@@ -38,7 +38,11 @@ fn main() {
         )
         .get_matches();
 
-    let (build_file, task, log_level) = if let Some(cmd_matches) = (cmd_matches.value_of("buildFile").unwrap_or(&default_toml), cmd_matches.value_of("task").unwrap_or("default"), cmd_matches.value_of("loglevel").unwrap_or("info"));
+    let (build_file, task, log_level) = if let Some(cmd_matches) = matches.subcommand_matches(name) {
+        (cmd_matches.value_of("buildFile").unwrap_or(&default_toml), cmd_matches.value_of("task").unwrap_or("default"), cmd_matches.value_of("loglevel").unwrap_or("info"))
+    } else {
+        panic!("cargo-{} not invoked via cargo.", name);
+    };
 
     let logger = log::create(log_level);
 
