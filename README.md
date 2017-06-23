@@ -6,6 +6,8 @@
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
 
+**Currently in initial development**
+
 * [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
