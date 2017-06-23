@@ -1,0 +1,10 @@
+
+[tasks.hello-world]
+script = [
+    "echo start...",
+    "echo \"Hello World From Script\"",
+    "echo end..."
+]
+
+[tasks.default]
+depedencies = ["hello-world"]

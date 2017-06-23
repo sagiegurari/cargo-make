@@ -1,0 +1,167 @@
+
+[tasks.default]
+depedencies = [
+    "dev-test-flow"
+]
+
+[tasks.ci-flow]
+depedencies = [
+    "pre-build",
+    "build-verbose",
+    "post-build",
+    "pre-test",
+    "test-verbose",
+    "post-test"
+]
+
+[tasks.dev-test-flow]
+depedencies = [
+    "format-flow",
+    "pre-build",
+    "build",
+    "post-build",
+    "pre-test",
+    "test",
+    "post-test"
+]
+
+[tasks.build-flow]
+depedencies = [
+    "init",
+    "pre-clean",
+    "clean-apidocs",
+    "clean",
+    "post-clean",
+    "format-flow",
+    "pre-docs",
+    "docs",
+    "post-docs",
+    "pre-build",
+    "build",
+    "post-build",
+    "pre-test",
+    "test",
+    "post-test",
+    "pre-verify-project",
+    "verify-project",
+    "post-verify-project",
+    "pre-audit",
+    "audit",
+    "post-audit",
+    "pre-outdated",
+    "outdated",
+    "post-outdated",
+    "copy-apidocs",
+    "end"
+]
+
+[tasks.init]
+
+[tasks.pre-clean]
+
+[tasks.clean-apidocs]
+command = "rm"
+args = ["-Rf", "./docs/api"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.post-clean]
+
+[tasks.pre-format]
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--write-mode=overwrite"]
+
+[tasks.post-format]
+
+[tasks.format-flow]
+depedencies = [
+    "pre-format",
+    "format",
+    "post-format"
+]
+
+[tasks.pre-docs]
+
+[tasks.docs]
+command = "cargo"
+args = ["doc", "--no-deps"]
+
+[tasks.post-docs]
+
+[tasks.pre-build]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+
+[tasks.build-verbose]
+command = "cargo"
+args = ["build", "--verbose"]
+
+[tasks.post-build]
+
+[tasks.pre-test]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+
+[tasks.test-verbose]
+command = "cargo"
+args = ["test", "--verbose"]
+
+[tasks.post-test]
+
+[tasks.pre-bench]
+
+[tasks.bench]
+command = "cargo"
+args = ["bench"]
+
+[tasks.post-bench]
+
+[tasks.bench-flow]
+depedencies = [
+    "pre-bench",
+    "bench",
+    "post-bench"
+]
+
+[tasks.pre-verify-project]
+
+[tasks.verify-project]
+command = "cargo"
+args = ["verify-project"]
+
+[tasks.post-verify-project]
+
+[tasks.pre-audit]
+
+[tasks.audit]
+install_crate = "cargo-audit"
+command = "cargo"
+args = ["audit"]
+
+[tasks.post-audit]
+
+[tasks.pre-outdated]
+
+[tasks.outdated]
+install_crate = "cargo-outdated"
+command = "cargo"
+args = ["outdated", "--root-deps-only", "--exit-code", "1"]
+
+[tasks.post-outdated]
+
+[tasks.copy-apidocs]
+script = [
+    "mkdir -p ./docs/api",
+    "mv ./target/doc/* ./docs/api"
+]
+
+[tasks.end]

@@ -1,0 +1,25 @@
+[tasks.format]
+install_script = ["cargo install rustfmt"]
+command = "cargo"
+args = ["fmt", "--", "--write-mode=overwrite"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+depedencies = ["clean"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+depedencies = ["clean"]
+
+[tasks.my-flow]
+depedencies = [
+    "format",
+    "build",
+    "test"
+]
