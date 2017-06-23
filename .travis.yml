@@ -23,8 +23,8 @@ addons:
       - gcc
       - binutils-dev
 script:
-  - cargo build --verbose
-  - cargo test --verbose
+  - cargo install --debug cargo-make
+  - cargo make ci-flow
   - echo "Running coverage"
   - wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
   - unzip v$KCOV_VERSION.zip
