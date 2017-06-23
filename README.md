@@ -169,7 +169,7 @@ For travis-ci, simple change the script to invoke the cargo-make installation an
 ````yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make ci-flow
+  - cargo make --task ci-flow
 ````
 
 For online CI services, it is better to install with the debug flag to enable a much faster installation.
