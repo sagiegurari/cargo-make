@@ -3,14 +3,13 @@
 //! Loads the tasks descriptor.
 //!
 
-use log::Log;
+use log::Logger;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use types::{Config, ExternalConfig, Task};
 
-extern crate serde;
 extern crate toml;
 
 fn merge_maps(
@@ -55,7 +54,7 @@ fn merge_tasks(
 
 pub fn load(
     file_name: &str,
-    logger: &Log,
+    logger: &Logger,
 ) -> Config {
     logger.verbose::<()>("Loading default tasks.", &[], None);
 

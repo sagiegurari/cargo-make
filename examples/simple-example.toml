@@ -1,5 +1,5 @@
 [tasks.format]
-install_script = ["cargo install rustfmt"]
+install_create = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
 

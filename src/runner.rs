@@ -5,13 +5,14 @@
 
 use command;
 use installer;
-use log::Log;
+use log::Logger;
 use std::collections::HashSet;
 use std::env;
+use std::time::SystemTime;
 use types::{Config, ExecutionPlan, Step};
 
 fn run_task(
-    logger: &Log,
+    logger: &Logger,
     step: &Step,
 ) {
     logger.info::<()>("Running Task: ", &[&step.name], None);
@@ -22,7 +23,7 @@ fn run_task(
 }
 
 fn run_task_flow(
-    logger: &Log,
+    logger: &Logger,
     execution_plan: &ExecutionPlan,
 ) {
     for step in &execution_plan.steps {
@@ -31,7 +32,7 @@ fn run_task_flow(
 }
 
 fn get_task_name(
-    logger: &Log,
+    logger: &Logger,
     config: &Config,
     name: &str,
 ) -> String {
@@ -52,7 +53,7 @@ fn get_task_name(
 }
 
 fn create_execution_plan_for_step(
-    logger: &Log,
+    logger: &Logger,
     config: &Config,
     task: &str,
     steps: &mut Vec<Step>,
@@ -84,7 +85,7 @@ fn create_execution_plan_for_step(
 }
 
 fn create_execution_plan(
-    logger: &Log,
+    logger: &Logger,
     config: &Config,
     task: &str,
 ) -> ExecutionPlan {
@@ -97,7 +98,7 @@ fn create_execution_plan(
 }
 
 fn set_env(
-    logger: &Log,
+    logger: &Logger,
     config: &Config,
 ) {
     logger.info::<()>("Setting Up Env.", &[], None);
@@ -109,14 +110,29 @@ fn set_env(
 }
 
 pub fn run(
-    logger: &Log,
+    logger: &Logger,
     config: &Config,
     task: &str,
 ) {
+    let start_time = SystemTime::now();
+
     set_env(logger, config);
 
     let execution_plan = create_execution_plan(&logger, &config, &task);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
 
     run_task_flow(logger, &execution_plan);
+
+    let time_string = match start_time.elapsed() {
+        Ok(elapsed) => {
+            let mut string = " in ".to_string();
+            string.push_str(&elapsed.as_secs().to_string());
+            string.push_str(" seconds");
+
+            string
+        }
+        _ => "".to_string(),
+    };
+
+    logger.info::<()>("Build done", &[&time_string, "."], None);
 }

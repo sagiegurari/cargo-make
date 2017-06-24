@@ -6,8 +6,6 @@
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
 
-**Currently in initial development**
-
 * [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
@@ -94,46 +92,59 @@ cargo make -b simple-example.toml -t my-flow
 The output would look something like this:
 
 ````console
-[cargo-make] info - Using Build File: ./examples/simple-example.toml
+[cargo-make] info - Using Build File: simple-example.toml
 [cargo-make] info - Task: my-flow
+[cargo-make] info - Setting Up Env.
 [cargo-make] info - Running Task: format
 [cargo-make] info - Execute Command: "cargo" "fmt" "--" "--write-mode=overwrite"
 [cargo-make] info - Running Task: clean
 [cargo-make] info - Execute Command: "cargo" "clean"
 [cargo-make] info - Running Task: build
 [cargo-make] info - Execute Command: "cargo" "build"
-   Compiling vec_map v0.8.0
-   Compiling serde v1.0.8
+   Compiling bitflags v0.9.1
    Compiling unicode-width v0.1.4
    Compiling quote v0.3.15
-   Compiling unicode-xid v0.0.4
-   Compiling libc v0.2.24
-   Compiling ansi_term v0.9.0
-   Compiling bitflags v0.9.1
    Compiling unicode-segmentation v1.1.0
    Compiling strsim v0.6.0
+   Compiling libc v0.2.24
+   Compiling serde v1.0.8
+   Compiling vec_map v0.8.0
+   Compiling ansi_term v0.9.0
+   Compiling unicode-xid v0.0.4
    Compiling synom v0.11.3
-   Compiling syn v0.11.11
+   Compiling rand v0.3.15
    Compiling term_size v0.3.0
    Compiling atty v0.2.2
+   Compiling syn v0.11.11
    Compiling textwrap v0.6.0
    Compiling clap v2.25.0
    Compiling serde_derive_internals v0.15.1
    Compiling toml v0.4.2
    Compiling serde_derive v1.0.8
-   Compiling cargo-make v0.1.0 (file:///home/ubuntu/workspace/rust/cargo-make)
-    Finished dev [unoptimized + debuginfo] target(s) in 253.16 secs
+   Compiling cargo-make v0.1.2 (file:///home/ubuntu/workspace)
+    Finished dev [unoptimized + debuginfo] target(s) in 79.75 secs
 [cargo-make] info - Running Task: test
 [cargo-make] info - Execute Command: "cargo" "test"
-   Compiling cargo-make v0.1.0 (file:///home/ubuntu/workspace/rust/cargo-make)
-    Finished dev [unoptimized + debuginfo] target(s) in 12.80 secs
-     Running target/debug/deps/cargo_make-542f1253498e7764
+   Compiling cargo-make v0.1.2 (file:///home/ubuntu/workspace)
+    Finished dev [unoptimized + debuginfo] target(s) in 5.1 secs
+     Running target/debug/deps/cargo_make-d5f8d30d73043ede
 
-running 0 tests
+running 10 tests
+test log::tests::create_info ... ok
+test log::tests::get_level_error ... ok
+test log::tests::create_verbose ... ok
+test log::tests::get_level_info ... ok
+test log::tests::get_level_other ... ok
+test log::tests::get_level_verbose ... ok
+test installer::tests::is_crate_installed_false ... ok
+test installer::tests::is_crate_installed_true ... ok
+test command::tests::validate_exit_code_error ... ok
+test log::tests::create_error ... ok
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 [cargo-make] info - Running Task: my-flow
+[cargo-make] info - Build done in 72 seconds.
 ````
 
 We now created a build script that can run on any platform.
@@ -296,6 +307,16 @@ script:
   - cargo make --task ci-flow
 ````
 
+For appveyor:
+
+````yaml
+build: false
+
+test_script:
+  - cargo install --debug cargo-make
+  - cargo make --task ci-flow
+````
+
 For online CI services, it is better to install with the debug flag to enable a much faster installation.
 
 <a name="usage-cli"></a>
@@ -337,6 +358,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
 | 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
 | 2017-06-23  | v0.1.0  | Initial release. |
 

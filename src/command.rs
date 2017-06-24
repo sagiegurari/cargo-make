@@ -1,9 +1,9 @@
 //! # command
 //!
-//! Runs the requested command
+//! Runs the requested command or script.
 //!
 
-use log::Log;
+use log::Logger;
 use rand::{Rng, thread_rng};
 use std::env;
 use std::env::current_dir;
@@ -32,7 +32,7 @@ pub fn validate_exit_code(exit_status: Result<ExitStatus, Error>) {
 }
 
 pub fn run_script(
-    logger: &Log,
+    logger: &Logger,
     script_lines: &Vec<String>,
 ) {
     let name = env!("CARGO_PKG_NAME");
@@ -119,7 +119,7 @@ pub fn run_script(
 }
 
 pub fn run_command(
-    logger: &Log,
+    logger: &Logger,
     command_string: &str,
     args: &Option<Vec<String>>,
 ) {
@@ -143,7 +143,7 @@ pub fn run_command(
 }
 
 pub fn run(
-    logger: &Log,
+    logger: &Logger,
     step: &Step,
 ) {
     match step.config.command {
@@ -157,4 +157,16 @@ pub fn run(
             }
         }
     };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::ErrorKind;
+
+    #[test]
+    #[should_panic]
+    fn validate_exit_code_error() {
+        validate_exit_code(Err(Error::new(ErrorKind::Other, "test")));
+    }
 }

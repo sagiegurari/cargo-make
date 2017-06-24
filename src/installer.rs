@@ -1,15 +1,18 @@
 //! # installer
 //!
-//! Installs depedencies.
+//! Installs external depedencies for tasks.<br>
+//! There are 2 types of depedencies: install_crate, install_script.<br>
+//! install_crate ensures the crate command is available and if not installs the crate based on the provided name.<br>
+//! install_script always gets executed before the task command.
 //!
 
 use command;
-use log::Log;
+use log::Logger;
 use std::process::Command;
 use types::Task;
 
 fn is_crate_installed(
-    logger: &Log,
+    logger: &Logger,
     crate_name: &str,
 ) -> bool {
     logger.verbose::<()>("Getting list of installed cargo commands.", &[], None);
@@ -47,7 +50,7 @@ fn is_crate_installed(
 }
 
 pub fn install(
-    logger: &Log,
+    logger: &Logger,
     task_config: &Task,
 ) {
     match task_config.install_crate {
@@ -70,5 +73,25 @@ pub fn install(
                 None => logger.verbose::<()>("No installation script defined.", &[], None),
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use log;
+
+    #[test]
+    fn is_crate_installed_true() {
+        let logger = log::create("error");
+        let output = is_crate_installed(&logger, "test");
+        assert!(output);
+    }
+
+    #[test]
+    fn is_crate_installed_false() {
+        let logger = log::create("error");
+        let output = is_crate_installed(&logger, "badbadbad");
+        assert!(!output);
     }
 }

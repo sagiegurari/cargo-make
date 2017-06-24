@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -34,4 +34,4 @@ default = []
 
 [badges]
 travis-ci = { repository = "sagiegurari/cargo-make", branch = "master" }
-appveyor = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
+codecov = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
