@@ -18,7 +18,7 @@
     * [Environment Variables](#usage-env)
     * [Cli Options](#usage-cli)
 * [Roadmap](#roadmap)
-* [API Documentation](https://sagiegurari.github.io/cargo-make/)
+* [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](#history)
 * [License](#license)
@@ -327,7 +327,7 @@ Here are a few of the top priorities:
 * Setup a website with more in depth explanations and examples
 
 ## API Documentation
-See full docs at: [API Docs](https://sagiegurari.github.io/cargo-make/)
+See full docs at: [API Docs](https://sagiegurari.github.io/cargo-make/api.html)
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)
