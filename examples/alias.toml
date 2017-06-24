@@ -1,0 +1,17 @@
+
+[tasks.A]
+depedencies = ["B", "C"]
+
+[tasks.B]
+depedencies = ["D"]
+
+[tasks.C]
+depedencies = ["D2"]
+
+[tasks.D]
+script = [
+    "echo hello"
+]
+
+[tasks.D2]
+alias="D"

@@ -1,4 +1,7 @@
 
+[env]
+RUST_BACKTRACE="1"
+
 [tasks.default]
 depedencies = [
     "dev-test-flow"

@@ -7,6 +7,7 @@ use command;
 use installer;
 use log::Log;
 use std::collections::HashSet;
+use std::env;
 use types::{Config, ExecutionPlan, Step};
 
 fn run_task(
@@ -29,6 +30,27 @@ fn run_task_flow(
     }
 }
 
+fn get_task_name(
+    logger: &Log,
+    config: &Config,
+    name: &str,
+) -> String {
+    match config.tasks.get(name) {
+        Some(task_config) => {
+            match task_config.alias {
+                Some(ref alias) => get_task_name(logger, config, alias),
+                _ => name.to_string(),
+            }
+        }
+        None => {
+            // This will actually panic
+            logger.error::<()>("Task not found: ", &[&name], None);
+
+            name.to_string()
+        }
+    }
+}
+
 fn create_execution_plan_for_step(
     logger: &Log,
     config: &Config,
@@ -37,7 +59,9 @@ fn create_execution_plan_for_step(
     task_names: &mut HashSet<String>,
     root: bool,
 ) {
-    match config.tasks.get(task) {
+    let actual_task = get_task_name(logger, config, task);
+
+    match config.tasks.get(&actual_task) {
         Some(task_config) => {
             match task_config.depedencies {
                 Some(ref depedencies) => {
@@ -72,11 +96,25 @@ fn create_execution_plan(
     ExecutionPlan { steps }
 }
 
+fn set_env(
+    logger: &Log,
+    config: &Config,
+) {
+    logger.info::<()>("Setting Up Env.", &[], None);
+
+    for (key, value) in &config.env {
+        logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);
+        env::set_var(&key, &value);
+    }
+}
+
 pub fn run(
     logger: &Log,
     config: &Config,
     task: &str,
 ) {
+    set_env(logger, config);
+
     let execution_plan = create_execution_plan(&logger, &config, &task);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
 

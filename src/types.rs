@@ -7,6 +7,7 @@ use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Task {
+    pub alias: Option<String>,
     pub install_crate: Option<String>,
     pub install_script: Option<Vec<String>>,
     pub script: Option<Vec<String>>,
@@ -17,7 +18,14 @@ pub struct Task {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
+    pub env: HashMap<String, String>,
     pub tasks: HashMap<String, Task>
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ExternalConfig {
+    pub env: Option<HashMap<String, String>>,
+    pub tasks: Option<HashMap<String, Task>>
 }
 
 #[derive(Debug)]

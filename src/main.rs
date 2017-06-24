@@ -43,16 +43,16 @@ fn main() {
             let build_file = cmd_matches.value_of("buildFile").unwrap_or(&default_toml);
             let task = cmd_matches.value_of("task").unwrap_or("default");
             let log_level = cmd_matches.value_of("loglevel").unwrap_or("info");
-        
+
             let logger = log::create(log_level);
-        
+
             logger.info::<()>("Using Build File: ", &[build_file], None);
             logger.info::<()>("Task: ", &[task], None);
-        
+
             let config = descriptor::load(&build_file, &logger);
-        
+
             runner::run(&logger, &config, &task);
         }
-        None => panic!("cargo-{} not invoked via cargo command.", name)
+        None => panic!("cargo-{} not invoked via cargo command.", name),
     }
 }

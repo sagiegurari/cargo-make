@@ -12,8 +12,10 @@
 * [Installation](#installation)
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
+    * [Tasks, Depedencies and Aliases](#usage-task-depedencies-alias)
     * [Default Tasks and Extending](#usage-default-tasks)
     * [Continues Integration](#usage-ci)
+    * [Environment Variables](#usage-env)
     * [Cli Options](#usage-cli)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/)
@@ -57,8 +59,7 @@ For example, if we would like to have a script which:
 We will create a toml file as follows:
 
 ````toml
-[tasks.format]
-install_script = ["cargo install rustfmt"]
+install_crate = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
 
@@ -137,6 +138,118 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
+<a name="usage-task-depedencies-alias"></a>
+### Tasks, Depedencies and Aliases
+In many cases, certain tasks depend on other tasks.<br>
+For example you would like to format the code before running build and run the build before running tests.<br>
+Such flow can be defined as follows:
+
+````toml
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--write-mode=overwrite"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+depedencies = ["format"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+depedencies = ["build"]
+````
+
+When you run:
+
+````sh
+cargo make -b ./my_build.toml -t test
+````
+
+It will try to run test, see that it has depedencies and those have other depedencies.<br>
+Therefore it will create an execution plan for the tasks based on the tasks and their depedencies.<br>
+In our case it will invoke format -> build -> test.<br>
+
+The same task will never be executed twice so if we have for example:
+
+````toml
+[tasks.A]
+depedencies = ["B", "C"]
+
+[tasks.B]
+depedencies = ["D"]
+
+[tasks.C]
+depedencies = ["D"]
+
+[tasks.D]
+script = [
+    "echo hello"
+]
+````
+
+In this example, A depdends on B and C, and both B and C are depedended on D.<br>
+Task D however will not be invoked twice.<br>
+The output of the execution will look something like this:
+
+````console
+[cargo-make] info - Task: A
+[cargo-make] info - Setting Up Env.
+[cargo-make] info - Running Task: D
+[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/CNuU47tIix.sh"
+hello
+[cargo-make] info - Running Task: B
+[cargo-make] info - Running Task: C
+[cargo-make] info - Running Task: A
+````
+
+As you can see, 'hello' was printed once by task D as it was only invoked once.<br>
+But what if we want to run D twice?<br>
+Simple answer would be to duplicate task D and have B depend on D and C depend on D2 which is a copy of D.<br>
+But duplicating can lead to bugs and to huge makefiles, so we have alias for that.<br>
+An alias task has its own name and points to another task.<br>
+All of the definitions of the alias task are ignored.<br>
+So now, if we want to have D execute twice we can do the following:
+
+````toml
+[tasks.A]
+depedencies = ["B", "C"]
+
+[tasks.B]
+depedencies = ["D"]
+
+[tasks.C]
+depedencies = ["D2"]
+
+[tasks.D]
+script = [
+    "echo hello"
+]
+
+[tasks.D2]
+alias="D"
+````
+
+Now C depends on D2 and D2 is an alias for D.<br>
+Execution output of such make file would like as follows:
+
+````console
+[cargo-make] info - Task: A
+[cargo-make] info - Setting Up Env.
+[cargo-make] info - Running Task: D
+[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/HP0UD7pgoX.sh"
+hello
+[cargo-make] info - Running Task: B
+[cargo-make] info - Running Task: D2
+[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/TuuZJkqCE2.sh"
+hello
+[cargo-make] info - Running Task: C
+[cargo-make] info - Running Task: A
+````
+
+Now you can see that 'hello' was printed twice.
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous example.<br>
@@ -160,6 +273,17 @@ args = ["build", "--verbose"]
 
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
+
+<a name="usage-env"></a>
+### Environment Variables
+You can also define env vars to be set as part of the execution of the flow in the env block, for examle:
+
+````yaml
+[env]
+RUST_BACKTRACE="1"
+````
+
+All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
 
 <a name="usage-ci"></a>
 ### Continues Integration
@@ -198,7 +322,6 @@ The cargo-make task runner is still in initial development and there are many th
 Here are a few of the top priorities:
 
 * Support platform specific task overrides
-* Environment variables definition via toml file
 * Git related task definitions in default toml
 * Crate publishing task definitions in default toml
 * Setup a website with more in depth explanations and examples
@@ -214,7 +337,8 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-24  | v0.1.0  | Initial release. |
+| 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
+| 2017-06-23  | v0.1.0  | Initial release. |
 
 <a name="license"></a>
 ## License
