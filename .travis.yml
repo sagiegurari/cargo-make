@@ -25,6 +25,7 @@ addons:
 script:
   - cargo install --debug cargo-make
   - cargo make --task ci-flow
+after_script:
   - echo "Running coverage"
   - wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
   - unzip v$KCOV_VERSION.zip
