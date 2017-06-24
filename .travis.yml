@@ -38,5 +38,6 @@ after_script:
   - ls ./target/debug/deps
   - mkdir -p ./target/coverage
   - for file in target/debug/deps/cargo_make*; do kcov --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; done
+  - tree -L 3 ./target/coverage
   - bash <(curl -s https://codecov.io/bash)
   - echo "Uploaded code coverage"
