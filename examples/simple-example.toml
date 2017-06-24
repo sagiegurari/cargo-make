@@ -10,15 +10,15 @@ args = ["clean"]
 [tasks.build]
 command = "cargo"
 args = ["build"]
-depedencies = ["clean"]
+dependencies = ["clean"]
 
 [tasks.test]
 command = "cargo"
 args = ["test"]
-depedencies = ["clean"]
+dependencies = ["clean"]
 
 [tasks.my-flow]
-depedencies = [
+dependencies = [
     "format",
     "build",
     "test"

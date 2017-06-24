@@ -10,7 +10,7 @@
 * [Installation](#installation)
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
-    * [Tasks, Depedencies and Aliases](#usage-task-depedencies-alias)
+    * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Default Tasks and Extending](#usage-default-tasks)
     * [Continues Integration](#usage-ci)
     * [Environment Variables](#usage-env)
@@ -25,7 +25,7 @@
 ## Overview
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
 A task is a command or a script to execute.<br>
-Tasks can have depedencies which are also tasks that will be executed before the task itself.<br>
+Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
 With a simple toml based configuration file, you can define a multi platform build script that can run build, test, documentation generation, bench tests execution, security validations and more by running a single command.
 
 <a name="installation"></a>
@@ -68,15 +68,15 @@ args = ["clean"]
 [tasks.build]
 command = "cargo"
 args = ["build"]
-depedencies = ["clean"]
+dependencies = ["clean"]
 
 [tasks.test]
 command = "cargo"
 args = ["test"]
-depedencies = ["clean"]
+dependencies = ["clean"]
 
 [tasks.my-flow]
-depedencies = [
+dependencies = [
     "format",
     "build",
     "test"
@@ -149,8 +149,8 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
-<a name="usage-task-depedencies-alias"></a>
-### Tasks, Depedencies and Aliases
+<a name="usage-task-dependencies-alias"></a>
+### Tasks, Dependencies and Aliases
 In many cases, certain tasks depend on other tasks.<br>
 For example you would like to format the code before running build and run the build before running tests.<br>
 Such flow can be defined as follows:
@@ -164,12 +164,12 @@ args = ["fmt", "--", "--write-mode=overwrite"]
 [tasks.build]
 command = "cargo"
 args = ["build"]
-depedencies = ["format"]
+dependencies = ["format"]
 
 [tasks.test]
 command = "cargo"
 args = ["test"]
-depedencies = ["build"]
+dependencies = ["build"]
 ````
 
 When you run:
@@ -178,21 +178,21 @@ When you run:
 cargo make -b ./my_build.toml -t test
 ````
 
-It will try to run test, see that it has depedencies and those have other depedencies.<br>
-Therefore it will create an execution plan for the tasks based on the tasks and their depedencies.<br>
+It will try to run test, see that it has dependencies and those have other dependencies.<br>
+Therefore it will create an execution plan for the tasks based on the tasks and their dependencies.<br>
 In our case it will invoke format -> build -> test.<br>
 
 The same task will never be executed twice so if we have for example:
 
 ````toml
 [tasks.A]
-depedencies = ["B", "C"]
+dependencies = ["B", "C"]
 
 [tasks.B]
-depedencies = ["D"]
+dependencies = ["D"]
 
 [tasks.C]
-depedencies = ["D"]
+dependencies = ["D"]
 
 [tasks.D]
 script = [
@@ -200,7 +200,7 @@ script = [
 ]
 ````
 
-In this example, A depdends on B and C, and both B and C are depedended on D.<br>
+In this example, A depends on B and C, and both B and C are dependended on D.<br>
 Task D however will not be invoked twice.<br>
 The output of the execution will look something like this:
 
@@ -225,13 +225,13 @@ So now, if we want to have D execute twice we can do the following:
 
 ````toml
 [tasks.A]
-depedencies = ["B", "C"]
+dependencies = ["B", "C"]
 
 [tasks.B]
-depedencies = ["D"]
+dependencies = ["D"]
 
 [tasks.C]
-depedencies = ["D2"]
+dependencies = ["D2"]
 
 [tasks.D]
 script = [
@@ -339,7 +339,7 @@ OPTIONS:
 
 <a name="roadmap"></a>
 ## Roadmap
-The cargo-make task runner is still in initial development and there are many things planned for the comming release.<br>
+The cargo-make task runner is still in initial development and there are many things planned for the coming release.<br>
 Here are a few of the top priorities:
 
 * Support platform specific task overrides
@@ -358,6 +358,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
 | 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
 | 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
 | 2017-06-23  | v0.1.0  | Initial release. |

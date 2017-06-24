@@ -6,7 +6,7 @@
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds a single task configuration such as command and depedencies list
+/// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
@@ -21,7 +21,7 @@ pub struct Task {
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
-    pub depedencies: Option<Vec<String>>
+    pub dependencies: Option<Vec<String>>
 }
 
 #[derive(Serialize, Deserialize, Debug)]

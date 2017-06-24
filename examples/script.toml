@@ -7,4 +7,4 @@ script = [
 ]
 
 [tasks.default]
-depedencies = ["hello-world"]
+dependencies = ["hello-world"]

@@ -1,12 +1,12 @@
 
 [tasks.A]
-depedencies = ["B", "C"]
+dependencies = ["B", "C"]
 
 [tasks.B]
-depedencies = ["D"]
+dependencies = ["D"]
 
 [tasks.C]
-depedencies = ["D2"]
+dependencies = ["D2"]
 
 [tasks.D]
 script = [

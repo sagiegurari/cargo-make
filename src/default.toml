@@ -3,12 +3,12 @@
 RUST_BACKTRACE="1"
 
 [tasks.default]
-depedencies = [
+dependencies = [
     "dev-test-flow"
 ]
 
 [tasks.ci-flow]
-depedencies = [
+dependencies = [
     "pre-build",
     "build-verbose",
     "post-build",
@@ -18,7 +18,7 @@ depedencies = [
 ]
 
 [tasks.dev-test-flow]
-depedencies = [
+dependencies = [
     "format-flow",
     "pre-build",
     "build",
@@ -29,7 +29,7 @@ depedencies = [
 ]
 
 [tasks.build-flow]
-depedencies = [
+dependencies = [
     "init",
     "pre-clean",
     "clean-apidocs",
@@ -82,7 +82,7 @@ args = ["fmt", "--", "--write-mode=overwrite"]
 [tasks.post-format]
 
 [tasks.format-flow]
-depedencies = [
+dependencies = [
     "pre-format",
     "format",
     "post-format"
@@ -129,7 +129,7 @@ args = ["bench"]
 [tasks.post-bench]
 
 [tasks.bench-flow]
-depedencies = [
+dependencies = [
     "pre-bench",
     "bench",
     "post-bench"

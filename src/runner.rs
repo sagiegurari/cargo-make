@@ -64,13 +64,13 @@ fn create_execution_plan_for_step(
 
     match config.tasks.get(&actual_task) {
         Some(task_config) => {
-            match task_config.depedencies {
-                Some(ref depedencies) => {
-                    for depedency in depedencies {
+            match task_config.dependencies {
+                Some(ref dependencies) => {
+                    for depedency in dependencies {
                         create_execution_plan_for_step(&logger, &config, &depedency, steps, task_names, false);
                     }
                 }
-                _ => logger.verbose::<()>("No depedencies found for task: ", &[&task], None),
+                _ => logger.verbose::<()>("No dependencies found for task: ", &[&task], None),
             };
 
             if !task_names.contains(task) {

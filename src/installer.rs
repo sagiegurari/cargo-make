@@ -1,7 +1,7 @@
 //! # installer
 //!
-//! Installs external depedencies for tasks.<br>
-//! There are 2 types of depedencies: install_crate, install_script.<br>
+//! Installs external dependencies for tasks.<br>
+//! There are 2 types of dependencies: install_crate, install_script.<br>
 //! install_crate ensures the crate command is available and if not installs the crate based on the provided name.<br>
 //! install_script always gets executed before the task command.
 //!
