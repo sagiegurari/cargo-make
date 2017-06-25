@@ -81,8 +81,15 @@ fn create_execution_plan_for_step(
             };
 
             if !task_names.contains(task) {
-                steps.push(Step { name: task.to_string(), config: task_config.clone() });
-                task_names.insert(task.to_string());
+                let add = match task_config.disabled {
+                    Some(ref disabled) => !disabled,
+                    None => true,
+                };
+
+                if add {
+                    steps.push(Step { name: task.to_string(), config: task_config.clone() });
+                    task_names.insert(task.to_string());
+                }
             } else if root {
                 logger.error::<()>("Circular reference found for task: ", &[&task], None);
             }

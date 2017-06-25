@@ -15,6 +15,7 @@
     * [Continues Integration](#usage-ci)
     * [Environment Variables](#usage-env)
     * [Cli Options](#usage-cli)
+    * [Task Definition](#usage-task-def)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
@@ -283,6 +284,13 @@ If for example, you would like to add verbose output to it, you would just need 
 args = ["build", "--verbose"]
 ````
 
+If you want to disable some existing task (will not disable its dependencies), you can do it as follows:
+
+````toml
+[tasks.build]
+disabled = true
+````
+
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
@@ -338,6 +346,32 @@ OPTIONS:
     -t, --task <TASK NAME>        The task name to execute (default: default)
 ````
 
+### Task Definition
+The following is the task definition:
+
+````rs
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds a single task configuration such as command and dependencies list
+pub struct Task {
+    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    pub disabled: Option<bool>,
+    /// if defined, task points to another task and all other properties are ignored
+    pub alias: Option<String>,
+    /// if defined, the provided crate will be installed (if needed) before running the task
+    pub install_crate: Option<String>,
+    /// if defined, the provided script will be executed before running the task
+    pub install_script: Option<Vec<String>>,
+    /// The command to execute
+    pub command: Option<String>,
+    /// The command args
+    pub args: Option<Vec<String>>,
+    /// If command is not defined, and script is defined, the provided script will be executed
+    pub script: Option<Vec<String>>,
+    /// A list of tasks to execute before this task
+    pub dependencies: Option<Vec<String>>
+}
+````
+
 <a name="badge"></a>
 ## Badge
 If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.<br>
@@ -374,7 +408,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-25  | v0.2.1  | Docs |
+| 2017-06-25  | v0.2.2  | Added disabled task attribute support |
 | 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
 | 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
 | 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |

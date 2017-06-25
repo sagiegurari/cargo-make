@@ -8,6 +8,8 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
+    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    pub disabled: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task

@@ -102,6 +102,8 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -113,6 +115,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
+    <span class="doccomment">/// if true, the command/script of this task will not be invoked, depedencies however will be</span>
+    <span class="kw">pub</span> <span class="ident">disabled</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, task points to another task and all other properties are ignored</span>
     <span class="kw">pub</span> <span class="ident">alias</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, the provided crate will be installed (if needed) before running the task</span>
