@@ -166,7 +166,9 @@ pub fn run(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use log;
     use std::io::ErrorKind;
+    use types::Task;
 
     #[test]
     #[should_panic]
@@ -187,7 +189,8 @@ mod tests {
             script: None,
             dependencies: None
         };
+        let step = Step { name: "test".to_string(), config: task };
 
-        run(&logger, &task);
+        run(&logger, &step);
     }
 }
