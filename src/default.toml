@@ -77,6 +77,8 @@ dependencies = [
     "end"
 ]
 
+[tasks.empty]
+
 [tasks.init]
 
 [tasks.pre-clean]
