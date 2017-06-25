@@ -3,11 +3,13 @@
 RUST_BACKTRACE="1"
 
 [tasks.default]
+# Default task points to the development testing flow
 dependencies = [
     "dev-test-flow"
 ]
 
 [tasks.ci-flow]
+# CI task will run cargo build and cargo test with verbose output
 dependencies = [
     "pre-build",
     "build-verbose",
@@ -18,6 +20,7 @@ dependencies = [
 ]
 
 [tasks.dev-test-flow]
+# Development testing flow will first format the code, and than run cargo build and test
 dependencies = [
     "format-flow",
     "pre-build",
@@ -28,7 +31,23 @@ dependencies = [
     "post-test"
 ]
 
+[tasks.publish-flow]
+# Publish flow - First clean the target directory of any old leftovers, package and publish
+dependencies = [
+    "pre-clean",
+    "clean",
+    "post-clean",
+    "pre-publish",
+    "publish",
+    "post-publish"
+]
+
 [tasks.build-flow]
+# This is the full sanity testing flow which includes:
+# cleanup of old build
+# generating docs and moving them to the docs folder
+# running cargo build and test
+# running cargo plugins such as security and dependency validations
 dependencies = [
     "init",
     "pre-clean",
@@ -168,3 +187,19 @@ script = [
 ]
 
 [tasks.end]
+
+[tasks.pre-package]
+
+[tasks.package]
+command = "cargo"
+args = ["package"]
+
+[tasks.post-package]
+
+[tasks.pre-publish]
+
+[tasks.publish]
+command = "cargo"
+args = ["publish"]
+
+[tasks.post-publish]

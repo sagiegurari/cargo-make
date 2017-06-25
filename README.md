@@ -360,13 +360,8 @@ Here are few snapshots:
 
 <a name="roadmap"></a>
 ## Roadmap
-The cargo-make task runner is still in initial development and there are many things planned for the coming release.<br>
-Here are a few of the top priorities:
-
-* Support platform specific task overrides
-* Git related task definitions in default toml
-* Crate publishing task definitions in default toml
-* Setup a website with more in depth explanations and examples
+The cargo-make task runner is still under heavy development and there are many things planned for the coming release.<br>
+You can view the current list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
 
 ## API Documentation
 See full docs at: [API Docs](https://sagiegurari.github.io/cargo-make/api.html)
