@@ -414,6 +414,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-25  | v0.2.4  | More tests |
 | 2017-06-25  | v0.2.3  | Added disabled task attribute support |
 | 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
 | 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
