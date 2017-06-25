@@ -349,7 +349,7 @@ OPTIONS:
 ### Task Definition
 The following is the task definition:
 
-````rs
+````rust
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
@@ -408,7 +408,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-25  | v0.2.2  | Added disabled task attribute support |
+| 2017-06-25  | v0.2.3  | Added disabled task attribute support |
 | 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
 | 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
 | 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
