@@ -99,13 +99,13 @@ pub fn run_script(
     }
 
     let command = if cfg!(windows) {
-        "cmd"
+        "cmd.exe"
     } else {
         "sh"
     };
 
     let args_vector = if cfg!(windows) {
-        vec!["-c".to_string(), file_path_str.to_string()]
+        vec!["/C".to_string(), file_path_str.to_string()]
     } else {
         vec![file_path_str.to_string()]
     };
