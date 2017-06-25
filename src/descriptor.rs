@@ -1,6 +1,9 @@
 //! # log
 //!
-//! Loads the tasks descriptor.
+//! Loads the tasks descriptor.<br>
+//! It will first load the default descriptor which is defined in cargo-make internally and
+//! afterwards tries to find the external descriptor and load it as well.<br>
+//! If an extenal descriptor exists, it will be loaded and extend the default descriptor.
 //!
 
 use log::Logger;
@@ -52,25 +55,15 @@ fn merge_tasks(
     merged
 }
 
-pub fn load(
+fn load_external_descriptor(
     file_name: &str,
     logger: &Logger,
-) -> Config {
-    logger.verbose::<()>("Loading default tasks.", &[], None);
-
-    let default_descriptor = include_str!("default.toml");
-
-    let default_config: Config = match toml::from_str(default_descriptor) {
-        Ok(value) => value,
-        Err(error) => panic!("Unable to parse default descriptor, {}", error),
-    };
-    logger.verbose("Loaded default config:", &[], Some(&default_config));
-
+) -> ExternalConfig {
     logger.verbose::<()>("Loading tasks from file: ", &[file_name], None);
 
     let file_path = Path::new(file_name);
 
-    let external_config: ExternalConfig = if file_path.exists() {
+    if file_path.exists() {
         let mut file = File::open(file_name).unwrap();
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
@@ -86,7 +79,28 @@ pub fn load(
         logger.info::<()>("External file not found, skipping.", &[], None);
 
         ExternalConfig { env: None, tasks: None }
+    }
+}
+
+/// Loads the tasks descriptor.<br>
+/// It will first load the default descriptor which is defined in cargo-make internally and
+/// afterwards tries to find the external descriptor and load it as well.<br>
+/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+pub fn load(
+    file_name: &str,
+    logger: &Logger,
+) -> Config {
+    logger.verbose::<()>("Loading default tasks.", &[], None);
+
+    let default_descriptor = include_str!("default.toml");
+
+    let default_config: Config = match toml::from_str(default_descriptor) {
+        Ok(value) => value,
+        Err(error) => panic!("Unable to parse default descriptor, {}", error),
     };
+    logger.verbose("Loaded default config:", &[], Some(&default_config));
+
+    let external_config: ExternalConfig = load_external_descriptor(file_name, logger);
 
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,

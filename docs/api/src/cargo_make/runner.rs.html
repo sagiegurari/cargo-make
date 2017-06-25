@@ -181,10 +181,30 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Runs the requested tasks</span>
+<span class="doccomment">//! Runs the requested tasks.&lt;br&gt;</span>
+<span class="doccomment">//! The flow is as follows:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! * Load env variables</span>
+<span class="doccomment">//! * Create an execution plan based on the requested task and its dependencies</span>
+<span class="doccomment">//! * Run all tasks defined in the execution plan</span>
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident">command</span>;
@@ -215,6 +235,7 @@
     }
 }
 
+<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases</span>
 <span class="kw">fn</span> <span class="ident">get_task_name</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
@@ -236,6 +257,7 @@
     }
 }
 
+<span class="doccomment">/// Creates an execution plan for the given step based on existing execution plan data</span>
 <span class="kw">fn</span> <span class="ident">create_execution_plan_for_step</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
@@ -268,6 +290,7 @@
     }
 }
 
+<span class="doccomment">/// Creates the full execution plan</span>
 <span class="kw">fn</span> <span class="ident">create_execution_plan</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
@@ -281,6 +304,7 @@
     <span class="ident">ExecutionPlan</span> { <span class="ident">steps</span> }
 }
 
+<span class="doccomment">/// Updates the env for the current execution</span>
 <span class="kw">fn</span> <span class="ident">set_env</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
@@ -293,6 +317,12 @@
     }
 }
 
+<span class="doccomment">/// Runs the requested tasks.&lt;br&gt;</span>
+<span class="doccomment">/// The flow is as follows:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * Load env variables</span>
+<span class="doccomment">/// * Create an execution plan based on the requested task and its dependencies</span>
+<span class="doccomment">/// * Run all tasks defined in the execution plan</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,

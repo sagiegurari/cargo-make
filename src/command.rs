@@ -1,6 +1,6 @@
 //! # command
 //!
-//! Runs the requested command or script.
+//! Runs task commands/scripts.
 //!
 
 use log::Logger;
@@ -13,6 +13,7 @@ use std::io::prelude::*;
 use std::process::{Command, ExitStatus, Stdio, exit};
 use types::Step;
 
+/// Validates the exit code code and if not 0 or unable to validate it, panic.
 pub fn validate_exit_code(exit_status: Result<ExitStatus, Error>) {
     match exit_status {
         Ok(code) => {
@@ -31,6 +32,7 @@ pub fn validate_exit_code(exit_status: Result<ExitStatus, Error>) {
     }
 }
 
+/// Runs the requested script text and panics in case of any script error.
 pub fn run_script(
     logger: &Logger,
     script_lines: &Vec<String>,
@@ -118,6 +120,7 @@ pub fn run_script(
     };
 }
 
+/// Runs the requested command and panics in case of any error.
 pub fn run_command(
     logger: &Logger,
     command_string: &str,
@@ -142,6 +145,7 @@ pub fn run_command(
     validate_exit_code(exit_status);
 }
 
+/// Runs the given task command and if not defined, the task script.
 pub fn run(
     logger: &Logger,
     step: &Step,

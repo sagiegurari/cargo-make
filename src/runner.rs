@@ -1,6 +1,11 @@
 //! # runner
 //!
-//! Runs the requested tasks
+//! Runs the requested tasks.<br>
+//! The flow is as follows:
+//!
+//! * Load env variables
+//! * Create an execution plan based on the requested task and its dependencies
+//! * Run all tasks defined in the execution plan
 //!
 
 use command;
@@ -31,6 +36,7 @@ fn run_task_flow(
     }
 }
 
+/// Returns the actual task name to invoke as tasks may have aliases
 fn get_task_name(
     logger: &Logger,
     config: &Config,
@@ -52,6 +58,7 @@ fn get_task_name(
     }
 }
 
+/// Creates an execution plan for the given step based on existing execution plan data
 fn create_execution_plan_for_step(
     logger: &Logger,
     config: &Config,
@@ -84,6 +91,7 @@ fn create_execution_plan_for_step(
     }
 }
 
+/// Creates the full execution plan
 fn create_execution_plan(
     logger: &Logger,
     config: &Config,
@@ -97,6 +105,7 @@ fn create_execution_plan(
     ExecutionPlan { steps }
 }
 
+/// Updates the env for the current execution
 fn set_env(
     logger: &Logger,
     config: &Config,
@@ -109,6 +118,12 @@ fn set_env(
     }
 }
 
+/// Runs the requested tasks.<br>
+/// The flow is as follows:
+///
+/// * Load env variables
+/// * Create an execution plan based on the requested task and its dependencies
+/// * Run all tasks defined in the execution plan
 pub fn run(
     logger: &Logger,
     config: &Config,

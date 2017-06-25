@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make) [![Build Status](https://travis-ci.org/sagiegurari/cargo-make.svg)](http://travis-ci.org/sagiegurari/cargo-make) [![Build status](https://ci.appveyor.com/api/projects/status/knyrs33tyjqgt06u?svg=true)](https://ci.appveyor.com/project/sagiegurari/cargo-make) [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make)<br>
 [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/sagiegurari/cargo-make.svg)](https://libraries.io/cargo/cargo-make) [![Documentation](https://docs.rs/cargo-make/badge.svg)](https://docs.rs/crate/cargo-make/) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make)<br>
-[![cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
 
@@ -15,6 +15,7 @@
     * [Continues Integration](#usage-ci)
     * [Environment Variables](#usage-env)
     * [Cli Options](#usage-cli)
+* [Badge](#badge)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
 * [Contributing](.github/CONTRIBUTING.md)
@@ -337,6 +338,26 @@ OPTIONS:
     -t, --task <TASK NAME>        The task name to execute (default: default)
 ````
 
+<a name="badge"></a>
+## Badge
+If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.<br>
+Here are few snapshots:
+
+### Markdown
+
+
+````md
+[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+````
+
+### HTML
+
+````html
+<a href="https://sagiegurari.github.io/cargo-make">
+  <img src="https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg" alt="Built with cargo-make">
+</a>
+````
+
 <a name="roadmap"></a>
 ## Roadmap
 The cargo-make task runner is still in initial development and there are many things planned for the coming release.<br>
@@ -358,6 +379,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-25  | v0.2.1  | Docs |
 | 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
 | 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
 | 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
