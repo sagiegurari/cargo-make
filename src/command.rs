@@ -173,4 +173,21 @@ mod tests {
     fn validate_exit_code_error() {
         validate_exit_code(Err(Error::new(ErrorKind::Other, "test")));
     }
+
+    #[test]
+    fn run_no_command() {
+        let logger = log::create("error");
+        let task = Task {
+            install_crate: None,
+            command: None,
+            args: None,
+            disabled: None,
+            alias: None,
+            install_script: None,
+            script: None,
+            dependencies: None
+        };
+
+        run(&logger, &task);
+    }
 }
