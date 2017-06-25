@@ -151,7 +151,7 @@ mod tests {
         assert!(logger.is_verbose_enabled());
         assert!(logger.is_info_enabled());
 
-        logger.verbose::<()>("test", &[], None);
+        logger.verbose::<()>("test", &["test"], None);
     }
 
     #[test]
@@ -161,7 +161,7 @@ mod tests {
         assert!(!logger.is_verbose_enabled());
         assert!(logger.is_info_enabled());
 
-        logger.info::<()>("test", &[], None);
+        logger.info::<()>("test", &["test"], None);
     }
 
     #[test]
@@ -172,6 +172,6 @@ mod tests {
         assert!(!logger.is_verbose_enabled());
         assert!(!logger.is_info_enabled());
 
-        logger.error::<()>("test", &[], None);
+        logger.error::<()>("test", &["test"], None);
     }
 }
