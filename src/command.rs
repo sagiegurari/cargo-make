@@ -193,4 +193,40 @@ mod tests {
 
         run(&logger, &step);
     }
+
+    #[test]
+    fn run_command() {
+        let logger = log::create("error");
+        let task = Task {
+            command: Some("echo 1".to_string()),
+            install_crate: None,
+            args: None,
+            disabled: None,
+            alias: None,
+            install_script: None,
+            script: None,
+            dependencies: None
+        };
+        let step = Step { name: "test".to_string(), config: task };
+
+        run(&logger, &step);
+    }
+
+    #[test]
+    fn run_script() {
+        let logger = log::create("error");
+        let task = Task {
+            script: Some(vec!["echo 1".to_string()]),
+            command: None,
+            install_crate: None,
+            args: None,
+            disabled: None,
+            alias: None,
+            install_script: None,
+            dependencies: None
+        };
+        let step = Step { name: "test".to_string(), config: task };
+
+        run(&logger, &step);
+    }
 }
