@@ -38,13 +38,9 @@ after_script:
   - rm -rf kcov-$KCOV_VERSION
   - ls ./target/debug/deps
   - mkdir -p ./target/coverage
-  - for file in target/debug/deps/cargo_make*; do if "$file" ; then echo "Running $file"; kcov --verify --debug=4 --exclude-pattern=main.rs --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; fi; done
-  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1)
-  - echo "Core file location:"
-  - echo $COREFILE
-  - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" example -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
+  - for file in target/debug/deps/cargo_make*; do if "$file" ; then echo "Running $file"; kcov --verify --debug=4 --exclude-pattern=main.rs --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1); echo "Core file location:"; echo $COREFILE; if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" "$file" -ex "thread apply all bt" -ex "set pagination 0" -batch; fi; fi; done
   - ls -ls ./target/coverage/cargo_make*
   - bash <(curl -s https://codecov.io/bash)
   - echo "Uploaded code coverage"
 before_script:
-  - ulimit -c unlimited -S       # enable core dumps
+  - ulimit -c unlimited -S 
