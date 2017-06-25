@@ -198,9 +198,9 @@ mod tests {
     fn run_command() {
         let logger = log::create("error");
         let task = Task {
-            command: Some("echo 1".to_string()),
+            command: Some("echo".to_string()),
+            args: Some(vec!["1".to_string()]),
             install_crate: None,
-            args: None,
             disabled: None,
             alias: None,
             install_script: None,
