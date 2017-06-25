@@ -37,7 +37,7 @@ after_script:
   - rm -rf kcov-$KCOV_VERSION
   - ls ./target/debug/deps
   - mkdir -p ./target/coverage
-  - for file in target/debug/deps/cargo_make*; do if "$file" ; then echo "Running $file"; kcov --verify --debug=4 --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; fi; done
+  - for file in target/debug/deps/cargo_make*; do if "$file" ; then echo "Running $file"; kcov --verify --debug=4 --exclude-pattern=main.rs --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; fi; done
   - ls -ls ./target/coverage/cargo_make*
   - bash <(curl -s https://codecov.io/bash)
   - echo "Uploaded code coverage"
