@@ -15,7 +15,7 @@
     * [Continues Integration](#usage-ci)
     * [Environment Variables](#usage-env)
     * [Cli Options](#usage-cli)
-    * [Makefile Definition](#usage-descriptor-def)
+    * [Makefile Definition](#usage-descriptor-definition)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
@@ -346,7 +346,7 @@ OPTIONS:
     -t, --task <TASK NAME>        The task name to execute (default: default)
 ````
 
-<a name="usage-descriptor-def"></a>
+<a name="usage-descriptor-definition"></a>
 ### Makefile Definition
 ````rust
 /// Holds the entire configuration such as task definitions and env vars
