@@ -26,6 +26,45 @@ pub struct Task {
     pub dependencies: Option<Vec<String>>
 }
 
+impl Task {
+    pub fn extend(
+        self: &mut Task,
+        task: &Task,
+    ) {
+        if task.disabled.is_some() {
+            self.disabled = task.disabled.clone();
+        }
+
+        if task.alias.is_some() {
+            self.alias = task.alias.clone();
+        }
+
+        if task.install_crate.is_some() {
+            self.install_crate = task.install_crate.clone();
+        }
+
+        if task.install_script.is_some() {
+            self.install_script = task.install_script.clone();
+        }
+
+        if task.command.is_some() {
+            self.command = task.command.clone();
+        }
+
+        if task.args.is_some() {
+            self.args = task.args.clone();
+        }
+
+        if task.script.is_some() {
+            self.script = task.script.clone();
+        }
+
+        if task.dependencies.is_some() {
+            self.dependencies = task.dependencies.clone();
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
@@ -58,4 +97,94 @@ pub struct Step {
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn extend_both_have_misc_data() {
+        let mut base = Task {
+            install_crate: Some("my crate1".to_string()),
+            command: Some("test1".to_string()),
+            disabled: Some(false),
+            alias: None,
+            install_script: None,
+            args: None,
+            script: Some(vec!["1".to_string(), "2".to_string()]),
+            dependencies: None
+        };
+        let extended = Task {
+            install_crate: Some("my crate2".to_string()),
+            command: None,
+            disabled: Some(true),
+            alias: Some("alias2".to_string()),
+            install_script: None,
+            args: None,
+            script: None,
+            dependencies: None
+        };
+
+        base.extend(&extended);
+
+        assert!(base.install_crate.is_some());
+        assert!(base.command.is_some());
+        assert!(base.disabled.is_some());
+        assert!(base.alias.is_some());
+        assert!(base.install_script.is_none());
+        assert!(base.args.is_none());
+        assert!(base.script.is_some());
+        assert!(base.dependencies.is_none());
+
+        assert_eq!(base.install_crate.unwrap(), "my crate2");
+        assert_eq!(base.command.unwrap(), "test1");
+        assert!(base.disabled.unwrap());
+        assert_eq!(base.alias.unwrap(), "alias2");
+        assert_eq!(base.script.unwrap().len(), 2);
+    }
+
+    #[test]
+    fn extend_extended_have_all_fields() {
+        let mut base = Task {
+            install_crate: Some("my crate1".to_string()),
+            command: Some("test1".to_string()),
+            disabled: Some(false),
+            alias: None,
+            install_script: None,
+            args: None,
+            script: Some(vec!["1".to_string(), "2".to_string()]),
+            dependencies: None
+        };
+        let extended = Task {
+            install_crate: Some("my crate2".to_string()),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            alias: Some("alias2".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            dependencies: Some(vec!["A".to_string()])
+        };
+
+        base.extend(&extended);
+
+        assert!(base.install_crate.is_some());
+        assert!(base.command.is_some());
+        assert!(base.disabled.is_some());
+        assert!(base.alias.is_some());
+        assert!(base.install_script.is_some());
+        assert!(base.args.is_some());
+        assert!(base.script.is_some());
+        assert!(base.dependencies.is_some());
+
+        assert_eq!(base.install_crate.unwrap(), "my crate2");
+        assert_eq!(base.command.unwrap(), "test2");
+        assert!(base.disabled.unwrap());
+        assert_eq!(base.alias.unwrap(), "alias2");
+        assert_eq!(base.install_script.unwrap().len(), 2);
+        assert_eq!(base.args.unwrap().len(), 2);
+        assert_eq!(base.script.unwrap().len(), 3);
+        assert_eq!(base.dependencies.unwrap().len(), 1);
+    }
 }

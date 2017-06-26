@@ -49,7 +49,30 @@ fn merge_tasks(
 
     for (key, value) in extended.iter() {
         let key_str = key.to_string();
-        merged.insert(key_str, value.clone());
+        let mut task = value.clone();
+
+        task = match base.get(key) {
+            Some(ref value) => {
+                let mut merged_task = Task {
+                    disabled: None,
+                    alias: None,
+                    install_crate: None,
+                    install_script: None,
+                    command: None,
+                    args: None,
+                    script: None,
+                    dependencies: None
+                };
+
+                merged_task.extend(value);
+                merged_task.extend(&task);
+
+                merged_task
+            }
+            _ => task,
+        };
+
+        merged.insert(key_str, task);
     }
 
     merged
@@ -307,6 +330,58 @@ mod tests {
         assert!(task.args.is_none());
         assert!(task.script.is_none());
         assert!(task.dependencies.is_none());
+    }
+
+    #[test]
+    fn merge_tasks_extend_task() {
+        let mut map1 = HashMap::<String, Task>::new();
+        let mut map2 = HashMap::<String, Task>::new();
+
+        map1.insert(
+            "test".to_string(),
+            Task {
+                disabled: None,
+                alias: None,
+                install_crate: Some("my crate".to_string()),
+                install_script: None,
+                command: Some("test1".to_string()),
+                args: None,
+                script: None,
+                dependencies: None
+            }
+        );
+
+        map2.insert(
+            "test".to_string(),
+            Task {
+                disabled: Some(true),
+                alias: None,
+                install_crate: None,
+                install_script: None,
+                command: Some("test2".to_string()),
+                args: None,
+                script: None,
+                dependencies: None
+            }
+        );
+
+        let output = merge_tasks(&mut map1, &mut map2);
+        assert_eq!(output.len(), 1);
+
+        let task = output.get("test").unwrap();
+        assert!(task.disabled.is_some());
+        assert!(task.alias.is_none());
+        assert!(task.install_crate.is_some());
+        assert!(task.install_script.is_none());
+        assert!(task.command.is_some());
+        assert!(task.args.is_none());
+        assert!(task.script.is_none());
+        assert!(task.dependencies.is_none());
+
+        let task_clone = task.clone();
+        assert!(task_clone.disabled.unwrap());
+        assert_eq!(task_clone.install_crate.unwrap(), "my crate");
+        assert_eq!(task_clone.command.unwrap(), "test2");
     }
 
     #[test]
