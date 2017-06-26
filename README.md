@@ -380,7 +380,10 @@ pub struct Task {
 
 <a name="badge"></a>
 ## Badge
-If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.<br>
+If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.
+
+[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+
 Here are few snapshots:
 
 ### Markdown
