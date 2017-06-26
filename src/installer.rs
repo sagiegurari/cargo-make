@@ -104,6 +104,9 @@ mod tests {
             args: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             script: None,
             dependencies: None
@@ -121,6 +124,9 @@ mod tests {
             args: Some(vec!["test".to_string()]),
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             script: None,
             dependencies: None
@@ -139,6 +145,9 @@ mod tests {
             args: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             script: None,
             dependencies: None
@@ -157,6 +166,9 @@ mod tests {
             args: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             script: None,
             dependencies: None
         };

@@ -44,9 +44,31 @@ fn get_task_name(
 ) -> String {
     match config.tasks.get(name) {
         Some(task_config) => {
-            match task_config.alias {
-                Some(ref alias) => get_task_name(logger, config, alias),
-                _ => name.to_string(),
+            let alias = if cfg!(windows) {
+                match task_config.windows_alias {
+                    Some(ref value) => Some(value),
+                    _ => None,
+                }
+            } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
+                match task_config.mac_alias {
+                    Some(ref value) => Some(value),
+                    _ => None,
+                }
+            } else {
+                match task_config.linux_alias {
+                    Some(ref value) => Some(value),
+                    _ => None,
+                }
+            };
+
+            match alias {
+                Some(ref os_alias) => get_task_name(logger, config, os_alias),
+                _ => {
+                    match task_config.alias {
+                        Some(ref alias) => get_task_name(logger, config, alias),
+                        _ => name.to_string(),
+                    }
+                }
             }
         }
         None => {

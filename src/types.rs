@@ -12,6 +12,12 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
+    /// acts like alias if runtime OS is Linux (takes precedence over alias)
+    pub linux_alias: Option<String>,
+    /// acts like alias if runtime OS is Windows (takes precedence over alias)
+    pub windows_alias: Option<String>,
+    /// acts like alias if runtime OS is Mac (takes precedence over alias)
+    pub mac_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task
@@ -37,6 +43,18 @@ impl Task {
 
         if task.alias.is_some() {
             self.alias = task.alias.clone();
+        }
+
+        if task.linux_alias.is_some() {
+            self.linux_alias = task.linux_alias.clone();
+        }
+
+        if task.windows_alias.is_some() {
+            self.windows_alias = task.windows_alias.clone();
+        }
+
+        if task.mac_alias.is_some() {
+            self.mac_alias = task.mac_alias.clone();
         }
 
         if task.install_crate.is_some() {
@@ -110,6 +128,9 @@ mod tests {
             command: Some("test1".to_string()),
             disabled: Some(false),
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             args: None,
             script: Some(vec!["1".to_string(), "2".to_string()]),
@@ -120,6 +141,9 @@ mod tests {
             command: None,
             disabled: Some(true),
             alias: Some("alias2".to_string()),
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             args: None,
             script: None,
@@ -132,6 +156,9 @@ mod tests {
         assert!(base.command.is_some());
         assert!(base.disabled.is_some());
         assert!(base.alias.is_some());
+        assert!(base.linux_alias.is_none());
+        assert!(base.windows_alias.is_none());
+        assert!(base.mac_alias.is_none());
         assert!(base.install_script.is_none());
         assert!(base.args.is_none());
         assert!(base.script.is_some());
@@ -151,6 +178,9 @@ mod tests {
             command: Some("test1".to_string()),
             disabled: Some(false),
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             args: None,
             script: Some(vec!["1".to_string(), "2".to_string()]),
@@ -161,6 +191,9 @@ mod tests {
             command: Some("test2".to_string()),
             disabled: Some(true),
             alias: Some("alias2".to_string()),
+            linux_alias: Some("linux".to_string()),
+            windows_alias: Some("windows".to_string()),
+            mac_alias: Some("mac".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -173,6 +206,9 @@ mod tests {
         assert!(base.command.is_some());
         assert!(base.disabled.is_some());
         assert!(base.alias.is_some());
+        assert!(base.linux_alias.is_some());
+        assert!(base.windows_alias.is_some());
+        assert!(base.mac_alias.is_some());
         assert!(base.install_script.is_some());
         assert!(base.args.is_some());
         assert!(base.script.is_some());
@@ -182,6 +218,9 @@ mod tests {
         assert_eq!(base.command.unwrap(), "test2");
         assert!(base.disabled.unwrap());
         assert_eq!(base.alias.unwrap(), "alias2");
+        assert_eq!(base.linux_alias.unwrap(), "linux");
+        assert_eq!(base.windows_alias.unwrap(), "windows");
+        assert_eq!(base.mac_alias.unwrap(), "mac");
         assert_eq!(base.install_script.unwrap().len(), 2);
         assert_eq!(base.args.unwrap().len(), 2);
         assert_eq!(base.script.unwrap().len(), 3);

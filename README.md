@@ -363,6 +363,12 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
+    /// acts like alias if runtime OS is Linux (takes precedence over alias)
+    pub linux_alias: Option<String>,
+    /// acts like alias if runtime OS is Windows (takes precedence over alias)
+    pub windows_alias: Option<String>,
+    /// acts like alias if runtime OS is Mac (takes precedence over alias)
+    pub mac_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task

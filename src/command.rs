@@ -185,6 +185,9 @@ mod tests {
             args: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             script: None,
             dependencies: None
@@ -203,6 +206,9 @@ mod tests {
             install_crate: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             script: None,
             dependencies: None
@@ -222,6 +228,9 @@ mod tests {
             args: None,
             disabled: None,
             alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
             install_script: None,
             dependencies: None
         };

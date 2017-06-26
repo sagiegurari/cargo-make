@@ -56,6 +56,9 @@ fn merge_tasks(
                 let mut merged_task = Task {
                     disabled: None,
                     alias: None,
+                    linux_alias: None,
+                    windows_alias: None,
+                    mac_alias: None,
                     install_crate: None,
                     install_script: None,
                     command: None,
@@ -221,6 +224,9 @@ mod tests {
             Task {
                 disabled: None,
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: Some("my crate".to_string()),
                 install_script: None,
                 command: Some("test".to_string()),
@@ -235,6 +241,9 @@ mod tests {
         let task = output.get("test").unwrap();
         assert!(task.disabled.is_none());
         assert!(task.alias.is_none());
+        assert!(task.linux_alias.is_none());
+        assert!(task.windows_alias.is_none());
+        assert!(task.mac_alias.is_none());
         assert!(task.install_crate.is_some());
         assert!(task.install_script.is_none());
         assert!(task.command.is_some());
@@ -253,6 +262,9 @@ mod tests {
             Task {
                 disabled: None,
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: Some("my crate".to_string()),
                 install_script: None,
                 command: Some("test".to_string()),
@@ -267,6 +279,9 @@ mod tests {
         let task = output.get("test").unwrap();
         assert!(task.disabled.is_none());
         assert!(task.alias.is_none());
+        assert!(task.linux_alias.is_none());
+        assert!(task.windows_alias.is_none());
+        assert!(task.mac_alias.is_none());
         assert!(task.install_crate.is_some());
         assert!(task.install_script.is_none());
         assert!(task.command.is_some());
@@ -285,6 +300,9 @@ mod tests {
             Task {
                 disabled: None,
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: Some("my crate".to_string()),
                 install_script: None,
                 command: Some("test".to_string()),
@@ -299,6 +317,9 @@ mod tests {
             Task {
                 disabled: None,
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: None,
                 install_script: None,
                 command: Some("test".to_string()),
@@ -314,6 +335,9 @@ mod tests {
         let mut task = output.get("test").unwrap();
         assert!(task.disabled.is_none());
         assert!(task.alias.is_none());
+        assert!(task.linux_alias.is_none());
+        assert!(task.windows_alias.is_none());
+        assert!(task.mac_alias.is_none());
         assert!(task.install_crate.is_some());
         assert!(task.install_script.is_none());
         assert!(task.command.is_some());
@@ -324,6 +348,9 @@ mod tests {
         task = output.get("test2").unwrap();
         assert!(task.disabled.is_none());
         assert!(task.alias.is_none());
+        assert!(task.linux_alias.is_none());
+        assert!(task.windows_alias.is_none());
+        assert!(task.mac_alias.is_none());
         assert!(task.install_crate.is_none());
         assert!(task.install_script.is_none());
         assert!(task.command.is_some());
@@ -342,6 +369,9 @@ mod tests {
             Task {
                 disabled: None,
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: Some("my crate".to_string()),
                 install_script: None,
                 command: Some("test1".to_string()),
@@ -356,6 +386,9 @@ mod tests {
             Task {
                 disabled: Some(true),
                 alias: None,
+                linux_alias: None,
+                windows_alias: None,
+                mac_alias: None,
                 install_crate: None,
                 install_script: None,
                 command: Some("test2".to_string()),
@@ -371,6 +404,9 @@ mod tests {
         let task = output.get("test").unwrap();
         assert!(task.disabled.is_some());
         assert!(task.alias.is_none());
+        assert!(task.linux_alias.is_none());
+        assert!(task.windows_alias.is_none());
+        assert!(task.mac_alias.is_none());
         assert!(task.install_crate.is_some());
         assert!(task.install_script.is_none());
         assert!(task.command.is_some());
