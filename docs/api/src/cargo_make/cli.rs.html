@@ -113,6 +113,11 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -182,6 +187,11 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">run_empty_task</span>() {
         <span class="ident">run</span>(<span class="string">&quot;bad.toml&quot;</span>, <span class="string">&quot;empty&quot;</span>, <span class="string">&quot;error&quot;</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">run_file_and_task</span>() {
+        <span class="ident">run</span>(<span class="string">&quot;./examples/dependencies.toml&quot;</span>, <span class="string">&quot;A&quot;</span>, <span class="string">&quot;error&quot;</span>);
     }
 }
 </pre>

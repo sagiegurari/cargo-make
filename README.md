@@ -263,6 +263,40 @@ hello
 
 Now you can see that 'hello' was printed twice.
 
+It is also possible to define platform specific aliases, for example:
+
+````toml
+[tasks.my_task]
+linux_alias = "linux_my_task"
+windows_alias = "windows_my_task"
+mac_alias = "mac_my_task"
+
+[tasks.linux_my_task]
+
+[tasks.mac_my_task]
+
+[tasks.windows_my_task]
+````
+
+If platform specific alias is found and matches current platform it will take precedence over the non platform alias definition.<br>
+For example:
+
+````toml
+[tasks.my_task]
+linux_alias = "run"
+alias = "do_nothing"
+
+[tasks.run]
+script = [
+    "echo hello"
+]
+
+[tasks.do_nothing]
+````
+
+If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
+However, if executed on a linux platform, it will invoke the **run** task.
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous example.<br>
@@ -423,6 +457,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-26  | v0.2.7  | Platform specific alias |
 | 2017-06-26  | v0.2.6  | Enable task attributes override |
 | 2017-06-25  | v0.2.3  | Added disabled task attribute support |
 | 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
