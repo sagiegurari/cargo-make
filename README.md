@@ -590,7 +590,7 @@ Here are few snapshots:
 <a name="roadmap"></a>
 ## Roadmap
 The cargo-make task runner is still under heavy development.<br>
-You can view the current list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
+You can view the future development items list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
 
 ## API Documentation
 See full docs at: [API Docs](https://sagiegurari.github.io/cargo-make/api.html)
@@ -603,7 +603,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-28  | v0.2.9  | Docs |
+| 2017-06-28  | v0.2.10 | Docs |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
 | 2017-06-26  | v0.2.6  | Enable task attributes override |
