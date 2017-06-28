@@ -16,7 +16,8 @@
     * [Environment Variables](#usage-env)
     * [Continues Integration](#usage-ci)
     * [Cli Options](#usage-cli)
-    * [Makefile Definition](#usage-descriptor-definition)
+* [Makefile Definition](#descriptor-definition)
+* [Task Naming conventions](#task-name-conventions)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
@@ -438,7 +439,7 @@ OPTIONS:
     -t, --task <TASK NAME>        The task name to execute (default: default)
 ````
 
-<a name="usage-descriptor-definition"></a>
+<a name="descriptor-definition"></a>
 ### Makefile Definition
 ````rust
 /// Holds the entire configuration such as task definitions and env vars
@@ -501,6 +502,56 @@ pub struct PlatformOverrideTask {
     dependencies: Option<Vec<String>>
 }
 ````
+
+<a name="task-name-conventions"></a>
+## Task Naming conventions
+This section explains the logic behind the default task names.<br>
+While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
+
+The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) file comes with three types of tasks:
+
+* Single command or script task (for example ````cargo build````)
+* Tasks that come before or after the single command tasks
+* Tasks that define flows using depedencies
+
+Single command tasks are named based on their commmand (in most cases), for example the task that runs cargo build is named build.
+
+````toml
+[tasks.build]
+command = "cargo"
+args = ["build"]
+````
+
+This allows to easily understand what this task does.
+
+Tasks that are invoked before/after those tasks are named the same way as the original task but with the pre/post prefix.<br>
+For example for task build the default toml also defines pre-build and post-build tasks.
+
+````toml
+[tasks.pre-build]
+
+[tasks.post-build]
+````
+
+In the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml), all pre/post tasks are empty and are there as placeholders
+for external Makefile.toml to override so custom functionality can be defined easily before/after running a specfific task.
+
+Flows are named with the flow suffix, for example: ci-flow
+
+````toml
+[tasks.ci-flow]
+# CI task will run cargo build and cargo test with verbose output
+dependencies = [
+    "pre-build",
+    "build-verbose",
+    "post-build",
+    "pre-test",
+    "test-verbose",
+    "post-test"
+]
+````
+
+This prevents flow task names to conflict with single command task names and quickly allow users to understand that this task is a flow definition.
 
 <a name="badge"></a>
 ## Badge
