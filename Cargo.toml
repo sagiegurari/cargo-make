@@ -34,4 +34,5 @@ default = []
 
 [badges]
 travis-ci = { repository = "sagiegurari/cargo-make", branch = "master" }
+appveyor = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
 codecov = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
