@@ -3,29 +3,41 @@
 
 @import "{{ site.theme }}";
 
-.site-footer-credits {
-    display: none;
-}
-
-.main-content {
-    margin: 0;
-}
-
-.site {
+body {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 
-    .site-nav {
+    .page-header {
         flex-grow: 0;
-        font-size: 14px;
-        min-width: 245px;
-        
-        ul ul {
-            padding-left: 10px;
-        }
+        width: 100%;
     }
 
-    .site-content {
+    .main-content {
         flex-grow: 1;
+        width: 100%;
+        margin: 0;
+    }
+
+    .site-footer-credits {
+        display: none;
+    }
+
+    .site {
+        display: flex;
+        flex-direction: row;
+
+        .site-nav {
+            flex-grow: 0;
+            font-size: 14px;
+            min-width: 245px;
+
+            ul ul {
+                padding-left: 10px;
+            }
+        }
+
+        .site-content {
+            flex-grow: 1;
+        }
     }
 }
