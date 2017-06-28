@@ -205,3 +205,35 @@ command = "cargo"
 args = ["publish"]
 
 [tasks.post-publish]
+
+[tasks.pre-git-add]
+
+[tasks.git-add]
+command = "git"
+args = ["add", "."]
+
+[tasks.post-git-add]
+
+[tasks.pre-git-status]
+
+[tasks.git-status]
+command = "git"
+args = ["status"]
+
+[tasks.post-git-status]
+
+[tasks.pre-git-commit]
+
+[tasks.git-commit]
+command = "git"
+args = ["commit"]
+
+[tasks.post-git-commit]
+
+[tasks.pre-git-push]
+
+[tasks.git-push]
+command = "git"
+args = ["push"]
+
+[tasks.post-git-push]
