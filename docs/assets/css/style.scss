@@ -1,0 +1,31 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.site-footer-credits {
+    display: none;
+}
+
+.main-content {
+    margin: 0;
+}
+
+.site {
+    display: flex;
+    flex-direction: row;
+
+    .site-nav {
+        flex-grow: 0;
+        font-size: 14px;
+        min-width: 245px;
+        
+        ul ul {
+            padding-left: 10px;
+        }
+    }
+
+    .site-content {
+        flex-grow: 1;
+    }
+}

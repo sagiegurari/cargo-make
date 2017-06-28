@@ -7,3 +7,4 @@ Cargo.lock
 **/*.log
 dump.rdb
 /rs*.sh
+/docs/_site

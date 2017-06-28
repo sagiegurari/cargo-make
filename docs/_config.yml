@@ -1,0 +1,4 @@
+theme: jekyll-theme-cayman
+title: cargo-make
+description: Rust task runner and build tool.
+show_downloads: false
