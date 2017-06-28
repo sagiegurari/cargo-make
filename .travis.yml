@@ -12,7 +12,7 @@ env:
     - RUSTFLAGS="-C link-dead-code"
     - KCOV_VERSION=33
 before_install:
-  - sudo apt-get update
+  - sudo apt-get update || true
 addons:
   apt:
     packages:
