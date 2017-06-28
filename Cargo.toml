@@ -32,7 +32,16 @@ toml = "^0.4.2"
 [features]
 default = []
 
-[badges]
-travis-ci = { repository = "sagiegurari/cargo-make", branch = "master" }
-appveyor = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
-codecov = { repository = "sagiegurari/cargo-make", branch = "master", service = "github" }
+[badges.travis-ci]
+branch = "master"
+repository = "sagiegurari/cargo-make"
+
+[badges.appveyor]
+repository = "sagiegurari/cargo-make"
+service = "github"
+branch = "master"
+
+[badges.codecov]
+branch = "master"
+repository = "sagiegurari/cargo-make"
+service = "github"

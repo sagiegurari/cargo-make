@@ -589,7 +589,7 @@ Here are few snapshots:
 
 <a name="roadmap"></a>
 ## Roadmap
-The cargo-make task runner is still under heavy development and there are many things planned for the coming release.<br>
+The cargo-make task runner is still under heavy development.<br>
 You can view the current list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
 
 ## API Documentation
