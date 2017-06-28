@@ -3,6 +3,10 @@
 //! Defines the various types and aliases used by cargo-make.
 //!
 
+#[cfg(test)]
+#[path = "./types_test.rs"]
+mod types_test;
+
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -29,7 +33,13 @@ pub struct Task {
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>
+    pub dependencies: Option<Vec<String>>,
+    /// override task if runtime OS is Linux (takes precedence over alias)
+    pub linux: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is Windows (takes precedence over alias)
+    pub windows: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is Mac (takes precedence over alias)
+    pub mac: Option<PlatformOverrideTask>
 }
 
 impl Task {
@@ -80,6 +90,155 @@ impl Task {
         if task.dependencies.is_some() {
             self.dependencies = task.dependencies.clone();
         }
+
+        if task.linux.is_some() {
+            self.linux = task.linux.clone();
+        }
+
+        if task.windows.is_some() {
+            self.windows = task.windows.clone();
+        }
+
+        if task.mac.is_some() {
+            self.mac = task.mac.clone();
+        }
+    }
+
+    fn get_override(self: &Task) -> Option<PlatformOverrideTask> {
+        if cfg!(windows) {
+            match self.windows {
+                Some(ref value) => Some(value.clone()),
+                _ => None,
+            }
+        } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
+            match self.mac {
+                Some(ref value) => Some(value.clone()),
+                _ => None,
+            }
+        } else {
+            match self.linux {
+                Some(ref value) => Some(value.clone()),
+                _ => None,
+            }
+        }
+    }
+
+    pub fn get_normalized_task(self: &mut Task) -> Task {
+        match self.get_override() {
+            Some(ref mut override_task) => {
+                override_task.extend(self);
+
+                Task {
+                    disabled: override_task.disabled.clone(),
+                    alias: None,
+                    linux_alias: None,
+                    windows_alias: None,
+                    mac_alias: None,
+                    install_crate: override_task.install_crate.clone(),
+                    install_script: override_task.install_script.clone(),
+                    command: override_task.command.clone(),
+                    args: override_task.args.clone(),
+                    script: override_task.script.clone(),
+                    dependencies: override_task.dependencies.clone(),
+                    linux: None,
+                    windows: None,
+                    mac: None
+                }
+            }
+            None => self.clone(),
+        }
+    }
+
+    pub fn get_alias(self: &Task) -> Option<String> {
+        let alias = if cfg!(windows) {
+            match self.windows_alias {
+                Some(ref value) => Some(value),
+                _ => None,
+            }
+        } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
+            match self.mac_alias {
+                Some(ref value) => Some(value),
+                _ => None,
+            }
+        } else {
+            match self.linux_alias {
+                Some(ref value) => Some(value),
+                _ => None,
+            }
+        };
+
+        match alias {
+            Some(os_alias) => Some(os_alias.clone()),
+            _ => {
+                match self.alias {
+                    Some(ref alias) => Some(alias.clone()),
+                    _ => None,
+                }
+            }
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds a single task configuration for a specific platform as an override of another task
+pub struct PlatformOverrideTask {
+    /// if true, it should ignore all data in base task
+    clear: Option<bool>,
+    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    disabled: Option<bool>,
+    /// if defined, the provided crate will be installed (if needed) before running the task
+    install_crate: Option<String>,
+    /// if defined, the provided script will be executed before running the task
+    install_script: Option<Vec<String>>,
+    /// The command to execute
+    command: Option<String>,
+    /// The command args
+    args: Option<Vec<String>>,
+    /// If command is not defined, and script is defined, the provided script will be executed
+    script: Option<Vec<String>>,
+    /// A list of tasks to execute before this task
+    dependencies: Option<Vec<String>>
+}
+
+impl PlatformOverrideTask {
+    pub fn extend(
+        self: &mut PlatformOverrideTask,
+        task: &mut Task,
+    ) {
+        let copy_values = match self.clear {
+            Some(value) => !value,
+            None => true,
+        };
+
+        if copy_values {
+            if self.disabled.is_none() && task.disabled.is_some() {
+                self.disabled = task.disabled.clone();
+            }
+
+            if self.install_crate.is_none() && task.install_crate.is_some() {
+                self.install_crate = task.install_crate.clone();
+            }
+
+            if self.install_script.is_none() && task.install_script.is_some() {
+                self.install_script = task.install_script.clone();
+            }
+
+            if self.command.is_none() && task.command.is_some() {
+                self.command = task.command.clone();
+            }
+
+            if self.args.is_none() && task.args.is_some() {
+                self.args = task.args.clone();
+            }
+
+            if self.script.is_none() && task.script.is_some() {
+                self.script = task.script.clone();
+            }
+
+            if self.dependencies.is_none() && task.dependencies.is_some() {
+                self.dependencies = task.dependencies.clone();
+            }
+        }
     }
 }
 
@@ -115,115 +274,4 @@ pub struct Step {
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn extend_both_have_misc_data() {
-        let mut base = Task {
-            install_crate: Some("my crate1".to_string()),
-            command: Some("test1".to_string()),
-            disabled: Some(false),
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_script: None,
-            args: None,
-            script: Some(vec!["1".to_string(), "2".to_string()]),
-            dependencies: None
-        };
-        let extended = Task {
-            install_crate: Some("my crate2".to_string()),
-            command: None,
-            disabled: Some(true),
-            alias: Some("alias2".to_string()),
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_script: None,
-            args: None,
-            script: None,
-            dependencies: None
-        };
-
-        base.extend(&extended);
-
-        assert!(base.install_crate.is_some());
-        assert!(base.command.is_some());
-        assert!(base.disabled.is_some());
-        assert!(base.alias.is_some());
-        assert!(base.linux_alias.is_none());
-        assert!(base.windows_alias.is_none());
-        assert!(base.mac_alias.is_none());
-        assert!(base.install_script.is_none());
-        assert!(base.args.is_none());
-        assert!(base.script.is_some());
-        assert!(base.dependencies.is_none());
-
-        assert_eq!(base.install_crate.unwrap(), "my crate2");
-        assert_eq!(base.command.unwrap(), "test1");
-        assert!(base.disabled.unwrap());
-        assert_eq!(base.alias.unwrap(), "alias2");
-        assert_eq!(base.script.unwrap().len(), 2);
-    }
-
-    #[test]
-    fn extend_extended_have_all_fields() {
-        let mut base = Task {
-            install_crate: Some("my crate1".to_string()),
-            command: Some("test1".to_string()),
-            disabled: Some(false),
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_script: None,
-            args: None,
-            script: Some(vec!["1".to_string(), "2".to_string()]),
-            dependencies: None
-        };
-        let extended = Task {
-            install_crate: Some("my crate2".to_string()),
-            command: Some("test2".to_string()),
-            disabled: Some(true),
-            alias: Some("alias2".to_string()),
-            linux_alias: Some("linux".to_string()),
-            windows_alias: Some("windows".to_string()),
-            mac_alias: Some("mac".to_string()),
-            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
-            args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
-            dependencies: Some(vec!["A".to_string()])
-        };
-
-        base.extend(&extended);
-
-        assert!(base.install_crate.is_some());
-        assert!(base.command.is_some());
-        assert!(base.disabled.is_some());
-        assert!(base.alias.is_some());
-        assert!(base.linux_alias.is_some());
-        assert!(base.windows_alias.is_some());
-        assert!(base.mac_alias.is_some());
-        assert!(base.install_script.is_some());
-        assert!(base.args.is_some());
-        assert!(base.script.is_some());
-        assert!(base.dependencies.is_some());
-
-        assert_eq!(base.install_crate.unwrap(), "my crate2");
-        assert_eq!(base.command.unwrap(), "test2");
-        assert!(base.disabled.unwrap());
-        assert_eq!(base.alias.unwrap(), "alias2");
-        assert_eq!(base.linux_alias.unwrap(), "linux");
-        assert_eq!(base.windows_alias.unwrap(), "windows");
-        assert_eq!(base.mac_alias.unwrap(), "mac");
-        assert_eq!(base.install_script.unwrap().len(), 2);
-        assert_eq!(base.args.unwrap().len(), 2);
-        assert_eq!(base.script.unwrap().len(), 3);
-        assert_eq!(base.dependencies.unwrap().len(), 1);
-    }
 }

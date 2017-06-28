@@ -12,8 +12,9 @@
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Default Tasks and Extending](#usage-default-tasks)
-    * [Continues Integration](#usage-ci)
+    * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
+    * [Continues Integration](#usage-ci)
     * [Cli Options](#usage-cli)
     * [Makefile Definition](#usage-descriptor-definition)
 * [Badge](#badge)
@@ -328,6 +329,63 @@ disabled = true
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
+<a name="usage-platform-override"></a>
+### Platform Override
+In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>
+For example:
+
+````toml
+[tasks.hello-world]
+script = [
+    "echo \"Hello World From Unknown\""
+]
+
+[tasks.hello-world.linux]
+script = [
+    "echo \"Hello World From Linux\""
+]
+````
+
+If you run cargo make with task 'hello-world' on linux, it would redirect to hello-world.linux while on other platforms it will execute the original hello-world.<br>
+In linux the output would be:
+
+````console
+[cargo-make] info - Task: hello-world
+[cargo-make] info - Setting Up Env.
+[cargo-make] info - Running Task: hello-world
+[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/kOUJfw8Vfc.sh"
+Hello World From Linux
+[cargo-make] info - Build done in 0 seconds.
+````
+
+While on other platforms
+
+````console
+[cargo-make] info - Task: hello-world
+[cargo-make] info - Setting Up Env.
+[cargo-make] info - Running Task: hello-world
+[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/2gYnulOJLP.sh"
+Hello World From Unknown
+[cargo-make] info - Build done in 0 seconds.
+````
+
+In the override task you can define any attribute that will override the attribute of the parent task, while undefined attributes will use the value from the parent task and will not be modified.<br>
+In case you need to delete attributes from the parent (for example script is only invoked if command is not defined and you have command defined in the parent task and script in the override task), then you will
+have to clear the parent task in the override task using the clear attribute as follows:
+
+````toml
+[tasks.hello-world.linux]
+clear = true
+script = [
+    "echo \"Hello World From Linux\""
+]
+````
+
+This means, however, that you will have to redefine all attributes in the override task that you want to carry with you from the parent task.<br>
+**Important - alias comes before checking override task so if parent task has an alias it will be redirected to that task instead of the override.**<br>
+**To override per platform, use the linux_alias, windows_alias, mac_alias attributes.<br>**
+**In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
+
 <a name="usage-env"></a>
 ### Environment Variables
 You can also define env vars to be set as part of the execution of the flow in the env block, for examle:
@@ -414,7 +472,33 @@ pub struct Task {
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>
+    pub dependencies: Option<Vec<String>>,
+    /// override task if runtime OS is Linux (takes precedence over alias)
+    pub linux: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is Windows (takes precedence over alias)
+    pub windows: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is Mac (takes precedence over alias)
+    pub mac: Option<PlatformOverrideTask>
+}
+
+/// Holds a single task configuration for a specific platform as an override of another task
+pub struct PlatformOverrideTask {
+    /// if true, it should ignore all data in base task
+    clear: Option<bool>,
+    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    disabled: Option<bool>,
+    /// if defined, the provided crate will be installed (if needed) before running the task
+    install_crate: Option<String>,
+    /// if defined, the provided script will be executed before running the task
+    install_script: Option<Vec<String>>,
+    /// The command to execute
+    command: Option<String>,
+    /// The command args
+    args: Option<Vec<String>>,
+    /// If command is not defined, and script is defined, the provided script will be executed
+    script: Option<Vec<String>>,
+    /// A list of tasks to execute before this task
+    dependencies: Option<Vec<String>>
 }
 ````
 
@@ -457,6 +541,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
 | 2017-06-26  | v0.2.6  | Enable task attributes override |
 | 2017-06-25  | v0.2.3  | Added disabled task attribute support |

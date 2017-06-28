@@ -3,6 +3,10 @@
 //! Handles the command line arguments and executes the runner.
 //!
 
+#[cfg(test)]
+#[path = "./cli_test.rs"]
+mod cli_test;
+
 use clap::{App, Arg, SubCommand};
 use descriptor;
 use log;
@@ -56,20 +60,5 @@ pub fn run_cli() {
             run(build_file, task, log_level);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn run_empty_task() {
-        run("bad.toml", "empty", "error");
-    }
-
-    #[test]
-    fn run_file_and_task() {
-        run("./examples/dependencies.toml", "A", "error");
     }
 }

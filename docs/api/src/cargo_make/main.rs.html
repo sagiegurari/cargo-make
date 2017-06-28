@@ -156,6 +156,10 @@
 <span id="111">111</span>
 <span id="112">112</span>
 <span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust ">
 <span class="attribute">#<span class="op">!</span>[<span class="ident">deny</span>(<span class="ident">anonymous_parameters</span>,
         <span class="ident">const_err</span>,
@@ -266,6 +270,10 @@
 <span class="kw">mod</span> <span class="ident">installer</span>;
 <span class="kw">mod</span> <span class="ident">runner</span>;
 <span class="kw">mod</span> <span class="ident">cli</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./main_test.rs&quot;</span>]</span>
+<span class="kw">mod</span> <span class="ident">main_test</span>;
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="ident">cli</span>::<span class="ident">run_cli</span>();

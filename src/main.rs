@@ -108,6 +108,10 @@ mod installer;
 mod runner;
 mod cli;
 
+#[cfg(test)]
+#[path = "./main_test.rs"]
+mod main_test;
+
 fn main() {
     cli::run_cli();
 }
