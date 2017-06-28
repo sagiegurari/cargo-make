@@ -15,6 +15,7 @@
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Continues Integration](#usage-ci)
+    * [Predefined Flows](#usage-predefined-flows)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming conventions](#task-name-conventions)
@@ -421,6 +422,16 @@ test_script:
 
 For online CI services, it is better to install with the debug flag to enable a much faster installation.
 
+<a name="usage-predefined-flows"></a>
+### Predefined Flows
+The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) file comes with many predefined tasks and flows.<br>
+The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
+
+* **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ````cargo make````).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
+* **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
+* **publish-flow** - Cleans old target directory and publishes the project.
+* **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
+
 <a name="usage-cli"></a>
 ### Cli Options
 These are the following options available while running cargo-make:
@@ -452,7 +463,7 @@ pub struct Config {
 
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
-    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
@@ -486,7 +497,7 @@ pub struct Task {
 pub struct PlatformOverrideTask {
     /// if true, it should ignore all data in base task
     clear: Option<bool>,
-    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    /// if true, the command/script of this task will not be invoked, dependencies however will be
     disabled: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     install_crate: Option<String>,
@@ -512,7 +523,7 @@ The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/def
 
 * Single command or script task (for example ````cargo build````)
 * Tasks that come before or after the single command tasks
-* Tasks that define flows using depedencies
+* Tasks that define flows using dependencies
 
 Single command tasks are named based on their commmand (in most cases), for example the task that runs cargo build is named build.
 
@@ -592,6 +603,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-06-28  | v0.2.9  | Docs |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
 | 2017-06-26  | v0.2.6  | Enable task attributes override |

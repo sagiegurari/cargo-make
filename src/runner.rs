@@ -79,8 +79,8 @@ fn create_execution_plan_for_step(
         Some(task_config) => {
             match task_config.dependencies {
                 Some(ref dependencies) => {
-                    for depedency in dependencies {
-                        create_execution_plan_for_step(&logger, &config, &depedency, steps, task_names, false);
+                    for dependency in dependencies {
+                        create_execution_plan_for_step(&logger, &config, &dependency, steps, task_names, false);
                     }
                 }
                 _ => logger.verbose::<()>("No dependencies found for task: ", &[&task], None),

@@ -12,7 +12,7 @@ use std::collections::HashMap;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
-    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
@@ -184,7 +184,7 @@ impl Task {
 pub struct PlatformOverrideTask {
     /// if true, it should ignore all data in base task
     clear: Option<bool>,
-    /// if true, the command/script of this task will not be invoked, depedencies however will be
+    /// if true, the command/script of this task will not be invoked, dependencies however will be
     disabled: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     install_crate: Option<String>,

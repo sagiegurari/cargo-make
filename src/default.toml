@@ -228,6 +228,11 @@ args = ["status"]
 command = "git"
 args = ["commit"]
 
+[tasks.git-commit-message]
+script = [
+    "git commit -m \"$COMMIT_MSG\""
+]
+
 [tasks.post-git-commit]
 
 [tasks.pre-git-push]
