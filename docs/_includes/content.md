@@ -570,5 +570,3 @@ See [contributing guide](.github/CONTRIBUTING.md)
 <a name="license"></a>
 # License
 Developed by Sagie Gur-Ari and licensed under the Apache 2 open source license.
-
-<div style="display:none"></div>
