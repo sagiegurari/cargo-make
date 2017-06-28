@@ -603,7 +603,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-28  | v0.2.10 | Docs |
+| 2017-06-28  | v0.2.11 | Published website |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
 | 2017-06-26  | v0.2.6  | Enable task attributes override |
