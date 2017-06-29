@@ -62,6 +62,7 @@ For example, if we would like to have a script which:
 We will create a toml file as follows:
 
 ````toml
+[tasks.format]
 install_crate = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
