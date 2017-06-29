@@ -34,6 +34,7 @@ For example, if we would like to have a script which:
 We will create a toml file as follows:
 
 ````toml
+[tasks.format]
 install_crate = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
@@ -565,7 +566,7 @@ The cargo-make task runner is still under heavy development.<br>
 You can view the future development items list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
 
 # Contributing
-See [contributing guide](.github/CONTRIBUTING.md)
+See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 
 <a name="license"></a>
 # License

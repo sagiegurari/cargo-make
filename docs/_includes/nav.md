@@ -15,6 +15,5 @@
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
-* [Contributing](.github/CONTRIBUTING.md)
-* [Release History](#history)
+* [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 * [License](#license)
