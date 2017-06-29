@@ -57,22 +57,7 @@ fn merge_tasks(
 
         task = match base.get(key) {
             Some(ref value) => {
-                let mut merged_task = Task {
-                    disabled: None,
-                    alias: None,
-                    linux_alias: None,
-                    windows_alias: None,
-                    mac_alias: None,
-                    install_crate: None,
-                    install_script: None,
-                    command: None,
-                    args: None,
-                    script: None,
-                    dependencies: None,
-                    linux: None,
-                    windows: None,
-                    mac: None
-                };
+                let mut merged_task = Task::new();
 
                 merged_task.extend(value);
                 merged_task.extend(&task);

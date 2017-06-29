@@ -64,25 +64,11 @@ fn merge_tasks_first_empty() {
     let mut map1 = HashMap::<String, Task>::new();
     let mut map2 = HashMap::<String, Task>::new();
 
-    map2.insert(
-        "test".to_string(),
-        Task {
-            disabled: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: Some("my crate".to_string()),
-            install_script: None,
-            command: Some("test".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    let mut task = Task::new();
+    task.install_crate = Some("my crate".to_string());
+    task.command = Some("test".to_string());
+
+    map2.insert("test".to_string(), task);
 
     let output = merge_tasks(&mut map1, &mut map2);
     assert_eq!(output.len(), 1);
@@ -108,25 +94,11 @@ fn merge_tasks_second_empty() {
     let mut map1 = HashMap::<String, Task>::new();
     let mut map2 = HashMap::<String, Task>::new();
 
-    map1.insert(
-        "test".to_string(),
-        Task {
-            disabled: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: Some("my crate".to_string()),
-            install_script: None,
-            command: Some("test".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    let mut task = Task::new();
+    task.install_crate = Some("my crate".to_string());
+    task.command = Some("test".to_string());
+
+    map1.insert("test".to_string(), task);
 
     let output = merge_tasks(&mut map1, &mut map2);
     assert_eq!(output.len(), 1);
@@ -152,45 +124,16 @@ fn merge_tasks_both_with_values() {
     let mut map1 = HashMap::<String, Task>::new();
     let mut map2 = HashMap::<String, Task>::new();
 
-    map1.insert(
-        "test".to_string(),
-        Task {
-            disabled: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: Some("my crate".to_string()),
-            install_script: None,
-            command: Some("test".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    let mut task1 = Task::new();
+    task1.install_crate = Some("my crate".to_string());
+    task1.command = Some("test".to_string());
 
-    map2.insert(
-        "test2".to_string(),
-        Task {
-            disabled: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: None,
-            install_script: None,
-            command: Some("test".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    map1.insert("test".to_string(), task1);
+
+    let mut task2 = Task::new();
+    task2.command = Some("test".to_string());
+
+    map2.insert("test2".to_string(), task2);
 
     let output = merge_tasks(&mut map1, &mut map2);
     assert_eq!(output.len(), 2);
@@ -233,45 +176,18 @@ fn merge_tasks_extend_task() {
     let mut map1 = HashMap::<String, Task>::new();
     let mut map2 = HashMap::<String, Task>::new();
 
-    map1.insert(
-        "test".to_string(),
-        Task {
-            disabled: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: Some("my crate".to_string()),
-            install_script: None,
-            command: Some("test1".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    let mut task1 = Task::new();
+    task1.disabled = Some(false);
+    task1.install_crate = Some("my crate".to_string());
+    task1.command = Some("test1".to_string());
 
-    map2.insert(
-        "test".to_string(),
-        Task {
-            disabled: Some(true),
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: None,
-            install_script: None,
-            command: Some("test2".to_string()),
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    map1.insert("test".to_string(), task1);
+
+    let mut task2 = Task::new();
+    task2.disabled = Some(true);
+    task2.command = Some("test2".to_string());
+
+    map2.insert("test".to_string(), task2);
 
     let output = merge_tasks(&mut map1, &mut map2);
     assert_eq!(output.len(), 1);

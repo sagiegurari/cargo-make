@@ -1,23 +1,33 @@
 use super::*;
 
 #[test]
+fn new_all_empty() {
+    let task = Task::new();
+
+    assert!(task.install_crate.is_none());
+    assert!(task.command.is_none());
+    assert!(task.disabled.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.install_script.is_none());
+    assert!(task.args.is_none());
+    assert!(task.script.is_none());
+    assert!(task.dependencies.is_none());
+    assert!(task.linux.is_none());
+    assert!(task.windows.is_none());
+    assert!(task.mac.is_none());
+}
+
+#[test]
 fn extend_both_have_misc_data() {
-    let mut base = Task {
-        install_crate: Some("my crate1".to_string()),
-        command: Some("test1".to_string()),
-        disabled: Some(false),
-        alias: None,
-        linux_alias: None,
-        windows_alias: None,
-        mac_alias: None,
-        install_script: None,
-        args: None,
-        script: Some(vec!["1".to_string(), "2".to_string()]),
-        dependencies: None,
-        linux: None,
-        windows: None,
-        mac: None
-    };
+    let mut base = Task::new();
+    base.install_crate = Some("my crate1".to_string());
+    base.command = Some("test1".to_string());
+    base.disabled = Some(false);
+    base.script = Some(vec!["1".to_string(), "2".to_string()]);
+
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
         command: None,

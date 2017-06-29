@@ -43,6 +43,25 @@ pub struct Task {
 }
 
 impl Task {
+    pub fn new() -> Task {
+        Task {
+            install_crate: None,
+            command: None,
+            disabled: None,
+            alias: None,
+            linux_alias: None,
+            windows_alias: None,
+            mac_alias: None,
+            install_script: None,
+            args: None,
+            script: None,
+            dependencies: None,
+            linux: None,
+            windows: None,
+            mac: None
+        }
+    }
+
     pub fn extend(
         self: &mut Task,
         task: &Task,

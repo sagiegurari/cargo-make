@@ -12,22 +12,8 @@ fn validate_exit_code_error() {
 #[test]
 fn run_no_command() {
     let logger = log::create("error");
-    let task = Task {
-        install_crate: None,
-        command: None,
-        args: None,
-        disabled: None,
-        alias: None,
-        linux_alias: None,
-        windows_alias: None,
-        mac_alias: None,
-        install_script: None,
-        script: None,
-        dependencies: None,
-        linux: None,
-        windows: None,
-        mac: None
-    };
+    let task = Task::new();
+
     let step = Step { name: "test".to_string(), config: task };
 
     run(&logger, &step);
@@ -36,22 +22,9 @@ fn run_no_command() {
 #[test]
 fn run_command() {
     let logger = log::create("error");
-    let task = Task {
-        command: Some("echo".to_string()),
-        args: Some(vec!["1".to_string()]),
-        install_crate: None,
-        disabled: None,
-        alias: None,
-        linux_alias: None,
-        windows_alias: None,
-        mac_alias: None,
-        install_script: None,
-        script: None,
-        dependencies: None,
-        linux: None,
-        windows: None,
-        mac: None
-    };
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+
     let step = Step { name: "test".to_string(), config: task };
 
     run(&logger, &step);
@@ -60,22 +33,9 @@ fn run_command() {
 #[test]
 fn run_script() {
     let logger = log::create("error");
-    let task = Task {
-        script: Some(vec!["echo 1".to_string()]),
-        command: None,
-        install_crate: None,
-        args: None,
-        disabled: None,
-        alias: None,
-        linux_alias: None,
-        windows_alias: None,
-        mac_alias: None,
-        install_script: None,
-        dependencies: None,
-        linux: None,
-        windows: None,
-        mac: None
-    };
+    let mut task = Task::new();
+    task.script = Some(vec!["echo 1".to_string()]);
+
     let step = Step { name: "test".to_string(), config: task };
 
     run(&logger, &step);

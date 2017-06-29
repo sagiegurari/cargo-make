@@ -38,25 +38,7 @@ fn get_task_name_no_alias() {
     let logger = log::create("error");
     let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
 
-    config.tasks.insert(
-        "test".to_string(),
-        Task {
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            disabled: None,
-            install_crate: None,
-            install_script: None,
-            command: None,
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    config.tasks.insert("test".to_string(), Task::new());
 
     let name = get_task_name(&logger, &config, "test");
 
@@ -68,45 +50,11 @@ fn get_task_name_alias() {
     let logger = log::create("error");
     let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
 
-    config.tasks.insert(
-        "test".to_string(),
-        Task {
-            alias: Some("test2".to_string()),
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            disabled: None,
-            install_crate: None,
-            install_script: None,
-            command: None,
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    let mut task = Task::new();
+    task.alias = Some("test2".to_string());
+    config.tasks.insert("test".to_string(), task);
 
-    config.tasks.insert(
-        "test2".to_string(),
-        Task {
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            disabled: None,
-            install_crate: None,
-            install_script: None,
-            command: None,
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    config.tasks.insert("test2".to_string(), Task::new());
 
     let name = get_task_name(&logger, &config, "test");
 
@@ -118,22 +66,7 @@ fn get_task_name_platform_alias() {
     let logger = log::create("error");
     let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
 
-    let mut task = Task {
-        alias: None,
-        linux_alias: None,
-        windows_alias: None,
-        mac_alias: None,
-        disabled: None,
-        install_crate: None,
-        install_script: None,
-        command: None,
-        args: None,
-        script: None,
-        dependencies: None,
-        linux: None,
-        windows: None,
-        mac: None
-    };
+    let mut task = Task::new();
     if cfg!(windows) {
         task.windows_alias = Some("test2".to_string());
     } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
@@ -144,25 +77,7 @@ fn get_task_name_platform_alias() {
 
     config.tasks.insert("test".to_string(), task);
 
-    config.tasks.insert(
-        "test2".to_string(),
-        Task {
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            disabled: None,
-            install_crate: None,
-            install_script: None,
-            command: None,
-            args: None,
-            script: None,
-            dependencies: None,
-            linux: None,
-            windows: None,
-            mac: None
-        }
-    );
+    config.tasks.insert("test2".to_string(), Task::new());
 
     let name = get_task_name(&logger, &config, "test");
 
