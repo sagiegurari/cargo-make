@@ -310,7 +310,7 @@ In some cases you want to run optional tasks as part of a bigger flow, but do no
 For those tasks, you can add the force=true attribute.
 
 ````toml
-[tasks.unsable_task]
+[tasks.unstable_task]
 force = true
 ````
 
