@@ -3,7 +3,7 @@
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
 A task is a command or a script to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
-With a simple toml based configuration file, you can define a multi platform build script that can run build, test, documentation generation, bench tests execution, security validations and more by running a single command.
+With a simple toml based configuration file, you can define a multi platform build script that can run build, test, documentation generation, bench tests execution, security validations and more and executed by running a single command.
 
 <a name="installation"></a>
 # Installation
@@ -19,7 +19,7 @@ Make sure to add ~/.cargo/bin directory to your PATH variable.
 <a name="usage"></a>
 # Usage
 When using cargo-make, all tasks are defined and configured via toml files.<br>
-Below are simple instructions to get your started off quickly.
+Below are simple instructions to get you started off quickly.
 
 <a name="usage-simple"></a>
 ## Simple Example
