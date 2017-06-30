@@ -1,6 +1,6 @@
 
 [env]
-RUST_BACKTRACE="1"
+RUST_BACKTRACE = "1"
 
 [tasks.default]
 # Default task points to the development testing flow
