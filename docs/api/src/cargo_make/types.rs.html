@@ -387,14 +387,14 @@
 <span class="kw">impl</span> <span class="ident">Task</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Task</span> {
         <span class="ident">Task</span> {
-            <span class="ident">install_crate</span>: <span class="prelude-val">None</span>,
-            <span class="ident">command</span>: <span class="prelude-val">None</span>,
             <span class="ident">disabled</span>: <span class="prelude-val">None</span>,
             <span class="ident">alias</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux_alias</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows_alias</span>: <span class="prelude-val">None</span>,
             <span class="ident">mac_alias</span>: <span class="prelude-val">None</span>,
+            <span class="ident">install_crate</span>: <span class="prelude-val">None</span>,
             <span class="ident">install_script</span>: <span class="prelude-val">None</span>,
+            <span class="ident">command</span>: <span class="prelude-val">None</span>,
             <span class="ident">args</span>: <span class="prelude-val">None</span>,
             <span class="ident">script</span>: <span class="prelude-val">None</span>,
             <span class="ident">dependencies</span>: <span class="prelude-val">None</span>,
@@ -613,7 +613,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Same as the config struct but all memebers are optional</span>
+<span class="doccomment">/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,

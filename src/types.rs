@@ -45,14 +45,14 @@ pub struct Task {
 impl Task {
     pub fn new() -> Task {
         Task {
-            install_crate: None,
-            command: None,
             disabled: None,
             alias: None,
             linux_alias: None,
             windows_alias: None,
             mac_alias: None,
+            install_crate: None,
             install_script: None,
+            command: None,
             args: None,
             script: None,
             dependencies: None,
@@ -271,7 +271,7 @@ pub struct Config {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-/// Same as the config struct but all memebers are optional
+/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// The env vars to setup before running the tasks
     pub env: Option<HashMap<String, String>>,

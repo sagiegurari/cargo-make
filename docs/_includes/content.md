@@ -426,12 +426,12 @@ OPTIONS:
 <a name="descriptor-definition"></a>
 # Makefile Definition
 ````rust
-/// Holds the entire configuration such as task definitions and env vars
-pub struct Config {
+/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
+pub struct ExternalConfig {
     /// The env vars to setup before running the tasks
-    pub env: HashMap<String, String>,
+    pub env: Option<HashMap<String, String>>,
     /// All task definitions
-    pub tasks: HashMap<String, Task>
+    pub tasks: Option<HashMap<String, Task>>
 }
 
 /// Holds a single task configuration such as command and dependencies list
