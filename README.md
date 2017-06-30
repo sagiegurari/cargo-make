@@ -604,7 +604,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-30  | v0.2.13 | Maintenance |
+| 2017-06-30  | v0.2.14 | Maintenance |
 | 2017-06-28  | v0.2.12 | Published website |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
