@@ -304,6 +304,16 @@ disabled = true
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
+<a name="usage-ignoring-errors"></a>
+## Ignoring Errors
+In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
+For those tasks, you can add the force=true attribute.
+
+````toml
+[tasks.build]
+disabled = true
+````
+
 <a name="usage-platform-override"></a>
 ## Platform Override
 In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>

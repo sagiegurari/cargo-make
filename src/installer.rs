@@ -57,6 +57,8 @@ pub fn install(
     logger: &Logger,
     task_config: &Task,
 ) {
+    let validate = !task_config.is_force();
+
     match task_config.install_crate {
         Some(ref crate_name) => {
             let cargo_command = match task_config.args {
@@ -68,12 +70,12 @@ pub fn install(
             };
 
             if !is_crate_installed(&logger, cargo_command) {
-                command::run_command(&logger, "cargo", &Some(vec!["install".to_string(), crate_name.to_string()]));
+                command::run_command(&logger, "cargo", &Some(vec!["install".to_string(), crate_name.to_string()]), validate);
             }
         }
         None => {
             match task_config.install_script {
-                Some(ref script) => command::run_script(&logger, &script),
+                Some(ref script) => command::run_script(&logger, &script, validate),
                 None => logger.verbose::<()>("No installation script defined.", &[], None),
             }
         }

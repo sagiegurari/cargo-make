@@ -14,6 +14,8 @@ use std::collections::HashMap;
 pub struct Task {
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if true, any error while executing the task will be printed but will not break the build
+    pub force: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -46,6 +48,7 @@ impl Task {
     pub fn new() -> Task {
         Task {
             disabled: None,
+            force: None,
             alias: None,
             linux_alias: None,
             windows_alias: None,
@@ -68,6 +71,10 @@ impl Task {
     ) {
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        }
+
+        if task.force.is_some() {
+            self.force = task.force.clone();
         }
 
         if task.alias.is_some() {
@@ -123,6 +130,10 @@ impl Task {
         }
     }
 
+    pub fn is_force(self: &Task) -> bool {
+        self.force.unwrap_or(false)
+    }
+
     fn get_override(self: &Task) -> Option<PlatformOverrideTask> {
         if cfg!(windows) {
             match self.windows {
@@ -149,6 +160,7 @@ impl Task {
 
                 Task {
                     disabled: override_task.disabled.clone(),
+                    force: override_task.force.clone(),
                     alias: None,
                     linux_alias: None,
                     windows_alias: None,
@@ -205,6 +217,8 @@ pub struct PlatformOverrideTask {
     clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     disabled: Option<bool>,
+    /// if true, any error while executing the task will be printed but will not break the build
+    force: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task
@@ -232,6 +246,10 @@ impl PlatformOverrideTask {
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
                 self.disabled = task.disabled.clone();
+            }
+
+            if self.force.is_none() && task.force.is_some() {
+                self.force = task.force.clone();
             }
 
             if self.install_crate.is_none() && task.install_crate.is_some() {

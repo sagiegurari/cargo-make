@@ -31,10 +31,34 @@ fn run_command() {
 }
 
 #[test]
+fn run_command_error_force() {
+    let logger = log::create("error");
+    let mut task = Task::new();
+    task.force = Some(true);
+    task.command = Some("badbadbad".to_string());
+
+    let step = Step { name: "test".to_string(), config: task };
+
+    run(&logger, &step);
+}
+
+#[test]
 fn run_script() {
     let logger = log::create("error");
     let mut task = Task::new();
     task.script = Some(vec!["echo 1".to_string()]);
+
+    let step = Step { name: "test".to_string(), config: task };
+
+    run(&logger, &step);
+}
+
+#[test]
+fn run_script_error_force() {
+    let logger = log::create("error");
+    let mut task = Task::new();
+    task.force = Some(true);
+    task.script = Some(vec!["exit 1".to_string()]);
 
     let step = Step { name: "test".to_string(), config: task };
 

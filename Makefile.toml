@@ -1,4 +1,4 @@
 
 [tasks.outdated]
-#do not break due to child outdated dependencies also used as root dependencies
-args = ["outdated", "--root-deps-only", "--exit-code", "0"]
+#do not break build due to child outdated dependencies also used as root dependencies
+force = true

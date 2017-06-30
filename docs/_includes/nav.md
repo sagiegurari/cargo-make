@@ -5,6 +5,7 @@
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Default Tasks and Extending](#usage-default-tasks)
+    * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Continues Integration](#usage-ci)

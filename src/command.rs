@@ -40,6 +40,7 @@ pub fn validate_exit_code(exit_status: Result<ExitStatus, Error>) {
 pub fn run_script(
     logger: &Logger,
     script_lines: &Vec<String>,
+    validate: bool,
 ) {
     let name = env!("CARGO_PKG_NAME");
     let file_name: String = thread_rng().gen_ascii_chars().take(10).collect();
@@ -116,7 +117,7 @@ pub fn run_script(
 
     let args = Some(args_vector);
 
-    run_command(&logger, &command, &args);
+    run_command(&logger, &command, &args, validate);
 
     match remove_file(&file_path_str) {
         Ok(_) => logger.verbose::<()>("Temporary file deleted: ", &[&file_path_str], None),
@@ -129,6 +130,7 @@ pub fn run_command(
     logger: &Logger,
     command_string: &str,
     args: &Option<Vec<String>>,
+    validate: bool,
 ) {
     logger.verbose::<()>("Execute Command: ", &[&command_string], None);
     let mut command = Command::new(&command_string);
@@ -146,7 +148,9 @@ pub fn run_command(
     logger.info("Execute Command: ", &[], Some(&command));
 
     let exit_status = command.status();
-    validate_exit_code(exit_status);
+    if validate {
+        validate_exit_code(exit_status);
+    }
 }
 
 /// Runs the given task command and if not defined, the task script.
@@ -154,13 +158,15 @@ pub fn run(
     logger: &Logger,
     step: &Step,
 ) {
+    let validate = !step.config.is_force();
+
     match step.config.command {
         Some(ref command_string) => {
-            run_command(&logger, &command_string, &step.config.args);
+            run_command(&logger, &command_string, &step.config.args, validate);
         }
         None => {
             match step.config.script {
-                Some(ref script) => run_script(&logger, script),
+                Some(ref script) => run_script(&logger, script, validate),
                 None => logger.verbose::<()>("No script defined.", &[], None),
             }
         }

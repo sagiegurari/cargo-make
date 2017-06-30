@@ -12,6 +12,7 @@
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Default Tasks and Extending](#usage-default-tasks)
+    * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Continues Integration](#usage-ci)
@@ -332,6 +333,16 @@ disabled = true
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
+<a name="usage-ignoring-errors"></a>
+### Ignoring Errors
+In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
+For those tasks, you can add the force=true attribute.
+
+````toml
+[tasks.build]
+disabled = true
+````
+
 <a name="usage-platform-override"></a>
 ### Platform Override
 In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>
@@ -604,7 +615,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-30  | v0.2.14 | Maintenance |
+| 2017-06-30  | v0.2.15 | Added force task attribute |
 | 2017-06-28  | v0.2.12 | Published website |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
 | 2017-06-26  | v0.2.7  | Platform specific alias |
