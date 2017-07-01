@@ -7,6 +7,6 @@ force = true
 script = [
     "echo \"generating readme file\"",
     "rm -f ./README.md",
-    "cat ./docs/templates/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md",
+    "cat ./docs/_includes/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md",
     "sed 's,https://github.com/sagiegurari/cargo-make/blob/master/.github,.github,g' -i ./README.md"
 ]
