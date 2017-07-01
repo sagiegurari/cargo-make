@@ -54,6 +54,15 @@ fn install_script_ok() {
     install(&logger, &task);
 }
 
+#[test]
+#[should_panic]
+fn install_script_error() {
+    let logger = log::create("error");
+    let mut task = Task::new();
+    task.install_script = Some(vec!["exit 1".to_string()]);
+
+    install(&logger, &task);
+}
 
 #[test]
 fn install_script_error_force() {

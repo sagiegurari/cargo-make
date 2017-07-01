@@ -26,7 +26,7 @@ fn is_crate_installed(
         Ok(output) => {
             let mut found = false;
 
-            command::validate_exit_code(Ok(output.status));
+            command::validate_exit_code(Ok(output.status), logger);
 
             let stdout = String::from_utf8_lossy(&output.stdout);
             let lines: Vec<&str> = stdout.split(' ').collect();

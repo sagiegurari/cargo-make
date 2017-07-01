@@ -14,25 +14,28 @@ use std::env::current_dir;
 use std::fs::{File, create_dir_all, remove_file};
 use std::io::Error;
 use std::io::prelude::*;
-use std::process::{Command, ExitStatus, Stdio, exit};
+use std::process::{Command, ExitStatus, Stdio};
 use types::Step;
 
 /// Validates the exit code code and if not 0 or unable to validate it, panic.
-pub fn validate_exit_code(exit_status: Result<ExitStatus, Error>) {
+pub fn validate_exit_code(
+    exit_status: Result<ExitStatus, Error>,
+    logger: &Logger,
+) {
     match exit_status {
         Ok(code) => {
             if !code.success() {
                 match code.code() {
                     Some(value) => {
                         if value != 0 {
-                            exit(value);
+                            logger.error("Error while executing command, exit code: ", &[], Some(value));
                         }
                     }
-                    None => exit(1),
+                    None => logger.error::<()>("Error while executing command, unable to extract exit code.", &[], None),
                 }
             }
         }
-        Err(error) => panic!("Error while executing command, error: {}", error),
+        Err(error) => logger.error("Error while executing command, error: ", &[], Some(error)),
     }
 }
 
@@ -149,7 +152,7 @@ pub fn run_command(
 
     let exit_status = command.status();
     if validate {
-        validate_exit_code(exit_status);
+        validate_exit_code(exit_status, logger);
     }
 }
 

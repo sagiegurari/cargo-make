@@ -165,5 +165,5 @@ pub fn run(
         _ => "".to_string(),
     };
 
-    logger.info::<()>("Build done", &[&time_string, "."], None);
+    logger.info::<()>("Build Done", &[&time_string, "."], None);
 }

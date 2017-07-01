@@ -103,7 +103,7 @@ impl Logger {
     ) {
         print_message("error", message, args, obj);
 
-        panic!("Existing...");
+        panic!("Build Failed.");
     }
 }
 
@@ -112,7 +112,6 @@ impl Logger {
 /// # Arguments
 ///
 /// * `level_name` - The log level name ('verbose', 'info', 'error')
-/// * `panic_on_error` - True if to exit in case of any error
 /// ```
 pub fn create(level_name: &str) -> Logger {
     let level = get_level(level_name);

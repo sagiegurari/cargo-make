@@ -619,6 +619,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-01  | v0.2.18 | Maintenance |
 | 2017-06-30  | v0.2.17 | Added force task attribute |
 | 2017-06-28  | v0.2.12 | Published website |
 | 2017-06-28  | v0.2.8  | Platform specific task override |
