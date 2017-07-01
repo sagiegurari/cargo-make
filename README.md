@@ -477,6 +477,8 @@ OPTIONS:
 ````rust
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
+    /// Path to another toml file to extend
+    pub extend: Option<String>,
     /// The env vars to setup before running the tasks
     pub env: Option<HashMap<String, String>>,
     /// All task definitions
