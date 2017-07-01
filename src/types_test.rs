@@ -1,7 +1,7 @@
 use super::*;
 
 #[test]
-fn new_all_empty() {
+fn task_new() {
     let task = Task::new();
 
     assert!(task.install_crate.is_none());
@@ -19,6 +19,15 @@ fn new_all_empty() {
     assert!(task.linux.is_none());
     assert!(task.windows.is_none());
     assert!(task.mac.is_none());
+}
+
+#[test]
+fn external_config_new() {
+    let config = ExternalConfig::new();
+
+    assert!(config.extend.is_none());
+    assert!(config.env.is_none());
+    assert!(config.tasks.is_none());
 }
 
 #[test]

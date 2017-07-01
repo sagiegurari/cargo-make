@@ -357,6 +357,14 @@
 <span id="312">312</span>
 <span id="313">313</span>
 <span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -651,10 +659,18 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
 <span class="doccomment">/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalConfig</span> {
+    <span class="doccomment">/// Path to another toml file to extend</span>
+    <span class="kw">pub</span> <span class="ident">extend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
     <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;&gt;</span>
+}
+
+<span class="kw">impl</span> <span class="ident">ExternalConfig</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+        <span class="ident">ExternalConfig</span> { <span class="ident">extend</span>: <span class="prelude-val">None</span>, <span class="ident">env</span>: <span class="prelude-val">None</span>, <span class="ident">tasks</span>: <span class="prelude-val">None</span> }
+    }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>

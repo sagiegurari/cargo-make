@@ -74,15 +74,25 @@ fn merge_tasks(
 }
 
 fn load_external_descriptor(
+    base_path: &str,
     file_name: &str,
     logger: &Logger,
 ) -> ExternalConfig {
     logger.verbose::<()>("Loading tasks from file: ", &[file_name], None);
 
-    let file_path = Path::new(file_name);
+    let mut file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() {
-        let mut file = File::open(file_name).unwrap();
+        file_path = match file_path.canonicalize() {
+            Ok(value) => value,
+            Err(error) => panic!("Unable to get file path for base path: {} file name: {} error: {}", base_path, file_name, error),
+        };
+
+        logger.verbose("Opening file:", &[], Some(&file_path));
+        let mut file = match File::open(&file_path) {
+            Ok(value) => value,
+            Err(error) => panic!("Unable to open file, base path: {} file name: {} error: {}", base_path, file_name, error),
+        };
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
 
@@ -92,11 +102,49 @@ fn load_external_descriptor(
         };
         logger.verbose("Loaded external config:", &[], Some(&file_config));
 
-        file_config
+        match file_config.extend {
+            Some(ref base_file) => {
+                let parent_path = match file_path.parent() {
+                    Some(ref parent) => {
+                        match parent.to_str() {
+                            Some(value) => value,
+                            None => ".",
+                        }
+                    }
+                    None => ".",
+                };
+                let base_file_config = load_external_descriptor(parent_path, base_file, logger);
+
+                // merge env
+                let mut base_env = match base_file_config.env {
+                    Some(env) => env,
+                    None => HashMap::new(),
+                };
+                let mut extended_env = match file_config.env {
+                    Some(env) => env,
+                    None => HashMap::new(),
+                };
+                let all_env = merge_maps(&mut base_env, &mut extended_env);
+
+                // merge tasks
+                let mut base_tasks = match base_file_config.tasks {
+                    Some(tasks) => tasks,
+                    None => HashMap::new(),
+                };
+                let mut extended_tasks = match file_config.tasks {
+                    Some(tasks) => tasks,
+                    None => HashMap::new(),
+                };
+                let all_tasks = merge_tasks(&mut base_tasks, &mut extended_tasks);
+
+                ExternalConfig { extend: None, env: Some(all_env), tasks: Some(all_tasks) }
+            }
+            None => file_config,
+        }
     } else {
         logger.info::<()>("External file not found, skipping.", &[], None);
 
-        ExternalConfig { env: None, tasks: None }
+        ExternalConfig::new()
     }
 }
 
@@ -118,7 +166,7 @@ pub fn load(
     };
     logger.verbose("Loaded default config:", &[], Some(&default_config));
 
-    let external_config: ExternalConfig = load_external_descriptor(file_name, logger);
+    let external_config: ExternalConfig = load_external_descriptor(".", file_name, logger);
 
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,

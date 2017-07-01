@@ -305,6 +305,17 @@ disabled = true
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
+You can also extend other external files from your external file by using the extend attribute, for example:
+
+````toml
+extend = "my_common_makefile.toml"
+````
+
+The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.
+
+The extend attribute can be very usefull when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
+the extend attribute pointing to the workspace makefile.
+
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
@@ -588,7 +599,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-01  | v0.2.18 | Maintenance |
+| 2017-07-01  | v0.2.19 | Added extend config level attribute |
 | 2017-06-30  | v0.2.17 | Added force task attribute |
 | 2017-06-28  | v0.2.12 | Published website |
 | 2017-06-28  | v0.2.8  | Platform specific task override |

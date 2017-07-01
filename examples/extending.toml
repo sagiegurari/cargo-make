@@ -1,0 +1,5 @@
+
+extend = "alias.toml"
+
+[tasks.extended]
+alias="D2"

@@ -217,8 +217,42 @@ fn merge_tasks_extend_task() {
 #[test]
 fn load_external_descriptor_no_file() {
     let logger = log::create("error");
-    let config = load_external_descriptor("bad_file.toml2", &logger);
+    let config = load_external_descriptor(".", "bad_file.toml2", &logger);
 
     assert!(config.env.is_none());
     assert!(config.tasks.is_none());
+}
+
+#[test]
+fn load_external_descriptor_simple_file() {
+    let logger = log::create("error");
+    let config = load_external_descriptor(".", "./examples/alias.toml", &logger);
+
+    assert!(config.env.is_none());
+    assert!(config.tasks.is_some());
+
+    let tasks = config.tasks.unwrap();
+    let test_task = tasks.get("D2").unwrap();
+    let alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D");
+}
+
+#[test]
+fn load_external_descriptor_extending_file() {
+    let logger = log::create("error");
+    let config = load_external_descriptor(".", "examples/extending.toml", &logger);
+
+    assert!(config.env.is_some());
+    assert!(config.tasks.is_some());
+
+    assert_eq!(config.env.unwrap().len(), 0);
+
+    let tasks = config.tasks.unwrap();
+    let mut test_task = tasks.get("D2").unwrap();
+    let mut alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D");
+
+    test_task = tasks.get("extended").unwrap();
+    alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D2");
 }
