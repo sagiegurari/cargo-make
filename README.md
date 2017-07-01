@@ -22,7 +22,6 @@
 * [Task Naming conventions](#task-name-conventions)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
-* [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](#history)
 * [License](#license)
@@ -607,9 +606,6 @@ Here are few snapshots:
 ## Roadmap
 The cargo-make task runner is still under heavy development.<br>
 You can view the future development items list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
-
-## API Documentation
-See full docs at: [API Docs](https://sagiegurari.github.io/cargo-make/api.html)
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)

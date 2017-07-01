@@ -1,12 +1,13 @@
+
 <a name="overview"></a>
-# Overview
+## Overview
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
 A task is a command or a script to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
 With a simple toml based configuration file, you can define a multi platform build script that can run build, test, documentation generation, bench tests execution, security validations and more and executed by running a single command.
 
 <a name="installation"></a>
-# Installation
+## Installation
 In order to install, just run the following command
 
 ```sh
@@ -17,12 +18,12 @@ This will install cargo-make in your ~/.cargo/bin.<br>
 Make sure to add ~/.cargo/bin directory to your PATH variable.
 
 <a name="usage"></a>
-# Usage
+## Usage
 When using cargo-make, all tasks are defined and configured via toml files.<br>
 Below are simple instructions to get you started off quickly.
 
 <a name="usage-simple"></a>
-## Simple Example
+### Simple Example
 In order to run a set of tasks, you first must define them in a toml file.<br>
 For example, if we would like to have a script which:
 
@@ -128,7 +129,7 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 We now created a build script that can run on any platform.
 
 <a name="usage-task-dependencies-alias"></a>
-## Tasks, Dependencies and Aliases
+### Tasks, Dependencies and Aliases
 In many cases, certain tasks depend on other tasks.<br>
 For example you would like to format the code before running build and run the build before running tests.<br>
 Such flow can be defined as follows:
@@ -274,7 +275,7 @@ If you run task **my_task** on windows or mac, it will invoke the **do_nothing**
 However, if executed on a linux platform, it will invoke the **run** task.
 
 <a name="usage-default-tasks"></a>
-## Default Tasks and Extending
+### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous example.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
@@ -305,7 +306,7 @@ There is no need to redefine existing properties of the task, only what needs to
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
 <a name="usage-ignoring-errors"></a>
-## Ignoring Errors
+### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
 For those tasks, you can add the force=true attribute.
 
@@ -315,7 +316,7 @@ force = true
 ````
 
 <a name="usage-platform-override"></a>
-## Platform Override
+### Platform Override
 In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>
 For example:
 
@@ -372,7 +373,7 @@ This means, however, that you will have to redefine all attributes in the overri
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
 
 <a name="usage-env"></a>
-## Environment Variables
+### Environment Variables
 You can also define env vars to be set as part of the execution of the flow in the env block, for examle:
 
 ````yaml
@@ -383,7 +384,7 @@ RUST_BACKTRACE="1"
 All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
 
 <a name="usage-ci"></a>
-## Continues Integration
+### Continues Integration
 cargo-make comes with a predefined flow for continues integration build executed by internal or online services such as travis-ci and appveyor.<br>
 For travis-ci, simple change the script to invoke the cargo-make installation and invocation as follows:
 
@@ -406,7 +407,7 @@ test_script:
 For online CI services, it is better to install with the debug flag to enable a much faster installation.
 
 <a name="usage-predefined-flows"></a>
-## Predefined Flows
+### Predefined Flows
 The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) file comes with many predefined tasks and flows.<br>
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
@@ -416,7 +417,7 @@ The following are some of the main flows that can be used without any need of an
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
 
 <a name="usage-cli"></a>
-## Cli Options
+### Cli Options
 These are the following options available while running cargo-make:
 
 ````console
@@ -434,7 +435,7 @@ OPTIONS:
 ````
 
 <a name="descriptor-definition"></a>
-# Makefile Definition
+## Makefile Definition
 ````rust
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
@@ -502,7 +503,7 @@ pub struct PlatformOverrideTask {
 ````
 
 <a name="task-name-conventions"></a>
-# Task Naming conventions
+## Task Naming conventions
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
@@ -552,21 +553,21 @@ dependencies = [
 This prevents flow task names to conflict with single command task names and quickly allow users to understand that this task is a flow definition.
 
 <a name="badge"></a>
-# Badge
+## Badge
 If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.
 
 [![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
 
 Here are few snapshots:
 
-## Markdown
+### Markdown
 
 
 ````md
 [![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
 ````
 
-## HTML
+### HTML
 
 ````html
 <a href="https://sagiegurari.github.io/cargo-make">
@@ -575,13 +576,30 @@ Here are few snapshots:
 ````
 
 <a name="roadmap"></a>
-# Roadmap
+## Roadmap
 The cargo-make task runner is still under heavy development.<br>
 You can view the future development items list in the [project board](https://github.com/sagiegurari/cargo-make/projects)
 
-# Contributing
+## Contributing
 See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 
+<a name="history"></a>
+## Release History
+
+| Date        | Version | Description |
+| ----------- | ------- | ----------- |
+| 2017-07-01  | v0.2.18 | Maintenance |
+| 2017-06-30  | v0.2.17 | Added force task attribute |
+| 2017-06-28  | v0.2.12 | Published website |
+| 2017-06-28  | v0.2.8  | Platform specific task override |
+| 2017-06-26  | v0.2.7  | Platform specific alias |
+| 2017-06-26  | v0.2.6  | Enable task attributes override |
+| 2017-06-25  | v0.2.3  | Added disabled task attribute support |
+| 2017-06-24  | v0.2.0  | Internal fixes (renamed dependencies attribute) |
+| 2017-06-24  | v0.1.2  | Print build time, added internal docs, unit tests and coverage |
+| 2017-06-24  | v0.1.1  | Added support for env vars, task alias and crate installation |
+| 2017-06-23  | v0.1.0  | Initial release. |
+
 <a name="license"></a>
-# License
+## License
 Developed by Sagie Gur-Ari and licensed under the Apache 2 open source license.

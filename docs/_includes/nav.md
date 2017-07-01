@@ -15,6 +15,6 @@
 * [Task Naming conventions](#task-name-conventions)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
-* [API Documentation](https://sagiegurari.github.io/cargo-make/api.html)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
+* [Release History](#history)
 * [License](#license)

@@ -2,3 +2,11 @@
 [tasks.outdated]
 #do not break build due to child outdated dependencies also used as root dependencies
 force = true
+
+[tasks.post-docs.linux]
+script = [
+    "echo \"generating readme file\"",
+    "rm -f ./README.md",
+    "cat ./docs/templates/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md",
+    "sed 's,https://github.com/sagiegurari/cargo-make/blob/master/.github,.github,g' -i ./README.md"
+]
