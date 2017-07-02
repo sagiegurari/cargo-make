@@ -65,7 +65,7 @@ dependencies = [
 We would execute the flow with the following command:
 
 ````sh
-cargo make -b simple-example.toml -t my-flow
+cargo make --makefile simple-example.toml my-flow
 ````
 
 The output would look something like this:
@@ -154,7 +154,7 @@ dependencies = ["build"]
 When you run:
 
 ````sh
-cargo make -b ./my_build.toml -t test
+cargo make --makefile ./my_build.toml test
 ````
 
 It will try to run test, see that it has dependencies and those have other dependencies.<br>
@@ -402,7 +402,7 @@ For travis-ci, simple change the script to invoke the cargo-make installation an
 ````yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make --task ci-flow
+  - cargo make ci-flow
 ````
 
 For appveyor:
@@ -412,7 +412,7 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make --task ci-flow
+  - cargo make ci-flow
 ````
 
 For online CI services, it is better to install with the debug flag to enable a much faster installation.
@@ -433,17 +433,20 @@ These are the following options available while running cargo-make:
 
 ````console
 USAGE:
-    cargo make [FLAGS] [OPTIONS]
+    cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
     -h, --help       Prints help information
-    -v               Sets the log level to verbose (shorthand for --loglevel verbose)
+    -v, --verbose    Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version    Prints version information
 
 OPTIONS:
-    -b, --buildFile <FILE>        The optional toml file containing the build descriptor [default: Makefile.toml]
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
-    -t, --task <TASK NAME>        The task name to execute [default: default]
+        --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
+    -t, --task <TASK NAME>        The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+
+ARGS:
+    <TASK>
 ````
 
 <a name="descriptor-definition"></a>
@@ -602,7 +605,8 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-02  | v0.2.20 | Added -v cli arg |
+| 2017-07-02  | v0.3.0  | Renamed few cli options |
+| 2017-07-02  | v0.2.20 | Added -v and --verbose cli arg |
 | 2017-07-01  | v0.2.19 | Added extend config level attribute |
 | 2017-06-30  | v0.2.17 | Added force task attribute |
 | 2017-06-28  | v0.2.12 | Published website |

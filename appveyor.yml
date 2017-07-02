@@ -38,4 +38,4 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make --task ci-flow
+  - cargo make ci-flow

@@ -39,8 +39,9 @@ fn run(
 fn run_for_args(matches: ArgMatches) {
     match matches.subcommand_matches(NAME) {
         Some(cmd_matches) => {
-            let build_file = cmd_matches.value_of("buildFile").unwrap_or(&DEFAULT_TOML);
-            let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
+            let build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML);
+            let mut task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
+            task = cmd_matches.value_of("TASK").unwrap_or(task);
             let mut log_level = cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL);
 
             if cmd_matches.is_present("v") {
@@ -59,16 +60,17 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             .version(VERSION)
             .author(AUTHOR)
             .about(DESCRIPTION)
-            .arg(Arg::from_usage("-b, --buildFile=[FILE] 'The optional toml file containing the build descriptor'").default_value(&DEFAULT_TOML))
-            .arg(Arg::from_usage("-t, --task=[TASK NAME] 'The task name to execute'").default_value(&DEFAULT_TASK_NAME))
+            .arg(Arg::from_usage("--makefile=[FILE] 'The optional toml file containing the tasks definitions'").default_value(&DEFAULT_TOML))
+            .arg(Arg::from_usage("-t, --task=[TASK NAME] 'The task name to execute (can omit the flag if the task name is the last argument)'").default_value(&DEFAULT_TASK_NAME))
             .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
                     .default_value(&DEFAULT_LOG_LEVEL)
             )
-            .arg(Arg::with_name("v").short("-v").help(
+            .arg(Arg::with_name("v").short("-v").long("--verbose").help(
                 "Sets the log level to verbose (shorthand for --loglevel verbose)"
             ))
+            .arg(Arg::with_name("TASK"))
     )
 }
 
