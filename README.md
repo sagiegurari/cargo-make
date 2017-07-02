@@ -421,6 +421,8 @@ RUST_BACKTRACE="1"
 
 All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
 
+In addition, cargo-make will also add an environment variable CARGO_MAKE_TASK with the name of the main task being executed.
+
 <a name="usage-ci"></a>
 ### Continues Integration
 cargo-make comes with a predefined flow for continues integration build executed by internal or online services such as travis-ci and appveyor.<br>
@@ -632,6 +634,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |
 | 2017-07-02  | v0.3.0  | Renamed few cli options |
 | 2017-07-02  | v0.2.20 | Added -v and --verbose cli arg |
 | 2017-07-01  | v0.2.19 | Added extend config level attribute |

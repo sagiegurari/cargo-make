@@ -152,6 +152,8 @@ pub fn run(
     let execution_plan = create_execution_plan(&logger, &config, &task);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
 
+    env::set_var("CARGO_MAKE_TASK", &task);
+
     run_task_flow(logger, &execution_plan);
 
     let time_string = match start_time.elapsed() {
