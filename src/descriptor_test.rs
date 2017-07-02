@@ -258,6 +258,7 @@ fn load_external_descriptor_extending_file() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 fn load_external_descriptor_extending_file_sub_folder() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "examples/files/extending.toml", &logger);
