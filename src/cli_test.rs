@@ -15,3 +15,22 @@ fn run_file_and_task() {
 fn run_cli_panic() {
     run_cli();
 }
+
+#[test]
+#[should_panic]
+fn run_for_args_bad_subcommand() {
+    let app = create_cli();
+
+    let matches = app.get_matches_from(vec!["bad"]);
+
+    run_for_args(matches);
+}
+
+#[test]
+fn run_for_args_valid() {
+    let app = create_cli();
+
+    let matches = app.get_matches_from(vec!["cargo", "make", "-b", "./examples/dependencies.toml", "-t", "A", "-l", "error"]);
+
+    run_for_args(matches);
+}

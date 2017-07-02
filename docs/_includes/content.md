@@ -433,16 +433,17 @@ These are the following options available while running cargo-make:
 
 ````console
 USAGE:
-    cargo-make make [OPTIONS]
+    cargo make [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help       Prints help information
+    -v               Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version    Prints version information
 
 OPTIONS:
-    -b, --buildFile <FILE>        Build toml file containing the build descriptor (default: Makefile.toml if exists)
-    -l, --loglevel <LOG LEVEL>    The log level (default: info) [values: verbose, info, error]
-    -t, --task <TASK NAME>        The task name to execute (default: default)
+    -b, --buildFile <FILE>        The optional toml file containing the build descriptor [default: Makefile.toml]
+    -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
+    -t, --task <TASK NAME>        The task name to execute [default: default]
 ````
 
 <a name="descriptor-definition"></a>
@@ -601,6 +602,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-02  | v0.2.20 | Added -v cli arg |
 | 2017-07-01  | v0.2.19 | Added extend config level attribute |
 | 2017-06-30  | v0.2.17 | Added force task attribute |
 | 2017-06-28  | v0.2.12 | Published website |
