@@ -1,0 +1,5 @@
+
+extend = "../extending.toml"
+
+[tasks.extended2]
+alias="extended"

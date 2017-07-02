@@ -256,3 +256,27 @@ fn load_external_descriptor_extending_file() {
     alias = test_task.alias.clone();
     assert_eq!(alias.unwrap(), "D2");
 }
+
+#[test]
+fn load_external_descriptor_extending_file_sub_folder() {
+    let logger = log::create("error");
+    let config = load_external_descriptor(".", "examples/files/extending.toml", &logger);
+
+    assert!(config.env.is_some());
+    assert!(config.tasks.is_some());
+
+    assert_eq!(config.env.unwrap().len(), 0);
+
+    let tasks = config.tasks.unwrap();
+    let mut test_task = tasks.get("D2").unwrap();
+    let mut alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D");
+
+    test_task = tasks.get("extended").unwrap();
+    alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D2");
+
+    test_task = tasks.get("extended2").unwrap();
+    alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "extended");
+}
