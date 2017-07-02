@@ -78,16 +78,11 @@ fn load_external_descriptor(
     file_name: &str,
     logger: &Logger,
 ) -> ExternalConfig {
-    logger.verbose::<()>("Loading tasks from file: ", &[file_name, "base directory: ", &base_path], None);
+    logger.verbose::<()>("Loading tasks from file: ", &[file_name, " base directory: ", &base_path], None);
 
-    let mut file_path = Path::new(base_path).join(file_name);
+    let file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() {
-        file_path = match file_path.canonicalize() {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to get file path for base path: {} file name: {} error: {}", base_path, file_name, error),
-        };
-
         logger.verbose("Opening file:", &[], Some(&file_path));
         let mut file = match File::open(&file_path) {
             Ok(value) => value,
