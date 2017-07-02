@@ -34,3 +34,12 @@ fn run_for_args_valid() {
 
     run_for_args(matches);
 }
+
+#[test]
+fn run_for_args_log_level_override() {
+    let app = create_cli();
+
+    let matches = app.get_matches_from(vec!["cargo", "make", "-b", "./examples/dependencies.toml", "-t", "A", "-l", "error", "-v"]);
+
+    run_for_args(matches);
+}
