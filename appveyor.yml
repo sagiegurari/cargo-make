@@ -37,4 +37,5 @@ install:
 build: false
 
 test_script:
-  - cargo test -- --nocapture load_external_descriptor_extending_file_sub_folder                                                                                                           
+  - cargo install --debug cargo-make
+  - cargo make ci-flow
