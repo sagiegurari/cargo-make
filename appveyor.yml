@@ -37,5 +37,4 @@ install:
 build: false
 
 test_script:
-  - cargo install --debug cargo-make
-  - cargo make ci-flow
+  - cargo test --nocapture

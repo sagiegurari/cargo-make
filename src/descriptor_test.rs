@@ -259,7 +259,7 @@ fn load_external_descriptor_extending_file() {
 
 #[test]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let logger = log::create("error");
+    let logger = log::create("verbose");
     let config = load_external_descriptor(".", "examples/files/extending.toml", &logger);
 
     assert!(config.env.is_some());
