@@ -78,7 +78,7 @@ fn load_external_descriptor(
     file_name: &str,
     logger: &Logger,
 ) -> ExternalConfig {
-    logger.verbose::<()>("Loading tasks from file: ", &[file_name], None);
+    logger.verbose::<()>("Loading tasks from file: ", &[file_name, "base directory: ", &base_path], None);
 
     let mut file_path = Path::new(base_path).join(file_name);
 
@@ -104,15 +104,9 @@ fn load_external_descriptor(
 
         match file_config.extend {
             Some(ref base_file) => {
-                let parent_path = match file_path.parent() {
-                    Some(ref parent) => {
-                        match parent.to_str() {
-                            Some(value) => value,
-                            None => ".",
-                        }
-                    }
-                    None => ".",
-                };
+                let parent_path_buf = Path::new(base_path).join(file_name).join("..");
+                let parent_path = file_path.parent().unwrap_or(&parent_path_buf).to_str().unwrap_or(".");
+                logger.verbose::<()>("External config parent path:", &[&parent_path], None);
                 let base_file_config = load_external_descriptor(parent_path, base_file, logger);
 
                 // merge env
