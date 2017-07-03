@@ -528,23 +528,23 @@ pub struct Task {
 /// Holds a single task configuration for a specific platform as an override of another task
 pub struct PlatformOverrideTask {
     /// if true, it should ignore all data in base task
-    clear: Option<bool>,
+    pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
-    disabled: Option<bool>,
+    pub disabled: Option<bool>,
     /// if true, any error while executing the task will be printed but will not break the build
-    force: Option<bool>,
+    pub force: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
-    install_crate: Option<String>,
+    pub install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task
-    install_script: Option<Vec<String>>,
+    pub install_script: Option<Vec<String>>,
     /// The command to execute
-    command: Option<String>,
+    pub command: Option<String>,
     /// The command args
-    args: Option<Vec<String>>,
+    pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
-    script: Option<Vec<String>>,
+    pub script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
-    dependencies: Option<Vec<String>>
+    pub dependencies: Option<Vec<String>>
 }
 ````
 
@@ -634,6 +634,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-03  | v0.3.2  | Fixed disabled not checked in platform override task |
 | 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |
 | 2017-07-02  | v0.3.0  | Renamed few cli options |
 | 2017-07-02  | v0.2.20 | Added -v and --verbose cli arg |

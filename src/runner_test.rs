@@ -1,7 +1,7 @@
 use super::*;
 use log;
 use std::collections::HashMap;
-use types::Task;
+use types::{PlatformOverrideTask, Task};
 
 #[test]
 fn set_env_empty() {
@@ -82,4 +82,77 @@ fn get_task_name_platform_alias() {
     let name = get_task_name(&logger, &config, "test");
 
     assert_eq!(name, "test2");
+}
+
+#[test]
+fn create_execution_plan_single() {
+    let logger = log::create("error");
+    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create_execution_plan(&logger, &config, "test");
+    assert_eq!(execution_plan.steps.len(), 1);
+}
+
+#[test]
+fn create_execution_plan_single_disabled() {
+    let logger = log::create("error");
+    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+
+    let mut task = Task::new();
+    task.disabled = Some(true);
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create_execution_plan(&logger, &config, "test");
+    assert_eq!(execution_plan.steps.len(), 0);
+}
+
+#[test]
+fn create_execution_plan_platform_disabled() {
+    let logger = log::create("error");
+    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+
+    let mut task = Task::new();
+    task.linux = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        install_crate: None,
+        command: None,
+        force: None,
+        install_script: None,
+        args: None,
+        script: None,
+        dependencies: None
+    });
+    task.windows = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        install_crate: None,
+        command: None,
+        force: None,
+        install_script: None,
+        args: None,
+        script: None,
+        dependencies: None
+    });
+    task.mac = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        install_crate: None,
+        command: None,
+        force: None,
+        install_script: None,
+        args: None,
+        script: None,
+        dependencies: None
+    });
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create_execution_plan(&logger, &config, "test");
+    assert_eq!(execution_plan.steps.len(), 0);
 }
