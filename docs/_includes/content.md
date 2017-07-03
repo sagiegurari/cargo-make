@@ -607,7 +607,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-03  | v0.3.2  | Fixed disabled not checked in platform override task |
+| 2017-07-03  | v0.3.3  | Fixed disabled not checked in platform override task |
 | 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |
 | 2017-07-02  | v0.3.0  | Renamed few cli options |
 | 2017-07-02  | v0.2.20 | Added -v and --verbose cli arg |

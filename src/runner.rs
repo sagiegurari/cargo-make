@@ -87,18 +87,13 @@ fn create_execution_plan_for_step(
             };
 
             if !task_names.contains(task) {
-                let mut add = !task_config.disabled.unwrap_or(false);
+                let mut clone_task = task_config.clone();
+                let normalized_task = clone_task.get_normalized_task();
+                let add = !normalized_task.disabled.unwrap_or(false);
 
                 if add {
-                    let mut clone_task = task_config.clone();
-                    let normalized_task = clone_task.get_normalized_task();
-
-                    add = !normalized_task.disabled.unwrap_or(false);
-
-                    if add {
-                        steps.push(Step { name: task.to_string(), config: normalized_task });
-                        task_names.insert(task.to_string());
-                    }
+                    steps.push(Step { name: task.to_string(), config: normalized_task });
+                    task_names.insert(task.to_string());
                 }
             } else if root {
                 logger.error::<()>("Circular reference found for task: ", &[&task], None);
