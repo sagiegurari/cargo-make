@@ -24,6 +24,7 @@ fn run(
     build_file: &str,
     task: &str,
     log_level: &str,
+    print_only: bool,
 ) {
     let logger = log::create(log_level);
 
@@ -32,7 +33,11 @@ fn run(
 
     let config = descriptor::load(&build_file, &logger);
 
-    runner::run(&logger, &config, &task);
+    if print_only {
+        runner::print(&logger, &config, &task);
+    } else {
+        runner::run(&logger, &config, &task);
+    }
 }
 
 /// Handles the command line arguments and executes the runner.
@@ -42,13 +47,16 @@ fn run_for_args(matches: ArgMatches) {
             let build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML);
             let mut task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
             task = cmd_matches.value_of("TASK").unwrap_or(task);
-            let mut log_level = cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL);
 
-            if cmd_matches.is_present("v") {
-                log_level = "verbose";
-            }
+            let log_level = if cmd_matches.is_present("v") {
+                "verbose"
+            } else {
+                cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL)
+            };
 
-            run(build_file, task, log_level);
+            let print_only = cmd_matches.is_present("print-steps");
+
+            run(build_file, task, log_level, print_only);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
     }
@@ -60,8 +68,21 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             .version(VERSION)
             .author(AUTHOR)
             .about(DESCRIPTION)
-            .arg(Arg::from_usage("--makefile=[FILE] 'The optional toml file containing the tasks definitions'").default_value(&DEFAULT_TOML))
-            .arg(Arg::from_usage("-t, --task=[TASK NAME] 'The task name to execute (can omit the flag if the task name is the last argument)'").default_value(&DEFAULT_TASK_NAME))
+            .arg(
+                Arg::with_name("makefile")
+                    .long("--makefile")
+                    .value_name("FILE")
+                    .help("The optional toml file containing the tasks definitions")
+                    .default_value(&DEFAULT_TOML)
+            )
+            .arg(
+                Arg::with_name("task")
+                    .short("-t")
+                    .long("--task")
+                    .value_name("TASK NAME")
+                    .help("The task name to execute (can omit the flag if the task name is the last argument)")
+                    .default_value(&DEFAULT_TASK_NAME)
+            )
             .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
@@ -69,6 +90,9 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             )
             .arg(Arg::with_name("v").short("-v").long("--verbose").help(
                 "Sets the log level to verbose (shorthand for --loglevel verbose)"
+            ))
+            .arg(Arg::with_name("print-steps").long("--print-steps").help(
+                "Only prints the steps of the build in the order they will be invoked but without invoking them"
             ))
             .arg(Arg::with_name("TASK"))
     )

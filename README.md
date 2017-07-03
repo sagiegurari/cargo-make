@@ -465,9 +465,10 @@ USAGE:
     cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
-    -h, --help       Prints help information
-    -v, --verbose    Sets the log level to verbose (shorthand for --loglevel verbose)
-    -V, --version    Prints version information
+    -h, --help           Prints help information
+        --print-steps    Only prints the steps of the build in the order they will be invoked but without invoking them
+    -v, --verbose        Sets the log level to verbose (shorthand for --loglevel verbose)
+    -V, --version        Prints version information
 
 OPTIONS:
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
@@ -475,7 +476,7 @@ OPTIONS:
     -t, --task <TASK NAME>        The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
-    <TASK>
+    <TASK>    
 ````
 
 <a name="descriptor-definition"></a>
@@ -634,7 +635,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-03  | v0.3.3  | Fixed disabled not checked in platform override task |
+| 2017-07-03  | v0.3.4  | Added --print-steps cli arg |
 | 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |
 | 2017-07-02  | v0.3.0  | Renamed few cli options |
 | 2017-07-02  | v0.2.20 | Added -v and --verbose cli arg |

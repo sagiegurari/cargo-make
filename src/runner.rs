@@ -165,3 +165,16 @@ pub fn run(
 
     logger.info::<()>("Build Done", &[&time_string, "."], None);
 }
+
+
+/// Only prints the execution plan
+pub fn print(
+    logger: &Logger,
+    config: &Config,
+    task: &str,
+) {
+    let execution_plan = create_execution_plan(&logger, &config, &task);
+    logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
+
+    println!("{:#?}", &execution_plan);
+}

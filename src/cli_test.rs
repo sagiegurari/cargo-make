@@ -2,12 +2,17 @@ use super::*;
 
 #[test]
 fn run_empty_task() {
-    run("bad.toml", "empty", "error");
+    run("bad.toml", "empty", "error", false);
+}
+
+#[test]
+fn print_empty_task() {
+    run("bad.toml", "empty", "error", true);
 }
 
 #[test]
 fn run_file_and_task() {
-    run("./examples/dependencies.toml", "A", "error");
+    run("./examples/dependencies.toml", "A", "error", false);
 }
 
 #[test]
@@ -40,6 +45,25 @@ fn run_for_args_log_level_override() {
     let app = create_cli();
 
     let matches = app.get_matches_from(vec!["cargo", "make", "--makefile", "./examples/dependencies.toml", "-t", "A", "-l", "error", "-v"]);
+
+    run_for_args(matches);
+}
+
+#[test]
+fn run_for_args_print_only() {
+    let app = create_cli();
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/dependencies.toml",
+        "-t",
+        "A",
+        "-l",
+        "error",
+        "--print-steps",
+    ]);
 
     run_for_args(matches);
 }
