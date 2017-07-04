@@ -608,6 +608,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-04  | v0.3.5  | Added clippy task |
 | 2017-07-03  | v0.3.4  | Added --print-steps cli arg |
 | 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |
 | 2017-07-02  | v0.3.0  | Renamed few cli options |

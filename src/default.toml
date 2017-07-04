@@ -183,6 +183,11 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
 [tasks.post-outdated]
 
+[tasks.clippy]
+install_crate = "clippy"
+command = "cargo"
+args = ["clippy"]
+
 [tasks.copy-apidocs]
 script = [
     "mkdir -p ./docs/api",
