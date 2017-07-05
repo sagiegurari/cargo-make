@@ -1,10 +1,10 @@
 [package]
 name = "cargo-make"
-version = "0.3.6"
+version = "0.3.7"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
-documentation = "https://sagiegurari.github.io/cargo-make/api/cargo_make/index.html"
+documentation = "https://sagiegurari.github.io/cargo-make"
 homepage = "https://sagiegurari.github.io/cargo-make"
 repository = "https://github.com/sagiegurari/cargo-make.git"
 readme = "README.md"
