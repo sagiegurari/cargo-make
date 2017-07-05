@@ -56,9 +56,6 @@ dependencies = [
     "clean",
     "post-clean",
     "format-flow",
-    "pre-docs",
-    "docs",
-    "post-docs",
     "pre-build",
     "build",
     "post-build",
@@ -74,6 +71,9 @@ dependencies = [
     "pre-outdated",
     "outdated",
     "post-outdated",
+    "pre-docs",
+    "docs",
+    "post-docs",
     "copy-apidocs",
     "end"
 ]

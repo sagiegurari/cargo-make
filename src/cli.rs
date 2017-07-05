@@ -11,6 +11,8 @@ use clap::{App, Arg, ArgMatches, SubCommand};
 use descriptor;
 use log;
 use runner;
+use std::env;
+use std::path::Path;
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -24,9 +26,26 @@ fn run(
     build_file: &str,
     task: &str,
     log_level: &str,
+    cwd: Option<&str>,
     print_only: bool,
 ) {
     let logger = log::create(log_level);
+
+    logger.info::<()>("cargo-", &[&NAME, " ", &VERSION], None);
+    logger.verbose::<()>("Written By ", &[&AUTHOR], None);
+
+    match cwd {
+        Some(directory) => {
+            let directory_path = Path::new(directory);
+            logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
+
+            match env::set_current_dir(&directory_path) {
+                Err(error) => logger.error("Unable to set current working directory to: ", &[&directory], Some(error)),
+                _ => logger.verbose::<()>("Working directory changed to: ", &[&directory], None),
+            }
+        }
+        None => (),
+    };
 
     logger.info::<()>("Using Build File: ", &[build_file], None);
     logger.info::<()>("Task: ", &[task], None);
@@ -47,6 +66,7 @@ fn run_for_args(matches: ArgMatches) {
             let build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML);
             let mut task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
             task = cmd_matches.value_of("TASK").unwrap_or(task);
+            let cwd = cmd_matches.value_of("cwd");
 
             let log_level = if cmd_matches.is_present("v") {
                 "verbose"
@@ -56,7 +76,7 @@ fn run_for_args(matches: ArgMatches) {
 
             let print_only = cmd_matches.is_present("print-steps");
 
-            run(build_file, task, log_level, print_only);
+            run(build_file, task, log_level, cwd, print_only);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
     }
@@ -79,10 +99,13 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                 Arg::with_name("task")
                     .short("-t")
                     .long("--task")
-                    .value_name("TASK NAME")
+                    .value_name("TASK")
                     .help("The task name to execute (can omit the flag if the task name is the last argument)")
                     .default_value(&DEFAULT_TASK_NAME)
             )
+            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").help(
+                "Will set the current working directory. The search for the makefile will be from this directory if defined."
+            ))
             .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])

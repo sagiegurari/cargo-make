@@ -444,12 +444,13 @@ FLAGS:
     -V, --version        Prints version information
 
 OPTIONS:
+        --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
         --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
-    -t, --task <TASK NAME>        The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+    -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
-    <TASK>    
+    <TASK>
 ````
 
 <a name="descriptor-definition"></a>
@@ -608,6 +609,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-05  | v0.3.6  | Added --cwd cli arg to enable setting working directory |
 | 2017-07-04  | v0.3.5  | Added clippy task |
 | 2017-07-03  | v0.3.4  | Added --print-steps cli arg |
 | 2017-07-02  | v0.3.1  | Added CARGO_MAKE_TASK env var holding the main task name |

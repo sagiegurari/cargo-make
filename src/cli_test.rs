@@ -1,18 +1,37 @@
 use super::*;
+use std::env;
+use std::path::Path;
 
 #[test]
 fn run_empty_task() {
-    run("bad.toml", "empty", "error", false);
+    run("bad.toml", "empty", "error", None, false);
 }
 
 #[test]
 fn print_empty_task() {
-    run("bad.toml", "empty", "error", true);
+    run("bad.toml", "empty", "error", None, true);
 }
 
 #[test]
 fn run_file_and_task() {
-    run("./examples/dependencies.toml", "A", "error", false);
+    run("./examples/dependencies.toml", "A", "error", None, false);
+}
+
+#[test]
+fn run_cwd_with_file() {
+    let directory = Path::new("./examples");
+    assert!(env::set_current_dir(&directory).is_ok());
+
+    run("./examples/dependencies.toml", "A", "error", Some(".."), false);
+}
+
+#[test]
+#[should_panic]
+fn run_cwd_task_not_found() {
+    let directory = Path::new("./examples");
+    assert!(env::set_current_dir(&directory).is_ok());
+
+    run("./dependencies.toml", "A", "error", Some(".."), false);
 }
 
 #[test]
