@@ -1,4 +1,7 @@
 
+[env]
+RUST_TEST_THREADS = "1"
+
 [tasks.outdated]
 #do not break build due to child outdated dependencies also used as root dependencies
 force = true
