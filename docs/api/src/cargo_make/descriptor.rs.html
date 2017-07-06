@@ -223,7 +223,6 @@
 <span id="178">178</span>
 <span id="179">179</span>
 <span id="180">180</span>
-<span id="181">181</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -242,9 +241,8 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
+<span class="kw">use</span> <span class="ident">toml</span>;
 <span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
-
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">toml</span>;
 
 <span class="kw">fn</span> <span class="ident">merge_maps</span>(
     <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,

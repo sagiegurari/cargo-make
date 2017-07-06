@@ -389,12 +389,22 @@ You can also define env vars to be set as part of the execution of the flow in t
 
 ````yaml
 [env]
-RUST_BACKTRACE="1"
+RUST_BACKTRACE = "1"
 ````
 
 All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
 
-In addition, cargo-make will also add an environment variable CARGO_MAKE_TASK with the name of the main task being executed.
+In addition, cargo-make will also add few environment variables that can be helpful when running task scripts/commands:
+
+* **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
+* **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
+* **CARGO_MAKE_CRATE_NAME** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_VERSION** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_DESCRIPTION** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_LICENSE** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_DOCUMENTATION** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_HOMEPAGE** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
+* **CARGO_MAKE_CRATE_REPOSITORY** - Holds the crate name from the Cargo.toml file found in the cwd (only if file exists and value is defined).
 
 <a name="usage-ci"></a>
 ### Continues Integration
@@ -609,7 +619,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-06  | v0.3.8  | Maintenance |
+| 2017-07-06  | v0.3.9  | cargo-make now defines env vars based on project Cargo.toml |
 | 2017-07-05  | v0.3.6  | Added --cwd cli arg to enable setting working directory |
 | 2017-07-04  | v0.3.5  | Added clippy task |
 | 2017-07-03  | v0.3.4  | Added --print-steps cli arg |

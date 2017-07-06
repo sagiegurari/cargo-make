@@ -1,7 +1,7 @@
 
 [env]
-CARGO_MAKE = "true"
 RUST_BACKTRACE = "full"
+RUST_TEST_THREADS = "1"
 
 [tasks.default]
 # Default task points to the development testing flow

@@ -320,3 +320,43 @@ pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate package information loaded from the Cargo.toml file package section.
+pub struct PackageInfo {
+    /// name
+    pub name: Option<String>,
+    /// version
+    pub version: Option<String>,
+    /// description
+    pub description: Option<String>,
+    /// license
+    pub license: Option<String>,
+    /// documentation link
+    pub documentation: Option<String>,
+    /// homepage link
+    pub homepage: Option<String>,
+    /// repository link
+    pub repository: Option<String>
+}
+
+impl PackageInfo {
+    pub fn new() -> PackageInfo {
+        PackageInfo {
+            name: None,
+            version: None,
+            description: None,
+            license: None,
+            documentation: None,
+            homepage: None,
+            repository: None
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate information loaded from the Cargo.toml file.
+pub struct CrateInfo {
+    /// package info
+    pub package: Option<PackageInfo>
+}

@@ -15,9 +15,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
+use toml;
 use types::{Config, ExternalConfig, Task};
-
-extern crate toml;
 
 fn merge_maps(
     base: &mut HashMap<String, String>,

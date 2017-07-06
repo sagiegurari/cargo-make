@@ -12,8 +12,6 @@ use descriptor;
 use environment;
 use log;
 use runner;
-use std::env;
-use std::path::Path;
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -35,25 +33,14 @@ fn run(
     logger.info::<()>("cargo-", &[&NAME, " ", &VERSION], None);
     logger.verbose::<()>("Written By ", &[&AUTHOR], None);
 
-    match cwd {
-        Some(directory) => {
-            let directory_path = Path::new(directory);
-            logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
-
-            match env::set_current_dir(&directory_path) {
-                Err(error) => logger.error("Unable to set current working directory to: ", &[&directory], Some(error)),
-                _ => logger.verbose::<()>("Working directory changed to: ", &[&directory], None),
-            }
-        }
-        None => (),
-    };
+    environment::setup_cwd(&logger, cwd);
 
     logger.info::<()>("Using Build File: ", &[build_file], None);
     logger.info::<()>("Task: ", &[task], None);
 
     let config = descriptor::load(&build_file, &logger);
 
-    environment::setup(&logger, &config, &task);
+    environment::setup_env(&logger, &config, &task);
 
     if print_only {
         runner::print(&logger, &config, &task);

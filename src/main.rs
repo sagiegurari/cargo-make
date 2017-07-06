@@ -99,6 +99,7 @@ extern crate clap;
 extern crate rand;
 #[macro_use]
 extern crate serde_derive;
+extern crate toml;
 
 mod types;
 mod log;
