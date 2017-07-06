@@ -16,7 +16,6 @@ use command;
 use installer;
 use log::Logger;
 use std::collections::HashSet;
-use std::env;
 use std::time::SystemTime;
 use types::{Config, ExecutionPlan, Step};
 
@@ -117,23 +116,9 @@ fn create_execution_plan(
     ExecutionPlan { steps }
 }
 
-/// Updates the env for the current execution
-fn set_env(
-    logger: &Logger,
-    config: &Config,
-) {
-    logger.info::<()>("Setting Up Env.", &[], None);
-
-    for (key, value) in &config.env {
-        logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);
-        env::set_var(&key, &value);
-    }
-}
-
 /// Runs the requested tasks.<br>
 /// The flow is as follows:
 ///
-/// * Load env variables
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
 pub fn run(
@@ -143,12 +128,8 @@ pub fn run(
 ) {
     let start_time = SystemTime::now();
 
-    set_env(logger, config);
-
     let execution_plan = create_execution_plan(&logger, &config, &task);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
-
-    env::set_var("CARGO_MAKE_TASK", &task);
 
     run_task_flow(logger, &execution_plan);
 

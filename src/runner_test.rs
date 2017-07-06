@@ -4,27 +4,6 @@ use std::collections::HashMap;
 use types::{PlatformOverrideTask, Task};
 
 #[test]
-fn set_env_empty() {
-    let logger = log::create("error");
-    let config = Config { env: HashMap::new(), tasks: HashMap::new() };
-
-    set_env(&logger, &config);
-}
-
-#[test]
-fn set_env_values() {
-    let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
-    config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
-
-    assert_eq!(env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
-
-    set_env(&logger, &config);
-
-    assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
-}
-
-#[test]
 #[should_panic]
 fn get_task_name_not_found() {
     let logger = log::create("error");

@@ -9,6 +9,7 @@ mod cli_test;
 
 use clap::{App, Arg, ArgMatches, SubCommand};
 use descriptor;
+use environment;
 use log;
 use runner;
 use std::env;
@@ -51,6 +52,8 @@ fn run(
     logger.info::<()>("Task: ", &[task], None);
 
     let config = descriptor::load(&build_file, &logger);
+
+    environment::setup(&logger, &config, &task);
 
     if print_only {
         runner::print(&logger, &config, &task);

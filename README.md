@@ -636,7 +636,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-05  | v0.3.7  | Update doc links |
+| 2017-07-06  | v0.3.8  | Maintenance |
 | 2017-07-05  | v0.3.6  | Added --cwd cli arg to enable setting working directory |
 | 2017-07-04  | v0.3.5  | Added clippy task |
 | 2017-07-03  | v0.3.4  | Added --print-steps cli arg |

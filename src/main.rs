@@ -103,6 +103,7 @@ extern crate serde_derive;
 mod types;
 mod log;
 mod descriptor;
+mod environment;
 mod command;
 mod installer;
 mod runner;
