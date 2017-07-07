@@ -8,7 +8,7 @@
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
-    * [Continues Integration](#usage-ci)
+    * [Continuous Integration](#usage-ci)
     * [Predefined Flows](#usage-predefined-flows)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)

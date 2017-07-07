@@ -15,7 +15,7 @@
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
-    * [Continues Integration](#usage-ci)
+    * [Continuous Integration](#usage-ci)
     * [Predefined Flows](#usage-predefined-flows)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
@@ -434,7 +434,7 @@ In addition, cargo-make will also add few environment variables that can be help
 * **CARGO_MAKE_CRATE_REPOSITORY** - Holds the crate repository link from the Cargo.toml file found in the cwd (only if file exists and value is defined).
 
 <a name="usage-ci"></a>
-### Continues Integration
+### Continuous Integration
 cargo-make comes with a predefined flow for continues integration build executed by internal or online services such as travis-ci and appveyor.<br>
 For travis-ci, simple change the script to invoke the cargo-make installation and invocation as follows:
 
