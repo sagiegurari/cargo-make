@@ -7,6 +7,7 @@
 #[path = "./environment_test.rs"]
 mod environment_test;
 
+use gitinfo;
 use log::Logger;
 use std::env;
 use std::fs::File;
@@ -81,6 +82,22 @@ fn setup_env_for_crate(logger: &Logger) {
     };
 }
 
+fn setup_env_for_git_repo(logger: &Logger) {
+    let git_info = gitinfo::load(&logger);
+
+    if git_info.branch.is_some() {
+        env::set_var("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
+    }
+
+    if git_info.user_name.is_some() {
+        env::set_var("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name.unwrap());
+    }
+
+    if git_info.user_email.is_some() {
+        env::set_var("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
+    }
+}
+
 /// Sets up the env before the tasks execution.
 pub fn setup_env(
     logger: &Logger,
@@ -94,6 +111,9 @@ pub fn setup_env(
 
     // load crate info
     setup_env_for_crate(&logger);
+
+    // load git info
+    setup_env_for_git_repo(&logger);
 }
 
 pub fn setup_cwd(

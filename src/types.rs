@@ -360,3 +360,20 @@ pub struct CrateInfo {
     /// package info
     pub package: Option<PackageInfo>
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds git info for the given repo directory
+pub struct GitInfo {
+    /// branch name
+    pub branch: Option<String>,
+    /// user.name
+    pub user_name: Option<String>,
+    /// user.email
+    pub user_email: Option<String>
+}
+
+impl GitInfo {
+    pub fn new() -> GitInfo {
+        GitInfo { branch: None, user_name: None, user_email: None }
+    }
+}

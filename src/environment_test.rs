@@ -1,5 +1,6 @@
 use super::*;
 
+use gitinfo;
 use log;
 use std::{thread, time};
 use std::collections::HashMap;
@@ -96,4 +97,27 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "https://github.com/sagiegurari/cargo-make.git");
+}
+
+#[test]
+fn setup_env_for_git_repo_with_values() {
+    let logger = log::create("error");
+
+    let git_info = gitinfo::load(&logger);
+
+    env::set_var("CARGO_MAKE_GIT_BRANCH", "EMPTY");
+    env::set_var("CARGO_MAKE_GIT_USER_NAME", "EMPTY");
+    env::set_var("CARGO_MAKE_GIT_USER_EMAIL", "EMPTY");
+
+    setup_env_for_git_repo(&logger);
+
+    if git_info.branch.is_some() {
+        assert_eq!(env::var("CARGO_MAKE_GIT_BRANCH").unwrap(), git_info.branch.unwrap());
+    }
+    if git_info.user_name.is_some() {
+        assert_eq!(env::var("CARGO_MAKE_GIT_USER_NAME").unwrap(), git_info.user_name.unwrap());
+    }
+    if git_info.user_email.is_some() {
+        assert_eq!(env::var("CARGO_MAKE_GIT_USER_EMAIL").unwrap(), git_info.user_email.unwrap());
+    }
 }
