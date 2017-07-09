@@ -3,11 +3,14 @@
 //! Sets up the env vars before running the tasks.
 //!
 
-#[cfg(test)]
-#[path = "./environment_test.rs"]
-mod environment_test;
+mod gitinfo;
+mod rustinfo;
 
-use gitinfo;
+#[cfg(test)]
+#[path = "./mod_test.rs"]
+mod mod_test;
+
+use self::rustinfo::Channel;
 use log::Logger;
 use std::env;
 use std::fs::File;
@@ -98,6 +101,26 @@ fn setup_env_for_git_repo(logger: &Logger) {
     }
 }
 
+fn setup_env_for_rust(logger: &Logger) {
+    let rust_info = rustinfo::load(&logger);
+
+    if rust_info.version.is_some() {
+        env::set_var("CARGO_MAKE_RUST_VERSION", &rust_info.version.unwrap());
+    }
+
+    if rust_info.channel.is_some() {
+        let channel_option = rust_info.channel.unwrap();
+
+        let channel = match channel_option {
+            Channel::Stable => "stable",
+            Channel::Beta => "beta",
+            Channel::Nightly => "nightly",
+        };
+
+        env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
+    }
+}
+
 /// Sets up the env before the tasks execution.
 pub fn setup_env(
     logger: &Logger,
@@ -114,6 +137,9 @@ pub fn setup_env(
 
     // load git info
     setup_env_for_git_repo(&logger);
+
+    // load rust info
+    setup_env_for_rust(&logger);
 }
 
 pub fn setup_cwd(

@@ -104,7 +104,6 @@ extern crate toml;
 mod types;
 mod log;
 mod descriptor;
-mod gitinfo;
 mod environment;
 mod command;
 mod installer;

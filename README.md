@@ -425,6 +425,8 @@ In addition, cargo-make will also add few environment variables that can be help
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
+* **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
+* **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -655,6 +657,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-10  | v0.3.12 | cargo-make now defines rust version env vars |
 | 2017-07-09  | v0.3.11 | cargo-make now defines env vars based on project git repo information |
 | 2017-07-06  | v0.3.10 | cargo-make now defines env vars based on project Cargo.toml |
 | 2017-07-05  | v0.3.6  | Added --cwd cli arg to enable setting working directory |

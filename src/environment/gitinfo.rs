@@ -10,7 +10,23 @@ mod gitinfo_test;
 use command;
 use log::Logger;
 use std::process::Command;
-use types::GitInfo;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds git info for the given repo directory
+pub struct GitInfo {
+    /// branch name
+    pub branch: Option<String>,
+    /// user.name
+    pub user_name: Option<String>,
+    /// user.email
+    pub user_email: Option<String>
+}
+
+impl GitInfo {
+    pub fn new() -> GitInfo {
+        GitInfo { branch: None, user_name: None, user_email: None }
+    }
+}
 
 fn load_from_git_config(
     logger: &Logger,

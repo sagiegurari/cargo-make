@@ -1,6 +1,6 @@
 use super::*;
 
-use gitinfo;
+use super::gitinfo;
 use log;
 use std::{thread, time};
 use std::collections::HashMap;

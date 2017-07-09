@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/environment.rs`.">
+    <meta name="description" content="Source to the Rust file `src/environment/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
-    <title>environment.rs.html -- source</title>
+    <title>mod.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
     
 
     
@@ -178,17 +178,46 @@
 <span id="133">133</span>
 <span id="134">134</span>
 <span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Sets up the env vars before running the tasks.</span>
 <span class="doccomment">//!</span>
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./environment_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">environment_test</span>;
+<span class="kw">mod</span> <span class="ident">gitinfo</span>;
+<span class="kw">mod</span> <span class="ident">rustinfo</span>;
 
-<span class="kw">use</span> <span class="ident">gitinfo</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./mod_test.rs&quot;</span>]</span>
+<span class="kw">mod</span> <span class="ident">mod_test</span>;
+
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">rustinfo</span>::<span class="ident">Channel</span>;
 <span class="kw">use</span> <span class="ident">log</span>::<span class="ident">Logger</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
@@ -279,6 +308,26 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">setup_env_for_rust</span>(<span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>) {
+    <span class="kw">let</span> <span class="ident">rust_info</span> <span class="op">=</span> <span class="ident">rustinfo</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
+
+    <span class="kw">if</span> <span class="ident">rust_info</span>.<span class="ident">version</span>.<span class="ident">is_some</span>() {
+        <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE_RUST_VERSION&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">rust_info</span>.<span class="ident">version</span>.<span class="ident">unwrap</span>());
+    }
+
+    <span class="kw">if</span> <span class="ident">rust_info</span>.<span class="ident">channel</span>.<span class="ident">is_some</span>() {
+        <span class="kw">let</span> <span class="ident">channel_option</span> <span class="op">=</span> <span class="ident">rust_info</span>.<span class="ident">channel</span>.<span class="ident">unwrap</span>();
+
+        <span class="kw">let</span> <span class="ident">channel</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">channel_option</span> {
+            <span class="ident">Channel</span>::<span class="ident">Stable</span> <span class="op">=&gt;</span> <span class="string">&quot;stable&quot;</span>,
+            <span class="ident">Channel</span>::<span class="ident">Beta</span> <span class="op">=&gt;</span> <span class="string">&quot;beta&quot;</span>,
+            <span class="ident">Channel</span>::<span class="ident">Nightly</span> <span class="op">=&gt;</span> <span class="string">&quot;nightly&quot;</span>,
+        };
+
+        <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE_RUST_CHANNEL&quot;</span>, <span class="ident">channel</span>.<span class="ident">to_string</span>());
+    }
+}
+
 <span class="doccomment">/// Sets up the env before the tasks execution.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">setup_env</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
@@ -295,6 +344,9 @@
 
     <span class="comment">// load git info</span>
     <span class="ident">setup_env_for_git_repo</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
+
+    <span class="comment">// load rust info</span>
+    <span class="ident">setup_env_for_rust</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">setup_cwd</span>(
@@ -369,10 +421,10 @@
     
 
     <script>
-        window.rootPath = "../../";
+        window.rootPath = "../../../";
         window.currentCrate = "cargo_make";
     </script>
-    <script src="../../main.js"></script>
-    <script defer src="../../search-index.js"></script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
 </body>
 </html>
