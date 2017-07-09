@@ -6,10 +6,13 @@ RUST_TEST_THREADS = "1"
 #do not break build due to child outdated dependencies also used as root dependencies
 force = true
 
-[tasks.post-docs.linux]
+[tasks.generate-readme]
 script = [
     "echo \"generating readme file\"",
     "rm -f ./README.md",
     "cat ./docs/_includes/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md",
     "sed 's,https://github.com/sagiegurari/cargo-make/blob/master/.github,.github,g' -i ./README.md"
 ]
+
+[tasks.post-docs]
+linux_alias = "generate-readme"
