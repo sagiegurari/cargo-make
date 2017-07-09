@@ -630,7 +630,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-10  | v0.3.12 | cargo-make now defines rust version env vars |
+| 2017-07-10  | v0.3.13 | cargo-make now defines rust version env vars |
 | 2017-07-09  | v0.3.11 | cargo-make now defines env vars based on project git repo information |
 | 2017-07-06  | v0.3.10 | cargo-make now defines env vars based on project Cargo.toml |
 | 2017-07-05  | v0.3.6  | Added --cwd cli arg to enable setting working directory |

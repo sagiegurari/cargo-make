@@ -51,14 +51,14 @@ pub fn load(logger: &Logger) -> RustInfo {
 
                 let version_parts: Vec<&str> = version_part.split('-').collect();
 
-                if version_parts.len() == 2 {
+                if version_parts.len() > 0 {
                     rust_info.version = Some(version_parts[0].to_string());
 
-                    if version_parts[1] == "stable" {
+                    if version_parts.len() == 1 {
                         rust_info.channel = Some(Channel::Stable);
-                    } else if version_parts[1] == "beta" {
+                    } else if version_parts[1].contains("beta") {
                         rust_info.channel = Some(Channel::Beta);
-                    } else if version_parts[1] == "nightly" {
+                    } else if version_parts[1].contains("nightly") {
                         rust_info.channel = Some(Channel::Nightly);
                     }
                 }
