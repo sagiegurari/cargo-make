@@ -1,5 +1,8 @@
 
 extend = "../extending.toml"
 
+[config]
+init_task = "test_init"
+
 [tasks.extended2]
 alias="extended"

@@ -17,6 +17,7 @@
     * [Environment Variables](#usage-env)
     * [Continuous Integration](#usage-ci)
     * [Predefined Flows](#usage-predefined-flows)
+    * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming conventions](#task-name-conventions)
@@ -477,6 +478,25 @@ The following are some of the main flows that can be used without any need of an
 * **publish-flow** - Cleans old target directory and publishes the project.
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
 
+<a name="usage-init-end-tasks"></a>
+### Init and End tasks
+Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
+An init task that gets invoked at the start of all flows and end task that is invoked at the end of all flows (end task will be invoked at the end in addition to any execution in the middle of the flow).<br>
+The names of the init and end tasks are defined in the config section in the toml file, the below shows the default settings:
+
+````toml
+[config]
+init_task = "init"
+end_task = "end"
+
+[tasks.init]
+
+[tasks.end]
+````
+
+By default the init and end tasks are empty and can be modified by external toml files or you can simply change the names of the init and end tasks in the external toml files.<br>
+These tasks allow common actions to be invoked no matter what flow you are running.
+
 <a name="usage-cli"></a>
 ### Cli Options
 These are the following options available while running cargo-make:
@@ -504,10 +524,19 @@ ARGS:
 <a name="descriptor-definition"></a>
 ## Makefile Definition
 ````rust
+pub struct ConfigSection {
+    /// Init task name which will be invoked at the start of every run
+    pub init_task: Option<String>,
+    /// End task name which will be invoked at the end of every run
+    pub end_task: Option<String>
+}
+
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend
     pub extend: Option<String>,
+    /// Runtime config
+    pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
     pub env: Option<HashMap<String, String>>,
     /// All task definitions
@@ -657,6 +686,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-12  | v0.3.14 | Added common init and end tasks |
 | 2017-07-10  | v0.3.13 | cargo-make now defines rust version env vars |
 | 2017-07-09  | v0.3.11 | cargo-make now defines env vars based on project git repo information |
 | 2017-07-06  | v0.3.10 | cargo-make now defines env vars based on project Cargo.toml |

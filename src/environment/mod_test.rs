@@ -5,11 +5,12 @@ use log;
 use std::{thread, time};
 use std::collections::HashMap;
 use std::env;
+use types::ConfigSection;
 
 #[test]
 fn setup_env_empty() {
     let logger = log::create("error");
-    let config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     setup_env(&logger, &config, "setup_env_empty1");
 
@@ -28,7 +29,7 @@ fn setup_env_empty() {
 #[test]
 fn setup_env_values() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
     config.env.insert("MY_ENV_KEY2".to_string(), "MY_ENV_VALUE2".to_string());
 

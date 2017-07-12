@@ -111,7 +111,46 @@ fn create_execution_plan(
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
 
+    match config.config.init_task {
+        Some(ref task) => {
+            match config.tasks.get(task) {
+                Some(task_config) => {
+                    let mut clone_task = task_config.clone();
+                    let normalized_task = clone_task.get_normalized_task();
+                    let add = !normalized_task.disabled.unwrap_or(false);
+
+                    if add {
+                        steps.push(Step { name: task.to_string(), config: normalized_task });
+                        task_names.insert(task.to_string());
+                    }
+                }
+                None => logger.error::<()>("Task not found: ", &[task], None),
+            }
+        }
+        None => logger.verbose::<()>("Init task not defined.", &[], None),
+    };
+
     create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
+
+    // always add end task even if already executed due to some depedency
+    match config.config.end_task {
+        Some(ref task) => {
+            match config.tasks.get(task) {
+                Some(task_config) => {
+                    let mut clone_task = task_config.clone();
+                    let normalized_task = clone_task.get_normalized_task();
+                    let add = !normalized_task.disabled.unwrap_or(false);
+
+                    if add {
+                        steps.push(Step { name: task.to_string(), config: normalized_task });
+                        task_names.insert(task.to_string());
+                    }
+                }
+                None => logger.error::<()>("Task not found: ", &[task], None),
+            }
+        }
+        None => logger.verbose::<()>("End task not defined.", &[], None),
+    };
 
     ExecutionPlan { steps }
 }

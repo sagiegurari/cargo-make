@@ -26,32 +26,33 @@ fn external_config_new() {
     let config = ExternalConfig::new();
 
     assert!(config.extend.is_none());
+    assert!(config.config.is_none());
     assert!(config.env.is_none());
     assert!(config.tasks.is_none());
 }
 
 #[test]
-fn is_force_none() {
+fn task_is_force_none() {
     let task = Task::new();
     assert!(!task.is_force());
 }
 
 #[test]
-fn is_force_false() {
+fn task_is_force_false() {
     let mut task = Task::new();
     task.force = Some(false);
     assert!(!task.is_force());
 }
 
 #[test]
-fn is_force_true() {
+fn task_is_force_true() {
     let mut task = Task::new();
     task.force = Some(true);
     assert!(task.is_force());
 }
 
 #[test]
-fn extend_both_have_misc_data() {
+fn task_extend_both_have_misc_data() {
     let mut base = Task::new();
     base.install_crate = Some("my crate1".to_string());
     base.command = Some("test1".to_string());
@@ -103,7 +104,7 @@ fn extend_both_have_misc_data() {
 }
 
 #[test]
-fn extend_extended_have_all_fields() {
+fn task_extend_extended_have_all_fields() {
     let mut base = Task {
         install_crate: Some("my crate1".to_string()),
         command: Some("test1".to_string()),
@@ -205,7 +206,7 @@ fn extend_extended_have_all_fields() {
 }
 
 #[test]
-fn get_alias_all_none() {
+fn task_get_alias_all_none() {
     let task = Task::new();
 
     let alias = task.get_alias();
@@ -213,7 +214,7 @@ fn get_alias_all_none() {
 }
 
 #[test]
-fn get_alias_common_defined() {
+fn task_get_alias_common_defined() {
     let mut task = Task::new();
     task.alias = Some("other".to_string());
 
@@ -222,7 +223,7 @@ fn get_alias_common_defined() {
 }
 
 #[test]
-fn get_alias_platform_defined() {
+fn task_get_alias_platform_defined() {
     let mut task = Task::new();
     task.alias = Some("other".to_string());
     task.linux_alias = Some("linux".to_string());
@@ -240,7 +241,7 @@ fn get_alias_platform_defined() {
 }
 
 #[test]
-fn get_normalized_task_undefined() {
+fn task_get_normalized_task_undefined() {
     let mut task = Task {
         alias: Some("alias".to_string()),
         linux_alias: Some("linux".to_string()),
@@ -293,7 +294,7 @@ fn get_normalized_task_undefined() {
 
 #[test]
 #[cfg(target_os = "linux")]
-fn get_normalized_task_with_override_no_clear() {
+fn task_get_normalized_task_with_override_no_clear() {
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -352,7 +353,7 @@ fn get_normalized_task_with_override_no_clear() {
 
 #[test]
 #[cfg(target_os = "linux")]
-fn get_normalized_task_with_override_clear_false() {
+fn task_get_normalized_task_with_override_clear_false() {
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -411,7 +412,7 @@ fn get_normalized_task_with_override_clear_false() {
 
 #[test]
 #[cfg(target_os = "linux")]
-fn get_normalized_task_with_override_clear_false_partial_override() {
+fn task_get_normalized_task_with_override_clear_false_partial_override() {
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -470,7 +471,7 @@ fn get_normalized_task_with_override_clear_false_partial_override() {
 
 #[test]
 #[cfg(target_os = "linux")]
-fn get_normalized_task_with_override_clear_true() {
+fn task_get_normalized_task_with_override_clear_true() {
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -518,4 +519,59 @@ fn get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.mac.is_none());
 
     assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
+}
+
+#[test]
+fn config_section_new() {
+    let config = ConfigSection::new();
+
+    assert!(config.init_task.is_none());
+    assert!(config.end_task.is_none());
+}
+
+#[test]
+fn config_section_extend_all_values() {
+    let mut base = ConfigSection::new();
+    let mut extended = ConfigSection::new();
+
+    base.init_task = Some("base_init".to_string());
+    base.end_task = Some("base_end".to_string());
+
+    extended.init_task = Some("extended_init".to_string());
+    extended.end_task = Some("extended_end".to_string());
+
+    base.extend(&mut extended);
+
+    assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
+    assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
+}
+
+#[test]
+fn config_section_extend_no_values() {
+    let mut base = ConfigSection::new();
+    let mut extended = ConfigSection::new();
+
+    base.init_task = Some("base_init".to_string());
+    base.end_task = Some("base_end".to_string());
+
+    base.extend(&mut extended);
+
+    assert_eq!(base.init_task.unwrap(), "base_init".to_string());
+    assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+}
+
+#[test]
+fn config_section_extend_some_values() {
+    let mut base = ConfigSection::new();
+    let mut extended = ConfigSection::new();
+
+    base.init_task = Some("base_init".to_string());
+    base.end_task = Some("base_end".to_string());
+
+    extended.init_task = Some("extended_init".to_string());
+
+    base.extend(&mut extended);
+
+    assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
+    assert_eq!(base.end_task.unwrap(), "base_end".to_string());
 }

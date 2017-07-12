@@ -1,4 +1,8 @@
 
+[config]
+init_task = "init"
+end_task = "end"
+
 [env]
 RUST_BACKTRACE = "full"
 
@@ -49,7 +53,7 @@ dependencies = [
 # running cargo build and test
 # running cargo plugins such as security and dependency validations
 dependencies = [
-    "init",
+    "init-build-flow",
     "pre-clean",
     "clean-apidocs",
     "clean",
@@ -74,12 +78,16 @@ dependencies = [
     "docs",
     "post-docs",
     "copy-apidocs",
-    "end"
+    "end-build-flow"
 ]
 
 [tasks.empty]
 
 [tasks.init]
+
+[tasks.end]
+
+[tasks.init-build-flow]
 
 [tasks.pre-clean]
 
@@ -193,7 +201,7 @@ script = [
     "mv ./target/doc/* ./docs/api"
 ]
 
-[tasks.end]
+[tasks.end-build-flow]
 
 [tasks.pre-package]
 

@@ -219,6 +219,7 @@ fn load_external_descriptor_no_file() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "bad_file.toml2", &logger);
 
+    assert!(config.config.is_none());
     assert!(config.env.is_none());
     assert!(config.tasks.is_none());
 }
@@ -228,6 +229,7 @@ fn load_external_descriptor_simple_file() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "./examples/alias.toml", &logger);
 
+    assert!(config.config.is_none());
     assert!(config.env.is_none());
     assert!(config.tasks.is_some());
 
@@ -242,6 +244,7 @@ fn load_external_descriptor_extending_file() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "examples/extending.toml", &logger);
 
+    assert!(config.config.is_some());
     assert!(config.env.is_some());
     assert!(config.tasks.is_some());
 
@@ -262,8 +265,14 @@ fn load_external_descriptor_extending_file_sub_folder() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "examples/files/extending.toml", &logger);
 
+    assert!(config.config.is_some());
     assert!(config.env.is_some());
     assert!(config.tasks.is_some());
+
+    let config_section = config.config.unwrap();
+    assert!(config_section.init_task.is_some());
+    assert!(config_section.end_task.is_none());
+    assert_eq!(config_section.init_task.unwrap(), "test_init");
 
     assert_eq!(config.env.unwrap().len(), 0);
 

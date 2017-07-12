@@ -279,9 +279,38 @@ impl PlatformOverrideTask {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ConfigSection {
+    /// Init task name which will be invoked at the start of every run
+    pub init_task: Option<String>,
+    /// End task name which will be invoked at the end of every run
+    pub end_task: Option<String>
+}
+
+impl ConfigSection {
+    pub fn new() -> ConfigSection {
+        ConfigSection { init_task: None, end_task: None }
+    }
+
+    pub fn extend(
+        self: &mut ConfigSection,
+        extended: &mut ConfigSection,
+    ) {
+        if extended.init_task.is_some() {
+            self.init_task = extended.init_task.clone();
+        }
+
+        if extended.end_task.is_some() {
+            self.end_task = extended.end_task.clone();
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
+    /// Runtime config
+    pub config: ConfigSection,
     /// The env vars to setup before running the tasks
     pub env: HashMap<String, String>,
     /// All task definitions
@@ -293,6 +322,8 @@ pub struct Config {
 pub struct ExternalConfig {
     /// Path to another toml file to extend
     pub extend: Option<String>,
+    /// Runtime config
+    pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
     pub env: Option<HashMap<String, String>>,
     /// All task definitions
@@ -301,7 +332,7 @@ pub struct ExternalConfig {
 
 impl ExternalConfig {
     pub fn new() -> ExternalConfig {
-        ExternalConfig { extend: None, env: None, tasks: None }
+        ExternalConfig { extend: None, config: None, env: None, tasks: None }
     }
 }
 

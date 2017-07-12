@@ -16,7 +16,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
-use types::{Config, ExternalConfig, Task};
+use types::{Config, ConfigSection, ExternalConfig, Task};
 
 fn merge_maps(
     base: &mut HashMap<String, String>,
@@ -125,7 +125,15 @@ fn load_external_descriptor(
                 };
                 let all_tasks = merge_tasks(&mut base_tasks, &mut extended_tasks);
 
-                ExternalConfig { extend: None, env: Some(all_env), tasks: Some(all_tasks) }
+                let mut config_section = ConfigSection::new();
+                if base_file_config.config.is_some() {
+                    config_section.extend(&mut base_file_config.config.unwrap());
+                }
+                if file_config.config.is_some() {
+                    config_section.extend(&mut file_config.config.unwrap());
+                }
+
+                ExternalConfig { extend: None, config: Some(config_section), env: Some(all_env), tasks: Some(all_tasks) }
             }
             None => file_config,
         }
@@ -172,7 +180,10 @@ pub fn load(
     let all_env = merge_maps(&mut default_env, &mut external_env);
     let all_tasks = merge_tasks(&mut default_tasks, &mut external_tasks);
 
-    let config = Config { env: all_env, tasks: all_tasks };
+    let mut config_section = default_config.config.clone();
+    config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
+
+    let config = Config { config: config_section, env: all_env, tasks: all_tasks };
 
     logger.verbose("Loaded merged config:", &[], Some(&config));
 

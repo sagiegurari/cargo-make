@@ -1,13 +1,13 @@
 use super::*;
 use log;
 use std::collections::HashMap;
-use types::{PlatformOverrideTask, Task};
+use types::{ConfigSection, PlatformOverrideTask, Task};
 
 #[test]
 #[should_panic]
 fn get_task_name_not_found() {
     let logger = log::create("error");
-    let config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     get_task_name(&logger, &config, "test");
 }
@@ -15,7 +15,7 @@ fn get_task_name_not_found() {
 #[test]
 fn get_task_name_no_alias() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     config.tasks.insert("test".to_string(), Task::new());
 
@@ -27,7 +27,7 @@ fn get_task_name_no_alias() {
 #[test]
 fn get_task_name_alias() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
     task.alias = Some("test2".to_string());
@@ -43,7 +43,7 @@ fn get_task_name_alias() {
 #[test]
 fn get_task_name_platform_alias() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
     if cfg!(windows) {
@@ -66,7 +66,7 @@ fn get_task_name_platform_alias() {
 #[test]
 fn create_execution_plan_single() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let task = Task::new();
 
@@ -79,7 +79,7 @@ fn create_execution_plan_single() {
 #[test]
 fn create_execution_plan_single_disabled() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
     task.disabled = Some(true);
@@ -93,7 +93,7 @@ fn create_execution_plan_single_disabled() {
 #[test]
 fn create_execution_plan_platform_disabled() {
     let logger = log::create("error");
-    let mut config = Config { env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
     task.linux = Some(PlatformOverrideTask {
