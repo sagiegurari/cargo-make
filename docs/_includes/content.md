@@ -453,7 +453,7 @@ The following are some of the main flows that can be used without any need of an
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
-An init task that gets invoked at the start of all flows and end task that is invoked at the end of all flows (end task will be invoked at the end in addition to any execution in the middle of the flow).<br>
+An init task that gets invoked at the start of all flows and end task that is invoked at the end of all flows.<br>
 The names of the init and end tasks are defined in the config section in the toml file, the below shows the default settings:
 
 ````toml
@@ -466,8 +466,15 @@ end_task = "end"
 [tasks.end]
 ````
 
-By default the init and end tasks are empty and can be modified by external toml files or you can simply change the names of the init and end tasks in the external toml files.<br>
+By default the init and end tasks are empty and can be modified by external toml files or you can simply change the names of the init and end tasks in the external toml files to point to different tasks.<br>
 These tasks allow common actions to be invoked no matter what flow you are running.
+
+Important to mention that init and end tasks invocation is different than other tasks.
+
+* Aliases and dependencies are ignored
+* If the same task is defined in the executed flow, those tasks will be invoked multiple times
+
+Therefore it is not recommanded to use the init/end tasks also inside your flows.
 
 <a name="usage-cli"></a>
 ### Cli Options
@@ -658,7 +665,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-12  | v0.3.14 | Added common init and end tasks |
+| 2017-07-13  | v0.3.15 | Added common init and end tasks |
 | 2017-07-10  | v0.3.13 | cargo-make now defines rust version env vars |
 | 2017-07-09  | v0.3.11 | cargo-make now defines env vars based on project git repo information |
 | 2017-07-06  | v0.3.10 | cargo-make now defines env vars based on project Cargo.toml |

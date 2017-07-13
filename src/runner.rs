@@ -121,7 +121,6 @@ fn create_execution_plan(
 
                     if add {
                         steps.push(Step { name: task.to_string(), config: normalized_task });
-                        task_names.insert(task.to_string());
                     }
                 }
                 None => logger.error::<()>("Task not found: ", &[task], None),
@@ -143,7 +142,6 @@ fn create_execution_plan(
 
                     if add {
                         steps.push(Step { name: task.to_string(), config: normalized_task });
-                        task_names.insert(task.to_string());
                     }
                 }
                 None => logger.error::<()>("Task not found: ", &[task], None),
