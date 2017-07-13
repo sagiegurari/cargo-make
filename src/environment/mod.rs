@@ -119,6 +119,26 @@ fn setup_env_for_rust(logger: &Logger) {
 
         env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
     }
+
+    if rust_info.target_arch.is_some() {
+        env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", &rust_info.target_arch.unwrap());
+    }
+
+    if rust_info.target_env.is_some() {
+        env::set_var("CARGO_MAKE_RUST_TARGET_ENV", &rust_info.target_env.unwrap());
+    }
+
+    if rust_info.target_os.is_some() {
+        env::set_var("CARGO_MAKE_RUST_TARGET_OS", &rust_info.target_os.unwrap());
+    }
+
+    if rust_info.target_pointer_width.is_some() {
+        env::set_var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", &rust_info.target_pointer_width.unwrap());
+    }
+
+    if rust_info.target_vendor.is_some() {
+        env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", &rust_info.target_vendor.unwrap());
+    }
 }
 
 /// Sets up the env before the tasks execution.

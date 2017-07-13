@@ -400,6 +400,11 @@ In addition, cargo-make will also add few environment variables that can be help
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
+* **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
+* **CARGO_MAKE_RUST_TARGET_ENV** - gnu, msvc, etc ... (see rust cfg feature)
+* **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
+* **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
+* **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -665,6 +670,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |
 | 2017-07-13  | v0.3.15 | Added common init and end tasks |
 | 2017-07-10  | v0.3.13 | cargo-make now defines rust version env vars |
 | 2017-07-09  | v0.3.11 | cargo-make now defines env vars based on project git repo information |

@@ -40,7 +40,6 @@ fn is_crate_installed(
                     logger.verbose::<()>("Found installed crate.", &[], None);
 
                     break;
-
                 }
             }
 

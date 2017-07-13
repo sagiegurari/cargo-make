@@ -122,3 +122,34 @@ fn setup_env_for_git_repo_with_values() {
         assert_eq!(env::var("CARGO_MAKE_GIT_USER_EMAIL").unwrap(), git_info.user_email.unwrap());
     }
 }
+
+#[test]
+fn setup_env_for_rust_simple_check() {
+    let logger = log::create("error");
+
+    env::set_var("CARGO_MAKE_RUST_VERSION", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_CHANNEL", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_TARGET_ENV", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_TARGET_OS", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", "EMPTY");
+    env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", "EMPTY");
+
+    assert!(env::var("CARGO_MAKE_RUST_VERSION").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_CHANNEL").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_ARCH").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_ENV").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_OS").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() == "EMPTY");
+
+    setup_env_for_rust(&logger);
+
+    assert!(env::var("CARGO_MAKE_RUST_VERSION").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_CHANNEL").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_ARCH").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_ENV").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_OS").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() != "EMPTY");
+    assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() != "EMPTY");
+}
