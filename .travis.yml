@@ -37,7 +37,6 @@ script:
   - sudo make install
   - cd ../..
   - rm -rf kcov-$KCOV_VERSION
-  - mkdir -p ./target/coverage
-  - for file in target/debug/deps/cargo_make*; do if "$file" ; then kcov --include-pattern=${TRAVIS_BUILD_DIR}/src/ "target/coverage" "$file" || true; fi; done
+  - cargo run -- make coverage-flow
   - bash <(curl -s https://codecov.io/bash)
   - echo "Uploaded Code Coverage"

@@ -267,7 +267,7 @@ script = [
     "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
     "do",
     "if \"$file\" ; then",
-    "echo \"Running file: $file\" Using include pattern: ${CARGO_MAKE_WORKING_DIRECTORY}/src/",
+    "echo \"Running file: $file\"",
     "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done",
@@ -275,7 +275,7 @@ script = [
     "for file in target/debug/deps/test_*",
     "do",
     "if \"$file\" ; then",
-    "echo \"Running file: $file\" Using include pattern: ${CARGO_MAKE_WORKING_DIRECTORY}/src/",
+    "echo \"Running file: $file\"",
     "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done"

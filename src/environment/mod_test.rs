@@ -8,6 +8,16 @@ use std::env;
 use types::ConfigSection;
 
 #[test]
+fn setup_cwd_empty() {
+    env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
+
+    let logger = log::create("error");
+    setup_cwd(&logger, None);
+
+    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
+}
+
+#[test]
 fn setup_env_empty() {
     let logger = log::create("error");
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -28,6 +38,7 @@ fn setup_env_empty() {
 
 #[test]
 fn setup_env_values() {
+
     let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
