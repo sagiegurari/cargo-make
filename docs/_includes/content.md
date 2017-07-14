@@ -673,6 +673,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-14  | v0.3.17 | Added coverage task in default toml |
 | 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |
 | 2017-07-13  | v0.3.15 | Added common init and end tasks |
 | 2017-07-10  | v0.3.13 | cargo-make now defines rust version env vars |
