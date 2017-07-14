@@ -289,3 +289,12 @@ dependencies = [
     "coverage",
     "post-coverage"
 ]
+
+[tasks.codecov-flow]
+dependencies = [
+    "coverage-flow"
+]
+script = [
+    "#!/bin/bash",
+    "bash <(curl -s https://codecov.io/bash)"
+]

@@ -37,6 +37,4 @@ script:
   - sudo make install
   - cd ../..
   - rm -rf kcov-$KCOV_VERSION
-  - cargo make coverage-flow
-  - bash <(curl -s https://codecov.io/bash)
-  - echo "Uploaded Code Coverage"
+  - cargo run -- make codecov-flow

@@ -39,6 +39,51 @@ pub fn validate_exit_code(
     }
 }
 
+fn create_script(
+    logger: &Logger,
+    script_lines: &Vec<String>,
+) -> String {
+    let cwd_holder = match current_dir() {
+        Ok(value) => value,
+        Err(error) => {
+            logger.error("Unable to get current working directory.", &[], Some(&error));
+            panic!("Unable to get current working directory, error: {}", error);
+        }
+    };
+
+    let cwd = match cwd_holder.to_str() {
+        Some(cwd_str) => cwd_str.clone(),
+        None => {
+            logger.error::<()>("Unable to get current working directory.", &[], None);
+            panic!("Unable to get current working directory");
+        }
+    };
+
+    // get local copy
+    let mut mut_script_lines = script_lines.clone();
+
+    // create cd command
+    let mut cd_command = "cd ".to_string();
+    cd_command.push_str(cwd);
+
+    // check if first line is shebang line
+    let mut insert_index = if mut_script_lines[0].starts_with("#!") {
+        1
+    } else {
+        0
+    };
+
+    if !cfg!(windows) {
+        mut_script_lines.insert(insert_index, "set -e".to_string());
+        insert_index = insert_index + 1;
+    }
+    mut_script_lines.insert(insert_index, cd_command);
+
+    mut_script_lines.push("\n".to_string());
+
+    mut_script_lines.join("\n")
+}
+
 /// Runs the requested script text and panics in case of any script error.
 pub fn run_script(
     logger: &Logger,
@@ -76,27 +121,7 @@ pub fn run_script(
         Ok(file) => file,
     };
 
-    let mut text = script_lines.join("\n");
-
-    let cwd_holder = match current_dir() {
-        Ok(value) => value,
-        Err(error) => {
-            logger.error("Unable to get current working directory.", &[], Some(&error));
-            panic!("Unable to get current working directory, error: {}", error);
-        }
-    };
-
-    let cwd = match cwd_holder.to_str() {
-        Some(cwd_str) => cwd_str.clone(),
-        None => {
-            logger.error::<()>("Unable to get current working directory.", &[], None);
-            panic!("Unable to get current working directory");
-        }
-    };
-
-    text.insert_str(0, "\n");
-    text.insert_str(0, cwd);
-    text.insert_str(0, "cd ");
+    let text = create_script(&logger, &script_lines);
 
     match file.write_all(text.as_bytes()) {
         Err(error) => {

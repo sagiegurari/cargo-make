@@ -485,6 +485,7 @@ The following are some of the main flows that can be used without any need of an
 * **publish-flow** - Cleans old target directory and publishes the project.
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
 * **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows).
+* **codecov-flow** - Runs the coverage-flow and uploads the coverage results to codecov (not supported on windows).
 
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
@@ -701,6 +702,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-14  | v0.3.21 | Added codecov task in default toml |
 | 2017-07-14  | v0.3.20 | Added coverage task in default toml |
 | 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |
 | 2017-07-13  | v0.3.15 | Added common init and end tasks |

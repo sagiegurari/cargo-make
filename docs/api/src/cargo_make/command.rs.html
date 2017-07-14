@@ -220,6 +220,31 @@
 <span id="175">175</span>
 <span id="176">176</span>
 <span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # command</span>
 <span class="doccomment">//!</span>
@@ -262,6 +287,51 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">create_script</span>(
+    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="ident">cwd_holder</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">current_dir</span>() {
+        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
+            <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">error</span>));
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory, error: {}&quot;</span>, <span class="ident">error</span>);
+        }
+    };
+
+    <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_holder</span>.<span class="ident">to_str</span>() {
+        <span class="prelude-val">Some</span>(<span class="ident">cwd_str</span>) <span class="op">=&gt;</span> <span class="ident">cwd_str</span>.<span class="ident">clone</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+            <span class="ident">logger</span>.<span class="ident">error</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory&quot;</span>);
+        }
+    };
+
+    <span class="comment">// get local copy</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mut_script_lines</span> <span class="op">=</span> <span class="ident">script_lines</span>.<span class="ident">clone</span>();
+
+    <span class="comment">// create cd command</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_command</span> <span class="op">=</span> <span class="string">&quot;cd &quot;</span>.<span class="ident">to_string</span>();
+    <span class="ident">cd_command</span>.<span class="ident">push_str</span>(<span class="ident">cwd</span>);
+
+    <span class="comment">// check if first line is shebang line</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">insert_index</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">mut_script_lines</span>[<span class="number">0</span>].<span class="ident">starts_with</span>(<span class="string">&quot;#!&quot;</span>) {
+        <span class="number">1</span>
+    } <span class="kw">else</span> {
+        <span class="number">0</span>
+    };
+
+    <span class="kw">if</span> <span class="op">!</span><span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+        <span class="ident">mut_script_lines</span>.<span class="ident">insert</span>(<span class="ident">insert_index</span>, <span class="string">&quot;set -e&quot;</span>.<span class="ident">to_string</span>());
+        <span class="ident">insert_index</span> <span class="op">=</span> <span class="ident">insert_index</span> <span class="op">+</span> <span class="number">1</span>;
+    }
+    <span class="ident">mut_script_lines</span>.<span class="ident">insert</span>(<span class="ident">insert_index</span>, <span class="ident">cd_command</span>);
+
+    <span class="ident">mut_script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;\n&quot;</span>.<span class="ident">to_string</span>());
+
+    <span class="ident">mut_script_lines</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>)
+}
+
 <span class="doccomment">/// Runs the requested script text and panics in case of any script error.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_script</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
@@ -299,27 +369,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">file</span>) <span class="op">=&gt;</span> <span class="ident">file</span>,
     };
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">script_lines</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>);
-
-    <span class="kw">let</span> <span class="ident">cwd_holder</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">current_dir</span>() {
-        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">error</span>));
-            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory, error: {}&quot;</span>, <span class="ident">error</span>);
-        }
-    };
-
-    <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_holder</span>.<span class="ident">to_str</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">cwd_str</span>) <span class="op">=&gt;</span> <span class="ident">cwd_str</span>.<span class="ident">clone</span>(),
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
-            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory&quot;</span>);
-        }
-    };
-
-    <span class="ident">text</span>.<span class="ident">insert_str</span>(<span class="number">0</span>, <span class="string">&quot;\n&quot;</span>);
-    <span class="ident">text</span>.<span class="ident">insert_str</span>(<span class="number">0</span>, <span class="ident">cwd</span>);
-    <span class="ident">text</span>.<span class="ident">insert_str</span>(<span class="number">0</span>, <span class="string">&quot;cd &quot;</span>);
+    <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">create_script</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">script_lines</span>);
 
     <span class="kw">match</span> <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">text</span>.<span class="ident">as_bytes</span>()) {
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
