@@ -170,23 +170,20 @@ pub fn setup_cwd(
     logger: &Logger,
     cwd: Option<&str>,
 ) {
-    match cwd {
-        Some(directory) => {
-            logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
+    let directory = cwd.unwrap_or(".");
 
-            let mut directory_path_buf = PathBuf::from(&directory);
-            directory_path_buf = directory_path_buf.canonicalize().unwrap_or(directory_path_buf);
-            let directory_path = directory_path_buf.as_path();
+    logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
 
-            match env::set_current_dir(&directory_path) {
-                Err(error) => logger.error("Unable to set current working directory to: ", &[&directory], Some(error)),
-                _ => {
-                    env::set_var("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
+    let mut directory_path_buf = PathBuf::from(&directory);
+    directory_path_buf = directory_path_buf.canonicalize().unwrap_or(directory_path_buf);
+    let directory_path = directory_path_buf.as_path();
 
-                    logger.verbose::<()>("Working directory changed to: ", &[&directory], None);
-                }
-            }
+    match env::set_current_dir(&directory_path) {
+        Err(error) => logger.error("Unable to set current working directory to: ", &[&directory], Some(error)),
+        _ => {
+            env::set_var("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
+
+            logger.verbose::<()>("Working directory changed to: ", &[&directory], None);
         }
-        None => (),
-    };
+    }
 }

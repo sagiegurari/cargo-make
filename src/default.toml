@@ -261,11 +261,13 @@ args = ["push"]
 [tasks.coverage]
 windows_alias = "empty"
 script = [
+    "echo \"Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}\"",
     "mkdir -p ./target/coverage",
     "echo \"Running Unit Tests\"",
     "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
     "do",
     "if \"$file\" ; then",
+    "echo \"Running file: $file\" Using include pattern: ${CARGO_MAKE_WORKING_DIRECTORY}/src/",
     "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done",
@@ -273,6 +275,7 @@ script = [
     "for file in target/debug/deps/test_*",
     "do",
     "if \"$file\" ; then",
+    "echo \"Running file: $file\" Using include pattern: ${CARGO_MAKE_WORKING_DIRECTORY}/src/",
     "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done"
