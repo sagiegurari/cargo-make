@@ -678,7 +678,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-14  | v0.3.22 | Added codecov task in default toml |
+| 2017-07-14  | v0.3.23 | Added codecov task in default toml |
 | 2017-07-14  | v0.3.20 | Added coverage task in default toml |
 | 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |
 | 2017-07-13  | v0.3.15 | Added common init and end tasks |
