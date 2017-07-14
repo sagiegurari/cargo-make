@@ -265,7 +265,8 @@ script = [
     "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
     "do",
     "if \"$file\" ; then",
-    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true;",
+    "Running coverage for file: $file",
+    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done"
 ]

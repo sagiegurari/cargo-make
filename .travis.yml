@@ -37,4 +37,4 @@ script:
   - sudo make install
   - cd ../..
   - rm -rf kcov-$KCOV_VERSION
-  - cargo make codecov-flow
+  - cargo run -- make codecov-flow
