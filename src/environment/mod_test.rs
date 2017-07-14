@@ -77,9 +77,14 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_REPOSITORY", "EMPTY");
 
+    env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
+    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() == "EMPTY");
+
     setup_cwd(&logger, Some("examples"));
     setup_env_for_crate(&logger);
     setup_cwd(&logger, Some(".."));
+
+    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), "EMPTY");
