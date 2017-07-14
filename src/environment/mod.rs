@@ -54,7 +54,11 @@ fn setup_env_for_crate(logger: &Logger) {
         let package_info = crate_info.package.unwrap_or(PackageInfo::new());
 
         if package_info.name.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_NAME", &package_info.name.unwrap());
+            let crate_name = package_info.name.unwrap();
+            env::set_var("CARGO_MAKE_CRATE_NAME", &crate_name);
+
+            let crate_fs_name = str::replace(&crate_name, "-", "_");
+            env::set_var("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
         }
 
         if package_info.version.is_some() {

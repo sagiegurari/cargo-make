@@ -255,3 +255,39 @@ command = "git"
 args = ["push"]
 
 [tasks.post-git-push]
+
+[tasks.pre-coverage]
+
+[tasks.coverage]
+windows_alias = "empty"
+script = [
+    "mkdir -p ./target/coverage",
+    "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
+    "do",
+    "if \"$file\" ; then",
+    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true;",
+    "fi",
+    "done"
+]
+
+[tasks.post-coverage]
+
+[tasks.coverage-flow]
+dependencies = [
+    "pre-coverage",
+    "coverage",
+    "post-coverage"
+]
+
+[tasks.codecov]
+windows_alias = "empty"
+script = [
+    "curl -s https://codecov.io/bash | sh",
+    "echo \"Uploaded Code Coverage\""
+]
+
+[tasks.codecov-flow]
+dependencies = [
+    "coverage-flow",
+    "codecov"
+]

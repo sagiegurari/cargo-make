@@ -47,6 +47,7 @@ fn setup_env_for_crate_load_toml_found() {
     let logger = log::create("error");
 
     env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_LICENSE", "EMPTY");
@@ -57,6 +58,7 @@ fn setup_env_for_crate_load_toml_found() {
     setup_env_for_crate(&logger);
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), env!("CARGO_PKG_VERSION"));
     assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), env!("CARGO_PKG_DESCRIPTION"));
     assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
@@ -70,6 +72,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     let logger = log::create("error");
 
     env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_LICENSE", "EMPTY");
@@ -87,6 +90,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "EMPTY");
@@ -97,6 +101,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     setup_env_for_crate(&logger);
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), env!("CARGO_PKG_VERSION"));
     assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), env!("CARGO_PKG_DESCRIPTION"));
     assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
