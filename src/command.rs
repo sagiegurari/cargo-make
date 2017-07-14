@@ -88,6 +88,7 @@ fn create_script(
 pub fn run_script(
     logger: &Logger,
     script_lines: &Vec<String>,
+    script_runner: Option<String>,
     validate: bool,
 ) {
     let name = env!("CARGO_PKG_NAME");
@@ -131,10 +132,15 @@ pub fn run_script(
         Ok(_) => logger.verbose::<()>("Written script file text:\n", &[&text], None),
     }
 
-    let command = if cfg!(windows) {
-        "cmd.exe"
-    } else {
-        "sh"
+    let command = match script_runner {
+        Some(ref value) => value,
+        None => {
+            if cfg!(windows) {
+                "cmd.exe"
+            } else {
+                "sh"
+            }
+        }
     };
 
     let args_vector = if cfg!(windows) {
@@ -194,7 +200,7 @@ pub fn run(
         }
         None => {
             match step.config.script {
-                Some(ref script) => run_script(&logger, script, validate),
+                Some(ref script) => run_script(&logger, script, step.config.script_runner.clone(), validate),
                 None => logger.verbose::<()>("No script defined.", &[], None),
             }
         }

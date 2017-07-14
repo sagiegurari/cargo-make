@@ -15,6 +15,7 @@ fn task_new() {
     assert!(task.install_script.is_none());
     assert!(task.args.is_none());
     assert!(task.script.is_none());
+    assert!(task.script_runner.is_none());
     assert!(task.dependencies.is_none());
     assert!(task.linux.is_none());
     assert!(task.windows.is_none());
@@ -71,6 +72,7 @@ fn task_extend_both_have_misc_data() {
         install_script: None,
         args: None,
         script: None,
+        script_runner: None,
         dependencies: None,
         linux: None,
         windows: None,
@@ -88,6 +90,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.windows_alias.is_none());
     assert!(base.mac_alias.is_none());
     assert!(base.install_script.is_none());
+    assert!(base.script_runner.is_none());
     assert!(base.args.is_none());
     assert!(base.script.is_some());
     assert!(base.dependencies.is_none());
@@ -117,6 +120,7 @@ fn task_extend_extended_have_all_fields() {
         install_script: None,
         args: None,
         script: Some(vec!["1".to_string(), "2".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: None,
         linux: None,
         windows: None,
@@ -134,6 +138,7 @@ fn task_extend_extended_have_all_fields() {
         install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
         script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script_runner: Some("sh2".to_string()),
         dependencies: Some(vec!["A".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
@@ -144,6 +149,7 @@ fn task_extend_extended_have_all_fields() {
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
             dependencies: Some(vec!["A".to_string()])
         }),
         windows: Some(PlatformOverrideTask {
@@ -155,6 +161,7 @@ fn task_extend_extended_have_all_fields() {
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
             dependencies: Some(vec!["A".to_string()])
         }),
         mac: Some(PlatformOverrideTask {
@@ -166,6 +173,7 @@ fn task_extend_extended_have_all_fields() {
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
             dependencies: Some(vec!["A".to_string()])
         })
     };
@@ -183,6 +191,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.install_script.is_some());
     assert!(base.args.is_some());
     assert!(base.script.is_some());
+    assert!(base.script_runner.is_some());
     assert!(base.dependencies.is_some());
     assert!(base.linux.is_some());
     assert!(base.windows.is_some());
@@ -199,6 +208,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.install_script.unwrap().len(), 2);
     assert_eq!(base.args.unwrap().len(), 2);
     assert_eq!(base.script.unwrap().len(), 3);
+    assert_eq!(base.script_runner.unwrap(), "sh2");
     assert_eq!(base.dependencies.unwrap().len(), 1);
     assert!(base.linux.unwrap().clear.unwrap());
     assert!(!base.windows.unwrap().clear.unwrap());
@@ -254,6 +264,7 @@ fn task_get_normalized_task_undefined() {
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
         linux: None,
         windows: None,
@@ -273,6 +284,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
+    assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -289,6 +301,7 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.install_script.unwrap().len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
     assert_eq!(normalized_task.script.unwrap().len(), 2);
+    assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
 }
 
@@ -307,6 +320,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: None,
@@ -317,6 +331,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
+            script_runner: Some("sh2".to_string()),
             dependencies: Some(vec!["1".to_string(), "2".to_string()])
         }),
         windows: None,
@@ -336,6 +351,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
+    assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -348,6 +364,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
     assert_eq!(normalized_task.script.unwrap().len(), 3);
+    assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
 }
 
@@ -366,6 +383,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -376,6 +394,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
+            script_runner: Some("sh2".to_string()),
             dependencies: Some(vec!["1".to_string(), "2".to_string()])
         }),
         windows: None,
@@ -395,6 +414,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
+    assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -407,6 +427,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
     assert_eq!(normalized_task.script.unwrap().len(), 3);
+    assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
 }
 
@@ -425,6 +446,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -435,6 +457,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             install_script: None,
             args: None,
             script: None,
+            script_runner: None,
             dependencies: None
         }),
         windows: None,
@@ -454,6 +477,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
+    assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -466,6 +490,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.install_script.unwrap().len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
     assert_eq!(normalized_task.script.unwrap().len(), 2);
+    assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
 }
 
@@ -484,6 +509,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
+        script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
@@ -494,6 +520,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             install_script: None,
             args: None,
             script: None,
+            script_runner: None,
             dependencies: None
         }),
         windows: None,
@@ -513,6 +540,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.install_script.is_none());
     assert!(normalized_task.args.is_none());
     assert!(normalized_task.script.is_none());
+    assert!(normalized_task.script_runner.is_none());
     assert!(normalized_task.dependencies.is_none());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());

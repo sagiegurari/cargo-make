@@ -245,6 +245,12 @@
 <span id="200">200</span>
 <span id="201">201</span>
 <span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # command</span>
 <span class="doccomment">//!</span>
@@ -336,6 +342,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_script</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">validate</span>: <span class="ident">bool</span>,
 ) {
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;CARGO_PKG_NAME&quot;</span>);
@@ -379,10 +386,15 @@
         <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Written script file text:\n&quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">text</span>], <span class="prelude-val">None</span>),
     }
 
-    <span class="kw">let</span> <span class="ident">command</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-        <span class="string">&quot;cmd.exe&quot;</span>
-    } <span class="kw">else</span> {
-        <span class="string">&quot;sh&quot;</span>
+    <span class="kw">let</span> <span class="ident">command</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">script_runner</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+                <span class="string">&quot;cmd.exe&quot;</span>
+            } <span class="kw">else</span> {
+                <span class="string">&quot;sh&quot;</span>
+            }
+        }
     };
 
     <span class="kw">let</span> <span class="ident">args_vector</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
@@ -442,7 +454,7 @@
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> <span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="ident">script</span>, <span class="ident">validate</span>),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> <span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="ident">script</span>, <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(), <span class="ident">validate</span>),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;No script defined.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>),
             }
         }

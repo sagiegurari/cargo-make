@@ -74,7 +74,7 @@ pub fn install(
         }
         None => {
             match task_config.install_script {
-                Some(ref script) => command::run_script(&logger, &script, validate),
+                Some(ref script) => command::run_script(&logger, &script, task_config.script_runner.clone(), validate),
                 None => logger.verbose::<()>("No installation script defined.", &[], None),
             }
         }

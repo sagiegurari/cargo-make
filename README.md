@@ -583,6 +583,8 @@ pub struct Task {
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
+    /// The script runner (defaults to cmd in windows and sh for other platforms)
+    pub script_runner: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -611,6 +613,8 @@ pub struct PlatformOverrideTask {
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
+    /// The script runner (defaults to cmd in windows and sh for other platforms)
+    pub script_runner: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
 }
@@ -702,7 +706,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-14  | v0.3.21 | Added codecov task in default toml |
+| 2017-07-14  | v0.3.22 | Added codecov task in default toml |
 | 2017-07-14  | v0.3.20 | Added coverage task in default toml |
 | 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |
 | 2017-07-13  | v0.3.15 | Added common init and end tasks |

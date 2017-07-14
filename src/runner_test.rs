@@ -105,6 +105,7 @@ fn create_execution_plan_platform_disabled() {
         install_script: None,
         args: None,
         script: None,
+        script_runner: None,
         dependencies: None
     });
     task.windows = Some(PlatformOverrideTask {
@@ -116,6 +117,7 @@ fn create_execution_plan_platform_disabled() {
         install_script: None,
         args: None,
         script: None,
+        script_runner: None,
         dependencies: None
     });
     task.mac = Some(PlatformOverrideTask {
@@ -127,6 +129,7 @@ fn create_execution_plan_platform_disabled() {
         install_script: None,
         args: None,
         script: None,
+        script_runner: None,
         dependencies: None
     });
 

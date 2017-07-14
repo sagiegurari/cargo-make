@@ -34,6 +34,8 @@ pub struct Task {
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
+    /// The script runner (defaults to cmd in windows and sh for other platforms)
+    pub script_runner: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -58,6 +60,7 @@ impl Task {
             command: None,
             args: None,
             script: None,
+            script_runner: None,
             dependencies: None,
             linux: None,
             windows: None,
@@ -111,6 +114,10 @@ impl Task {
 
         if task.script.is_some() {
             self.script = task.script.clone();
+        }
+
+        if task.script_runner.is_some() {
+            self.script_runner = task.script_runner.clone();
         }
 
         if task.dependencies.is_some() {
@@ -170,6 +177,7 @@ impl Task {
                     command: override_task.command.clone(),
                     args: override_task.args.clone(),
                     script: override_task.script.clone(),
+                    script_runner: override_task.script_runner.clone(),
                     dependencies: override_task.dependencies.clone(),
                     linux: None,
                     windows: None,
@@ -229,6 +237,8 @@ pub struct PlatformOverrideTask {
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
     pub script: Option<Vec<String>>,
+    /// The script runner (defaults to cmd in windows and sh for other platforms)
+    pub script_runner: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
 }
@@ -270,6 +280,10 @@ impl PlatformOverrideTask {
 
             if self.script.is_none() && task.script.is_some() {
                 self.script = task.script.clone();
+            }
+
+            if self.script_runner.is_none() && task.script_runner.is_some() {
+                self.script_runner = task.script_runner.clone();
             }
 
             if self.dependencies.is_none() && task.dependencies.is_some() {

@@ -290,11 +290,17 @@ dependencies = [
     "post-coverage"
 ]
 
-[tasks.codecov-flow]
-dependencies = [
-    "coverage-flow"
-]
+[tasks.codecov]
+windows_alias = "empty"
+script_runner = "bash"
 script = [
-    "#!/bin/bash",
+    "#!/usr/bin/env bash",
     "bash <(curl -s https://codecov.io/bash)"
+]
+
+[tasks.codecov-flow]
+windows_alias = "empty"
+dependencies = [
+    "coverage-flow",
+    "codecov"
 ]

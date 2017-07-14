@@ -128,3 +128,16 @@ fn run_script_error_force() {
 
     run(&logger, &step);
 }
+
+#[test]
+#[cfg(target_os = "linux")]
+fn run_script_custom_runner() {
+    let logger = log::create("error");
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+    task.script_runner = Some("bash".to_string());
+
+    let step = Step { name: "test".to_string(), config: task };
+
+    run(&logger, &step);
+}
