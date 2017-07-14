@@ -262,10 +262,17 @@ args = ["push"]
 windows_alias = "empty"
 script = [
     "mkdir -p ./target/coverage",
+    "echo \"Running Unit Tests\"",
     "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
     "do",
     "if \"$file\" ; then",
-    "Running coverage for file: $file",
+    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
+    "fi",
+    "done",
+    "echo \"Running Integration Tests\"",
+    "for file in target/debug/deps/test_*",
+    "do",
+    "if \"$file\" ; then",
     "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
     "fi",
     "done"
@@ -278,17 +285,4 @@ dependencies = [
     "pre-coverage",
     "coverage",
     "post-coverage"
-]
-
-[tasks.codecov]
-windows_alias = "empty"
-script = [
-    "curl -s https://codecov.io/bash | sh",
-    "echo \"Uploaded Code Coverage\""
-]
-
-[tasks.codecov-flow]
-dependencies = [
-    "coverage-flow",
-    "codecov"
 ]

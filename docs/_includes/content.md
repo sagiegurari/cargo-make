@@ -456,6 +456,7 @@ The following are some of the main flows that can be used without any need of an
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **publish-flow** - Cleans old target directory and publishes the project.
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
+* **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows).
 
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
