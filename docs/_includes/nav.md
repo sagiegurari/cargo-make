@@ -10,6 +10,7 @@
     * [Environment Variables](#usage-env)
     * [Continuous Integration](#usage-ci)
     * [Predefined Flows](#usage-predefined-flows)
+    * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)

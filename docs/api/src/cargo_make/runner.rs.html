@@ -241,6 +241,45 @@
 <span id="196">196</span>
 <span id="197">197</span>
 <span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -261,7 +300,7 @@
 <span class="kw">use</span> <span class="ident">log</span>::<span class="ident">Logger</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">SystemTime</span>;
-<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">Step</span>};
+<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
 
 <span class="kw">fn</span> <span class="ident">run_task</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
@@ -346,6 +385,36 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">create_workspace_task</span>(
+    <span class="ident">crate_info</span>: <span class="ident">CrateInfo</span>,
+    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+) <span class="op">-&gt;</span> <span class="ident">Task</span> {
+    <span class="kw">let</span> <span class="ident">workspace</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">members</span> <span class="op">=</span> <span class="ident">workspace</span>.<span class="ident">members</span>.<span class="ident">unwrap_or</span>(<span class="macro">vec</span><span class="macro">!</span>[]);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">members</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>();
+        <span class="ident">cd_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>);
+        <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">cd_line</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_line</span> <span class="op">=</span> <span class="string">&quot;cargo make &quot;</span>.<span class="ident">to_string</span>();
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+        <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
+
+        <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd %CARGO_MAKE_WORKING_DIRECTORY%&quot;</span>.<span class="ident">to_string</span>());
+        } <span class="kw">else</span> {
+            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd ${CARGO_MAKE_WORKING_DIRECTORY}&quot;</span>.<span class="ident">to_string</span>());
+        };
+    }
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">workspace_task</span> <span class="op">=</span> <span class="ident">Task</span>::<span class="ident">new</span>();
+    <span class="ident">workspace_task</span>.<span class="ident">script</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">script_lines</span>);
+
+    <span class="ident">workspace_task</span>
+}
+
 <span class="doccomment">/// Creates the full execution plan</span>
 <span class="kw">fn</span> <span class="ident">create_execution_plan</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
@@ -373,7 +442,16 @@
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Init task not defined.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>),
     };
 
-    <span class="ident">create_execution_plan_for_step</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">task_names</span>, <span class="bool-val">true</span>);
+    <span class="comment">// load crate info and look for workspace info</span>
+    <span class="kw">let</span> <span class="ident">crate_info</span> <span class="op">=</span> <span class="ident">CrateInfo</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
+
+    <span class="kw">if</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>() {
+        <span class="kw">let</span> <span class="ident">workspace_task</span> <span class="op">=</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>, <span class="ident">task</span>);
+
+        <span class="ident">steps</span>.<span class="ident">push</span>(<span class="ident">Step</span> { <span class="ident">name</span>: <span class="string">&quot;workspace&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">config</span>: <span class="ident">workspace_task</span> });
+    } <span class="kw">else</span> {
+        <span class="ident">create_execution_plan_for_step</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">task_names</span>, <span class="bool-val">true</span>);
+    }
 
     <span class="comment">// always add end task even if already executed due to some depedency</span>
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">end_task</span> {

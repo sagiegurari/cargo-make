@@ -17,6 +17,7 @@
     * [Environment Variables](#usage-env)
     * [Continuous Integration](#usage-ci)
     * [Predefined Flows](#usage-predefined-flows)
+    * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
@@ -487,6 +488,27 @@ The following are some of the main flows that can be used without any need of an
 * **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows).
 * **codecov-flow** - Runs the coverage-flow and uploads the coverage results to codecov (not supported on windows).
 
+<a name="usage-workspace-support"></a>
+### Workspace Support
+In case cargo-make detects that the current working directory is a workspace crate (crate with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
+Instead, it will generate a task definition in runtime which will go to each member directory and invoke the requested task on that member.<br>
+For example if we have the following directory structure:
+
+````console
+workspace
+├── Cargo.toml
+├── member1
+│   └── Cargo.toml
+└── member2
+    └── Cargo.toml
+````
+
+And we ran ````cargo make mytask````, it will go to each workspace member directory and execute: ````cargo make mytask```` at that directory,
+where mytask is the original task that was requested on the workspace level.<br>
+The order of the members is defined by the member attribute in the workspace Cargo.toml.
+
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ````cargo make format````.
+
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
@@ -706,6 +728,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-15  | v0.3.24 | Workspace support |
 | 2017-07-14  | v0.3.23 | Added codecov task in default toml |
 | 2017-07-14  | v0.3.20 | Added coverage task in default toml |
 | 2017-07-14  | v0.3.16 | Added more environment variables based on target environment and rust compiler |

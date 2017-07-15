@@ -1,7 +1,7 @@
 use super::*;
 use log;
 use std::collections::HashMap;
-use types::{ConfigSection, PlatformOverrideTask, Task};
+use types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
 
 #[test]
 #[should_panic]
@@ -137,4 +137,42 @@ fn create_execution_plan_platform_disabled() {
 
     let execution_plan = create_execution_plan(&logger, &config, "test");
     assert_eq!(execution_plan.steps.len(), 0);
+}
+
+#[test]
+fn create_workspace_task_no_members() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace { members: Some(members) });
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    assert!(task.script.is_some());
+    let script = task.script.unwrap();
+    assert_eq!(script.join("\n"), "".to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_members() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec!["member1".to_string(), "member2".to_string(), "dir1/member3".to_string()];
+    crate_info.workspace = Some(Workspace { members: Some(members) });
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    let expected_script = r#"cd ./member1
+cargo make some_task
+cd ${CARGO_MAKE_WORKING_DIRECTORY}
+cd ./member2
+cargo make some_task
+cd ${CARGO_MAKE_WORKING_DIRECTORY}
+cd ./dir1/member3
+cargo make some_task
+cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
+        .to_string();
+
+    assert!(task.script.is_some());
+    let script = task.script.unwrap();
+    assert_eq!(script.join("\n"), expected_script);
 }
