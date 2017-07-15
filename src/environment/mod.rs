@@ -13,10 +13,7 @@ mod mod_test;
 use self::rustinfo::Channel;
 use log::Logger;
 use std::env;
-use std::fs::File;
-use std::io::Read;
-use std::path::{Path, PathBuf};
-use toml;
+use std::path::PathBuf;
 use types::{Config, CrateInfo, PackageInfo};
 
 /// Updates the env for the current execution based on the descriptor.
@@ -33,60 +30,41 @@ fn set_env(
 }
 
 fn setup_env_for_crate(logger: &Logger) {
-    // load crate info
-    let file_path = Path::new("Cargo.toml");
+    let crate_info = CrateInfo::load(&logger);
 
-    if file_path.exists() {
-        logger.verbose("Opening file:", &[], Some(&file_path));
-        let mut file = match File::open(&file_path) {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
-        };
-        let mut crate_info_string = String::new();
-        file.read_to_string(&mut crate_info_string).unwrap();
+    let package_info = crate_info.package.unwrap_or(PackageInfo::new());
 
-        let crate_info: CrateInfo = match toml::from_str(&crate_info_string) {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
-        };
-        logger.verbose("Loaded Cargo.toml:", &[], Some(&crate_info));
+    if package_info.name.is_some() {
+        let crate_name = package_info.name.unwrap();
+        env::set_var("CARGO_MAKE_CRATE_NAME", &crate_name);
 
-        let package_info = crate_info.package.unwrap_or(PackageInfo::new());
+        let crate_fs_name = str::replace(&crate_name, "-", "_");
+        env::set_var("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
+    }
 
-        if package_info.name.is_some() {
-            let crate_name = package_info.name.unwrap();
-            env::set_var("CARGO_MAKE_CRATE_NAME", &crate_name);
+    if package_info.version.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
+    }
 
-            let crate_fs_name = str::replace(&crate_name, "-", "_");
-            env::set_var("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
-        }
+    if package_info.description.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", &package_info.description.unwrap());
+    }
 
-        if package_info.version.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
-        }
+    if package_info.license.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
+    }
 
-        if package_info.description.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", &package_info.description.unwrap());
-        }
+    if package_info.documentation.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", &package_info.documentation.unwrap());
+    }
 
-        if package_info.license.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
-        }
+    if package_info.homepage.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
+    }
 
-        if package_info.documentation.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", &package_info.documentation.unwrap());
-        }
-
-        if package_info.homepage.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
-        }
-
-        if package_info.repository.is_some() {
-            env::set_var("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository.unwrap());
-        }
-    } else {
-        logger.info::<()>("Cargo.toml not found, skipping.", &[], None);
-    };
+    if package_info.repository.is_some() {
+        env::set_var("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository.unwrap());
+    }
 }
 
 fn setup_env_for_git_repo(logger: &Logger) {

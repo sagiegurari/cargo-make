@@ -1,4 +1,5 @@
 use super::*;
+use log;
 
 #[test]
 fn task_new() {
@@ -602,4 +603,16 @@ fn config_section_extend_some_values() {
 
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+}
+
+#[test]
+fn crate_info_load() {
+    let logger = log::create("error");
+    let crate_info = CrateInfo::load(&logger);
+
+    assert!(crate_info.package.is_some());
+    assert!(crate_info.workspace.is_none());
+
+    let package = crate_info.package.unwrap();
+    assert_eq!(package.name.unwrap(), "cargo-make");
 }
