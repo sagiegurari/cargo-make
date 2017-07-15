@@ -17,7 +17,7 @@ use installer;
 use log::Logger;
 use std::collections::HashSet;
 use std::time::SystemTime;
-use types::{Config, ExecutionPlan, Step};
+use types::{Config, CrateInfo, ExecutionPlan, Step, Task};
 
 fn run_task(
     logger: &Logger,
@@ -129,7 +129,33 @@ fn create_execution_plan(
         None => logger.verbose::<()>("Init task not defined.", &[], None),
     };
 
-    create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
+    // load crate info and look for workspace info
+    let crate_info = CrateInfo::load(&logger);
+
+    if crate_info.workspace.is_some() {
+        let workspace = crate_info.workspace.unwrap();
+        let members = workspace.members.unwrap_or(vec![]);
+
+        let mut script_lines = vec![];
+        for member in &members {
+            let mut cd_line = "cd ".to_string();
+            cd_line.push_str(&member);
+            script_lines.push(cd_line);
+
+            let mut make_line = "cargo make ".to_string();
+            make_line.push_str(&task);
+            script_lines.push(make_line);
+
+            script_lines.push("cd ..".to_string());
+        }
+
+        let mut workspace_task = Task::new();
+        workspace_task.script = Some(script_lines);
+
+        steps.push(Step { name: "workspace".to_string(), config: workspace_task });
+    } else {
+        create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
+    }
 
     // always add end task even if already executed due to some depedency
     match config.config.end_task {
