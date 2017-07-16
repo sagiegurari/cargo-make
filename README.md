@@ -461,7 +461,7 @@ cargo-make comes with a predefined flow for continuous integration build execute
 It is recommanded to install cargo-make with the debug flag for faster installation.
 
 <a name="usage-ci-travis"></a>
-### Travis
+#### Travis
 Add the following to .travis.yml file:
 
 ````yaml
@@ -481,7 +481,7 @@ env:
 You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/cargo-make/blob/master/.travis.yml)
 
 <a name="usage-ci-appveyor"></a>
-### AppVeyor
+#### AppVeyor
 Add the following to appveyor.yml file:
 
 ````yaml
@@ -774,6 +774,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-16  | v0.3.26 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |
 | 2017-07-15  | v0.3.24 | Workspace support |
 | 2017-07-14  | v0.3.23 | Added codecov task in default toml |
