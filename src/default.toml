@@ -320,7 +320,7 @@ linux_alias = "travis-coverage-flow"
 script = [
     "if [ \"$TRAVIS\" = \"true\" ]; then",
     "if [ \"$CARGO_MAKE_RUN_CODECOV\" = \"true\" ]; then",
-    "cargo make travis-codecov-flow",
+    "cargo run -- make travis-codecov-flow",
     "fi",
     "fi"
 ]
