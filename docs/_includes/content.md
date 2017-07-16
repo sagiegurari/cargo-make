@@ -426,7 +426,8 @@ The following environment variables will be set by cargo-make if the project is 
 
 <a name="usage-ci"></a>
 ### Continuous Integration
-cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.
+cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
+It is recommanded to install cargo-make with the debug flag for faster installation.
 
 <a name="usage-ci-travis"></a>
 ### Travis
@@ -446,6 +447,8 @@ env:
     - CARGO_MAKE_RUN_CODECOV="true"
 ````
 
+You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/cargo-make/blob/master/.travis.yml)
+
 <a name="usage-ci-appveyor"></a>
 ### AppVeyor
 Add the following to appveyor.yml file:
@@ -458,7 +461,7 @@ test_script:
   - cargo make ci-flow
 ````
 
-For online CI services, it is better to install with the debug flag to enable a much faster installation.
+You can see full yaml file at: [appveyor.yml](https://github.com/sagiegurari/cargo-make/blob/master/appveyor.yml)
 
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows

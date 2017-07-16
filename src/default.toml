@@ -260,6 +260,10 @@ args = ["push"]
 
 [tasks.post-git-push]
 
+[tasks.pre-ci-flow]
+
+[tasks.post-ci-flow]
+
 [tasks.pre-coverage]
 
 [tasks.coverage]
