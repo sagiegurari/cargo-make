@@ -26,6 +26,7 @@ fn run(
     task: &str,
     log_level: &str,
     cwd: Option<&str>,
+    disable_workspace: bool,
     print_only: bool,
 ) {
     let logger = log::create(log_level);
@@ -43,9 +44,9 @@ fn run(
     environment::setup_env(&logger, &config, &task);
 
     if print_only {
-        runner::print(&logger, &config, &task);
+        runner::print(&logger, &config, &task, disable_workspace);
     } else {
-        runner::run(&logger, &config, &task);
+        runner::run(&logger, &config, &task, disable_workspace);
     }
 }
 
@@ -65,8 +66,9 @@ fn run_for_args(matches: ArgMatches) {
             };
 
             let print_only = cmd_matches.is_present("print-steps");
+            let disable_workspace = cmd_matches.is_present("no-workspace");
 
-            run(build_file, task, log_level, cwd, print_only);
+            run(build_file, task, log_level, cwd, disable_workspace, print_only);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
     }
@@ -95,6 +97,9 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             )
             .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").help(
                 "Will set the current working directory. The search for the makefile will be from this directory if defined."
+            ))
+            .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
+                "Disable workspace support (tasks are triggered on workspace and not on members)"
             ))
             .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")

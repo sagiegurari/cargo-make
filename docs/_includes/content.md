@@ -480,6 +480,33 @@ The order of the members is defined by the member attribute in the workspace Car
 
 We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ````cargo make format````.
 
+In case you wish to run the tasks on the workspace level and not on the members, use the ````--no-workspace```` cli flag when running cargo make, for example:
+
+````sh
+cargo make --no-workspace mytask
+````
+
+You can define a composite flow that runs both workspace level tasks and member level tasks using this flag.<br>
+This is an example of a workspace level Makefile.toml which enables to run such a flow:
+
+````toml
+[tasks.composite]
+dependencies = ["member_flow", "workspace_flow"]
+
+[tasks.member_flow]
+command = "cargo"
+args = ["make", "member_task"]
+
+[tasks.workspace_flow]
+#run some workspace level command or flow
+````
+
+You can start this composite flow as follows:
+
+````sh
+cargo make --no-workspace composite
+````
+
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
@@ -515,10 +542,11 @@ USAGE:
     cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
-    -h, --help           Prints help information
-        --print-steps    Only prints the steps of the build in the order they will be invoked but without invoking them
-    -v, --verbose        Sets the log level to verbose (shorthand for --loglevel verbose)
-    -V, --version        Prints version information
+    -h, --help            Prints help information
+        --no-workspace    Disable workspace support (tasks are triggered on workspace and not on members)
+        --print-steps     Only prints the steps of the build in the order they will be invoked but without invoking them
+    -v, --verbose         Sets the log level to verbose (shorthand for --loglevel verbose)
+    -V, --version         Prints version information
 
 OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
@@ -699,6 +727,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-16  | v0.3.25 | New --no-workspace cli arg |
 | 2017-07-15  | v0.3.24 | Workspace support |
 | 2017-07-14  | v0.3.23 | Added codecov task in default toml |
 | 2017-07-14  | v0.3.20 | Added coverage task in default toml |

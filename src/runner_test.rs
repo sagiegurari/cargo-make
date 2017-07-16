@@ -1,6 +1,7 @@
 use super::*;
 use log;
 use std::collections::HashMap;
+use std::env;
 use types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
 
 #[test]
@@ -66,28 +67,45 @@ fn get_task_name_platform_alias() {
 #[test]
 fn create_execution_plan_single() {
     let logger = log::create("error");
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config { config: config_section, env: HashMap::new(), tasks: HashMap::new() };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
 
     let task = Task::new();
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test");
-    assert_eq!(execution_plan.steps.len(), 1);
+    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test");
+    assert_eq!(execution_plan.steps[2].name, "end");
 }
 
 #[test]
 fn create_execution_plan_single_disabled() {
     let logger = log::create("error");
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config { config: config_section, env: HashMap::new(), tasks: HashMap::new() };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
     task.disabled = Some(true);
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test");
-    assert_eq!(execution_plan.steps.len(), 0);
+    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    assert_eq!(execution_plan.steps.len(), 2);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "end");
 }
 
 #[test]
@@ -135,8 +153,41 @@ fn create_execution_plan_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test");
+    let execution_plan = create_execution_plan(&logger, &config, "test", false);
     assert_eq!(execution_plan.steps.len(), 0);
+}
+
+#[test]
+fn create_execution_plan_workspace() {
+    let logger = log::create("error");
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    env::set_current_dir("./examples/workspace").unwrap();
+    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    env::set_current_dir("../../").unwrap();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "workspace");
+}
+
+
+#[test]
+fn create_execution_plan_noworkspace() {
+    let logger = log::create("error");
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    env::set_current_dir("./examples/workspace").unwrap();
+    let execution_plan = create_execution_plan(&logger, &config, "test", true);
+    env::set_current_dir("../../").unwrap();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "test");
 }
 
 #[test]

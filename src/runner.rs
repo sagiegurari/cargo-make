@@ -137,6 +137,7 @@ fn create_execution_plan(
     logger: &Logger,
     config: &Config,
     task: &str,
+    disable_workspace: bool,
 ) -> ExecutionPlan {
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
@@ -162,12 +163,12 @@ fn create_execution_plan(
     // load crate info and look for workspace info
     let crate_info = CrateInfo::load(&logger);
 
-    if crate_info.workspace.is_some() {
+    if disable_workspace || crate_info.workspace.is_none() {
+        create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
+    } else {
         let workspace_task = create_workspace_task(crate_info, task);
 
         steps.push(Step { name: "workspace".to_string(), config: workspace_task });
-    } else {
-        create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
     }
 
     // always add end task even if already executed due to some depedency
@@ -201,10 +202,11 @@ pub fn run(
     logger: &Logger,
     config: &Config,
     task: &str,
+    disable_workspace: bool,
 ) {
     let start_time = SystemTime::now();
 
-    let execution_plan = create_execution_plan(&logger, &config, &task);
+    let execution_plan = create_execution_plan(&logger, &config, &task, disable_workspace);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
 
     run_task_flow(logger, &execution_plan);
@@ -229,8 +231,9 @@ pub fn print(
     logger: &Logger,
     config: &Config,
     task: &str,
+    disable_workspace: bool,
 ) {
-    let execution_plan = create_execution_plan(&logger, &config, &task);
+    let execution_plan = create_execution_plan(&logger, &config, &task, disable_workspace);
     logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
 
     println!("{:#?}", &execution_plan);

@@ -4,17 +4,17 @@ use std::path::Path;
 
 #[test]
 fn run_empty_task() {
-    run("bad.toml", "empty", "error", None, false);
+    run("bad.toml", "empty", "error", None, false, false);
 }
 
 #[test]
 fn print_empty_task() {
-    run("bad.toml", "empty", "error", None, true);
+    run("bad.toml", "empty", "error", None, false, true);
 }
 
 #[test]
 fn run_file_and_task() {
-    run("./examples/dependencies.toml", "A", "error", None, false);
+    run("./examples/dependencies.toml", "A", "error", None, false, false);
 }
 
 #[test]
@@ -22,7 +22,7 @@ fn run_cwd_with_file() {
     let directory = Path::new("./examples");
     assert!(env::set_current_dir(&directory).is_ok());
 
-    run("./examples/dependencies.toml", "A", "error", Some(".."), false);
+    run("./examples/dependencies.toml", "A", "error", Some(".."), false, false);
 }
 
 #[test]
@@ -31,7 +31,7 @@ fn run_cwd_task_not_found() {
     let directory = Path::new("./examples");
     assert!(env::set_current_dir(&directory).is_ok());
 
-    run("./dependencies.toml", "A", "error", Some(".."), false);
+    run("./dependencies.toml", "A", "error", Some(".."), false, false);
 }
 
 #[test]
@@ -81,6 +81,7 @@ fn run_for_args_print_only() {
         "A",
         "-l",
         "error",
+        "--no-workspace",
         "--print-steps",
     ]);
 
