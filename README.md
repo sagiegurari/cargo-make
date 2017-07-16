@@ -774,7 +774,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-16  | v0.3.26 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
+| 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |
 | 2017-07-15  | v0.3.24 | Workspace support |
 | 2017-07-14  | v0.3.23 | Added codecov task in default toml |
