@@ -9,6 +9,8 @@
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Continuous Integration](#usage-ci)
+        * [Travis](#usage-ci-travis)
+        * [AppVeyor](#usage-ci-appveyor)
     * [Predefined Flows](#usage-predefined-flows)
     * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)

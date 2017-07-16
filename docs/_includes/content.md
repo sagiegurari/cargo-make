@@ -426,8 +426,11 @@ The following environment variables will be set by cargo-make if the project is 
 
 <a name="usage-ci"></a>
 ### Continuous Integration
-cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
-For travis-ci, simple change the script to invoke the cargo-make installation and invocation as follows:
+cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.
+
+<a name="usage-ci-travis"></a>
+### Travis
+Add the following to .travis.yml file:
 
 ````yaml
 script:
@@ -435,7 +438,17 @@ script:
   - cargo make ci-flow
 ````
 
-For appveyor:
+If you want to run code coverage and upload it to codecov, also define the following environment variable:
+
+````yaml
+env:
+  global:
+    - CARGO_MAKE_RUN_CODECOV="true"
+````
+
+<a name="usage-ci-appveyor"></a>
+### AppVeyor
+Add the following to appveyor.yml file:
 
 ````yaml
 build: false
