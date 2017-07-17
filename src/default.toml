@@ -27,6 +27,16 @@ dependencies = [
     "post-ci-flow"
 ]
 
+[tasks.workspace-ci-flow]
+# CI task will run CI flow for each member and merge coverage reports
+dependencies = [
+    "pre-workspace-ci-flow",
+    "prepare-workspace-coverage",
+    "workspace-members-ci",
+    "workspace-coverage",
+    "post-workspace-ci-flow"
+]
+
 [tasks.dev-test-flow]
 # Development testing flow will first format the code, and than run cargo build and test
 dependencies = [
@@ -264,27 +274,58 @@ args = ["push"]
 
 [tasks.post-ci-flow]
 
+[tasks.pre-workspace-ci-flow]
+
+[tasks.post-workspace-ci-flow]
+
+[tasks.prepare-workspace-coverage]
+linux_alias = "kcov-install-debian"
+
+[tasks.workspace-members-ci]
+script = [
+    "export CARGO_MAKE_SKIP_CODECOV=\"true\"", #prevent codecov publish in member builds
+    "export CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY=\"${CARGO_MAKE_WORKING_DIRECTORY}/target\"",
+    "export CARGO_MAKE_COVERAGE_REPORT_DIRECTORY=\"${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/coverage\"", #output coverage data goes into workspace level
+    "cargo make ci-flow",
+    "unset CARGO_MAKE_COVERAGE_REPORT_DIRECTORY",
+    "unset CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY",
+    "unset CARGO_MAKE_SKIP_CODECOV"
+]
+
+[tasks.workspace-coverage]
+linux_alias = "codecov"
+
 [tasks.pre-coverage]
 
 [tasks.coverage]
 windows_alias = "empty"
 script = [
     "echo \"Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}\"",
+    "TARGET_DIRECTORY=\"target/coverage\"",
+    "if [ -n \"$CARGO_MAKE_COVERAGE_REPORT_DIRECTORY\" ]; then",
+    "TARGET_DIRECTORY=\"$CARGO_MAKE_COVERAGE_REPORT_DIRECTORY\"",
+    "mkdir -p ${TARGET_DIRECTORY}",
+    "else",
     "mkdir -p ./target/coverage",
-    "echo \"Running Unit Tests\"",
-    "for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*",
+    "fi",
+    "BINARY_DIRECTORY=target/debug/deps",
+    "if [ -n \"$CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY\" ]; then",
+    "BINARY_DIRECTORY=\"${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/debug/deps\"",
+    "fi",
+    "echo \"Running unit tests from directory: ${BINARY_DIRECTORY}\"",
+    "for file in ${BINARY_DIRECTORY}/${CARGO_MAKE_CRATE_FS_NAME}*",
     "do",
     "if \"$file\" ; then",
     "echo \"Running file: $file\"",
-    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
+    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"$TARGET_DIRECTORY\" \"$file\" || true",
     "fi",
     "done",
-    "echo \"Running Integration Tests\"",
-    "for file in target/debug/deps/test_*",
+    "echo \"Running integration tests from directory: ${BINARY_DIRECTORY}\"",
+    "for file in ${BINARY_DIRECTORY}/test_*",
     "do",
     "if \"$file\" ; then",
     "echo \"Running file: $file\"",
-    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"target/coverage\" \"$file\" || true",
+    "kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ \"$TARGET_DIRECTORY\" \"$file\" || true",
     "fi",
     "done"
 ]
@@ -303,7 +344,9 @@ windows_alias = "empty"
 script_runner = "bash"
 script = [
     "#!/usr/bin/env bash",
-    "bash <(curl -s https://codecov.io/bash)"
+    "if [ -z \"$CARGO_MAKE_SKIP_CODECOV\" ]; then",
+    "bash <(curl -s https://codecov.io/bash)",
+    "fi"
 ]
 
 [tasks.codecov-flow]
@@ -335,6 +378,8 @@ dependencies = [
 
 [tasks.kcov-install-debian.linux]
 script = [
+    "command -v kcov >/dev/null 2>&1 || {",
+    "if [ -n \"$KCOV_VERSION\" ]; then",
     "if [ \"$(grep -Ei 'debian|buntu|mint' /etc/*release)\" ]; then",
     "sudo apt-get update || true",
     "sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev",
@@ -348,5 +393,7 @@ script = [
     "sudo make install",
     "cd ../..",
     "rm -rf kcov-$KCOV_VERSION",
-    "fi"
+    "fi",
+    "fi",
+    "}"
 ]

@@ -480,6 +480,14 @@ env:
 
 You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/cargo-make/blob/master/.travis.yml)
 
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+````yaml
+script:
+  - cargo install --debug cargo-make
+  - cargo make workspace-ci-flow --no-workspace
+````
+
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
 Add the following to appveyor.yml file:
@@ -493,6 +501,16 @@ test_script:
 ````
 
 You can see full yaml file at: [appveyor.yml](https://github.com/sagiegurari/cargo-make/blob/master/appveyor.yml)
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+````yaml
+build: false
+
+test_script:
+  - cargo install --debug cargo-make
+  - cargo make workspace-ci-flow --no-workspace
+````
 
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
@@ -774,6 +792,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-17  | v0.3.28 | workspace level ci flow |
 | 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |
 | 2017-07-15  | v0.3.24 | Workspace support |
