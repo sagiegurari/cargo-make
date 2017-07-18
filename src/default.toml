@@ -31,7 +31,6 @@ dependencies = [
 # CI task will run CI flow for each member and merge coverage reports
 dependencies = [
     "pre-workspace-ci-flow",
-    "prepare-workspace-coverage",
     "workspace-members-ci",
     "workspace-coverage",
     "post-workspace-ci-flow"
@@ -278,9 +277,6 @@ args = ["push"]
 
 [tasks.post-workspace-ci-flow]
 
-[tasks.prepare-workspace-coverage]
-linux_alias = "kcov-install-debian"
-
 [tasks.workspace-members-ci]
 script = [
     "export CARGO_MAKE_SKIP_CODECOV=\"true\"", #prevent codecov publish in member builds
@@ -299,6 +295,26 @@ linux_alias = "codecov"
 
 [tasks.coverage]
 windows_alias = "empty"
+install_script = [
+    "command -v kcov >/dev/null 2>&1 || {",
+    "if [ -n \"$KCOV_VERSION\" ]; then",
+    "if [ \"$(grep -Ei 'debian|buntu|mint' /etc/*release)\" ]; then",
+    "sudo apt-get update || true",
+    "sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev",
+    "wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip",
+    "unzip v$KCOV_VERSION.zip",
+    "cd kcov-$KCOV_VERSION",
+    "mkdir build",
+    "cd ./build",
+    "cmake ..",
+    "make",
+    "sudo make install",
+    "cd ../..",
+    "rm -rf kcov-$KCOV_VERSION",
+    "fi",
+    "fi",
+    "}"
+]
 script = [
     "echo \"Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}\"",
     "TARGET_DIRECTORY=\"target/coverage\"",
@@ -357,43 +373,11 @@ dependencies = [
 ]
 
 [tasks.ci-coverage-flow]
-linux_alias = "travis-coverage-flow"
-
-[tasks.travis-coverage-flow]
+windows_alias = "empty"
 script = [
     "if [ \"$TRAVIS\" = \"true\" ]; then",
     "if [ \"$CARGO_MAKE_RUN_CODECOV\" = \"true\" ]; then",
-    "cargo make travis-codecov-flow",
+    "cargo make codecov-flow",
     "fi",
     "fi"
-]
-
-[tasks.travis-codecov-flow]
-dependencies = [
-    "kcov-install-debian",
-    "codecov-flow"
-]
-
-[tasks.kcov-install-debian]
-
-[tasks.kcov-install-debian.linux]
-script = [
-    "command -v kcov >/dev/null 2>&1 || {",
-    "if [ -n \"$KCOV_VERSION\" ]; then",
-    "if [ \"$(grep -Ei 'debian|buntu|mint' /etc/*release)\" ]; then",
-    "sudo apt-get update || true",
-    "sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev",
-    "wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip",
-    "unzip v$KCOV_VERSION.zip",
-    "cd kcov-$KCOV_VERSION",
-    "mkdir build",
-    "cd ./build",
-    "cmake ..",
-    "make",
-    "sudo make install",
-    "cd ../..",
-    "rm -rf kcov-$KCOV_VERSION",
-    "fi",
-    "fi",
-    "}"
 ]
