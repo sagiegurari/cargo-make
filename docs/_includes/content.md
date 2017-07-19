@@ -729,7 +729,7 @@ This prevents flow task names to conflict with single command task names and qui
 ## Badge
 If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.
 
-[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 Here are few snapshots:
 
@@ -737,14 +737,14 @@ Here are few snapshots:
 
 
 ````md
-[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 ````
 
 ### HTML
 
 ````html
 <a href="https://sagiegurari.github.io/cargo-make">
-  <img src="https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg" alt="Built with cargo-make">
+  <img src="https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg" alt="Built with cargo-make">
 </a>
 ````
 

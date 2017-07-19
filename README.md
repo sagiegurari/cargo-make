@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make) [![Build Status](https://travis-ci.org/sagiegurari/cargo-make.svg)](http://travis-ci.org/sagiegurari/cargo-make) [![Build status](https://ci.appveyor.com/api/projects/status/knyrs33tyjqgt06u?svg=true)](https://ci.appveyor.com/project/sagiegurari/cargo-make) [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make)<br>
 [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/sagiegurari/cargo-make.svg)](https://libraries.io/cargo/cargo-make) [![Documentation](https://docs.rs/cargo-make/badge.svg)](https://docs.rs/crate/cargo-make/) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make)<br>
-[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
 
@@ -760,7 +760,7 @@ This prevents flow task names to conflict with single command task names and qui
 ## Badge
 If you are using cargo-make in your project and want to display it in your project README or website, you can embed the "Built with cargo-make" badge.
 
-[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 Here are few snapshots:
 
@@ -768,14 +768,14 @@ Here are few snapshots:
 
 
 ````md
-[![Built with cargo-make](https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg)](https://sagiegurari.github.io/cargo-make)
+[![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 ````
 
 ### HTML
 
 ````html
 <a href="https://sagiegurari.github.io/cargo-make">
-  <img src="https://img.shields.io/badge/built%20with-cargo--make-e49d41.svg" alt="Built with cargo-make">
+  <img src="https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg" alt="Built with cargo-make">
 </a>
 ````
 
