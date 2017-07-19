@@ -134,6 +134,16 @@ pub fn setup_env(
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
 
+    let log_level = if logger.is_verbose_enabled() {
+        "verbose"
+    } else if logger.is_info_enabled() {
+        "info"
+    } else {
+        "error"
+    };
+
+    env::set_var("CARGO_MAKE_LOG_LEVEL", log_level);
+
     // load crate info
     setup_env_for_crate(&logger);
 

@@ -122,6 +122,45 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
 }
 
 #[test]
+fn setup_env_log_verbose() {
+    let logger = log::create("verbose");
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+
+    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
+
+    setup_env(&logger, &config, "setup_env_empty1");
+
+    let value = env::var("CARGO_MAKE_LOG_LEVEL");
+    assert_eq!(value.unwrap(), "verbose");
+}
+
+#[test]
+fn setup_env_log_info() {
+    let logger = log::create("info");
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+
+    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
+
+    setup_env(&logger, &config, "setup_env_empty1");
+
+    let value = env::var("CARGO_MAKE_LOG_LEVEL");
+    assert_eq!(value.unwrap(), "info");
+}
+
+#[test]
+fn setup_env_log_error() {
+    let logger = log::create("error");
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+
+    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
+
+    setup_env(&logger, &config, "setup_env_empty1");
+
+    let value = env::var("CARGO_MAKE_LOG_LEVEL");
+    assert_eq!(value.unwrap(), "error");
+}
+
+#[test]
 fn setup_env_for_git_repo_with_values() {
     let logger = log::create("error");
 

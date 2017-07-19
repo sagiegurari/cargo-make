@@ -282,10 +282,15 @@ script = [
     "export CARGO_MAKE_SKIP_CODECOV=\"true\"", #prevent codecov publish in member builds
     "export CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY=\"${CARGO_MAKE_WORKING_DIRECTORY}/target\"",
     "export CARGO_MAKE_COVERAGE_REPORT_DIRECTORY=\"${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/coverage\"", #output coverage data goes into workspace level
-    "cargo make ci-flow",
+    "cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} ci-flow",
     "unset CARGO_MAKE_COVERAGE_REPORT_DIRECTORY",
     "unset CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY",
     "unset CARGO_MAKE_SKIP_CODECOV"
+]
+
+[tasks.workspace-members-ci.windows]
+script = [
+    "cargo make --loglevel=%CARGO_MAKE_LOG_LEVEL% ci-flow"
 ]
 
 [tasks.workspace-coverage]
@@ -377,7 +382,7 @@ windows_alias = "empty"
 script = [
     "if [ \"$TRAVIS\" = \"true\" ]; then",
     "if [ \"$CARGO_MAKE_RUN_CODECOV\" = \"true\" ]; then",
-    "cargo make codecov-flow",
+    "cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} codecov-flow",
     "fi",
     "fi"
 ]
