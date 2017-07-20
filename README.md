@@ -648,6 +648,8 @@ pub struct ExternalConfig {
 
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
+    /// Task description
+    pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -793,7 +795,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-20  | v0.3.31 | Added --list-all-steps cli option |
+| 2017-07-20  | v0.3.32 | Added --list-all-steps cli option |
 | 2017-07-17  | v0.3.28 | workspace level ci flow |
 | 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |
