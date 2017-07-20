@@ -5,18 +5,19 @@ environment:
       target: x86_64-pc-windows-msvc
     - channel: stable
       target: i686-pc-windows-msvc
-    - channel: beta
-      target: x86_64-pc-windows-msvc
-    - channel: beta
-      target: i686-pc-windows-msvc
-    - channel: nightly
-      target: x86_64-pc-windows-msvc
-    - channel: nightly
-      target: i686-pc-windows-msvc
+    #- channel: beta
+    #  target: x86_64-pc-windows-msvc
+    #- channel: beta
+    #  target: i686-pc-windows-msvc
+    #- channel: nightly
+    #  target: x86_64-pc-windows-msvc
+    #- channel: nightly
+    #  target: i686-pc-windows-msvc
 
 install:
-  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
-  - rustup-init -yv --default-toolchain %channel% --default-host %target%
+  - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+  #- rustup-init.exe -yv --default-toolchain %channel% --default-host %target%
+  - rustup-init.exe -yv --default-host %target%
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
@@ -24,5 +25,7 @@ install:
 build: false
 
 test_script:
-  - cargo install --debug cargo-make
-  - cargo make ci-flow
+  #- cargo install --debug cargo-make
+  #- cargo make ci-flow
+  - cargo build
+  - cargo test
