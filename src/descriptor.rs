@@ -189,3 +189,14 @@ pub fn load(
 
     config
 }
+
+pub fn list_steps(config: &Config) {
+    for (key, value) in config.tasks.iter() {
+        let description = match value.description {
+            Some(ref value) => value,
+            None => "No Description.",
+        };
+
+        println!("{}: {} ", &key, &description);
+    }
+}

@@ -495,6 +495,47 @@
 <span id="450">450</span>
 <span id="451">451</span>
 <span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -513,8 +554,43 @@
 <span class="kw">use</span> <span class="ident">toml</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds CLI args</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CliArgs</span> {
+    <span class="doccomment">/// The external Makefile.toml path</span>
+    <span class="kw">pub</span> <span class="ident">build_file</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The task to invoke</span>
+    <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Log level name</span>
+    <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Current working directory</span>
+    <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Prevent workspace support</span>
+    <span class="kw">pub</span> <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Only print the execution plan</span>
+    <span class="kw">pub</span> <span class="ident">print_only</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// List all known steps</span>
+    <span class="kw">pub</span> <span class="ident">list_all_steps</span>: <span class="ident">bool</span>
+}
+
+<span class="kw">impl</span> <span class="ident">CliArgs</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CliArgs</span> {
+        <span class="ident">CliArgs</span> {
+            <span class="ident">build_file</span>: <span class="string">&quot;Makefile.toml&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">task</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">log_level</span>: <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
+            <span class="ident">disable_workspace</span>: <span class="bool-val">false</span>,
+            <span class="ident">print_only</span>: <span class="bool-val">false</span>,
+            <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
+    <span class="doccomment">/// Task description</span>
+    <span class="kw">pub</span> <span class="ident">description</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if true, the command/script of this task will not be invoked, dependencies however will be</span>
     <span class="kw">pub</span> <span class="ident">disabled</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build</span>
@@ -552,6 +628,7 @@
 <span class="kw">impl</span> <span class="ident">Task</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Task</span> {
         <span class="ident">Task</span> {
+            <span class="ident">description</span>: <span class="prelude-val">None</span>,
             <span class="ident">disabled</span>: <span class="prelude-val">None</span>,
             <span class="ident">force</span>: <span class="prelude-val">None</span>,
             <span class="ident">alias</span>: <span class="prelude-val">None</span>,
@@ -575,6 +652,10 @@
         <span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>,
         <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>,
     ) {
+        <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">description</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">description</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">description</span>.<span class="ident">clone</span>();
+        }
+
         <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">disabled</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">clone</span>();
         }
@@ -669,6 +750,7 @@
                 <span class="ident">override_task</span>.<span class="ident">extend</span>(<span class="self">self</span>);
 
                 <span class="ident">Task</span> {
+                    <span class="ident">description</span>: <span class="self">self</span>.<span class="ident">description</span>.<span class="ident">clone</span>(),
                     <span class="ident">disabled</span>: <span class="ident">override_task</span>.<span class="ident">disabled</span>.<span class="ident">clone</span>(),
                     <span class="ident">force</span>: <span class="ident">override_task</span>.<span class="ident">force</span>.<span class="ident">clone</span>(),
                     <span class="ident">alias</span>: <span class="prelude-val">None</span>,

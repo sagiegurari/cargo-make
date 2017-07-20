@@ -12,6 +12,7 @@ use descriptor;
 use environment;
 use log;
 use runner;
+use types::CliArgs;
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -21,20 +22,20 @@ static DEFAULT_TOML: &str = "Makefile.toml";
 static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
 
-fn run(
-    build_file: &str,
-    task: &str,
-    log_level: &str,
-    cwd: Option<&str>,
-    disable_workspace: bool,
-    print_only: bool,
-) {
-    let logger = log::create(log_level);
+fn run(cli_args: CliArgs) {
+    let logger = log::create(&cli_args.log_level);
 
     logger.info::<()>("cargo-", &[&NAME, " ", &VERSION], None);
     logger.verbose::<()>("Written By ", &[&AUTHOR], None);
 
+    let cwd = match cli_args.cwd {
+        Some(ref value) => Some(value.as_ref()),
+        None => None,
+    };
     environment::setup_cwd(&logger, cwd);
+
+    let build_file = &cli_args.build_file;
+    let task = &cli_args.task;
 
     logger.info::<()>("Using Build File: ", &[build_file], None);
     logger.info::<()>("Task: ", &[task], None);
@@ -43,10 +44,12 @@ fn run(
 
     environment::setup_env(&logger, &config, &task);
 
-    if print_only {
-        runner::print(&logger, &config, &task, disable_workspace);
+    if cli_args.list_all_steps {
+        descriptor::list_steps(&config);
+    } else if cli_args.print_only {
+        runner::print(&logger, &config, &task, cli_args.disable_workspace);
     } else {
-        runner::run(&logger, &config, &task, disable_workspace);
+        runner::run(&logger, &config, &task, cli_args.disable_workspace);
     }
 }
 
@@ -54,21 +57,28 @@ fn run(
 fn run_for_args(matches: ArgMatches) {
     match matches.subcommand_matches(NAME) {
         Some(cmd_matches) => {
-            let build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML);
-            let mut task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
-            task = cmd_matches.value_of("TASK").unwrap_or(task);
-            let cwd = cmd_matches.value_of("cwd");
+            let mut cli_args = CliArgs::new();
 
-            let log_level = if cmd_matches.is_present("v") {
-                "verbose"
-            } else {
-                cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL)
+            cli_args.build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML).to_string();
+
+            let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
+            cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
+            cli_args.cwd = match cmd_matches.value_of("cwd") {
+                Some(value) => Some(value.to_string()),
+                None => None,
             };
 
-            let print_only = cmd_matches.is_present("print-steps");
-            let disable_workspace = cmd_matches.is_present("no-workspace");
+            cli_args.log_level = if cmd_matches.is_present("v") {
+                "verbose".to_string()
+            } else {
+                cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL).to_string()
+            };
 
-            run(build_file, task, log_level, cwd, disable_workspace, print_only);
+            cli_args.print_only = cmd_matches.is_present("print-steps");
+            cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
+            cli_args.list_all_steps = cmd_matches.is_present("list-steps");
+
+            run(cli_args);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
     }
@@ -112,6 +122,7 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             .arg(Arg::with_name("print-steps").long("--print-steps").help(
                 "Only prints the steps of the build in the order they will be invoked but without invoking them"
             ))
+            .arg(Arg::with_name("list-steps").long("--list-all-steps").help("Lists all known steps"))
             .arg(Arg::with_name("TASK"))
     )
 }

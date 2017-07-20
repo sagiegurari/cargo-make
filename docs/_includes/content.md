@@ -576,11 +576,12 @@ USAGE:
     cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
-    -h, --help            Prints help information
-        --no-workspace    Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps     Only prints the steps of the build in the order they will be invoked but without invoking them
-    -v, --verbose         Sets the log level to verbose (shorthand for --loglevel verbose)
-    -V, --version         Prints version information
+    -h, --help              Prints help information
+        --list-all-steps    Lists all known steps
+        --no-workspace      Disable workspace support (tasks are triggered on workspace and not on members)
+        --print-steps       Only prints the steps of the build in the order they will be invoked but without invoking them
+    -v, --verbose           Sets the log level to verbose (shorthand for --loglevel verbose)
+    -V, --version           Prints version information
 
 OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
@@ -761,7 +762,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-20  | v0.3.30 | Maintenance |
+| 2017-07-20  | v0.3.31 | Added --list-all-steps cli option |
 | 2017-07-17  | v0.3.28 | workspace level ci flow |
 | 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |

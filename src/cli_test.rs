@@ -1,20 +1,58 @@
 use super::*;
 use std::env;
 use std::path::Path;
+use types::CliArgs;
 
 #[test]
 fn run_empty_task() {
-    run("bad.toml", "empty", "error", None, false, false);
+    run(CliArgs {
+        build_file: "bad.toml".to_string(),
+        task: "empty".to_string(),
+        log_level: "error".to_string(),
+        cwd: None,
+        disable_workspace: false,
+        print_only: false,
+        list_all_steps: false
+    });
 }
 
 #[test]
 fn print_empty_task() {
-    run("bad.toml", "empty", "error", None, false, true);
+    run(CliArgs {
+        build_file: "bad.toml".to_string(),
+        task: "empty".to_string(),
+        log_level: "error".to_string(),
+        cwd: None,
+        disable_workspace: false,
+        print_only: true,
+        list_all_steps: false
+    });
+}
+
+#[test]
+fn list_empty_task() {
+    run(CliArgs {
+        build_file: "bad.toml".to_string(),
+        task: "empty".to_string(),
+        log_level: "error".to_string(),
+        cwd: None,
+        disable_workspace: false,
+        print_only: false,
+        list_all_steps: true
+    });
 }
 
 #[test]
 fn run_file_and_task() {
-    run("./examples/dependencies.toml", "A", "error", None, false, false);
+    run(CliArgs {
+        build_file: "./examples/dependencies.toml".to_string(),
+        task: "A".to_string(),
+        log_level: "error".to_string(),
+        cwd: None,
+        disable_workspace: false,
+        print_only: false,
+        list_all_steps: false
+    });
 }
 
 #[test]
@@ -22,7 +60,15 @@ fn run_cwd_with_file() {
     let directory = Path::new("./examples");
     assert!(env::set_current_dir(&directory).is_ok());
 
-    run("./examples/dependencies.toml", "A", "error", Some(".."), false, false);
+    run(CliArgs {
+        build_file: "./examples/dependencies.toml".to_string(),
+        task: "A".to_string(),
+        log_level: "error".to_string(),
+        cwd: Some("..".to_string()),
+        disable_workspace: false,
+        print_only: false,
+        list_all_steps: false
+    });
 }
 
 #[test]
@@ -31,7 +77,15 @@ fn run_cwd_task_not_found() {
     let directory = Path::new("./examples");
     assert!(env::set_current_dir(&directory).is_ok());
 
-    run("./dependencies.toml", "A", "error", Some(".."), false, false);
+    run(CliArgs {
+        build_file: "./dependencies.toml".to_string(),
+        task: "A".to_string(),
+        log_level: "error".to_string(),
+        cwd: Some("..".to_string()),
+        disable_workspace: false,
+        print_only: false,
+        list_all_steps: false
+    });
 }
 
 #[test]

@@ -15,8 +15,43 @@ use std::path::Path;
 use toml;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds CLI args
+pub struct CliArgs {
+    /// The external Makefile.toml path
+    pub build_file: String,
+    /// The task to invoke
+    pub task: String,
+    /// Log level name
+    pub log_level: String,
+    /// Current working directory
+    pub cwd: Option<String>,
+    /// Prevent workspace support
+    pub disable_workspace: bool,
+    /// Only print the execution plan
+    pub print_only: bool,
+    /// List all known steps
+    pub list_all_steps: bool
+}
+
+impl CliArgs {
+    pub fn new() -> CliArgs {
+        CliArgs {
+            build_file: "Makefile.toml".to_string(),
+            task: "default".to_string(),
+            log_level: "info".to_string(),
+            cwd: None,
+            disable_workspace: false,
+            print_only: false,
+            list_all_steps: false
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
+    /// Task description
+    pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -54,6 +89,7 @@ pub struct Task {
 impl Task {
     pub fn new() -> Task {
         Task {
+            description: None,
             disabled: None,
             force: None,
             alias: None,
@@ -77,6 +113,10 @@ impl Task {
         self: &mut Task,
         task: &Task,
     ) {
+        if task.description.is_some() {
+            self.description = task.description.clone();
+        }
+
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
         }
@@ -171,6 +211,7 @@ impl Task {
                 override_task.extend(self);
 
                 Task {
+                    description: self.description.clone(),
                     disabled: override_task.disabled.clone(),
                     force: override_task.force.clone(),
                     alias: None,

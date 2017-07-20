@@ -2,12 +2,26 @@ use super::*;
 use log;
 
 #[test]
+fn cli_args_new() {
+    let cli_args = CliArgs::new();
+
+    assert_eq!(cli_args.build_file, "Makefile.toml");
+    assert_eq!(cli_args.task, "default");
+    assert_eq!(cli_args.log_level, "info");
+    assert!(cli_args.cwd.is_none());
+    assert!(!cli_args.disable_workspace);
+    assert!(!cli_args.print_only);
+    assert!(!cli_args.list_all_steps);
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 
     assert!(task.install_crate.is_none());
     assert!(task.command.is_none());
     assert!(task.disabled.is_none());
+    assert!(task.description.is_none());
     assert!(task.force.is_none());
     assert!(task.alias.is_none());
     assert!(task.linux_alias.is_none());
@@ -64,6 +78,7 @@ fn task_extend_both_have_misc_data() {
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
         command: None,
+        description: None,
         disabled: Some(true),
         force: Some(true),
         alias: Some("alias2".to_string()),
@@ -84,6 +99,7 @@ fn task_extend_both_have_misc_data() {
 
     assert!(base.install_crate.is_some());
     assert!(base.command.is_some());
+    assert!(base.description.is_none());
     assert!(base.disabled.is_some());
     assert!(base.force.is_some());
     assert!(base.alias.is_some());
@@ -112,6 +128,7 @@ fn task_extend_extended_have_all_fields() {
     let mut base = Task {
         install_crate: Some("my crate1".to_string()),
         command: Some("test1".to_string()),
+        description: None,
         disabled: Some(false),
         force: Some(true),
         alias: None,
@@ -130,6 +147,7 @@ fn task_extend_extended_have_all_fields() {
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
         command: Some("test2".to_string()),
+        description: Some("description".to_string()),
         disabled: Some(true),
         force: Some(false),
         alias: Some("alias2".to_string()),
@@ -183,6 +201,7 @@ fn task_extend_extended_have_all_fields() {
 
     assert!(base.install_crate.is_some());
     assert!(base.command.is_some());
+    assert!(base.description.is_some());
     assert!(base.disabled.is_some());
     assert!(base.force.is_some());
     assert!(base.alias.is_some());
@@ -200,6 +219,7 @@ fn task_extend_extended_have_all_fields() {
 
     assert_eq!(base.install_crate.unwrap(), "my crate2");
     assert_eq!(base.command.unwrap(), "test2");
+    assert_eq!(base.description.unwrap(), "description");
     assert!(base.disabled.unwrap());
     assert!(!base.force.unwrap());
     assert_eq!(base.alias.unwrap(), "alias2");
@@ -267,6 +287,7 @@ fn task_get_normalized_task_undefined() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
+        description: Some("description".to_string()),
         linux: None,
         windows: None,
         mac: None
@@ -287,12 +308,14 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
+    assert!(normalized_task.description.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
     assert_eq!(normalized_task.install_crate.unwrap(), "install_crate");
     assert_eq!(normalized_task.command.unwrap(), "command");
+    assert_eq!(normalized_task.description.unwrap(), "description");
     assert!(!normalized_task.disabled.unwrap());
     assert!(!normalized_task.force.unwrap_or(false));
     assert_eq!(normalized_task.alias.unwrap(), "alias");
@@ -316,6 +339,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         mac_alias: Some("bad".to_string()),
         install_crate: Some("install_crate".to_string()),
         command: Some("command".to_string()),
+        description: Some("description".to_string()),
         disabled: Some(false),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -343,6 +367,7 @@ fn task_get_normalized_task_with_override_no_clear() {
 
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_some());
+    assert!(normalized_task.description.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.alias.is_none());
@@ -360,6 +385,7 @@ fn task_get_normalized_task_with_override_no_clear() {
 
     assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
+    assert_eq!(normalized_task.description.unwrap(), "description");
     assert!(normalized_task.disabled.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
@@ -379,6 +405,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         mac_alias: Some("bad".to_string()),
         install_crate: Some("install_crate".to_string()),
         command: Some("command".to_string()),
+        description: Some("description".to_string()),
         disabled: Some(false),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -406,6 +433,7 @@ fn task_get_normalized_task_with_override_clear_false() {
 
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_some());
+    assert!(normalized_task.description.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.alias.is_none());
@@ -423,6 +451,7 @@ fn task_get_normalized_task_with_override_clear_false() {
 
     assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
+    assert_eq!(normalized_task.description.unwrap(), "description");
     assert!(normalized_task.disabled.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
@@ -449,6 +478,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
+        description: None,
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
             install_crate: None,
@@ -480,6 +510,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.dependencies.is_some());
+    assert!(normalized_task.description.is_none());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -512,6 +543,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         dependencies: Some(vec!["1".to_string()]),
+        description: Some("description".to_string()),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some("linux_crate".to_string()),
@@ -543,11 +575,13 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.script.is_none());
     assert!(normalized_task.script_runner.is_none());
     assert!(normalized_task.dependencies.is_none());
+    assert!(normalized_task.description.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
     assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
+    assert_eq!(normalized_task.description.unwrap(), "description");
 }
 
 #[test]
