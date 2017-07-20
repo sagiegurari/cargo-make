@@ -792,7 +792,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-18  | v0.3.29 | updates to coverage and workspace ci tasks |
+| 2017-07-20  | v0.3.30 | Maintenance |
 | 2017-07-17  | v0.3.28 | workspace level ci flow |
 | 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |
 | 2017-07-16  | v0.3.25 | New --no-workspace cli arg |

@@ -1,7 +1,5 @@
 language: rust
 sudo: true
-dist: trusty
-group: edge
 rust:
   - stable
   - beta
