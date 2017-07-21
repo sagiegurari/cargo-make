@@ -74,7 +74,7 @@ fn create_script(
     };
 
     if !cfg!(windows) {
-        mut_script_lines.insert(insert_index, "set -e".to_string());
+        mut_script_lines.insert(insert_index, "set -xe".to_string());
         insert_index = insert_index + 1;
     }
     mut_script_lines.insert(insert_index, cd_command);

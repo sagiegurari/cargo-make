@@ -12,7 +12,7 @@ fn create_script_no_shebang() {
     let cwd = current_dir().unwrap();
     let mut expected_script = "".to_string();
     if !cfg!(windows) {
-        expected_script.push_str("set -e\n");
+        expected_script.push_str("set -xe\n");
     }
     expected_script.push_str("cd ");
     expected_script.push_str(cwd.to_str().unwrap());
@@ -31,7 +31,7 @@ fn create_script_with_shebang() {
     let cwd = current_dir().unwrap();
     let mut expected_script = "#!/bin/bash\n".to_string();
     if !cfg!(windows) {
-        expected_script.push_str("set -e\n");
+        expected_script.push_str("set -xe\n");
     }
     expected_script.push_str("cd ");
     expected_script.push_str(cwd.to_str().unwrap());

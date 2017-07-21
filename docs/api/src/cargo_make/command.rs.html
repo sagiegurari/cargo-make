@@ -328,7 +328,7 @@
     };
 
     <span class="kw">if</span> <span class="op">!</span><span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-        <span class="ident">mut_script_lines</span>.<span class="ident">insert</span>(<span class="ident">insert_index</span>, <span class="string">&quot;set -e&quot;</span>.<span class="ident">to_string</span>());
+        <span class="ident">mut_script_lines</span>.<span class="ident">insert</span>(<span class="ident">insert_index</span>, <span class="string">&quot;set -xe&quot;</span>.<span class="ident">to_string</span>());
         <span class="ident">insert_index</span> <span class="op">=</span> <span class="ident">insert_index</span> <span class="op">+</span> <span class="number">1</span>;
     }
     <span class="ident">mut_script_lines</span>.<span class="ident">insert</span>(<span class="ident">insert_index</span>, <span class="ident">cd_command</span>);
