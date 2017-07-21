@@ -419,6 +419,12 @@ pub struct Workspace {
     pub members: Option<Vec<String>>
 }
 
+impl Workspace {
+    pub fn new() -> Workspace {
+        Workspace { members: None }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {

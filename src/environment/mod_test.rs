@@ -65,6 +65,8 @@ fn setup_env_for_crate_load_toml_found() {
     env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_REPOSITORY", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
     setup_env_for_crate(&logger);
 
@@ -76,6 +78,8 @@ fn setup_env_for_crate_load_toml_found() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "https://github.com/sagiegurari/cargo-make.git");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 }
 
 #[test]
@@ -90,6 +94,8 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_REPOSITORY", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
     env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
     assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() == "EMPTY");
@@ -108,6 +114,8 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 
     setup_env_for_crate(&logger);
 
@@ -119,6 +127,39 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "https://sagiegurari.github.io/cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "https://github.com/sagiegurari/cargo-make.git");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
+}
+
+#[test]
+fn setup_env_for_crate_workspace() {
+    let logger = log::create("error");
+
+    env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_LICENSE", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_REPOSITORY", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
+    env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
+
+    setup_cwd(&logger, Some("examples/workspace"));
+    setup_env_for_crate(&logger);
+    setup_cwd(&logger, Some("../.."));
+
+    assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "TRUE");
+    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "member1,member2");
 }
 
 #[test]

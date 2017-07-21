@@ -14,7 +14,7 @@ use self::rustinfo::Channel;
 use log::Logger;
 use std::env;
 use std::path::PathBuf;
-use types::{Config, CrateInfo, PackageInfo};
+use types::{Config, CrateInfo, PackageInfo, Workspace};
 
 /// Updates the env for the current execution based on the descriptor.
 fn set_env(
@@ -65,6 +65,18 @@ fn setup_env_for_crate(logger: &Logger) {
     if package_info.repository.is_some() {
         env::set_var("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository.unwrap());
     }
+
+    let is_workspace_var_value = if crate_info.workspace.is_none() {
+        "FALSE"
+    } else {
+        "TRUE"
+    };
+    env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
+
+    let workspace = crate_info.workspace.unwrap_or(Workspace::new());
+    let members = workspace.members.unwrap_or(vec![]);
+    let members_string = members.join(",");
+    env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
 }
 
 fn setup_env_for_git_repo(logger: &Logger) {

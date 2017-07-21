@@ -437,6 +437,8 @@ In addition, cargo-make will also add few environment variables that can be help
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
+* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -795,6 +797,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-21  | v0.3.33 | Added more environment variables for workspace support |
 | 2017-07-20  | v0.3.32 | Added --list-all-steps cli option |
 | 2017-07-17  | v0.3.28 | workspace level ci flow |
 | 2017-07-16  | v0.3.27 | cargo make ci-flow on travis now automatically runs code coverage and uploads to codecov |

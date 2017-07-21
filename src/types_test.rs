@@ -650,3 +650,10 @@ fn crate_info_load() {
     let package = crate_info.package.unwrap();
     assert_eq!(package.name.unwrap(), "cargo-make");
 }
+
+#[test]
+fn workspace_new() {
+    let workspace = Workspace::new();
+
+    assert!(workspace.members.is_none());
+}
