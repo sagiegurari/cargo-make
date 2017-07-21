@@ -12,6 +12,7 @@
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
     * [Predefined Flows](#usage-predefined-flows)
+        * [Coverage](#usage-predefined-flows-coverage)
     * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)

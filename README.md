@@ -19,6 +19,7 @@
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
     * [Predefined Flows](#usage-predefined-flows)
+        * [Coverage](#usage-predefined-flows-coverage)
     * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
@@ -523,8 +524,44 @@ The following are some of the main flows that can be used without any need of an
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **publish-flow** - Cleans old target directory and publishes the project.
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
-* **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows).
+* **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows). By default cargo-make uses kcov for code coverage, however additional unsupported implementations are defined.
 * **codecov-flow** - Runs the coverage-flow and uploads the coverage results to codecov (not supported on windows).
+
+<a name="usage-predefined-flows-coverage"></a>
+#### Coverage
+cargo-make has built in support for multiple coverage tasks.<br>
+Switching between them without modifying the flows is done by changing the main coverage task alias.
+
+Currently the main coverage task is defined as follows:
+
+````toml
+[tasks.coverage]
+alias = "coverage-kcov"
+````
+
+To switch to another provider simply change the alias to that specific task name, for example if we would like to use the already defined tarpaulin provider:
+
+````toml
+[tasks.coverage]
+alias = "coverage-tarpaulin"
+````
+
+You can run:
+
+````sh
+cargo make --list-all-steps | grep "coverage-"
+````
+
+To view all currently supported providers. Example output:
+
+````console
+ci-coverage-flow: No Description. 
+coverage-tarpaulin: Runs coverage using tarpaulin rust crate (linux only) 
+coverage-flow: Runs the full coverage flow. 
+coverage-kcov: Installs (if missing) and runs coverage using kcov (not supported on windows) 
+````
+
+All built in coverage providers are supported by their authors and not by cargo-make.
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
@@ -797,6 +834,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-21  | v0.3.34 | Added coverage-tarpaulin task |
 | 2017-07-21  | v0.3.33 | Added more environment variables for workspace support |
 | 2017-07-20  | v0.3.32 | Added --list-all-steps cli option |
 | 2017-07-17  | v0.3.28 | workspace level ci flow |

@@ -302,6 +302,10 @@ linux_alias = "codecov"
 [tasks.pre-coverage]
 
 [tasks.coverage]
+alias = "coverage-kcov"
+
+[tasks.coverage-kcov]
+description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 windows_alias = "empty"
 install_script = [
     "command -v kcov >/dev/null 2>&1 || {",
@@ -354,9 +358,18 @@ script = [
     "done"
 ]
 
+[tasks.coverage-tarpaulin]
+description = "Runs coverage using tarpaulin rust crate (linux only)"
+
+[tasks.coverage-tarpaulin.linux]
+install_crate = "cargo-tarpaulin"
+command = "cargo"
+args = ["tarpaulin"]
+
 [tasks.post-coverage]
 
 [tasks.coverage-flow]
+description = "Runs the full coverage flow."
 dependencies = [
     "pre-coverage",
     "coverage",
@@ -374,6 +387,7 @@ script = [
 ]
 
 [tasks.codecov-flow]
+description = "Runs the full coverage flow and uploads the results to codecov."
 windows_alias = "empty"
 dependencies = [
     "coverage-flow",

@@ -1,4 +1,8 @@
-os: Previous Visual Studio 2015
+os: Visual Studio 2015
+
+init:
+  - ps: Disable-NetFirewallRule -DisplayName 'Core Networking - Group Policy (LSASS-Out)'
+
 environment:
   matrix:
     - channel: stable
