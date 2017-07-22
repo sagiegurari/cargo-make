@@ -834,7 +834,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-21  | v0.3.35 | Maintenance |
+| 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
 | 2017-07-21  | v0.3.34 | Added coverage-tarpaulin task |
 | 2017-07-21  | v0.3.33 | Added more environment variables for workspace support |
 | 2017-07-20  | v0.3.32 | Added --list-all-steps cli option |
