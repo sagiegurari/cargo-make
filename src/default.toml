@@ -381,11 +381,16 @@ windows_alias = "empty"
 install_script = [
 '''
 command -v lcov >/dev/null 2>&1 || {
-    git clone https://github.com/linux-test-project/lcov.git
-    cd lcov
-    sudo make install
-    cd ..
-    rm -Rf ./lcov
+    if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        sudo apt-get update || true
+        sudo apt-get install -y clang
+        
+        git clone https://github.com/linux-test-project/lcov.git
+        cd lcov
+        sudo make install
+        cd ..
+        rm -Rf ./lcov
+    fi
 }
 '''
 ]
