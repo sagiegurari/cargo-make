@@ -44,9 +44,30 @@ fn create_script_with_shebang() {
 
 #[test]
 #[should_panic]
-fn validate_exit_code_error() {
+fn validate_exit_code_unable_to_fetch() {
     let logger = log::create("error");
-    validate_exit_code(Err(Error::new(ErrorKind::Other, "test")), &logger);
+    validate_exit_code(-1, &logger);
+}
+
+#[test]
+#[should_panic]
+fn validate_exit_code_not_zero() {
+    let logger = log::create("error");
+    validate_exit_code(1, &logger);
+}
+
+
+#[test]
+fn validate_exit_code_zero() {
+    let logger = log::create("error");
+    validate_exit_code(0, &logger);
+}
+
+#[test]
+#[should_panic]
+fn get_exit_code_error() {
+    let logger = log::create("error");
+    get_exit_code(Err(Error::new(ErrorKind::Other, "test")), &logger, false);
 }
 
 #[test]

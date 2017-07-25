@@ -454,11 +454,16 @@ dependencies = [
 [tasks.codecov]
 windows_alias = "empty"
 script_runner = "bash"
-script = [
+condition_script = [
     "#!/usr/bin/env bash",
     "if [ -z \"$CARGO_MAKE_SKIP_CODECOV\" ]; then",
-    "bash <(curl -s https://codecov.io/bash)",
-    "fi"
+    "exit 0",
+    "fi",
+    "exit 1"
+]
+script = [
+    "#!/usr/bin/env bash",
+    "bash <(curl -s https://codecov.io/bash)"
 ]
 
 [tasks.codecov-flow]
@@ -471,12 +476,17 @@ dependencies = [
 
 [tasks.ci-coverage-flow]
 windows_alias = "empty"
-script = [
+condition_script = [
 '''
 if [ "$TRAVIS" = "true" ]; then
     if [ "$CARGO_MAKE_RUN_CODECOV" = "true" ]; then
-        cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} codecov-flow
+        exit 0
     fi
 fi
+
+exit 1
 '''
+]
+script = [
+    "cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} codecov-flow"
 ]

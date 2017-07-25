@@ -60,25 +60,27 @@ pub fn load(logger: &Logger) -> RustInfo {
 
     match result {
         Ok(output) => {
-            command::validate_exit_code(Ok(output.status), logger);
+            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
 
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let parts: Vec<&str> = stdout.split(' ').collect();
+            if exit_code == 0 {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let parts: Vec<&str> = stdout.split(' ').collect();
 
-            if (parts.len() >= 3) && (parts[0] == "rustc") {
-                let version_part = parts[1];
+                if (parts.len() >= 3) && (parts[0] == "rustc") {
+                    let version_part = parts[1];
 
-                let version_parts: Vec<&str> = version_part.split('-').collect();
+                    let version_parts: Vec<&str> = version_part.split('-').collect();
 
-                if version_parts.len() > 0 {
-                    rust_info.version = Some(version_parts[0].to_string());
+                    if version_parts.len() > 0 {
+                        rust_info.version = Some(version_parts[0].to_string());
 
-                    if version_parts.len() == 1 {
-                        rust_info.channel = Some(Channel::Stable);
-                    } else if version_parts[1].contains("beta") {
-                        rust_info.channel = Some(Channel::Beta);
-                    } else if version_parts[1].contains("nightly") {
-                        rust_info.channel = Some(Channel::Nightly);
+                        if version_parts.len() == 1 {
+                            rust_info.channel = Some(Channel::Stable);
+                        } else if version_parts[1].contains("beta") {
+                            rust_info.channel = Some(Channel::Beta);
+                        } else if version_parts[1].contains("nightly") {
+                            rust_info.channel = Some(Channel::Nightly);
+                        }
                     }
                 }
             }
@@ -90,29 +92,31 @@ pub fn load(logger: &Logger) -> RustInfo {
 
     match result {
         Ok(output) => {
-            command::validate_exit_code(Ok(output.status), logger);
+            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
 
-            let mut values = HashMap::<String, String>::new();
+            if exit_code == 0 {
+                let mut values = HashMap::<String, String>::new();
 
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let lines: Vec<&str> = stdout.split('\n').collect();
-            for mut line in lines {
-                line = line.trim();
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let lines: Vec<&str> = stdout.split('\n').collect();
+                for mut line in lines {
+                    line = line.trim();
 
-                logger.verbose::<()>("Checking: ", &[&line], None);
+                    logger.verbose::<()>("Checking: ", &[&line], None);
 
-                if line.contains("=") {
-                    let parts: Vec<&str> = line.split('=').collect();
-                    let value = str::replace(parts[1], "\"", "");
-                    values.insert(parts[0].to_string(), value.to_string());
+                    if line.contains("=") {
+                        let parts: Vec<&str> = line.split('=').collect();
+                        let value = str::replace(parts[1], "\"", "");
+                        values.insert(parts[0].to_string(), value.to_string());
+                    }
                 }
-            }
 
-            rust_info.target_arch = Some(values.remove("target_arch").unwrap_or("unknown".to_string()));
-            rust_info.target_env = Some(values.remove("target_env").unwrap_or("unknown".to_string()));
-            rust_info.target_os = Some(values.remove("target_os").unwrap_or("unknown".to_string()));
-            rust_info.target_pointer_width = Some(values.remove("target_pointer_width").unwrap_or("unknown".to_string()));
-            rust_info.target_vendor = Some(values.remove("target_vendor").unwrap_or("unknown".to_string()));
+                rust_info.target_arch = Some(values.remove("target_arch").unwrap_or("unknown".to_string()));
+                rust_info.target_env = Some(values.remove("target_env").unwrap_or("unknown".to_string()));
+                rust_info.target_os = Some(values.remove("target_os").unwrap_or("unknown".to_string()));
+                rust_info.target_pointer_width = Some(values.remove("target_pointer_width").unwrap_or("unknown".to_string()));
+                rust_info.target_vendor = Some(values.remove("target_vendor").unwrap_or("unknown".to_string()));
+            }
         }
         Err(error) => logger.info("Error while running rustc --version command.: ", &[], Some(&error)),
     };

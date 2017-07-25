@@ -426,6 +426,25 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the give config user.name key.
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the give config user.email key.
 
+<a name="usage-conditions"></a>
+### Conditions
+Condition scripts allow you to evaluate at runtime if to run a specific task or not.<br>
+These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.<br>
+The task dependencies however are not affected by parent task condition outcome.
+
+Below is an example of a condition script that always returns a non zero value, in which case the command is never executed:
+
+````toml
+[tasks.never]
+condition_script = [
+    "exit 1"
+]
+command = "cargo"
+args = ["build"]
+````
+
+Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific environment variable is defined.
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
@@ -659,6 +678,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
+    pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
@@ -697,6 +718,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
+    pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
@@ -802,6 +825,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
 | 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
 | 2017-07-21  | v0.3.34 | Added coverage-tarpaulin task |
 | 2017-07-21  | v0.3.33 | Added more environment variables for workspace support |

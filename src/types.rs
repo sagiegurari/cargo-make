@@ -54,6 +54,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
+    pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// if defined, task points to another task and all other properties are ignored
@@ -91,6 +93,7 @@ impl Task {
         Task {
             description: None,
             disabled: None,
+            condition_script: None,
             force: None,
             alias: None,
             linux_alias: None,
@@ -119,6 +122,10 @@ impl Task {
 
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        }
+
+        if task.condition_script.is_some() {
+            self.condition_script = task.condition_script.clone();
         }
 
         if task.force.is_some() {
@@ -213,6 +220,7 @@ impl Task {
                 Task {
                     description: self.description.clone(),
                     disabled: override_task.disabled.clone(),
+                    condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
                     alias: None,
                     linux_alias: None,
@@ -271,6 +279,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
+    pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// if defined, the provided crate will be installed (if needed) before running the task
@@ -302,6 +312,10 @@ impl PlatformOverrideTask {
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
                 self.disabled = task.disabled.clone();
+            }
+
+            if self.condition_script.is_none() && task.condition_script.is_some() {
+                self.condition_script = task.condition_script.clone();
             }
 
             if self.force.is_none() && task.force.is_some() {

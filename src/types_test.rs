@@ -21,6 +21,7 @@ fn task_new() {
     assert!(task.install_crate.is_none());
     assert!(task.command.is_none());
     assert!(task.disabled.is_none());
+    assert!(task.condition_script.is_none());
     assert!(task.description.is_none());
     assert!(task.force.is_none());
     assert!(task.alias.is_none());
@@ -80,6 +81,7 @@ fn task_extend_both_have_misc_data() {
         command: None,
         description: None,
         disabled: Some(true),
+        condition_script: None,
         force: Some(true),
         alias: Some("alias2".to_string()),
         linux_alias: None,
@@ -101,6 +103,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.command.is_some());
     assert!(base.description.is_none());
     assert!(base.disabled.is_some());
+    assert!(base.condition_script.is_none());
     assert!(base.force.is_some());
     assert!(base.alias.is_some());
     assert!(base.linux_alias.is_none());
@@ -130,6 +133,7 @@ fn task_extend_extended_have_all_fields() {
         command: Some("test1".to_string()),
         description: None,
         disabled: Some(false),
+        condition_script: None,
         force: Some(true),
         alias: None,
         linux_alias: None,
@@ -149,6 +153,7 @@ fn task_extend_extended_have_all_fields() {
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
         disabled: Some(true),
+        condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
         alias: Some("alias2".to_string()),
         linux_alias: Some("linux".to_string()),
@@ -164,6 +169,7 @@ fn task_extend_extended_have_all_fields() {
             install_crate: Some("my crate2".to_string()),
             command: Some("test2".to_string()),
             disabled: Some(true),
+            condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
@@ -176,6 +182,7 @@ fn task_extend_extended_have_all_fields() {
             install_crate: Some("my crate2".to_string()),
             command: Some("test2".to_string()),
             disabled: Some(true),
+            condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
@@ -188,6 +195,7 @@ fn task_extend_extended_have_all_fields() {
             install_crate: Some("my crate2".to_string()),
             command: Some("test2".to_string()),
             disabled: Some(true),
+            condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
@@ -203,6 +211,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.command.is_some());
     assert!(base.description.is_some());
     assert!(base.disabled.is_some());
+    assert!(base.condition_script.is_some());
     assert!(base.force.is_some());
     assert!(base.alias.is_some());
     assert!(base.linux_alias.is_some());
@@ -221,6 +230,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.command.unwrap(), "test2");
     assert_eq!(base.description.unwrap(), "description");
     assert!(base.disabled.unwrap());
+    assert_eq!(base.condition_script.unwrap().len(), 1);
     assert!(!base.force.unwrap());
     assert_eq!(base.alias.unwrap(), "alias2");
     assert_eq!(base.linux_alias.unwrap(), "linux");
@@ -281,6 +291,7 @@ fn task_get_normalized_task_undefined() {
         install_crate: Some("install_crate".to_string()),
         command: Some("command".to_string()),
         disabled: Some(false),
+        condition_script: None,
         force: None,
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -298,6 +309,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
+    assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.force.is_none());
     assert!(normalized_task.alias.is_some());
     assert!(normalized_task.linux_alias.is_some());
@@ -341,6 +353,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         command: Some("command".to_string()),
         description: Some("description".to_string()),
         disabled: Some(false),
+        condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -352,6 +365,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             install_crate: Some("linux_crate".to_string()),
             command: Some("linux_command".to_string()),
             disabled: Some(true),
+            condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -369,6 +383,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.disabled.is_some());
+    assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
@@ -387,6 +402,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert!(normalized_task.disabled.unwrap());
+    assert_eq!(normalized_task.condition_script.unwrap().len(), 1);
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
@@ -407,6 +423,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         command: Some("command".to_string()),
         description: Some("description".to_string()),
         disabled: Some(false),
+        condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -418,6 +435,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             install_crate: Some("linux_crate".to_string()),
             command: Some("linux_command".to_string()),
             disabled: Some(true),
+            condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
             force: Some(true),
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -435,6 +453,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.disabled.is_some());
+    assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
@@ -453,6 +472,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert!(normalized_task.disabled.unwrap());
+    assert_eq!(normalized_task.condition_script.unwrap().len(), 2);
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
@@ -472,6 +492,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         install_crate: Some("install_crate".to_string()),
         command: Some("command".to_string()),
         disabled: Some(false),
+        condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -484,6 +505,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             install_crate: None,
             command: None,
             disabled: None,
+            condition_script: None,
             force: None,
             install_script: None,
             args: None,
@@ -500,6 +522,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
+    assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
@@ -537,6 +560,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         install_crate: Some("install_crate".to_string()),
         command: Some("command".to_string()),
         disabled: Some(false),
+        condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -549,6 +573,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             install_crate: Some("linux_crate".to_string()),
             command: None,
             disabled: None,
+            condition_script: None,
             force: None,
             install_script: None,
             args: None,
@@ -565,6 +590,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_none());
     assert!(normalized_task.disabled.is_none());
+    assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.force.is_none());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());

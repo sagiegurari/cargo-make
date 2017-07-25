@@ -36,23 +36,25 @@ fn load_from_git_config(
 
     match result {
         Ok(output) => {
-            command::validate_exit_code(Ok(output.status), logger);
+            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
 
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let lines: Vec<&str> = stdout.split('\n').collect();
-            for mut line in lines {
-                line = line.trim();
+            if exit_code == 0 {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let lines: Vec<&str> = stdout.split('\n').collect();
+                for mut line in lines {
+                    line = line.trim();
 
-                logger.verbose::<()>("Checking: ", &[&line], None);
+                    logger.verbose::<()>("Checking: ", &[&line], None);
 
-                if line.starts_with("user.name=") {
-                    let parts: Vec<&str> = line.split('=').collect();
-                    let value = parts[1];
-                    git_info.user_name = Some(value.to_string());
-                } else if line.starts_with("user.email=") {
-                    let parts: Vec<&str> = line.split('=').collect();
-                    let value = parts[1];
-                    git_info.user_email = Some(value.to_string());
+                    if line.starts_with("user.name=") {
+                        let parts: Vec<&str> = line.split('=').collect();
+                        let value = parts[1];
+                        git_info.user_name = Some(value.to_string());
+                    } else if line.starts_with("user.email=") {
+                        let parts: Vec<&str> = line.split('=').collect();
+                        let value = parts[1];
+                        git_info.user_email = Some(value.to_string());
+                    }
                 }
             }
         }
@@ -68,7 +70,8 @@ fn load_branch(
 
     match result {
         Ok(output) => {
-            command::validate_exit_code(Ok(output.status), logger);
+            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
+            command::validate_exit_code(exit_code, logger);
 
             let stdout = String::from_utf8_lossy(&output.stdout);
             let lines: Vec<&str> = stdout.split('\n').collect();

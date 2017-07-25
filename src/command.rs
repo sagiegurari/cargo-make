@@ -17,25 +17,42 @@ use std::io::prelude::*;
 use std::process::{Command, ExitStatus, Stdio};
 use types::Step;
 
-/// Validates the exit code code and if not 0 or unable to validate it, panic.
-pub fn validate_exit_code(
+/// Returns the exit code (-1 if no exit code found)
+pub fn get_exit_code(
     exit_status: Result<ExitStatus, Error>,
     logger: &Logger,
-) {
+    force: bool,
+) -> i32 {
     match exit_status {
         Ok(code) => {
             if !code.success() {
                 match code.code() {
-                    Some(value) => {
-                        if value != 0 {
-                            logger.error("Error while executing command, exit code: ", &[], Some(value));
-                        }
-                    }
-                    None => logger.error::<()>("Error while executing command, unable to extract exit code.", &[], None),
+                    Some(value) => value,
+                    None => -1,
                 }
+            } else {
+                0
             }
         }
-        Err(error) => logger.error("Error while executing command, error: ", &[], Some(error)),
+        Err(error) => {
+            if !force {
+                logger.error("Error while executing command, error: ", &[], Some(error));
+            }
+
+            -1
+        }
+    }
+}
+
+/// Validates the exit code code and if not 0 or unable to validate it, panic.
+pub fn validate_exit_code(
+    code: i32,
+    logger: &Logger,
+) {
+    if code == -1 {
+        logger.error::<()>("Error while executing command, unable to extract exit code.", &[], None);
+    } else if code != 0 {
+        logger.error("Error while executing command, exit code: ", &[], Some(code));
     }
 }
 
@@ -90,7 +107,7 @@ pub fn run_script(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     validate: bool,
-) {
+) -> i32 {
     let name = env!("CARGO_PKG_NAME");
     let file_name: String = thread_rng().gen_ascii_chars().take(10).collect();
 
@@ -151,12 +168,14 @@ pub fn run_script(
 
     let args = Some(args_vector);
 
-    run_command(&logger, &command, &args, validate);
+    let exit_code = run_command(&logger, &command, &args, validate);
 
     match remove_file(&file_path_str) {
         Ok(_) => logger.verbose::<()>("Temporary file deleted: ", &[&file_path_str], None),
         Err(error) => logger.verbose("Unable to delete temporary file: ", &[&file_path_str], Some(error)),
     };
+
+    exit_code
 }
 
 /// Runs the requested command and panics in case of any error.
@@ -165,7 +184,7 @@ pub fn run_command(
     command_string: &str,
     args: &Option<Vec<String>>,
     validate: bool,
-) {
+) -> i32 {
     logger.verbose::<()>("Execute Command: ", &[&command_string], None);
     let mut command = Command::new(&command_string);
 
@@ -182,9 +201,14 @@ pub fn run_command(
     logger.info("Execute Command: ", &[], Some(&command));
 
     let exit_status = command.status();
+
+    let exit_code = get_exit_code(exit_status, logger, !validate);
+
     if validate {
-        validate_exit_code(exit_status, logger);
+        validate_exit_code(exit_code, logger);
     }
+
+    exit_code
 }
 
 /// Runs the given task command and if not defined, the task script.
@@ -200,9 +224,12 @@ pub fn run(
         }
         None => {
             match step.config.script {
-                Some(ref script) => run_script(&logger, script, step.config.script_runner.clone(), validate),
+                Some(ref script) => {
+                    run_script(&logger, script, step.config.script_runner.clone(), validate);
+                    ()
+                }
                 None => logger.verbose::<()>("No script defined.", &[], None),
-            }
+            };
         }
     };
 }

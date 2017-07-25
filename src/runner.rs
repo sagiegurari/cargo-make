@@ -19,15 +19,39 @@ use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, ExecutionPlan, Step, Task};
 
+fn validate_condition(
+    logger: &Logger,
+    step: &Step,
+) -> bool {
+    match step.config.condition_script {
+        Some(ref script) => {
+            logger.verbose::<()>("Checking task condition.", &[], None);
+
+            let exit_code = command::run_script(&logger, &script, step.config.script_runner.clone(), false);
+
+            if exit_code == 0 {
+                true
+            } else {
+                false
+            }
+        }
+        None => true,
+    }
+}
+
 fn run_task(
     logger: &Logger,
     step: &Step,
 ) {
     logger.info::<()>("Running Task: ", &[&step.name], None);
 
-    installer::install(&logger, &step.config);
+    if validate_condition(&logger, &step) {
+        installer::install(&logger, &step.config);
 
-    command::run(&logger, &step);
+        command::run(&logger, &step);
+    } else {
+        logger.verbose::<()>("Task: ", &[&step.name, " disabled"], None);
+    }
 }
 
 fn run_task_flow(

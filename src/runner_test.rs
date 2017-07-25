@@ -2,7 +2,7 @@ use super::*;
 use log;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
+use types::{ConfigSection, CrateInfo, PlatformOverrideTask, Step, Task, Workspace};
 
 #[test]
 #[should_panic]
@@ -117,6 +117,7 @@ fn create_execution_plan_platform_disabled() {
     task.linux = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition_script: None,
         install_crate: None,
         command: None,
         force: None,
@@ -129,6 +130,7 @@ fn create_execution_plan_platform_disabled() {
     task.windows = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition_script: None,
         install_crate: None,
         command: None,
         force: None,
@@ -141,6 +143,7 @@ fn create_execution_plan_platform_disabled() {
     task.mac = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition_script: None,
         install_crate: None,
         command: None,
         force: None,
@@ -226,4 +229,42 @@ cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
     assert!(task.script.is_some());
     let script = task.script.unwrap();
     assert_eq!(script.join("\n"), expected_script);
+}
+
+#[test]
+fn validate_condition_empty() {
+    let logger = log::create("error");
+
+    let task = Task::new();
+    let step = Step { name: "test".to_string(), config: task };
+
+    let enabled = validate_condition(&logger, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_valid() {
+    let logger = log::create("error");
+
+    let mut task = Task::new();
+    task.condition_script = Some(vec!["exit 0".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    let enabled = validate_condition(&logger, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_invalid() {
+    let logger = log::create("error");
+
+    let mut task = Task::new();
+    task.condition_script = Some(vec!["exit 1".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    let enabled = validate_condition(&logger, &step);
+
+    assert!(!enabled);
 }
