@@ -49,7 +49,7 @@ fn run(cli_args: CliArgs) {
     } else if cli_args.print_only {
         runner::print(&logger, &config, &task, cli_args.disable_workspace);
     } else {
-        runner::run(&logger, &config, &task, cli_args.disable_workspace);
+        runner::run(&logger, config, &task, cli_args.disable_workspace);
     }
 }
 

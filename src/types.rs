@@ -34,6 +34,7 @@ pub struct CliArgs {
 }
 
 impl CliArgs {
+    /// Creates and returns a new instance.
     pub fn new() -> CliArgs {
         CliArgs {
             build_file: "Makefile.toml".to_string(),
@@ -45,6 +46,17 @@ impl CliArgs {
             list_all_steps: false
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds flow information
+pub struct FlowInfo {
+    /// The flow config object
+    pub config: Config,
+    /// The main task of the flow
+    pub task: String,
+    /// Prevent workspace support
+    pub disable_workspace: bool
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -78,6 +90,8 @@ pub struct Task {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The task name to execute
+    pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -89,6 +103,7 @@ pub struct Task {
 }
 
 impl Task {
+    /// Creates and returns a new instance.
     pub fn new() -> Task {
         Task {
             description: None,
@@ -105,6 +120,7 @@ impl Task {
             args: None,
             script: None,
             script_runner: None,
+            run_task: None,
             dependencies: None,
             linux: None,
             windows: None,
@@ -112,6 +128,11 @@ impl Task {
         }
     }
 
+    /// Copies values from the task into self.
+    ///
+    /// # Arguments
+    ///
+    /// * `task` - The task to copy from
     pub fn extend(
         self: &mut Task,
         task: &Task,
@@ -172,6 +193,10 @@ impl Task {
             self.script_runner = task.script_runner.clone();
         }
 
+        if task.run_task.is_some() {
+            self.run_task = task.run_task.clone();
+        }
+
         if task.dependencies.is_some() {
             self.dependencies = task.dependencies.clone();
         }
@@ -189,10 +214,12 @@ impl Task {
         }
     }
 
+    /// Returns true if the task force attribute is defined and true
     pub fn is_force(self: &Task) -> bool {
         self.force.unwrap_or(false)
     }
 
+    /// Returns the override task definition based on the current platform.
     fn get_override(self: &Task) -> Option<PlatformOverrideTask> {
         if cfg!(windows) {
             match self.windows {
@@ -212,6 +239,7 @@ impl Task {
         }
     }
 
+    /// Returns a new task based on the override information and current platform.
     pub fn get_normalized_task(self: &mut Task) -> Task {
         match self.get_override() {
             Some(ref mut override_task) => {
@@ -232,6 +260,7 @@ impl Task {
                     args: override_task.args.clone(),
                     script: override_task.script.clone(),
                     script_runner: override_task.script_runner.clone(),
+                    run_task: override_task.run_task.clone(),
                     dependencies: override_task.dependencies.clone(),
                     linux: None,
                     windows: None,
@@ -242,6 +271,7 @@ impl Task {
         }
     }
 
+    /// Returns the alias value based on the current platform and task definition.
     pub fn get_alias(self: &Task) -> Option<String> {
         let alias = if cfg!(windows) {
             match self.windows_alias {
@@ -295,11 +325,18 @@ pub struct PlatformOverrideTask {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The task name to execute
+    pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
 }
 
 impl PlatformOverrideTask {
+    /// Copies values from the task into self.
+    ///
+    /// # Arguments
+    ///
+    /// * `task` - The task to copy from
     pub fn extend(
         self: &mut PlatformOverrideTask,
         task: &mut Task,
@@ -346,6 +383,10 @@ impl PlatformOverrideTask {
                 self.script_runner = task.script_runner.clone();
             }
 
+            if self.run_task.is_none() && task.run_task.is_some() {
+                self.run_task = task.run_task.clone();
+            }
+
             if self.dependencies.is_none() && task.dependencies.is_some() {
                 self.dependencies = task.dependencies.clone();
             }
@@ -354,6 +395,7 @@ impl PlatformOverrideTask {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// Init task name which will be invoked at the start of every run
     pub init_task: Option<String>,
@@ -362,10 +404,16 @@ pub struct ConfigSection {
 }
 
 impl ConfigSection {
+    /// Creates and returns a new instance.
     pub fn new() -> ConfigSection {
         ConfigSection { init_task: None, end_task: None }
     }
 
+    /// Copies values from the config section into self.
+    ///
+    /// # Arguments
+    ///
+    /// * `task` - The task to copy from
     pub fn extend(
         self: &mut ConfigSection,
         extended: &mut ConfigSection,
@@ -380,7 +428,7 @@ impl ConfigSection {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
     /// Runtime config
@@ -405,6 +453,7 @@ pub struct ExternalConfig {
 }
 
 impl ExternalConfig {
+    /// Creates and returns a new instance.
     pub fn new() -> ExternalConfig {
         ExternalConfig { extend: None, config: None, env: None, tasks: None }
     }
@@ -434,6 +483,7 @@ pub struct Workspace {
 }
 
 impl Workspace {
+    /// Creates and returns a new instance.
     pub fn new() -> Workspace {
         Workspace { members: None }
     }
@@ -459,6 +509,7 @@ pub struct PackageInfo {
 }
 
 impl PackageInfo {
+    /// Creates and returns a new instance.
     pub fn new() -> PackageInfo {
         PackageInfo {
             name: None,
@@ -482,10 +533,16 @@ pub struct CrateInfo {
 }
 
 impl CrateInfo {
+    /// Creates and returns a new instance.
     pub fn new() -> CrateInfo {
         CrateInfo { package: None, workspace: None }
     }
 
+    /// Loads the crate info based on the Cargo.toml found in the current working directory.
+    ///
+    /// # Arguments
+    ///
+    /// * `logger` - Logger instance
     pub fn load(logger: &Logger) -> CrateInfo {
         // load crate info
         let file_path = Path::new("Cargo.toml");

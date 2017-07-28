@@ -2,7 +2,7 @@ use super::*;
 use log;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, PlatformOverrideTask, Step, Task, Workspace};
+use types::{ConfigSection, CrateInfo, FlowInfo, PlatformOverrideTask, Step, Task, Workspace};
 
 #[test]
 #[should_panic]
@@ -125,6 +125,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        run_task: None,
         dependencies: None
     });
     task.windows = Some(PlatformOverrideTask {
@@ -138,6 +139,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        run_task: None,
         dependencies: None
     });
     task.mac = Some(PlatformOverrideTask {
@@ -151,6 +153,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        run_task: None,
         dependencies: None
     });
 
@@ -267,4 +270,109 @@ fn validate_condition_invalid() {
     let enabled = validate_condition(&logger, &step);
 
     assert!(!enabled);
+}
+
+#[test]
+#[should_panic]
+fn run_task_bad_script() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 1".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
+}
+
+#[test]
+fn run_task_command_and_bad_script() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    task.script = Some(vec!["exit 1".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
+}
+
+#[test]
+#[should_panic]
+fn run_task_bad_command_valid_script() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.command = Some("bad12345".to_string());
+    task.script = Some(vec!["exit 0".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
+}
+
+#[test]
+fn run_task_no_command_valid_script() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
+}
+
+#[test]
+#[should_panic]
+fn run_task_bad_run_task_valid_command() {
+    let logger = log::create("error");
+
+    let mut sub_task = Task::new();
+    sub_task.script = Some(vec!["exit 1".to_string()]);
+
+    let mut tasks = HashMap::new();
+    tasks.insert("sub".to_string(), sub_task);
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.run_task = Some("sub".to_string());
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
+}
+
+#[test]
+fn run_task_valid_run_task_bad_command() {
+    let logger = log::create("error");
+
+    let mut sub_task = Task::new();
+    sub_task.script = Some(vec!["exit 0".to_string()]);
+
+    let mut tasks = HashMap::new();
+    tasks.insert("sub".to_string(), sub_task);
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
+    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+
+    let mut task = Task::new();
+    task.run_task = Some("sub".to_string());
+    task.command = Some("bad12345".to_string());
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&logger, &flow_info, &step);
 }

@@ -11,11 +11,13 @@
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
+    * [Commands, Scripts and Sub Tasks](#usage-task-command-script-task)
     * [Default Tasks and Extending](#usage-default-tasks)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Conditions](#usage-conditions)
+        * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
@@ -307,6 +309,18 @@ script = [
 If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
+<a name="usage-task-command-script-task"></a>
+### Commands, Scripts and Sub Tasks
+The actual operation that a task invokes can be defined in 3 ways.<br>
+The below explains each one and lists them by priority:
+
+* **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
+* **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what attributes to provide as part of the command.
+* **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
+
+Only one of the definitions will be used.<br>
+If multiple attributes are defined (for example both command and script), only the higher priority attribute is used.
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous example.<br>
@@ -477,6 +491,40 @@ args = ["build"]
 ````
 
 Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific environment variable is defined.
+
+<a name="usage-conditions-and-subtasks"></a>
+### Combining Conditions and Sub Tasks
+condition_script and run_task combined can enable you to define a conditional sub flow.<br>
+For example, if you have a coverage flow that should only be invoked in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
+
+````toml
+[tasks.ci-coverage-flow]
+windows_alias = "empty"
+condition_script = [
+'''
+if [ "$TRAVIS" = "true" ]; then
+    if [ "$CARGO_MAKE_RUN_CODECOV" = "true" ]; then
+        exit 0
+    fi
+fi
+
+exit 1
+'''
+]
+run_task = "codecov-flow"
+
+[tasks.codecov-flow]
+description = "Runs the full coverage flow and uploads the results to codecov."
+windows_alias = "empty"
+dependencies = [
+    "coverage-flow",
+    "codecov"
+]
+````
+
+The first task **ci-coverage-flow** defines the condition_script that checks we are in travis and the CARGO_MAKE_RUN_CODECOV environment variable.<br>
+Only if both are defined, it will run the **codecov-flow** task.<br>
+We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
 
 <a name="usage-ci"></a>
 ### Continuous Integration
@@ -858,6 +906,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
 | 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
 | 2017-07-21  | v0.3.34 | Added coverage-tarpaulin task |

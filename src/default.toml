@@ -300,9 +300,7 @@ unset CARGO_MAKE_SKIP_CODECOV
 ]
 
 [tasks.workspace-members-ci.windows]
-script = [
-    "cargo make --loglevel=%CARGO_MAKE_LOG_LEVEL% ci-flow"
-]
+run_task = "ci-flow"
 
 [tasks.workspace-coverage]
 linux_alias = "codecov"
@@ -487,6 +485,4 @@ fi
 exit 1
 '''
 ]
-script = [
-    "cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} codecov-flow"
-]
+run_task = "codecov-flow"

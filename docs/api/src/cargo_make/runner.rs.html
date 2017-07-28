@@ -307,6 +307,30 @@
 <span id="262">262</span>
 <span id="263">263</span>
 <span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -327,7 +351,7 @@
 <span class="kw">use</span> <span class="ident">log</span>::<span class="ident">Logger</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">SystemTime</span>;
-<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
+<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">FlowInfo</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
 
 <span class="kw">fn</span> <span class="ident">validate_condition</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
@@ -349,8 +373,20 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">run_sub_task</span>(
+    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
+    <span class="ident">sub_task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+) {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
+    <span class="ident">sub_flow_info</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">sub_task</span>.<span class="ident">to_string</span>();
+
+    <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>);
+}
+
 <span class="kw">fn</span> <span class="ident">run_task</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
 ) {
     <span class="ident">logger</span>.<span class="ident">info</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Running Task: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>], <span class="prelude-val">None</span>);
@@ -358,7 +394,10 @@
     <span class="kw">if</span> <span class="ident">validate_condition</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>) {
         <span class="ident">installer</span>::<span class="ident">install</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>);
 
-        <span class="ident">command</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
+        <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">run_task</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">sub_task</span>) <span class="op">=&gt;</span> <span class="ident">run_sub_task</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">sub_task</span>),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">command</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>),
+        };
     } <span class="kw">else</span> {
         <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Task: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="string">&quot; disabled&quot;</span>], <span class="prelude-val">None</span>);
     }
@@ -366,10 +405,11 @@
 
 <span class="kw">fn</span> <span class="ident">run_task_flow</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">execution_plan</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionPlan</span>,
 ) {
     <span class="kw">for</span> <span class="ident">step</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>.<span class="ident">steps</span> {
-        <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
+        <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
     }
 }
 
@@ -527,6 +567,16 @@
     <span class="ident">ExecutionPlan</span> { <span class="ident">steps</span> }
 }
 
+<span class="kw">fn</span> <span class="ident">run_flow</span>(
+    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
+) {
+    <span class="kw">let</span> <span class="ident">execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">task</span>, <span class="ident">flow_info</span>.<span class="ident">disable_workspace</span>);
+    <span class="ident">logger</span>.<span class="ident">verbose</span>(<span class="string">&quot;Created execution plan: &quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">execution_plan</span>));
+
+    <span class="ident">run_task_flow</span>(<span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>);
+}
+
 <span class="doccomment">/// Runs the requested tasks.&lt;br&gt;</span>
 <span class="doccomment">/// The flow is as follows:</span>
 <span class="doccomment">///</span>
@@ -534,16 +584,15 @@
 <span class="doccomment">/// * Run all tasks defined in the execution plan</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
-    <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
+    <span class="ident">config</span>: <span class="ident">Config</span>,
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
 ) {
     <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
 
-    <span class="kw">let</span> <span class="ident">execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">disable_workspace</span>);
-    <span class="ident">logger</span>.<span class="ident">verbose</span>(<span class="string">&quot;Created execution plan: &quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">execution_plan</span>));
+    <span class="kw">let</span> <span class="ident">flow_info</span> <span class="op">=</span> <span class="ident">FlowInfo</span> { <span class="ident">config</span>, <span class="ident">task</span>: <span class="ident">task</span>.<span class="ident">to_string</span>(), <span class="ident">disable_workspace</span> };
 
-    <span class="ident">run_task_flow</span>(<span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>);
+    <span class="ident">run_flow</span>(<span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>);
 
     <span class="kw">let</span> <span class="ident">time_string</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">start_time</span>.<span class="ident">elapsed</span>() {
         <span class="prelude-val">Ok</span>(<span class="ident">elapsed</span>) <span class="op">=&gt;</span> {
@@ -558,7 +607,6 @@
 
     <span class="ident">logger</span>.<span class="ident">info</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Build Done&quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">time_string</span>, <span class="string">&quot;.&quot;</span>], <span class="prelude-val">None</span>);
 }
-
 
 <span class="doccomment">/// Only prints the execution plan</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print</span>(

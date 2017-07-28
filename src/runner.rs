@@ -17,7 +17,7 @@ use installer;
 use log::Logger;
 use std::collections::HashSet;
 use std::time::SystemTime;
-use types::{Config, CrateInfo, ExecutionPlan, Step, Task};
+use types::{Config, CrateInfo, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(
     logger: &Logger,
@@ -39,8 +39,20 @@ fn validate_condition(
     }
 }
 
+fn run_sub_task(
+    logger: &Logger,
+    flow_info: &FlowInfo,
+    sub_task: &str,
+) {
+    let mut sub_flow_info = flow_info.clone();
+    sub_flow_info.task = sub_task.to_string();
+
+    run_flow(&logger, &sub_flow_info);
+}
+
 fn run_task(
     logger: &Logger,
+    flow_info: &FlowInfo,
     step: &Step,
 ) {
     logger.info::<()>("Running Task: ", &[&step.name], None);
@@ -48,7 +60,10 @@ fn run_task(
     if validate_condition(&logger, &step) {
         installer::install(&logger, &step.config);
 
-        command::run(&logger, &step);
+        match step.config.run_task {
+            Some(ref sub_task) => run_sub_task(&logger, &flow_info, sub_task),
+            None => command::run(&logger, &step),
+        };
     } else {
         logger.verbose::<()>("Task: ", &[&step.name, " disabled"], None);
     }
@@ -56,10 +71,11 @@ fn run_task(
 
 fn run_task_flow(
     logger: &Logger,
+    flow_info: &FlowInfo,
     execution_plan: &ExecutionPlan,
 ) {
     for step in &execution_plan.steps {
-        run_task(&logger, &step);
+        run_task(&logger, &flow_info, &step);
     }
 }
 
@@ -217,6 +233,16 @@ fn create_execution_plan(
     ExecutionPlan { steps }
 }
 
+fn run_flow(
+    logger: &Logger,
+    flow_info: &FlowInfo,
+) {
+    let execution_plan = create_execution_plan(&logger, &flow_info.config, &flow_info.task, flow_info.disable_workspace);
+    logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
+
+    run_task_flow(logger, &flow_info, &execution_plan);
+}
+
 /// Runs the requested tasks.<br>
 /// The flow is as follows:
 ///
@@ -224,16 +250,15 @@ fn create_execution_plan(
 /// * Run all tasks defined in the execution plan
 pub fn run(
     logger: &Logger,
-    config: &Config,
+    config: Config,
     task: &str,
     disable_workspace: bool,
 ) {
     let start_time = SystemTime::now();
 
-    let execution_plan = create_execution_plan(&logger, &config, &task, disable_workspace);
-    logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
+    let flow_info = FlowInfo { config, task: task.to_string(), disable_workspace };
 
-    run_task_flow(logger, &execution_plan);
+    run_flow(logger, &flow_info);
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {
@@ -248,7 +273,6 @@ pub fn run(
 
     logger.info::<()>("Build Done", &[&time_string, "."], None);
 }
-
 
 /// Only prints the execution plan
 pub fn print(

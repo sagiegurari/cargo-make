@@ -101,7 +101,9 @@ extern crate rand;
 extern crate serde_derive;
 extern crate toml;
 
-mod types;
+// make types public for docs
+pub mod types;
+
 mod log;
 mod descriptor;
 mod environment;

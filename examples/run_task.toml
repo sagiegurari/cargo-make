@@ -1,0 +1,11 @@
+
+[tasks.echo]
+script = [
+    "echo hello world"
+]
+
+[tasks.flow]
+run_task = "echo"
+condition_script = [
+    "exit 0"
+]
