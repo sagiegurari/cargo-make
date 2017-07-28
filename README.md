@@ -906,6 +906,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-07-28  | v0.3.39 | Maintenance |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
 | 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
