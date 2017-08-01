@@ -535,6 +535,7 @@ args = ["hublish"]
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release."
 install_crate = "cargo-hublish"
+args = ["hublish"]
 script = [
     "cargo hublish --remote \"$GITHUB_REMOTE_NAME\""
 ]
