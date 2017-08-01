@@ -99,8 +99,10 @@ dependencies = [
 description = "Empty Task"
 
 [tasks.init]
+description = "By default this task is invoked at the start of every cargo-make run."
 
 [tasks.end]
+description = "By default this task is invoked at the end of every cargo-make run."
 
 [tasks.init-build-flow]
 
@@ -112,14 +114,22 @@ command = "rm"
 args = ["-Rf", "./docs/api"]
 
 [tasks.clean]
+description = "Runs the cargo clean command."
 command = "cargo"
 args = ["clean"]
 
 [tasks.post-clean]
 
+[tasks.delete-lock]
+description = "Deletes the Cargo.lock file."
+script = [
+    "rm -f ./Cargo.lock"
+]
+
 [tasks.pre-format]
 
 [tasks.format]
+description = "Runs the cargo rustfmt plugin."
 install_crate = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
@@ -127,6 +137,7 @@ args = ["fmt", "--", "--write-mode=overwrite"]
 [tasks.post-format]
 
 [tasks.format-flow]
+description = "Runs the cargo rustfmt plugin as part of a flow."
 dependencies = [
     "pre-format",
     "format",
@@ -136,6 +147,7 @@ dependencies = [
 [tasks.pre-docs]
 
 [tasks.docs]
+description = "Generate rust documentation."
 command = "cargo"
 args = ["doc", "--no-deps"]
 
@@ -144,10 +156,12 @@ args = ["doc", "--no-deps"]
 [tasks.pre-build]
 
 [tasks.build]
+description = "Runs the rust compiler."
 command = "cargo"
 args = ["build"]
 
 [tasks.build-verbose]
+description = "Runs the rust compiler with verbose output."
 command = "cargo"
 args = ["build", "--verbose"]
 
@@ -156,10 +170,12 @@ args = ["build", "--verbose"]
 [tasks.pre-test]
 
 [tasks.test]
+description = "Runs all available tests."
 command = "cargo"
 args = ["test"]
 
 [tasks.test-verbose]
+description = "Runs all available tests with verbose output."
 command = "cargo"
 args = ["test", "--verbose"]
 
@@ -168,12 +184,14 @@ args = ["test", "--verbose"]
 [tasks.pre-bench]
 
 [tasks.bench]
+description = "Runs all available bench files."
 command = "cargo"
 args = ["bench"]
 
 [tasks.post-bench]
 
 [tasks.bench-flow]
+description = "Runs a bench flow."
 dependencies = [
     "pre-bench",
     "bench",
@@ -183,6 +201,7 @@ dependencies = [
 [tasks.pre-verify-project]
 
 [tasks.verify-project]
+description = "Runs verify-project cargo plugin."
 command = "cargo"
 args = ["verify-project"]
 
@@ -191,6 +210,7 @@ args = ["verify-project"]
 [tasks.pre-audit]
 
 [tasks.audit]
+description = "Runs verify-audit cargo plugin."
 install_crate = "cargo-audit"
 command = "cargo"
 args = ["audit"]
@@ -200,6 +220,7 @@ args = ["audit"]
 [tasks.pre-outdated]
 
 [tasks.outdated]
+description = "Runs verify-outdated cargo plugin."
 install_crate = "cargo-outdated"
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
@@ -207,11 +228,13 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 [tasks.post-outdated]
 
 [tasks.clippy]
+description = "Runs clippy code linter."
 install_crate = "clippy"
 command = "cargo"
 args = ["clippy"]
 
 [tasks.copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
 script = [
     "mkdir -p ./docs/api",
     "mv ./target/doc/* ./docs/api"
@@ -222,6 +245,7 @@ script = [
 [tasks.pre-package]
 
 [tasks.package]
+description = "Runs the cargo package command."
 command = "cargo"
 args = ["package"]
 
@@ -230,6 +254,7 @@ args = ["package"]
 [tasks.pre-publish]
 
 [tasks.publish]
+description = "Runs the cargo publish command."
 command = "cargo"
 args = ["publish"]
 
@@ -238,6 +263,7 @@ args = ["publish"]
 [tasks.pre-git-add]
 
 [tasks.git-add]
+description = "Runs the cargo add command."
 command = "git"
 args = ["add", "."]
 
@@ -246,6 +272,7 @@ args = ["add", "."]
 [tasks.pre-git-status]
 
 [tasks.git-status]
+description = "Runs git status command."
 command = "git"
 args = ["status"]
 
@@ -254,10 +281,12 @@ args = ["status"]
 [tasks.pre-git-commit]
 
 [tasks.git-commit]
+description = "Runs git commit command."
 command = "git"
 args = ["commit"]
 
 [tasks.git-commit-message]
+description = "Runs git commit command with the message defined in the COMMIT_MSG environment variable."
 script = [
     "git commit -m \"$COMMIT_MSG\""
 ]
@@ -267,6 +296,7 @@ script = [
 [tasks.pre-git-push]
 
 [tasks.git-push]
+description = "Runs git push command."
 command = "git"
 args = ["push"]
 
@@ -281,6 +311,7 @@ args = ["push"]
 [tasks.post-workspace-ci-flow]
 
 [tasks.workspace-members-ci]
+description = "Runs the ci-flow for every workspace member."
 script = [
 '''
 #prevent codecov publish in member builds
@@ -303,11 +334,13 @@ unset CARGO_MAKE_SKIP_CODECOV
 run_task = "ci-flow"
 
 [tasks.workspace-coverage]
+description = "Runs coverage task (by default the codecov flow)."
 linux_alias = "codecov"
 
 [tasks.pre-coverage]
 
 [tasks.coverage]
+description = "Runs coverage (by default using kcov)."
 alias = "coverage-kcov"
 
 [tasks.coverage-kcov]
@@ -450,6 +483,7 @@ dependencies = [
 ]
 
 [tasks.codecov]
+description = "Runs codecov script to upload coverage results to codecov."
 windows_alias = "empty"
 script_runner = "bash"
 condition_script = [
@@ -473,6 +507,7 @@ dependencies = [
 ]
 
 [tasks.ci-coverage-flow]
+description = "Runs the coverage flow and uploads the results to codecov."
 windows_alias = "empty"
 condition_script = [
 '''
@@ -486,3 +521,42 @@ exit 1
 '''
 ]
 run_task = "codecov-flow"
+
+[tasks.github-publish]
+# Creates a new github release.
+# Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
+description = "Creates a new github release."
+install_crate = "cargo-hublish"
+command = "cargo"
+args = ["hublish"]
+
+[tasks.build-publish-flow]
+description = "Runs full sanity, generates github release and publishes the crate."
+condition_script = [
+'''
+if [ -z "$COMMIT_MSG" ]; then 
+    echo "Commit message not defined";
+    exit 1
+fi
+
+if [ -z "$GITHUB_API_TOKEN" ]; then 
+    echo "Github API token not defined";
+    exit 1
+fi
+
+exit 0
+'''
+]
+run_task = "build-publish-flow-no-validation"
+
+[tasks.build-publish-flow-no-validation]
+dependencies = [
+    "delete-lock",
+    "build-flow",
+    "git-add",
+    "git-status",
+    "git-commit-message",
+    "git-push",
+    "github-publish",
+    "publish-flow"
+]

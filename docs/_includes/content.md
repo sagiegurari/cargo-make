@@ -555,6 +555,7 @@ The following are some of the main flows that can be used without any need of an
 
 * **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ````cargo make````).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
+* **workspace-ci-flow** - Should be used in CI builds (such as travis/appveyor) for workspace projects.
 * **publish-flow** - Cleans old target directory and publishes the project.
 * **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
 * **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows). By default cargo-make uses kcov for code coverage, however additional unsupported implementations are defined.
@@ -595,6 +596,61 @@ coverage-kcov: Installs (if missing) and runs coverage using kcov (not supported
 ````
 
 All built in coverage providers are supported by their authors and not by cargo-make.
+
+<a name="usage-predefined-flows-cargo"></a>
+#### Cargo Commands and Plugins
+
+* **clean** - Runs the cargo clean command.
+* **build** - Runs the rust compiler.
+* **build-verbose** - Runs the rust compiler with verbose output.
+* **test** - Runs all available tests.
+* **test-verbose** - Runs all available tests with verbose output.
+* **bench** - Runs all available bench files.
+* **docs** - Generate rust documentation.
+* **package** - Runs the cargo package command.
+* **publish** - Runs the cargo publish command.
+* **format** - Runs the cargo rustfmt plugin.
+* **outdated** - Runs verify-outdated cargo plugin.
+* **verify-project** - Runs verify-project cargo plugin.
+* **audit** - Runs verify-audit cargo plugin.
+* **clippy** - Runs clippy code linter.
+
+<a name="usage-predefined-flows-flows"></a>
+#### Flows
+
+* **empty** - Empty Task
+* **init** - By default this task is invoked at the start of every cargo-make run.
+* **end** - By default this task is invoked at the end of every cargo-make run.
+* **default** - Default task points to the development testing flow
+* **ci-flow** - CI task will run cargo build and cargo test with verbose output
+* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
+* **build-flow** - Full sanity testing flow.
+* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
+* **copy-apidocs** - Copies the generated documentation to the docs/api directory.
+* **clean-apidocs** - Delete API docs.
+* **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
+* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
+* **bench-flow** - Runs a bench flow.
+* **delete-lock** - Deletes the Cargo.lock file.
+* **codecov** - Runs codecov script to upload coverage results to codecov.
+* **coverage** - Runs coverage (by default using kcov).
+* **coverage-flow** - Runs the full coverage flow.
+* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
+* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
+* **workspace-coverage** - Runs coverage task (by default the codecov flow).
+* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
+* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
+* **workspace-members-ci** - Runs the ci-flow for every workspace member.
+
+<a name="usage-predefined-flows-git"></a>
+#### Git Commands
+
+* **git-status** - Runs git status command.
+* **git-add** - Runs the cargo add command.
+* **git-commit** - Runs git commit command.
+* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
+* **git-push** - Runs git push command.
+* **github-publish** - Creates a new github release.
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
@@ -873,7 +929,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-07-28  | v0.3.39 | Maintenance |
+| 2017-08-01  | v0.3.40 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
 | 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
