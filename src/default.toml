@@ -530,6 +530,15 @@ install_crate = "cargo-hublish"
 command = "cargo"
 args = ["hublish"]
 
+[tasks.github-publish-custom-name]
+# Creates a new github release.
+# Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
+description = "Creates a new github release."
+install_crate = "cargo-hublish"
+script = [
+    "cargo hublish --remote \"$GITHUB_REMOTE_NAME\""
+]
+
 [tasks.build-publish-flow]
 description = "Runs full sanity, generates github release and publishes the crate."
 condition_script = [
@@ -541,6 +550,11 @@ fi
 
 if [ -z "$GITHUB_API_TOKEN" ]; then 
     echo "Github API token not defined";
+    exit 1
+fi
+
+if [ -z "$GITHUB_REMOTE_NAME" ]; then 
+    echo "Github remote name not defined";
     exit 1
 fi
 
@@ -557,6 +571,6 @@ dependencies = [
     "git-status",
     "git-commit-message",
     "git-push",
-    "github-publish",
+    "github-publish-custom-name",
     "publish-flow"
 ]
