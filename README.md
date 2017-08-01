@@ -820,6 +820,8 @@ pub struct PlatformOverrideTask {
 }
 ````
 
+More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/index.html) section of the API documentation.
+
 <a name="task-name-conventions"></a>
 ## Task Naming conventions
 This section explains the logic behind the default task names.<br>
