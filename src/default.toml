@@ -302,6 +302,11 @@ args = ["push"]
 
 [tasks.post-git-push]
 
+[tasks.git-pull]
+description = "Runs git pull command."
+command = "git"
+args = ["pull"]
+
 [tasks.pre-ci-flow]
 
 [tasks.post-ci-flow]
@@ -537,7 +542,7 @@ description = "Creates a new github release."
 install_crate = "cargo-hublish"
 args = ["hublish"]
 script = [
-    "cargo hublish --url \"https://api.github.com/repos/$GITHUB_REMOTE_NAME/releases\""
+    "cargo hublish --url \"https://api.github.com/repos/$GITHUB_REPO_NAME/releases\""
 ]
 
 [tasks.build-publish-flow]
@@ -554,8 +559,8 @@ if [ -z "$GITHUB_API_TOKEN" ]; then
     exit 1
 fi
 
-if [ -z "$GITHUB_REMOTE_NAME" ]; then 
-    echo "Github remote name not defined";
+if [ -z "$GITHUB_REPO_NAME" ]; then 
+    echo "Github repo name not defined";
     exit 1
 fi
 
@@ -573,5 +578,6 @@ dependencies = [
     "git-commit-message",
     "git-push",
     "github-publish-custom-name",
-    "publish-flow"
+    "publish-flow",
+    "git-pull"
 ]

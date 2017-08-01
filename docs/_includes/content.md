@@ -641,6 +641,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
+* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
 
 <a name="usage-predefined-flows-git"></a>
 #### Git Commands
@@ -650,7 +651,9 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **git-commit** - Runs git commit command.
 * **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
 * **git-push** - Runs git push command.
+* **git-pull** - Runs git pull command.
 * **github-publish** - Creates a new github release.
+* **github-publish-custom-name** - Creates a new github release.
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
@@ -804,6 +807,8 @@ pub struct Task {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The task name to execute
+    pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -836,6 +841,8 @@ pub struct PlatformOverrideTask {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The task name to execute
+    pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
 }
@@ -929,7 +936,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-01  | v0.3.40 | Added github-publish task |
+| 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
 | 2017-07-22  | v0.3.36 | Added coverage-lcov task (not fully tested) |
