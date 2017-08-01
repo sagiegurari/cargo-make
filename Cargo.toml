@@ -23,11 +23,11 @@ include = [
 ]
 
 [dependencies]
-clap = "^2.25.1"
+clap = "^2.26.0"
 rand = "^0.3.16"
 serde = "^1.0.11"
 serde_derive = "^1.0.11"
-toml = "^0.4.3"
+toml = "^0.4.4"
 
 [features]
 default = []

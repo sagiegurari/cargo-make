@@ -537,7 +537,7 @@ description = "Creates a new github release."
 install_crate = "cargo-hublish"
 args = ["hublish"]
 script = [
-    "cargo hublish --remote \"$GITHUB_REMOTE_NAME\""
+    "cargo hublish --url \"https://api.github.com/repos/$GITHUB_REMOTE_NAME/releases\""
 ]
 
 [tasks.build-publish-flow]
