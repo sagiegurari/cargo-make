@@ -613,6 +613,9 @@
 <span id="568">568</span>
 <span id="569">569</span>
 <span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -641,6 +644,8 @@
     <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Current working directory</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Environment variables</span>
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Prevent workspace support</span>
     <span class="kw">pub</span> <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Only print the execution plan</span>
@@ -657,6 +662,7 @@
             <span class="ident">task</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">log_level</span>: <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
+            <span class="ident">env</span>: <span class="prelude-val">None</span>,
             <span class="ident">disable_workspace</span>: <span class="bool-val">false</span>,
             <span class="ident">print_only</span>: <span class="bool-val">false</span>,
             <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>

@@ -150,6 +150,7 @@ fn load_external_descriptor(
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
 pub fn load(
     file_name: &str,
+    env: Option<Vec<String>>,
     logger: &Logger,
 ) -> Config {
     logger.verbose::<()>("Loading default tasks.", &[], None);
@@ -177,7 +178,25 @@ pub fn load(
     let mut default_env = default_config.env;
 
     // merge configs
-    let all_env = merge_maps(&mut default_env, &mut external_env);
+    let mut all_env = merge_maps(&mut default_env, &mut external_env);
+    all_env = match env {
+        Some(values) => {
+            let mut cli_env = HashMap::new();
+
+            for env_pair in &values {
+                let env_part: Vec<&str> = env_pair.split('=').collect();
+                logger.verbose::<()>("Checking env pair: ", &[&env_pair], None);
+
+                if env_part.len() == 2 {
+                    cli_env.insert(env_part[0].to_string(), env_part[1].to_string());
+                }
+            }
+
+            merge_maps(&mut all_env, &mut cli_env)
+        }
+        None => all_env,
+    };
+
     let all_tasks = merge_tasks(&mut default_tasks, &mut external_tasks);
 
     let mut config_section = default_config.config.clone();

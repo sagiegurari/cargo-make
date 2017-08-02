@@ -28,6 +28,8 @@ fn run(cli_args: CliArgs) {
     logger.info::<()>("cargo-", &[&NAME, " ", &VERSION], None);
     logger.verbose::<()>("Written By ", &[&AUTHOR], None);
 
+    logger.verbose("Cli Args", &[], Some(&cli_args));
+
     let cwd = match cli_args.cwd {
         Some(ref value) => Some(value.as_ref()),
         None => None,
@@ -40,7 +42,9 @@ fn run(cli_args: CliArgs) {
     logger.info::<()>("Using Build File: ", &[build_file], None);
     logger.info::<()>("Task: ", &[task], None);
 
-    let config = descriptor::load(&build_file, &logger);
+    let env = cli_args.env.clone();
+
+    let config = descriptor::load(&build_file, env, &logger);
 
     environment::setup_env(&logger, &config, &task);
 
@@ -59,10 +63,10 @@ fn run_for_args(matches: ArgMatches) {
         Some(cmd_matches) => {
             let mut cli_args = CliArgs::new();
 
+            cli_args.env = cmd_matches.values_of_lossy("env");
+
             cli_args.build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML).to_string();
 
-            let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
-            cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
             cli_args.cwd = match cmd_matches.value_of("cwd") {
                 Some(value) => Some(value.to_string()),
                 None => None,
@@ -77,6 +81,9 @@ fn run_for_args(matches: ArgMatches) {
             cli_args.print_only = cmd_matches.is_present("print-steps");
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
             cli_args.list_all_steps = cmd_matches.is_present("list-steps");
+
+            let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
+            cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
 
             run(cli_args);
         }
@@ -94,6 +101,7 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                 Arg::with_name("makefile")
                     .long("--makefile")
                     .value_name("FILE")
+                    .max_values(1)
                     .help("The optional toml file containing the tasks definitions")
                     .default_value(&DEFAULT_TOML)
             )
@@ -102,19 +110,31 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                     .short("-t")
                     .long("--task")
                     .value_name("TASK")
+                    .max_values(1)
                     .help("The task name to execute (can omit the flag if the task name is the last argument)")
                     .default_value(&DEFAULT_TASK_NAME)
             )
-            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").help(
+            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").max_values(1).help(
                 "Will set the current working directory. The search for the makefile will be from this directory if defined."
             ))
             .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
                 "Disable workspace support (tasks are triggered on workspace and not on members)"
             ))
             .arg(
+                Arg::with_name("env")
+                    .long("--env")
+                    .short("-e")
+                    .value_name("ENV")
+                    .multiple(true)
+                    .takes_value(true)
+                    .number_of_values(1)
+                    .help("Set environment variables")
+            )
+            .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
                     .default_value(&DEFAULT_LOG_LEVEL)
+                    .max_values(1)
             )
             .arg(Arg::with_name("v").short("-v").long("--verbose").help(
                 "Sets the log level to verbose (shorthand for --loglevel verbose)"

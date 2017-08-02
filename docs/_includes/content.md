@@ -406,6 +406,12 @@ RUST_BACKTRACE = "1"
 
 All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
 
+Environment variables can also be defined in the command line using the --env/-e argument as follows:
+
+````console
+cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
+````
+
 In addition, cargo-make will also add few environment variables that can be helpful when running task scripts/commands:
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
@@ -747,6 +753,7 @@ FLAGS:
 
 OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
+    -e, --env <ENV>...            Set environment variables
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
         --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
     -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument) [default: default]
@@ -936,6 +943,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-02  | v0.3.42 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |

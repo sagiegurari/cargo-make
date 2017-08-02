@@ -25,6 +25,8 @@ pub struct CliArgs {
     pub log_level: String,
     /// Current working directory
     pub cwd: Option<String>,
+    /// Environment variables
+    pub env: Option<Vec<String>>,
     /// Prevent workspace support
     pub disable_workspace: bool,
     /// Only print the execution plan
@@ -41,6 +43,7 @@ impl CliArgs {
             task: "default".to_string(),
             log_level: "info".to_string(),
             cwd: None,
+            env: None,
             disable_workspace: false,
             print_only: false,
             list_all_steps: false
