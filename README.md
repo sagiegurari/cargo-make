@@ -435,7 +435,7 @@ This means, however, that you will have to redefine all attributes in the overri
 
 <a name="usage-env"></a>
 ### Environment Variables
-You can also define env vars to be set as part of the execution of the flow in the env block, for examle:
+You can also define env vars to be set as part of the execution of the flow in the env block, for example:
 
 ````yaml
 [env]
@@ -981,7 +981,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-02  | v0.3.42 | Added --env/-e cli args to set environment variables via command line |
+| 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
 | 2017-07-25  | v0.3.37 | Added condition script capability for tasks |
