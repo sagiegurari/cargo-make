@@ -954,7 +954,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-06  | v0.3.44 | Added bintray upload task |
+| 2017-08-06  | v0.3.45 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
