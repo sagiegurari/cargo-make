@@ -175,7 +175,9 @@ pub fn setup_cwd(
     logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
 
     let mut directory_path_buf = PathBuf::from(&directory);
-    directory_path_buf = directory_path_buf.canonicalize().unwrap_or(directory_path_buf);
+    if !cfg!(windows) {
+        directory_path_buf = directory_path_buf.canonicalize().unwrap_or(directory_path_buf);
+    }
     let directory_path = directory_path_buf.as_path();
 
     match env::set_current_dir(&directory_path) {
