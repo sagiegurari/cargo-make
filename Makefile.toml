@@ -12,7 +12,7 @@ script = [
     "rm -f ./README.md",
     "cat ./docs/_includes/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md",
     "sed 's,https://github.com/sagiegurari/cargo-make/blob/master/.github,.github,g' -i ./README.md",
-    "sed \"s,BINTRAY_VERSION,${CARGO_MAKE_CRATE_VERSION},g\" -i ./README.md"
+    "sed \"s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g\" -i ./README.md"
 ]
 
 [tasks.post-docs]

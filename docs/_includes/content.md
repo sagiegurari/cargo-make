@@ -534,7 +534,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_vBINTRAY_VERSION
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{{ site.version }}
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -542,7 +542,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_vBINTRAY_VERSION
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{{ site.version }}
 ````
 
 <a name="usage-ci-appveyor"></a>
@@ -960,6 +960,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-06  | v0.3.47 | Maintenance |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
