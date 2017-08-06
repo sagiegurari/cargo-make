@@ -1,7 +1,7 @@
 # cargo-make
 
 [![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make) [![Build Status](https://travis-ci.org/sagiegurari/cargo-make.svg)](http://travis-ci.org/sagiegurari/cargo-make) [![Build status](https://ci.appveyor.com/api/projects/status/knyrs33tyjqgt06u?svg=true)](https://ci.appveyor.com/project/sagiegurari/cargo-make) [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make)<br>
-[![license](https://img.shields.io/github/license/sagiegurari/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/sagiegurari/cargo-make.svg)](https://libraries.io/cargo/cargo-make) [![Documentation](https://docs.rs/cargo-make/badge.svg)](https://docs.rs/crate/cargo-make/) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make)<br>
+[![license](https://img.shields.io/github/license/sagiegurari/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/sagiegurari/cargo-make.svg)](https://libraries.io/cargo/cargo-make) [![Documentation](https://docs.rs/cargo-make/badge.svg)](https://docs.rs/crate/cargo-make/) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make) [ ![Download](https://api.bintray.com/packages/sagiegurari/cargo-make/linux/images/download.svg) ](https://bintray.com/sagiegurari/cargo-make/linux/_latestVersion)<br>
 [![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
@@ -572,9 +572,15 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.46
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
+````
+
+The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
+
+````sh
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.46
 ````
 
 <a name="usage-ci-appveyor"></a>
@@ -992,7 +998,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-06  | v0.3.45 | Added bintray upload task |
+| 2017-08-06  | v0.3.46 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
