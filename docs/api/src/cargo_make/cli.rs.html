@@ -197,9 +197,6 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
-<span id="155">155</span>
-<span id="156">156</span>
-<span id="157">157</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -304,7 +301,6 @@
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;makefile&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--makefile&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
-                    .<span class="ident">max_values</span>(<span class="number">1</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>)
                     .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TOML</span>)
             )
@@ -313,11 +309,10 @@
                     .<span class="ident">short</span>(<span class="string">&quot;-t&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--task&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;TASK&quot;</span>)
-                    .<span class="ident">max_values</span>(<span class="number">1</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;The task name to execute (can omit the flag if the task name is the last argument)&quot;</span>)
                     .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>)
             )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>).<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>).<span class="ident">max_values</span>(<span class="number">1</span>).<span class="ident">help</span>(
+            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>).<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>).<span class="ident">help</span>(
                 <span class="string">&quot;Will set the current working directory. The search for the makefile will be from this directory if defined.&quot;</span>
             ))
             .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
@@ -337,7 +332,6 @@
                 <span class="ident">Arg</span>::<span class="ident">from_usage</span>(<span class="string">&quot;-l, --loglevel=[LOG LEVEL] &#39;The log level&#39;&quot;</span>)
                     .<span class="ident">possible_values</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;verbose&quot;</span>, <span class="string">&quot;info&quot;</span>, <span class="string">&quot;error&quot;</span>])
                     .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>)
-                    .<span class="ident">max_values</span>(<span class="number">1</span>)
             )
             .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;v&quot;</span>).<span class="ident">short</span>(<span class="string">&quot;-v&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--verbose&quot;</span>).<span class="ident">help</span>(
                 <span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>

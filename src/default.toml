@@ -527,6 +527,42 @@ exit 1
 ]
 run_task = "codecov-flow"
 
+[tasks.upload-artifacts]
+description = "Uploads the binary artifact from the cargo package/publish output."
+alias = "bintray-upload"
+
+[tasks.bintray-upload]
+description = "Uploads the binary artifact from the cargo package/publish output to bintray."
+
+[tasks.bintray-upload.linux]
+condition_script = [
+'''
+if [ -z "$BINTRAY_API_KEY" ]; then
+    echo "Bintray API key not defined (BINTRAY_API_KEY)";
+    exit 1
+fi
+
+if [ -z "$BINTRAY_OWNER_NAME" ]; then
+    echo "Bintray owner name not defined (BINTRAY_OWNER_NAME)";
+    exit 1
+fi
+
+if [ -z "$BINTRAY_PACKAGE_NAME" ]; then
+    echo "Bintray package name not defined (BINTRAY_PACKAGE_NAME)";
+    exit 1
+fi
+
+if [ -z "$BINTRAY_TARGET_FILE_PATH" ]; then
+    echo "Bintray target file path not defined (BINTRAY_TARGET_FILE_PATH)";
+    exit 1
+fi
+'''
+]
+script = [
+    "curl -T \"./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}\" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H \"X-Bintray-Package:${BINTRAY_PACKAGE_NAME}\" -H \"X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}\" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_TARGET_FILE_PATH}",
+    "curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish"
+]
+
 [tasks.github-publish]
 # Creates a new github release.
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
@@ -563,8 +599,6 @@ if [ -z "$GITHUB_REPO_NAME" ]; then
     echo "Github repo name not defined";
     exit 1
 fi
-
-exit 0
 '''
 ]
 run_task = "build-publish-flow-no-validation"
@@ -579,5 +613,6 @@ dependencies = [
     "git-push",
     "github-publish-custom-name",
     "publish-flow",
+    "upload-artifacts",
     "git-pull"
 ]

@@ -101,7 +101,6 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                 Arg::with_name("makefile")
                     .long("--makefile")
                     .value_name("FILE")
-                    .max_values(1)
                     .help("The optional toml file containing the tasks definitions")
                     .default_value(&DEFAULT_TOML)
             )
@@ -110,11 +109,10 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                     .short("-t")
                     .long("--task")
                     .value_name("TASK")
-                    .max_values(1)
                     .help("The task name to execute (can omit the flag if the task name is the last argument)")
                     .default_value(&DEFAULT_TASK_NAME)
             )
-            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").max_values(1).help(
+            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").help(
                 "Will set the current working directory. The search for the makefile will be from this directory if defined."
             ))
             .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
@@ -134,7 +132,6 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
                     .default_value(&DEFAULT_LOG_LEVEL)
-                    .max_values(1)
             )
             .arg(Arg::with_name("v").short("-v").long("--verbose").help(
                 "Sets the log level to verbose (shorthand for --loglevel verbose)"

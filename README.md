@@ -568,6 +568,15 @@ script:
   - cargo make workspace-ci-flow --no-workspace
 ````
 
+For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
+
+````yml
+script:
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make
+  - chmod 777 ~/.cargo/bin/cargo-make
+  - cargo-make make ci-flow
+````
+
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
 Add the following to appveyor.yml file:
@@ -686,6 +695,8 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
 * **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
+* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output.
+* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
 
 <a name="usage-predefined-flows-git"></a>
 #### Git Commands
@@ -981,6 +992,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-06  | v0.3.44 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |
 | 2017-07-28  | v0.3.38 | Added run_script which allows executing sub tasks |
