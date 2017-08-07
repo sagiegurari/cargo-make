@@ -583,6 +583,19 @@ The specific version of cargo-make requested is defined in the suffix of the car
 https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.48
 ````
 
+In order to pull the latest prebuild cargo-make binary, use the following example:
+
+````yml
+env:
+  global:
+  - CARGO_MAKE_URL="https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v"
+
+before_install:
+  - curl -SsL $CARGO_MAKE_URL$(cargo search cargo-make | grep cargo-make | cut -d\" -f2) > ~/.cargo/bin/cargo-make
+  - chmod 777 ~/.cargo/bin/cargo-make
+  - cargo-make make ci-flow
+````
+
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
 Add the following to appveyor.yml file:
