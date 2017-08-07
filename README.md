@@ -26,8 +26,8 @@
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
-        * [Flows](#usage-predefined-flows-flows)
         * [Git Commands](#usage-predefined-flows-git)
+        * [Flows/Other](#usage-predefined-flows-flows)
     * [Workspace Support](#usage-workspace-support)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
@@ -530,7 +530,7 @@ args = ["build"]
 Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific environment variable is defined.
 
 <a name="usage-conditions-and-subtasks"></a>
-### Combining Conditions and Sub Tasks
+#### Combining Conditions and Sub Tasks
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
 For example, if you have a coverage flow that should only be invoked in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
 
@@ -600,7 +600,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.49
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.50
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -608,7 +608,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.49
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.50
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -715,8 +715,20 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **audit** - Runs verify-audit cargo plugin.
 * **clippy** - Runs clippy code linter.
 
+<a name="usage-predefined-flows-git"></a>
+#### Git Commands
+
+* **git-status** - Runs git status command.
+* **git-add** - Runs the cargo add command.
+* **git-commit** - Runs git commit command.
+* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
+* **git-push** - Runs git push command.
+* **git-pull** - Runs git pull command.
+* **github-publish** - Creates a new github release.
+* **github-publish-custom-name** - Creates a new github release.
+
 <a name="usage-predefined-flows-flows"></a>
-#### Flows
+#### Flows/Other
 
 * **empty** - Empty Task
 * **init** - By default this task is invoked at the start of every cargo-make run.
@@ -744,18 +756,6 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
 * **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output.
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
-
-<a name="usage-predefined-flows-git"></a>
-#### Git Commands
-
-* **git-status** - Runs git status command.
-* **git-add** - Runs the cargo add command.
-* **git-commit** - Runs git commit command.
-* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
-* **git-push** - Runs git push command.
-* **git-pull** - Runs git pull command.
-* **github-publish** - Creates a new github release.
-* **github-publish-custom-name** - Creates a new github release.
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
@@ -1051,6 +1051,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-08  | v0.3.50 | Docs |
 | 2017-08-08  | v0.3.49 | Added condition attribute |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
