@@ -1,6 +1,5 @@
 use super::*;
 
-use super::gitinfo;
 use log;
 use std::{thread, time};
 use std::collections::HashMap;
@@ -205,13 +204,11 @@ fn setup_env_log_error() {
 fn setup_env_for_git_repo_with_values() {
     let logger = log::create("error");
 
-    let git_info = gitinfo::load(&logger);
-
     env::set_var("CARGO_MAKE_GIT_BRANCH", "EMPTY");
     env::set_var("CARGO_MAKE_GIT_USER_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_GIT_USER_EMAIL", "EMPTY");
 
-    setup_env_for_git_repo(&logger);
+    let git_info = setup_env_for_git_repo(&logger);
 
     if git_info.branch.is_some() {
         assert_eq!(env::var("CARGO_MAKE_GIT_BRANCH").unwrap(), git_info.branch.unwrap());

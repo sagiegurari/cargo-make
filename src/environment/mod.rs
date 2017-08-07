@@ -10,11 +10,10 @@ mod rustinfo;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use self::rustinfo::Channel;
 use log::Logger;
 use std::env;
 use std::path::PathBuf;
-use types::{Config, CrateInfo, PackageInfo, Workspace};
+use types::{Config, CrateInfo, EnvInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
 
 /// Updates the env for the current execution based on the descriptor.
 fn set_env(
@@ -29,8 +28,9 @@ fn set_env(
     }
 }
 
-fn setup_env_for_crate(logger: &Logger) {
+fn setup_env_for_crate(logger: &Logger) -> CrateInfo {
     let crate_info = CrateInfo::load(&logger);
+    let crate_info_clone = crate_info.clone();
 
     let package_info = crate_info.package.unwrap_or(PackageInfo::new());
 
@@ -77,10 +77,13 @@ fn setup_env_for_crate(logger: &Logger) {
     let members = workspace.members.unwrap_or(vec![]);
     let members_string = members.join(",");
     env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
+
+    crate_info_clone
 }
 
-fn setup_env_for_git_repo(logger: &Logger) {
+fn setup_env_for_git_repo(logger: &Logger) -> GitInfo {
     let git_info = gitinfo::load(&logger);
+    let git_info_clone = git_info.clone();
 
     if git_info.branch.is_some() {
         env::set_var("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
@@ -93,10 +96,13 @@ fn setup_env_for_git_repo(logger: &Logger) {
     if git_info.user_email.is_some() {
         env::set_var("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
     }
+
+    git_info_clone
 }
 
-fn setup_env_for_rust(logger: &Logger) {
+fn setup_env_for_rust(logger: &Logger) -> RustInfo {
     let rust_info = rustinfo::load(&logger);
+    let rust_info_clone = rust_info.clone();
 
     if rust_info.version.is_some() {
         env::set_var("CARGO_MAKE_RUST_VERSION", &rust_info.version.unwrap());
@@ -106,9 +112,9 @@ fn setup_env_for_rust(logger: &Logger) {
         let channel_option = rust_info.channel.unwrap();
 
         let channel = match channel_option {
-            Channel::Stable => "stable",
-            Channel::Beta => "beta",
-            Channel::Nightly => "nightly",
+            RustChannel::Stable => "stable",
+            RustChannel::Beta => "beta",
+            RustChannel::Nightly => "nightly",
         };
 
         env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
@@ -133,6 +139,8 @@ fn setup_env_for_rust(logger: &Logger) {
     if rust_info.target_vendor.is_some() {
         env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", &rust_info.target_vendor.unwrap());
     }
+
+    rust_info_clone
 }
 
 /// Sets up the env before the tasks execution.
@@ -140,7 +148,7 @@ pub fn setup_env(
     logger: &Logger,
     config: &Config,
     task: &str,
-) {
+) -> EnvInfo {
     set_env(logger, config);
 
     env::set_var("CARGO_MAKE", "true");
@@ -157,13 +165,15 @@ pub fn setup_env(
     env::set_var("CARGO_MAKE_LOG_LEVEL", log_level);
 
     // load crate info
-    setup_env_for_crate(&logger);
+    let crate_info = setup_env_for_crate(&logger);
 
     // load git info
-    setup_env_for_git_repo(&logger);
+    let git_info = setup_env_for_git_repo(&logger);
 
     // load rust info
-    setup_env_for_rust(&logger);
+    let rust_info = setup_env_for_rust(&logger);
+
+    EnvInfo { rust_info, crate_info, git_info }
 }
 
 pub fn setup_cwd(

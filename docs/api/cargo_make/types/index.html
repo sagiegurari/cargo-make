@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Module types</p><div class="block items"><ul><li><a href="#structs">Structs</a></li></ul></div><p class='location'><a href='../index.html'>cargo_make</a></p><script>window.sidebarCurrent = {name: 'types', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module types</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>cargo_make</a></p><script>window.sidebarCurrent = {name: 'types', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#1-573' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#1-684' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'>
 <h1 id='types' class='section-header'><a href='#types'>types</a></h1>
 <p>Defines the various types and aliases used by cargo-make.</p>
@@ -83,6 +83,13 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.EnvInfo.html"
+                                  title='struct cargo_make::types::EnvInfo'>EnvInfo</a></td>
+                           <td class='docblock-short'>
+                                <p>Holds env information</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.ExecutionPlan.html"
                                   title='struct cargo_make::types::ExecutionPlan'>ExecutionPlan</a></td>
                            <td class='docblock-short'>
@@ -104,6 +111,13 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.GitInfo.html"
+                                  title='struct cargo_make::types::GitInfo'>GitInfo</a></td>
+                           <td class='docblock-short'>
+                                <p>Holds git info for the given repo directory</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.PackageInfo.html"
                                   title='struct cargo_make::types::PackageInfo'>PackageInfo</a></td>
                            <td class='docblock-short'>
@@ -115,6 +129,13 @@
                                   title='struct cargo_make::types::PlatformOverrideTask'>PlatformOverrideTask</a></td>
                            <td class='docblock-short'>
                                 <p>Holds a single task configuration for a specific platform as an override of another task</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.RustInfo.html"
+                                  title='struct cargo_make::types::RustInfo'>RustInfo</a></td>
+                           <td class='docblock-short'>
+                                <p>Holds rust info for the current runtime</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -132,10 +153,33 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.TaskCondition.html"
+                                  title='struct cargo_make::types::TaskCondition'>TaskCondition</a></td>
+                           <td class='docblock-short'>
+                                <p>Holds condition attributes</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.Workspace.html"
                                   title='struct cargo_make::types::Workspace'>Workspace</a></td>
                            <td class='docblock-short'>
                                 <p>Holds crate workspace info.</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.RustChannel.html"
+                                  title='enum cargo_make::types::RustChannel'>RustChannel</a></td>
+                           <td class='docblock-short'>
+                                <p>Rust channel type</p>
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.get_platform_name.html"
+                                  title='fn cargo_make::types::get_platform_name'>get_platform_name</a></td>
+                           <td class='docblock-short'>
+                                <p>Returns the platform name</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

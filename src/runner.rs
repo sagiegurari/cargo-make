@@ -17,15 +17,71 @@ use installer;
 use log::Logger;
 use std::collections::HashSet;
 use std::time::SystemTime;
-use types::{Config, CrateInfo, ExecutionPlan, FlowInfo, Step, Task};
+use types;
+use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, RustChannel, Step, Task};
 
-fn validate_condition(
+fn validate_condition_structure(
+    logger: &Logger,
+    flow_info: &FlowInfo,
+    step: &Step,
+) -> bool {
+    match step.config.condition {
+        Some(ref condition) => {
+            logger.verbose::<()>("Checking task condition structure.", &[], None);
+
+            let platforms = condition.platforms.clone();
+            let platform_valid = match platforms {
+                Some(platform_names) => {
+                    let platform_name = types::get_platform_name();
+
+                    let index = platform_names.iter().position(|value| *value == platform_name);
+
+                    match index {
+                        None => {
+                            logger.verbose::<()>("Failed platform condition, current platform: ", &[&platform_name], None);
+                            false
+                        }
+                        _ => true,
+                    }
+                }
+                None => true,
+            };
+
+            let channels = condition.channels.clone();
+            let channel_valid = match channels {
+                Some(channel_names) => {
+                    match flow_info.env_info.rust_info.channel {
+                        Some(value) => {
+                            let index = match value {
+                                RustChannel::Stable => channel_names.iter().position(|value| *value == "stable".to_string()),
+                                RustChannel::Beta => channel_names.iter().position(|value| *value == "beta".to_string()),
+                                RustChannel::Nightly => channel_names.iter().position(|value| *value == "nightly".to_string()),
+                            };
+
+                            match index {
+                                None => false,
+                                _ => true,
+                            }
+                        }
+                        None => false,
+                    }
+                }
+                None => true,
+            };
+
+            platform_valid && channel_valid
+        }
+        None => true,
+    }
+}
+
+fn validate_condition_script(
     logger: &Logger,
     step: &Step,
 ) -> bool {
     match step.config.condition_script {
         Some(ref script) => {
-            logger.verbose::<()>("Checking task condition.", &[], None);
+            logger.verbose::<()>("Checking task condition script.", &[], None);
 
             let exit_code = command::run_script(&logger, &script, step.config.script_runner.clone(), false);
 
@@ -37,6 +93,14 @@ fn validate_condition(
         }
         None => true,
     }
+}
+
+fn validate_condition(
+    logger: &Logger,
+    flow_info: &FlowInfo,
+    step: &Step,
+) -> bool {
+    validate_condition_structure(&logger, &flow_info, &step) && validate_condition_script(&logger, &step)
 }
 
 fn run_sub_task(
@@ -57,7 +121,7 @@ fn run_task(
 ) {
     logger.info::<()>("Running Task: ", &[&step.name], None);
 
-    if validate_condition(&logger, &step) {
+    if validate_condition(&logger, &flow_info, &step) {
         installer::install(&logger, &step.config);
 
         match step.config.run_task {
@@ -252,11 +316,12 @@ pub fn run(
     logger: &Logger,
     config: Config,
     task: &str,
+    env_info: EnvInfo,
     disable_workspace: bool,
 ) {
     let start_time = SystemTime::now();
 
-    let flow_info = FlowInfo { config, task: task.to_string(), disable_workspace };
+    let flow_info = FlowInfo { config, task: task.to_string(), env_info, disable_workspace };
 
     run_flow(logger, &flow_info);
 

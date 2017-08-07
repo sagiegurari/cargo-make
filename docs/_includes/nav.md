@@ -10,6 +10,8 @@
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
     * [Conditions](#usage-conditions)
+        * [Criteria](#usage-conditions-structure)
+        * [Scripts](#usage-conditions-script)
         * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)

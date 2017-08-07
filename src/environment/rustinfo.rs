@@ -11,47 +11,7 @@ use command;
 use log::Logger;
 use std::collections::HashMap;
 use std::process::Command;
-
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-/// Rust channel type
-pub enum Channel {
-    Stable,
-    Beta,
-    Nightly
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds rust info for the current runtime
-pub struct RustInfo {
-    /// version
-    pub version: Option<String>,
-    /// channel
-    pub channel: Option<Channel>,
-    /// target arch cfg value
-    pub target_arch: Option<String>,
-    /// target env cfg value
-    pub target_env: Option<String>,
-    /// target OS cfg value
-    pub target_os: Option<String>,
-    /// target pointer width cfg value
-    pub target_pointer_width: Option<String>,
-    /// target vendor cfg value
-    pub target_vendor: Option<String>
-}
-
-impl RustInfo {
-    pub fn new() -> RustInfo {
-        RustInfo {
-            version: None,
-            channel: None,
-            target_arch: None,
-            target_env: None,
-            target_os: None,
-            target_pointer_width: None,
-            target_vendor: None
-        }
-    }
-}
+use types::{RustChannel, RustInfo};
 
 pub fn load(logger: &Logger) -> RustInfo {
     let mut rust_info = RustInfo::new();
@@ -75,11 +35,11 @@ pub fn load(logger: &Logger) -> RustInfo {
                         rust_info.version = Some(version_parts[0].to_string());
 
                         if version_parts.len() == 1 {
-                            rust_info.channel = Some(Channel::Stable);
+                            rust_info.channel = Some(RustChannel::Stable);
                         } else if version_parts[1].contains("beta") {
-                            rust_info.channel = Some(Channel::Beta);
+                            rust_info.channel = Some(RustChannel::Beta);
                         } else if version_parts[1].contains("nightly") {
-                            rust_info.channel = Some(Channel::Nightly);
+                            rust_info.channel = Some(RustChannel::Nightly);
                         }
                     }
                 }

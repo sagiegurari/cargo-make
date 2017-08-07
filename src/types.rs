@@ -14,6 +14,17 @@ use std::io::Read;
 use std::path::Path;
 use toml;
 
+/// Returns the platform name
+pub fn get_platform_name() -> String {
+    if cfg!(windows) {
+        "windows".to_string()
+    } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
+        "mac".to_string()
+    } else {
+        "linux".to_string()
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
@@ -51,6 +62,174 @@ impl CliArgs {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
+/// Rust channel type
+pub enum RustChannel {
+    /// Rust stable channel
+    Stable,
+    /// Rust beta channel
+    Beta,
+    /// Rust nightly channel
+    Nightly
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds rust info for the current runtime
+pub struct RustInfo {
+    /// version
+    pub version: Option<String>,
+    /// channel
+    pub channel: Option<RustChannel>,
+    /// target arch cfg value
+    pub target_arch: Option<String>,
+    /// target env cfg value
+    pub target_env: Option<String>,
+    /// target OS cfg value
+    pub target_os: Option<String>,
+    /// target pointer width cfg value
+    pub target_pointer_width: Option<String>,
+    /// target vendor cfg value
+    pub target_vendor: Option<String>
+}
+
+impl RustInfo {
+    /// Returns new instasnce
+    pub fn new() -> RustInfo {
+        RustInfo {
+            version: None,
+            channel: None,
+            target_arch: None,
+            target_env: None,
+            target_os: None,
+            target_pointer_width: None,
+            target_vendor: None
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds git info for the given repo directory
+pub struct GitInfo {
+    /// branch name
+    pub branch: Option<String>,
+    /// user.name
+    pub user_name: Option<String>,
+    /// user.email
+    pub user_email: Option<String>
+}
+
+impl GitInfo {
+    /// Returns new instasnce
+    pub fn new() -> GitInfo {
+        GitInfo { branch: None, user_name: None, user_email: None }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate workspace info.
+pub struct Workspace {
+    /// members paths
+    pub members: Option<Vec<String>>
+}
+
+impl Workspace {
+    /// Creates and returns a new instance.
+    pub fn new() -> Workspace {
+        Workspace { members: None }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate package information loaded from the Cargo.toml file package section.
+pub struct PackageInfo {
+    /// name
+    pub name: Option<String>,
+    /// version
+    pub version: Option<String>,
+    /// description
+    pub description: Option<String>,
+    /// license
+    pub license: Option<String>,
+    /// documentation link
+    pub documentation: Option<String>,
+    /// homepage link
+    pub homepage: Option<String>,
+    /// repository link
+    pub repository: Option<String>
+}
+
+impl PackageInfo {
+    /// Creates and returns a new instance.
+    pub fn new() -> PackageInfo {
+        PackageInfo {
+            name: None,
+            version: None,
+            description: None,
+            license: None,
+            documentation: None,
+            homepage: None,
+            repository: None
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate information loaded from the Cargo.toml file.
+pub struct CrateInfo {
+    /// package info
+    pub package: Option<PackageInfo>,
+    /// workspace info
+    pub workspace: Option<Workspace>
+}
+
+impl CrateInfo {
+    /// Creates and returns a new instance.
+    pub fn new() -> CrateInfo {
+        CrateInfo { package: None, workspace: None }
+    }
+
+    /// Loads the crate info based on the Cargo.toml found in the current working directory.
+    ///
+    /// # Arguments
+    ///
+    /// * `logger` - Logger instance
+    pub fn load(logger: &Logger) -> CrateInfo {
+        // load crate info
+        let file_path = Path::new("Cargo.toml");
+
+        if file_path.exists() {
+            logger.verbose("Opening file:", &[], Some(&file_path));
+            let mut file = match File::open(&file_path) {
+                Ok(value) => value,
+                Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
+            };
+            let mut crate_info_string = String::new();
+            file.read_to_string(&mut crate_info_string).unwrap();
+
+            let crate_info: CrateInfo = match toml::from_str(&crate_info_string) {
+                Ok(value) => value,
+                Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
+            };
+            logger.verbose("Loaded Cargo.toml:", &[], Some(&crate_info));
+
+            crate_info
+        } else {
+            CrateInfo::new()
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds env information
+pub struct EnvInfo {
+    /// Rust info
+    pub rust_info: RustInfo,
+    /// Crate info
+    pub crate_info: CrateInfo,
+    /// Git info
+    pub git_info: GitInfo
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds flow information
 pub struct FlowInfo {
@@ -58,8 +237,19 @@ pub struct FlowInfo {
     pub config: Config,
     /// The main task of the flow
     pub task: String,
+    /// The env info
+    pub env_info: EnvInfo,
     /// Prevent workspace support
     pub disable_workspace: bool
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds condition attributes
+pub struct TaskCondition {
+    /// Platform names (linux, windows, mac)
+    pub platforms: Option<Vec<String>>,
+    /// Channel names (stable, beta, nightly)
+    pub channels: Option<Vec<String>>
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -69,6 +259,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
+    pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -111,6 +303,7 @@ impl Task {
         Task {
             description: None,
             disabled: None,
+            condition: None,
             condition_script: None,
             force: None,
             alias: None,
@@ -146,6 +339,10 @@ impl Task {
 
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        }
+
+        if task.condition.is_some() {
+            self.condition = task.condition.clone();
         }
 
         if task.condition_script.is_some() {
@@ -224,12 +421,13 @@ impl Task {
 
     /// Returns the override task definition based on the current platform.
     fn get_override(self: &Task) -> Option<PlatformOverrideTask> {
-        if cfg!(windows) {
+        let platform_name = get_platform_name();
+        if platform_name == "windows" {
             match self.windows {
                 Some(ref value) => Some(value.clone()),
                 _ => None,
             }
-        } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
+        } else if platform_name == "mac" {
             match self.mac {
                 Some(ref value) => Some(value.clone()),
                 _ => None,
@@ -251,6 +449,7 @@ impl Task {
                 Task {
                     description: self.description.clone(),
                     disabled: override_task.disabled.clone(),
+                    condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
                     alias: None,
@@ -312,6 +511,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
+    pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -352,6 +553,10 @@ impl PlatformOverrideTask {
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
                 self.disabled = task.disabled.clone();
+            }
+
+            if self.condition.is_none() && task.condition.is_some() {
+                self.condition = task.condition.clone();
             }
 
             if self.condition_script.is_none() && task.condition_script.is_some() {
@@ -476,98 +681,4 @@ pub struct Step {
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds crate workspace info.
-pub struct Workspace {
-    /// members paths
-    pub members: Option<Vec<String>>
-}
-
-impl Workspace {
-    /// Creates and returns a new instance.
-    pub fn new() -> Workspace {
-        Workspace { members: None }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds crate package information loaded from the Cargo.toml file package section.
-pub struct PackageInfo {
-    /// name
-    pub name: Option<String>,
-    /// version
-    pub version: Option<String>,
-    /// description
-    pub description: Option<String>,
-    /// license
-    pub license: Option<String>,
-    /// documentation link
-    pub documentation: Option<String>,
-    /// homepage link
-    pub homepage: Option<String>,
-    /// repository link
-    pub repository: Option<String>
-}
-
-impl PackageInfo {
-    /// Creates and returns a new instance.
-    pub fn new() -> PackageInfo {
-        PackageInfo {
-            name: None,
-            version: None,
-            description: None,
-            license: None,
-            documentation: None,
-            homepage: None,
-            repository: None
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds crate information loaded from the Cargo.toml file.
-pub struct CrateInfo {
-    /// package info
-    pub package: Option<PackageInfo>,
-    /// workspace info
-    pub workspace: Option<Workspace>
-}
-
-impl CrateInfo {
-    /// Creates and returns a new instance.
-    pub fn new() -> CrateInfo {
-        CrateInfo { package: None, workspace: None }
-    }
-
-    /// Loads the crate info based on the Cargo.toml found in the current working directory.
-    ///
-    /// # Arguments
-    ///
-    /// * `logger` - Logger instance
-    pub fn load(logger: &Logger) -> CrateInfo {
-        // load crate info
-        let file_path = Path::new("Cargo.toml");
-
-        if file_path.exists() {
-            logger.verbose("Opening file:", &[], Some(&file_path));
-            let mut file = match File::open(&file_path) {
-                Ok(value) => value,
-                Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
-            };
-            let mut crate_info_string = String::new();
-            file.read_to_string(&mut crate_info_string).unwrap();
-
-            let crate_info: CrateInfo = match toml::from_str(&crate_info_string) {
-                Ok(value) => value,
-                Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
-            };
-            logger.verbose("Loaded Cargo.toml:", &[], Some(&crate_info));
-
-            crate_info
-        } else {
-            CrateInfo::new()
-        }
-    }
 }

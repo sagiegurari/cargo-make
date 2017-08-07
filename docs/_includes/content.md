@@ -446,9 +446,35 @@ The following environment variables will be set by cargo-make if the project is 
 
 <a name="usage-conditions"></a>
 ### Conditions
-Condition scripts allow you to evaluate at runtime if to run a specific task or not.<br>
-These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.<br>
+Conditions allow you to evaluate at runtime if to run a specific task or not.<br>
+These conditions are evaluated before the task is running its installation and/or commands and if the condition is not fulfilled, the task will not be invoked.<br>
 The task dependencies however are not affected by parent task condition outcome.
+
+There are two types of conditions:
+
+* Criteria
+* Scripts
+
+The task runner will evaluate any condition defined and a task definition may contain both types at the same time.
+
+<a name="usage-conditions-structure"></a>
+#### Criteria
+The condition attribute may define multiple parameters to validate.<br>
+All defined parameters must be valid for the condition as a whole to be true and enable the task to run.
+
+Below is an example of a condition script that checks that we are running on windows or linux (but not mac) and that we are running on beta or nightly (but not stable):
+
+````toml
+[tasks.test-condition]
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"] }
+script = [
+    "echo \"condition was met\""
+]
+````
+
+<a name="usage-conditions-script"></a>
+#### Scripts
+These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.
 
 Below is an example of a condition script that always returns a non zero value, in which case the command is never executed:
 
@@ -465,7 +491,7 @@ Condition scripts can be used to ensure that the task is only invoked if a speci
 
 <a name="usage-conditions-and-subtasks"></a>
 ### Combining Conditions and Sub Tasks
-condition_script and run_task combined can enable you to define a conditional sub flow.<br>
+Conditions and run_task combined can enable you to define a conditional sub flow.<br>
 For example, if you have a coverage flow that should only be invoked in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
 
 ````toml
@@ -820,6 +846,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
+    pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -862,6 +890,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
+    pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
@@ -882,6 +912,14 @@ pub struct PlatformOverrideTask {
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
+}
+
+/// Holds condition attributes
+pub struct TaskCondition {
+    /// Platform names (linux, windows, mac)
+    pub platforms: Option<Vec<String>>,
+    /// Channel names (stable, beta, nightly)
+    pub channels: Option<Vec<String>>
 }
 ````
 
@@ -973,7 +1011,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-06  | v0.3.48 | Workspace fix for windows |
+| 2017-08-08  | v0.3.49 | Added condition attribute |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |
 | 2017-08-01  | v0.3.41 | Added github-publish task |

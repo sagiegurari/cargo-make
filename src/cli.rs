@@ -46,14 +46,14 @@ fn run(cli_args: CliArgs) {
 
     let config = descriptor::load(&build_file, env, &logger);
 
-    environment::setup_env(&logger, &config, &task);
+    let env_info = environment::setup_env(&logger, &config, &task);
 
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
     } else if cli_args.print_only {
         runner::print(&logger, &config, &task, cli_args.disable_workspace);
     } else {
-        runner::run(&logger, config, &task, cli_args.disable_workspace);
+        runner::run(&logger, config, &task, env_info, cli_args.disable_workspace);
     }
 }
 

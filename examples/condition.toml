@@ -1,0 +1,6 @@
+
+[tasks.test-condition]
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"] }
+script = [
+    "echo \"condition was met\""
+]

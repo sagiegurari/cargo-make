@@ -2,7 +2,7 @@ use super::*;
 use log;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, FlowInfo, PlatformOverrideTask, Step, Task, Workspace};
+use types::{ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, PlatformOverrideTask, RustChannel, RustInfo, Step, Task, TaskCondition, Workspace};
 
 #[test]
 #[should_panic]
@@ -117,6 +117,7 @@ fn create_execution_plan_platform_disabled() {
     task.linux = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition: None,
         condition_script: None,
         install_crate: None,
         command: None,
@@ -131,6 +132,7 @@ fn create_execution_plan_platform_disabled() {
     task.windows = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition: None,
         condition_script: None,
         install_crate: None,
         command: None,
@@ -145,6 +147,7 @@ fn create_execution_plan_platform_disabled() {
     task.mac = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        condition: None,
         condition_script: None,
         install_crate: None,
         command: None,
@@ -235,39 +238,223 @@ cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
 }
 
 #[test]
-fn validate_condition_empty() {
+fn validate_condition_script_empty() {
     let logger = log::create("error");
 
     let task = Task::new();
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_condition(&logger, &step);
+    let enabled = validate_condition_script(&logger, &step);
 
     assert!(enabled);
 }
 
 #[test]
-fn validate_condition_valid() {
+fn validate_condition_script_valid() {
     let logger = log::create("error");
 
     let mut task = Task::new();
     task.condition_script = Some(vec!["exit 0".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_condition(&logger, &step);
+    let enabled = validate_condition_script(&logger, &step);
 
     assert!(enabled);
 }
 
 #[test]
-fn validate_condition_invalid() {
+fn validate_condition_script_invalid() {
     let logger = log::create("error");
 
     let mut task = Task::new();
     task.condition_script = Some(vec!["exit 1".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_condition(&logger, &step);
+    let enabled = validate_condition_script(&logger, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_structure_empty() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition { platforms: None, channels: None });
+
+    let enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_structure_valid_platform() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition {
+        platforms: Some(vec!["bad1".to_string(), types::get_platform_name(), "bad2".to_string()]),
+        channels: None
+    });
+
+    let enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_structure_invalid_platform() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition { platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]), channels: None });
+
+    let enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_structure_valid_channel() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
+    step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "stable".to_string(), "bad2".to_string()]) });
+    let mut enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(enabled);
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
+    step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "beta".to_string(), "bad2".to_string()]) });
+    enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(enabled);
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Nightly);
+    step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "nightly".to_string(), "bad2".to_string()]) });
+    enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_structure_invalid_channel() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
+    step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "bad2".to_string()]) });
+    let enabled = validate_condition_structure(&logger, &flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_both_valid() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition {
+        platforms: Some(vec!["bad1".to_string(), types::get_platform_name(), "bad2".to_string()]),
+        channels: None
+    });
+    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+
+    let enabled = validate_condition(&logger, &flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_structure_valid_script_invalid() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition {
+        platforms: Some(vec!["bad1".to_string(), types::get_platform_name(), "bad2".to_string()]),
+        channels: None
+    });
+    step.config.condition_script = Some(vec!["exit 1".to_string()]);
+
+    let enabled = validate_condition(&logger, &flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_structure_invalid_script_valid() {
+    let logger = log::create("error");
+    let mut step = Step { name: "test".to_string(), config: Task::new() };
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    step.config.condition = Some(TaskCondition { platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]), channels: None });
+    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+
+    let enabled = validate_condition(&logger, &flow_info, &step);
 
     assert!(!enabled);
 }
@@ -278,7 +465,12 @@ fn run_task_bad_script() {
     let logger = log::create("error");
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 1".to_string()]);
@@ -292,7 +484,12 @@ fn run_task_command_and_bad_script() {
     let logger = log::create("error");
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.command = Some("echo".to_string());
@@ -309,7 +506,12 @@ fn run_task_bad_command_valid_script() {
     let logger = log::create("error");
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.command = Some("bad12345".to_string());
@@ -324,7 +526,12 @@ fn run_task_no_command_valid_script() {
     let logger = log::create("error");
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
@@ -345,7 +552,12 @@ fn run_task_bad_run_task_valid_command() {
     tasks.insert("sub".to_string(), sub_task);
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.run_task = Some("sub".to_string());
@@ -367,7 +579,12 @@ fn run_task_valid_run_task_bad_command() {
     tasks.insert("sub".to_string(), sub_task);
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
-    let flow_info = FlowInfo { config, task: "test".to_string(), disable_workspace: false };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
 
     let mut task = Task::new();
     task.run_task = Some("sub".to_string());
