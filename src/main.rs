@@ -109,6 +109,7 @@ mod descriptor;
 mod environment;
 mod command;
 mod installer;
+mod condition;
 mod runner;
 mod cli;
 
