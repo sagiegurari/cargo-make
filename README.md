@@ -331,8 +331,8 @@ If multiple attributes are defined (for example both command and script), only t
 There is no real need to define the tasks that were shown in the previous example.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
-tasks that are defined in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml).<br>
-Lets take the build task definition which comes alrady in the default toml:
+tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml).<br>
+Lets take the build task definition which comes already in the default toml:
 
 ````toml
 [tasks.build]
@@ -444,7 +444,7 @@ You can also define env vars to be set as part of the execution of the flow in t
 RUST_BACKTRACE = "1"
 ````
 
-All env vars defined in the env block and in the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) will be defined before running the tasks.
+All env vars defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be defined before running the tasks.
 
 Environment variables can also be defined in the command line using the --env/-e argument as follows:
 
@@ -615,7 +615,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.52
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.53
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -623,7 +623,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.52
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.53
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -665,7 +665,7 @@ test_script:
 
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
-The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) file comes with many predefined tasks and flows.<br>
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
 * **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ````cargo make````).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
@@ -992,7 +992,7 @@ More info can be found in the [types](https://sagiegurari.github.io/cargo-make/a
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
-The [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml) file comes with three types of tasks:
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with three types of tasks:
 
 * Single command or script task (for example ````cargo build````)
 * Tasks that come before or after the single command tasks
@@ -1017,7 +1017,7 @@ For example for task build the default toml also defines pre-build and post-buil
 [tasks.post-build]
 ````
 
-In the [default toml](https://github.com/sagiegurari/cargo-make/blob/master/src/default.toml), all pre/post tasks are empty and are there as placeholders
+In the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml), all pre/post tasks are empty and are there as placeholders
 for external Makefile.toml to override so custom functionality can be defined easily before/after running a specfific task.
 
 Flows are named with the flow suffix, for example: ci-flow
@@ -1073,7 +1073,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-09  | v0.3.52 | Added new condition types: env, env_set and env_not_set |
+| 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |
 | 2017-08-08  | v0.3.49 | Added condition attribute |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |
