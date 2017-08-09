@@ -44,7 +44,7 @@ fn run(cli_args: CliArgs) {
 
     let env = cli_args.env.clone();
 
-    let config = descriptor::load(&build_file, env, &logger);
+    let config = descriptor::load(&build_file, env, cli_args.experimental, &logger);
 
     let env_info = environment::setup_env(&logger, &config, &task);
 
@@ -78,6 +78,7 @@ fn run_for_args(matches: ArgMatches) {
                 cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL).to_string()
             };
 
+            cli_args.experimental = cmd_matches.is_present("experimental");
             cli_args.print_only = cmd_matches.is_present("print-steps");
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
             cli_args.list_all_steps = cmd_matches.is_present("list-steps");
@@ -135,6 +136,9 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             )
             .arg(Arg::with_name("v").short("-v").long("--verbose").help(
                 "Sets the log level to verbose (shorthand for --loglevel verbose)"
+            ))
+            .arg(Arg::with_name("experimental").long("--experimental").help(
+                "Allows access unsupported experimental predefined tasks."
             ))
             .arg(Arg::with_name("print-steps").long("--print-steps").help(
                 "Only prints the steps of the build in the order they will be invoked but without invoking them"

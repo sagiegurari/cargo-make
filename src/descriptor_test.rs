@@ -215,6 +215,28 @@ fn merge_tasks_extend_task() {
 }
 
 #[test]
+fn load_default_no_experimental() {
+    let logger = log::create("error");
+    let config = load_default(false, &logger);
+
+    let mut task = config.tasks.get("ci-flow");
+    assert!(task.is_some());
+    task = config.tasks.get("coverage-lcov");
+    assert!(task.is_none());
+}
+
+#[test]
+fn load_default_with_experimental() {
+    let logger = log::create("error");
+    let config = load_default(true, &logger);
+
+    let mut task = config.tasks.get("ci-flow");
+    assert!(task.is_some());
+    task = config.tasks.get("coverage-lcov");
+    assert!(task.is_some());
+}
+
+#[test]
 fn load_external_descriptor_no_file() {
     let logger = log::create("error");
     let config = load_external_descriptor(".", "bad_file.toml2", &logger);

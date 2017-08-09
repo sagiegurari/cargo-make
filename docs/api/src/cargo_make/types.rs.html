@@ -727,6 +727,9 @@
 <span id="682">682</span>
 <span id="683">683</span>
 <span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -773,7 +776,9 @@
     <span class="doccomment">/// Only print the execution plan</span>
     <span class="kw">pub</span> <span class="ident">print_only</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// List all known steps</span>
-    <span class="kw">pub</span> <span class="ident">list_all_steps</span>: <span class="ident">bool</span>
+    <span class="kw">pub</span> <span class="ident">list_all_steps</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Allows access unsupported experimental predefined tasks</span>
+    <span class="kw">pub</span> <span class="ident">experimental</span>: <span class="ident">bool</span>
 }
 
 <span class="kw">impl</span> <span class="ident">CliArgs</span> {
@@ -787,7 +792,8 @@
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
             <span class="ident">disable_workspace</span>: <span class="bool-val">false</span>,
             <span class="ident">print_only</span>: <span class="bool-val">false</span>,
-            <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>
+            <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>,
+            <span class="ident">experimental</span>: <span class="bool-val">false</span>
         }
     }
 }

@@ -144,6 +144,39 @@ fn load_external_descriptor(
     }
 }
 
+fn load_default(
+    experimental: bool,
+    logger: &Logger,
+) -> Config {
+    logger.verbose::<()>("Loading default tasks.", &[], None);
+
+    let default_descriptor = include_str!("Makefile.stable.toml");
+
+    let mut default_config: Config = match toml::from_str(default_descriptor) {
+        Ok(value) => value,
+        Err(error) => panic!("Unable to parse default descriptor, {}", error),
+    };
+    logger.verbose("Loaded default config:", &[], Some(&default_config));
+
+    if experimental {
+        let experimental_descriptor = include_str!("Makefile.beta.toml");
+
+        let experimental_config: Config = match toml::from_str(experimental_descriptor) {
+            Ok(value) => value,
+            Err(error) => panic!("Unable to parse experimental descriptor, {}", error),
+        };
+        logger.verbose("Loaded experimental config:", &[], Some(&experimental_config));
+
+        let mut default_tasks = default_config.tasks;
+        let mut experimental_tasks = experimental_config.tasks;
+        let all_tasks = merge_tasks(&mut default_tasks, &mut experimental_tasks);
+
+        default_config.tasks = all_tasks;
+    }
+
+    default_config
+}
+
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
@@ -151,17 +184,10 @@ fn load_external_descriptor(
 pub fn load(
     file_name: &str,
     env: Option<Vec<String>>,
+    experimental: bool,
     logger: &Logger,
 ) -> Config {
-    logger.verbose::<()>("Loading default tasks.", &[], None);
-
-    let default_descriptor = include_str!("default.toml");
-
-    let default_config: Config = match toml::from_str(default_descriptor) {
-        Ok(value) => value,
-        Err(error) => panic!("Unable to parse default descriptor, {}", error),
-    };
-    logger.verbose("Loaded default config:", &[], Some(&default_config));
+    let default_config = load_default(experimental, &logger);
 
     let external_config: ExternalConfig = load_external_descriptor(".", file_name, logger);
 

@@ -42,7 +42,81 @@ fn validate_script_invalid() {
 }
 
 #[test]
-fn valdiate_criteria_empty() {
+fn validate_platform_valid() {
+    let logger = log::create("error");
+
+    let condition = TaskCondition {
+        platforms: Some(vec!["bad1".to_string(), types::get_platform_name(), "bad2".to_string()]),
+        channels: None
+    };
+
+    let enabled = validate_platform(&logger, &condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_platform_invalid() {
+    let logger = log::create("error");
+
+    let condition = TaskCondition { platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]), channels: None };
+
+    let enabled = validate_platform(&logger, &condition);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_channel_valid() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
+    let mut condition = TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "stable".to_string(), "bad2".to_string()]) };
+    let mut enabled = validate_channel(&logger, &condition, &flow_info);
+    assert!(enabled);
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
+    condition = TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "beta".to_string(), "bad2".to_string()]) };
+    enabled = validate_channel(&logger, &condition, &flow_info);
+
+    assert!(enabled);
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Nightly);
+    condition = TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "nightly".to_string(), "bad2".to_string()]) };
+    enabled = validate_channel(&logger, &condition, &flow_info);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_channel_invalid() {
+    let logger = log::create("error");
+
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
+    let condition = TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "bad2".to_string()]) };
+    let enabled = validate_channel(&logger, &condition, &flow_info);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_criteria_empty() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -56,13 +130,13 @@ fn valdiate_criteria_empty() {
 
     step.config.condition = Some(TaskCondition { platforms: None, channels: None });
 
-    let enabled = valdiate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
-fn valdiate_criteria_valid_platform() {
+fn validate_criteria_valid_platform() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -79,13 +153,13 @@ fn valdiate_criteria_valid_platform() {
         channels: None
     });
 
-    let enabled = valdiate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
-fn valdiate_criteria_invalid_platform() {
+fn validate_criteria_invalid_platform() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -99,13 +173,13 @@ fn valdiate_criteria_invalid_platform() {
 
     step.config.condition = Some(TaskCondition { platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]), channels: None });
 
-    let enabled = valdiate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
-fn valdiate_criteria_valid_channel() {
+fn validate_criteria_valid_channel() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -119,25 +193,25 @@ fn valdiate_criteria_valid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "stable".to_string(), "bad2".to_string()]) });
-    let mut enabled = valdiate_criteria(&logger, &flow_info, &step);
+    let mut enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(enabled);
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
     step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "beta".to_string(), "bad2".to_string()]) });
-    enabled = valdiate_criteria(&logger, &flow_info, &step);
+    enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(enabled);
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Nightly);
     step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "nightly".to_string(), "bad2".to_string()]) });
-    enabled = valdiate_criteria(&logger, &flow_info, &step);
+    enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
-fn valdiate_criteria_invalid_channel() {
+fn validate_criteria_invalid_channel() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -151,7 +225,7 @@ fn valdiate_criteria_invalid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     step.config.condition = Some(TaskCondition { platforms: None, channels: Some(vec!["bad1".to_string(), "bad2".to_string()]) });
-    let enabled = valdiate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&logger, &flow_info, &step);
 
     assert!(!enabled);
 }
@@ -181,7 +255,7 @@ fn validate_condition_both_valid() {
 }
 
 #[test]
-fn valdiate_criteria_valid_script_invalid() {
+fn validate_criteria_valid_script_invalid() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
@@ -205,7 +279,7 @@ fn valdiate_criteria_valid_script_invalid() {
 }
 
 #[test]
-fn valdiate_criteria_invalid_script_valid() {
+fn validate_criteria_invalid_script_valid() {
     let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 

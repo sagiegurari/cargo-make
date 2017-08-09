@@ -1,0 +1,62 @@
+
+[config]
+
+[env]
+
+[tasks.coverage-lcov]
+description = "WARNING, THIS TASK IS UNTESTED!!!! Installs (if missing) and runs coverage using llvm-cov (not supported on windows/mac)"
+
+[tasks.coverage-lcov.linux]
+install_script = [
+'''
+command -v lcov >/dev/null 2>&1 || {
+    if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        sudo apt-get update || true
+        sudo apt-get install -y clang llvm-3.9 lcov
+        
+        git clone https://github.com/linux-test-project/lcov.git
+        cd lcov
+        sudo make install
+        cd ..
+        rm -Rf ./lcov
+    fi
+}
+'''
+]
+script = [
+'''
+#based on https://users.rust-lang.org/t/howto-generating-a-branch-coverage-report/8524
+if [ -n "$LLVM_VERSION" ]; then
+    rm -f *.gcda *.gcno
+
+    cargo rustc -- --test -Ccodegen-units=1 -Clink-dead-code -Cpasses=insert-gcov-profiling -Zno-landing-pads "-L/usr/lib/llvm-$LLVM_VERSION/lib/clang/$LLVM_VERSION/lib/linux/" "-lclang_rt.profile-${CARGO_MAKE_RUST_TARGET_ARCH}"
+
+    ls *.gcno
+
+    echo "Running unit tests"
+    for file in target/debug/deps/${CARGO_MAKE_CRATE_FS_NAME}*
+    do
+        "$file" || true
+    done
+
+    echo "Running integration tests"
+    for file in target/debug/deps/test_*
+    do
+        "$file" || true
+    done
+
+    ls *.gcda
+
+    echo "#!/bin/sh -e\nllvm-cov gcov $*" >> ./target/llvm-gcov
+    chmod 777 ./target/llvm-gcov
+    PATH=$PATH:./target:"/usr/lib/llvm-$LLVM_VERSION/bin"
+
+    LCOVOPTS="--gcov-tool llvm-gcov --rc lcov_branch_coverage=1"
+    LCOVOPTS="${LCOVOPTS} --rc lcov_excl_line=assert"
+    lcov ${LCOVOPTS} --capture --directory . --base-directory . -o coverage.lcov
+    lcov ${LCOVOPTS} --extract coverage.info "$(pwd)/*" -o "${CARGO_MAKE_CRATE_FS_NAME}.lcov"
+
+    genhtml --branch-coverage --demangle-cpp --legend "${CARGO_MAKE_CRATE_FS_NAME}.info" -o target/coverage/
+fi
+'''
+]

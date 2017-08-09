@@ -43,7 +43,9 @@ pub struct CliArgs {
     /// Only print the execution plan
     pub print_only: bool,
     /// List all known steps
-    pub list_all_steps: bool
+    pub list_all_steps: bool,
+    /// Allows access unsupported experimental predefined tasks
+    pub experimental: bool
 }
 
 impl CliArgs {
@@ -57,7 +59,8 @@ impl CliArgs {
             env: None,
             disable_workspace: false,
             print_only: false,
-            list_all_steps: false
+            list_all_steps: false,
+            experimental: false
         }
     }
 }

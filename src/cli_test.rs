@@ -13,7 +13,8 @@ fn run_empty_task() {
         env: None,
         disable_workspace: false,
         print_only: false,
-        list_all_steps: false
+        list_all_steps: false,
+        experimental: false
     });
 }
 
@@ -27,7 +28,8 @@ fn print_empty_task() {
         env: None,
         disable_workspace: false,
         print_only: true,
-        list_all_steps: false
+        list_all_steps: false,
+        experimental: false
     });
 }
 
@@ -41,7 +43,8 @@ fn list_empty_task() {
         env: None,
         disable_workspace: false,
         print_only: false,
-        list_all_steps: true
+        list_all_steps: true,
+        experimental: false
     });
 }
 
@@ -55,7 +58,8 @@ fn run_file_and_task() {
         env: None,
         disable_workspace: false,
         print_only: false,
-        list_all_steps: false
+        list_all_steps: false,
+        experimental: false
     });
 }
 
@@ -72,7 +76,8 @@ fn run_cwd_with_file() {
         env: None,
         disable_workspace: false,
         print_only: false,
-        list_all_steps: false
+        list_all_steps: false,
+        experimental: false
     });
 }
 
@@ -90,7 +95,8 @@ fn run_cwd_task_not_found() {
         env: None,
         disable_workspace: false,
         print_only: false,
-        list_all_steps: false
+        list_all_steps: false,
+        experimental: false
     });
 }
 
@@ -172,6 +178,7 @@ fn run_for_args_print_only() {
         "error",
         "--no-workspace",
         "--print-steps",
+        "--experimental",
     ]);
 
     run_for_args(matches);

@@ -600,7 +600,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.50
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.51
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -608,7 +608,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.50
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.51
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -840,6 +840,7 @@ USAGE:
     cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
+        --experimental      Allows access unsupported experimental predefined tasks.
     -h, --help              Prints help information
         --list-all-steps    Lists all known steps
         --no-workspace      Disable workspace support (tasks are triggered on workspace and not on members)
@@ -1051,7 +1052,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-08  | v0.3.50 | Docs |
+| 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |
 | 2017-08-08  | v0.3.49 | Added condition attribute |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |
 | 2017-08-02  | v0.3.43 | Added --env/-e cli args to set environment variables via command line |

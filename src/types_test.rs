@@ -13,6 +13,7 @@ fn cli_args_new() {
     assert!(!cli_args.disable_workspace);
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);
+    assert!(!cli_args.experimental);
 }
 
 #[test]
