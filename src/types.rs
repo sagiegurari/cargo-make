@@ -252,7 +252,13 @@ pub struct TaskCondition {
     /// Platform names (linux, windows, mac)
     pub platforms: Option<Vec<String>>,
     /// Channel names (stable, beta, nightly)
-    pub channels: Option<Vec<String>>
+    pub channels: Option<Vec<String>>,
+    /// Environment variables which must be defined
+    pub env_set: Option<Vec<String>>,
+    /// Environment variables which must not be defined
+    pub env_not_set: Option<Vec<String>>,
+    /// Environment variables and their values
+    pub env: Option<HashMap<String, String>>
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

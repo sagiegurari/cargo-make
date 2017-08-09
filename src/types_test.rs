@@ -165,7 +165,10 @@ fn task_extend_extended_have_all_fields() {
         disabled: Some(true),
         condition: Some(TaskCondition {
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-            channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -186,7 +189,10 @@ fn task_extend_extended_have_all_fields() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -204,7 +210,10 @@ fn task_extend_extended_have_all_fields() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -222,7 +231,10 @@ fn task_extend_extended_have_all_fields() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -397,7 +409,10 @@ fn task_get_normalized_task_with_override_no_clear() {
         disabled: Some(false),
         condition: Some(TaskCondition {
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-            channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -414,7 +429,10 @@ fn task_get_normalized_task_with_override_no_clear() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -484,7 +502,10 @@ fn task_get_normalized_task_with_override_clear_false() {
         disabled: Some(false),
         condition: Some(TaskCondition {
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-            channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -501,7 +522,10 @@ fn task_get_normalized_task_with_override_clear_false() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string(), "beta".to_string()])
+                channels: Some(vec!["nightly".to_string(), "stable".to_string(), "beta".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None
             }),
             condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
             force: Some(true),
@@ -570,7 +594,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         disabled: Some(false),
         condition: Some(TaskCondition {
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-            channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -648,7 +675,10 @@ fn task_get_normalized_task_with_override_clear_true() {
         disabled: Some(false),
         condition: Some(TaskCondition {
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
-            channels: Some(vec!["nightly".to_string(), "stable".to_string()])
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),

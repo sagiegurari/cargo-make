@@ -9,8 +9,89 @@ mod condition_test;
 
 use command;
 use log::Logger;
+use std::env;
 use types;
 use types::{FlowInfo, RustChannel, Step, TaskCondition};
+
+fn validate_env(condition: &TaskCondition) -> bool {
+    let env = condition.env.clone();
+
+    match env {
+        Some(env_vars) => {
+            let mut all_valid = true;
+
+            for (key, current_value) in env_vars.iter() {
+                match env::var(key) {
+                    Ok(value) => {
+                        all_valid = value == current_value.to_string();
+                    }
+                    _ => {
+                        all_valid = false;
+                    }
+                };
+
+                if !all_valid {
+                    break;
+                }
+            }
+
+            all_valid
+        }
+        None => true,
+    }
+}
+
+fn validate_env_set(condition: &TaskCondition) -> bool {
+    let env = condition.env_set.clone();
+
+    match env {
+        Some(env_vars) => {
+            let mut all_valid = true;
+
+            for key in env_vars.iter() {
+                match env::var(key) {
+                    Err(_) => {
+                        all_valid = false;
+                    }
+                    _ => (),
+                };
+
+                if !all_valid {
+                    break;
+                }
+            }
+
+            all_valid
+        }
+        None => true,
+    }
+}
+
+fn validate_env_not_set(condition: &TaskCondition) -> bool {
+    let env = condition.env_not_set.clone();
+
+    match env {
+        Some(env_vars) => {
+            let mut all_valid = true;
+
+            for key in env_vars.iter() {
+                match env::var(key) {
+                    Ok(_) => {
+                        all_valid = false;
+                    }
+                    _ => (),
+                };
+
+                if !all_valid {
+                    break;
+                }
+            }
+
+            all_valid
+        }
+        None => true,
+    }
+}
 
 fn validate_platform(
     logger: &Logger,
@@ -75,11 +156,7 @@ fn validate_criteria(
         Some(ref condition) => {
             logger.verbose::<()>("Checking task condition structure.", &[], None);
 
-            let platform_valid = validate_platform(&logger, &condition);
-
-            let channel_valid = validate_channel(&logger, &condition, &flow_info);
-
-            platform_valid && channel_valid
+            validate_platform(&logger, &condition) && validate_channel(&logger, &condition, &flow_info) && validate_env(&condition) && validate_env_set(&condition) && validate_env_not_set(&condition)
         }
         None => true,
     }

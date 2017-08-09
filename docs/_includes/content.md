@@ -472,6 +472,21 @@ script = [
 ]
 ````
 
+The following condition types are available:
+
+* **platforms** - List of platform names (windows, linux, mac)
+* **channels** - List of rust channels (stable, beta, nightly)
+* **env_set** - List of environment variables that must be defined
+* **env_not_set** - List of environment variables that must not be defined
+* **env** - Map of environment variables that must be defined and equal to the provided values
+
+Few examples:
+
+````toml
+[tasks.test-condition]
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true", } }
+````
+
 <a name="usage-conditions-script"></a>
 #### Scripts
 These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.
@@ -920,7 +935,13 @@ pub struct TaskCondition {
     /// Platform names (linux, windows, mac)
     pub platforms: Option<Vec<String>>,
     /// Channel names (stable, beta, nightly)
-    pub channels: Option<Vec<String>>
+    pub channels: Option<Vec<String>>,
+    /// Environment variables which must be defined
+    pub env_set: Option<Vec<String>>,
+    /// Environment variables which must not be defined
+    pub env_not_set: Option<Vec<String>>,
+    /// Environment variables and their values
+    pub env: Option<HashMap<String, String>>
 }
 ````
 
@@ -1012,6 +1033,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-09  | v0.3.52 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |
 | 2017-08-08  | v0.3.49 | Added condition attribute |
 | 2017-08-06  | v0.3.46 | Added bintray upload task |

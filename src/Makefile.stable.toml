@@ -351,25 +351,24 @@ alias = "coverage-kcov"
 [tasks.coverage-kcov]
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 windows_alias = "empty"
+condition = { env_set = [ "KCOV_VERSION" ] }
 install_script = [
 '''
 command -v kcov >/dev/null 2>&1 || {
-    if [ -n "$KCOV_VERSION" ]; then
-        if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
-            sudo apt-get update || true
-            sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
+    if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        sudo apt-get update || true
+        sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
 
-            wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
-            unzip v$KCOV_VERSION.zip
-            cd kcov-$KCOV_VERSION
-            mkdir build
-            cd ./build
-            cmake ..
-            make
-            sudo make install
-            cd ../..
-            rm -rf kcov-$KCOV_VERSION
-        fi
+        wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
+        unzip v$KCOV_VERSION.zip
+        cd kcov-$KCOV_VERSION
+        mkdir build
+        cd ./build
+        cmake ..
+        make
+        sudo make install
+        cd ../..
+        rm -rf kcov-$KCOV_VERSION
     fi
 }
 '''
@@ -433,13 +432,7 @@ dependencies = [
 description = "Runs codecov script to upload coverage results to codecov."
 windows_alias = "empty"
 script_runner = "bash"
-condition_script = [
-    "#!/usr/bin/env bash",
-    "if [ -z \"$CARGO_MAKE_SKIP_CODECOV\" ]; then",
-    "exit 0",
-    "fi",
-    "exit 1"
-]
+condition = { env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ] }
 script = [
     "#!/usr/bin/env bash",
     "bash <(curl -s https://codecov.io/bash)"
@@ -456,17 +449,7 @@ dependencies = [
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
 windows_alias = "empty"
-condition_script = [
-'''
-if [ "$TRAVIS" = "true" ]; then
-    if [ "$CARGO_MAKE_RUN_CODECOV" = "true" ]; then
-        exit 0
-    fi
-fi
-
-exit 1
-'''
-]
+condition = { env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.upload-artifacts]
@@ -477,24 +460,7 @@ alias = "bintray-upload"
 description = "Uploads the binary artifact from the cargo package/publish output to bintray."
 
 [tasks.bintray-upload.linux]
-condition_script = [
-'''
-if [ -z "$BINTRAY_API_KEY" ]; then
-    echo "Bintray API key not defined (BINTRAY_API_KEY)";
-    exit 1
-fi
-
-if [ -z "$BINTRAY_OWNER_NAME" ]; then
-    echo "Bintray owner name not defined (BINTRAY_OWNER_NAME)";
-    exit 1
-fi
-
-if [ -z "$BINTRAY_PACKAGE_NAME" ]; then
-    echo "Bintray package name not defined (BINTRAY_PACKAGE_NAME)";
-    exit 1
-fi
-'''
-]
+condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME" ] }
 script = [
     "curl -T \"./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}\" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H \"X-Bintray-Package:${BINTRAY_PACKAGE_NAME}\" -H \"X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}\" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1",
     "curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish"
@@ -520,24 +486,7 @@ script = [
 
 [tasks.build-publish-flow]
 description = "Runs full sanity, generates github release and publishes the crate."
-condition_script = [
-'''
-if [ -z "$COMMIT_MSG" ]; then 
-    echo "Commit message not defined";
-    exit 1
-fi
-
-if [ -z "$GITHUB_API_TOKEN" ]; then 
-    echo "Github API token not defined";
-    exit 1
-fi
-
-if [ -z "$GITHUB_REPO_NAME" ]; then 
-    echo "Github repo name not defined";
-    exit 1
-fi
-'''
-]
+condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
 run_task = "build-publish-flow-no-validation"
 
 [tasks.build-publish-flow-no-validation]
