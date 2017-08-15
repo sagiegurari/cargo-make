@@ -297,7 +297,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">create_cli</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
-    <span class="ident">App</span>::<span class="ident">new</span>(<span class="string">&quot;cargo&quot;</span>).<span class="ident">subcommand</span>(
+    <span class="ident">App</span>::<span class="ident">new</span>(<span class="string">&quot;cargo&quot;</span>).<span class="ident">bin_name</span>(<span class="string">&quot;cargo&quot;</span>).<span class="ident">subcommand</span>(
         <span class="ident">SubCommand</span>::<span class="ident">with_name</span>(<span class="ident">NAME</span>)
             .<span class="ident">version</span>(<span class="ident">VERSION</span>)
             .<span class="ident">author</span>(<span class="ident">AUTHOR</span>)

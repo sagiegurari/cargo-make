@@ -93,7 +93,7 @@ fn run_for_args(matches: ArgMatches) {
 }
 
 fn create_cli<'a, 'b>() -> App<'a, 'b> {
-    App::new("cargo").subcommand(
+    App::new("cargo").bin_name("cargo").subcommand(
         SubCommand::with_name(NAME)
             .version(VERSION)
             .author(AUTHOR)
