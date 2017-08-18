@@ -274,6 +274,8 @@ pub struct Task {
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
+    /// The env vars to setup before running the task commands
+    pub env: Option<HashMap<String, String>>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -315,6 +317,7 @@ impl Task {
             condition: None,
             condition_script: None,
             force: None,
+            env: None,
             alias: None,
             linux_alias: None,
             windows_alias: None,
@@ -360,6 +363,10 @@ impl Task {
 
         if task.force.is_some() {
             self.force = task.force.clone();
+        }
+
+        if task.env.is_some() {
+            self.env = task.env.clone();
         }
 
         if task.alias.is_some() {
@@ -461,6 +468,7 @@ impl Task {
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
+                    env: override_task.env.clone(),
                     alias: None,
                     linux_alias: None,
                     windows_alias: None,
@@ -526,6 +534,8 @@ pub struct PlatformOverrideTask {
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
+    /// The env vars to setup before running the task commands
+    pub env: Option<HashMap<String, String>>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task
@@ -574,6 +584,10 @@ impl PlatformOverrideTask {
 
             if self.force.is_none() && task.force.is_some() {
                 self.force = task.force.clone();
+            }
+
+            if self.env.is_none() && task.env.is_some() {
+                self.env = task.env.clone();
             }
 
             if self.install_crate.is_none() && task.install_crate.is_some() {

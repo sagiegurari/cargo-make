@@ -27,6 +27,7 @@ fn task_new() {
     assert!(task.condition_script.is_none());
     assert!(task.description.is_none());
     assert!(task.force.is_none());
+    assert!(task.env.is_none());
     assert!(task.alias.is_none());
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
@@ -88,6 +89,7 @@ fn task_extend_both_have_misc_data() {
         condition: None,
         condition_script: None,
         force: Some(true),
+        env: Some(HashMap::new()),
         alias: Some("alias2".to_string()),
         linux_alias: None,
         windows_alias: None,
@@ -112,6 +114,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.condition.is_none());
     assert!(base.condition_script.is_none());
     assert!(base.force.is_some());
+    assert!(base.env.is_some());
     assert!(base.alias.is_some());
     assert!(base.linux_alias.is_none());
     assert!(base.windows_alias.is_none());
@@ -130,6 +133,7 @@ fn task_extend_both_have_misc_data() {
     assert_eq!(base.command.unwrap(), "test1");
     assert!(base.disabled.unwrap());
     assert!(base.force.unwrap());
+    assert_eq!(base.env.unwrap().len(), 0);
     assert_eq!(base.alias.unwrap(), "alias2");
     assert_eq!(base.script.unwrap().len(), 2);
 }
@@ -144,6 +148,7 @@ fn task_extend_extended_have_all_fields() {
         condition: None,
         condition_script: None,
         force: Some(true),
+        env: Some(HashMap::new()),
         alias: None,
         linux_alias: None,
         windows_alias: None,
@@ -158,6 +163,9 @@ fn task_extend_extended_have_all_fields() {
         windows: None,
         mac: None
     };
+
+    let mut env = HashMap::new();
+    env.insert("test".to_string(), "value".to_string());
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
         command: Some("test2".to_string()),
@@ -172,6 +180,7 @@ fn task_extend_extended_have_all_fields() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
+        env: Some(env.clone()),
         alias: Some("alias2".to_string()),
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
@@ -196,6 +205,7 @@ fn task_extend_extended_have_all_fields() {
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
+            env: Some(env.clone()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -217,6 +227,7 @@ fn task_extend_extended_have_all_fields() {
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
+            env: Some(env.clone()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -238,6 +249,7 @@ fn task_extend_extended_have_all_fields() {
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
+            env: Some(env.clone()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
@@ -256,6 +268,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.condition.is_some());
     assert!(base.condition_script.is_some());
     assert!(base.force.is_some());
+    assert!(base.env.is_some());
     assert!(base.alias.is_some());
     assert!(base.linux_alias.is_some());
     assert!(base.windows_alias.is_some());
@@ -276,6 +289,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.disabled.unwrap());
     assert_eq!(base.condition_script.unwrap().len(), 1);
     assert!(!base.force.unwrap());
+    assert_eq!(base.env.unwrap().len(), 1);
     assert_eq!(base.alias.unwrap(), "alias2");
     assert_eq!(base.linux_alias.unwrap(), "linux");
     assert_eq!(base.windows_alias.unwrap(), "windows");
@@ -343,6 +357,7 @@ fn task_get_normalized_task_undefined() {
         condition: None,
         condition_script: None,
         force: None,
+        env: None,
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
@@ -363,6 +378,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.force.is_none());
+    assert!(normalized_task.env.is_none());
     assert!(normalized_task.alias.is_some());
     assert!(normalized_task.linux_alias.is_some());
     assert!(normalized_task.windows_alias.is_some());
@@ -398,6 +414,9 @@ fn task_get_normalized_task_undefined() {
 #[test]
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_no_clear() {
+    let mut env = HashMap::new();
+    env.insert("test".to_string(), "value".to_string());
+
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -416,6 +435,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
+        env: Some(HashMap::new()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
@@ -436,6 +456,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
+            env: Some(env),
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
@@ -456,6 +477,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
@@ -476,6 +498,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.disabled.unwrap());
     assert_eq!(normalized_task.condition_script.unwrap().len(), 1);
     assert!(normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env.unwrap().len(), 1);
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
     assert_eq!(normalized_task.script.unwrap().len(), 3);
@@ -491,6 +514,9 @@ fn task_get_normalized_task_with_override_no_clear() {
 #[test]
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_clear_false() {
+    let mut env = HashMap::new();
+    env.insert("test".to_string(), "value".to_string());
+
     let mut task = Task {
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
@@ -509,6 +535,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
+        env: Some(HashMap::new()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
@@ -529,6 +556,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             }),
             condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
             force: Some(true),
+            env: Some(env),
             install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
@@ -549,6 +577,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
@@ -569,6 +598,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.disabled.unwrap());
     assert_eq!(normalized_task.condition_script.unwrap().len(), 2);
     assert!(normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env.unwrap().len(), 1);
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
     assert_eq!(normalized_task.script.unwrap().len(), 3);
@@ -601,6 +631,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
+        env: Some(HashMap::new()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
@@ -616,6 +647,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             condition: None,
             condition_script: None,
             force: None,
+            env: None,
             install_script: None,
             args: None,
             script: None,
@@ -635,6 +667,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env.is_some());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
@@ -654,6 +687,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert!(!normalized_task.disabled.unwrap());
     assert!(!normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env.unwrap().len(), 0);
     assert_eq!(normalized_task.install_script.unwrap().len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
     assert_eq!(normalized_task.script.unwrap().len(), 2);
@@ -682,6 +716,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
+        env: Some(HashMap::new()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
         script: Some(vec!["a".to_string(), "b".to_string()]),
@@ -697,6 +732,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             condition: None,
             condition_script: None,
             force: None,
+            env: None,
             install_script: None,
             args: None,
             script: None,
@@ -716,6 +752,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.force.is_none());
+    assert!(normalized_task.env.is_none());
     assert!(normalized_task.alias.is_none());
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());

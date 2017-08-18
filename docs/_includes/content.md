@@ -412,7 +412,15 @@ Environment variables can also be defined in the command line using the --env/-e
 cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
 ````
 
-In addition, cargo-make will also add few environment variables that can be helpful when running task scripts/commands:
+Environment variables can also be defined inside tasks, so when a task is invoked (after its dependencies), the environment variables will be set, for example:
+
+````yaml
+[tasks.test-flow]
+env = { "SOME_ENV_VAR" = "value" }
+run_task = "actual-task"
+````
+
+In addition, cargo-make will also automatically add few environment variables that can be helpful when running task scripts, commands, conditions, etc:
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
@@ -868,6 +876,8 @@ pub struct Task {
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
+    /// The env vars to setup before running the task commands
+    pub env: Option<HashMap<String, String>>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -912,6 +922,8 @@ pub struct PlatformOverrideTask {
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
+    /// The env vars to setup before running the task commands
+    pub env: Option<HashMap<String, String>>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// if defined, the provided script will be executed before running the task
@@ -1033,7 +1045,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-15  | v0.3.55 | Update executable name in help/version output |
+| 2017-08-18  | v0.3.56 | Set environment variables during task invocation |
 | 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |
 | 2017-08-08  | v0.3.49 | Added condition attribute |

@@ -11,21 +11,32 @@ mod rustinfo;
 mod mod_test;
 
 use log::Logger;
+use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
 use types::{Config, CrateInfo, EnvInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
 
+/// Updates the env based on the provided data
+pub fn set_env(
+    logger: &Logger,
+    env: HashMap<String, String>,
+) {
+    logger.info::<()>("Setting Up Env.", &[], None);
+
+    for (key, value) in &env {
+        logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);
+        env::set_var(&key, &value);
+    }
+}
+
 /// Updates the env for the current execution based on the descriptor.
-fn set_env(
+fn initialize_env(
     logger: &Logger,
     config: &Config,
 ) {
     logger.info::<()>("Setting Up Env.", &[], None);
 
-    for (key, value) in &config.env {
-        logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);
-        env::set_var(&key, &value);
-    }
+    set_env(&logger, config.env.clone());
 }
 
 fn setup_env_for_crate(logger: &Logger) -> CrateInfo {
@@ -149,7 +160,7 @@ pub fn setup_env(
     config: &Config,
     task: &str,
 ) -> EnvInfo {
-    set_env(logger, config);
+    initialize_env(logger, config);
 
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);

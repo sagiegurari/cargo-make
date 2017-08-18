@@ -244,6 +244,17 @@
 <span id="199">199</span>
 <span id="200">200</span>
 <span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -258,21 +269,32 @@
 <span class="kw">mod</span> <span class="ident">mod_test</span>;
 
 <span class="kw">use</span> <span class="ident">log</span>::<span class="ident">Logger</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">PathBuf</span>;
 <span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">GitInfo</span>, <span class="ident">PackageInfo</span>, <span class="ident">RustChannel</span>, <span class="ident">RustInfo</span>, <span class="ident">Workspace</span>};
 
+<span class="doccomment">/// Updates the env based on the provided data</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_env</span>(
+    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
+    <span class="ident">env</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
+) {
+    <span class="ident">logger</span>.<span class="ident">info</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Setting Up Env.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
+
+    <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">env</span> {
+        <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Setting env: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="string">&quot;=&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>], <span class="prelude-val">None</span>);
+        <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>);
+    }
+}
+
 <span class="doccomment">/// Updates the env for the current execution based on the descriptor.</span>
-<span class="kw">fn</span> <span class="ident">set_env</span>(
+<span class="kw">fn</span> <span class="ident">initialize_env</span>(
     <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
 ) {
     <span class="ident">logger</span>.<span class="ident">info</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Setting Up Env.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
 
-    <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">env</span> {
-        <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Setting env: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="string">&quot;=&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>], <span class="prelude-val">None</span>);
-        <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>);
-    }
+    <span class="ident">set_env</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="ident">config</span>.<span class="ident">env</span>.<span class="ident">clone</span>());
 }
 
 <span class="kw">fn</span> <span class="ident">setup_env_for_crate</span>(<span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>) <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
@@ -396,7 +418,7 @@
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
 ) <span class="op">-&gt;</span> <span class="ident">EnvInfo</span> {
-    <span class="ident">set_env</span>(<span class="ident">logger</span>, <span class="ident">config</span>);
+    <span class="ident">initialize_env</span>(<span class="ident">logger</span>, <span class="ident">config</span>);
 
     <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE&quot;</span>, <span class="string">&quot;true&quot;</span>);
     <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE_TASK&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);

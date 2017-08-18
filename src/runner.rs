@@ -14,8 +14,10 @@ mod runner_test;
 
 use command;
 use condition;
+use environment;
 use installer;
 use log::Logger;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
@@ -47,6 +49,12 @@ fn run_task(
     logger.info::<()>("Running Task: ", &[&step.name], None);
 
     if validate_condition(&logger, &flow_info, &step) {
+        let env = match step.config.env {
+            Some(ref env) => env.clone(),
+            None => HashMap::new(),
+        };
+        environment::set_env(&logger, env);
+
         installer::install(&logger, &step.config);
 
         match step.config.run_task {
