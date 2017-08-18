@@ -397,30 +397,46 @@ This means, however, that you will have to redefine all attributes in the overri
 
 <a name="usage-env"></a>
 ### Environment Variables
-You can also define env vars to be set as part of the execution of the flow in the env block, for example:
+cargo-make enables you to defined environment variables in several ways.
+
+<a name="usage-env-config"></a>
+#### Global Configuration
+You can define env vars to be set as part of the execution of the flow in the global env block for your makefile, for example:
 
 ````yaml
 [env]
 RUST_BACKTRACE = "1"
 ````
 
-All env vars defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be defined before running the tasks.
+All env vars defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
 
-Environment variables can also be defined in the command line using the --env/-e argument as follows:
-
-````console
-cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
-````
-
-Environment variables can also be defined inside tasks, so when a task is invoked (after its dependencies), the environment variables will be set, for example:
+<a name="usage-env-task"></a>
+#### Task
+Environment variables can be defined inside tasks using the env attribute, so when a task is invoked (after its dependencies), the environment variables will be set, for example:
 
 ````yaml
 [tasks.test-flow]
 env = { "SOME_ENV_VAR" = "value" }
 run_task = "actual-task"
+
+[tasks.actual-task]
+condition = { env_set = [ "SOME_ENV_VAR" ] }
+script = [
+    "echo var: ${SOME_ENV_VAR}"
+]
 ````
 
-In addition, cargo-make will also automatically add few environment variables that can be helpful when running task scripts, commands, conditions, etc:
+<a name="usage-env-cli"></a>
+#### Command Line
+Environment variables can be defined in the command line using the --env/-e argument as follows:
+
+````console
+cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
+````
+
+<a name="usage-env-global"></a>
+#### Global
+In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc:
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
