@@ -10,6 +10,7 @@
 #[path = "./descriptor_test.rs"]
 mod descriptor_test;
 
+use command;
 use log::Logger;
 use std::collections::HashMap;
 use std::fs::File;
@@ -72,6 +73,33 @@ fn merge_tasks(
     merged
 }
 
+fn run_load_script(
+    logger: &Logger,
+    external_config: &ExternalConfig,
+) -> bool {
+    match external_config.config {
+        Some(ref config) => {
+            match config.load_script {
+                Some(ref script) => {
+                    logger.verbose::<()>("Load script found.", &[], None);
+
+                    command::run_script(&logger, script, None, true);
+
+                    true
+                }
+                None => {
+                    logger.verbose::<()>("No load script defined.", &[], None);
+                    false
+                }
+            }
+        }
+        None => {
+            logger.verbose::<()>("No load script defined.", &[], None);
+            false
+        }
+    }
+}
+
 fn load_external_descriptor(
     base_path: &str,
     file_name: &str,
@@ -95,6 +123,8 @@ fn load_external_descriptor(
             Err(error) => panic!("Unable to parse external descriptor, {}", error),
         };
         logger.verbose("Loaded external config:", &[], Some(&file_config));
+
+        run_load_script(&logger, &file_config);
 
         match file_config.extend {
             Some(ref base_file) => {

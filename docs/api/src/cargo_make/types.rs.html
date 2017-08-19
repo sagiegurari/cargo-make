@@ -750,6 +750,12 @@
 <span id="705">705</span>
 <span id="706">706</span>
 <span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1384,13 +1390,15 @@
     <span class="doccomment">/// Init task name which will be invoked at the start of every run</span>
     <span class="kw">pub</span> <span class="ident">init_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// End task name which will be invoked at the end of every run</span>
-    <span class="kw">pub</span> <span class="ident">end_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="ident">end_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
+    <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
 }
 
 <span class="kw">impl</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ConfigSection</span> {
-        <span class="ident">ConfigSection</span> { <span class="ident">init_task</span>: <span class="prelude-val">None</span>, <span class="ident">end_task</span>: <span class="prelude-val">None</span> }
+        <span class="ident">ConfigSection</span> { <span class="ident">init_task</span>: <span class="prelude-val">None</span>, <span class="ident">end_task</span>: <span class="prelude-val">None</span>, <span class="ident">load_script</span>: <span class="prelude-val">None</span> }
     }
 
     <span class="doccomment">/// Copies values from the config section into self.</span>
@@ -1408,6 +1416,10 @@
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">end_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>();
         }
     }
 }

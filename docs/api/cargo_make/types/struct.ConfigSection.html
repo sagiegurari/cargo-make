@@ -48,10 +48,11 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#630-635' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#630-637' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ConfigSection {
     pub init_task: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;,
     pub end_task: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;,
+    pub load_script: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;,
 }</pre><div class='docblock'><p>Holds the configuration found in the makefile toml config section.</p>
 </div><h2 id='fields' class='fields'>Fields</h2><span id='structfield.init_task' class="structfield">
                            <span id='init_task.v' class='invisible'>
@@ -61,7 +62,11 @@
                            <span id='end_task.v' class='invisible'>
                            <code>end_task: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>End task name which will be invoked at the end of every run</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#637-660' title='goto source code'>[src]</a></span></h3>
+</div><span id='structfield.load_script' class="structfield">
+                           <span id='load_script.v' class='invisible'>
+                           <code>load_script: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>Invoked while loading the descriptor file but before loading any extended descriptor</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#639-666' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a></code></span></h4>
 <div class='docblock'><p>Creates and returns a new instance.</p>
 </div><h4 id='method.extend' class="method"><span id='extend.v' class='invisible'><code>fn <a href='#method.extend' class='fnname'>extend</a>(self: &amp;mut <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a>, extended: &amp;mut <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a>)</code></span></h4>

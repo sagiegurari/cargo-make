@@ -13,6 +13,7 @@
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Commands, Scripts and Sub Tasks](#usage-task-command-script-task)
     * [Default Tasks and Extending](#usage-default-tasks)
+        * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
@@ -372,6 +373,31 @@ The file path in the extend attribute is always relative to the current toml fil
 The extend attribute can be very usefull when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
 the extend attribute pointing to the workspace makefile.
 
+<a name="usage-load-scripts"></a>
+#### Load Scripts
+In more complex scenarios, you may want multiple unrelated projects to share some common cutom tasks, for example if you wish to notify some internal company server of the build status.<br>
+Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
+The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote resource (using http or git clone and so on...), you can use the load scripts.
+
+Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
+This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
+
+Here is an example of a load script which downloads the common toml from a remote server using HTTP:
+
+````toml
+[config]
+load_script = ["wget -O /home/myuser/common.toml companyserver.com/common.toml"]
+````
+
+Here is an example of pulling the common toml file from some git repo:
+
+````toml
+[config]
+load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
+````
+
+You can run any command or set of commands you want, so you can build a more complex flow of how and where to fetch the toml file from and where to put it.
+
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
@@ -643,7 +669,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.56
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.57
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -651,7 +677,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.56
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.57
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -909,7 +935,9 @@ pub struct ConfigSection {
     /// Init task name which will be invoked at the start of every run
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
-    pub end_task: Option<String>
+    pub end_task: Option<String>,
+    /// Invoked while loading the descriptor file but before loading any extended descriptor
+    pub load_script: Option<Vec<String>>
 }
 
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
@@ -1105,6 +1133,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-19  | v0.3.57 | Added load_script capability |
 | 2017-08-18  | v0.3.56 | Set environment variables during task invocation |
 | 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |

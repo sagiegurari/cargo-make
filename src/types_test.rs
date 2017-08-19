@@ -778,6 +778,7 @@ fn config_section_new() {
 
     assert!(config.init_task.is_none());
     assert!(config.end_task.is_none());
+    assert!(config.load_script.is_none());
 }
 
 #[test]
@@ -787,14 +788,17 @@ fn config_section_extend_all_values() {
 
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.load_script = Some(vec!["base_info".to_string()]);
 
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
+    extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
 
     base.extend(&mut extended);
 
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
+    assert_eq!(base.load_script.unwrap().len(), 2);
 }
 
 #[test]
@@ -804,11 +808,13 @@ fn config_section_extend_no_values() {
 
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
 
     base.extend(&mut extended);
 
     assert_eq!(base.init_task.unwrap(), "base_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+    assert_eq!(base.load_script.unwrap().len(), 2);
 }
 
 #[test]
@@ -818,6 +824,7 @@ fn config_section_extend_some_values() {
 
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
 
     extended.init_task = Some("extended_init".to_string());
 
@@ -825,6 +832,7 @@ fn config_section_extend_some_values() {
 
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+    assert_eq!(base.load_script.unwrap().len(), 2);
 }
 
 #[test]

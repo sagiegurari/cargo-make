@@ -311,3 +311,50 @@ fn load_external_descriptor_extending_file_sub_folder() {
     alias = test_task.alias.clone();
     assert_eq!(alias.unwrap(), "extended");
 }
+
+#[test]
+fn run_load_script_no_config_section() {
+    let logger = log::create("error");
+    let external_config = ExternalConfig::new();
+
+    let invoked = run_load_script(&logger, &external_config);
+    assert!(!invoked);
+}
+
+#[test]
+fn run_load_script_no_load_script() {
+    let logger = log::create("error");
+    let mut external_config = ExternalConfig::new();
+    external_config.config = Some(ConfigSection::new());
+
+    let invoked = run_load_script(&logger, &external_config);
+    assert!(!invoked);
+}
+
+#[test]
+fn run_load_script_valid_load_script() {
+    let logger = log::create("error");
+
+    let mut config = ConfigSection::new();
+    config.load_script = Some(vec!["exit 0".to_string()]);
+
+    let mut external_config = ExternalConfig::new();
+    external_config.config = Some(config);
+
+    let invoked = run_load_script(&logger, &external_config);
+    assert!(invoked);
+}
+
+#[test]
+#[should_panic]
+fn run_load_script_invalid_load_script() {
+    let logger = log::create("error");
+
+    let mut config = ConfigSection::new();
+    config.load_script = Some(vec!["exit 1".to_string()]);
+
+    let mut external_config = ExternalConfig::new();
+    external_config.config = Some(config);
+
+    run_load_script(&logger, &external_config);
+}

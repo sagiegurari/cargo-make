@@ -631,13 +631,15 @@ pub struct ConfigSection {
     /// Init task name which will be invoked at the start of every run
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
-    pub end_task: Option<String>
+    pub end_task: Option<String>,
+    /// Invoked while loading the descriptor file but before loading any extended descriptor
+    pub load_script: Option<Vec<String>>
 }
 
 impl ConfigSection {
     /// Creates and returns a new instance.
     pub fn new() -> ConfigSection {
-        ConfigSection { init_task: None, end_task: None }
+        ConfigSection { init_task: None, end_task: None, load_script: None }
     }
 
     /// Copies values from the config section into self.
@@ -655,6 +657,10 @@ impl ConfigSection {
 
         if extended.end_task.is_some() {
             self.end_task = extended.end_task.clone();
+        }
+
+        if extended.load_script.is_some() {
+            self.load_script = extended.load_script.clone();
         }
     }
 }

@@ -6,6 +6,7 @@
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Commands, Scripts and Sub Tasks](#usage-task-command-script-task)
     * [Default Tasks and Extending](#usage-default-tasks)
+        * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
     * [Environment Variables](#usage-env)
