@@ -375,9 +375,9 @@ the extend attribute pointing to the workspace makefile.
 
 <a name="usage-load-scripts"></a>
 #### Load Scripts
-In more complex scenarios, you may want multiple unrelated projects to share some common cutom tasks, for example if you wish to notify some internal company server of the build status.<br>
+In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
 Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
-The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote resource (using http or git clone and so on...), you can use the load scripts.
+The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
 
 Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
 This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
@@ -669,7 +669,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.57
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.58
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -677,7 +677,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.57
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.58
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1133,7 +1133,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-19  | v0.3.57 | Added load_script capability |
+| 2017-08-19  | v0.3.58 | Added load_script capability |
 | 2017-08-18  | v0.3.56 | Set environment variables during task invocation |
 | 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |

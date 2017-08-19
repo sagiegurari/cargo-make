@@ -330,9 +330,9 @@ the extend attribute pointing to the workspace makefile.
 
 <a name="usage-load-scripts"></a>
 #### Load Scripts
-In more complex scenarios, you may want multiple unrelated projects to share some common cutom tasks, for example if you wish to notify some internal company server of the build status.<br>
+In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
 Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
-The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote resource (using http or git clone and so on...), you can use the load scripts.
+The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
 
 Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
 This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
@@ -1088,7 +1088,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-19  | v0.3.57 | Added load_script capability |
+| 2017-08-19  | v0.3.58 | Added load_script capability |
 | 2017-08-18  | v0.3.56 | Set environment variables during task invocation |
 | 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |
 | 2017-08-09  | v0.3.51 | Added experimental cli arg to enable access unsupported experimental predefined tasks |
