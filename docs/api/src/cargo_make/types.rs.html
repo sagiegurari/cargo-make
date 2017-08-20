@@ -756,6 +756,56 @@
 <span id="711">711</span>
 <span id="712">712</span>
 <span id="713">713</span>
+<span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+<span id="721">721</span>
+<span id="722">722</span>
+<span id="723">723</span>
+<span id="724">724</span>
+<span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1392,13 +1442,26 @@
     <span class="doccomment">/// End task name which will be invoked at the end of every run</span>
     <span class="kw">pub</span> <span class="ident">end_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
-    <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
+    <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// acts like load_script if runtime OS is Linux (takes precedence over load_script)</span>
+    <span class="kw">pub</span> <span class="ident">linux_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// acts like load_script if runtime OS is Windows (takes precedence over load_script)</span>
+    <span class="kw">pub</span> <span class="ident">windows_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// acts like load_script if runtime OS is Mac (takes precedence over load_script)</span>
+    <span class="kw">pub</span> <span class="ident">mac_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
 }
 
 <span class="kw">impl</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ConfigSection</span> {
-        <span class="ident">ConfigSection</span> { <span class="ident">init_task</span>: <span class="prelude-val">None</span>, <span class="ident">end_task</span>: <span class="prelude-val">None</span>, <span class="ident">load_script</span>: <span class="prelude-val">None</span> }
+        <span class="ident">ConfigSection</span> {
+            <span class="ident">init_task</span>: <span class="prelude-val">None</span>,
+            <span class="ident">end_task</span>: <span class="prelude-val">None</span>,
+            <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
+            <span class="ident">linux_load_script</span>: <span class="prelude-val">None</span>,
+            <span class="ident">windows_load_script</span>: <span class="prelude-val">None</span>,
+            <span class="ident">mac_load_script</span>: <span class="prelude-val">None</span>
+        }
     }
 
     <span class="doccomment">/// Copies values from the config section into self.</span>
@@ -1418,8 +1481,45 @@
             <span class="self">self</span>.<span class="ident">end_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">clone</span>();
         }
 
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">linux_load_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">linux_load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">linux_load_script</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">windows_load_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">windows_load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">windows_load_script</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">mac_load_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">mac_load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">mac_load_script</span>.<span class="ident">clone</span>();
+        }
+
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>();
+        }
+    }
+
+    <span class="doccomment">/// Returns the load script based on the current platform</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_load_script</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ConfigSection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">platform_name</span> <span class="op">=</span> <span class="ident">get_platform_name</span>();
+
+        <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;windows&quot;</span> {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">windows_load_script</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">windows_load_script</span>.<span class="ident">clone</span>()
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>()
+            }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;mac&quot;</span> {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mac_load_script</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">mac_load_script</span>.<span class="ident">clone</span>()
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>()
+            }
+        } <span class="kw">else</span> {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">linux_load_script</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">linux_load_script</span>.<span class="ident">clone</span>()
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>()
+            }
         }
     }
 }

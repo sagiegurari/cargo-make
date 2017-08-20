@@ -79,7 +79,9 @@ fn run_load_script(
 ) -> bool {
     match external_config.config {
         Some(ref config) => {
-            match config.load_script {
+            let load_script = config.get_load_script();
+
+            match load_script {
                 Some(ref script) => {
                     logger.verbose::<()>("Load script found.", &[], None);
 

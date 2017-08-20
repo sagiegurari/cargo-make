@@ -633,13 +633,26 @@ pub struct ConfigSection {
     /// End task name which will be invoked at the end of every run
     pub end_task: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
-    pub load_script: Option<Vec<String>>
+    pub load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
+    pub linux_load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
+    pub windows_load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
+    pub mac_load_script: Option<Vec<String>>
 }
 
 impl ConfigSection {
     /// Creates and returns a new instance.
     pub fn new() -> ConfigSection {
-        ConfigSection { init_task: None, end_task: None, load_script: None }
+        ConfigSection {
+            init_task: None,
+            end_task: None,
+            load_script: None,
+            linux_load_script: None,
+            windows_load_script: None,
+            mac_load_script: None
+        }
     }
 
     /// Copies values from the config section into self.
@@ -659,8 +672,45 @@ impl ConfigSection {
             self.end_task = extended.end_task.clone();
         }
 
+        if extended.linux_load_script.is_some() {
+            self.linux_load_script = extended.linux_load_script.clone();
+        }
+
+        if extended.windows_load_script.is_some() {
+            self.windows_load_script = extended.windows_load_script.clone();
+        }
+
+        if extended.mac_load_script.is_some() {
+            self.mac_load_script = extended.mac_load_script.clone();
+        }
+
         if extended.load_script.is_some() {
             self.load_script = extended.load_script.clone();
+        }
+    }
+
+    /// Returns the load script based on the current platform
+    pub fn get_load_script(self: &ConfigSection) -> Option<Vec<String>> {
+        let platform_name = get_platform_name();
+
+        if platform_name == "windows" {
+            if self.windows_load_script.is_some() {
+                self.windows_load_script.clone()
+            } else {
+                self.load_script.clone()
+            }
+        } else if platform_name == "mac" {
+            if self.mac_load_script.is_some() {
+                self.mac_load_script.clone()
+            } else {
+                self.load_script.clone()
+            }
+        } else {
+            if self.linux_load_script.is_some() {
+                self.linux_load_script.clone()
+            } else {
+                self.load_script.clone()
+            }
         }
     }
 }

@@ -396,7 +396,8 @@ Here is an example of pulling the common toml file from some git repo:
 load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
 ````
 
-You can run any command or set of commands you want, so you can build a more complex flow of how and where to fetch the toml file from and where to put it.
+You can run any command or set of commands you want, so you can build a more complex flow of how and where to fetch the toml file from and where to put it.<br>
+If needed, you can override the load_script per platform using the **linux_load_script**, **windows_load_script** and **mac_load_script** attributes.
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
@@ -669,7 +670,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.58
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.59
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -677,7 +678,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.58
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.59
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -937,7 +938,13 @@ pub struct ConfigSection {
     /// End task name which will be invoked at the end of every run
     pub end_task: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
-    pub load_script: Option<Vec<String>>
+    pub load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
+    pub linux_load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
+    pub windows_load_script: Option<Vec<String>>,
+    /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
+    pub mac_load_script: Option<Vec<String>>
 }
 
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
@@ -1133,6 +1140,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-20  | v0.3.59 | Support load_script platform overrides |
 | 2017-08-19  | v0.3.58 | Added load_script capability |
 | 2017-08-18  | v0.3.56 | Set environment variables during task invocation |
 | 2017-08-09  | v0.3.53 | Added new condition types: env, env_set and env_not_set |

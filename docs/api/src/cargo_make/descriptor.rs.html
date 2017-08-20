@@ -320,6 +320,8 @@
 <span id="275">275</span>
 <span id="276">276</span>
 <span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -402,7 +404,9 @@
 ) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">config</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">config</span>) <span class="op">=&gt;</span> {
-            <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">load_script</span> {
+            <span class="kw">let</span> <span class="ident">load_script</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">get_load_script</span>();
+
+            <span class="kw">match</span> <span class="ident">load_script</span> {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> {
                     <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Load script found.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
 
