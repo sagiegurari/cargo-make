@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `EnvInfo` struct in crate `cargo_make`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, EnvInfo">
+    <meta name="description" content="API documentation for the Rust `CrateDependency` enum in crate `cargo_make`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, CrateDependency">
 
-    <title>cargo_make::types::EnvInfo - Rust</title>
+    <title>cargo_make::types::CrateDependency - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc struct">
+<body class="rustdoc enum">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Struct EnvInfo</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>cargo_make</a>::<wbr><a href='index.html'>types</a></p><script>window.sidebarCurrent = {name: 'EnvInfo', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Enum CrateDependency</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>cargo_make</a>::<wbr><a href='index.html'>types</a></p><script>window.sidebarCurrent = {name: 'CrateDependency', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,33 +44,23 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>cargo_make</a>::<wbr><a href='index.html'>types</a>::<wbr><a class="struct" href=''>EnvInfo</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>cargo_make</a>::<wbr><a href='index.html'>types</a>::<wbr><a class="enum" href=''>CrateDependency</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#204-211' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct EnvInfo {
-    pub rust_info: <a class="struct" href="../../cargo_make/types/struct.RustInfo.html" title="struct cargo_make::types::RustInfo">RustInfo</a>,
-    pub crate_info: <a class="struct" href="../../cargo_make/types/struct.CrateInfo.html" title="struct cargo_make::types::CrateInfo">CrateInfo</a>,
-    pub git_info: <a class="struct" href="../../cargo_make/types/struct.GitInfo.html" title="struct cargo_make::types::GitInfo">GitInfo</a>,
-}</pre><div class='docblock'><p>Holds env information</p>
-</div><h2 id='fields' class='fields'>Fields</h2><span id='structfield.rust_info' class="structfield">
-                           <span id='rust_info.v' class='invisible'>
-                           <code>rust_info: <a class="struct" href="../../cargo_make/types/struct.RustInfo.html" title="struct cargo_make::types::RustInfo">RustInfo</a></code>
-                           </span></span><div class='docblock'><p>Rust info</p>
-</div><span id='structfield.crate_info' class="structfield">
-                           <span id='crate_info.v' class='invisible'>
-                           <code>crate_info: <a class="struct" href="../../cargo_make/types/struct.CrateInfo.html" title="struct cargo_make::types::CrateInfo">CrateInfo</a></code>
-                           </span></span><div class='docblock'><p>Crate info</p>
-</div><span id='structfield.git_info' class="structfield">
-                           <span id='git_info.v' class='invisible'>
-                           <code>git_info: <a class="struct" href="../../cargo_make/types/struct.GitInfo.html" title="struct cargo_make::types::GitInfo">GitInfo</a></code>
-                           </span></span><div class='docblock'><p>Git info</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../cargo_make/types/struct.EnvInfo.html" title="struct cargo_make::types::EnvInfo">EnvInfo</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#202' title='goto source code'>[src]</a></span></h3>
+               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#177-182' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum CrateDependency {
+    Version(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>),
+    Info(<a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;),
+}</pre><div class='docblock'><p>Holds crate dependency info.</p>
+</div><h2 id='variants' class='variants'>Variants</h2>
+<span id='variant.Version' class='variant'><span id='Version.v' class='invisible'><code>Version(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>)</code></span></span><div class='docblock'><p>Holds the dependency version</p>
+</div><span id='variant.Info' class='variant'><span id='Info.v' class='invisible'><code>Info(<a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;)</code></span></span><div class='docblock'><p>Hold dependency info</p>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../cargo_make/types/enum.CrateDependency.html" title="enum cargo_make::types::CrateDependency">CrateDependency</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#174' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../cargo_make/types/struct.EnvInfo.html" title="struct cargo_make::types::EnvInfo">EnvInfo</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#202' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../../cargo_make/types/struct.EnvInfo.html" title="struct cargo_make::types::EnvInfo">EnvInfo</a></code></span></h4>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="enum" href="../../cargo_make/types/enum.CrateDependency.html" title="enum cargo_make::types::CrateDependency">CrateDependency</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#174' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="enum" href="../../cargo_make/types/enum.CrateDependency.html" title="enum cargo_make::types::CrateDependency">CrateDependency</a></code></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>

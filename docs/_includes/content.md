@@ -1095,7 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-20  | v0.3.60 | Maintenance |
+| 2017-08-20  | v0.3.61 | Add workspace member detection based on dependency paths |
 | 2017-08-20  | v0.3.59 | Support load_script platform overrides |
 | 2017-08-19  | v0.3.58 | Added load_script capability |
 | 2017-08-18  | v0.3.56 | Set environment variables during task invocation |

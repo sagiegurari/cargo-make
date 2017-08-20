@@ -771,6 +771,18 @@
 <span id="726">726</span>
 <span id="727">727</span>
 <span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -946,18 +958,30 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Holds crate dependency info.</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CrateDependency</span> {
+    <span class="doccomment">/// Holds the dependency version</span>
+    <span class="ident">Version</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Hold dependency info</span>
+    <span class="ident">Info</span>(<span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>)
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds crate information loaded from the Cargo.toml file.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// package info</span>
     <span class="kw">pub</span> <span class="ident">package</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PackageInfo</span><span class="op">&gt;</span>,
     <span class="doccomment">/// workspace info</span>
-    <span class="kw">pub</span> <span class="ident">workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Workspace</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="ident">workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Workspace</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// crate dependencies</span>
+    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">CrateDependency</span><span class="op">&gt;&gt;</span>
 }
 
 <span class="kw">impl</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
-        <span class="ident">CrateInfo</span> { <span class="ident">package</span>: <span class="prelude-val">None</span>, <span class="ident">workspace</span>: <span class="prelude-val">None</span> }
+        <span class="ident">CrateInfo</span> { <span class="ident">package</span>: <span class="prelude-val">None</span>, <span class="ident">workspace</span>: <span class="prelude-val">None</span>, <span class="ident">dependencies</span>: <span class="prelude-val">None</span> }
     }
 }
 

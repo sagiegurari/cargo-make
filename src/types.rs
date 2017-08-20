@@ -172,18 +172,30 @@ impl PackageInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds crate dependency info.
+pub enum CrateDependency {
+    /// Holds the dependency version
+    Version(String),
+    /// Hold dependency info
+    Info(HashMap<String, String>)
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
     pub package: Option<PackageInfo>,
     /// workspace info
-    pub workspace: Option<Workspace>
+    pub workspace: Option<Workspace>,
+    /// crate dependencies
+    pub dependencies: Option<HashMap<String, CrateDependency>>
 }
 
 impl CrateInfo {
     /// Creates and returns a new instance.
     pub fn new() -> CrateInfo {
-        CrateInfo { package: None, workspace: None }
+        CrateInfo { package: None, workspace: None, dependencies: None }
     }
 }
 
