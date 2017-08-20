@@ -1,5 +1,4 @@
 use super::*;
-use log;
 
 #[test]
 fn cli_args_new() {
@@ -901,18 +900,6 @@ fn config_section_get_get_load_script_all_defined() {
     let script = load_script.unwrap();
     assert_eq!(script.len(), 1);
     assert_eq!(script[0], get_platform_name());
-}
-
-#[test]
-fn crate_info_load() {
-    let logger = log::create("error");
-    let crate_info = CrateInfo::load(&logger);
-
-    assert!(crate_info.package.is_some());
-    assert!(crate_info.workspace.is_none());
-
-    let package = crate_info.package.unwrap();
-    assert_eq!(package.name.unwrap(), "cargo-make");
 }
 
 #[test]

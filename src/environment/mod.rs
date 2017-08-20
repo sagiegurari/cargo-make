@@ -5,6 +5,7 @@
 
 mod gitinfo;
 mod rustinfo;
+pub mod crateinfo;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
@@ -40,7 +41,7 @@ fn initialize_env(
 }
 
 fn setup_env_for_crate(logger: &Logger) -> CrateInfo {
-    let crate_info = CrateInfo::load(&logger);
+    let crate_info = crateinfo::load(&logger);
     let crate_info_clone = crate_info.clone();
 
     let package_info = crate_info.package.unwrap_or(PackageInfo::new());

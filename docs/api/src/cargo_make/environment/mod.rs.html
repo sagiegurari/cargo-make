@@ -255,6 +255,7 @@
 <span id="210">210</span>
 <span id="211">211</span>
 <span id="212">212</span>
+<span id="213">213</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -263,6 +264,7 @@
 
 <span class="kw">mod</span> <span class="ident">gitinfo</span>;
 <span class="kw">mod</span> <span class="ident">rustinfo</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">crateinfo</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./mod_test.rs&quot;</span>]</span>
@@ -298,7 +300,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">setup_env_for_crate</span>(<span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>) <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
-    <span class="kw">let</span> <span class="ident">crate_info</span> <span class="op">=</span> <span class="ident">CrateInfo</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
+    <span class="kw">let</span> <span class="ident">crate_info</span> <span class="op">=</span> <span class="ident">crateinfo</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>);
     <span class="kw">let</span> <span class="ident">crate_info_clone</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">clone</span>();
 
     <span class="kw">let</span> <span class="ident">package_info</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">package</span>.<span class="ident">unwrap_or</span>(<span class="ident">PackageInfo</span>::<span class="ident">new</span>());

@@ -198,7 +198,7 @@ fn create_execution_plan(
     };
 
     // load crate info and look for workspace info
-    let crate_info = CrateInfo::load(&logger);
+    let crate_info = environment::crateinfo::load(&logger);
 
     if disable_workspace || crate_info.workspace.is_none() {
         create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
