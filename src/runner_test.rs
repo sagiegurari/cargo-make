@@ -206,7 +206,7 @@ fn create_execution_plan_noworkspace() {
 fn create_workspace_task_no_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec![];
-    crate_info.workspace = Some(Workspace { members: Some(members) });
+    crate_info.workspace = Some(Workspace { members: Some(members), exclude: None });
 
     let task = create_workspace_task(crate_info, "some_task");
 
@@ -220,7 +220,7 @@ fn create_workspace_task_no_members() {
 fn create_workspace_task_with_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec!["member1".to_string(), "member2".to_string(), "dir1/member3".to_string()];
-    crate_info.workspace = Some(Workspace { members: Some(members) });
+    crate_info.workspace = Some(Workspace { members: Some(members), exclude: None });
 
     let task = create_workspace_task(crate_info, "some_task");
 

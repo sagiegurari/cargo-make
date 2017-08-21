@@ -783,6 +783,8 @@
 <span id="738">738</span>
 <span id="739">739</span>
 <span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -910,16 +912,18 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="doccomment">/// Holds crate workspace info.</span>
+<span class="doccomment">/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// members paths</span>
-    <span class="kw">pub</span> <span class="ident">members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
+    <span class="kw">pub</span> <span class="ident">members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// exclude paths</span>
+    <span class="kw">pub</span> <span class="ident">exclude</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
 }
 
 <span class="kw">impl</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Workspace</span> {
-        <span class="ident">Workspace</span> { <span class="ident">members</span>: <span class="prelude-val">None</span> }
+        <span class="ident">Workspace</span> { <span class="ident">members</span>: <span class="prelude-val">None</span>, <span class="ident">exclude</span>: <span class="prelude-val">None</span> }
     }
 }
 

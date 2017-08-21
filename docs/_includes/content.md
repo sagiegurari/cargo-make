@@ -1095,6 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
 | 2017-08-21  | v0.3.62 | Add workspace member detection based on dependency paths |
 | 2017-08-20  | v0.3.59 | Support load_script platform overrides |
 | 2017-08-19  | v0.3.58 | Added load_script capability |

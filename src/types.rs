@@ -124,16 +124,18 @@ impl GitInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds crate workspace info.
+/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section
 pub struct Workspace {
     /// members paths
-    pub members: Option<Vec<String>>
+    pub members: Option<Vec<String>>,
+    /// exclude paths
+    pub exclude: Option<Vec<String>>
 }
 
 impl Workspace {
     /// Creates and returns a new instance.
     pub fn new() -> Workspace {
-        Workspace { members: None }
+        Workspace { members: None, exclude: None }
     }
 }
 

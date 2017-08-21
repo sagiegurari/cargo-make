@@ -42,14 +42,6 @@ fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
     members
 }
 
-fn load_workspace_members(crate_info: &mut CrateInfo) {
-    if crate_info.workspace.is_some() {
-        let dependencies = get_members_from_dependencies(&crate_info);
-
-        add_members(crate_info, dependencies);
-    }
-}
-
 fn add_members(
     crate_info: &mut CrateInfo,
     new_members: Vec<String>,
@@ -73,6 +65,53 @@ fn add_members(
             }
             None => (), //not a workspace
         }
+    }
+}
+
+fn remove_excludes(crate_info: &mut CrateInfo) -> bool {
+    let mut removed = false;
+
+    match crate_info.workspace {
+        Some(ref mut workspace) => {
+            match workspace.exclude {
+                Some(ref excludes) => {
+                    match workspace.members {
+                        Some(ref mut members) => {
+                            for exclude in excludes.iter() {
+                                let exclude_string = exclude.to_string();
+
+                                let result = members.iter().position(|member| *member == exclude_string);
+                                match result {
+                                    Some(index) => {
+                                        members.remove(index);
+
+                                        removed = true;
+
+                                        ()
+                                    }
+                                    None => (),
+                                };
+                            }
+                        }
+                        None => (),
+                    }
+                }
+                None => (),
+            }
+        }
+        None => (), //not a workspace
+    };
+
+    removed
+}
+
+fn load_workspace_members(crate_info: &mut CrateInfo) {
+    if crate_info.workspace.is_some() {
+        let dependencies = get_members_from_dependencies(&crate_info);
+
+        add_members(crate_info, dependencies);
+
+        remove_excludes(crate_info);
     }
 }
 

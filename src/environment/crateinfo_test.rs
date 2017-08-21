@@ -175,3 +175,91 @@ fn get_members_from_dependencies_workspace_paths() {
     assert!((value2 == "member1") || value2 == "member2");
     assert!(value1 != value2);
 }
+
+#[test]
+fn remove_excludes_no_workspace() {
+    let mut crate_info = CrateInfo::new();
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_none());
+}
+
+#[test]
+fn remove_excludes_workspace_no_members_with_excludes() {
+    let mut crate_info = CrateInfo::new();
+    let mut workspace = Workspace::new();
+    workspace.exclude = Some(vec!["test".to_string()]);
+    crate_info.workspace = Some(workspace);
+
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_none());
+}
+
+#[test]
+fn remove_excludes_workspace_empty_members_with_excludes() {
+    let mut crate_info = CrateInfo::new();
+    let mut workspace = Workspace::new();
+    workspace.exclude = Some(vec!["test".to_string()]);
+    workspace.members = Some(vec![]);
+    crate_info.workspace = Some(workspace);
+
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    assert_eq!(workspace.members.unwrap().len(), 0);
+}
+
+#[test]
+fn remove_excludes_workspace_with_members_no_excludes() {
+    let mut crate_info = CrateInfo::new();
+    let mut workspace = Workspace::new();
+    workspace.members = Some(vec!["test".to_string()]);
+    crate_info.workspace = Some(workspace);
+
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    assert_eq!(workspace.members.unwrap().len(), 1);
+}
+
+#[test]
+fn remove_excludes_workspace_with_members_empty_excludes() {
+    let mut crate_info = CrateInfo::new();
+    let mut workspace = Workspace::new();
+    workspace.exclude = Some(vec![]);
+    workspace.members = Some(vec!["test".to_string()]);
+    crate_info.workspace = Some(workspace);
+
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    assert_eq!(workspace.members.unwrap().len(), 1);
+}
+
+#[test]
+fn remove_excludes_workspace_with_members_with_excludes() {
+    let mut crate_info = CrateInfo::new();
+    let mut workspace = Workspace::new();
+    workspace.exclude = Some(vec!["test0".to_string(), "test2".to_string(), "test3".to_string(), "test6".to_string()]);
+    workspace.members = Some(vec!["test1".to_string(), "test2".to_string(), "test3".to_string(), "test4".to_string()]);
+    crate_info.workspace = Some(workspace);
+
+    remove_excludes(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    let members = workspace.members.unwrap();
+    assert_eq!(members.len(), 2);
+    assert_eq!(&members[0], "test1");
+    assert_eq!(&members[1], "test4");
+}

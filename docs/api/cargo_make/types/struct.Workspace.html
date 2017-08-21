@@ -48,15 +48,20 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#128-131' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/cargo_make/types.rs.html#128-133' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Workspace {
     pub members: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;,
-}</pre><div class='docblock'><p>Holds crate workspace info.</p>
+    pub exclude: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;,
+}</pre><div class='docblock'><p>Holds crate workspace info, see <a href="http://doc.crates.io/manifest.html#the-workspace-section">http://doc.crates.io/manifest.html#the-workspace-section</a></p>
 </div><h2 id='fields' class='fields'>Fields</h2><span id='structfield.members' class="structfield">
                            <span id='members.v' class='invisible'>
                            <code>members: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>members paths</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../../cargo_make/types/struct.Workspace.html" title="struct cargo_make::types::Workspace">Workspace</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#133-138' title='goto source code'>[src]</a></span></h3>
+</div><span id='structfield.exclude' class="structfield">
+                           <span id='exclude.v' class='invisible'>
+                           <code>exclude: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>exclude paths</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../../cargo_make/types/struct.Workspace.html" title="struct cargo_make::types::Workspace">Workspace</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#135-140' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../../cargo_make/types/struct.Workspace.html" title="struct cargo_make::types::Workspace">Workspace</a></code></span></h4>
 <div class='docblock'><p>Creates and returns a new instance.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../cargo_make/types/struct.Workspace.html" title="struct cargo_make::types::Workspace">Workspace</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#126' title='goto source code'>[src]</a></span></h3>
