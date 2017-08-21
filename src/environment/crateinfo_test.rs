@@ -1,6 +1,7 @@
 use super::*;
 use log;
 use std::collections::HashMap;
+use types::Workspace;
 
 #[test]
 fn crate_info_load() {
@@ -27,10 +28,7 @@ fn add_members_workspace_none_members_with_data() {
     let mut crate_info = CrateInfo::new();
     add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
 
-    assert!(crate_info.workspace.is_some());
-    let workspace = crate_info.workspace.unwrap();
-    assert!(workspace.members.is_some());
-    assert_eq!(workspace.members.unwrap().len(), 2);
+    assert!(crate_info.workspace.is_none());
 }
 
 #[test]

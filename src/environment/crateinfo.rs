@@ -12,7 +12,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
-use types::{CrateDependency, CrateInfo, Workspace};
+use types::{CrateDependency, CrateInfo};
 
 fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
     let mut members = vec![];
@@ -43,9 +43,11 @@ fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
 }
 
 fn load_workspace_members(crate_info: &mut CrateInfo) {
-    let dependencies = get_members_from_dependencies(&crate_info);
+    if crate_info.workspace.is_some() {
+        let dependencies = get_members_from_dependencies(&crate_info);
 
-    add_members(crate_info, dependencies);
+        add_members(crate_info, dependencies);
+    }
 }
 
 fn add_members(
@@ -69,7 +71,7 @@ fn add_members(
                     None => workspace.members = Some(new_members),
                 }
             }
-            None => crate_info.workspace = Some(Workspace { members: Some(new_members) }),
+            None => (), //not a workspace
         }
     }
 }

@@ -151,6 +151,8 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # crateinfo</span>
 <span class="doccomment">//!</span>
@@ -166,7 +168,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
 <span class="kw">use</span> <span class="ident">toml</span>;
-<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">CrateDependency</span>, <span class="ident">CrateInfo</span>, <span class="ident">Workspace</span>};
+<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">CrateDependency</span>, <span class="ident">CrateInfo</span>};
 
 <span class="kw">fn</span> <span class="ident">get_members_from_dependencies</span>(<span class="ident">crate_info</span>: <span class="kw-2">&amp;</span><span class="ident">CrateInfo</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">members</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
@@ -197,9 +199,11 @@
 }
 
 <span class="kw">fn</span> <span class="ident">load_workspace_members</span>(<span class="ident">crate_info</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">CrateInfo</span>) {
-    <span class="kw">let</span> <span class="ident">dependencies</span> <span class="op">=</span> <span class="ident">get_members_from_dependencies</span>(<span class="kw-2">&amp;</span><span class="ident">crate_info</span>);
+    <span class="kw">if</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>() {
+        <span class="kw">let</span> <span class="ident">dependencies</span> <span class="op">=</span> <span class="ident">get_members_from_dependencies</span>(<span class="kw-2">&amp;</span><span class="ident">crate_info</span>);
 
-    <span class="ident">add_members</span>(<span class="ident">crate_info</span>, <span class="ident">dependencies</span>);
+        <span class="ident">add_members</span>(<span class="ident">crate_info</span>, <span class="ident">dependencies</span>);
+    }
 }
 
 <span class="kw">fn</span> <span class="ident">add_members</span>(
@@ -223,7 +227,7 @@
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">workspace</span>.<span class="ident">members</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">new_members</span>),
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Workspace</span> { <span class="ident">members</span>: <span class="prelude-val">Some</span>(<span class="ident">new_members</span>) }),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> (), <span class="comment">//not a workspace</span>
         }
     }
 }
