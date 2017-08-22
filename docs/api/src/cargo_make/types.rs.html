@@ -785,6 +785,13 @@
 <span id="740">740</span>
 <span id="741">741</span>
 <span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -962,13 +969,20 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds crate dependency info.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateDependencyInfo</span> {
+    <span class="doccomment">/// Holds the dependency path</span>
+    <span class="kw">pub</span> <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds crate dependency info.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CrateDependency</span> {
     <span class="doccomment">/// Holds the dependency version</span>
     <span class="ident">Version</span>(<span class="ident">String</span>),
     <span class="doccomment">/// Hold dependency info</span>
-    <span class="ident">Info</span>(<span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>)
+    <span class="ident">Info</span>(<span class="ident">CrateDependencyInfo</span>)
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>

@@ -22,7 +22,7 @@ fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
             for value in dependencies.values() {
                 match *value {
                     CrateDependency::Info(ref info) => {
-                        match info.get("path") {
+                        match info.path {
                             Some(ref path) => {
                                 if path.starts_with("./") {
                                     let member_path = path.chars().skip(2).take(path.len() - 2).collect();

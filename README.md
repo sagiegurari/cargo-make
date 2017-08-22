@@ -670,7 +670,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.63
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.64
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -678,7 +678,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.63
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.64
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1140,6 +1140,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
 | 2017-08-21  | v0.3.62 | Add workspace member detection based on dependency paths |
 | 2017-08-20  | v0.3.59 | Support load_script platform overrides |

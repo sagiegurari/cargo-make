@@ -217,7 +217,7 @@
             <span class="kw">for</span> <span class="ident">value</span> <span class="kw">in</span> <span class="ident">dependencies</span>.<span class="ident">values</span>() {
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">value</span> {
                     <span class="ident">CrateDependency</span>::<span class="ident">Info</span>(<span class="kw-2">ref</span> <span class="ident">info</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">match</span> <span class="ident">info</span>.<span class="ident">get</span>(<span class="string">&quot;path&quot;</span>) {
+                        <span class="kw">match</span> <span class="ident">info</span>.<span class="ident">path</span> {
                             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> {
                                 <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="string">&quot;./&quot;</span>) {
                                     <span class="kw">let</span> <span class="ident">member_path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">chars</span>().<span class="ident">skip</span>(<span class="number">2</span>).<span class="ident">take</span>(<span class="ident">path</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">2</span>).<span class="ident">collect</span>();

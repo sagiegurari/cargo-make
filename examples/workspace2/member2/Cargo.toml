@@ -1,0 +1,7 @@
+[package]
+name = "member2"
+version = "1.0.0"
+
+[dependencies]
+test200 = {version = "1.0.0", features = ["abc"]}
+test100 = { path = "../test100" }

@@ -1,7 +1,7 @@
 use super::*;
 use log;
 use std::collections::HashMap;
-use types::Workspace;
+use types::{CrateDependencyInfo, Workspace};
 
 #[test]
 fn crate_info_load() {
@@ -120,7 +120,7 @@ fn get_members_from_dependencies_no_paths() {
     let mut dependencies = HashMap::new();
     dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
     dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(HashMap::new()));
+    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: None }));
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -137,7 +137,7 @@ fn get_members_from_dependencies_no_workspace_paths() {
     let mut dependencies = HashMap::new();
     dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
     dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(HashMap::new()));
+    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: None }));
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -152,17 +152,11 @@ fn get_members_from_dependencies_workspace_paths() {
     dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
     dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
 
-    let mut invalid = HashMap::new();
-    invalid.insert("path".to_string(), "somepath".to_string());
-    dependencies.insert("test3".to_string(), CrateDependency::Info(invalid));
+    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("somepath".to_string()) }));
 
-    let mut valid1 = HashMap::new();
-    valid1.insert("path".to_string(), "./member1".to_string());
-    dependencies.insert("valid1".to_string(), CrateDependency::Info(valid1));
+    dependencies.insert("valid1".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./member1".to_string()) }));
 
-    let mut valid2 = HashMap::new();
-    valid2.insert("path".to_string(), "./member2".to_string());
-    dependencies.insert("valid2".to_string(), CrateDependency::Info(valid2));
+    dependencies.insert("valid2".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./member2".to_string()) }));
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);

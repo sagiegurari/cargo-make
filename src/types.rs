@@ -174,13 +174,20 @@ impl PackageInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds crate dependency info.
+pub struct CrateDependencyInfo {
+    /// Holds the dependency path
+    pub path: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds crate dependency info.
 pub enum CrateDependency {
     /// Holds the dependency version
     Version(String),
     /// Hold dependency info
-    Info(HashMap<String, String>)
+    Info(CrateDependencyInfo)
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
