@@ -22,7 +22,11 @@ fn expand_glob_members(glob_member: &str) -> Vec<String> {
 
             for entry in entries {
                 match entry {
-                    Ok(path) => members.push(path.to_str().unwrap().to_string()),
+                    Ok(path) => {
+                        let mut updated_path = path.to_str().unwrap().to_string();
+                        updated_path = updated_path.replace("\\", "/");
+                        members.push(updated_path);
+                    }
                     _ => (),
                 };
             }
