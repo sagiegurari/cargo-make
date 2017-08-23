@@ -7,12 +7,58 @@
 #[path = "./crateinfo_test.rs"]
 mod crateinfo_test;
 
+use glob::glob;
 use log::Logger;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
 use types::{CrateDependency, CrateInfo};
+
+fn expand_glob_members(glob_member: &str) -> Vec<String> {
+    match glob(glob_member) {
+        Ok(entries) => {
+            let mut members = vec![];
+
+            for entry in entries {
+                match entry {
+                    Ok(path) => members.push(path.to_str().unwrap().to_string()),
+                    _ => (),
+                };
+            }
+
+            members
+        }
+        _ => vec![],
+    }
+}
+
+fn normalize_members(crate_info: &mut CrateInfo) {
+    match crate_info.workspace {
+        Some(ref mut workspace) => {
+            match workspace.members {
+                Some(ref mut members) => {
+                    let existing_members = members.clone();
+
+                    let mut index = 0;
+                    for member in existing_members.iter() {
+                        // glob
+                        if member.contains("*") {
+                            let mut expanded_members = expand_glob_members(&member);
+
+                            members.remove(index);
+                            members.append(&mut expanded_members);
+                        } else {
+                            index = index + 1;
+                        }
+                    }
+                }
+                None => (),
+            };
+        }
+        None => (), //not a workspace
+    }
+}
 
 fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
     let mut members = vec![];
@@ -107,6 +153,8 @@ fn remove_excludes(crate_info: &mut CrateInfo) -> bool {
 
 fn load_workspace_members(crate_info: &mut CrateInfo) {
     if crate_info.workspace.is_some() {
+        normalize_members(crate_info);
+
         let dependencies = get_members_from_dependencies(&crate_info);
 
         add_members(crate_info, dependencies);
