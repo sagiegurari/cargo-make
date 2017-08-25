@@ -22,7 +22,7 @@ pub fn set_env(
     logger: &Logger,
     env: HashMap<String, String>,
 ) {
-    logger.info::<()>("Setting Up Env.", &[], None);
+    logger.verbose::<()>("Setting Up Env.", &[], None);
 
     for (key, value) in &env {
         logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);

@@ -1095,6 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-08-25  | v0.3.67 | Maintenance |
 | 2017-08-23  | v0.3.66 | Add support for workspace glob members |
 | 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
