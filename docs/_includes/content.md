@@ -491,8 +491,8 @@ The following environment variables will be set by cargo-make if Cargo.toml file
 The following environment variables will be set by cargo-make if the project is part of a git repo:
 
 * **CARGO_MAKE_GIT_BRANCH** - The current branch name.
-* **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the give config user.name key.
-* **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the give config user.email key.
+* **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
+* **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
 
 <a name="usage-conditions"></a>
 ### Conditions
@@ -1010,7 +1010,7 @@ pub struct TaskCondition {
 More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/index.html) section of the API documentation.
 
 <a name="task-name-conventions"></a>
-## Task Naming conventions
+## Task Naming Conventions
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
@@ -1095,7 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-25  | v0.3.68 | Maintenance |
+| 2017-08-25  | v0.3.69 | Maintenance |
 | 2017-08-23  | v0.3.66 | Add support for workspace glob members |
 | 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |

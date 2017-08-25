@@ -30,7 +30,7 @@
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
-* [Task Naming conventions](#task-name-conventions)
+* [Task Naming Conventions](#task-name-conventions)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)

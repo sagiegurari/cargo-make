@@ -37,7 +37,7 @@
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
-* [Task Naming conventions](#task-name-conventions)
+* [Task Naming Conventions](#task-name-conventions)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Contributing](.github/CONTRIBUTING.md)
@@ -536,8 +536,8 @@ The following environment variables will be set by cargo-make if Cargo.toml file
 The following environment variables will be set by cargo-make if the project is part of a git repo:
 
 * **CARGO_MAKE_GIT_BRANCH** - The current branch name.
-* **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the give config user.name key.
-* **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the give config user.email key.
+* **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
+* **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
 
 <a name="usage-conditions"></a>
 ### Conditions
@@ -670,7 +670,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.68
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.69
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -678,7 +678,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.68
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.69
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1055,7 +1055,7 @@ pub struct TaskCondition {
 More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/index.html) section of the API documentation.
 
 <a name="task-name-conventions"></a>
-## Task Naming conventions
+## Task Naming Conventions
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
@@ -1140,7 +1140,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-25  | v0.3.68 | Maintenance |
+| 2017-08-25  | v0.3.69 | Maintenance |
 | 2017-08-23  | v0.3.66 | Add support for workspace glob members |
 | 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
