@@ -179,7 +179,7 @@ script = [
 ]
 ````
 
-In this example, A depends on B and C, and both B and C are dependended on D.<br>
+In this example, A depends on B and C, and both B and C are dependent on D.<br>
 Task D however will not be invoked twice.<br>
 The output of the execution will look something like this:
 
@@ -1095,7 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-25  | v0.3.67 | Maintenance |
+| 2017-08-25  | v0.3.68 | Maintenance |
 | 2017-08-23  | v0.3.66 | Add support for workspace glob members |
 | 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
