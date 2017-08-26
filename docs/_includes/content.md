@@ -325,7 +325,7 @@ extend = "my_common_makefile.toml"
 
 The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.
 
-The extend attribute can be very usefull when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
+The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
 the extend attribute pointing to the workspace makefile.
 
 <a name="usage-load-scripts"></a>
@@ -591,7 +591,7 @@ We can't define the condition directly on the **codecov-flow** task, as it will 
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
-It is recommanded to install cargo-make with the debug flag for faster installation.
+It is recommended to install cargo-make with the debug flag for faster installation.
 
 <a name="usage-ci-travis"></a>
 #### Travis
@@ -854,7 +854,7 @@ Important to mention that init and end tasks invocation is different than other 
 * Aliases and dependencies are ignored
 * If the same task is defined in the executed flow, those tasks will be invoked multiple times
 
-Therefore it is not recommanded to use the init/end tasks also inside your flows.
+Therefore it is not recommended to use the init/end tasks also inside your flows.
 
 <a name="usage-cli"></a>
 ### Cli Options
@@ -1020,7 +1020,7 @@ The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/maste
 * Tasks that come before or after the single command tasks
 * Tasks that define flows using dependencies
 
-Single command tasks are named based on their commmand (in most cases), for example the task that runs cargo build is named build.
+Single command tasks are named based on their command (in most cases), for example the task that runs cargo build is named build.
 
 ````toml
 [tasks.build]
@@ -1040,7 +1040,7 @@ For example for task build the default toml also defines pre-build and post-buil
 ````
 
 In the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml), all pre/post tasks are empty and are there as placeholders
-for external Makefile.toml to override so custom functionality can be defined easily before/after running a specfific task.
+for external Makefile.toml to override so custom functionality can be defined easily before/after running a specific task.
 
 Flows are named with the flow suffix, for example: ci-flow
 
@@ -1095,7 +1095,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-08-25  | v0.3.69 | Maintenance |
+| 2017-08-26  | v0.3.70 | Maintenance |
 | 2017-08-23  | v0.3.66 | Add support for workspace glob members |
 | 2017-08-22  | v0.3.64 | Cargo.toml parsing fix |
 | 2017-08-21  | v0.3.63 | Add support for Cargo.toml workspace.exclude |
