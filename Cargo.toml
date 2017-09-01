@@ -11,15 +11,14 @@ readme = "README.md"
 keywords = ["task", "build", "cargo", "plugin", "subcommand"]
 categories = ["development-tools", "development-tools::cargo-plugins", "development-tools::build-utils", "development-tools::testing"]
 include = [
-    "**/*.rs",
-    "src/*",
-    "tests/*",
-    "docs/*",
-    "examples/*",
-    "Cargo.toml",
-    "LICENSE",
-    "README.md",
-    "Makefile.toml"
+    "/docs",
+    "/examples",
+    "/src",
+    "/tests",
+    "/Cargo.toml",
+    "/LICENSE",
+    "/README.md",
+    "/Makefile.toml"
 ]
 
 [dependencies]

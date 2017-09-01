@@ -1,11 +1,10 @@
 language: rust
 sudo: true
-dist: trusty
-group: edge
 rust:
   - stable
   - beta
   - nightly
+  - 1.17.0
 env:
   global:
     - RUST_BACKTRACE=1
