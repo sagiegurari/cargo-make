@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.3.71"
+version = "0.3.72"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -27,7 +27,7 @@ clap = "^2.26.0"
 glob = "^0.2.11"
 rand = "^0.3.16"
 serde = "^1.0.11"
-serde_derive = "^1.0.11"
+serde_derive = "^1.0.12"
 toml = "^0.4.5"
 
 [features]
