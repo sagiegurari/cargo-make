@@ -11,37 +11,30 @@ pub mod crateinfo;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use log::Logger;
 use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
 use types::{Config, CrateInfo, EnvInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
 
 /// Updates the env based on the provided data
-pub fn set_env(
-    logger: &Logger,
-    env: HashMap<String, String>,
-) {
-    logger.verbose::<()>("Setting Up Env.", &[], None);
+pub fn set_env(env: HashMap<String, String>) {
+    debug!("Setting Up Env.");
 
     for (key, value) in &env {
-        logger.verbose::<()>("Setting env: ", &[&key, "=", &value], None);
+        debug!("Setting env: {} = {}", &key, &value);
         env::set_var(&key, &value);
     }
 }
 
 /// Updates the env for the current execution based on the descriptor.
-fn initialize_env(
-    logger: &Logger,
-    config: &Config,
-) {
-    logger.info::<()>("Setting Up Env.", &[], None);
+fn initialize_env(config: &Config) {
+    info!("Setting Up Env.");
 
-    set_env(&logger, config.env.clone());
+    set_env(config.env.clone());
 }
 
-fn setup_env_for_crate(logger: &Logger) -> CrateInfo {
-    let crate_info = crateinfo::load(&logger);
+fn setup_env_for_crate() -> CrateInfo {
+    let crate_info = crateinfo::load();
     let crate_info_clone = crate_info.clone();
 
     let package_info = crate_info.package.unwrap_or(PackageInfo::new());
@@ -93,8 +86,8 @@ fn setup_env_for_crate(logger: &Logger) -> CrateInfo {
     crate_info_clone
 }
 
-fn setup_env_for_git_repo(logger: &Logger) -> GitInfo {
-    let git_info = gitinfo::load(&logger);
+fn setup_env_for_git_repo() -> GitInfo {
+    let git_info = gitinfo::load();
     let git_info_clone = git_info.clone();
 
     if git_info.branch.is_some() {
@@ -112,8 +105,8 @@ fn setup_env_for_git_repo(logger: &Logger) -> GitInfo {
     git_info_clone
 }
 
-fn setup_env_for_rust(logger: &Logger) -> RustInfo {
-    let rust_info = rustinfo::load(&logger);
+fn setup_env_for_rust() -> RustInfo {
+    let rust_info = rustinfo::load();
     let rust_info_clone = rust_info.clone();
 
     if rust_info.version.is_some() {
@@ -157,44 +150,30 @@ fn setup_env_for_rust(logger: &Logger) -> RustInfo {
 
 /// Sets up the env before the tasks execution.
 pub fn setup_env(
-    logger: &Logger,
     config: &Config,
     task: &str,
 ) -> EnvInfo {
-    initialize_env(logger, config);
+    initialize_env(config);
 
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
 
-    let log_level = if logger.is_verbose_enabled() {
-        "verbose"
-    } else if logger.is_info_enabled() {
-        "info"
-    } else {
-        "error"
-    };
-
-    env::set_var("CARGO_MAKE_LOG_LEVEL", log_level);
-
     // load crate info
-    let crate_info = setup_env_for_crate(&logger);
+    let crate_info = setup_env_for_crate();
 
     // load git info
-    let git_info = setup_env_for_git_repo(&logger);
+    let git_info = setup_env_for_git_repo();
 
     // load rust info
-    let rust_info = setup_env_for_rust(&logger);
+    let rust_info = setup_env_for_rust();
 
     EnvInfo { rust_info, crate_info, git_info }
 }
 
-pub fn setup_cwd(
-    logger: &Logger,
-    cwd: Option<&str>,
-) {
+pub fn setup_cwd(cwd: Option<&str>) {
     let directory = cwd.unwrap_or(".");
 
-    logger.verbose::<()>("Changing working directory to: ", &[&directory], None);
+    debug!("Changing working directory to: {}", &directory);
 
     let mut directory_path_buf = PathBuf::from(&directory);
     if !cfg!(windows) {
@@ -203,11 +182,11 @@ pub fn setup_cwd(
     let directory_path = directory_path_buf.as_path();
 
     match env::set_current_dir(&directory_path) {
-        Err(error) => logger.error("Unable to set current working directory to: ", &[&directory], Some(error)),
+        Err(error) => error!("Unable to set current working directory to: {} {:#?}", &directory, error),
         _ => {
             env::set_var("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
 
-            logger.verbose::<()>("Working directory changed to: ", &[&directory], None);
+            debug!("Working directory changed to: {}", &directory);
         }
     }
 }

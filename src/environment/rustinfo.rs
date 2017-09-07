@@ -8,19 +8,18 @@
 mod rustinfo_test;
 
 use command;
-use log::Logger;
 use std::collections::HashMap;
 use std::process::Command;
 use types::{RustChannel, RustInfo};
 
-pub fn load(logger: &Logger) -> RustInfo {
+pub fn load() -> RustInfo {
     let mut rust_info = RustInfo::new();
 
     let mut result = Command::new("rustc").arg("--version").output();
 
     match result {
         Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
+            let exit_code = command::get_exit_code(Ok(output.status), true);
 
             if exit_code == 0 {
                 let stdout = String::from_utf8_lossy(&output.stdout);
@@ -45,14 +44,14 @@ pub fn load(logger: &Logger) -> RustInfo {
                 }
             }
         }
-        Err(error) => logger.info("Error while running rustc --version command.: ", &[], Some(&error)),
+        Err(error) => info!("Error while running rustc --version command: {:#?}", &error),
     };
 
     result = Command::new("rustc").arg("--print").arg("cfg").output();
 
     match result {
         Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
+            let exit_code = command::get_exit_code(Ok(output.status), true);
 
             if exit_code == 0 {
                 let mut values = HashMap::<String, String>::new();
@@ -62,7 +61,7 @@ pub fn load(logger: &Logger) -> RustInfo {
                 for mut line in lines {
                     line = line.trim();
 
-                    logger.verbose::<()>("Checking: ", &[&line], None);
+                    debug!("Checking: {}", &line);
 
                     if line.contains("=") {
                         let parts: Vec<&str> = line.split('=').collect();
@@ -78,7 +77,7 @@ pub fn load(logger: &Logger) -> RustInfo {
                 rust_info.target_vendor = Some(values.remove("target_vendor").unwrap_or("unknown".to_string()));
             }
         }
-        Err(error) => logger.info("Error while running rustc --version command.: ", &[], Some(&error)),
+        Err(error) => info!("Error while running rustc --version command: {:#?}", &error),
     };
 
     rust_info

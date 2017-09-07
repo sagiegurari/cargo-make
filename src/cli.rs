@@ -10,7 +10,7 @@ mod cli_test;
 use clap::{App, Arg, ArgMatches, SubCommand};
 use descriptor;
 use environment;
-use log;
+use logger;
 use runner;
 use types::CliArgs;
 
@@ -23,37 +23,37 @@ static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
 
 fn run(cli_args: CliArgs) {
-    let logger = log::create(&cli_args.log_level);
+    logger::init(&cli_args.log_level);
 
-    logger.info::<()>("cargo-", &[&NAME, " ", &VERSION], None);
-    logger.verbose::<()>("Written By ", &[&AUTHOR], None);
+    info!("cargo-{} {}", &NAME, &VERSION);
+    debug!("Written By {}", &AUTHOR);
 
-    logger.verbose("Cli Args", &[], Some(&cli_args));
+    debug!("Cli Args {:#?}", &cli_args);
 
     let cwd = match cli_args.cwd {
         Some(ref value) => Some(value.as_ref()),
         None => None,
     };
-    environment::setup_cwd(&logger, cwd);
+    environment::setup_cwd(cwd);
 
     let build_file = &cli_args.build_file;
     let task = &cli_args.task;
 
-    logger.info::<()>("Using Build File: ", &[build_file], None);
-    logger.info::<()>("Task: ", &[task], None);
+    info!("Using Build File: {}", &build_file);
+    info!("Task: {}", &task);
 
     let env = cli_args.env.clone();
 
-    let config = descriptor::load(&build_file, env, cli_args.experimental, &logger);
+    let config = descriptor::load(&build_file, env, cli_args.experimental);
 
-    let env_info = environment::setup_env(&logger, &config, &task);
+    let env_info = environment::setup_env(&config, &task);
 
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
     } else if cli_args.print_only {
-        runner::print(&logger, &config, &task, cli_args.disable_workspace);
+        runner::print(&config, &task, cli_args.disable_workspace);
     } else {
-        runner::run(&logger, config, &task, env_info, cli_args.disable_workspace);
+        runner::run(config, &task, env_info, cli_args.disable_workspace);
     }
 }
 

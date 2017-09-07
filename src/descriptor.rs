@@ -11,7 +11,6 @@
 mod descriptor_test;
 
 use command;
-use log::Logger;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
@@ -73,30 +72,27 @@ fn merge_tasks(
     merged
 }
 
-fn run_load_script(
-    logger: &Logger,
-    external_config: &ExternalConfig,
-) -> bool {
+fn run_load_script(external_config: &ExternalConfig) -> bool {
     match external_config.config {
         Some(ref config) => {
             let load_script = config.get_load_script();
 
             match load_script {
                 Some(ref script) => {
-                    logger.verbose::<()>("Load script found.", &[], None);
+                    debug!("Load script found.");
 
-                    command::run_script(&logger, script, None, true);
+                    command::run_script(script, None, true);
 
                     true
                 }
                 None => {
-                    logger.verbose::<()>("No load script defined.", &[], None);
+                    debug!("No load script defined.");
                     false
                 }
             }
         }
         None => {
-            logger.verbose::<()>("No load script defined.", &[], None);
+            debug!("No load script defined.");
             false
         }
     }
@@ -105,14 +101,13 @@ fn run_load_script(
 fn load_external_descriptor(
     base_path: &str,
     file_name: &str,
-    logger: &Logger,
 ) -> ExternalConfig {
-    logger.verbose::<()>("Loading tasks from file: ", &[file_name, " base directory: ", &base_path], None);
+    debug!("Loading tasks from file: {} base directory: {}", &file_name, &base_path);
 
     let file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() {
-        logger.verbose("Opening file:", &[], Some(&file_path));
+        debug!("Opening file: {:#?}", &file_path);
         let mut file = match File::open(&file_path) {
             Ok(value) => value,
             Err(error) => panic!("Unable to open file, base path: {} file name: {} error: {}", base_path, file_name, error),
@@ -124,16 +119,16 @@ fn load_external_descriptor(
             Ok(value) => value,
             Err(error) => panic!("Unable to parse external descriptor, {}", error),
         };
-        logger.verbose("Loaded external config:", &[], Some(&file_config));
+        debug!("Loaded external config: {:#?}", &file_config);
 
-        run_load_script(&logger, &file_config);
+        run_load_script(&file_config);
 
         match file_config.extend {
             Some(ref base_file) => {
                 let parent_path_buf = Path::new(base_path).join(file_name).join("..");
                 let parent_path = file_path.parent().unwrap_or(&parent_path_buf).to_str().unwrap_or(".");
-                logger.verbose::<()>("External config parent path:", &[&parent_path], None);
-                let base_file_config = load_external_descriptor(parent_path, base_file, logger);
+                debug!("External config parent path: {}", &parent_path);
+                let base_file_config = load_external_descriptor(parent_path, base_file);
 
                 // merge env
                 let mut base_env = match base_file_config.env {
@@ -170,17 +165,14 @@ fn load_external_descriptor(
             None => file_config,
         }
     } else {
-        logger.info::<()>("External file not found, skipping.", &[], None);
+        info!("External file not found, skipping.");
 
         ExternalConfig::new()
     }
 }
 
-fn load_default(
-    experimental: bool,
-    logger: &Logger,
-) -> Config {
-    logger.verbose::<()>("Loading default tasks.", &[], None);
+fn load_default(experimental: bool) -> Config {
+    debug!("Loading default tasks.");
 
     let default_descriptor = include_str!("Makefile.stable.toml");
 
@@ -188,7 +180,7 @@ fn load_default(
         Ok(value) => value,
         Err(error) => panic!("Unable to parse default descriptor, {}", error),
     };
-    logger.verbose("Loaded default config:", &[], Some(&default_config));
+    debug!("Loaded default config: {:#?}", &default_config);
 
     if experimental {
         let experimental_descriptor = include_str!("Makefile.beta.toml");
@@ -197,7 +189,7 @@ fn load_default(
             Ok(value) => value,
             Err(error) => panic!("Unable to parse experimental descriptor, {}", error),
         };
-        logger.verbose("Loaded experimental config:", &[], Some(&experimental_config));
+        debug!("Loaded experimental config: {:#?}", &experimental_config);
 
         let mut default_tasks = default_config.tasks;
         let mut experimental_tasks = experimental_config.tasks;
@@ -217,11 +209,10 @@ pub fn load(
     file_name: &str,
     env: Option<Vec<String>>,
     experimental: bool,
-    logger: &Logger,
 ) -> Config {
-    let default_config = load_default(experimental, &logger);
+    let default_config = load_default(experimental);
 
-    let external_config: ExternalConfig = load_external_descriptor(".", file_name, logger);
+    let external_config: ExternalConfig = load_external_descriptor(".", file_name);
 
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
@@ -243,7 +234,7 @@ pub fn load(
 
             for env_pair in &values {
                 let env_part: Vec<&str> = env_pair.split('=').collect();
-                logger.verbose::<()>("Checking env pair: ", &[&env_pair], None);
+                debug!("Checking env pair: {}", &env_pair);
 
                 if env_part.len() == 2 {
                     cli_env.insert(env_part[0].to_string(), env_part[1].to_string());
@@ -262,7 +253,7 @@ pub fn load(
 
     let config = Config { config: config_section, env: all_env, tasks: all_tasks };
 
-    logger.verbose("Loaded merged config:", &[], Some(&config));
+    debug!("Loaded merged config: {:#?}", &config);
 
     config
 }

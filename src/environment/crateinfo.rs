@@ -8,7 +8,6 @@
 mod crateinfo_test;
 
 use glob::glob;
-use log::Logger;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -168,16 +167,12 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
 }
 
 /// Loads the crate info based on the Cargo.toml found in the current working directory.
-///
-/// # Arguments
-///
-/// * `logger` - Logger instance
-pub fn load(logger: &Logger) -> CrateInfo {
+pub fn load() -> CrateInfo {
     // load crate info
     let file_path = Path::new("Cargo.toml");
 
     if file_path.exists() {
-        logger.verbose("Opening file:", &[], Some(&file_path));
+        debug!("Opening file: {:#?}", &file_path);
         let mut file = match File::open(&file_path) {
             Ok(value) => value,
             Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
@@ -192,7 +187,7 @@ pub fn load(logger: &Logger) -> CrateInfo {
 
         load_workspace_members(&mut crate_info);
 
-        logger.verbose("Loaded Cargo.toml:", &[], Some(&crate_info));
+        debug!("Loaded Cargo.toml: {:#?}", &crate_info);
 
         crate_info
     } else {

@@ -265,19 +265,6 @@
 <span id="220">220</span>
 <span id="221">221</span>
 <span id="222">222</span>
-<span id="223">223</span>
-<span id="224">224</span>
-<span id="225">225</span>
-<span id="226">226</span>
-<span id="227">227</span>
-<span id="228">228</span>
-<span id="229">229</span>
-<span id="230">230</span>
-<span id="231">231</span>
-<span id="232">232</span>
-<span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # command</span>
 <span class="doccomment">//!</span>
@@ -288,7 +275,6 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./command_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">command_test</span>;
 
-<span class="kw">use</span> <span class="ident">log</span>::<span class="ident">Logger</span>;
 <span class="kw">use</span> <span class="ident">rand</span>::{<span class="ident">Rng</span>, <span class="ident">thread_rng</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">current_dir</span>;
@@ -301,7 +287,6 @@
 <span class="doccomment">/// Returns the exit code (-1 if no exit code found)</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_exit_code</span>(
     <span class="ident">exit_status</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExitStatus</span>, <span class="ident">Error</span><span class="op">&gt;</span>,
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">force</span>: <span class="ident">bool</span>,
 ) <span class="op">-&gt;</span> <span class="ident">i32</span> {
     <span class="kw">match</span> <span class="ident">exit_status</span> {
@@ -317,7 +302,7 @@
         }
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> {
-                <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Error while executing command, error: &quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="ident">error</span>));
+                <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
             }
 
             <span class="op">-</span><span class="number">1</span>
@@ -326,25 +311,19 @@
 }
 
 <span class="doccomment">/// Validates the exit code code and if not 0 or unable to validate it, panic.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate_exit_code</span>(
-    <span class="ident">code</span>: <span class="ident">i32</span>,
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
-) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate_exit_code</span>(<span class="ident">code</span>: <span class="ident">i32</span>) {
     <span class="kw">if</span> <span class="ident">code</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> {
-        <span class="ident">logger</span>.<span class="ident">error</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Error while executing command, unable to extract exit code.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
+        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, unable to extract exit code.&quot;</span>);
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span> <span class="op">!=</span> <span class="number">0</span> {
-        <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Error while executing command, exit code: &quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="ident">code</span>));
+        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, exit code: {}&quot;</span>, <span class="ident">code</span>);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">create_script</span>(
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
-    <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">create_script</span>(<span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="ident">cwd_holder</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">current_dir</span>() {
         <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">error</span>));
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">error</span>);
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory, error: {}&quot;</span>, <span class="ident">error</span>);
         }
     };
@@ -352,7 +331,7 @@
     <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_holder</span>.<span class="ident">to_str</span>() {
         <span class="prelude-val">Some</span>(<span class="ident">cwd_str</span>) <span class="op">=&gt;</span> <span class="ident">cwd_str</span>.<span class="ident">clone</span>(),
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>);
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory.&quot;</span>);
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to get current working directory&quot;</span>);
         }
     };
@@ -384,7 +363,6 @@
 
 <span class="doccomment">/// Runs the requested script text and panics in case of any script error.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_script</span>(
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">validate</span>: <span class="ident">bool</span>,
@@ -397,8 +375,8 @@
 
     <span class="comment">// create parent directory</span>
     <span class="kw">match</span> <span class="ident">create_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">file_path</span>) {
-        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Created temporary directory.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>),
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>(<span class="string">&quot;Unable to create temporary directory: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path</span>.<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;???&quot;</span>)], <span class="prelude-val">Some</span>(<span class="ident">error</span>)),
+        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Created temporary directory.&quot;</span>),
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Unable to create temporary directory: {} {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>.<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;???&quot;</span>), <span class="ident">error</span>),
     };
 
     <span class="ident">file_path</span>.<span class="ident">push</span>(<span class="ident">file_name</span>);
@@ -410,24 +388,24 @@
 
     <span class="kw">let</span> <span class="ident">file_path_str</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">file_path</span>.<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;???&quot;</span>);
 
-    <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Creating temporary script file: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>], <span class="prelude-val">None</span>);
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Creating temporary script file: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">File</span>::<span class="ident">create</span>(<span class="kw-2">&amp;</span><span class="ident">file_path</span>) {
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Unable to create script file: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">error</span>));
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to create script file: {} {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>, <span class="kw-2">&amp;</span><span class="ident">error</span>);
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to create script file, error: {}&quot;</span>, <span class="ident">error</span>);
         }
         <span class="prelude-val">Ok</span>(<span class="ident">file</span>) <span class="op">=&gt;</span> <span class="ident">file</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">create_script</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">script_lines</span>);
+    <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">create_script</span>(<span class="kw-2">&amp;</span><span class="ident">script_lines</span>);
 
     <span class="kw">match</span> <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">text</span>.<span class="ident">as_bytes</span>()) {
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
-            <span class="ident">logger</span>.<span class="ident">error</span>(<span class="string">&quot;Unable to write to script file: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">error</span>));
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to write to script file: {} {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>, <span class="kw-2">&amp;</span><span class="ident">error</span>);
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to write to script file, error: {}&quot;</span>, <span class="ident">error</span>);
         }
-        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Written script file text:\n&quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">text</span>], <span class="prelude-val">None</span>),
+        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Written script file text:\n{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">text</span>),
     }
 
     <span class="kw">let</span> <span class="ident">command</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">script_runner</span> {
@@ -449,11 +427,11 @@
 
     <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">args_vector</span>);
 
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="ident">validate</span>);
+    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="ident">validate</span>);
 
     <span class="kw">match</span> <span class="ident">remove_file</span>(<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>) {
-        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Temporary file deleted: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>], <span class="prelude-val">None</span>),
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>(<span class="string">&quot;Unable to delete temporary file: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">file_path_str</span>], <span class="prelude-val">Some</span>(<span class="ident">error</span>)),
+        <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Temporary file deleted: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>),
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Unable to delete temporary file: {} {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>, <span class="ident">error</span>),
     };
 
     <span class="ident">exit_code</span>
@@ -461,12 +439,11 @@
 
 <span class="doccomment">/// Runs the requested command and panics in case of any error.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_command</span>(
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
     <span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="ident">validate</span>: <span class="ident">bool</span>,
 ) <span class="op">-&gt;</span> <span class="ident">i32</span> {
-    <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;Execute Command: &quot;</span>, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">command_string</span>], <span class="prelude-val">None</span>);
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Execute Command: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>);
 
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">args</span> {
@@ -475,41 +452,38 @@
                 <span class="ident">command</span>.<span class="ident">arg</span>(<span class="ident">arg</span>);
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;No command args defined.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No command args defined.&quot;</span>),
     };
 
     <span class="ident">command</span>.<span class="ident">stdin</span>(<span class="ident">Stdio</span>::<span class="ident">inherit</span>()).<span class="ident">stdout</span>(<span class="ident">Stdio</span>::<span class="ident">inherit</span>()).<span class="ident">stderr</span>(<span class="ident">Stdio</span>::<span class="ident">inherit</span>());
-    <span class="ident">logger</span>.<span class="ident">info</span>(<span class="string">&quot;Execute Command: &quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">command</span>));
+    <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Execute Command: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command</span>);
 
     <span class="kw">let</span> <span class="ident">exit_status</span> <span class="op">=</span> <span class="ident">command</span>.<span class="ident">status</span>();
 
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">get_exit_code</span>(<span class="ident">exit_status</span>, <span class="ident">logger</span>, <span class="op">!</span><span class="ident">validate</span>);
+    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">get_exit_code</span>(<span class="ident">exit_status</span>, <span class="op">!</span><span class="ident">validate</span>);
 
     <span class="kw">if</span> <span class="ident">validate</span> {
-        <span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>, <span class="ident">logger</span>);
+        <span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
     }
 
     <span class="ident">exit_code</span>
 }
 
 <span class="doccomment">/// Runs the given task command and if not defined, the task script.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(
-    <span class="ident">logger</span>: <span class="kw-2">&amp;</span><span class="ident">Logger</span>,
-    <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
-) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) {
     <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">is_force</span>();
 
     <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command_string</span>) <span class="op">=&gt;</span> {
-            <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
+            <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span> {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">logger</span>, <span class="ident">script</span>, <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(), <span class="ident">validate</span>);
+                    <span class="ident">run_script</span>(<span class="ident">script</span>, <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(), <span class="ident">validate</span>);
                     ()
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">logger</span>.<span class="ident">verbose</span>::<span class="op">&lt;</span>()<span class="op">&gt;</span>(<span class="string">&quot;No script defined.&quot;</span>, <span class="kw-2">&amp;</span>[], <span class="prelude-val">None</span>),
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No script defined.&quot;</span>),
             };
         }
     };

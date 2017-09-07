@@ -1,6 +1,5 @@
 use super::*;
 
-use log;
 use std::{thread, time};
 use std::collections::HashMap;
 use std::env;
@@ -10,23 +9,21 @@ use types::ConfigSection;
 fn setup_cwd_empty() {
     env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
-    let logger = log::create("error");
-    setup_cwd(&logger, None);
+    setup_cwd(None);
 
     assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
 }
 
 #[test]
 fn setup_env_empty() {
-    let logger = log::create("error");
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
-    setup_env(&logger, &config, "setup_env_empty1");
+    setup_env(&config, "setup_env_empty1");
 
     let mut value = env::var("CARGO_MAKE_TASK");
     assert_eq!(value.unwrap(), "setup_env_empty1");
 
-    setup_env(&logger, &config, "setup_env_empty2");
+    setup_env(&config, "setup_env_empty2");
 
     let delay = time::Duration::from_millis(10);
     thread::sleep(delay);
@@ -37,8 +34,6 @@ fn setup_env_empty() {
 
 #[test]
 fn setup_env_values() {
-
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
     config.env.insert("MY_ENV_KEY2".to_string(), "MY_ENV_VALUE2".to_string());
@@ -46,7 +41,7 @@ fn setup_env_values() {
     assert_eq!(env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
     assert_eq!(env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
 
-    setup_env(&logger, &config, "set_env_values");
+    setup_env(&config, "set_env_values");
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
     assert_eq!(env::var("MY_ENV_KEY2").unwrap(), "MY_ENV_VALUE2");
@@ -54,8 +49,6 @@ fn setup_env_values() {
 
 #[test]
 fn setup_env_for_crate_load_toml_found() {
-    let logger = log::create("error");
-
     env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
@@ -67,7 +60,7 @@ fn setup_env_for_crate_load_toml_found() {
     env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
-    setup_env_for_crate(&logger);
+    setup_env_for_crate();
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
@@ -83,8 +76,6 @@ fn setup_env_for_crate_load_toml_found() {
 
 #[test]
 fn setup_env_for_crate_load_toml_not_found_and_cwd() {
-    let logger = log::create("error");
-
     env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
@@ -99,9 +90,9 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
     assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() == "EMPTY");
 
-    setup_cwd(&logger, Some("examples"));
-    setup_env_for_crate(&logger);
-    setup_cwd(&logger, Some(".."));
+    setup_cwd(Some("examples"));
+    setup_env_for_crate();
+    setup_cwd(Some(".."));
 
     assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
 
@@ -116,7 +107,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
     assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 
-    setup_env_for_crate(&logger);
+    setup_env_for_crate();
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
@@ -132,8 +123,6 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
 
 #[test]
 fn setup_env_for_crate_workspace() {
-    let logger = log::create("error");
-
     env::set_var("CARGO_MAKE_CRATE_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_VERSION", "EMPTY");
@@ -145,9 +134,9 @@ fn setup_env_for_crate_workspace() {
     env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
     env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
-    setup_cwd(&logger, Some("examples/workspace"));
-    setup_env_for_crate(&logger);
-    setup_cwd(&logger, Some("../.."));
+    setup_cwd(Some("examples/workspace"));
+    setup_env_for_crate();
+    setup_cwd(Some("../.."));
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "EMPTY");
@@ -162,53 +151,12 @@ fn setup_env_for_crate_workspace() {
 }
 
 #[test]
-fn setup_env_log_verbose() {
-    let logger = log::create("verbose");
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-
-    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
-
-    setup_env(&logger, &config, "setup_env_empty1");
-
-    let value = env::var("CARGO_MAKE_LOG_LEVEL");
-    assert_eq!(value.unwrap(), "verbose");
-}
-
-#[test]
-fn setup_env_log_info() {
-    let logger = log::create("info");
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-
-    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
-
-    setup_env(&logger, &config, "setup_env_empty1");
-
-    let value = env::var("CARGO_MAKE_LOG_LEVEL");
-    assert_eq!(value.unwrap(), "info");
-}
-
-#[test]
-fn setup_env_log_error() {
-    let logger = log::create("error");
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-
-    env::set_var("CARGO_MAKE_LOG_LEVEL", "EMPTY");
-
-    setup_env(&logger, &config, "setup_env_empty1");
-
-    let value = env::var("CARGO_MAKE_LOG_LEVEL");
-    assert_eq!(value.unwrap(), "error");
-}
-
-#[test]
 fn setup_env_for_git_repo_with_values() {
-    let logger = log::create("error");
-
     env::set_var("CARGO_MAKE_GIT_BRANCH", "EMPTY");
     env::set_var("CARGO_MAKE_GIT_USER_NAME", "EMPTY");
     env::set_var("CARGO_MAKE_GIT_USER_EMAIL", "EMPTY");
 
-    let git_info = setup_env_for_git_repo(&logger);
+    let git_info = setup_env_for_git_repo();
 
     if git_info.branch.is_some() {
         assert_eq!(env::var("CARGO_MAKE_GIT_BRANCH").unwrap(), git_info.branch.unwrap());
@@ -223,8 +171,6 @@ fn setup_env_for_git_repo_with_values() {
 
 #[test]
 fn setup_env_for_rust_simple_check() {
-    let logger = log::create("error");
-
     env::set_var("CARGO_MAKE_RUST_VERSION", "EMPTY");
     env::set_var("CARGO_MAKE_RUST_CHANNEL", "EMPTY");
     env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", "EMPTY");
@@ -241,7 +187,7 @@ fn setup_env_for_rust_simple_check() {
     assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() == "EMPTY");
     assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() == "EMPTY");
 
-    setup_env_for_rust(&logger);
+    setup_env_for_rust();
 
     assert!(env::var("CARGO_MAKE_RUST_VERSION").unwrap() != "EMPTY");
     assert!(env::var("CARGO_MAKE_RUST_CHANNEL").unwrap() != "EMPTY");

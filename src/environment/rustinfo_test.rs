@@ -1,11 +1,8 @@
 use super::*;
 
-use log;
-
 #[test]
 fn load_with_values() {
-    let logger = log::create("error");
-    let rust_info = load(&logger);
+    let rust_info = load();
 
     assert!(rust_info.version.is_some());
     assert!(rust_info.channel.is_some());

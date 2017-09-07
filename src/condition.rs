@@ -8,7 +8,6 @@
 mod condition_test;
 
 use command;
-use log::Logger;
 use std::env;
 use types;
 use types::{FlowInfo, RustChannel, Step, TaskCondition};
@@ -93,10 +92,7 @@ fn validate_env_not_set(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_platform(
-    logger: &Logger,
-    condition: &TaskCondition,
-) -> bool {
+fn validate_platform(condition: &TaskCondition) -> bool {
     let platforms = condition.platforms.clone();
     match platforms {
         Some(platform_names) => {
@@ -106,7 +102,7 @@ fn validate_platform(
 
             match index {
                 None => {
-                    logger.verbose::<()>("Failed platform condition, current platform: ", &[&platform_name], None);
+                    debug!("Failed platform condition, current platform: {}", &platform_name);
                     false
                 }
                 _ => true,
@@ -117,7 +113,6 @@ fn validate_platform(
 }
 
 fn validate_channel(
-    logger: &Logger,
     condition: &TaskCondition,
     flow_info: &FlowInfo,
 ) -> bool {
@@ -134,7 +129,7 @@ fn validate_channel(
 
                     match index {
                         None => {
-                            logger.verbose::<()>("Failed channel condition", &[], None);
+                            debug!("Failed channel condition");
                             false
                         }
                         _ => true,
@@ -148,29 +143,25 @@ fn validate_channel(
 }
 
 fn validate_criteria(
-    logger: &Logger,
     flow_info: &FlowInfo,
     step: &Step,
 ) -> bool {
     match step.config.condition {
         Some(ref condition) => {
-            logger.verbose::<()>("Checking task condition structure.", &[], None);
+            debug!("Checking task condition structure.");
 
-            validate_platform(&logger, &condition) && validate_channel(&logger, &condition, &flow_info) && validate_env(&condition) && validate_env_set(&condition) && validate_env_not_set(&condition)
+            validate_platform(&condition) && validate_channel(&condition, &flow_info) && validate_env(&condition) && validate_env_set(&condition) && validate_env_not_set(&condition)
         }
         None => true,
     }
 }
 
-fn validate_script(
-    logger: &Logger,
-    step: &Step,
-) -> bool {
+fn validate_script(step: &Step) -> bool {
     match step.config.condition_script {
         Some(ref script) => {
-            logger.verbose::<()>("Checking task condition script.", &[], None);
+            debug!("Checking task condition script.");
 
-            let exit_code = command::run_script(&logger, &script, step.config.script_runner.clone(), false);
+            let exit_code = command::run_script(&script, step.config.script_runner.clone(), false);
 
             if exit_code == 0 {
                 true
@@ -183,9 +174,8 @@ fn validate_script(
 }
 
 pub fn validate_condition(
-    logger: &Logger,
     flow_info: &FlowInfo,
     step: &Step,
 ) -> bool {
-    validate_criteria(&logger, &flow_info, &step) && validate_script(&logger, &step)
+    validate_criteria(&flow_info, &step) && validate_script(&step)
 }

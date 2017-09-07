@@ -1,5 +1,4 @@
 use super::*;
-use log;
 
 #[test]
 fn merge_maps_both_empty() {
@@ -216,8 +215,7 @@ fn merge_tasks_extend_task() {
 
 #[test]
 fn load_default_no_experimental() {
-    let logger = log::create("error");
-    let config = load_default(false, &logger);
+    let config = load_default(false);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -227,8 +225,7 @@ fn load_default_no_experimental() {
 
 #[test]
 fn load_default_with_experimental() {
-    let logger = log::create("error");
-    let config = load_default(true, &logger);
+    let config = load_default(true);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -238,8 +235,7 @@ fn load_default_with_experimental() {
 
 #[test]
 fn load_external_descriptor_no_file() {
-    let logger = log::create("error");
-    let config = load_external_descriptor(".", "bad_file.toml2", &logger);
+    let config = load_external_descriptor(".", "bad_file.toml2");
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -248,8 +244,7 @@ fn load_external_descriptor_no_file() {
 
 #[test]
 fn load_external_descriptor_simple_file() {
-    let logger = log::create("error");
-    let config = load_external_descriptor(".", "./examples/alias.toml", &logger);
+    let config = load_external_descriptor(".", "./examples/alias.toml");
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -263,8 +258,7 @@ fn load_external_descriptor_simple_file() {
 
 #[test]
 fn load_external_descriptor_extending_file() {
-    let logger = log::create("error");
-    let config = load_external_descriptor(".", "examples/extending.toml", &logger);
+    let config = load_external_descriptor(".", "examples/extending.toml");
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -284,8 +278,7 @@ fn load_external_descriptor_extending_file() {
 
 #[test]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let logger = log::create("error");
-    let config = load_external_descriptor(".", "examples/files/extending.toml", &logger);
+    let config = load_external_descriptor(".", "examples/files/extending.toml");
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -314,47 +307,41 @@ fn load_external_descriptor_extending_file_sub_folder() {
 
 #[test]
 fn run_load_script_no_config_section() {
-    let logger = log::create("error");
     let external_config = ExternalConfig::new();
 
-    let invoked = run_load_script(&logger, &external_config);
+    let invoked = run_load_script(&external_config);
     assert!(!invoked);
 }
 
 #[test]
 fn run_load_script_no_load_script() {
-    let logger = log::create("error");
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(ConfigSection::new());
 
-    let invoked = run_load_script(&logger, &external_config);
+    let invoked = run_load_script(&external_config);
     assert!(!invoked);
 }
 
 #[test]
 fn run_load_script_valid_load_script() {
-    let logger = log::create("error");
-
     let mut config = ConfigSection::new();
     config.load_script = Some(vec!["exit 0".to_string()]);
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    let invoked = run_load_script(&logger, &external_config);
+    let invoked = run_load_script(&external_config);
     assert!(invoked);
 }
 
 #[test]
 #[should_panic]
 fn run_load_script_invalid_load_script() {
-    let logger = log::create("error");
-
     let mut config = ConfigSection::new();
     config.load_script = Some(vec!["exit 1".to_string()]);
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    run_load_script(&logger, &external_config);
+    run_load_script(&external_config);
 }

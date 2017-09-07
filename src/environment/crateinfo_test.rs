@@ -1,12 +1,10 @@
 use super::*;
-use log;
 use std::collections::HashMap;
 use types::{CrateDependencyInfo, Workspace};
 
 #[test]
 fn crate_info_load() {
-    let logger = log::create("error");
-    let crate_info = load(&logger);
+    let crate_info = load();
 
     assert!(crate_info.package.is_some());
     assert!(crate_info.workspace.is_none());

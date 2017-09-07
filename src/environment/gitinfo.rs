@@ -8,19 +8,15 @@
 mod gitinfo_test;
 
 use command;
-use log::Logger;
 use std::process::Command;
 use types::GitInfo;
 
-fn load_from_git_config(
-    logger: &Logger,
-    git_info: &mut GitInfo,
-) {
+fn load_from_git_config(git_info: &mut GitInfo) {
     let result = Command::new("git").arg("config").arg("--list").output();
 
     match result {
         Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
+            let exit_code = command::get_exit_code(Ok(output.status), true);
 
             if exit_code == 0 {
                 let stdout = String::from_utf8_lossy(&output.stdout);
@@ -28,7 +24,7 @@ fn load_from_git_config(
                 for mut line in lines {
                     line = line.trim();
 
-                    logger.verbose::<()>("Checking: ", &[&line], None);
+                    debug!("Checking: {}", &line);
 
                     if line.starts_with("user.name=") {
                         let parts: Vec<&str> = line.split('=').collect();
@@ -42,27 +38,24 @@ fn load_from_git_config(
                 }
             }
         }
-        Err(error) => logger.info("Error while running git config --list command.: ", &[], Some(&error)),
+        Err(error) => info!("Error while running git config --list command: {:#?}", &error),
     };
 }
 
-fn load_branch(
-    logger: &Logger,
-    git_info: &mut GitInfo,
-) {
+fn load_branch(git_info: &mut GitInfo) {
     let result = Command::new("git").arg("branch").output();
 
     match result {
         Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), logger, true);
-            command::validate_exit_code(exit_code, logger);
+            let exit_code = command::get_exit_code(Ok(output.status), true);
+            command::validate_exit_code(exit_code);
 
             let stdout = String::from_utf8_lossy(&output.stdout);
             let lines: Vec<&str> = stdout.split('\n').collect();
             for mut line in lines {
                 line = line.trim();
 
-                logger.verbose::<()>("Checking: ", &[&line], None);
+                debug!("Checking: {}", &line);
 
                 if line.starts_with("*") {
                     let parts: Vec<&str> = line.split(' ').collect();
@@ -71,19 +64,19 @@ fn load_branch(
                 }
             }
         }
-        Err(error) => logger.info("Error while running git branch command.: ", &[], Some(&error)),
+        Err(error) => info!("Error while running git branch command: {:#?}", &error),
     };
 }
 
-pub fn load(logger: &Logger) -> GitInfo {
-    logger.verbose::<()>("Searching for git info.", &[], None);
+pub fn load() -> GitInfo {
+    debug!("Searching for git info.");
 
     let mut git_info = GitInfo::new();
 
-    load_from_git_config(&logger, &mut git_info);
-    load_branch(&logger, &mut git_info);
+    load_from_git_config(&mut git_info);
+    load_branch(&mut git_info);
 
-    logger.verbose("Loaded git info.", &[], Some(&git_info));
+    debug!("Loaded git info {:#?}", &git_info);
 
     git_info
 }

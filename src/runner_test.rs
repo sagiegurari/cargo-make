@@ -1,5 +1,4 @@
 use super::*;
-use log;
 use std::collections::HashMap;
 use std::env;
 use types::{ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, PlatformOverrideTask, RustInfo, Step, Task, Workspace};
@@ -7,27 +6,24 @@ use types::{ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, PlatformOverri
 #[test]
 #[should_panic]
 fn get_task_name_not_found() {
-    let logger = log::create("error");
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
-    get_task_name(&logger, &config, "test");
+    get_task_name(&config, "test");
 }
 
 #[test]
 fn get_task_name_no_alias() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     config.tasks.insert("test".to_string(), Task::new());
 
-    let name = get_task_name(&logger, &config, "test");
+    let name = get_task_name(&config, "test");
 
     assert_eq!(name, "test");
 }
 
 #[test]
 fn get_task_name_alias() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
@@ -36,14 +32,13 @@ fn get_task_name_alias() {
 
     config.tasks.insert("test2".to_string(), Task::new());
 
-    let name = get_task_name(&logger, &config, "test");
+    let name = get_task_name(&config, "test");
 
     assert_eq!(name, "test2");
 }
 
 #[test]
 fn get_task_name_platform_alias() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
@@ -59,14 +54,13 @@ fn get_task_name_platform_alias() {
 
     config.tasks.insert("test2".to_string(), Task::new());
 
-    let name = get_task_name(&logger, &config, "test");
+    let name = get_task_name(&config, "test");
 
     assert_eq!(name, "test2");
 }
 
 #[test]
 fn create_execution_plan_single() {
-    let logger = log::create("error");
     let mut config_section = ConfigSection::new();
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
@@ -79,7 +73,7 @@ fn create_execution_plan_single() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -88,7 +82,6 @@ fn create_execution_plan_single() {
 
 #[test]
 fn create_execution_plan_single_disabled() {
-    let logger = log::create("error");
     let mut config_section = ConfigSection::new();
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
@@ -102,7 +95,7 @@ fn create_execution_plan_single_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -110,7 +103,6 @@ fn create_execution_plan_single_disabled() {
 
 #[test]
 fn create_execution_plan_platform_disabled() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let mut task = Task::new();
@@ -165,13 +157,12 @@ fn create_execution_plan_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false);
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
 #[test]
 fn create_execution_plan_workspace() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let task = Task::new();
@@ -179,7 +170,7 @@ fn create_execution_plan_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create_execution_plan(&logger, &config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -188,7 +179,6 @@ fn create_execution_plan_workspace() {
 
 #[test]
 fn create_execution_plan_noworkspace() {
-    let logger = log::create("error");
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
 
     let task = Task::new();
@@ -196,7 +186,7 @@ fn create_execution_plan_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create_execution_plan(&logger, &config, "test", true);
+    let execution_plan = create_execution_plan(&config, "test", true);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
@@ -243,8 +233,6 @@ cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
 #[test]
 #[should_panic]
 fn run_task_bad_script() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -257,13 +245,11 @@ fn run_task_bad_script() {
     task.script = Some(vec!["exit 1".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_command_and_bad_script() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -278,14 +264,12 @@ fn run_task_command_and_bad_script() {
     task.script = Some(vec!["exit 1".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 #[should_panic]
 fn run_task_bad_command_valid_script() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -299,13 +283,11 @@ fn run_task_bad_command_valid_script() {
     task.script = Some(vec!["exit 0".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_no_command_valid_script() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -318,14 +300,12 @@ fn run_task_no_command_valid_script() {
     task.script = Some(vec!["exit 0".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 #[should_panic]
 fn run_task_bad_run_task_valid_command() {
-    let logger = log::create("error");
-
     let mut sub_task = Task::new();
     sub_task.script = Some(vec!["exit 1".to_string()]);
 
@@ -346,13 +326,11 @@ fn run_task_bad_run_task_valid_command() {
     task.args = Some(vec!["test".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_valid_run_task_bad_command() {
-    let logger = log::create("error");
-
     let mut sub_task = Task::new();
     sub_task.script = Some(vec!["exit 0".to_string()]);
 
@@ -372,13 +350,11 @@ fn run_task_valid_run_task_bad_command() {
     task.command = Some("bad12345".to_string());
     let step = Step { name: "test".to_string(), config: task };
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_set_env() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -398,7 +374,7 @@ fn run_task_set_env() {
 
     env::set_var("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
-    run_task(&logger, &flow_info, &step);
+    run_task(&flow_info, &step);
 
     assert_eq!(env::var("TEST_RUN_TASK_SET_ENV").unwrap(), "VALID");
 }

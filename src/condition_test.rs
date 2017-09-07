@@ -1,5 +1,4 @@
 use super::*;
-use log;
 use std::collections::HashMap;
 use types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustChannel, RustInfo, Step, Task, TaskCondition};
 
@@ -193,46 +192,38 @@ fn validate_env_invalid_partial_found() {
 
 #[test]
 fn validate_script_empty() {
-    let logger = log::create("error");
-
     let task = Task::new();
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_script(&logger, &step);
+    let enabled = validate_script(&step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_script_valid() {
-    let logger = log::create("error");
-
     let mut task = Task::new();
     task.condition_script = Some(vec!["exit 0".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_script(&logger, &step);
+    let enabled = validate_script(&step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_script_invalid() {
-    let logger = log::create("error");
-
     let mut task = Task::new();
     task.condition_script = Some(vec!["exit 1".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
-    let enabled = validate_script(&logger, &step);
+    let enabled = validate_script(&step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_platform_valid() {
-    let logger = log::create("error");
-
     let condition = TaskCondition {
         platforms: Some(vec!["bad1".to_string(), types::get_platform_name(), "bad2".to_string()]),
         channels: None,
@@ -241,15 +232,13 @@ fn validate_platform_valid() {
         env: None
     };
 
-    let enabled = validate_platform(&logger, &condition);
+    let enabled = validate_platform(&condition);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_platform_invalid() {
-    let logger = log::create("error");
-
     let condition = TaskCondition {
         platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         channels: None,
@@ -258,15 +247,13 @@ fn validate_platform_invalid() {
         env: None
     };
 
-    let enabled = validate_platform(&logger, &condition);
+    let enabled = validate_platform(&condition);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_channel_valid() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let mut flow_info = FlowInfo {
         config,
@@ -283,7 +270,7 @@ fn validate_channel_valid() {
         env_not_set: None,
         env: None
     };
-    let mut enabled = validate_channel(&logger, &condition, &flow_info);
+    let mut enabled = validate_channel(&condition, &flow_info);
     assert!(enabled);
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
@@ -294,7 +281,7 @@ fn validate_channel_valid() {
         env_not_set: None,
         env: None
     };
-    enabled = validate_channel(&logger, &condition, &flow_info);
+    enabled = validate_channel(&condition, &flow_info);
 
     assert!(enabled);
 
@@ -306,15 +293,13 @@ fn validate_channel_valid() {
         env_not_set: None,
         env: None
     };
-    enabled = validate_channel(&logger, &condition, &flow_info);
+    enabled = validate_channel(&condition, &flow_info);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_channel_invalid() {
-    let logger = log::create("error");
-
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let mut flow_info = FlowInfo {
         config,
@@ -331,14 +316,13 @@ fn validate_channel_invalid() {
         env_not_set: None,
         env: None
     };
-    let enabled = validate_channel(&logger, &condition, &flow_info);
+    let enabled = validate_channel(&condition, &flow_info);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_empty() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -351,14 +335,13 @@ fn validate_criteria_empty() {
 
     step.config.condition = Some(TaskCondition { platforms: None, channels: None, env_set: None, env_not_set: None, env: None });
 
-    let enabled = validate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_criteria_valid_platform() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -377,14 +360,13 @@ fn validate_criteria_valid_platform() {
         env: None
     });
 
-    let enabled = validate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_platform() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -403,14 +385,13 @@ fn validate_criteria_invalid_platform() {
         env: None
     });
 
-    let enabled = validate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_valid_channel() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -429,7 +410,7 @@ fn validate_criteria_valid_channel() {
         env_not_set: None,
         env: None
     });
-    let mut enabled = validate_criteria(&logger, &flow_info, &step);
+    let mut enabled = validate_criteria(&flow_info, &step);
 
     assert!(enabled);
 
@@ -441,7 +422,7 @@ fn validate_criteria_valid_channel() {
         env_not_set: None,
         env: None
     });
-    enabled = validate_criteria(&logger, &flow_info, &step);
+    enabled = validate_criteria(&flow_info, &step);
 
     assert!(enabled);
 
@@ -453,14 +434,13 @@ fn validate_criteria_valid_channel() {
         env_not_set: None,
         env: None
     });
-    enabled = validate_criteria(&logger, &flow_info, &step);
+    enabled = validate_criteria(&flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_channel() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -479,14 +459,13 @@ fn validate_criteria_invalid_channel() {
         env_not_set: None,
         env: None
     });
-    let enabled = validate_criteria(&logger, &flow_info, &step);
+    let enabled = validate_criteria(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_condition_both_valid() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -506,14 +485,13 @@ fn validate_condition_both_valid() {
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_criteria_valid_script_invalid() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -533,14 +511,13 @@ fn validate_criteria_valid_script_invalid() {
     });
     step.config.condition_script = Some(vec!["exit 1".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_script_valid() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -560,14 +537,13 @@ fn validate_criteria_invalid_script_valid() {
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_env_set() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -587,14 +563,13 @@ fn validate_criteria_invalid_env_set() {
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_env_not_set() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -616,14 +591,13 @@ fn validate_criteria_invalid_env_not_set() {
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_valid_env() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -644,14 +618,13 @@ fn validate_criteria_valid_env() {
     step.config.condition = Some(TaskCondition { platforms: None, channels: None, env_set: None, env_not_set: None, env: Some(env_values) });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_env_not_found() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -669,14 +642,13 @@ fn validate_criteria_invalid_env_not_found() {
     step.config.condition = Some(TaskCondition { platforms: None, channels: None, env_set: None, env_not_set: None, env: Some(env_values) });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_criteria_invalid_env_not_equal() {
-    let logger = log::create("error");
     let mut step = Step { name: "test".to_string(), config: Task::new() };
 
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
@@ -697,7 +669,7 @@ fn validate_criteria_invalid_env_not_equal() {
     step.config.condition = Some(TaskCondition { platforms: None, channels: None, env_set: None, env_not_set: None, env: Some(env_values) });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
-    let enabled = validate_condition(&logger, &flow_info, &step);
+    let enabled = validate_condition(&flow_info, &step);
 
     assert!(!enabled);
 }

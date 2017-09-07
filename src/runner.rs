@@ -16,69 +16,63 @@ use command;
 use condition;
 use environment;
 use installer;
-use log::Logger;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(
-    logger: &Logger,
     flow_info: &FlowInfo,
     step: &Step,
 ) -> bool {
-    condition::validate_condition(&logger, &flow_info, &step)
+    condition::validate_condition(&flow_info, &step)
 }
 
 fn run_sub_task(
-    logger: &Logger,
     flow_info: &FlowInfo,
     sub_task: &str,
 ) {
     let mut sub_flow_info = flow_info.clone();
     sub_flow_info.task = sub_task.to_string();
 
-    run_flow(&logger, &sub_flow_info);
+    run_flow(&sub_flow_info);
 }
 
 fn run_task(
-    logger: &Logger,
     flow_info: &FlowInfo,
     step: &Step,
 ) {
-    logger.info::<()>("Running Task: ", &[&step.name], None);
+    info!("Running Task: {}", &step.name);
 
-    if validate_condition(&logger, &flow_info, &step) {
+    if validate_condition(&flow_info, &step) {
         let env = match step.config.env {
             Some(ref env) => env.clone(),
             None => HashMap::new(),
         };
-        environment::set_env(&logger, env);
+        environment::set_env(env);
 
-        installer::install(&logger, &step.config);
+        installer::install(&step.config);
 
         match step.config.run_task {
-            Some(ref sub_task) => run_sub_task(&logger, &flow_info, sub_task),
-            None => command::run(&logger, &step),
+            Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
+            None => command::run(&step),
         };
     } else {
-        logger.verbose::<()>("Task: ", &[&step.name, " disabled"], None);
+        debug!("Task: {} disabled", &step.name);
     }
 }
 
 fn run_task_flow(
-    logger: &Logger,
     flow_info: &FlowInfo,
     execution_plan: &ExecutionPlan,
 ) {
     for step in &execution_plan.steps {
-        run_task(&logger, &flow_info, &step);
+        run_task(&flow_info, &step);
     }
 }
 
 /// Returns the actual task name to invoke as tasks may have aliases
 fn get_task_name(
-    logger: &Logger,
     config: &Config,
     name: &str,
 ) -> String {
@@ -87,13 +81,13 @@ fn get_task_name(
             let alias = task_config.get_alias();
 
             match alias {
-                Some(ref alias) => get_task_name(logger, config, alias),
+                Some(ref alias) => get_task_name(config, alias),
                 _ => name.to_string(),
             }
         }
         None => {
             // This will actually panic
-            logger.error::<()>("Task not found: ", &[&name], None);
+            error!("Task not found: {}", &name);
 
             name.to_string()
         }
@@ -102,24 +96,23 @@ fn get_task_name(
 
 /// Creates an execution plan for the given step based on existing execution plan data
 fn create_execution_plan_for_step(
-    logger: &Logger,
     config: &Config,
     task: &str,
     steps: &mut Vec<Step>,
     task_names: &mut HashSet<String>,
     root: bool,
 ) {
-    let actual_task = get_task_name(logger, config, task);
+    let actual_task = get_task_name(config, task);
 
     match config.tasks.get(&actual_task) {
         Some(task_config) => {
             match task_config.dependencies {
                 Some(ref dependencies) => {
                     for dependency in dependencies {
-                        create_execution_plan_for_step(&logger, &config, &dependency, steps, task_names, false);
+                        create_execution_plan_for_step(&config, &dependency, steps, task_names, false);
                     }
                 }
-                _ => logger.verbose::<()>("No dependencies found for task: ", &[&task], None),
+                _ => debug!("No dependencies found for task: {}", &task),
             };
 
             if !task_names.contains(task) {
@@ -132,10 +125,10 @@ fn create_execution_plan_for_step(
                     task_names.insert(task.to_string());
                 }
             } else if root {
-                logger.error::<()>("Circular reference found for task: ", &[&task], None);
+                error!("Circular reference found for task: {}", &task);
             }
         }
-        None => logger.error::<()>("Task not found: ", &[&task], None),
+        None => error!("Task not found: {}", &task),
     }
 }
 
@@ -171,7 +164,6 @@ fn create_workspace_task(
 
 /// Creates the full execution plan
 fn create_execution_plan(
-    logger: &Logger,
     config: &Config,
     task: &str,
     disable_workspace: bool,
@@ -191,17 +183,17 @@ fn create_execution_plan(
                         steps.push(Step { name: task.to_string(), config: normalized_task });
                     }
                 }
-                None => logger.error::<()>("Task not found: ", &[task], None),
+                None => error!("Task not found: {}", &task),
             }
         }
-        None => logger.verbose::<()>("Init task not defined.", &[], None),
+        None => debug!("Init task not defined."),
     };
 
     // load crate info and look for workspace info
-    let crate_info = environment::crateinfo::load(&logger);
+    let crate_info = environment::crateinfo::load();
 
     if disable_workspace || crate_info.workspace.is_none() {
-        create_execution_plan_for_step(&logger, &config, &task, &mut steps, &mut task_names, true);
+        create_execution_plan_for_step(&config, &task, &mut steps, &mut task_names, true);
     } else {
         let workspace_task = create_workspace_task(crate_info, task);
 
@@ -221,23 +213,20 @@ fn create_execution_plan(
                         steps.push(Step { name: task.to_string(), config: normalized_task });
                     }
                 }
-                None => logger.error::<()>("Task not found: ", &[task], None),
+                None => error!("Task not found: {}", &task),
             }
         }
-        None => logger.verbose::<()>("End task not defined.", &[], None),
+        None => debug!("End task not defined."),
     };
 
     ExecutionPlan { steps }
 }
 
-fn run_flow(
-    logger: &Logger,
-    flow_info: &FlowInfo,
-) {
-    let execution_plan = create_execution_plan(&logger, &flow_info.config, &flow_info.task, flow_info.disable_workspace);
-    logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
+fn run_flow(flow_info: &FlowInfo) {
+    let execution_plan = create_execution_plan(&flow_info.config, &flow_info.task, flow_info.disable_workspace);
+    debug!("Created execution plan: {:#?}", &execution_plan);
 
-    run_task_flow(logger, &flow_info, &execution_plan);
+    run_task_flow(&flow_info, &execution_plan);
 }
 
 /// Runs the requested tasks.<br>
@@ -246,7 +235,6 @@ fn run_flow(
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
 pub fn run(
-    logger: &Logger,
     config: Config,
     task: &str,
     env_info: EnvInfo,
@@ -256,7 +244,7 @@ pub fn run(
 
     let flow_info = FlowInfo { config, task: task.to_string(), env_info, disable_workspace };
 
-    run_flow(logger, &flow_info);
+    run_flow(&flow_info);
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {
@@ -269,18 +257,17 @@ pub fn run(
         _ => "".to_string(),
     };
 
-    logger.info::<()>("Build Done", &[&time_string, "."], None);
+    info!("Build Done {}.", &time_string);
 }
 
 /// Only prints the execution plan
 pub fn print(
-    logger: &Logger,
     config: &Config,
     task: &str,
     disable_workspace: bool,
 ) {
-    let execution_plan = create_execution_plan(&logger, &config, &task, disable_workspace);
-    logger.verbose("Created execution plan: ", &[], Some(&execution_plan));
+    let execution_plan = create_execution_plan(&config, &task, disable_workspace);
+    debug!("Created execution plan: {:#?}", &execution_plan);
 
     println!("{:#?}", &execution_plan);
 }

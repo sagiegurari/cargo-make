@@ -166,6 +166,9 @@
 <span id="121">121</span>
 <span id="122">122</span>
 <span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">anonymous_parameters</span>,
         <span class="ident">const_err</span>,
@@ -265,7 +268,10 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">clap</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fern</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">glob</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
@@ -274,7 +280,7 @@
 <span class="comment">// make types public for docs</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span>;
 
-<span class="kw">mod</span> <span class="ident">log</span>;
+<span class="kw">mod</span> <span class="ident">logger</span>;
 <span class="kw">mod</span> <span class="ident">descriptor</span>;
 <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">mod</span> <span class="ident">command</span>;

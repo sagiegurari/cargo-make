@@ -96,7 +96,10 @@
 //!
 
 extern crate clap;
+extern crate fern;
 extern crate glob;
+#[macro_use]
+extern crate log;
 extern crate rand;
 #[macro_use]
 extern crate serde_derive;
@@ -105,7 +108,7 @@ extern crate toml;
 // make types public for docs
 pub mod types;
 
-mod log;
+mod logger;
 mod descriptor;
 mod environment;
 mod command;
