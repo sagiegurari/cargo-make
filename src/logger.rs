@@ -1,6 +1,6 @@
 //! # log
 //!
-//! Implements a simple output logger.
+//! Initializes the global logger.
 //!
 
 #[cfg(test)]
