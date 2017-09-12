@@ -169,12 +169,12 @@ args = ["doc", "--no-deps"]
 [tasks.build]
 description = "Runs the rust compiler."
 command = "cargo"
-args = ["build"]
+args = ["build", "--all-features"]
 
 [tasks.build-verbose]
 description = "Runs the rust compiler with verbose output."
 command = "cargo"
-args = ["build", "--verbose"]
+args = ["build", "--verbose", "--all-features"]
 
 [tasks.post-build]
 
@@ -183,12 +183,12 @@ args = ["build", "--verbose"]
 [tasks.test]
 description = "Runs all available tests."
 command = "cargo"
-args = ["test"]
+args = ["test", "--all-features"]
 
 [tasks.test-verbose]
 description = "Runs all available tests with verbose output."
 command = "cargo"
-args = ["test", "--verbose"]
+args = ["test", "--verbose", "--all-features"]
 
 [tasks.post-test]
 
