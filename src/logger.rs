@@ -11,6 +11,14 @@ use fern;
 use log::{LogLevel, LogLevelFilter};
 use std::io::stdout;
 
+#[cfg(test)]
+fn exit(code: i32) {
+    panic!(code);
+}
+
+#[cfg(not(test))]
+use std::process::exit;
+
 #[derive(Debug, PartialEq)]
 /// The log levels
 pub enum Level {
@@ -53,7 +61,9 @@ pub fn init(level_name: &str) {
             out.finish(format_args!("[{}] {} - {}", &name, record_level, message));
 
             if record_level == LogLevel::Error {
-                panic!("Build Failed.");
+                warn!("Build Failed.");
+
+                exit(0);
             }
         })
         .level(log_level)
