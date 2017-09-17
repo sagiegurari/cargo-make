@@ -39,6 +39,8 @@ pub struct CliArgs {
     pub print_only: bool,
     /// List all known steps
     pub list_all_steps: bool,
+    /// Disables the update check during startup
+    pub disable_check_for_updates: bool,
     /// Allows access unsupported experimental predefined tasks
     pub experimental: bool
 }
@@ -55,6 +57,7 @@ impl CliArgs {
             disable_workspace: false,
             print_only: false,
             list_all_steps: false,
+            disable_check_for_updates: false,
             experimental: false
         }
     }

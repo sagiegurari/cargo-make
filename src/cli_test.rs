@@ -12,6 +12,7 @@ fn run_empty_task() {
         cwd: None,
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
         experimental: false
@@ -27,6 +28,7 @@ fn print_empty_task() {
         cwd: None,
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: true,
         list_all_steps: false,
         experimental: false
@@ -42,6 +44,7 @@ fn list_empty_task() {
         cwd: None,
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: false,
         list_all_steps: true,
         experimental: false
@@ -57,6 +60,7 @@ fn run_file_and_task() {
         cwd: None,
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
         experimental: false
@@ -75,6 +79,7 @@ fn run_cwd_with_file() {
         cwd: Some("..".to_string()),
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
         experimental: false
@@ -94,6 +99,7 @@ fn run_cwd_task_not_found() {
         cwd: Some("..".to_string()),
         env: None,
         disable_workspace: false,
+        disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
         experimental: false
@@ -152,6 +158,7 @@ fn run_for_args_set_env() {
         "-e",
         "ENV3_TEST=TEST3",
         "--verbose",
+        "--disable-check-for-updates",
         "-t",
         "empty",
     ]);

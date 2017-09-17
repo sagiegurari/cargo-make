@@ -31,7 +31,9 @@ fn run(cli_args: CliArgs) {
 
     debug!("Cli Args {:#?}", &cli_args);
 
-    version::check();
+    if !cli_args.disable_check_for_updates {
+        version::check();
+    }
 
     let cwd = match cli_args.cwd {
         Some(ref value) => Some(value.as_ref()),
@@ -81,6 +83,7 @@ fn run_for_args(matches: ArgMatches) {
                 cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL).to_string()
             };
 
+            cli_args.disable_check_for_updates = cmd_matches.is_present("disable-check-for-updates");
             cli_args.experimental = cmd_matches.is_present("experimental");
             cli_args.print_only = cmd_matches.is_present("print-steps");
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
@@ -142,6 +145,9 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
             ))
             .arg(Arg::with_name("experimental").long("--experimental").help(
                 "Allows access unsupported experimental predefined tasks."
+            ))
+            .arg(Arg::with_name("disable-check-for-updates").long("--disable-check-for-updates").help(
+                "Disables the update check during startup"
             ))
             .arg(Arg::with_name("print-steps").long("--print-steps").help(
                 "Only prints the steps of the build in the order they will be invoked but without invoking them"

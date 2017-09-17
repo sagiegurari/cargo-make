@@ -724,10 +724,10 @@ cargo make --list-all-steps | grep "coverage-"
 To view all currently supported providers. Example output:
 
 ````console
-ci-coverage-flow: No Description. 
-coverage-tarpaulin: Runs coverage using tarpaulin rust crate (linux only) 
-coverage-flow: Runs the full coverage flow. 
-coverage-kcov: Installs (if missing) and runs coverage using kcov (not supported on windows) 
+ci-coverage-flow: No Description.
+coverage-tarpaulin: Runs coverage using tarpaulin rust crate (linux only)
+coverage-flow: Runs the full coverage flow.
+coverage-kcov: Installs (if missing) and runs coverage using kcov (not supported on windows)
 ````
 
 All built in coverage providers are supported by their authors and not by cargo-make.
@@ -875,13 +875,14 @@ USAGE:
     cargo make [FLAGS] [OPTIONS] [TASK]
 
 FLAGS:
-        --experimental      Allows access unsupported experimental predefined tasks.
-    -h, --help              Prints help information
-        --list-all-steps    Lists all known steps
-        --no-workspace      Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps       Only prints the steps of the build in the order they will be invoked but without invoking them
-    -v, --verbose           Sets the log level to verbose (shorthand for --loglevel verbose)
-    -V, --version           Prints version information
+        --disable-check-for-updates    Disables the update check during startup
+        --experimental                 Allows access unsupported experimental predefined tasks.
+    -h, --help                         Prints help information
+        --list-all-steps               Lists all known steps
+        --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
+        --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
+    -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
+    -V, --version                      Prints version information
 
 OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
