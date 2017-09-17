@@ -13,6 +13,7 @@ use environment;
 use logger;
 use runner;
 use types::CliArgs;
+use version;
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -29,6 +30,8 @@ fn run(cli_args: CliArgs) {
     debug!("Written By {}", &AUTHOR);
 
     debug!("Cli Args {:#?}", &cli_args);
+
+    version::check();
 
     let cwd = match cli_args.cwd {
         Some(ref value) => Some(value.as_ref()),

@@ -101,6 +101,7 @@ extern crate glob;
 #[macro_use]
 extern crate log;
 extern crate rand;
+extern crate semver;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
@@ -116,6 +117,7 @@ mod installer;
 mod condition;
 mod runner;
 mod cli;
+mod version;
 
 #[cfg(test)]
 #[path = "./main_test.rs"]
