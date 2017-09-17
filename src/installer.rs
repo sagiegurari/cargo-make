@@ -49,6 +49,16 @@ fn is_crate_installed(crate_name: &str) -> bool {
     }
 }
 
+fn install_crate(
+    cargo_command: &str,
+    crate_name: &str,
+    validate: bool,
+) {
+    if !is_crate_installed(cargo_command) {
+        command::run_command("cargo", &Some(vec!["install".to_string(), crate_name.to_string()]), validate);
+    }
+}
+
 pub fn install(task_config: &Task) {
     let validate = !task_config.is_force();
 
@@ -62,9 +72,7 @@ pub fn install(task_config: &Task) {
                 }
             };
 
-            if !is_crate_installed(cargo_command) {
-                command::run_command("cargo", &Some(vec!["install".to_string(), crate_name.to_string()]), validate);
-            }
+            install_crate(cargo_command, crate_name, validate);
         }
         None => {
             match task_config.install_script {
@@ -72,7 +80,25 @@ pub fn install(task_config: &Task) {
                     command::run_script(&script, task_config.script_runner.clone(), validate);
                     ()
                 }
-                None => debug!("No installation script defined."),
+                None => {
+                    match task_config.command {
+                        Some(ref command) => {
+                            if command == "cargo" {
+                                match task_config.args {
+                                    Some(ref args) => {
+                                        // create crate name
+                                        let mut crate_name = "cargo-".to_string();
+                                        crate_name = crate_name + &args[0];
+
+                                        install_crate(&args[0], &crate_name, validate);
+                                    }
+                                    None => debug!("No installation script defined."),
+                                }
+                            }
+                        }
+                        None => debug!("No installation script defined."),
+                    }
+                }
             }
         }
     }

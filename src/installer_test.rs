@@ -40,6 +40,25 @@ fn install_crate_missing_cargo_command() {
 }
 
 #[test]
+fn install_crate_auto_detect_already_installed() {
+    let mut task = Task::new();
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+
+    install(&task);
+}
+
+#[test]
+#[should_panic]
+fn install_crate_auto_detect_unable_to_install() {
+    let mut task = Task::new();
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["badbadbad".to_string()]);
+
+    install(&task);
+}
+
+#[test]
 fn install_script_ok() {
     let mut task = Task::new();
     task.install_script = Some(vec!["exit 0".to_string()]);
