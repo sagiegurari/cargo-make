@@ -49,13 +49,36 @@ fn is_crate_installed(crate_name: &str) -> bool {
     }
 }
 
+fn get_install_crate_args(
+    crate_name: &str,
+    args: &Option<Vec<String>>,
+) -> Vec<String> {
+    let mut install_args = vec!["install".to_string()];
+
+    match *args {
+        Some(ref args_vec) => {
+            for arg in args_vec.iter() {
+                install_args.push(arg.to_string());
+            }
+        }
+        None => debug!("No crate installation args defined."),
+    };
+
+    install_args.push(crate_name.to_string());
+
+    install_args
+}
+
 fn install_crate(
     cargo_command: &str,
     crate_name: &str,
+    args: &Option<Vec<String>>,
     validate: bool,
 ) {
     if !is_crate_installed(cargo_command) {
-        command::run_command("cargo", &Some(vec!["install".to_string(), crate_name.to_string()]), validate);
+        let install_args = get_install_crate_args(crate_name, args);
+
+        command::run_command("cargo", &Some(install_args), validate);
     }
 }
 
@@ -72,7 +95,7 @@ pub fn install(task_config: &Task) {
                 }
             };
 
-            install_crate(cargo_command, crate_name, validate);
+            install_crate(cargo_command, crate_name, &task_config.install_crate_args, validate);
         }
         None => {
             match task_config.install_script {
@@ -90,7 +113,7 @@ pub fn install(task_config: &Task) {
                                         let mut crate_name = "cargo-".to_string();
                                         crate_name = crate_name + &args[0];
 
-                                        install_crate(&args[0], &crate_name, validate);
+                                        install_crate(&args[0], &crate_name, &task_config.install_crate_args, validate);
                                     }
                                     None => debug!("No installation script defined."),
                                 }

@@ -59,6 +59,35 @@ fn install_crate_auto_detect_unable_to_install() {
 }
 
 #[test]
+fn get_install_crate_args_no_args() {
+    let all_args = get_install_crate_args("test123", &None);
+
+    assert_eq!(all_args.len(), 2);
+    assert_eq!(all_args[0], "install");
+    assert_eq!(all_args[1], "test123");
+}
+
+#[test]
+fn get_install_crate_args_empty_args() {
+    let all_args = get_install_crate_args("test123", &Some(vec![]));
+
+    assert_eq!(all_args.len(), 2);
+    assert_eq!(all_args[0], "install");
+    assert_eq!(all_args[1], "test123");
+}
+
+#[test]
+fn get_install_crate_args_with_args() {
+    let all_args = get_install_crate_args("test123", &Some(vec!["arg1".to_string(), "arg2".to_string()]));
+
+    assert_eq!(all_args.len(), 4);
+    assert_eq!(all_args[0], "install");
+    assert_eq!(all_args[1], "arg1");
+    assert_eq!(all_args[2], "arg2");
+    assert_eq!(all_args[3], "test123");
+}
+
+#[test]
 fn install_script_ok() {
     let mut task = Task::new();
     task.install_script = Some(vec!["exit 0".to_string()]);

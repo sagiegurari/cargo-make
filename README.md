@@ -999,6 +999,8 @@ pub struct Task {
     pub mac_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
+    /// additional cargo install arguments
+    pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
     pub install_script: Option<Vec<String>>,
     /// The command to execute
@@ -1037,6 +1039,8 @@ pub struct PlatformOverrideTask {
     pub env: Option<HashMap<String, String>>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
+    /// additional cargo install arguments
+    pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
     pub install_script: Option<Vec<String>>,
     /// The command to execute

@@ -272,6 +272,8 @@ pub struct Task {
     pub mac_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
+    /// additional cargo install arguments
+    pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
     pub install_script: Option<Vec<String>>,
     /// The command to execute
@@ -309,6 +311,7 @@ impl Task {
             windows_alias: None,
             mac_alias: None,
             install_crate: None,
+            install_crate_args: None,
             install_script: None,
             command: None,
             args: None,
@@ -373,6 +376,10 @@ impl Task {
 
         if task.install_crate.is_some() {
             self.install_crate = task.install_crate.clone();
+        }
+
+        if task.install_crate_args.is_some() {
+            self.install_crate_args = task.install_crate_args.clone();
         }
 
         if task.install_script.is_some() {
@@ -460,6 +467,7 @@ impl Task {
                     windows_alias: None,
                     mac_alias: None,
                     install_crate: override_task.install_crate.clone(),
+                    install_crate_args: override_task.install_crate_args.clone(),
                     install_script: override_task.install_script.clone(),
                     command: override_task.command.clone(),
                     args: override_task.args.clone(),
@@ -524,6 +532,8 @@ pub struct PlatformOverrideTask {
     pub env: Option<HashMap<String, String>>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
+    /// additional cargo install arguments
+    pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
     pub install_script: Option<Vec<String>>,
     /// The command to execute
@@ -578,6 +588,10 @@ impl PlatformOverrideTask {
 
             if self.install_crate.is_none() && task.install_crate.is_some() {
                 self.install_crate = task.install_crate.clone();
+            }
+
+            if self.install_crate_args.is_none() && task.install_crate_args.is_some() {
+                self.install_crate_args = task.install_crate_args.clone();
             }
 
             if self.install_script.is_none() && task.install_script.is_some() {
