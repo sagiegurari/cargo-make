@@ -739,7 +739,9 @@ test_script:
 The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
+* **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
 * **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ````cargo make````).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
+* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **workspace-ci-flow** - Should be used in CI builds (such as travis/appveyor) for workspace projects.
 * **publish-flow** - Cleans old target directory and publishes the project.
@@ -824,6 +826,8 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **build-flow** - Full sanity testing flow.
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
+* **dev-watch-flow** - Alias for test-flow
+* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **clean-apidocs** - Delete API docs.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.

@@ -9,9 +9,7 @@ KCOV_VERSION = "33"
 
 [tasks.default]
 description = "Default task points to the development testing flow"
-dependencies = [
-    "dev-test-flow"
-]
+alias = "dev-test-flow"
 
 [tasks.ci-flow]
 description = "CI task will run cargo build and cargo test with verbose output"
@@ -43,10 +41,17 @@ dependencies = [
     "pre-build",
     "build",
     "post-build",
-    "pre-test",
-    "test",
-    "post-test"
+    "test-flow"
 ]
+
+[tasks.dev-watch-flow]
+description = "Alias for test-flow"
+alias = "test-flow"
+
+[tasks.watch-flow]
+description = "Watches for any file change and if any change is detected, it will invoke the test flow."
+command = "cargo"
+args = ["watch", "--exec", "make dev-watch-flow"]
 
 [tasks.pre-publish-clean-flow]
 description = "Clears old artifactes before publishing"
@@ -87,9 +92,7 @@ dependencies = [
     "pre-build",
     "build",
     "post-build",
-    "pre-test",
-    "test",
-    "post-test",
+    "test-flow",
     "pre-verify-project",
     "verify-project",
     "post-verify-project",
@@ -185,6 +188,14 @@ description = "Runs all available tests."
 command = "cargo"
 args = ["test", "--all-features"]
 
+[tasks.test-flow]
+description = "Runs pre/post hooks and cargo test."
+dependencies = [
+    "pre-test",
+    "test",
+    "post-test"
+]
+
 [tasks.test-verbose]
 description = "Runs all available tests with verbose output."
 command = "cargo"
@@ -222,7 +233,6 @@ args = ["verify-project"]
 
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
-install_crate = "cargo-audit"
 command = "cargo"
 args = ["audit"]
 
@@ -232,7 +242,6 @@ args = ["audit"]
 
 [tasks.outdated]
 description = "Runs verify-outdated cargo plugin."
-install_crate = "cargo-outdated"
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
@@ -425,7 +434,6 @@ done
 description = "Runs coverage using tarpaulin rust crate (linux only)"
 
 [tasks.coverage-tarpaulin.linux]
-install_crate = "cargo-tarpaulin"
 command = "cargo"
 args = ["tarpaulin"]
 
@@ -481,7 +489,6 @@ script = [
 # Creates a new github release.
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release."
-install_crate = "cargo-hublish"
 command = "cargo"
 args = ["hublish"]
 
