@@ -190,3 +190,14 @@ pub fn setup_cwd(cwd: Option<&str>) {
         }
     }
 }
+
+fn is_env_defined(key: &str) -> bool {
+    match env::var(key) {
+        Ok(_) => true,
+        _ => false,
+    }
+}
+
+pub fn is_ci() -> bool {
+    is_env_defined("CI") || is_env_defined("CONTINUOUS_INTEGRATION") || is_env_defined("BUILD_NUMBER")
+}

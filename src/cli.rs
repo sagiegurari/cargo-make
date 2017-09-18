@@ -31,7 +31,8 @@ fn run(cli_args: CliArgs) {
 
     debug!("Cli Args {:#?}", &cli_args);
 
-    if !cli_args.disable_check_for_updates {
+    // only run check for updates if we are not in a CI env and user didn't ask to skip the check
+    if !cli_args.disable_check_for_updates && !environment::is_ci() {
         version::check();
     }
 

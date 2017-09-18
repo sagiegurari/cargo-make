@@ -100,3 +100,8 @@ fn is_newer_found_older_minor_newer_patch() {
 
     assert!(!newer);
 }
+
+#[test]
+fn check_full() {
+    check();
+}
