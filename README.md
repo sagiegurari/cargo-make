@@ -686,7 +686,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.77
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.4.1
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -694,7 +694,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.3.77
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.4.1
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1165,6 +1165,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-09-18  | v0.4.1  | Added watch-flow task |
 | 2017-09-17  | v0.3.77 | Automatically define install_crate and enable cargo install arguments via install_crate_args |
 | 2017-09-16  | v0.3.76 | Build failure will not cause panic but will exit |
 | 2017-09-12  | v0.3.75 | By default build and test should work with "--all-features" flag |

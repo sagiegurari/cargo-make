@@ -1114,6 +1114,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-09-18  | v0.4.1  | Added watch-flow task |
 | 2017-09-17  | v0.3.77 | Automatically define install_crate and enable cargo install arguments via install_crate_args |
 | 2017-09-16  | v0.3.76 | Build failure will not cause panic but will exit |
 | 2017-09-12  | v0.3.75 | By default build and test should work with "--all-features" flag |
