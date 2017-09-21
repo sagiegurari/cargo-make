@@ -467,8 +467,7 @@ dependencies = [
 
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
-windows_alias = "empty"
-condition = { env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["linux"], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.upload-artifacts]
