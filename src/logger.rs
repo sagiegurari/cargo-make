@@ -39,6 +39,19 @@ fn get_level(level_name: &str) -> Level {
     level
 }
 
+/// Returns the current logger level name
+pub fn get_log_level() -> String {
+    let level = if log_enabled!(LogLevel::Trace) {
+        "verbose"
+    } else if log_enabled!(LogLevel::Info) {
+        "info"
+    } else {
+        "error"
+    };
+
+    level.to_string()
+}
+
 /// Initializes the global logger.
 ///
 /// # Arguments

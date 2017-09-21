@@ -217,16 +217,19 @@ fn create_workspace_task_with_members() {
 
     let task = create_workspace_task(crate_info, "some_task");
 
-    let expected_script = r#"cd ./member1
-cargo make some_task
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
 cd ${CARGO_MAKE_WORKING_DIRECTORY}
 cd ./member2
-cargo make some_task
+cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
 cd ${CARGO_MAKE_WORKING_DIRECTORY}
 cd ./dir1/member3
-cargo make some_task
+cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
 cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
         .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
 
     assert!(task.script.is_some());
     let script = task.script.unwrap();

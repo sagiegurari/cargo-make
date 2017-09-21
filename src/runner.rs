@@ -16,6 +16,7 @@ use command;
 use condition;
 use environment;
 use installer;
+use logger;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
@@ -139,13 +140,17 @@ fn create_workspace_task(
     let workspace = crate_info.workspace.unwrap();
     let members = workspace.members.unwrap_or(vec![]);
 
+    let log_level = logger::get_log_level();
+
     let mut script_lines = vec![];
     for member in &members {
         let mut cd_line = "cd ./".to_string();
         cd_line.push_str(&member);
         script_lines.push(cd_line);
 
-        let mut make_line = "cargo make ".to_string();
+        let mut make_line = "cargo make --disable-check-for-updates --loglevel=".to_string();
+        make_line.push_str(&log_level);
+        make_line.push_str(" ");
         make_line.push_str(&task);
         script_lines.push(make_line);
 

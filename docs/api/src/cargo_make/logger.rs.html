@@ -119,6 +119,19 @@
 <span id="74">74</span>
 <span id="75">75</span>
 <span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # log</span>
 <span class="doccomment">//!</span>
@@ -159,6 +172,19 @@
     }
 
     <span class="ident">level</span>
+}
+
+<span class="doccomment">/// Returns the current logger level name</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_log_level</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">log_enabled</span><span class="macro">!</span>(<span class="ident">LogLevel</span>::<span class="ident">Trace</span>) {
+        <span class="string">&quot;verbose&quot;</span>
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">log_enabled</span><span class="macro">!</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>) {
+        <span class="string">&quot;info&quot;</span>
+    } <span class="kw">else</span> {
+        <span class="string">&quot;error&quot;</span>
+    };
+
+    <span class="ident">level</span>.<span class="ident">to_string</span>()
 }
 
 <span class="doccomment">/// Initializes the global logger.</span>
