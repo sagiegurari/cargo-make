@@ -237,6 +237,16 @@ dependencies = [
     "post-check"
 ]
 
+[tasks.check-tests]
+description = "Runs cargo check for project tests."
+command = "cargo"
+args = ["check", "--tests"]
+
+[tasks.check-examples]
+description = "Runs cargo check for project examples."
+command = "cargo"
+args = ["check", "--examples"]
+
 [tasks.pre-verify-project]
 
 [tasks.verify-project]

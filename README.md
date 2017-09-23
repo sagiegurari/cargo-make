@@ -795,6 +795,8 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **test-verbose** - Runs all available tests with verbose output.
 * **bench** - Runs all available bench files.
 * **check** - Runs cargo check.
+* **check-tests** - Runs cargo check for project tests.
+* **check-examples** - Runs cargo check for project examples.
 * **docs** - Generate rust documentation.
 * **package** - Runs the cargo package command.
 * **publish** - Runs the cargo publish command.
