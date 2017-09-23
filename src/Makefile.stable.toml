@@ -220,6 +220,23 @@ dependencies = [
     "post-bench"
 ]
 
+[tasks.pre-check]
+
+[tasks.check]
+description = "Runs cargo check."
+command = "cargo"
+args = ["check"]
+
+[tasks.post-check]
+
+[tasks.check-flow]
+description = "Runs cargo check flow."
+dependencies = [
+    "pre-check",
+    "check",
+    "post-check"
+]
+
 [tasks.pre-verify-project]
 
 [tasks.verify-project]

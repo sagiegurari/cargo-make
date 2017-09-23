@@ -794,6 +794,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **test** - Runs all available tests.
 * **test-verbose** - Runs all available tests with verbose output.
 * **bench** - Runs all available bench files.
+* **check** - Runs cargo check.
 * **docs** - Generate rust documentation.
 * **package** - Runs the cargo package command.
 * **publish** - Runs the cargo publish command.
@@ -833,6 +834,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **bench-flow** - Runs a bench flow.
+* **check-flow** - Runs cargo check flow.
 * **delete-lock** - Deletes the Cargo.lock file.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
