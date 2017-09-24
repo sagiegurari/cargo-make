@@ -179,6 +179,11 @@ description = "Runs the rust compiler with verbose output."
 command = "cargo"
 args = ["build", "--verbose", "--all-features"]
 
+[tasks.build-release]
+description = "Runs release build."
+command = "cargo"
+args = ["build", "--release", "--all-features"]
+
 [tasks.post-build]
 
 [tasks.pre-test]

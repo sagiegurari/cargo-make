@@ -740,6 +740,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **clean** - Runs the cargo clean command.
 * **build** - Runs the rust compiler.
 * **build-verbose** - Runs the rust compiler with verbose output.
+* **build-release** - Runs release build.
 * **test** - Runs all available tests.
 * **test-verbose** - Runs all available tests with verbose output.
 * **bench** - Runs all available bench files.
