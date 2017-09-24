@@ -686,7 +686,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.5.1
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.5.2
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -694,7 +694,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.5.1
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.5.2
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -791,8 +791,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **clean** - Runs the cargo clean command.
 * **build** - Runs the rust compiler.
 * **build-verbose** - Runs the rust compiler with verbose output.
-* **build-release** - Runs release build.
-* **test** - Runs all available tests.
+* **build-release** - Runs release build.* **test** - Runs all available tests.
 * **test-verbose** - Runs all available tests with verbose output.
 * **bench** - Runs all available bench files.
 * **check** - Runs cargo check.
@@ -1170,7 +1169,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-09-21  | v0.5.1  | Maintenance |
+| 2017-09-24  | v0.5.2  | Added various check and build tasks |
 | 2017-09-21  | v0.5.0  | Disable by default coverage flow on mac |
 | 2017-09-18  | v0.4.1  | Added watch-flow task |
 | 2017-09-17  | v0.3.77 | Automatically define install_crate and enable cargo install arguments via install_crate_args |

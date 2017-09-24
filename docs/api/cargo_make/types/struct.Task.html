@@ -74,92 +74,114 @@
     pub mac: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../cargo_make/types/struct.PlatformOverrideTask.html" title="struct cargo_make::types::PlatformOverrideTask">PlatformOverrideTask</a>&gt;,
 }</pre><div class='docblock'><p>Holds a single task configuration such as command and dependencies list</p>
 </div><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.description' class="structfield">
-                           <span id='description.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.description" class="structfield small-section-header">
+                           <a href="#structfield.description" class="anchor field"></a>
+                           <span id="description.v" class='invisible'>
                            <code>description: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>Task description</p>
-</div><span id='structfield.disabled' class="structfield">
-                           <span id='disabled.v' class='invisible'>
+</div><span id="structfield.disabled" class="structfield small-section-header">
+                           <a href="#structfield.disabled" class="anchor field"></a>
+                           <span id="disabled.v" class='invisible'>
                            <code>disabled: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>&gt;</code>
                            </span></span><div class='docblock'><p>if true, the command/script of this task will not be invoked, dependencies however will be</p>
-</div><span id='structfield.condition' class="structfield">
-                           <span id='condition.v' class='invisible'>
+</div><span id="structfield.condition" class="structfield small-section-header">
+                           <a href="#structfield.condition" class="anchor field"></a>
+                           <span id="condition.v" class='invisible'>
                            <code>condition: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../cargo_make/types/struct.TaskCondition.html" title="struct cargo_make::types::TaskCondition">TaskCondition</a>&gt;</code>
                            </span></span><div class='docblock'><p>if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)</p>
-</div><span id='structfield.condition_script' class="structfield">
-                           <span id='condition_script.v' class='invisible'>
+</div><span id="structfield.condition_script" class="structfield small-section-header">
+                           <a href="#structfield.condition_script" class="anchor field"></a>
+                           <span id="condition_script.v" class='invisible'>
                            <code>condition_script: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be</p>
-</div><span id='structfield.force' class="structfield">
-                           <span id='force.v' class='invisible'>
+</div><span id="structfield.force" class="structfield small-section-header">
+                           <a href="#structfield.force" class="anchor field"></a>
+                           <span id="force.v" class='invisible'>
                            <code>force: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>&gt;</code>
                            </span></span><div class='docblock'><p>if true, any error while executing the task will be printed but will not break the build</p>
-</div><span id='structfield.env' class="structfield">
-                           <span id='env.v' class='invisible'>
+</div><span id="structfield.env" class="structfield small-section-header">
+                           <a href="#structfield.env" class="anchor field"></a>
+                           <span id="env.v" class='invisible'>
                            <code>env: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>The env vars to setup before running the task commands</p>
-</div><span id='structfield.alias' class="structfield">
-                           <span id='alias.v' class='invisible'>
+</div><span id="structfield.alias" class="structfield small-section-header">
+                           <a href="#structfield.alias" class="anchor field"></a>
+                           <span id="alias.v" class='invisible'>
                            <code>alias: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>if defined, task points to another task and all other properties are ignored</p>
-</div><span id='structfield.linux_alias' class="structfield">
-                           <span id='linux_alias.v' class='invisible'>
+</div><span id="structfield.linux_alias" class="structfield small-section-header">
+                           <a href="#structfield.linux_alias" class="anchor field"></a>
+                           <span id="linux_alias.v" class='invisible'>
                            <code>linux_alias: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>acts like alias if runtime OS is Linux (takes precedence over alias)</p>
-</div><span id='structfield.windows_alias' class="structfield">
-                           <span id='windows_alias.v' class='invisible'>
+</div><span id="structfield.windows_alias" class="structfield small-section-header">
+                           <a href="#structfield.windows_alias" class="anchor field"></a>
+                           <span id="windows_alias.v" class='invisible'>
                            <code>windows_alias: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>acts like alias if runtime OS is Windows (takes precedence over alias)</p>
-</div><span id='structfield.mac_alias' class="structfield">
-                           <span id='mac_alias.v' class='invisible'>
+</div><span id="structfield.mac_alias" class="structfield small-section-header">
+                           <a href="#structfield.mac_alias" class="anchor field"></a>
+                           <span id="mac_alias.v" class='invisible'>
                            <code>mac_alias: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>acts like alias if runtime OS is Mac (takes precedence over alias)</p>
-</div><span id='structfield.install_crate' class="structfield">
-                           <span id='install_crate.v' class='invisible'>
+</div><span id="structfield.install_crate" class="structfield small-section-header">
+                           <a href="#structfield.install_crate" class="anchor field"></a>
+                           <span id="install_crate.v" class='invisible'>
                            <code>install_crate: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>if defined, the provided crate will be installed (if needed) before running the task</p>
-</div><span id='structfield.install_crate_args' class="structfield">
-                           <span id='install_crate_args.v' class='invisible'>
+</div><span id="structfield.install_crate_args" class="structfield small-section-header">
+                           <a href="#structfield.install_crate_args" class="anchor field"></a>
+                           <span id="install_crate_args.v" class='invisible'>
                            <code>install_crate_args: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>additional cargo install arguments</p>
-</div><span id='structfield.install_script' class="structfield">
-                           <span id='install_script.v' class='invisible'>
+</div><span id="structfield.install_script" class="structfield small-section-header">
+                           <a href="#structfield.install_script" class="anchor field"></a>
+                           <span id="install_script.v" class='invisible'>
                            <code>install_script: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>if defined, the provided script will be executed before running the task</p>
-</div><span id='structfield.command' class="structfield">
-                           <span id='command.v' class='invisible'>
+</div><span id="structfield.command" class="structfield small-section-header">
+                           <a href="#structfield.command" class="anchor field"></a>
+                           <span id="command.v" class='invisible'>
                            <code>command: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>The command to execute</p>
-</div><span id='structfield.args' class="structfield">
-                           <span id='args.v' class='invisible'>
+</div><span id="structfield.args" class="structfield small-section-header">
+                           <a href="#structfield.args" class="anchor field"></a>
+                           <span id="args.v" class='invisible'>
                            <code>args: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>The command args</p>
-</div><span id='structfield.script' class="structfield">
-                           <span id='script.v' class='invisible'>
+</div><span id="structfield.script" class="structfield small-section-header">
+                           <a href="#structfield.script" class="anchor field"></a>
+                           <span id="script.v" class='invisible'>
                            <code>script: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>If command is not defined, and script is defined, the provided script will be executed</p>
-</div><span id='structfield.script_runner' class="structfield">
-                           <span id='script_runner.v' class='invisible'>
+</div><span id="structfield.script_runner" class="structfield small-section-header">
+                           <a href="#structfield.script_runner" class="anchor field"></a>
+                           <span id="script_runner.v" class='invisible'>
                            <code>script_runner: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>The script runner (defaults to cmd in windows and sh for other platforms)</p>
-</div><span id='structfield.run_task' class="structfield">
-                           <span id='run_task.v' class='invisible'>
+</div><span id="structfield.run_task" class="structfield small-section-header">
+                           <a href="#structfield.run_task" class="anchor field"></a>
+                           <span id="run_task.v" class='invisible'>
                            <code>run_task: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code>
                            </span></span><div class='docblock'><p>The task name to execute</p>
-</div><span id='structfield.dependencies' class="structfield">
-                           <span id='dependencies.v' class='invisible'>
+</div><span id="structfield.dependencies" class="structfield small-section-header">
+                           <a href="#structfield.dependencies" class="anchor field"></a>
+                           <span id="dependencies.v" class='invisible'>
                            <code>dependencies: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;&gt;</code>
                            </span></span><div class='docblock'><p>A list of tasks to execute before this task</p>
-</div><span id='structfield.linux' class="structfield">
-                           <span id='linux.v' class='invisible'>
+</div><span id="structfield.linux" class="structfield small-section-header">
+                           <a href="#structfield.linux" class="anchor field"></a>
+                           <span id="linux.v" class='invisible'>
                            <code>linux: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../cargo_make/types/struct.PlatformOverrideTask.html" title="struct cargo_make::types::PlatformOverrideTask">PlatformOverrideTask</a>&gt;</code>
                            </span></span><div class='docblock'><p>override task if runtime OS is Linux (takes precedence over alias)</p>
-</div><span id='structfield.windows' class="structfield">
-                           <span id='windows.v' class='invisible'>
+</div><span id="structfield.windows" class="structfield small-section-header">
+                           <a href="#structfield.windows" class="anchor field"></a>
+                           <span id="windows.v" class='invisible'>
                            <code>windows: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../cargo_make/types/struct.PlatformOverrideTask.html" title="struct cargo_make::types::PlatformOverrideTask">PlatformOverrideTask</a>&gt;</code>
                            </span></span><div class='docblock'><p>override task if runtime OS is Windows (takes precedence over alias)</p>
-</div><span id='structfield.mac' class="structfield">
-                           <span id='mac.v' class='invisible'>
+</div><span id="structfield.mac" class="structfield small-section-header">
+                           <a href="#structfield.mac" class="anchor field"></a>
+                           <span id="mac.v" class='invisible'>
                            <code>mac: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../cargo_make/types/struct.PlatformOverrideTask.html" title="struct cargo_make::types::PlatformOverrideTask">PlatformOverrideTask</a>&gt;</code>
                            </span></span><div class='docblock'><p>override task if runtime OS is Mac (takes precedence over alias)</p>
 </div>
@@ -167,20 +189,20 @@
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#302-519' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#304-329' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#304-329' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Creates and returns a new instance.</p>
-</div><h4 id='method.extend' class="method"><span id='extend.v' class='invisible'><code>fn <a href='#method.extend' class='fnname'>extend</a>(self: &amp;mut <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>, task: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#336-427' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.extend' class="method"><span id='extend.v' class='invisible'><code>pub fn <a href='#method.extend' class='fnname'>extend</a>(self: &amp;mut <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>, task: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#336-427' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Copies values from the task into self.</p>
 
 <h1 id='arguments' class='section-header'><a href='#arguments'>Arguments</a></h1>
 <ul>
 <li><code>task</code> - The task to copy from</li>
 </ul>
-</div><h4 id='method.is_force' class="method"><span id='is_force.v' class='invisible'><code>fn <a href='#method.is_force' class='fnname'>is_force</a>(self: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#430-432' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.is_force' class="method"><span id='is_force.v' class='invisible'><code>pub fn <a href='#method.is_force' class='fnname'>is_force</a>(self: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#430-432' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns true if the task force attribute is defined and true</p>
-</div><h4 id='method.get_normalized_task' class="method"><span id='get_normalized_task.v' class='invisible'><code>fn <a href='#method.get_normalized_task' class='fnname'>get_normalized_task</a>(self: &amp;mut <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#456-488' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.get_normalized_task' class="method"><span id='get_normalized_task.v' class='invisible'><code>pub fn <a href='#method.get_normalized_task' class='fnname'>get_normalized_task</a>(self: &amp;mut <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#456-488' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns a new task based on the override information and current platform.</p>
-</div><h4 id='method.get_alias' class="method"><span id='get_alias.v' class='invisible'><code>fn <a href='#method.get_alias' class='fnname'>get_alias</a>(self: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#491-518' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.get_alias' class="method"><span id='get_alias.v' class='invisible'><code>pub fn <a href='#method.get_alias' class='fnname'>get_alias</a>(self: &amp;<a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/cargo_make/types.rs.html#491-518' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns the alias value based on the current platform and task definition.</p>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
