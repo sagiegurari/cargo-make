@@ -332,24 +332,24 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
 <span class="kw">use</span> <span class="ident">toml</span>;
-<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
+<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">EnvValue</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
 
-<span class="kw">fn</span> <span class="ident">merge_maps</span>(
-    <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>::<span class="ident">new</span>();
+<span class="kw">fn</span> <span class="ident">merge_env</span>(
+    <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
+    <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
+) <span class="op">-&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>::<span class="ident">new</span>();
 
     <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">base</span>.<span class="ident">iter</span>() {
         <span class="kw">let</span> <span class="ident">key_str</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">to_string</span>();
-        <span class="kw">let</span> <span class="ident">value_str</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
-        <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value_str</span>);
+        <span class="kw">let</span> <span class="ident">value_clone</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">clone</span>();
+        <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value_clone</span>);
     }
 
     <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">extended</span>.<span class="ident">iter</span>() {
         <span class="kw">let</span> <span class="ident">key_str</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">to_string</span>();
-        <span class="kw">let</span> <span class="ident">value_str</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
-        <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value_str</span>);
+        <span class="kw">let</span> <span class="ident">value_clone</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">clone</span>();
+        <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value_clone</span>);
     }
 
     <span class="ident">merged</span>
@@ -455,7 +455,7 @@
                     <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">HashMap</span>::<span class="ident">new</span>(),
                 };
-                <span class="kw">let</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_maps</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env</span>);
+                <span class="kw">let</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env</span>);
 
                 <span class="comment">// merge tasks</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">base_file_config</span>.<span class="ident">tasks</span> {
@@ -543,7 +543,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">default_env</span> <span class="op">=</span> <span class="ident">default_config</span>.<span class="ident">env</span>;
 
     <span class="comment">// merge configs</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_maps</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">default_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_env</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">default_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_env</span>);
     <span class="ident">all_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span> {
         <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_env</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
@@ -553,11 +553,11 @@
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking env pair: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">env_pair</span>);
 
                 <span class="kw">if</span> <span class="ident">env_part</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">2</span> {
-                    <span class="ident">cli_env</span>.<span class="ident">insert</span>(<span class="ident">env_part</span>[<span class="number">0</span>].<span class="ident">to_string</span>(), <span class="ident">env_part</span>[<span class="number">1</span>].<span class="ident">to_string</span>());
+                    <span class="ident">cli_env</span>.<span class="ident">insert</span>(<span class="ident">env_part</span>[<span class="number">0</span>].<span class="ident">to_string</span>(), <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="ident">env_part</span>[<span class="number">1</span>].<span class="ident">to_string</span>()));
                 }
             }
 
-            <span class="ident">merge_maps</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">all_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cli_env</span>)
+            <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">all_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cli_env</span>)
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">all_env</span>,
     };

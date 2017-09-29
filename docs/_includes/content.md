@@ -1131,6 +1131,7 @@ See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-09-29  | v0.5.3  | Added support to evaluate env var values from script output and define cwd on task level |
 | 2017-09-24  | v0.5.2  | Added various check and build tasks |
 | 2017-09-21  | v0.5.0  | Disable by default coverage flow on mac |
 | 2017-09-18  | v0.4.1  | Added watch-flow task |
