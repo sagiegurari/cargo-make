@@ -493,9 +493,16 @@ You can define env vars to be set as part of the execution of the flow in the gl
 ````yaml
 [env]
 RUST_BACKTRACE = "1"
+EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+TEST1 = "value1"
+TEST2 = "value2"
+COMPOSITE = "${TEST1} ${TEST2}"
 ````
 
-All env vars defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
+Environment variables can be defined as a simple key/value pair or key and the output (last line) of the provided script.
+In addition, you can define environment variables values based on other environment variables using the ${} syntax.
+
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
 
 <a name="usage-env-task"></a>
 #### Task
@@ -512,6 +519,8 @@ script = [
     "echo var: ${SOME_ENV_VAR}"
 ]
 ````
+
+In task level, environment variables can also be defined as key/value pair or key/script as in the global env block.
 
 <a name="usage-env-cli"></a>
 #### Command Line
@@ -979,7 +988,7 @@ pub struct ExternalConfig {
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
     /// All task definitions
     pub tasks: Option<HashMap<String, Task>>
 }
@@ -997,7 +1006,9 @@ pub struct Task {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -1045,7 +1056,9 @@ pub struct PlatformOverrideTask {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// additional cargo install arguments

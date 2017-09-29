@@ -6,6 +6,47 @@ use std::env;
 use types::ConfigSection;
 
 #[test]
+fn get_env_exists() {
+    env::set_var("TEST_GET_ENV_EXISTS", "EXISTS");
+    let output = get_env("TEST_GET_ENV_EXISTS", "bad");
+    assert_eq!(output, "EXISTS".to_string());
+}
+
+#[test]
+fn get_env_not_exists() {
+    let output = get_env("TEST_GET_ENV_NOT_EXISTS", "good");
+    assert_eq!(output, "good".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_simple() {
+    assert!(!is_env_defined("EVAL_SET_SIMPLE"));
+    evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
+    assert_eq!(env::var("EVAL_SET_SIMPLE").unwrap(), "SIMPLE".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_exists() {
+    env::set_var("eval_test1", "test");
+    evaluate_and_set_env("evaluate_and_set_env_exists", "testing: ${eval_test1} works");
+    assert_eq!(env::var("evaluate_and_set_env_exists").unwrap(), "testing: test works".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_not_exists() {
+    evaluate_and_set_env("evaluate_and_set_env_not_exists", "testing: ${eval_test_bad} works");
+    assert_eq!(env::var("evaluate_and_set_env_not_exists").unwrap(), "testing: ${eval_test_bad} works".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_complex() {
+    env::set_var("eval_test10", "10");
+    env::set_var("eval_test20", "20");
+    evaluate_and_set_env("evaluate_and_set_env_complex", "checking 10 is ${eval_test10} empty is ${eval_test30} and 20 is ${eval_test20}");
+    assert_eq!(env::var("evaluate_and_set_env_complex").unwrap(), "checking 10 is 10 empty is ${eval_test30} and 20 is 20".to_string());
+}
+
+#[test]
 fn setup_cwd_empty() {
     env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
@@ -35,8 +76,8 @@ fn setup_env_empty() {
 #[test]
 fn setup_env_values() {
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
-    config.env.insert("MY_ENV_KEY2".to_string(), "MY_ENV_VALUE2".to_string());
+    config.env.insert("MY_ENV_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
+    config.env.insert("MY_ENV_KEY2".to_string(), EnvValue::Value("MY_ENV_VALUE2".to_string()));
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
     assert_eq!(env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
@@ -45,6 +86,44 @@ fn setup_env_values() {
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
     assert_eq!(env::var("MY_ENV_KEY2").unwrap(), "MY_ENV_VALUE2");
+}
+
+#[test]
+fn setup_env_script() {
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    config.env.insert("MY_ENV_SCRIPT_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
+    config.env.insert(
+        "MY_ENV_SCRIPT_KEY2".to_string(),
+        EnvValue::Info(EnvValueInfo { script: vec!["echo script1".to_string()] })
+    );
+
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
+
+    setup_env(&config, "set_env_values");
+
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap(), "MY_ENV_VALUE");
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap(), "script1");
+}
+
+#[test]
+fn evaluate_env_value_valid() {
+    let output = evaluate_env_value(&EnvValueInfo { script: vec!["echo script1".to_string()] });
+
+    assert_eq!(output, "script1".to_string());
+}
+
+#[test]
+fn evaluate_env_value_empty() {
+    let output = evaluate_env_value(&EnvValueInfo { script: vec!["".to_string()] });
+
+    assert_eq!(output, "".to_string());
+}
+
+#[test]
+#[should_panic]
+fn evaluate_env_error() {
+    evaluate_env_value(&EnvValueInfo { script: vec!["exit 1".to_string()] });
 }
 
 #[test]

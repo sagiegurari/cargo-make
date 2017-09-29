@@ -252,6 +252,23 @@ pub struct TaskCondition {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
+pub struct EnvValueInfo {
+    /// The script to execute to get the env value
+    pub script: Vec<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds the env value or script
+pub enum EnvValue {
+    /// The value as string
+    Value(String),
+    /// Script which will return the value
+    Info(EnvValueInfo)
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// Task description
     pub description: Option<String>,
@@ -264,7 +281,9 @@ pub struct Task {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -309,6 +328,7 @@ impl Task {
             condition_script: None,
             force: None,
             env: None,
+            cwd: None,
             alias: None,
             linux_alias: None,
             windows_alias: None,
@@ -359,6 +379,10 @@ impl Task {
 
         if task.env.is_some() {
             self.env = task.env.clone();
+        }
+
+        if task.cwd.is_some() {
+            self.cwd = task.cwd.clone();
         }
 
         if task.alias.is_some() {
@@ -465,6 +489,7 @@ impl Task {
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
                     env: override_task.env.clone(),
+                    cwd: override_task.cwd.clone(),
                     alias: None,
                     linux_alias: None,
                     windows_alias: None,
@@ -532,7 +557,9 @@ pub struct PlatformOverrideTask {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// additional cargo install arguments
@@ -587,6 +614,10 @@ impl PlatformOverrideTask {
 
             if self.env.is_none() && task.env.is_some() {
                 self.env = task.env.clone();
+            }
+
+            if self.cwd.is_none() && task.cwd.is_some() {
+                self.cwd = task.cwd.clone();
             }
 
             if self.install_crate.is_none() && task.install_crate.is_some() {
@@ -724,7 +755,7 @@ pub struct Config {
     /// Runtime config
     pub config: ConfigSection,
     /// The env vars to setup before running the tasks
-    pub env: HashMap<String, String>,
+    pub env: HashMap<String, EnvValue>,
     /// All task definitions
     pub tasks: HashMap<String, Task>
 }
@@ -737,7 +768,7 @@ pub struct ExternalConfig {
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
     /// All task definitions
     pub tasks: Option<HashMap<String, Task>>
 }

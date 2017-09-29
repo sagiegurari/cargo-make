@@ -56,7 +56,26 @@ fn run_task(
 
         match step.config.run_task {
             Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
-            None => command::run(&step),
+            None => {
+                let revert_directory = match step.config.cwd {
+                    Some(ref cwd) => {
+                        let directory = environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
+
+                        environment::setup_cwd(Some(cwd));
+
+                        directory
+                    }
+                    None => "".to_string(),
+                };
+
+                command::run(&step);
+
+                // revert to original cwd
+                match step.config.cwd {
+                    Some(_) => environment::setup_cwd(Some(&revert_directory)),
+                    _ => (),
+                };
+            }
         };
     } else {
         debug!("Task: {} disabled", &step.name);
