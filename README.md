@@ -494,9 +494,13 @@ You can define env vars to be set as part of the execution of the flow in the gl
 [env]
 RUST_BACKTRACE = "1"
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+TEST1 = "value1"
+TEST2 = "value2"
+COMPOSITE = "${TEST1} ${TEST2}"
 ````
 
 Environment variables can be defined as a simple key/value pair or key and the output (last line) of the provided script.
+In addition, you can define environment variables values based on other environment variables using the ${} syntax.
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
 

@@ -27,7 +27,7 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
         match output {
             Ok(output_struct) => {
                 let stdout = String::from_utf8_lossy(&output_struct.stdout);
-                let mut lines: Vec<&str> = stdout.split('\n').collect();
+                let mut lines: Vec<&str> = stdout.split("\n").collect();
                 lines.retain(|&line| line.len() > 0);
 
                 if lines.len() > 0 {
@@ -46,13 +46,36 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     }
 }
 
+fn evaluate_and_set_env(
+    key: &str,
+    value: &str,
+) {
+    let mut value_string = value.to_string();
+    let env_value = match value_string.find("${") {
+        Some(_) => {
+            for (existing_key, existing_value) in env::vars() {
+                let mut key_pattern = "${".to_string();
+                key_pattern.push_str(&existing_key);
+                key_pattern.push_str("}");
+
+                value_string = str::replace(&value_string, &key_pattern, &existing_value);
+            }
+
+            value_string.as_str()
+        }
+        None => value,
+    };
+
+    env::set_var(&key, &env_value);
+}
+
 fn set_env_for_info(
     key: &str,
     env_value: &EnvValueInfo,
 ) {
     let value = evaluate_env_value(&env_value);
 
-    env::set_var(&key, &value);
+    evaluate_and_set_env(&key, &value);
 }
 
 /// Updates the env based on the provided data
@@ -63,7 +86,7 @@ pub fn set_env(env: HashMap<String, EnvValue>) {
         debug!("Setting env: {} = {:#?}", &key, &env_value);
 
         match *env_value {
-            EnvValue::Value(ref value) => env::set_var(&key, value),
+            EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
             EnvValue::Info(ref info) => set_env_for_info(&key, info),
         };
     }

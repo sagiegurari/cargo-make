@@ -6,6 +6,34 @@ use std::env;
 use types::ConfigSection;
 
 #[test]
+fn evaluate_and_set_env_simple() {
+    assert!(!is_env_defined("EVAL_SET_SIMPLE"));
+    evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
+    assert_eq!(env::var("EVAL_SET_SIMPLE").unwrap(), "SIMPLE".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_exists() {
+    env::set_var("eval_test1", "test");
+    evaluate_and_set_env("evaluate_and_set_env_exists", "testing: ${eval_test1} works");
+    assert_eq!(env::var("evaluate_and_set_env_exists").unwrap(), "testing: test works".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_not_exists() {
+    evaluate_and_set_env("evaluate_and_set_env_not_exists", "testing: ${eval_test_bad} works");
+    assert_eq!(env::var("evaluate_and_set_env_not_exists").unwrap(), "testing: ${eval_test_bad} works".to_string());
+}
+
+#[test]
+fn evaluate_and_set_env_complex() {
+    env::set_var("eval_test10", "10");
+    env::set_var("eval_test20", "20");
+    evaluate_and_set_env("evaluate_and_set_env_complex", "checking 10 is ${eval_test10} empty is ${eval_test30} and 20 is ${eval_test20}");
+    assert_eq!(env::var("evaluate_and_set_env_complex").unwrap(), "checking 10 is 10 empty is ${eval_test30} and 20 is 20".to_string());
+}
+
+#[test]
 fn setup_cwd_empty() {
     env::set_var("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
