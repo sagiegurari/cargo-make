@@ -1,0 +1,13 @@
+
+[tasks.cwd]
+command = "pwd"
+
+[tasks.change-cwd]
+command = "pwd"
+cwd = "./examples/files"
+
+[tasks.back-again]
+alias = "cwd"
+
+[tasks.all]
+dependencies = ["cwd", "change-cwd", "back-again"]

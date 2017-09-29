@@ -282,6 +282,8 @@ pub struct Task {
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -326,6 +328,7 @@ impl Task {
             condition_script: None,
             force: None,
             env: None,
+            cwd: None,
             alias: None,
             linux_alias: None,
             windows_alias: None,
@@ -376,6 +379,10 @@ impl Task {
 
         if task.env.is_some() {
             self.env = task.env.clone();
+        }
+
+        if task.cwd.is_some() {
+            self.cwd = task.cwd.clone();
         }
 
         if task.alias.is_some() {
@@ -482,6 +489,7 @@ impl Task {
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
                     env: override_task.env.clone(),
+                    cwd: override_task.cwd.clone(),
                     alias: None,
                     linux_alias: None,
                     windows_alias: None,
@@ -550,6 +558,8 @@ pub struct PlatformOverrideTask {
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// additional cargo install arguments
@@ -604,6 +614,10 @@ impl PlatformOverrideTask {
 
             if self.env.is_none() && task.env.is_some() {
                 self.env = task.env.clone();
+            }
+
+            if self.cwd.is_none() && task.cwd.is_some() {
+                self.cwd = task.cwd.clone();
             }
 
             if self.install_crate.is_none() && task.install_crate.is_some() {

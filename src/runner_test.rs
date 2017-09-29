@@ -116,6 +116,7 @@ fn create_execution_plan_platform_disabled() {
         command: None,
         force: None,
         env: None,
+        cwd: None,
         install_script: None,
         args: None,
         script: None,
@@ -133,6 +134,7 @@ fn create_execution_plan_platform_disabled() {
         command: None,
         force: None,
         env: None,
+        cwd: None,
         install_script: None,
         args: None,
         script: None,
@@ -150,6 +152,7 @@ fn create_execution_plan_platform_disabled() {
         command: None,
         force: None,
         env: None,
+        cwd: None,
         install_script: None,
         args: None,
         script: None,
@@ -383,4 +386,41 @@ fn run_task_set_env() {
     run_task(&flow_info, &step);
 
     assert_eq!(env::var("TEST_RUN_TASK_SET_ENV").unwrap(), "VALID");
+}
+
+#[test]
+#[should_panic]
+fn run_task_cwd_no_such_dir() {
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.cwd = Some("./bad/badagain".to_string());
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+fn run_task_cwd_dir_exists() {
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.cwd = Some("./src".to_string());
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&flow_info, &step);
 }

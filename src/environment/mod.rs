@@ -257,6 +257,16 @@ pub fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
+pub fn get_env(
+    key: &str,
+    default: &str,
+) -> String {
+    match env::var(key) {
+        Ok(value) => value.to_string(),
+        _ => default.to_string(),
+    }
+}
+
 fn is_env_defined(key: &str) -> bool {
     match env::var(key) {
         Ok(_) => true,

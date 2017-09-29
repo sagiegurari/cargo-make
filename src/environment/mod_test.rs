@@ -6,6 +6,19 @@ use std::env;
 use types::ConfigSection;
 
 #[test]
+fn get_env_exists() {
+    env::set_var("TEST_GET_ENV_EXISTS", "EXISTS");
+    let output = get_env("TEST_GET_ENV_EXISTS", "bad");
+    assert_eq!(output, "EXISTS".to_string());
+}
+
+#[test]
+fn get_env_not_exists() {
+    let output = get_env("TEST_GET_ENV_NOT_EXISTS", "good");
+    assert_eq!(output, "good".to_string());
+}
+
+#[test]
 fn evaluate_and_set_env_simple() {
     assert!(!is_env_defined("EVAL_SET_SIMPLE"));
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");

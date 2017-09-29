@@ -1007,6 +1007,8 @@ pub struct Task {
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -1055,6 +1057,8 @@ pub struct PlatformOverrideTask {
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<HashMap<String, EnvValue>>,
+    /// The working directory for the task to execute its command/script
+    pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// additional cargo install arguments
