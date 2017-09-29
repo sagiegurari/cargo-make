@@ -1,52 +1,72 @@
 use super::*;
 
 #[test]
-fn merge_maps_both_empty() {
-    let mut map1 = HashMap::<String, String>::new();
-    let mut map2 = HashMap::<String, String>::new();
+fn merge_env_both_empty() {
+    let mut map1 = HashMap::<String, EnvValue>::new();
+    let mut map2 = HashMap::<String, EnvValue>::new();
 
-    let output = merge_maps(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2);
     assert_eq!(output.len(), 0);
 }
 
 #[test]
-fn merge_maps_first_empty() {
-    let mut map1 = HashMap::<String, String>::new();
-    let mut map2 = HashMap::<String, String>::new();
+fn merge_env_first_empty() {
+    let mut map1 = HashMap::<String, EnvValue>::new();
+    let mut map2 = HashMap::<String, EnvValue>::new();
 
-    map2.insert("test".to_string(), "value".to_string());
+    map2.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
-    let output = merge_maps(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2);
     assert_eq!(output.len(), 1);
-    assert_eq!(output.get("test").unwrap(), &"value".to_string());
+    let value = output.get("test").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value".to_string()),
+        _ => panic!("wrong value type"),
+    };
 }
 
 #[test]
-fn merge_maps_second_empty() {
-    let mut map1 = HashMap::<String, String>::new();
-    let mut map2 = HashMap::<String, String>::new();
+fn merge_env_second_empty() {
+    let mut map1 = HashMap::<String, EnvValue>::new();
+    let mut map2 = HashMap::<String, EnvValue>::new();
 
-    map1.insert("test".to_string(), "value".to_string());
+    map1.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
-    let output = merge_maps(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2);
     assert_eq!(output.len(), 1);
-    assert_eq!(output.get("test").unwrap(), &"value".to_string());
+    let value = output.get("test").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value".to_string()),
+        _ => panic!("wrong value type"),
+    };
 }
 
 #[test]
-fn merge_maps_both_with_values() {
-    let mut map1 = HashMap::<String, String>::new();
-    let mut map2 = HashMap::<String, String>::new();
+fn merge_env_both_with_values() {
+    let mut map1 = HashMap::<String, EnvValue>::new();
+    let mut map2 = HashMap::<String, EnvValue>::new();
 
-    map1.insert("test1".to_string(), "value1".to_string());
-    map2.insert("test21".to_string(), "value21".to_string());
-    map2.insert("test22".to_string(), "value22".to_string());
+    map1.insert("test1".to_string(), EnvValue::Value("value1".to_string()));
+    map2.insert("test21".to_string(), EnvValue::Value("value21".to_string()));
+    map2.insert("test22".to_string(), EnvValue::Value("value22".to_string()));
 
-    let output = merge_maps(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2);
     assert_eq!(output.len(), 3);
-    assert_eq!(output.get("test1").unwrap(), &"value1".to_string());
-    assert_eq!(output.get("test21").unwrap(), &"value21".to_string());
-    assert_eq!(output.get("test22").unwrap(), &"value22".to_string());
+    let mut value = output.get("test1").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value1".to_string()),
+        _ => panic!("wrong value type"),
+    };
+    value = output.get("test21").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value21".to_string()),
+        _ => panic!("wrong value type"),
+    };
+    value = output.get("test22").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value22".to_string()),
+        _ => panic!("wrong value type"),
+    };
 }
 
 #[test]

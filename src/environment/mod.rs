@@ -11,18 +11,61 @@ pub mod crateinfo;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
+use command;
 use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
-use types::{Config, CrateInfo, EnvInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
+use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
+
+fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
+    let output = command::run_script_get_output(&env_value.script, None, true);
+
+    let exit_code = command::get_exit_code_from_output(&output, false);
+    command::validate_exit_code(exit_code);
+
+    if exit_code == 0 {
+        match output {
+            Ok(output_struct) => {
+                let stdout = String::from_utf8_lossy(&output_struct.stdout);
+                let mut lines: Vec<&str> = stdout.split('\n').collect();
+                lines.retain(|&line| line.len() > 0);
+
+                if lines.len() > 0 {
+                    lines[lines.len() - 1].to_string()
+                } else {
+                    "".to_string()
+                }
+            }
+            Err(error) => {
+                error!("Unable to get env var value evaluation result: {:#?}", error);
+                "".to_string()
+            }
+        }
+    } else {
+        "".to_string()
+    }
+}
+
+fn set_env_for_info(
+    key: &str,
+    env_value: &EnvValueInfo,
+) {
+    let value = evaluate_env_value(&env_value);
+
+    env::set_var(&key, &value);
+}
 
 /// Updates the env based on the provided data
-pub fn set_env(env: HashMap<String, String>) {
+pub fn set_env(env: HashMap<String, EnvValue>) {
     debug!("Setting Up Env.");
 
-    for (key, value) in &env {
-        debug!("Setting env: {} = {}", &key, &value);
-        env::set_var(&key, &value);
+    for (key, env_value) in &env {
+        debug!("Setting env: {} = {:#?}", &key, &env_value);
+
+        match *env_value {
+            EnvValue::Value(ref value) => env::set_var(&key, value),
+            EnvValue::Info(ref info) => set_env_for_info(&key, info),
+        };
     }
 }
 

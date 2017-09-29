@@ -169,7 +169,7 @@ fn task_extend_extended_have_all_fields() {
     };
 
     let mut env = HashMap::new();
-    env.insert("test".to_string(), "value".to_string());
+    env.insert("test".to_string(), EnvValue::Value("value".to_string()));
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
@@ -427,7 +427,7 @@ fn task_get_normalized_task_undefined() {
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_no_clear() {
     let mut env = HashMap::new();
-    env.insert("test".to_string(), "value".to_string());
+    env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
         alias: Some("bad".to_string()),
@@ -531,7 +531,7 @@ fn task_get_normalized_task_with_override_no_clear() {
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_clear_false() {
     let mut env = HashMap::new();
-    env.insert("test".to_string(), "value".to_string());
+    env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
         alias: Some("bad".to_string()),

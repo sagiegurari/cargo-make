@@ -16,24 +16,24 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
-use types::{Config, ConfigSection, ExternalConfig, Task};
+use types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 
-fn merge_maps(
-    base: &mut HashMap<String, String>,
-    extended: &mut HashMap<String, String>,
-) -> HashMap<String, String> {
-    let mut merged = HashMap::<String, String>::new();
+fn merge_env(
+    base: &mut HashMap<String, EnvValue>,
+    extended: &mut HashMap<String, EnvValue>,
+) -> HashMap<String, EnvValue> {
+    let mut merged = HashMap::<String, EnvValue>::new();
 
     for (key, value) in base.iter() {
         let key_str = key.to_string();
-        let value_str = value.to_string();
-        merged.insert(key_str, value_str);
+        let value_clone = value.clone();
+        merged.insert(key_str, value_clone);
     }
 
     for (key, value) in extended.iter() {
         let key_str = key.to_string();
-        let value_str = value.to_string();
-        merged.insert(key_str, value_str);
+        let value_clone = value.clone();
+        merged.insert(key_str, value_clone);
     }
 
     merged
@@ -139,7 +139,7 @@ fn load_external_descriptor(
                     Some(env) => env,
                     None => HashMap::new(),
                 };
-                let all_env = merge_maps(&mut base_env, &mut extended_env);
+                let all_env = merge_env(&mut base_env, &mut extended_env);
 
                 // merge tasks
                 let mut base_tasks = match base_file_config.tasks {
@@ -227,7 +227,7 @@ pub fn load(
     let mut default_env = default_config.env;
 
     // merge configs
-    let mut all_env = merge_maps(&mut default_env, &mut external_env);
+    let mut all_env = merge_env(&mut default_env, &mut external_env);
     all_env = match env {
         Some(values) => {
             let mut cli_env = HashMap::new();
@@ -237,11 +237,11 @@ pub fn load(
                 debug!("Checking env pair: {}", &env_pair);
 
                 if env_part.len() == 2 {
-                    cli_env.insert(env_part[0].to_string(), env_part[1].to_string());
+                    cli_env.insert(env_part[0].to_string(), EnvValue::Value(env_part[1].to_string()));
                 }
             }
 
-            merge_maps(&mut all_env, &mut cli_env)
+            merge_env(&mut all_env, &mut cli_env)
         }
         None => all_env,
     };

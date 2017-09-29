@@ -35,8 +35,8 @@ fn setup_env_empty() {
 #[test]
 fn setup_env_values() {
     let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    config.env.insert("MY_ENV_KEY".to_string(), "MY_ENV_VALUE".to_string());
-    config.env.insert("MY_ENV_KEY2".to_string(), "MY_ENV_VALUE2".to_string());
+    config.env.insert("MY_ENV_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
+    config.env.insert("MY_ENV_KEY2".to_string(), EnvValue::Value("MY_ENV_VALUE2".to_string()));
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
     assert_eq!(env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
@@ -45,6 +45,44 @@ fn setup_env_values() {
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
     assert_eq!(env::var("MY_ENV_KEY2").unwrap(), "MY_ENV_VALUE2");
+}
+
+#[test]
+fn setup_env_script() {
+    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    config.env.insert("MY_ENV_SCRIPT_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
+    config.env.insert(
+        "MY_ENV_SCRIPT_KEY2".to_string(),
+        EnvValue::Info(EnvValueInfo { script: vec!["echo script1".to_string()] })
+    );
+
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
+
+    setup_env(&config, "set_env_values");
+
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap(), "MY_ENV_VALUE");
+    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap(), "script1");
+}
+
+#[test]
+fn evaluate_env_value_valid() {
+    let output = evaluate_env_value(&EnvValueInfo { script: vec!["echo script1".to_string()] });
+
+    assert_eq!(output, "script1".to_string());
+}
+
+#[test]
+fn evaluate_env_value_empty() {
+    let output = evaluate_env_value(&EnvValueInfo { script: vec!["".to_string()] });
+
+    assert_eq!(output, "".to_string());
+}
+
+#[test]
+#[should_panic]
+fn evaluate_env_error() {
+    evaluate_env_value(&EnvValueInfo { script: vec!["exit 1".to_string()] });
 }
 
 #[test]

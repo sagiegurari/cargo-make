@@ -1,7 +1,7 @@
 use super::*;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, PlatformOverrideTask, RustInfo, Step, Task, Workspace};
+use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, RustInfo, Step, Task, Workspace};
 
 #[test]
 #[should_panic]
@@ -370,7 +370,7 @@ fn run_task_set_env() {
     };
 
     let mut env = HashMap::new();
-    env.insert("TEST_RUN_TASK_SET_ENV".to_string(), "VALID".to_string());
+    env.insert("TEST_RUN_TASK_SET_ENV".to_string(), EnvValue::Value("VALID".to_string()));
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);

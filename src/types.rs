@@ -252,6 +252,23 @@ pub struct TaskCondition {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
+pub struct EnvValueInfo {
+    /// The script to execute to get the env value
+    pub script: Vec<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds the env value or script
+pub enum EnvValue {
+    /// The value as string
+    Value(String),
+    /// Script which will return the value
+    Info(EnvValueInfo)
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// Task description
     pub description: Option<String>,
@@ -264,7 +281,7 @@ pub struct Task {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
     /// if defined, task points to another task and all other properties are ignored
     pub alias: Option<String>,
     /// acts like alias if runtime OS is Linux (takes precedence over alias)
@@ -532,7 +549,7 @@ pub struct PlatformOverrideTask {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<String>,
     /// additional cargo install arguments
@@ -724,7 +741,7 @@ pub struct Config {
     /// Runtime config
     pub config: ConfigSection,
     /// The env vars to setup before running the tasks
-    pub env: HashMap<String, String>,
+    pub env: HashMap<String, EnvValue>,
     /// All task definitions
     pub tasks: HashMap<String, Task>
 }
@@ -737,7 +754,7 @@ pub struct ExternalConfig {
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<HashMap<String, EnvValue>>,
     /// All task definitions
     pub tasks: Option<HashMap<String, Task>>
 }

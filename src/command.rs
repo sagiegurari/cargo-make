@@ -11,9 +11,10 @@ use rand::{Rng, thread_rng};
 use std::env;
 use std::env::current_dir;
 use std::fs::{File, create_dir_all, remove_file};
+use std::io;
 use std::io::Error;
 use std::io::prelude::*;
-use std::process::{Command, ExitStatus, Stdio};
+use std::process::{Command, ExitStatus, Output, Stdio};
 use types::Step;
 
 /// Returns the exit code (-1 if no exit code found)
@@ -33,6 +34,22 @@ pub fn get_exit_code(
             }
         }
         Err(error) => {
+            if !force {
+                error!("Error while executing command, error: {:#?}", error);
+            }
+
+            -1
+        }
+    }
+}
+
+pub fn get_exit_code_from_output(
+    output: &io::Result<Output>,
+    force: bool,
+) -> i32 {
+    match output {
+        &Ok(ref output_struct) => get_exit_code(Ok(output_struct.status), force),
+        &Err(ref error) => {
             if !force {
                 error!("Error while executing command, error: {:#?}", error);
             }
@@ -93,12 +110,12 @@ fn create_script(script_lines: &Vec<String>) -> String {
     mut_script_lines.join("\n")
 }
 
-/// Runs the requested script text and panics in case of any script error.
-pub fn run_script(
+/// Runs the requested script text and returns its output.
+pub fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
-    validate: bool,
-) -> i32 {
+    capture_output: bool,
+) -> io::Result<Output> {
     let name = env!("CARGO_PKG_NAME");
     let file_name: String = thread_rng().gen_ascii_chars().take(10).collect();
 
@@ -159,22 +176,39 @@ pub fn run_script(
 
     let args = Some(args_vector);
 
-    let exit_code = run_command(&command, &args, validate);
+    let output = run_command_get_output(&command, &args, capture_output);
 
     match remove_file(&file_path_str) {
         Ok(_) => debug!("Temporary file deleted: {}", &file_path_str),
         Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file_path_str, error),
     };
 
+    output
+}
+
+/// Runs the requested script text and panics in case of any script error.
+pub fn run_script(
+    script_lines: &Vec<String>,
+    script_runner: Option<String>,
+    validate: bool,
+) -> i32 {
+    let output = run_script_get_output(&script_lines, script_runner, false);
+
+    let exit_code = get_exit_code_from_output(&output, !validate);
+
+    if validate {
+        validate_exit_code(exit_code);
+    }
+
     exit_code
 }
 
-/// Runs the requested command and panics in case of any error.
-pub fn run_command(
+/// Runs the requested command and return its output.
+pub fn run_command_get_output(
     command_string: &str,
     args: &Option<Vec<String>>,
-    validate: bool,
-) -> i32 {
+    capture_output: bool,
+) -> io::Result<Output> {
     debug!("Execute Command: {}", &command_string);
     let mut command = Command::new(&command_string);
 
@@ -187,12 +221,27 @@ pub fn run_command(
         None => debug!("No command args defined."),
     };
 
-    command.stdin(Stdio::inherit()).stdout(Stdio::inherit()).stderr(Stdio::inherit());
+    command.stdin(Stdio::inherit());
+    if !capture_output {
+        command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+    }
     info!("Execute Command: {:#?}", &command);
 
-    let exit_status = command.status();
+    let output = command.output();
+    debug!("Output: {:#?}", &output);
 
-    let exit_code = get_exit_code(exit_status, !validate);
+    output
+}
+
+/// Runs the requested command and panics in case of any error.
+pub fn run_command(
+    command_string: &str,
+    args: &Option<Vec<String>>,
+    validate: bool,
+) -> i32 {
+    let output = run_command_get_output(&command_string, &args, false);
+
+    let exit_code = get_exit_code_from_output(&output, !validate);
 
     if validate {
         validate_exit_code(exit_code);
