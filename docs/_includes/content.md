@@ -914,134 +914,14 @@ ARGS:
 
 <a name="descriptor-definition"></a>
 ## Makefile Definition
-````rust
-pub struct ConfigSection {
-    /// Init task name which will be invoked at the start of every run
-    pub init_task: Option<String>,
-    /// End task name which will be invoked at the end of every run
-    pub end_task: Option<String>,
-    /// Invoked while loading the descriptor file but before loading any extended descriptor
-    pub load_script: Option<Vec<String>>,
-    /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
-    pub linux_load_script: Option<Vec<String>>,
-    /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
-    pub windows_load_script: Option<Vec<String>>,
-    /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
-    pub mac_load_script: Option<Vec<String>>
-}
 
-/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
-pub struct ExternalConfig {
-    /// Path to another toml file to extend
-    pub extend: Option<String>,
-    /// Runtime config
-    pub config: Option<ConfigSection>,
-    /// The env vars to setup before running the tasks
-    pub env: Option<HashMap<String, EnvValue>>,
-    /// All task definitions
-    pub tasks: Option<HashMap<String, Task>>
-}
+[Config Section](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.ConfigSection.html)
 
-/// Holds a single task configuration such as command and dependencies list
-pub struct Task {
-    /// Task description
-    pub description: Option<String>,
-    /// if true, the command/script of this task will not be invoked, dependencies however will be
-    pub disabled: Option<bool>,
-    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
-    pub condition: Option<TaskCondition>,
-    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    pub condition_script: Option<Vec<String>>,
-    /// if true, any error while executing the task will be printed but will not break the build
-    pub force: Option<bool>,
-    /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, EnvValue>>,
-    /// The working directory for the task to execute its command/script
-    pub cwd: Option<String>,
-    /// if defined, task points to another task and all other properties are ignored
-    pub alias: Option<String>,
-    /// acts like alias if runtime OS is Linux (takes precedence over alias)
-    pub linux_alias: Option<String>,
-    /// acts like alias if runtime OS is Windows (takes precedence over alias)
-    pub windows_alias: Option<String>,
-    /// acts like alias if runtime OS is Mac (takes precedence over alias)
-    pub mac_alias: Option<String>,
-    /// if defined, the provided crate will be installed (if needed) before running the task
-    pub install_crate: Option<String>,
-    /// additional cargo install arguments
-    pub install_crate_args: Option<Vec<String>>,
-    /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
-    /// The command to execute
-    pub command: Option<String>,
-    /// The command args
-    pub args: Option<Vec<String>>,
-    /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
-    /// The script runner (defaults to cmd in windows and sh for other platforms)
-    pub script_runner: Option<String>,
-    /// The task name to execute
-    pub run_task: Option<String>,
-    /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>,
-    /// override task if runtime OS is Linux (takes precedence over alias)
-    pub linux: Option<PlatformOverrideTask>,
-    /// override task if runtime OS is Windows (takes precedence over alias)
-    pub windows: Option<PlatformOverrideTask>,
-    /// override task if runtime OS is Mac (takes precedence over alias)
-    pub mac: Option<PlatformOverrideTask>
-}
+[Task](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.Task.html)
 
-/// Holds a single task configuration for a specific platform as an override of another task
-pub struct PlatformOverrideTask {
-    /// if true, it should ignore all data in base task
-    pub clear: Option<bool>,
-    /// if true, the command/script of this task will not be invoked, dependencies however will be
-    pub disabled: Option<bool>,
-    /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
-    pub condition: Option<TaskCondition>,
-    /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    pub condition_script: Option<Vec<String>>,
-    /// if true, any error while executing the task will be printed but will not break the build
-    pub force: Option<bool>,
-    /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, EnvValue>>,
-    /// The working directory for the task to execute its command/script
-    pub cwd: Option<String>,
-    /// if defined, the provided crate will be installed (if needed) before running the task
-    pub install_crate: Option<String>,
-    /// additional cargo install arguments
-    pub install_crate_args: Option<Vec<String>>,
-    /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
-    /// The command to execute
-    pub command: Option<String>,
-    /// The command args
-    pub args: Option<Vec<String>>,
-    /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
-    /// The script runner (defaults to cmd in windows and sh for other platforms)
-    pub script_runner: Option<String>,
-    /// The task name to execute
-    pub run_task: Option<String>,
-    /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>
-}
+[Platform Override](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.PlatformOverrideTask.html)
 
-/// Holds condition attributes
-pub struct TaskCondition {
-    /// Platform names (linux, windows, mac)
-    pub platforms: Option<Vec<String>>,
-    /// Channel names (stable, beta, nightly)
-    pub channels: Option<Vec<String>>,
-    /// Environment variables which must be defined
-    pub env_set: Option<Vec<String>>,
-    /// Environment variables which must not be defined
-    pub env_not_set: Option<Vec<String>>,
-    /// Environment variables and their values
-    pub env: Option<HashMap<String, String>>
-}
-````
+[Condition](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.TaskCondition.html)
 
 More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/index.html) section of the API documentation.
 
