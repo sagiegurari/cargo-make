@@ -40,5 +40,5 @@
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
-* [Release History](#history)
+* [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)

@@ -19,6 +19,7 @@ include = [
     "/Cargo.toml",
     "/LICENSE",
     "/README.md",
+    "/CHANGELOG.md",
     "/Makefile.toml"
 ]
 
