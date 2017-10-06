@@ -39,6 +39,7 @@ fn task_new() {
     assert!(task.script.is_none());
     assert!(task.script_runner.is_none());
     assert!(task.run_task.is_none());
+    assert!(task.rust_script.is_none());
     assert!(task.dependencies.is_none());
     assert!(task.linux.is_none());
     assert!(task.windows.is_none());
@@ -103,6 +104,7 @@ fn task_extend_both_have_misc_data() {
         script: None,
         script_runner: None,
         run_task: None,
+        rust_script: None,
         dependencies: None,
         linux: None,
         windows: None,
@@ -128,6 +130,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.install_script.is_none());
     assert!(base.script_runner.is_none());
     assert!(base.run_task.is_none());
+    assert!(base.rust_script.is_none());
     assert!(base.args.is_none());
     assert!(base.script.is_some());
     assert!(base.dependencies.is_none());
@@ -166,6 +169,7 @@ fn task_extend_extended_have_all_fields() {
         script: Some(vec!["1".to_string(), "2".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["r1".to_string(), "r2".to_string()]),
         dependencies: None,
         linux: None,
         windows: None,
@@ -200,6 +204,7 @@ fn task_extend_extended_have_all_fields() {
         script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
         script_runner: Some("sh2".to_string()),
         run_task: Some("task2".to_string()),
+        rust_script: Some(vec!["1r".to_string(), "2r".to_string(), "3r".to_string()]),
         dependencies: Some(vec!["A".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
@@ -223,6 +228,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
+            rust_script: Some(vec!["1r".to_string(), "2r".to_string(), "3r".to_string()]),
             dependencies: Some(vec!["A".to_string()])
         }),
         windows: Some(PlatformOverrideTask {
@@ -247,6 +253,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
+            rust_script: Some(vec!["1r".to_string(), "2r".to_string(), "3r".to_string()]),
             dependencies: Some(vec!["A".to_string()])
         }),
         mac: Some(PlatformOverrideTask {
@@ -271,6 +278,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
+            rust_script: Some(vec!["1r".to_string(), "2r".to_string(), "3r".to_string()]),
             dependencies: Some(vec!["A".to_string()])
         })
     };
@@ -296,6 +304,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.script.is_some());
     assert!(base.script_runner.is_some());
     assert!(base.run_task.is_some());
+    assert!(base.rust_script.is_some());
     assert!(base.dependencies.is_some());
     assert!(base.linux.is_some());
     assert!(base.windows.is_some());
@@ -319,6 +328,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.script.unwrap().len(), 3);
     assert_eq!(base.script_runner.unwrap(), "sh2");
     assert_eq!(base.run_task.unwrap(), "task2");
+    assert_eq!(base.rust_script.unwrap().len(), 3);
     assert_eq!(base.dependencies.unwrap().len(), 1);
     assert!(base.linux.unwrap().clear.unwrap());
     assert!(!base.windows.unwrap().clear.unwrap());
@@ -385,6 +395,7 @@ fn task_get_normalized_task_undefined() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["ar".to_string(), "br".to_string()]),
         dependencies: Some(vec!["1".to_string()]),
         description: Some("description".to_string()),
         linux: None,
@@ -412,6 +423,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.run_task.is_some());
+    assert!(normalized_task.rust_script.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.linux.is_none());
@@ -432,6 +444,7 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.run_task.unwrap(), "task1");
+    assert_eq!(normalized_task.rust_script.unwrap().len(), 2);
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
 }
 
@@ -467,6 +480,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["ar".to_string(), "br".to_string()]),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: None,
@@ -490,6 +504,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             run_task: Some("task2".to_string()),
+            rust_script: Some(vec!["ar".to_string(), "br".to_string(), "cr".to_string()]),
             dependencies: Some(vec!["1".to_string(), "2".to_string()])
         }),
         windows: None,
@@ -517,6 +532,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.run_task.is_some());
+    assert!(normalized_task.rust_script.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -536,6 +552,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.run_task.unwrap(), "task2");
+    assert_eq!(normalized_task.rust_script.unwrap().len(), 3);
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
 
     let condition = normalized_task.condition.unwrap();
@@ -575,6 +592,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["ar".to_string(), "br".to_string()]),
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -598,6 +616,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             run_task: Some("task2".to_string()),
+            rust_script: Some(vec!["ar".to_string(), "br".to_string(), "cr".to_string()]),
             dependencies: Some(vec!["1".to_string(), "2".to_string()])
         }),
         windows: None,
@@ -625,6 +644,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.run_task.is_some());
+    assert!(normalized_task.rust_script.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
@@ -644,6 +664,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.run_task.unwrap(), "task2");
+    assert_eq!(normalized_task.rust_script.unwrap().len(), 3);
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
 
     let condition = normalized_task.condition.unwrap();
@@ -679,6 +700,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["ar".to_string(), "br".to_string()]),
         dependencies: Some(vec!["1".to_string()]),
         description: None,
         linux: Some(PlatformOverrideTask {
@@ -697,6 +719,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             script: None,
             script_runner: None,
             run_task: None,
+            rust_script: None,
             dependencies: None
         }),
         windows: None,
@@ -723,6 +746,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.script.is_some());
     assert!(normalized_task.script_runner.is_some());
     assert!(normalized_task.run_task.is_some());
+    assert!(normalized_task.rust_script.is_some());
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.description.is_none());
     assert!(normalized_task.linux.is_none());
@@ -741,6 +765,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.run_task.unwrap(), "task1");
+    assert_eq!(normalized_task.rust_script.unwrap().len(), 2);
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
 }
 
@@ -772,6 +797,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         run_task: Some("task1".to_string()),
+        rust_script: Some(vec!["ar".to_string(), "br".to_string()]),
         dependencies: Some(vec!["1".to_string()]),
         description: Some("description".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -790,6 +816,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             script: None,
             script_runner: None,
             run_task: None,
+            rust_script: None,
             dependencies: None
         }),
         windows: None,
@@ -816,6 +843,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.script.is_none());
     assert!(normalized_task.script_runner.is_none());
     assert!(normalized_task.run_task.is_none());
+    assert!(normalized_task.rust_script.is_none());
     assert!(normalized_task.dependencies.is_none());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.linux.is_none());

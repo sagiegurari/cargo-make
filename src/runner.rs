@@ -17,6 +17,7 @@ use condition;
 use environment;
 use installer;
 use logger;
+use rsscript;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
@@ -68,7 +69,10 @@ fn run_task(
                     None => "".to_string(),
                 };
 
-                command::run(&step);
+                match step.config.rust_script {
+                    Some(ref rust_script) => rsscript::execute(rust_script),
+                    None => command::run(&step),
+                };
 
                 // revert to original cwd
                 match step.config.cwd {

@@ -18,6 +18,10 @@
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
     * [Commands, Scripts and Sub Tasks](#usage-task-command-script-task)
+        * [Sub Task](#usage-task-command-script-task-examplesubtask)
+        * [Rust Code](#usage-task-command-script-task-examplerust)
+        * [Command](#usage-task-command-script-task-examplecommand)
+        * [Script](#usage-task-command-script-task-examplescript)
     * [Default Tasks and Extending](#usage-default-tasks)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
@@ -341,11 +345,85 @@ The actual operation that a task invokes can be defined in 3 ways.<br>
 The below explains each one and lists them by priority:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
+* **rust_script** - Compiles the rust code and runs it. Dependencies are defined in Cargo.toml format inside an optional comment block at the top of the code.
 * **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what attributes to provide as part of the command.
 * **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
 
 Only one of the definitions will be used.<br>
 If multiple attributes are defined (for example both command and script), only the higher priority attribute is used.
+
+Below are some basic examples of each action type.
+
+<a name="usage-task-command-script-task-examplesubtask"></a>
+#### Sub Task
+In this example, if we execute the **flow** task, it will invoke the **echo** task defined in the **run_task** attribute.
+
+````toml
+[tasks.echo]
+script = [
+    "echo hello world"
+]
+
+[tasks.flow]
+run_task = "echo"
+````
+
+<a name="usage-task-command-script-task-examplerust"></a>
+#### Rust Code
+In this example, when the **rust** task is invoked, the **rust_script** content will be compiled and executed.
+You can see how dependencies are defined in Cargo.toml format inside the code.
+
+````toml
+[tasks.rust]
+rust_script = [
+'''
+//! ```cargo
+//! [dependencies]
+//! time = "*"
+//! ```
+extern crate time;
+fn main() {
+    println!("{}", time::now().rfc822z());
+}
+'''
+]
+````
+
+<a name="usage-task-command-script-task-examplecommand"></a>
+#### Command
+For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
+
+````toml
+[tasks.build-with-verbose]
+command = "cargo"
+args = ["build", "--verbose", "--all-features"]
+````
+
+<a name="usage-task-command-script-task-examplescript"></a>
+#### Script
+Below simple script which prints hello world.
+
+````toml
+[tasks.hello-world]
+script = [
+    "echo start...",
+    "echo \"Hello World From Script\"",
+    "echo end..."
+]
+````
+
+You can use multi line toml string to make the script more readable as follows:
+
+````toml
+[tasks.hello-world]
+script = [
+'''
+echo start...
+echo "Hello World From Script"
+echo end...
+'''
+]
+````
 
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
