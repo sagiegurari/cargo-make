@@ -114,6 +114,7 @@ fn evaluate_env_value_valid() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 fn evaluate_env_value_empty() {
     let output = evaluate_env_value(&EnvValueInfo { script: vec!["".to_string()] });
 
