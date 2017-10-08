@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-09-24  | v0.6.1  | Tasks can now run rust code using rust_script attribute and tasks can no longer hold multiple action definitions. |
 | 2017-09-29  | v0.5.3  | Added support to evaluate env var values from script output and define cwd on task level |
 | 2017-09-24  | v0.5.2  | Added various check and build tasks |
 | 2017-09-21  | v0.5.0  | Disable by default coverage flow on mac |
