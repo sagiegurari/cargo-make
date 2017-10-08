@@ -862,6 +862,92 @@ fn task_is_valid_all_none() {
 }
 
 #[test]
+fn task_is_valid_only_run_task() {
+    let mut task = Task::new();
+    task.run_task = Some("test".to_string());
+
+    assert!(task.is_valid());
+}
+
+#[test]
+fn task_is_valid_only_command() {
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+
+    assert!(task.is_valid());
+}
+
+#[test]
+fn task_is_valid_only_script() {
+    let mut task = Task::new();
+    task.script = Some(vec!["test".to_string()]);
+
+    assert!(task.is_valid());
+}
+
+#[test]
+fn task_is_valid_only_rust_script() {
+    let mut task = Task::new();
+    task.rust_script = Some(vec!["test".to_string()]);
+
+    assert!(task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_run_task_and_command() {
+    let mut task = Task::new();
+    task.run_task = Some("test".to_string());
+    task.command = Some("test".to_string());
+
+    assert!(!task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_run_task_and_script() {
+    let mut task = Task::new();
+    task.run_task = Some("test".to_string());
+    task.script = Some(vec!["test".to_string()]);
+
+    assert!(!task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_run_task_and_rust_script() {
+    let mut task = Task::new();
+    task.run_task = Some("test".to_string());
+    task.rust_script = Some(vec!["test".to_string()]);
+
+    assert!(!task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_command_and_script() {
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+    task.script = Some(vec!["test".to_string()]);
+
+    assert!(!task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_command_and_rust_script() {
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+    task.rust_script = Some(vec!["test".to_string()]);
+
+    assert!(!task.is_valid());
+}
+
+#[test]
+fn task_is_valid_both_script_and_rust_script() {
+    let mut task = Task::new();
+    task.script = Some(vec!["test".to_string()]);
+    task.rust_script = Some(vec!["test".to_string()]);
+
+    assert!(!task.is_valid());
+}
+
+#[test]
 fn config_section_new() {
     let config = ConfigSection::new();
 
