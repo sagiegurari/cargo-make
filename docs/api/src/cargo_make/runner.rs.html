@@ -340,6 +340,14 @@
 <span id="295">295</span>
 <span id="296">296</span>
 <span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -360,6 +368,7 @@
 <span class="kw">use</span> <span class="ident">environment</span>;
 <span class="kw">use</span> <span class="ident">installer</span>;
 <span class="kw">use</span> <span class="ident">logger</span>;
+<span class="kw">use</span> <span class="ident">rsscript</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">SystemTime</span>;
@@ -389,6 +398,10 @@
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
 
     <span class="kw">if</span> <span class="ident">validate_condition</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">is_valid</span>() {
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Invalid task, contains multiple actions.\n{:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>);
+        }
+
         <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">env</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>.<span class="ident">clone</span>(),
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">HashMap</span>::<span class="ident">new</span>(),
@@ -411,7 +424,10 @@
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
                 };
 
-                <span class="ident">command</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>);
+                <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">rust_script</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">rust_script</span>) <span class="op">=&gt;</span> <span class="ident">rsscript</span>::<span class="ident">execute</span>(<span class="ident">rust_script</span>),
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">command</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>),
+                };
 
                 <span class="comment">// revert to original cwd</span>
                 <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">cwd</span> {

@@ -211,7 +211,7 @@
             <span class="kw">if</span> <span class="ident">record_level</span> <span class="op">==</span> <span class="ident">LogLevel</span>::<span class="ident">Error</span> {
                 <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Build Failed.&quot;</span>);
 
-                <span class="ident">exit</span>(<span class="number">0</span>);
+                <span class="ident">exit</span>(<span class="number">1</span>);
             }
         })
         .<span class="ident">level</span>(<span class="ident">log_level</span>)

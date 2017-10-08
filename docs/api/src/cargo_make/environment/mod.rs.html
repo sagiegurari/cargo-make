@@ -322,6 +322,16 @@
 <span id="277">277</span>
 <span id="278">278</span>
 <span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -329,7 +339,7 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">mod</span> <span class="ident">gitinfo</span>;
-<span class="kw">mod</span> <span class="ident">rustinfo</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rustinfo</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">crateinfo</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -355,8 +365,18 @@
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lines</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">stdout</span>.<span class="ident">split</span>(<span class="string">&quot;\n&quot;</span>).<span class="ident">collect</span>();
                 <span class="ident">lines</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">line</span><span class="op">|</span> <span class="ident">line</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>);
 
-                <span class="kw">if</span> <span class="ident">lines</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="ident">lines</span>[<span class="ident">lines</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>].<span class="ident">to_string</span>()
+                <span class="kw">let</span> <span class="ident">min_lines_count</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+                    <span class="number">1</span>
+                } <span class="kw">else</span> {
+                    <span class="number">0</span>
+                };
+
+                <span class="kw">if</span> <span class="ident">lines</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="ident">min_lines_count</span> {
+                    <span class="kw">let</span> <span class="ident">line</span> <span class="op">=</span> <span class="ident">lines</span>[<span class="ident">lines</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>].<span class="ident">to_string</span>();
+
+                    <span class="kw">let</span> <span class="ident">line_str</span> <span class="op">=</span> <span class="ident">str</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="ident">line</span>, <span class="string">&quot;\r&quot;</span>, <span class="string">&quot;&quot;</span>);
+
+                    <span class="ident">line_str</span>.<span class="ident">to_string</span>()
                 } <span class="kw">else</span> {
                     <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()
                 }

@@ -840,6 +840,44 @@
 <span id="795">795</span>
 <span id="796">796</span>
 <span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1151,6 +1189,8 @@
     <span class="kw">pub</span> <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task name to execute</span>
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The rust code to execute</span>
+    <span class="kw">pub</span> <span class="ident">rust_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Linux (takes precedence over alias)</span>
@@ -1184,6 +1224,7 @@
             <span class="ident">script</span>: <span class="prelude-val">None</span>,
             <span class="ident">script_runner</span>: <span class="prelude-val">None</span>,
             <span class="ident">run_task</span>: <span class="prelude-val">None</span>,
+            <span class="ident">rust_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">dependencies</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows</span>: <span class="prelude-val">None</span>,
@@ -1276,6 +1317,10 @@
             <span class="self">self</span>.<span class="ident">run_task</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>();
         }
 
+        <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">rust_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">rust_script</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">rust_script</span>.<span class="ident">clone</span>();
+        }
+
         <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">dependencies</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">clone</span>();
         }
@@ -1345,6 +1390,7 @@
                     <span class="ident">script</span>: <span class="ident">override_task</span>.<span class="ident">script</span>.<span class="ident">clone</span>(),
                     <span class="ident">script_runner</span>: <span class="ident">override_task</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(),
                     <span class="ident">run_task</span>: <span class="ident">override_task</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>(),
+                    <span class="ident">rust_script</span>: <span class="ident">override_task</span>.<span class="ident">rust_script</span>.<span class="ident">clone</span>(),
                     <span class="ident">dependencies</span>: <span class="ident">override_task</span>.<span class="ident">dependencies</span>.<span class="ident">clone</span>(),
                     <span class="ident">linux</span>: <span class="prelude-val">None</span>,
                     <span class="ident">windows</span>: <span class="prelude-val">None</span>,
@@ -1384,6 +1430,30 @@
             }
         }
     }
+
+    <span class="doccomment">/// Returns true if the task is valid</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_valid</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">actions_count</span> <span class="op">=</span> <span class="number">0</span>;
+
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>() {
+            <span class="ident">actions_count</span> <span class="op">=</span> <span class="ident">actions_count</span> <span class="op">+</span> <span class="number">1</span>;
+        }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">command</span>.<span class="ident">is_some</span>() {
+            <span class="ident">actions_count</span> <span class="op">=</span> <span class="ident">actions_count</span> <span class="op">+</span> <span class="number">1</span>;
+        }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script</span>.<span class="ident">is_some</span>() {
+            <span class="ident">actions_count</span> <span class="op">=</span> <span class="ident">actions_count</span> <span class="op">+</span> <span class="number">1</span>;
+        }
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rust_script</span>.<span class="ident">is_some</span>() {
+            <span class="ident">actions_count</span> <span class="op">=</span> <span class="ident">actions_count</span> <span class="op">+</span> <span class="number">1</span>;
+        }
+
+        <span class="kw">if</span> <span class="ident">actions_count</span> <span class="op">&lt;=</span> <span class="number">1</span> {
+            <span class="bool-val">true</span>
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
+        }
+    }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -1419,6 +1489,8 @@
     <span class="kw">pub</span> <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task name to execute</span>
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The rust code to execute</span>
+    <span class="kw">pub</span> <span class="ident">rust_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>
 }
@@ -1493,6 +1565,10 @@
 
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">run_task</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>();
+            }
+
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rust_script</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">rust_script</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">rust_script</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">rust_script</span>.<span class="ident">clone</span>();
             }
 
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dependencies</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>() {
