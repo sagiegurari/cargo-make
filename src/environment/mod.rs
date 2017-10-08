@@ -31,7 +31,11 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
                 lines.retain(|&line| line.len() > 0);
 
                 if lines.len() > 0 {
-                    lines[lines.len() - 1].to_string()
+                    let line = lines[lines.len() - 1].to_string();
+
+                    let line_str = str::replace(&line, "\r", "");
+
+                    line_str.to_string()
                 } else {
                     "".to_string()
                 }

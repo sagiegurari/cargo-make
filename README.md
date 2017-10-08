@@ -82,6 +82,11 @@ Below is a list of articles which explain most of the cargo-make features.
 * [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
 * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 
+The articles are missing the new features added after being published, such as:
+
+* [Rust Task](#usage-task-command-script-task-examplerust)
+* [Full List of Predefined Flows](#usage-predefined-flows)
+
 <a name="usage"></a>
 ## Usage
 When using cargo-make, all tasks are defined and configured via toml files.<br>

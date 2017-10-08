@@ -76,7 +76,7 @@ pub fn init(level_name: &str) {
             if record_level == LogLevel::Error {
                 warn!("Build Failed.");
 
-                exit(0);
+                exit(1);
             }
         })
         .level(log_level)

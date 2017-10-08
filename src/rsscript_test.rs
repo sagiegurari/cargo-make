@@ -1,6 +1,7 @@
 use super::*;
 
 #[test]
+#[cfg(target_os = "linux")]
 fn execute_valid() {
     execute(&vec!["fn main() {println!(\"test\");}".to_string()]);
 }
