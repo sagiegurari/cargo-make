@@ -30,13 +30,7 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
                 let mut lines: Vec<&str> = stdout.split("\n").collect();
                 lines.retain(|&line| line.len() > 0);
 
-                let min_lines_count = if cfg!(windows) {
-                    1
-                } else {
-                    0
-                };
-
-                if lines.len() > min_lines_count {
+                if lines.len() > 0 {
                     let line = lines[lines.len() - 1].to_string();
 
                     let line_str = str::replace(&line, "\r", "");
