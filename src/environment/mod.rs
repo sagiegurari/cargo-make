@@ -4,7 +4,7 @@
 //!
 
 mod gitinfo;
-mod rustinfo;
+pub mod rustinfo;
 pub mod crateinfo;
 
 #[cfg(test)]
@@ -30,8 +30,18 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
                 let mut lines: Vec<&str> = stdout.split("\n").collect();
                 lines.retain(|&line| line.len() > 0);
 
-                if lines.len() > 0 {
-                    lines[lines.len() - 1].to_string()
+                let min_lines_count = if cfg!(windows) {
+                    1
+                } else {
+                    0
+                };
+
+                if lines.len() > min_lines_count {
+                    let line = lines[lines.len() - 1].to_string();
+
+                    let line_str = str::replace(&line, "\r", "");
+
+                    line_str.to_string()
                 } else {
                     "".to_string()
                 }

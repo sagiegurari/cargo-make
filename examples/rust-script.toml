@@ -1,0 +1,14 @@
+
+[tasks.rust]
+rust_script = [
+'''
+//! ```cargo
+//! [dependencies]
+//! time = "*"
+//! ```
+extern crate time;
+fn main() {
+    println!("{}", time::now().rfc822z());
+}
+'''
+]

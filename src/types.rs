@@ -308,6 +308,8 @@ pub struct Task {
     pub script_runner: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
+    /// The rust code to execute
+    pub rust_script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -341,6 +343,7 @@ impl Task {
             script: None,
             script_runner: None,
             run_task: None,
+            rust_script: None,
             dependencies: None,
             linux: None,
             windows: None,
@@ -433,6 +436,10 @@ impl Task {
             self.run_task = task.run_task.clone();
         }
 
+        if task.rust_script.is_some() {
+            self.rust_script = task.rust_script.clone();
+        }
+
         if task.dependencies.is_some() {
             self.dependencies = task.dependencies.clone();
         }
@@ -502,6 +509,7 @@ impl Task {
                     script: override_task.script.clone(),
                     script_runner: override_task.script_runner.clone(),
                     run_task: override_task.run_task.clone(),
+                    rust_script: override_task.rust_script.clone(),
                     dependencies: override_task.dependencies.clone(),
                     linux: None,
                     windows: None,
@@ -541,6 +549,30 @@ impl Task {
             }
         }
     }
+
+    /// Returns true if the task is valid
+    pub fn is_valid(self: &Task) -> bool {
+        let mut actions_count = 0;
+
+        if self.run_task.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.command.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.script.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.rust_script.is_some() {
+            actions_count = actions_count + 1;
+        }
+
+        if actions_count <= 1 {
+            true
+        } else {
+            false
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -576,6 +608,8 @@ pub struct PlatformOverrideTask {
     pub script_runner: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
+    /// The rust code to execute
+    pub rust_script: Option<Vec<String>>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>
 }
@@ -650,6 +684,10 @@ impl PlatformOverrideTask {
 
             if self.run_task.is_none() && task.run_task.is_some() {
                 self.run_task = task.run_task.clone();
+            }
+
+            if self.rust_script.is_none() && task.rust_script.is_some() {
+                self.rust_script = task.rust_script.clone();
             }
 
             if self.dependencies.is_none() && task.dependencies.is_some() {

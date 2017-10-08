@@ -69,7 +69,7 @@ fn get_install_crate_args(
     install_args
 }
 
-fn install_crate(
+pub fn install_crate(
     cargo_command: &str,
     crate_name: &str,
     args: &Option<Vec<String>>,
