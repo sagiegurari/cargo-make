@@ -1,5 +1,6 @@
 language: rust
 sudo: true
+cache: cargo
 rust:
   - stable
   - beta
@@ -17,5 +18,5 @@ env:
     - CARGO_MAKE_RUN_CODECOV=true
     - RUST_TEST_THREADS=1
 script:
-  - cargo install --debug cargo-make
+  - cargo install --debug --force cargo-make
   - cargo make ci-flow
