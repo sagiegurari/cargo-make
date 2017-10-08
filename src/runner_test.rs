@@ -261,7 +261,7 @@ fn run_task_bad_script() {
 }
 
 #[test]
-fn run_task_command_and_bad_script() {
+fn run_task_command() {
     let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
     let flow_info = FlowInfo {
         config,
@@ -273,7 +273,6 @@ fn run_task_command_and_bad_script() {
     let mut task = Task::new();
     task.command = Some("echo".to_string());
     task.args = Some(vec!["test".to_string()]);
-    task.script = Some(vec!["exit 1".to_string()]);
     let step = Step { name: "test".to_string(), config: task };
 
     run_task(&flow_info, &step);
@@ -342,7 +341,7 @@ fn run_task_bad_run_task_valid_command() {
 }
 
 #[test]
-fn run_task_valid_run_task_bad_command() {
+fn run_task_valid_run_task() {
     let mut sub_task = Task::new();
     sub_task.script = Some(vec!["exit 0".to_string()]);
 
@@ -359,7 +358,25 @@ fn run_task_valid_run_task_bad_command() {
 
     let mut task = Task::new();
     task.run_task = Some("sub".to_string());
-    task.command = Some("bad12345".to_string());
+    let step = Step { name: "test".to_string(), config: task };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+#[should_panic]
+fn run_task_invalid_task() {
+    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
+        disable_workspace: false
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.command = Some("echo".to_string());
     let step = Step { name: "test".to_string(), config: task };
 
     run_task(&flow_info, &step);

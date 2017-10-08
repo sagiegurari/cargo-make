@@ -855,6 +855,13 @@ fn task_get_normalized_task_with_override_clear_true() {
 }
 
 #[test]
+fn task_is_valid_all_none() {
+    let task = Task::new();
+
+    assert!(task.is_valid());
+}
+
+#[test]
 fn config_section_new() {
     let config = ConfigSection::new();
 

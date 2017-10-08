@@ -549,6 +549,30 @@ impl Task {
             }
         }
     }
+
+    /// Returns true if the task is valid
+    pub fn is_valid(self: &Task) -> bool {
+        let mut actions_count = 0;
+
+        if self.run_task.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.command.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.script.is_some() {
+            actions_count = actions_count + 1;
+        }
+        if self.rust_script.is_some() {
+            actions_count = actions_count + 1;
+        }
+
+        if actions_count <= 1 {
+            true
+        } else {
+            false
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

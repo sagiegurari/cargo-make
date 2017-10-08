@@ -291,8 +291,8 @@ However, if executed on a linux platform, it will invoke the **run** task.
 
 <a name="usage-task-command-script-task"></a>
 ### Commands, Scripts and Sub Tasks
-The actual operation that a task invokes can be defined in 3 ways.<br>
-The below explains each one and lists them by priority:
+The actual operation that a task invokes can be defined in 4 ways.<br>
+The below explains each one:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
 * **rust_script** - Compiles the rust code and runs it. Dependencies are defined in Cargo.toml format inside an optional comment block at the top of the code.
@@ -300,7 +300,7 @@ The below explains each one and lists them by priority:
 * **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
 
 Only one of the definitions will be used.<br>
-If multiple attributes are defined (for example both command and script), only the higher priority attribute is used.
+If multiple attributes are defined (for example both command and script), the task will fail during invocation.
 
 Below are some basic examples of each action type.
 

@@ -47,6 +47,10 @@ fn run_task(
     info!("Running Task: {}", &step.name);
 
     if validate_condition(&flow_info, &step) {
+        if !step.config.is_valid() {
+            error!("Invalid task, contains multiple actions.\n{:#?}", &step.config);
+        }
+
         let env = match step.config.env {
             Some(ref env) => env.clone(),
             None => HashMap::new(),
