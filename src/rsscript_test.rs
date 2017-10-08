@@ -7,12 +7,14 @@ fn execute_valid() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 #[should_panic]
 fn execute_not_compile() {
     execute(&vec!["fn main() {donotcompile();}".to_string()]);
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 #[should_panic]
 fn execute_runtime_panic() {
     execute(&vec!["fn main() {panic!(\"error\");}".to_string()]);
