@@ -24,14 +24,14 @@ include = [
 ]
 
 [dependencies]
-clap = "^2.26.0"
-fern = "^0.4.2"
+clap = "^2.26.2"
+fern = "^0.4.3"
 glob = "^0.2.11"
 log = "^0.3.8"
-rand = "^0.3.16"
-semver = "0.8.0"
-serde = "^1.0.12"
-serde_derive = "^1.0.14"
+rand = "^0.3.17"
+semver = "^0.8.0"
+serde = "^1.0.15"
+serde_derive = "^1.0.15"
 toml = "^0.4.5"
 
 [features]
