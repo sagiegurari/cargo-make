@@ -98,6 +98,7 @@
 //! [Apache 2](https://github.com/sagiegurari/simple_redis/blob/master/LICENSE) open source license.
 //!
 
+extern crate ci_info;
 extern crate clap;
 extern crate fern;
 extern crate glob;

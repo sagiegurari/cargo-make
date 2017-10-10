@@ -20,7 +20,7 @@ fn get_env_not_exists() {
 
 #[test]
 fn evaluate_and_set_env_simple() {
-    assert!(!is_env_defined("EVAL_SET_SIMPLE"));
+    env::remove_var("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
     assert_eq!(env::var("EVAL_SET_SIMPLE").unwrap(), "SIMPLE".to_string());
 }
@@ -276,29 +276,4 @@ fn setup_env_for_rust_simple_check() {
     assert!(env::var("CARGO_MAKE_RUST_TARGET_OS").unwrap() != "EMPTY");
     assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() != "EMPTY");
     assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() != "EMPTY");
-}
-
-#[test]
-fn is_env_defined_found() {
-    env::set_var("ENV_VAR_FOUND_VALUE", "EMPTY");
-
-    let found = is_env_defined("ENV_VAR_FOUND_VALUE");
-
-    assert!(found);
-}
-
-#[test]
-fn is_env_defined_empty() {
-    env::set_var("ENV_VAR_FOUND_EMPTY", "");
-
-    let found = is_env_defined("ENV_VAR_FOUND_EMPTY");
-
-    assert!(found);
-}
-
-#[test]
-fn is_env_defined_not_found() {
-    let found = is_env_defined("ENV_VAR_NOT_FOUND");
-
-    assert!(!found);
 }
