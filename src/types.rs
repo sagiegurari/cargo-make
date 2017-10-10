@@ -76,7 +76,7 @@ pub struct GitInfo {
 }
 
 impl GitInfo {
-    /// Returns new instasnce
+    /// Returns new instance
     pub fn new() -> GitInfo {
         GitInfo { branch: None, user_name: None, user_email: None }
     }
