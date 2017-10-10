@@ -7,78 +7,33 @@
 #[path = "./rustinfo_test.rs"]
 mod rustinfo_test;
 
-use command;
-use std::collections::HashMap;
-use std::process::Command;
+use rust_info;
 use types::{RustChannel, RustInfo};
 
 pub fn load() -> RustInfo {
-    let mut rust_info = RustInfo::new();
+    let info = rust_info::get();
 
-    let mut result = Command::new("rustc").arg("--version").output();
+    let mut rustinfo = RustInfo::new();
 
-    match result {
-        Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), true);
+    if info.version.is_some() {
+        rustinfo.version = Some(info.version.unwrap());
+    }
 
-            if exit_code == 0 {
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                let parts: Vec<&str> = stdout.split(' ').collect();
+    if info.channel.is_some() {
+        let channel = info.channel.unwrap();
 
-                if (parts.len() >= 3) && (parts[0] == "rustc") {
-                    let version_part = parts[1];
-
-                    let version_parts: Vec<&str> = version_part.split('-').collect();
-
-                    if version_parts.len() > 0 {
-                        rust_info.version = Some(version_parts[0].to_string());
-
-                        if version_parts.len() == 1 {
-                            rust_info.channel = Some(RustChannel::Stable);
-                        } else if version_parts[1].contains("beta") {
-                            rust_info.channel = Some(RustChannel::Beta);
-                        } else if version_parts[1].contains("nightly") {
-                            rust_info.channel = Some(RustChannel::Nightly);
-                        }
-                    }
-                }
-            }
+        match channel {
+            rust_info::types::RustChannel::Stable => rustinfo.channel = Some(RustChannel::Stable),
+            rust_info::types::RustChannel::Beta => rustinfo.channel = Some(RustChannel::Beta),
+            rust_info::types::RustChannel::Nightly => rustinfo.channel = Some(RustChannel::Nightly),
         }
-        Err(error) => info!("Error while running rustc --version command: {:#?}", &error),
-    };
+    }
 
-    result = Command::new("rustc").arg("--print").arg("cfg").output();
+    rustinfo.target_arch = Some(info.target_arch.unwrap_or("unknown".to_string()));
+    rustinfo.target_env = Some(info.target_env.unwrap_or("unknown".to_string()));
+    rustinfo.target_os = Some(info.target_os.unwrap_or("unknown".to_string()));
+    rustinfo.target_pointer_width = Some(info.target_pointer_width.unwrap_or("unknown".to_string()));
+    rustinfo.target_vendor = Some(info.target_vendor.unwrap_or("unknown".to_string()));
 
-    match result {
-        Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), true);
-
-            if exit_code == 0 {
-                let mut values = HashMap::<String, String>::new();
-
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                let lines: Vec<&str> = stdout.split('\n').collect();
-                for mut line in lines {
-                    line = line.trim();
-
-                    debug!("Checking: {}", &line);
-
-                    if line.contains("=") {
-                        let parts: Vec<&str> = line.split('=').collect();
-                        let value = str::replace(parts[1], "\"", "");
-                        values.insert(parts[0].to_string(), value.to_string());
-                    }
-                }
-
-                rust_info.target_arch = Some(values.remove("target_arch").unwrap_or("unknown".to_string()));
-                rust_info.target_env = Some(values.remove("target_env").unwrap_or("unknown".to_string()));
-                rust_info.target_os = Some(values.remove("target_os").unwrap_or("unknown".to_string()));
-                rust_info.target_pointer_width = Some(values.remove("target_pointer_width").unwrap_or("unknown".to_string()));
-                rust_info.target_vendor = Some(values.remove("target_vendor").unwrap_or("unknown".to_string()));
-            }
-        }
-        Err(error) => info!("Error while running rustc --version command: {:#?}", &error),
-    };
-
-    rust_info
+    rustinfo
 }

@@ -104,6 +104,7 @@ extern crate glob;
 #[macro_use]
 extern crate log;
 extern crate rand;
+extern crate rust_info;
 extern crate semver;
 #[macro_use]
 extern crate serde_derive;
