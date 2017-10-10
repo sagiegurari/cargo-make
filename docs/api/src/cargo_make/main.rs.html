@@ -175,6 +175,8 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">anonymous_parameters</span>,
         <span class="ident">const_err</span>,
@@ -276,12 +278,14 @@
 <span class="doccomment">//! [Apache 2](https://github.com/sagiegurari/simple_redis/blob/master/LICENSE) open source license.</span>
 <span class="doccomment">//!</span>
 
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">ci_info</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">clap</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fern</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">glob</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rust_info</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">semver</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;

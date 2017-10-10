@@ -834,50 +834,6 @@
 <span id="789">789</span>
 <span id="790">790</span>
 <span id="791">791</span>
-<span id="792">792</span>
-<span id="793">793</span>
-<span id="794">794</span>
-<span id="795">795</span>
-<span id="796">796</span>
-<span id="797">797</span>
-<span id="798">798</span>
-<span id="799">799</span>
-<span id="800">800</span>
-<span id="801">801</span>
-<span id="802">802</span>
-<span id="803">803</span>
-<span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
-<span id="815">815</span>
-<span id="816">816</span>
-<span id="817">817</span>
-<span id="818">818</span>
-<span id="819">819</span>
-<span id="820">820</span>
-<span id="821">821</span>
-<span id="822">822</span>
-<span id="823">823</span>
-<span id="824">824</span>
-<span id="825">825</span>
-<span id="826">826</span>
-<span id="827">827</span>
-<span id="828">828</span>
-<span id="829">829</span>
-<span id="830">830</span>
-<span id="831">831</span>
-<span id="832">832</span>
-<span id="833">833</span>
-<span id="834">834</span>
-<span id="835">835</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -888,6 +844,7 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./types_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">types_test</span>;
 
+<span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="doccomment">/// Returns the platform name</span>
@@ -901,7 +858,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds CLI args</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CliArgs</span> {
     <span class="doccomment">/// The external Makefile.toml path</span>
@@ -944,52 +901,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Copy</span>)]</span>
-<span class="doccomment">/// Rust channel type</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RustChannel</span> {
-    <span class="doccomment">/// Rust stable channel</span>
-    <span class="ident">Stable</span>,
-    <span class="doccomment">/// Rust beta channel</span>
-    <span class="ident">Beta</span>,
-    <span class="doccomment">/// Rust nightly channel</span>
-    <span class="ident">Nightly</span>
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="doccomment">/// Holds rust info for the current runtime</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RustInfo</span> {
-    <span class="doccomment">/// version</span>
-    <span class="kw">pub</span> <span class="ident">version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// channel</span>
-    <span class="kw">pub</span> <span class="ident">channel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustChannel</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// target arch cfg value</span>
-    <span class="kw">pub</span> <span class="ident">target_arch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// target env cfg value</span>
-    <span class="kw">pub</span> <span class="ident">target_env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// target OS cfg value</span>
-    <span class="kw">pub</span> <span class="ident">target_os</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// target pointer width cfg value</span>
-    <span class="kw">pub</span> <span class="ident">target_pointer_width</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// target vendor cfg value</span>
-    <span class="kw">pub</span> <span class="ident">target_vendor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>
-}
-
-<span class="kw">impl</span> <span class="ident">RustInfo</span> {
-    <span class="doccomment">/// Returns new instasnce</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">RustInfo</span> {
-        <span class="ident">RustInfo</span> {
-            <span class="ident">version</span>: <span class="prelude-val">None</span>,
-            <span class="ident">channel</span>: <span class="prelude-val">None</span>,
-            <span class="ident">target_arch</span>: <span class="prelude-val">None</span>,
-            <span class="ident">target_env</span>: <span class="prelude-val">None</span>,
-            <span class="ident">target_os</span>: <span class="prelude-val">None</span>,
-            <span class="ident">target_pointer_width</span>: <span class="prelude-val">None</span>,
-            <span class="ident">target_vendor</span>: <span class="prelude-val">None</span>
-        }
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds git info for the given repo directory</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GitInfo</span> {
     <span class="doccomment">/// branch name</span>
@@ -1001,7 +913,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">GitInfo</span> {
-    <span class="doccomment">/// Returns new instasnce</span>
+    <span class="doccomment">/// Returns new instance</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">GitInfo</span> {
         <span class="ident">GitInfo</span> { <span class="ident">branch</span>: <span class="prelude-val">None</span>, <span class="ident">user_name</span>: <span class="prelude-val">None</span>, <span class="ident">user_email</span>: <span class="prelude-val">None</span> }
     }
@@ -1092,7 +1004,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds env information</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvInfo</span> {
     <span class="doccomment">/// Rust info</span>
@@ -1103,7 +1015,7 @@
     <span class="kw">pub</span> <span class="ident">git_info</span>: <span class="ident">GitInfo</span>
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds flow information</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FlowInfo</span> {
     <span class="doccomment">/// The flow config object</span>
