@@ -1,7 +1,8 @@
 use super::*;
+use rust_info::types::RustInfo;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, RustInfo, Step, Task, Workspace};
+use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step, Task, Workspace};
 
 #[test]
 #[should_panic]

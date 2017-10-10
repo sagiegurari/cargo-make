@@ -8,9 +8,10 @@
 mod condition_test;
 
 use command;
+use rust_info::types::RustChannel;
 use std::env;
 use types;
-use types::{FlowInfo, RustChannel, Step, TaskCondition};
+use types::{FlowInfo, Step, TaskCondition};
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();

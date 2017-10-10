@@ -4,7 +4,6 @@
 //!
 
 mod gitinfo;
-pub mod rustinfo;
 pub mod crateinfo;
 
 #[cfg(test)]
@@ -12,10 +11,12 @@ pub mod crateinfo;
 mod mod_test;
 
 use command;
+use rust_info;
+use rust_info::types::{RustChannel, RustInfo};
 use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
-use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, RustChannel, RustInfo, Workspace};
+use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     let output = command::run_script_get_output(&env_value.script, None, true);
@@ -176,15 +177,15 @@ fn setup_env_for_git_repo() -> GitInfo {
 }
 
 fn setup_env_for_rust() -> RustInfo {
-    let rust_info = rustinfo::load();
-    let rust_info_clone = rust_info.clone();
+    let rustinfo = rust_info::get();
+    let rust_info_clone = rustinfo.clone();
 
-    if rust_info.version.is_some() {
-        env::set_var("CARGO_MAKE_RUST_VERSION", &rust_info.version.unwrap());
+    if rustinfo.version.is_some() {
+        env::set_var("CARGO_MAKE_RUST_VERSION", &rustinfo.version.unwrap());
     }
 
-    if rust_info.channel.is_some() {
-        let channel_option = rust_info.channel.unwrap();
+    if rustinfo.channel.is_some() {
+        let channel_option = rustinfo.channel.unwrap();
 
         let channel = match channel_option {
             RustChannel::Stable => "stable",
@@ -195,25 +196,11 @@ fn setup_env_for_rust() -> RustInfo {
         env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
     }
 
-    if rust_info.target_arch.is_some() {
-        env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", &rust_info.target_arch.unwrap());
-    }
-
-    if rust_info.target_env.is_some() {
-        env::set_var("CARGO_MAKE_RUST_TARGET_ENV", &rust_info.target_env.unwrap());
-    }
-
-    if rust_info.target_os.is_some() {
-        env::set_var("CARGO_MAKE_RUST_TARGET_OS", &rust_info.target_os.unwrap());
-    }
-
-    if rust_info.target_pointer_width.is_some() {
-        env::set_var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", &rust_info.target_pointer_width.unwrap());
-    }
-
-    if rust_info.target_vendor.is_some() {
-        env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", &rust_info.target_vendor.unwrap());
-    }
+    env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", &rustinfo.target_arch.unwrap_or("unknown".to_string()));
+    env::set_var("CARGO_MAKE_RUST_TARGET_ENV", &rustinfo.target_env.unwrap_or("unknown".to_string()));
+    env::set_var("CARGO_MAKE_RUST_TARGET_OS", &rustinfo.target_os.unwrap_or("unknown".to_string()));
+    env::set_var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", &rustinfo.target_pointer_width.unwrap_or("unknown".to_string()));
+    env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", &rustinfo.target_vendor.unwrap_or("unknown".to_string()));
 
     rust_info_clone
 }

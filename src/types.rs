@@ -7,6 +7,7 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
+use rust_info::types::RustInfo;
 use std::collections::HashMap;
 
 /// Returns the platform name
@@ -20,7 +21,7 @@ pub fn get_platform_name() -> String {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
     /// The external Makefile.toml path
@@ -63,52 +64,7 @@ impl CliArgs {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
-/// Rust channel type
-pub enum RustChannel {
-    /// Rust stable channel
-    Stable,
-    /// Rust beta channel
-    Beta,
-    /// Rust nightly channel
-    Nightly
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds rust info for the current runtime
-pub struct RustInfo {
-    /// version
-    pub version: Option<String>,
-    /// channel
-    pub channel: Option<RustChannel>,
-    /// target arch cfg value
-    pub target_arch: Option<String>,
-    /// target env cfg value
-    pub target_env: Option<String>,
-    /// target OS cfg value
-    pub target_os: Option<String>,
-    /// target pointer width cfg value
-    pub target_pointer_width: Option<String>,
-    /// target vendor cfg value
-    pub target_vendor: Option<String>
-}
-
-impl RustInfo {
-    /// Returns new instasnce
-    pub fn new() -> RustInfo {
-        RustInfo {
-            version: None,
-            channel: None,
-            target_arch: None,
-            target_env: None,
-            target_os: None,
-            target_pointer_width: None,
-            target_vendor: None
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 /// Holds git info for the given repo directory
 pub struct GitInfo {
     /// branch name
@@ -211,7 +167,7 @@ impl CrateInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 /// Holds env information
 pub struct EnvInfo {
     /// Rust info
@@ -222,7 +178,7 @@ pub struct EnvInfo {
     pub git_info: GitInfo
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone)]
 /// Holds flow information
 pub struct FlowInfo {
     /// The flow config object

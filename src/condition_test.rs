@@ -1,6 +1,7 @@
 use super::*;
+use rust_info::types::{RustChannel, RustInfo};
 use std::collections::HashMap;
-use types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustChannel, RustInfo, Step, Task, TaskCondition};
+use types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, Step, Task, TaskCondition};
 
 #[test]
 fn validate_env_set_empty() {

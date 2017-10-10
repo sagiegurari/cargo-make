@@ -1,11 +1,11 @@
 use super::*;
 use environment::is_ci;
-use environment::rustinfo;
-use types::RustChannel;
+use rust_info;
+use rust_info::types::RustChannel;
 
 fn should_test(panic_if_false: bool) -> bool {
-    let rust_info = rustinfo::load();
-    let rust_channel = rust_info.channel.unwrap();
+    let rustinfo = rust_info::get();
+    let rust_channel = rustinfo.channel.unwrap();
 
     if (cfg!(target_os = "linux") && rust_channel == RustChannel::Nightly) || !is_ci() {
         true
