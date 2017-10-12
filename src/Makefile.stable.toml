@@ -21,6 +21,8 @@ dependencies = [
     "pre-test",
     "test-verbose",
     "post-test",
+    "examples-ci-flow",
+    "bench-ci-flow",
     "ci-coverage-flow",
     "post-ci-flow"
 ]
@@ -93,6 +95,8 @@ dependencies = [
     "build",
     "post-build",
     "test-flow",
+    "examples-ci-flow",
+    "bench-ci-flow",
     "pre-verify-project",
     "verify-project",
     "post-verify-project",
@@ -213,7 +217,7 @@ args = ["test", "--verbose", "--all-features"]
 [tasks.bench]
 description = "Runs all available bench files."
 command = "cargo"
-args = ["bench"]
+args = ["bench", "--all-features"]
 
 [tasks.post-bench]
 
@@ -223,6 +227,28 @@ dependencies = [
     "pre-bench",
     "bench",
     "post-bench"
+]
+
+[tasks.bench-conditioned-flow]
+description = "Runs the bench flow if conditions are met."
+condition = { env_set = [ "CARGO_MAKE_RUN_BENCH" ] }
+run_task = "bench-flow"
+
+[tasks.bench-compile]
+description = "Compiles all available bench files."
+command = "cargo"
+args = ["build", "--benches", "--all-features"]
+
+[tasks.bench-conditioned-compile]
+description = "Compiles all available bench files if conditions are met."
+condition = { env_set = [ "CARGO_MAKE_BUILD_BENCH" ] }
+run_task = "bench-compile"
+
+[tasks.bench-ci-flow]
+description = "Runs/Compiles the benches if conditions are met."
+dependencies = [
+    "bench-conditioned-compile",
+    "bench-conditioned-flow"
 ]
 
 [tasks.pre-check]
@@ -252,6 +278,22 @@ description = "Runs cargo check for project examples."
 command = "cargo"
 args = ["check", "--examples"]
 
+[tasks.examples-compile]
+description = "Runs cargo build for project examples."
+command = "cargo"
+args = ["build", "--examples"]
+
+[tasks.examples-conditioned-compile]
+description = "Runs cargo build for project examples if conditions are met."
+condition = { env_set = [ "CARGO_MAKE_BUILD_EXAMPLES" ] }
+run_task = "examples-compile"
+
+[tasks.examples-ci-flow]
+description = "Compiles the examples if conditions are met."
+dependencies = [
+    "examples-conditioned-compile"
+]
+
 [tasks.pre-verify-project]
 
 [tasks.verify-project]
@@ -265,6 +307,7 @@ args = ["verify-project"]
 
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
 command = "cargo"
 args = ["audit"]
 
@@ -274,6 +317,7 @@ args = ["audit"]
 
 [tasks.outdated]
 description = "Runs verify-outdated cargo plugin."
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 

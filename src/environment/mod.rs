@@ -142,6 +142,18 @@ fn setup_env_for_crate() -> CrateInfo {
         env::set_var("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository.unwrap());
     }
 
+    let has_dependencies = match crate_info.dependencies {
+        Some(ref dependencies) => dependencies.len() > 0,
+        None => false,
+    };
+
+    let has_dependencies_var_value = if has_dependencies {
+        "TRUE"
+    } else {
+        "FALSE"
+    };
+    env::set_var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies_var_value);
+
     let is_workspace_var_value = if crate_info.workspace.is_none() {
         "FALSE"
     } else {

@@ -572,6 +572,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
+* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds TRUE/FALSE based if there are dependencies defined in the Cargo.toml or not (defined as FALSE if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 
@@ -874,6 +875,8 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **bench-flow** - Runs a bench flow.
 * **check-flow** - Runs cargo check flow.
+* **bench-ci-flow** - Runs/Compiles the benches if conditions are met. 
+* **examples-ci-flow** - Compiles the examples if conditions are met. 
 * **delete-lock** - Deletes the Cargo.lock file.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
