@@ -265,6 +265,7 @@ args = ["verify-project"]
 
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
 command = "cargo"
 args = ["audit"]
 
@@ -274,6 +275,7 @@ args = ["audit"]
 
 [tasks.outdated]
 description = "Runs verify-outdated cargo plugin."
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 

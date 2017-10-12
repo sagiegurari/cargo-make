@@ -572,6 +572,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
+* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds TRUE/FALSE based if there are dependencies defined in the Cargo.toml or not (defined as FALSE if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 
