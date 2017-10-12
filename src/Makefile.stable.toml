@@ -231,7 +231,7 @@ dependencies = [
 
 [tasks.bench-conditioned-flow]
 description = "Runs the bench flow if conditions are met."
-condition = { env_set = [ "CARGO_MAKE_RUN_BENCH" ] }
+condition = { env_set = [ "CARGO_MAKE_RUN_BENCH" ], channels = [ "nightly" ] }
 run_task = "bench-flow"
 
 [tasks.bench-compile]
@@ -241,7 +241,7 @@ args = ["build", "--benches", "--all-features"]
 
 [tasks.bench-conditioned-compile]
 description = "Compiles all available bench files if conditions are met."
-condition = { env_set = [ "CARGO_MAKE_BUILD_BENCH" ] }
+condition = { env_set = [ "CARGO_MAKE_BUILD_BENCH" ], channels = [ "nightly" ] }
 run_task = "bench-compile"
 
 [tasks.bench-ci-flow]

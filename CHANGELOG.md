@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-10-12  | v0.6.4  | ci-flow and build-flow will build/run benches and examples based on new environment variables: CARGO_MAKE_BUILD_EXAMPLES, CARGO_MAKE_BUILD_BENCH and CARGO_MAKE_RUN_BENCH |
+| 2017-10-12  | v0.6.5  | ci-flow and build-flow will build/run benches and examples based on new environment variables: CARGO_MAKE_BUILD_EXAMPLES, CARGO_MAKE_BUILD_BENCH and CARGO_MAKE_RUN_BENCH |
 | 2017-10-08  | v0.6.1  | Tasks can now run rust code using rust_script attribute and tasks can no longer hold multiple different action definitions. |
 | 2017-09-29  | v0.5.3  | Added support to evaluate env var values from script output and define cwd on task level |
 | 2017-09-24  | v0.5.2  | Added various check and build tasks |
