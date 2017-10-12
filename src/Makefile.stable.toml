@@ -21,6 +21,7 @@ dependencies = [
     "pre-test",
     "test-verbose",
     "post-test",
+    "examples-ci-flow",
     "bench-ci-flow",
     "ci-coverage-flow",
     "post-ci-flow"
@@ -94,6 +95,7 @@ dependencies = [
     "build",
     "post-build",
     "test-flow",
+    "examples-ci-flow",
     "bench-ci-flow",
     "pre-verify-project",
     "verify-project",
@@ -243,7 +245,7 @@ condition = { env_set = [ "CARGO_MAKE_BUILD_BENCH" ] }
 run_task = "bench-compile"
 
 [tasks.bench-ci-flow]
-description = "Runs/Compiles the bench flow if conditions are met."
+description = "Runs/Compiles the benches if conditions are met."
 dependencies = [
     "bench-conditioned-compile",
     "bench-conditioned-flow"
@@ -275,6 +277,22 @@ args = ["check", "--tests"]
 description = "Runs cargo check for project examples."
 command = "cargo"
 args = ["check", "--examples"]
+
+[tasks.examples-compile]
+description = "Runs cargo build for project examples."
+command = "cargo"
+args = ["build", "--examples"]
+
+[tasks.examples-conditioned-compile]
+description = "Runs cargo build for project examples if conditions are met."
+condition = { env_set = [ "CARGO_MAKE_BUILD_EXAMPLES" ] }
+run_task = "examples-compile"
+
+[tasks.examples-ci-flow]
+description = "Compiles the examples if conditions are met."
+dependencies = [
+    "examples-conditioned-compile"
+]
 
 [tasks.pre-verify-project]
 

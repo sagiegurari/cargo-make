@@ -930,6 +930,8 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **bench-flow** - Runs a bench flow.
 * **check-flow** - Runs cargo check flow.
+* **bench-ci-flow** - Runs/Compiles the benches if conditions are met. 
+* **examples-ci-flow** - Compiles the examples if conditions are met. 
 * **delete-lock** - Deletes the Cargo.lock file.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
