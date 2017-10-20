@@ -23,6 +23,29 @@ use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
 
+fn invoke_script_runner(step: &Step) -> bool {
+    match step.config.script_runner {
+        Some(ref script_runner) => {
+            match step.config.script {
+                Some(ref script) => {
+                    debug!("Checking script runner: {}", script_runner);
+                        
+                    if script_runner == "@rust" {
+                        debug!("Rust script detected.");
+                        rsscript::execute(script);
+
+                        true
+                    } else {
+                        false
+                    }
+                }
+                None => false,
+            }
+        }
+        None => false,
+    }
+}
+
 fn validate_condition(
     flow_info: &FlowInfo,
     step: &Step,
@@ -73,9 +96,12 @@ fn run_task(
                     None => "".to_string(),
                 };
 
-                match step.config.rust_script {
-                    Some(ref rust_script) => rsscript::execute(rust_script),
-                    None => command::run(&step),
+                // try to invoke it as a none OS script
+                let script_runner_done = invoke_script_runner(&step);
+
+                // run as command or OS script
+                if !script_runner_done {
+                    command::run(&step)
                 };
 
                 // revert to original cwd

@@ -1,6 +1,7 @@
 
 [tasks.rust]
-rust_script = [
+script_runner = "@rust"
+script = [
 '''
 //! ```cargo
 //! [dependencies]

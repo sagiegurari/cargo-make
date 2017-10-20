@@ -123,7 +123,6 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        rust_script: None,
         dependencies: None
     });
     task.windows = Some(PlatformOverrideTask {
@@ -142,7 +141,6 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        rust_script: None,
         dependencies: None
     });
     task.mac = Some(PlatformOverrideTask {
@@ -161,7 +159,6 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        rust_script: None,
         dependencies: None
     });
 
