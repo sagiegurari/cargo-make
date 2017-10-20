@@ -29,7 +29,7 @@ fn invoke_script_runner(step: &Step) -> bool {
             match step.config.script {
                 Some(ref script) => {
                     debug!("Checking script runner: {}", script_runner);
-                        
+
                     if script_runner == "@rust" {
                         debug!("Rust script detected.");
                         rsscript::execute(script);
