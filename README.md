@@ -362,8 +362,8 @@ The script attribute may hold non OS scripts, for example rust code to be compil
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
 The following runners are currently supported:
 
-* **@rust** - Compiles and executes the defined rust code, see [example](#usage-task-command-script-task-examplerust)
-* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is, see [example](#usage-task-command-script-task-exampleshell2batch)
+* **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
+* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
 Below are some basic examples of each action type.
 
@@ -802,7 +802,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.0
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.1
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -810,7 +810,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.0
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.1
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:

@@ -306,8 +306,8 @@ The script attribute may hold non OS scripts, for example rust code to be compil
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
 The following runners are currently supported:
 
-* **@rust** - Compiles and executes the defined rust code, see [example](#usage-task-command-script-task-examplerust)
-* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is, see [example](#usage-task-command-script-task-exampleshell2batch)
+* **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
+* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
 Below are some basic examples of each action type.
 
