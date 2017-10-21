@@ -129,6 +129,10 @@ mod version;
 #[path = "./main_test.rs"]
 mod main_test;
 
+#[cfg(test)]
+#[path = "./test.rs"]
+mod test;
+
 fn main() {
     cli::run_cli();
 }
