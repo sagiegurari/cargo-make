@@ -109,6 +109,7 @@ extern crate rust_info;
 extern crate semver;
 #[macro_use]
 extern crate serde_derive;
+extern crate shell2batch;
 extern crate toml;
 
 // make types public for docs

@@ -44,6 +44,17 @@ fn get_engine_type_rust() {
 }
 
 #[test]
+fn get_engine_type_shell_to_batch() {
+    let mut task = Task::new();
+    task.script_runner = Some("@shell".to_string());
+    task.script = Some(vec!["test".to_string()]);
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Shell2Batch);
+}
+
+#[test]
 fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(vec!["test".to_string()]);
@@ -99,4 +110,27 @@ fn invoke_rust_runner_error() {
 
         assert!(output);
     }
+}
+
+#[test]
+fn invoke_shell_to_batch_runner() {
+    let mut task = Task::new();
+    task.script_runner = Some("@shell".to_string());
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let output = invoke(&task);
+
+    assert!(output);
+}
+
+#[test]
+#[should_panic]
+fn invoke_shell_to_batch_runner_error() {
+    let mut task = Task::new();
+    task.script_runner = Some("@shell".to_string());
+    task.script = Some(vec!["exit 1".to_string()]);
+
+    let output = invoke(&task);
+
+    assert!(output);
 }

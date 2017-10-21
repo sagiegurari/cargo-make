@@ -22,6 +22,7 @@
         * [Command](#usage-task-command-script-task-examplecommand)
         * [Script](#usage-task-command-script-task-examplescript)
         * [Rust Code](#usage-task-command-script-task-examplerust)
+        * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
     * [Default Tasks and Extending](#usage-default-tasks)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
@@ -85,6 +86,7 @@ Below is a list of articles which explain most of the cargo-make features.
 The articles are missing the new features added after being published, such as:
 
 * [Rust Task](#usage-task-command-script-task-examplerust)
+* [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
 * [Full List of Predefined Flows](#usage-predefined-flows)
 
 <a name="usage"></a>
@@ -358,7 +360,10 @@ If multiple attributes are defined (for example both command and script), the ta
 
 The script attribute may hold non OS scripts, for example rust code to be compiled and executed.<br>
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
-Currently only rust code is supported and the script_runner attribute must be defined as **@rust**
+The following runners are currently supported:
+
+* **@rust** - Compiles and executes the defined rust code, see [example](#usage-task-command-script-task-examplerust)
+* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is, see [example](#usage-task-command-script-task-exampleshell2batch)
 
 Below are some basic examples of each action type.
 
@@ -430,6 +435,20 @@ extern crate time;
 fn main() {
     println!("{}", time::now().rfc822z());
 }
+'''
+]
+````
+
+<a name="usage-task-command-script-task-exampleshell2batch"></a>
+#### Cross Platform Shell
+In this example, when the **shell** task is invoked, the **script** content will be automatically converted to windows batch commands (in case we are on windows platform) and invoked.
+
+````toml
+[tasks.shell]
+script_runner = "@shell"
+script = [
+'''
+rm ./myfile.txt
 '''
 ]
 ````

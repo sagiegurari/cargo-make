@@ -4,6 +4,7 @@
 //!
 
 mod rsscript;
+mod shell_to_batch;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
@@ -14,8 +15,10 @@ use types::Task;
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types
 enum EngineType {
-    /// Rust
+    /// Rust language
     Rust,
+    /// shell to windows batch conversion
+    Shell2Batch,
     /// Unsupported type
     Unsupported
 }
@@ -31,6 +34,9 @@ fn get_engine_type(task: &Task) -> EngineType {
                     if script_runner == "@rust" {
                         debug!("Rust script detected.");
                         EngineType::Rust
+                    } else if script_runner == "@shell" {
+                        debug!("Shell to batch detected.");
+                        EngineType::Shell2Batch
                     } else {
                         EngineType::Unsupported
                     }
@@ -48,6 +54,12 @@ pub fn invoke(task: &Task) -> bool {
         EngineType::Rust => {
             let script = task.script.as_ref().unwrap();
             rsscript::execute(script);
+
+            true
+        }
+        EngineType::Shell2Batch => {
+            let script = task.script.as_ref().unwrap();
+            shell_to_batch::execute(script);
 
             true
         }

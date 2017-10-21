@@ -1,0 +1,8 @@
+
+[tasks.shell]
+script_runner = "@shell"
+script = [
+'''
+rm ./myfile.txt
+'''
+]
