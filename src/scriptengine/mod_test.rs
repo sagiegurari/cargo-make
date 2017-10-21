@@ -90,7 +90,7 @@ fn invoke_rust_runner() {
 #[test]
 #[should_panic]
 fn invoke_rust_runner_error() {
-    if test::should_test(false) {
+    if test::should_test(true) {
         let mut task = Task::new();
         task.script_runner = Some("@rust".to_string());
         task.script = Some(vec!["fn main() {bad!(\"test\");}".to_string()]);
