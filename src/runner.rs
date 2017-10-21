@@ -17,34 +17,11 @@ use condition;
 use environment;
 use installer;
 use logger;
-use rsscript;
+use scriptengine;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
-
-fn invoke_script_runner(step: &Step) -> bool {
-    match step.config.script_runner {
-        Some(ref script_runner) => {
-            match step.config.script {
-                Some(ref script) => {
-                    debug!("Checking script runner: {}", script_runner);
-
-                    if script_runner == "@rust" {
-                        debug!("Rust script detected.");
-                        rsscript::execute(script);
-
-                        true
-                    } else {
-                        false
-                    }
-                }
-                None => false,
-            }
-        }
-        None => false,
-    }
-}
 
 fn validate_condition(
     flow_info: &FlowInfo,
@@ -97,7 +74,7 @@ fn run_task(
                 };
 
                 // try to invoke it as a none OS script
-                let script_runner_done = invoke_script_runner(&step);
+                let script_runner_done = scriptengine::invoke(&step.config);
 
                 // run as command or OS script
                 if !script_runner_done {

@@ -119,7 +119,7 @@ mod descriptor;
 mod environment;
 mod command;
 mod installer;
-mod rsscript;
+mod scriptengine;
 mod condition;
 mod runner;
 mod cli;
