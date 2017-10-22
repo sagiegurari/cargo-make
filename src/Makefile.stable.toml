@@ -5,7 +5,7 @@ end_task = "end"
 
 [env]
 RUST_BACKTRACE = "full"
-KCOV_VERSION = "33"
+KCOV_VERSION = "34"
 
 [tasks.default]
 description = "Default task points to the development testing flow"
