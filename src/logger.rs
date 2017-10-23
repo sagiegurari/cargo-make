@@ -9,8 +9,8 @@ mod logger_test;
 
 use fern;
 use log::{LogLevel, LogLevelFilter};
-use std::io::stdout;
 use std::env;
+use std::io::stdout;
 
 #[cfg(test)]
 fn exit(code: i32) {
@@ -67,7 +67,7 @@ pub fn init(level_name: &str) {
         Level::INFO => (LogLevelFilter::Info, "info"),
         Level::ERROR => (LogLevelFilter::Error, "error"),
     };
-    
+
     env::set_var("CARGO_MAKE_LOG_LEVEL", level_name_value);
 
     let result = fern::Dispatch::new()
