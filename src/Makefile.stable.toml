@@ -32,7 +32,7 @@ description = "CI task will run CI flow for each member and merge coverage repor
 dependencies = [
     "pre-workspace-ci-flow",
     "workspace-members-ci",
-    "workspace-coverage",
+    "workspace-coverage-pack",
     "post-workspace-ci-flow"
 ]
 
@@ -407,12 +407,8 @@ args = ["pull"]
 
 [tasks.post-ci-flow]
 
-[tasks.pre-workspace-ci-flow]
-
-[tasks.post-workspace-ci-flow]
-
-[tasks.workspace-members-ci]
-description = "Runs the ci-flow for every workspace member."
+[tasks.do-on-members]
+description = "Runs the requested task for every workspace member."
 script = [
 '''
 #prevent codecov publish in member builds
@@ -423,7 +419,7 @@ export CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY="${CARGO_MAKE_WORKING_DIRECTORY}/ta
 #output coverage data goes into workspace level
 export CARGO_MAKE_COVERAGE_REPORT_DIRECTORY="${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/coverage"
 
-cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} ci-flow
+cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} ${CARGO_MAKE_MEMBER_TASK}
 
 unset CARGO_MAKE_COVERAGE_REPORT_DIRECTORY
 unset CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY
@@ -431,11 +427,32 @@ unset CARGO_MAKE_SKIP_CODECOV
 '''
 ]
 
+[tasks.pre-workspace-ci-flow]
+
+[tasks.post-workspace-ci-flow]
+
+[tasks.workspace-members-ci]
+description = "Runs the ci-flow for every workspace member."
+env = { "CARGO_MAKE_MEMBER_TASK" = "ci-flow" }
+run_task = "do-on-members"
+
 [tasks.workspace-members-ci.windows]
 run_task = "ci-flow"
 
+[tasks.workspace-members-coverage]
+description = "Runs the ci-flow for every workspace member."
+env = { "CARGO_MAKE_MEMBER_TASK" = "coverage" }
+run_task = "do-on-members"
+
 [tasks.workspace-coverage]
-description = "Runs coverage task (by default the codecov flow)."
+description = "Runs coverage task for all members and packages all of them (by default the codecov flow)."
+dependencies = [
+    "workspace-members-coverage",
+    "workspace-coverage-pack"
+]
+
+[tasks.workspace-coverage-pack]
+description = "Publishes all member coverage reports."
 linux_alias = "codecov"
 
 [tasks.pre-coverage]

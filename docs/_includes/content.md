@@ -905,7 +905,7 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **coverage-flow** - Runs the full coverage flow.
 * **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
 * **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **workspace-coverage** - Runs coverage task (by default the codecov flow).
+* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.

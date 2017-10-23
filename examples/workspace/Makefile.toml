@@ -1,0 +1,4 @@
+
+[tasks.workspace-echo]
+env = { "CARGO_MAKE_MEMBER_TASK" = "echo" }
+run_task = "do-on-members"

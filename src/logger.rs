@@ -10,6 +10,7 @@ mod logger_test;
 use fern;
 use log::{LogLevel, LogLevelFilter};
 use std::io::stdout;
+use std::env;
 
 #[cfg(test)]
 fn exit(code: i32) {
@@ -61,11 +62,13 @@ pub fn get_log_level() -> String {
 pub fn init(level_name: &str) {
     let level = get_level(level_name);
 
-    let log_level = match level {
-        Level::VERBOSE => LogLevelFilter::Trace,
-        Level::INFO => LogLevelFilter::Info,
-        Level::ERROR => LogLevelFilter::Error,
+    let (log_level, level_name_value) = match level {
+        Level::VERBOSE => (LogLevelFilter::Trace, "verbose"),
+        Level::INFO => (LogLevelFilter::Info, "info"),
+        Level::ERROR => (LogLevelFilter::Error, "error"),
     };
+    
+    env::set_var("CARGO_MAKE_LOG_LEVEL", level_name_value);
 
     let result = fern::Dispatch::new()
         .format(|out, message, record| {
