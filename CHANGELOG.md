@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-10-23  | v0.7.2  | Added workspace level coverage task without the need to run full CI flow (workspace-coverage) |
 | 2017-10-21  | v0.7.1  | Added support for cross platform scripts using script runner @shell |
 | 2017-10-20  | v0.7.0  | Refactored how rust code based scripts are defined to enable future expansion of this feature. |
 | 2017-10-12  | v0.6.5  | ci-flow and build-flow will build/run benches and examples based on new environment variables: CARGO_MAKE_BUILD_EXAMPLES, CARGO_MAKE_BUILD_BENCH and CARGO_MAKE_RUN_BENCH |

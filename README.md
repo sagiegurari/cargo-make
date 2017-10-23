@@ -802,7 +802,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.1
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.2
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -810,7 +810,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.1
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.2
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -901,6 +901,18 @@ coverage-kcov: Installs (if missing) and runs coverage using kcov (not supported
 
 All built in coverage providers are supported by their authors and not by cargo-make.
 
+Based on the above explanation, to generate a coverage report for a simple project, run the following command:
+
+````sh
+cargo make coverage
+````
+
+In order to run coverage in a workspace project and package all member coverage reports in the workspace level, run the following command:
+
+````sh
+cargo make --no-workspace workspace-coverage
+````
+
 <a name="usage-predefined-flows-cargo"></a>
 #### Cargo Commands and Plugins
 
@@ -953,15 +965,15 @@ All built in coverage providers are supported by their authors and not by cargo-
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **bench-flow** - Runs a bench flow.
 * **check-flow** - Runs cargo check flow.
-* **bench-ci-flow** - Runs/Compiles the benches if conditions are met. 
-* **examples-ci-flow** - Compiles the examples if conditions are met. 
+* **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
+* **examples-ci-flow** - Compiles the examples if conditions are met.
 * **delete-lock** - Deletes the Cargo.lock file.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
 * **coverage-flow** - Runs the full coverage flow.
 * **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
 * **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **workspace-coverage** - Runs coverage task (by default the codecov flow).
+* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
