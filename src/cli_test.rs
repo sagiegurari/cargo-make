@@ -108,6 +108,7 @@ fn run_cwd_task_not_found() {
 
 #[test]
 #[should_panic]
+#[cfg(not(target_os = "macos"))]
 fn run_cli_panic() {
     run_cli();
 }
