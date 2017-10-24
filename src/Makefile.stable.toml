@@ -140,6 +140,7 @@ args = ["clean"]
 
 [tasks.delete-lock]
 description = "Deletes the Cargo.lock file."
+script_runner = "@shell"
 script = [
     "rm -f ./Cargo.lock"
 ]
@@ -331,6 +332,7 @@ args = ["clippy"]
 
 [tasks.copy-apidocs]
 description = "Copies the generated documentation to the docs/api directory."
+script_runner = "@shell"
 script = [
     "mkdir -p ./docs/api",
     "mv ./target/doc/* ./docs/api"
@@ -383,8 +385,9 @@ args = ["commit"]
 
 [tasks.git-commit-message]
 description = "Runs git commit command with the message defined in the COMMIT_MSG environment variable."
+script_runner = "@shell"
 script = [
-    "git commit -m \"$COMMIT_MSG\""
+    "git commit -m \"${COMMIT_MSG}\""
 ]
 
 [tasks.post-git-commit]
@@ -409,6 +412,7 @@ args = ["pull"]
 
 [tasks.do-on-members]
 description = "Runs the requested task for every workspace member."
+script_runner = "@shell"
 script = [
 '''
 #prevent codecov publish in member builds
@@ -590,8 +594,9 @@ args = ["hublish"]
 description = "Creates a new github release."
 install_crate = "cargo-hublish"
 args = ["hublish"]
+script_runner = "@shell"
 script = [
-    "cargo hublish --url \"https://api.github.com/repos/$GITHUB_REPO_NAME/releases\""
+    "cargo hublish --url \"https://api.github.com/repos/${GITHUB_REPO_NAME}/releases\""
 ]
 
 [tasks.build-publish-flow]
