@@ -802,7 +802,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.2
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.3
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -810,7 +810,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.2
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.3
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -913,13 +913,13 @@ In order to run coverage in a workspace project and package all member coverage 
 cargo make --no-workspace workspace-coverage
 ````
 
-If you are using `kcov`, you may declare the following environmental variables in `Makefile.toml` to specify lines or regions of code to ignore:
+If you are using **kcov**, you may declare the following environment variables in your Makefile.toml to specify lines or regions of code to ignore:
 
-```toml
+````toml
 [env]
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"             # your choice of pattern(s)
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end" # your choice of markers
-```
+````
 
 <a name="usage-predefined-flows-cargo"></a>
 #### Cargo Commands and Plugins

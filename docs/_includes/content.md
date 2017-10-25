@@ -857,6 +857,14 @@ In order to run coverage in a workspace project and package all member coverage 
 cargo make --no-workspace workspace-coverage
 ````
 
+If you are using **kcov**, you may declare the following environment variables in your Makefile.toml to specify lines or regions of code to ignore:
+
+````toml
+[env]
+CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"             # your choice of pattern(s)
+CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end" # your choice of markers
+````
+
 <a name="usage-predefined-flows-cargo"></a>
 #### Cargo Commands and Plugins
 

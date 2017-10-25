@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-10-25  | v0.7.3  | kcov support for excluding lines/blocks from coverage report  |
 | 2017-10-23  | v0.7.2  | Added workspace level coverage task without the need to run full CI flow (workspace-coverage) |
 | 2017-10-21  | v0.7.1  | Added support for cross platform scripts using script runner @shell |
 | 2017-10-20  | v0.7.0  | Refactored how rust code based scripts are defined to enable future expansion of this feature. |
