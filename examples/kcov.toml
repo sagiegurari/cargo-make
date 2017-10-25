@@ -1,0 +1,8 @@
+
+[env]
+# The following environmental variables are passed to kcov to exclude lines or regions of code
+# during coverage.
+#
+# See examples/workspace3
+CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"
+CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
