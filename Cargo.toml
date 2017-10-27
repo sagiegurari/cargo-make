@@ -25,7 +25,7 @@ include = [
 
 [dependencies]
 ci_info = "^0.1.9"
-clap = "^2.27.0"
+clap = "^2.27.1"
 fern = "^0.4.3"
 glob = "^0.2.11"
 log = "^0.3.8"
