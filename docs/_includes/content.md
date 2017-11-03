@@ -682,18 +682,8 @@ For example, if you have a coverage flow that should only be invoked in a travis
 
 ````toml
 [tasks.ci-coverage-flow]
-windows_alias = "empty"
-condition_script = [
-'''
-if [ "$TRAVIS" = "true" ]; then
-    if [ "$CARGO_MAKE_RUN_CODECOV" = "true" ]; then
-        exit 0
-    fi
-fi
-
-exit 1
-'''
-]
+description = "Runs the coverage flow and uploads the results to codecov."
+condition = { platforms = ["linux"], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.codecov-flow]
