@@ -1,41 +1,6 @@
 use super::*;
-use std::env::current_dir;
 use std::io::ErrorKind;
 use types::Task;
-
-#[test]
-fn create_script_no_shebang() {
-    let script_lines = vec!["echo test".to_string()];
-    let cwd = current_dir().unwrap();
-    let mut expected_script = "".to_string();
-    if !cfg!(windows) {
-        expected_script.push_str("set -xe\n");
-    }
-    expected_script.push_str("cd ");
-    expected_script.push_str(cwd.to_str().unwrap());
-    expected_script.push_str("\necho test\n\n");
-
-    let script = create_script(&script_lines);
-
-    assert_eq!(script, expected_script);
-}
-
-#[test]
-fn create_script_with_shebang() {
-    let script_lines = vec!["#!/bin/bash".to_string(), "echo test".to_string()];
-    let cwd = current_dir().unwrap();
-    let mut expected_script = "#!/bin/bash\n".to_string();
-    if !cfg!(windows) {
-        expected_script.push_str("set -xe\n");
-    }
-    expected_script.push_str("cd ");
-    expected_script.push_str(cwd.to_str().unwrap());
-    expected_script.push_str("\necho test\n\n");
-
-    let script = create_script(&script_lines);
-
-    assert_eq!(script, expected_script);
-}
 
 #[test]
 #[should_panic]

@@ -19,15 +19,14 @@ use std::path::PathBuf;
 use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
-    let output = command::run_script_get_output(&env_value.script, None, true);
+    match command::run_script_get_output(&env_value.script, None, true) {
+        Ok(output) => {
+            let exit_code = output.0;
+            let stdout = output.1;
 
-    let exit_code = command::get_exit_code_from_output(&output, false);
-    command::validate_exit_code(exit_code);
+            command::validate_exit_code(exit_code);
 
-    if exit_code == 0 {
-        match output {
-            Ok(output_struct) => {
-                let stdout = String::from_utf8_lossy(&output_struct.stdout);
+            if exit_code == 0 {
                 let mut lines: Vec<&str> = stdout.split("\n").collect();
                 lines.retain(|&line| line.len() > 0);
 
@@ -40,14 +39,11 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
                 } else {
                     "".to_string()
                 }
-            }
-            Err(error) => {
-                error!("Unable to get env var value evaluation result: {:#?}", error);
+            } else {
                 "".to_string()
             }
         }
-    } else {
-        "".to_string()
+        _ => "".to_string(),
     }
 }
 

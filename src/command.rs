@@ -7,13 +7,10 @@
 #[path = "./command_test.rs"]
 mod command_test;
 
-use rand::{Rng, thread_rng};
-use std::env;
-use std::env::current_dir;
-use std::fs::{File, create_dir_all, remove_file};
+use run_script;
+use run_script::{ScriptError, ScriptOptions};
 use std::io;
 use std::io::Error;
-use std::io::prelude::*;
 use std::process::{Command, ExitStatus, Output, Stdio};
 use types::Step;
 
@@ -68,122 +65,19 @@ pub fn validate_exit_code(code: i32) {
     }
 }
 
-fn create_script(script_lines: &Vec<String>) -> String {
-    let cwd_holder = match current_dir() {
-        Ok(value) => value,
-        Err(error) => {
-            error!("Unable to get current working directory {:#?}", &error);
-            panic!("Unable to get current working directory, error: {}", error);
-        }
-    };
-
-    let cwd = match cwd_holder.to_str() {
-        Some(cwd_str) => cwd_str.clone(),
-        None => {
-            error!("Unable to get current working directory.");
-            panic!("Unable to get current working directory");
-        }
-    };
-
-    // get local copy
-    let mut mut_script_lines = script_lines.clone();
-
-    // create cd command
-    let mut cd_command = "cd ".to_string();
-    cd_command.push_str(cwd);
-
-    // check if first line is shebang line
-    let mut insert_index = if mut_script_lines[0].starts_with("#!") {
-        1
-    } else {
-        0
-    };
-
-    if !cfg!(windows) {
-        mut_script_lines.insert(insert_index, "set -xe".to_string());
-        insert_index = insert_index + 1;
-    }
-    mut_script_lines.insert(insert_index, cd_command);
-
-    mut_script_lines.push("\n".to_string());
-
-    mut_script_lines.join("\n")
-}
-
 /// Runs the requested script text and returns its output.
 pub fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     capture_output: bool,
-) -> io::Result<Output> {
-    let name = env!("CARGO_PKG_NAME");
-    let file_name: String = thread_rng().gen_ascii_chars().take(10).collect();
+) -> Result<(i32, String, String), ScriptError> {
+    let mut options = ScriptOptions::new();
+    options.runner = script_runner.clone();
+    options.capture_output = capture_output;
+    options.exit_on_error = true;
+    options.print_commands = true;
 
-    let mut file_path = env::temp_dir();
-    file_path.push(name);
-
-    // create parent directory
-    match create_dir_all(&file_path) {
-        Ok(_) => debug!("Created temporary directory."),
-        Err(error) => debug!("Unable to create temporary directory: {} {:#?}", &file_path.to_str().unwrap_or("???"), error),
-    };
-
-    file_path.push(file_name);
-    if cfg!(windows) {
-        file_path.set_extension("bat");
-    } else {
-        file_path.set_extension("sh");
-    };
-
-    let file_path_str = &file_path.to_str().unwrap_or("???");
-
-    debug!("Creating temporary script file: {}", &file_path_str);
-
-    let mut file = match File::create(&file_path) {
-        Err(error) => {
-            error!("Unable to create script file: {} {:#?}", &file_path_str, &error);
-            panic!("Unable to create script file, error: {}", error);
-        }
-        Ok(file) => file,
-    };
-
-    let text = create_script(&script_lines);
-
-    match file.write_all(text.as_bytes()) {
-        Err(error) => {
-            error!("Unable to write to script file: {} {:#?}", &file_path_str, &error);
-            panic!("Unable to write to script file, error: {}", error);
-        }
-        Ok(_) => debug!("Written script file text:\n{}", &text),
-    }
-
-    let command = match script_runner {
-        Some(ref value) => value,
-        None => {
-            if cfg!(windows) {
-                "cmd.exe"
-            } else {
-                "sh"
-            }
-        }
-    };
-
-    let args_vector = if cfg!(windows) {
-        vec!["/C".to_string(), file_path_str.to_string()]
-    } else {
-        vec![file_path_str.to_string()]
-    };
-
-    let args = Some(args_vector);
-
-    let output = run_command_get_output(&command, &args, capture_output);
-
-    match remove_file(&file_path_str) {
-        Ok(_) => debug!("Temporary file deleted: {}", &file_path_str),
-        Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file_path_str, error),
-    };
-
-    output
+    run_script::run(script_lines.join("\n").as_str(), &vec![], &options)
 }
 
 /// Runs the requested script text and panics in case of any script error.
@@ -194,7 +88,10 @@ pub fn run_script(
 ) -> i32 {
     let output = run_script_get_output(&script_lines, script_runner, false);
 
-    let exit_code = get_exit_code_from_output(&output, !validate);
+    let exit_code = match output {
+        Ok(output_struct) => output_struct.0,
+        _ => -1,
+    };
 
     if validate {
         validate_exit_code(exit_code);
