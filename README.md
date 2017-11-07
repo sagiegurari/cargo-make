@@ -58,16 +58,16 @@
 <a name="overview"></a>
 ## Overview
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
-A task is a command or a script to execute.<br>
+A task is a command, script, rust code or other sub tasks to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
-With a simple toml based configuration file, you can define a multi platform build script that can run build, test, documentation generation, bench tests execution, security validations and more and executed by running a single command.
+With a simple toml based configuration file, you can define a multi platform build script that can run build, test, generate documentation,run bench tests, run security validations and more, executed by running a single command.
 
 <a name="installation"></a>
 ## Installation
 In order to install, just run the following command
 
 ```sh
-cargo install cargo-make
+cargo install --force cargo-make
 ```
 
 This will install cargo-make in your ~/.cargo/bin.<br>
@@ -83,7 +83,7 @@ Below is a list of articles which explain most of the cargo-make features.
 * [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
 * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 
-The articles are missing the new features added after being published, such as:
+The articles are missing some of the new features which have been added after they were published, such as:
 
 * [Rust Task](#usage-task-command-script-task-examplerust)
 * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
@@ -269,7 +269,7 @@ hello
 As you can see, 'hello' was printed once by task D as it was only invoked once.<br>
 But what if we want to run D twice?<br>
 Simple answer would be to duplicate task D and have B depend on D and C depend on D2 which is a copy of D.<br>
-But duplicating can lead to bugs and to huge makefiles, so we have alias for that.<br>
+But duplicating can lead to bugs and to huge makefiles, so we have aliases for that.<br>
 An alias task has its own name and points to another task.<br>
 All of the definitions of the alias task are ignored.<br>
 So now, if we want to have D execute twice we can do the following:
@@ -348,7 +348,7 @@ However, if executed on a linux platform, it will invoke the **run** task.
 
 <a name="usage-task-command-script-task"></a>
 ### Commands, Scripts and Sub Tasks
-The actual operation that a task invokes can be defined in 4 ways.<br>
+The actual operation that a task invokes can be defined in 3 ways.<br>
 The below explains each one:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
@@ -455,7 +455,7 @@ rm ./myfile.txt
 
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
-There is no real need to define the tasks that were shown in the previous example.<br>
+There is no real need to define the tasks that were shown in the previous examples.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
 tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml).<br>
@@ -484,7 +484,7 @@ disabled = true
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
 The default toml file comes with many steps and flows already built in, so it is worth to check it first.
 
-You can also extend other external files from your external file by using the extend attribute, for example:
+You can also extend additional external files from your external file by using the extend attribute, for example:
 
 ````toml
 extend = "my_common_makefile.toml"
@@ -518,7 +518,7 @@ Here is an example of pulling the common toml file from some git repo:
 load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
 ````
 
-You can run any command or set of commands you want, so you can build a more complex flow of how and where to fetch the toml file from and where to put it.<br>
+You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
 If needed, you can override the load_script per platform using the **linux_load_script**, **windows_load_script** and **mac_load_script** attributes.
 
 <a name="usage-ignoring-errors"></a>
@@ -572,7 +572,7 @@ Hello World From Unknown
 ````
 
 In the override task you can define any attribute that will override the attribute of the parent task, while undefined attributes will use the value from the parent task and will not be modified.<br>
-In case you need to delete attributes from the parent (for example script is only invoked if command is not defined and you have command defined in the parent task and script in the override task), then you will
+In case you need to delete attributes from the parent (for example you have a command defined in the parent task but you want to have a script defined in the override task), then you will
 have to clear the parent task in the override task using the clear attribute as follows:
 
 ````toml
@@ -585,7 +585,7 @@ script = [
 
 This means, however, that you will have to redefine all attributes in the override task that you want to carry with you from the parent task.<br>
 **Important - alias comes before checking override task so if parent task has an alias it will be redirected to that task instead of the override.**<br>
-**To override per platform, use the linux_alias, windows_alias, mac_alias attributes.<br>**
+**To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
 
 <a name="usage-env"></a>
@@ -605,7 +605,7 @@ TEST2 = "value2"
 COMPOSITE = "${TEST1} ${TEST2}"
 ````
 
-Environment variables can be defined as a simple key/value pair or key and the output (last line) of the provided script.
+Environment variables can be defined as a simple key/value pair or key and the output (second line) of the provided script.
 In addition, you can define environment variables values based on other environment variables using the ${} syntax.
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
@@ -711,7 +711,7 @@ Few examples:
 
 ````toml
 [tasks.test-condition]
-condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true", } }
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 ````
 
 <a name="usage-conditions-script"></a>
@@ -729,12 +729,12 @@ command = "cargo"
 args = ["build"]
 ````
 
-Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific environment variable is defined.
+Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific 3rd party is installed.
 
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
-For example, if you have a coverage flow that should only be invoked in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
+For example, if you have a coverage flow that should only be invoked on linux in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
 
 ````toml
 [tasks.ci-coverage-flow]
@@ -751,8 +751,8 @@ dependencies = [
 ]
 ````
 
-The first task **ci-coverage-flow** defines the condition_script that checks we are in travis and the CARGO_MAKE_RUN_CODECOV environment variable.<br>
-Only if both are defined, it will run the **codecov-flow** task.<br>
+The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a travis build and the CARGO_MAKE_RUN_CODECOV environment variable is set to "true".<br>
+Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
 
 <a name="usage-ci"></a>
