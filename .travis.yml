@@ -11,9 +11,6 @@ rust:
 os:
   - linux
   - osx
-matrix:
-  allow_failures:
-    - rust: nightly
 env:
   global:
     - RUST_BACKTRACE=1
