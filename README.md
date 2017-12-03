@@ -45,6 +45,7 @@
         * [Git Commands](#usage-predefined-flows-git)
         * [Flows/Other](#usage-predefined-flows-flows)
     * [Workspace Support](#usage-workspace-support)
+        * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)
@@ -792,7 +793,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.4
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.5
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -800,7 +801,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.4
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.7.5
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1025,6 +1026,38 @@ You can start this composite flow as follows:
 
 ````sh
 cargo make --no-workspace composite
+````
+
+<a name="usage-workspace-support-skip-members"></a>
+#### Skipping Specific Members
+
+In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
+
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a **;** character), you can define if you want those members not to participate in the flow.
+
+In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
+
+````toml
+[env]
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
+````
+
+However there are some cases you will want to skip specific members only if a specific condition is met.
+
+For example, you want to build a member module only if we are running on a rust nightly compiler.
+
+This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
+
+````toml
+[tasks.workspace-task]
+env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+run_task = "do-on-members"
+````
+
+You will have to invoke this as a composite flow:
+
+````sh
+cargo make workspace-task --no-workspace
 ````
 
 <a name="usage-init-end-tasks"></a>
