@@ -1,4 +1,4 @@
 
 [tasks.workspace-echo]
-env = { "CARGO_MAKE_MEMBER_TASK" = "echo" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "echo", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member2" }
 run_task = "do-on-members"

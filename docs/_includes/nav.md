@@ -38,6 +38,7 @@
         * [Git Commands](#usage-predefined-flows-git)
         * [Flows/Other](#usage-predefined-flows-flows)
     * [Workspace Support](#usage-workspace-support)
+        * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
 * [Makefile Definition](#descriptor-definition)

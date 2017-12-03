@@ -971,6 +971,38 @@ You can start this composite flow as follows:
 cargo make --no-workspace composite
 ````
 
+<a name="usage-workspace-support-skip-members"></a>
+#### Skipping Specific Members
+
+In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
+
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a **;** character), you can define if you want those members not to participate in the flow.
+
+In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
+
+````toml
+[env]
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
+````
+
+However there are some cases you will want to skip specific members only if a specific condition is met.
+
+For example, you want to build a member module only if we are running on a rust nightly compiler.
+
+This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
+
+````toml
+[tasks.workspace-task]
+env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+run_task = "do-on-members"
+````
+
+You will have to invoke this as a composite flow:
+
+````sh
+cargo make workspace-task --no-workspace
+````
+
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
