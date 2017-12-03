@@ -163,6 +163,20 @@ fn create_execution_plan_for_step(
     }
 }
 
+fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String> {
+    let mut members = HashSet::new();
+
+    let members_list: Vec<&str> = skip_members_config.split(';').collect();
+
+    for member in members_list.iter() {
+        if member.len() > 0 {
+            members.insert(member.to_string());
+        }
+    }
+
+    return members;
+}
+
 fn create_workspace_task(
     crate_info: CrateInfo,
     task: &str,
@@ -172,23 +186,32 @@ fn create_workspace_task(
 
     let log_level = logger::get_log_level();
 
+    let skip_members_config = environment::get_env("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
+    let skip_members = get_skipped_workspace_members(skip_members_config);
+
     let mut script_lines = vec![];
     for member in &members {
-        let mut cd_line = "cd ./".to_string();
-        cd_line.push_str(&member);
-        script_lines.push(cd_line);
+        if !skip_members.contains(member) {
+            info!("Adding Member: {}.", &member);
 
-        let mut make_line = "cargo make --disable-check-for-updates --loglevel=".to_string();
-        make_line.push_str(&log_level);
-        make_line.push_str(" ");
-        make_line.push_str(&task);
-        script_lines.push(make_line);
+            let mut cd_line = "cd ./".to_string();
+            cd_line.push_str(&member);
+            script_lines.push(cd_line);
 
-        if cfg!(windows) {
-            script_lines.push("cd %CARGO_MAKE_WORKING_DIRECTORY%".to_string());
+            let mut make_line = "cargo make --disable-check-for-updates --loglevel=".to_string();
+            make_line.push_str(&log_level);
+            make_line.push_str(" ");
+            make_line.push_str(&task);
+            script_lines.push(make_line);
+
+            if cfg!(windows) {
+                script_lines.push("cd %CARGO_MAKE_WORKING_DIRECTORY%".to_string());
+            } else {
+                script_lines.push("cd ${CARGO_MAKE_WORKING_DIRECTORY}".to_string());
+            };
         } else {
-            script_lines.push("cd ${CARGO_MAKE_WORKING_DIRECTORY}".to_string());
-        };
+            info!("Skipping Member: {}.", &member);
+        }
     }
 
     let mut workspace_task = Task::new();

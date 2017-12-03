@@ -442,3 +442,28 @@ fn run_task_cwd_dir_exists() {
 
     run_task(&flow_info, &step);
 }
+
+#[test]
+fn get_skipped_workspace_members_not_defined_or_empty() {
+    let members = get_skipped_workspace_members("".to_string());
+
+    assert_eq!(members.len(), 0);
+}
+
+#[test]
+fn get_skipped_workspace_members_single() {
+    let members = get_skipped_workspace_members("test".to_string());
+
+    assert_eq!(members.len(), 1);
+    assert!(members.contains(&"test".to_string()));
+}
+
+#[test]
+fn get_skipped_workspace_members_multiple() {
+    let members = get_skipped_workspace_members("test1;test2;test3".to_string());
+
+    assert_eq!(members.len(), 3);
+    assert!(members.contains(&"test1".to_string()));
+    assert!(members.contains(&"test2".to_string()));
+    assert!(members.contains(&"test3".to_string()));
+}

@@ -404,5 +404,5 @@ fn load_workspace_members_mixed() {
     assert!(members.iter().position(|member| member == "member2").is_some());
     assert!(members.iter().position(|member| member == "member4").is_some());
     assert!(members.iter().position(|member| member == "examples/workspace/member1").is_some());
-    assert_eq!(members.len(), 6);
+    assert_eq!(members.len(), 7);
 }
