@@ -976,7 +976,7 @@ cargo make --no-workspace composite
 
 In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
 
-By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a **;** character), you can define if you want those members not to participate in the flow.
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a ';' character), you can define if you want those members not to participate in the flow.
 
 In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
 
@@ -993,6 +993,7 @@ This is a simple example of a conditioned skip for member3 and memeber4 (should 
 
 ````toml
 [tasks.workspace-task]
+condition = { channels = ["beta", "stable"] }
 env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
 run_task = "do-on-members"
 ````
