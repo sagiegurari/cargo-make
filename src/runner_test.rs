@@ -223,13 +223,13 @@ fn create_workspace_task_with_members() {
 
     let mut expected_script = r#"cd ./member1
 cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
-cd ${CARGO_MAKE_WORKING_DIRECTORY}
+cd -
 cd ./member2
 cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
-cd ${CARGO_MAKE_WORKING_DIRECTORY}
+cd -
 cd ./dir1/member3
 cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
-cd ${CARGO_MAKE_WORKING_DIRECTORY}"#
+cd -"#
         .to_string();
 
     let log_level = logger::get_log_level();

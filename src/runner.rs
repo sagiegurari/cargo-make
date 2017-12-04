@@ -194,7 +194,11 @@ fn create_workspace_task(
         if !skip_members.contains(member) {
             info!("Adding Member: {}.", &member);
 
-            let mut cd_line = "cd ./".to_string();
+            let mut cd_line = if cfg!(windows) {
+                "PUSHD ./".to_string()
+            } else {
+                "cd ./".to_string()
+            };
             cd_line.push_str(&member);
             script_lines.push(cd_line);
 
@@ -205,9 +209,9 @@ fn create_workspace_task(
             script_lines.push(make_line);
 
             if cfg!(windows) {
-                script_lines.push("cd %CARGO_MAKE_WORKING_DIRECTORY%".to_string());
+                script_lines.push("POPD".to_string());
             } else {
-                script_lines.push("cd ${CARGO_MAKE_WORKING_DIRECTORY}".to_string());
+                script_lines.push("cd -".to_string());
             };
         } else {
             info!("Skipping Member: {}.", &member);

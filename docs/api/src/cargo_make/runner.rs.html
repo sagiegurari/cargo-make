@@ -374,6 +374,10 @@
 <span id="329">329</span>
 <span id="330">330</span>
 <span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -571,7 +575,11 @@
         <span class="kw">if</span> <span class="op">!</span><span class="ident">skip_members</span>.<span class="ident">contains</span>(<span class="ident">member</span>) {
             <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Adding Member: {}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+                <span class="string">&quot;PUSHD ./&quot;</span>.<span class="ident">to_string</span>()
+            } <span class="kw">else</span> {
+                <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>()
+            };
             <span class="ident">cd_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>);
             <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">cd_line</span>);
 
@@ -582,9 +590,9 @@
             <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
 
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd %CARGO_MAKE_WORKING_DIRECTORY%&quot;</span>.<span class="ident">to_string</span>());
+                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;POPD&quot;</span>.<span class="ident">to_string</span>());
             } <span class="kw">else</span> {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd ${CARGO_MAKE_WORKING_DIRECTORY}&quot;</span>.<span class="ident">to_string</span>());
+                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd -&quot;</span>.<span class="ident">to_string</span>());
             };
         } <span class="kw">else</span> {
             <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Skipping Member: {}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
