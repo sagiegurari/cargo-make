@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-12-04  | v0.7.6  | Workspace support fixes for windows  |
+| 2017-12-04  | v0.7.7  | Workspace support fixes for windows  |
 | 2017-12-03  | v0.7.5  | Support conditional skipping of workspace members from flow (#42)  |
 | 2017-10-25  | v0.7.4  | kcov support for excluding lines/blocks from coverage report  |
 | 2017-10-23  | v0.7.2  | Added workspace level coverage task without the need to run full CI flow (workspace-coverage) |

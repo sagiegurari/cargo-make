@@ -195,7 +195,7 @@ fn create_workspace_task(
             info!("Adding Member: {}.", &member);
 
             let mut cd_line = if cfg!(windows) {
-                "PUSHD ./".to_string()
+                "PUSHD ".to_string()
             } else {
                 "cd ./".to_string()
             };
