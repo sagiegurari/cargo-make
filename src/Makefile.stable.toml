@@ -442,9 +442,6 @@ description = "Runs the ci-flow for every workspace member."
 env = { "CARGO_MAKE_MEMBER_TASK" = "ci-flow" }
 run_task = "do-on-members"
 
-[tasks.workspace-members-ci.windows]
-run_task = "ci-flow"
-
 [tasks.workspace-members-coverage]
 description = "Runs the ci-flow for every workspace member."
 env = { "CARGO_MAKE_MEMBER_TASK" = "coverage" }
