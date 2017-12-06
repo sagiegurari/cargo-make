@@ -433,6 +433,15 @@ unset CARGO_MAKE_SKIP_CODECOV
 '''
 ]
 
+[tasks.do-on-members.windows]
+clear = true
+script = [
+'''
+cargo make --loglevel=%CARGO_MAKE_LOG_LEVEL% %CARGO_MAKE_MEMBER_TASK%
+if %errorlevel% neq 0 exit /b %errorlevel%
+'''
+]
+
 [tasks.pre-workspace-ci-flow]
 
 [tasks.post-workspace-ci-flow]

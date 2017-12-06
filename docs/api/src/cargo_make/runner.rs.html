@@ -378,6 +378,7 @@
 <span id="333">333</span>
 <span id="334">334</span>
 <span id="335">335</span>
+<span id="336">336</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -590,6 +591,7 @@
             <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
 
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;if %errorlevel% neq 0 exit /b %errorlevel%&quot;</span>.<span class="ident">to_string</span>());
                 <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;POPD&quot;</span>.<span class="ident">to_string</span>());
             } <span class="kw">else</span> {
                 <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd -&quot;</span>.<span class="ident">to_string</span>());

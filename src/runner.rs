@@ -209,6 +209,7 @@ fn create_workspace_task(
             script_lines.push(make_line);
 
             if cfg!(windows) {
+                script_lines.push("if %errorlevel% neq 0 exit /b %errorlevel%".to_string());
                 script_lines.push("POPD".to_string());
             } else {
                 script_lines.push("cd -".to_string());
