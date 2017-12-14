@@ -149,11 +149,21 @@ script = [
 
 [tasks.pre-format]
 
-[tasks.format]
+[tasks.format-stable]
 description = "Runs the cargo rustfmt plugin."
 install_crate = "rustfmt"
 command = "cargo"
+args = ["fmt", "--", "--write-mode=overwrite", "--force"]
+
+[tasks.format-nightly]
+description = "Runs the cargo rustfmt nightly plugin."
+install_crate = "rustfmt-nightly"
+command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite"]
+
+[tasks.format]
+description = "Runs the cargo rustfmt plugin."
+alias = "format-stable"
 
 [tasks.post-format]
 
