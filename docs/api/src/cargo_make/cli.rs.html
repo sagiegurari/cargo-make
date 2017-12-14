@@ -375,7 +375,7 @@
 }
 
 <span class="doccomment">/// Handles the command line arguments and executes the runner.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_cli</span>() {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_cli</span>() {
     <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="ident">create_cli</span>();
 
     <span class="kw">let</span> <span class="ident">matches</span> <span class="op">=</span> <span class="ident">app</span>.<span class="ident">get_matches</span>();
@@ -408,7 +408,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

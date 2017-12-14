@@ -181,13 +181,15 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">anonymous_parameters</span>,
+        <span class="ident">coerce_never</span>,
         <span class="ident">const_err</span>,
         <span class="ident">dead_code</span>,
         <span class="ident">deprecated</span>,
         <span class="ident">exceeding_bitshifts</span>,
-        <span class="ident">extra_requirement_in_impl</span>,
         <span class="ident">illegal_floating_point_literal_pattern</span>,
         <span class="ident">improper_ctypes</span>,
         <span class="ident">invalid_type_param_default</span>,
@@ -217,14 +219,15 @@
         <span class="ident">renamed_and_removed_lints</span>,
         <span class="ident">resolve_trait_on_defaulted_unit</span>,
         <span class="ident">safe_extern_statics</span>,
+        <span class="ident">safe_packed_borrows</span>,
         <span class="ident">stable_features</span>,
         <span class="ident">trivial_numeric_casts</span>,
         <span class="ident">unconditional_recursion</span>,
         <span class="ident">unions_with_drop_fields</span>,
         <span class="ident">unknown_crate_types</span>,
-        <span class="ident">unknown_lints</span>,
         <span class="ident">unreachable_code</span>,
         <span class="ident">unreachable_patterns</span>,
+        <span class="ident">unreachable_pub</span>,
         <span class="ident">unsafe_code</span>,
         <span class="ident">unstable_features</span>,
         <span class="ident">unused_allocation</span>,
@@ -245,7 +248,8 @@
         <span class="ident">unused_variables</span>,
         <span class="ident">while_true</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">unknown_lints</span>)]</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">box_pointers</span>,
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">auto_impl</span>,
+        <span class="ident">box_pointers</span>,
         <span class="ident">missing_debug_implementations</span>,
         <span class="ident">trivial_casts</span>,
         <span class="ident">unused_results</span>,
@@ -346,7 +350,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-12-14  | v0.7.11 | Fixed rustfmt backward compatability break issue |
 | 2017-12-06  | v0.7.10 | Workspace support fixes for windows  |
 | 2017-12-03  | v0.7.5  | Support conditional skipping of workspace members from flow (#42)  |
 | 2017-10-25  | v0.7.4  | kcov support for excluding lines/blocks from coverage report  |

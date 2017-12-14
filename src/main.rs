@@ -62,7 +62,8 @@
         unused_variables,
         while_true)]
 #![warn(unknown_lints)]
-#![allow(box_pointers,
+#![allow(auto_impl,
+        box_pointers,
         missing_debug_implementations,
         trivial_casts,
         unused_results,

@@ -409,7 +409,7 @@
 }
 
 <span class="doccomment">/// Loads the crate info based on the Cargo.toml found in the current working directory.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>() <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>() <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
     <span class="comment">// load crate info</span>
     <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;Cargo.toml&quot;</span>);
 
@@ -462,7 +462,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

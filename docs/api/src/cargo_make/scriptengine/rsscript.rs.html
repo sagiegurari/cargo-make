@@ -198,7 +198,7 @@
     <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span>
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute</span>(<span class="ident">rust_script</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">execute</span>(<span class="ident">rust_script</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) {
     <span class="ident">install_crate</span>();
 
     <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">create_rust_file</span>(<span class="ident">rust_script</span>);
@@ -240,7 +240,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
