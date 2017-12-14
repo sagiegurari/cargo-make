@@ -39,7 +39,6 @@
         unconditional_recursion,
         unions_with_drop_fields,
         unknown_crate_types,
-        unknown_lints,
         unreachable_code,
         unreachable_patterns,
         unreachable_pub,
