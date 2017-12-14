@@ -174,7 +174,7 @@ fn validate_script(step: &Step) -> bool {
     }
 }
 
-pub fn validate_condition(
+pub(crate) fn validate_condition(
     flow_info: &FlowInfo,
     step: &Step,
 ) -> bool {

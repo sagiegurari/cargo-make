@@ -205,7 +205,7 @@ fn load_default(experimental: bool) -> Config {
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub fn load(
+pub(crate) fn load(
     file_name: &str,
     env: Option<Vec<String>>,
     experimental: bool,
@@ -258,7 +258,7 @@ pub fn load(
     config
 }
 
-pub fn list_steps(config: &Config) {
+pub(crate) fn list_steps(config: &Config) {
     for (key, value) in config.tasks.iter() {
         let description = match value.description {
             Some(ref value) => value,

@@ -10,7 +10,7 @@ mod shell_to_batch_test;
 use command;
 use shell2batch;
 
-pub fn execute(script: &Vec<String>) {
+pub(crate) fn execute(script: &Vec<String>) {
     if cfg!(windows) {
         let shell_script = script.join("\n");
         let windows_batch = shell2batch::convert(&shell_script);

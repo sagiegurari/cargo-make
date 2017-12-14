@@ -160,7 +160,7 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
 }
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli() {
+pub(crate) fn run_cli() {
     let app = create_cli();
 
     let matches = app.get_matches();

@@ -68,7 +68,7 @@ fn load_branch(git_info: &mut GitInfo) {
     };
 }
 
-pub fn load() -> GitInfo {
+pub(crate) fn load() -> GitInfo {
     debug!("Searching for git info.");
 
     let mut git_info = GitInfo::new();

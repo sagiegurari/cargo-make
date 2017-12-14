@@ -69,7 +69,7 @@ fn get_install_crate_args(
     install_args
 }
 
-pub fn install_crate(
+pub(crate) fn install_crate(
     cargo_command: &str,
     crate_name: &str,
     args: &Option<Vec<String>>,
@@ -82,7 +82,7 @@ pub fn install_crate(
     }
 }
 
-pub fn install(task_config: &Task) {
+pub(crate) fn install(task_config: &Task) {
     let validate = !task_config.is_force();
 
     match task_config.install_crate {

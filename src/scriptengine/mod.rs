@@ -47,7 +47,7 @@ fn get_engine_type(task: &Task) -> EngineType {
     }
 }
 
-pub fn invoke(task: &Task) -> bool {
+pub(crate) fn invoke(task: &Task) -> bool {
     let engine_type = get_engine_type(&task);
 
     match engine_type {

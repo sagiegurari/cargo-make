@@ -22,7 +22,7 @@ use std::process::exit;
 
 #[derive(Debug, PartialEq)]
 /// The log levels
-pub enum Level {
+pub(crate) enum Level {
     VERBOSE,
     INFO,
     ERROR
@@ -41,7 +41,7 @@ fn get_level(level_name: &str) -> Level {
 }
 
 /// Returns the current logger level name
-pub fn get_log_level() -> String {
+pub(crate) fn get_log_level() -> String {
     let level = if log_enabled!(LogLevel::Trace) {
         "verbose"
     } else if log_enabled!(LogLevel::Info) {
@@ -59,7 +59,7 @@ pub fn get_log_level() -> String {
 ///
 /// * `level_name` - The log level name ('verbose', 'info', 'error')
 /// ```
-pub fn init(level_name: &str) {
+pub(crate) fn init(level_name: &str) {
     let level = get_level(level_name);
 
     let (log_level, level_name_value) = match level {

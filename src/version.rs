@@ -100,7 +100,7 @@ fn print_notification(latest_string: &str) {
     warn!("#####################################################################");
 }
 
-pub fn check() {
+pub(crate) fn check() {
     let latest = get_latest_version();
 
     match latest {

@@ -167,7 +167,7 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
 }
 
 /// Loads the crate info based on the Cargo.toml found in the current working directory.
-pub fn load() -> CrateInfo {
+pub(crate) fn load() -> CrateInfo {
     // load crate info
     let file_path = Path::new("Cargo.toml");
 

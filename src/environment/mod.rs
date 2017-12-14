@@ -4,7 +4,7 @@
 //!
 
 mod gitinfo;
-pub mod crateinfo;
+pub(crate) mod crateinfo;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
@@ -80,7 +80,7 @@ fn set_env_for_info(
 }
 
 /// Updates the env based on the provided data
-pub fn set_env(env: HashMap<String, EnvValue>) {
+pub(crate) fn set_env(env: HashMap<String, EnvValue>) {
     debug!("Setting Up Env.");
 
     for (key, env_value) in &env {
@@ -214,7 +214,7 @@ fn setup_env_for_rust() -> RustInfo {
 }
 
 /// Sets up the env before the tasks execution.
-pub fn setup_env(
+pub(crate) fn setup_env(
     config: &Config,
     task: &str,
 ) -> EnvInfo {
@@ -235,7 +235,7 @@ pub fn setup_env(
     EnvInfo { rust_info, crate_info, git_info }
 }
 
-pub fn setup_cwd(cwd: Option<&str>) {
+pub(crate) fn setup_cwd(cwd: Option<&str>) {
     let directory = cwd.unwrap_or(".");
 
     debug!("Changing working directory to: {}", &directory);
@@ -256,7 +256,7 @@ pub fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub fn get_env(
+pub(crate) fn get_env(
     key: &str,
     default: &str,
 ) -> String {

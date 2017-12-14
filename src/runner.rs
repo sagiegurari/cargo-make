@@ -297,7 +297,7 @@ fn run_flow(flow_info: &FlowInfo) {
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub fn run(
+pub(crate) fn run(
     config: Config,
     task: &str,
     env_info: EnvInfo,
@@ -324,7 +324,7 @@ pub fn run(
 }
 
 /// Only prints the execution plan
-pub fn print(
+pub(crate) fn print(
     config: &Config,
     task: &str,
     disable_workspace: bool,

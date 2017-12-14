@@ -15,7 +15,7 @@ use std::process::{Command, ExitStatus, Output, Stdio};
 use types::Step;
 
 /// Returns the exit code (-1 if no exit code found)
-pub fn get_exit_code(
+pub(crate) fn get_exit_code(
     exit_status: Result<ExitStatus, Error>,
     force: bool,
 ) -> i32 {
@@ -40,7 +40,7 @@ pub fn get_exit_code(
     }
 }
 
-pub fn get_exit_code_from_output(
+pub(crate) fn get_exit_code_from_output(
     output: &io::Result<Output>,
     force: bool,
 ) -> i32 {
@@ -57,7 +57,7 @@ pub fn get_exit_code_from_output(
 }
 
 /// Validates the exit code code and if not 0 or unable to validate it, panic.
-pub fn validate_exit_code(code: i32) {
+pub(crate) fn validate_exit_code(code: i32) {
     if code == -1 {
         error!("Error while executing command, unable to extract exit code.");
     } else if code != 0 {
@@ -66,7 +66,7 @@ pub fn validate_exit_code(code: i32) {
 }
 
 /// Runs the requested script text and returns its output.
-pub fn run_script_get_output(
+pub(crate) fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     capture_output: bool,
@@ -81,7 +81,7 @@ pub fn run_script_get_output(
 }
 
 /// Runs the requested script text and panics in case of any script error.
-pub fn run_script(
+pub(crate) fn run_script(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     validate: bool,
@@ -101,7 +101,7 @@ pub fn run_script(
 }
 
 /// Runs the requested command and return its output.
-pub fn run_command_get_output(
+pub(crate) fn run_command_get_output(
     command_string: &str,
     args: &Option<Vec<String>>,
     capture_output: bool,
@@ -131,7 +131,7 @@ pub fn run_command_get_output(
 }
 
 /// Runs the requested command and panics in case of any error.
-pub fn run_command(
+pub(crate) fn run_command(
     command_string: &str,
     args: &Option<Vec<String>>,
     validate: bool,
@@ -148,7 +148,7 @@ pub fn run_command(
 }
 
 /// Runs the given task command and if not defined, the task script.
-pub fn run(step: &Step) {
+pub(crate) fn run(step: &Step) {
     let validate = !step.config.is_force();
 
     match step.config.command {

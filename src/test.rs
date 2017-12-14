@@ -2,7 +2,7 @@ use ci_info;
 use rust_info;
 use rust_info::types::RustChannel;
 
-pub fn should_test(panic_if_false: bool) -> bool {
+pub(crate) fn should_test(panic_if_false: bool) -> bool {
     let rustinfo = rust_info::get();
     let rust_channel = rustinfo.channel.unwrap();
 

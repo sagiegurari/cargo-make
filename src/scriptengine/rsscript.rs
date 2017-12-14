@@ -67,7 +67,7 @@ fn run_file(file: &str) -> bool {
     exit_code == 0
 }
 
-pub fn execute(rust_script: &Vec<String>) {
+pub(crate) fn execute(rust_script: &Vec<String>) {
     install_crate();
 
     let file = create_rust_file(rust_script);
