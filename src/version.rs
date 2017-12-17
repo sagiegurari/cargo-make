@@ -28,7 +28,10 @@ fn get_version_from_output(line: &str) -> Option<String> {
 }
 
 fn get_latest_version() -> Option<String> {
-    let result = Command::new("cargo").arg("search").arg("cargo-make").output();
+    let result = Command::new("cargo")
+        .arg("search")
+        .arg("cargo-make")
+        .output();
 
     match result {
         Ok(output) => {
@@ -75,7 +78,8 @@ fn is_newer_found(latest_string: &str) -> bool {
                         if latest_values.minor > current_values.minor {
                             true
                         } else {
-                            latest_values.minor == current_values.minor && latest_values.patch > current_values.patch
+                            latest_values.minor == current_values.minor
+                                && latest_values.patch > current_values.patch
                         }
                     } else {
                         false
@@ -93,7 +97,10 @@ fn print_notification(latest_string: &str) {
     warn!("#                                                                   #");
     warn!("#                                                                   #");
     warn!("#                  NEW CARGO-MAKE VERSION FOUND!!!                  #");
-    warn!("#                  Current: {}, Latest: {}\t\t\t#", VERSION, latest_string);
+    warn!(
+        "#                  Current: {}, Latest: {}\t\t\t#",
+        VERSION, latest_string
+    );
     warn!("#    Run 'cargo install --force cargo-make' to get latest version   #");
     warn!("#                                                                   #");
     warn!("#                                                                   #");

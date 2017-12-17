@@ -39,7 +39,8 @@ fn is_newer_found_same() {
 fn is_newer_found_newer_major() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = (version.major + 1).to_string() + "." + &version.minor.to_string() + "." + &version.patch.to_string();
+    let version_string = (version.major + 1).to_string() + "." + &version.minor.to_string() + "."
+        + &version.patch.to_string();
 
     let newer = is_newer_found(&version_string);
 
@@ -50,7 +51,8 @@ fn is_newer_found_newer_major() {
 fn is_newer_found_newer_minor() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = version.major.to_string() + "." + &(version.minor + 1).to_string() + "." + &version.patch.to_string();
+    let version_string = version.major.to_string() + "." + &(version.minor + 1).to_string() + "."
+        + &version.patch.to_string();
 
     let newer = is_newer_found(&version_string);
 
@@ -61,7 +63,8 @@ fn is_newer_found_newer_minor() {
 fn is_newer_found_newer_patch() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = version.major.to_string() + "." + &version.minor.to_string() + "." + &(version.patch + 1).to_string();
+    let version_string = version.major.to_string() + "." + &version.minor.to_string() + "."
+        + &(version.patch + 1).to_string();
 
     let newer = is_newer_found(&version_string);
 
@@ -72,7 +75,9 @@ fn is_newer_found_newer_patch() {
 fn is_newer_found_older_major_newer_minor() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = (version.major as i64 - 1).to_string() + "." + &(version.minor + 1).to_string() + "." + &version.patch.to_string();
+    let version_string = (version.major as i64 - 1).to_string() + "."
+        + &(version.minor + 1).to_string() + "."
+        + &version.patch.to_string();
 
     let newer = is_newer_found(&version_string);
 
@@ -83,7 +88,8 @@ fn is_newer_found_older_major_newer_minor() {
 fn is_newer_found_older_major_newer_patch() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = (version.major as i64 - 1).to_string() + "." + &version.minor.to_string() + "." + &(version.patch + 1).to_string();
+    let version_string = (version.major as i64 - 1).to_string() + "." + &version.minor.to_string()
+        + "." + &(version.patch + 1).to_string();
 
     let newer = is_newer_found(&version_string);
 
@@ -94,7 +100,8 @@ fn is_newer_found_older_major_newer_patch() {
 fn is_newer_found_older_minor_newer_patch() {
     let current = env!("CARGO_PKG_VERSION");
     let version = Version::parse(current).unwrap();
-    let version_string = version.major.to_string() + "." + &(version.minor as i64 - 1).to_string() + "." + &(version.patch + 1).to_string();
+    let version_string = version.major.to_string() + "." + &(version.minor as i64 - 1).to_string()
+        + "." + &(version.patch + 1).to_string();
 
     let newer = is_newer_found(&version_string);
 

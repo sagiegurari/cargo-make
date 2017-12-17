@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -109,8 +110,6 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
-<span id="67">67</span>
-<span id="68">68</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # scriptengine</span>
 <span class="doccomment">//!</span>
@@ -134,29 +133,27 @@
     <span class="doccomment">/// shell to windows batch conversion</span>
     <span class="ident">Shell2Batch</span>,
     <span class="doccomment">/// Unsupported type</span>
-    <span class="ident">Unsupported</span>
+    <span class="ident">Unsupported</span>,
 }
 
 <span class="kw">fn</span> <span class="ident">get_engine_type</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">EngineType</span> {
     <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script_runner</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script_runner</span>) <span class="op">=&gt;</span> {
-            <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script</span> {
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>,
-                _ <span class="op">=&gt;</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, <span class="ident">script_runner</span>);
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script_runner</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script</span> {
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>,
+            _ <span class="op">=&gt;</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, <span class="ident">script_runner</span>);
 
-                    <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@rust&quot;</span> {
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Rust script detected.&quot;</span>);
-                        <span class="ident">EngineType</span>::<span class="ident">Rust</span>
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@shell&quot;</span> {
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Shell to batch detected.&quot;</span>);
-                        <span class="ident">EngineType</span>::<span class="ident">Shell2Batch</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>
-                    }
+                <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@rust&quot;</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Rust script detected.&quot;</span>);
+                    <span class="ident">EngineType</span>::<span class="ident">Rust</span>
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@shell&quot;</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Shell to batch detected.&quot;</span>);
+                    <span class="ident">EngineType</span>::<span class="ident">Shell2Batch</span>
+                } <span class="kw">else</span> {
+                    <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>
                 }
             }
-        }
+        },
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>,
     }
 }

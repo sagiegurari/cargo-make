@@ -78,7 +78,10 @@ fn get_install_crate_args_empty_args() {
 
 #[test]
 fn get_install_crate_args_with_args() {
-    let all_args = get_install_crate_args("test123", &Some(vec!["arg1".to_string(), "arg2".to_string()]));
+    let all_args = get_install_crate_args(
+        "test123",
+        &Some(vec!["arg1".to_string(), "arg2".to_string()]),
+    );
 
     assert_eq!(all_args.len(), 4);
     assert_eq!(all_args[0], "install");

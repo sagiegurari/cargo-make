@@ -38,7 +38,10 @@ fn load_from_git_config(git_info: &mut GitInfo) {
                 }
             }
         }
-        Err(error) => info!("Error while running git config --list command: {:#?}", &error),
+        Err(error) => info!(
+            "Error while running git config --list command: {:#?}",
+            &error
+        ),
     };
 }
 

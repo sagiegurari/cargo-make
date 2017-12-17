@@ -24,7 +24,10 @@ fn add_members_workspace_none_members_empty() {
 #[test]
 fn add_members_workspace_none_members_with_data() {
     let mut crate_info = CrateInfo::new();
-    add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
+    add_members(
+        &mut crate_info,
+        vec!["test1".to_string(), "test2".to_string()],
+    );
 
     assert!(crate_info.workspace.is_none());
 }
@@ -33,7 +36,10 @@ fn add_members_workspace_none_members_with_data() {
 fn add_members_workspace_new_members_with_data() {
     let mut crate_info = CrateInfo::new();
     crate_info.workspace = Some(Workspace::new());
-    add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
+    add_members(
+        &mut crate_info,
+        vec!["test1".to_string(), "test2".to_string()],
+    );
 
     assert!(crate_info.workspace.is_some());
     let workspace = crate_info.workspace.unwrap();
@@ -47,7 +53,10 @@ fn add_members_workspace_empty_members_with_data() {
     let mut workspace = Workspace::new();
     workspace.members = Some(vec![]);
     crate_info.workspace = Some(workspace);
-    add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
+    add_members(
+        &mut crate_info,
+        vec!["test1".to_string(), "test2".to_string()],
+    );
 
     assert!(crate_info.workspace.is_some());
     let workspace = crate_info.workspace.unwrap();
@@ -61,7 +70,10 @@ fn add_members_workspace_with_data_members_with_data_no_duplicates() {
     let mut workspace = Workspace::new();
     workspace.members = Some(vec!["member1".to_string(), "member2".to_string()]);
     crate_info.workspace = Some(workspace);
-    add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
+    add_members(
+        &mut crate_info,
+        vec!["test1".to_string(), "test2".to_string()],
+    );
 
     assert!(crate_info.workspace.is_some());
     let workspace = crate_info.workspace.unwrap();
@@ -73,9 +85,16 @@ fn add_members_workspace_with_data_members_with_data_no_duplicates() {
 fn add_members_workspace_with_data_members_with_data_with_duplicates() {
     let mut crate_info = CrateInfo::new();
     let mut workspace = Workspace::new();
-    workspace.members = Some(vec!["member1".to_string(), "member2".to_string(), "test1".to_string()]);
+    workspace.members = Some(vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "test1".to_string(),
+    ]);
     crate_info.workspace = Some(workspace);
-    add_members(&mut crate_info, vec!["test1".to_string(), "test2".to_string()]);
+    add_members(
+        &mut crate_info,
+        vec!["test1".to_string(), "test2".to_string()],
+    );
 
     assert!(crate_info.workspace.is_some());
     let workspace = crate_info.workspace.unwrap();
@@ -103,8 +122,14 @@ fn get_members_from_dependencies_empty() {
 #[test]
 fn get_members_from_dependencies_only_versions() {
     let mut dependencies = HashMap::new();
-    dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
-    dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -116,9 +141,18 @@ fn get_members_from_dependencies_only_versions() {
 #[test]
 fn get_members_from_dependencies_no_paths() {
     let mut dependencies = HashMap::new();
-    dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
-    dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: None }));
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
+    dependencies.insert(
+        "test3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo { path: None }),
+    );
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -133,9 +167,18 @@ fn get_members_from_dependencies_no_workspace_paths() {
     info.insert("path".to_string(), "somepath".to_string());
 
     let mut dependencies = HashMap::new();
-    dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
-    dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: None }));
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
+    dependencies.insert(
+        "test3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo { path: None }),
+    );
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -147,11 +190,32 @@ fn get_members_from_dependencies_no_workspace_paths() {
 #[test]
 fn get_members_from_dependencies_workspace_paths() {
     let mut dependencies = HashMap::new();
-    dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
-    dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("somepath".to_string()) }));
-    dependencies.insert("valid1".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./member1".to_string()) }));
-    dependencies.insert("valid2".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./member2".to_string()) }));
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
+    dependencies.insert(
+        "test3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("somepath".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid1".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./member1".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid2".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./member2".to_string()),
+        }),
+    );
 
     let mut crate_info = CrateInfo::new();
     crate_info.dependencies = Some(dependencies);
@@ -238,8 +302,18 @@ fn remove_excludes_workspace_with_members_empty_excludes() {
 fn remove_excludes_workspace_with_members_with_excludes() {
     let mut crate_info = CrateInfo::new();
     let mut workspace = Workspace::new();
-    workspace.exclude = Some(vec!["test0".to_string(), "test2".to_string(), "test3".to_string(), "test6".to_string()]);
-    workspace.members = Some(vec!["test1".to_string(), "test2".to_string(), "test3".to_string(), "test4".to_string()]);
+    workspace.exclude = Some(vec![
+        "test0".to_string(),
+        "test2".to_string(),
+        "test3".to_string(),
+        "test6".to_string(),
+    ]);
+    workspace.members = Some(vec![
+        "test1".to_string(),
+        "test2".to_string(),
+        "test3".to_string(),
+        "test4".to_string(),
+    ]);
     crate_info.workspace = Some(workspace);
 
     remove_excludes(&mut crate_info);
@@ -265,18 +339,38 @@ fn expand_glob_members_found() {
     let mut members = expand_glob_members("examples/*.toml");
 
     assert!(members.len() > 0);
-    assert!(members.iter().position(|member| member == "examples/env.toml").is_some());
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/env.toml")
+            .is_some()
+    );
 
     members = expand_glob_members("examples/*/*.toml");
 
     assert!(members.len() > 0);
-    assert!(members.iter().position(|member| member == "examples/workspace2/Makefile.toml").is_some());
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace2/Makefile.toml")
+            .is_some()
+    );
 
     members = expand_glob_members("examples/workspace/member*");
 
     assert!(members.len() > 0);
-    assert!(members.iter().position(|member| member == "examples/workspace/member1").is_some());
-    assert!(members.iter().position(|member| member == "examples/workspace/member2").is_some());
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace/member1")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace/member2")
+            .is_some()
+    );
 }
 
 #[test]
@@ -347,12 +441,42 @@ fn normalize_members_mixed() {
     workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_some());
     let members = workspace.members.unwrap();
-    assert!(members.iter().position(|member| member == "member1").is_some());
-    assert!(members.iter().position(|member| member == "member2").is_some());
-    assert!(members.iter().position(|member| member == "member3").is_some());
-    assert!(members.iter().position(|member| member == "member4").is_some());
-    assert!(members.iter().position(|member| member == "examples/workspace/member1").is_some());
-    assert!(members.iter().position(|member| member == "examples/workspace/member2").is_some());
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member1")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member2")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member3")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member4")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace/member1")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace/member2")
+            .is_some()
+    );
 }
 
 #[test]
@@ -368,12 +492,38 @@ fn load_workspace_members_mixed() {
     let mut crate_info = CrateInfo::new();
 
     let mut dependencies = HashMap::new();
-    dependencies.insert("test1".to_string(), CrateDependency::Version("1".to_string()));
-    dependencies.insert("test2".to_string(), CrateDependency::Version("2".to_string()));
-    dependencies.insert("test3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("somepath".to_string()) }));
-    dependencies.insert("valid1".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./path1".to_string()) }));
-    dependencies.insert("valid2".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./path2".to_string()) }));
-    dependencies.insert("valid3".to_string(), CrateDependency::Info(CrateDependencyInfo { path: Some("./member1".to_string()) }));
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
+    dependencies.insert(
+        "test3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("somepath".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid1".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./path1".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid2".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./path2".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./member1".to_string()),
+        }),
+    );
     crate_info.dependencies = Some(dependencies);
 
     let mut workspace = Workspace::new();
@@ -398,11 +548,41 @@ fn load_workspace_members_mixed() {
     workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_some());
     let members = workspace.members.unwrap();
-    assert!(members.iter().position(|member| member == "path1").is_some());
-    assert!(members.iter().position(|member| member == "path2").is_some());
-    assert!(members.iter().position(|member| member == "member1").is_some());
-    assert!(members.iter().position(|member| member == "member2").is_some());
-    assert!(members.iter().position(|member| member == "member4").is_some());
-    assert!(members.iter().position(|member| member == "examples/workspace/member1").is_some());
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "path1")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "path2")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member1")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member2")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "member4")
+            .is_some()
+    );
+    assert!(
+        members
+            .iter()
+            .position(|member| member == "examples/workspace/member1")
+            .is_some()
+    );
     assert_eq!(members.len(), 7);
 }

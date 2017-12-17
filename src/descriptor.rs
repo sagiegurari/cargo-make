@@ -98,11 +98,11 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
     }
 }
 
-fn load_external_descriptor(
-    base_path: &str,
-    file_name: &str,
-) -> ExternalConfig {
-    debug!("Loading tasks from file: {} base directory: {}", &file_name, &base_path);
+fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig {
+    debug!(
+        "Loading tasks from file: {} base directory: {}",
+        &file_name, &base_path
+    );
 
     let file_path = Path::new(base_path).join(file_name);
 
@@ -110,7 +110,10 @@ fn load_external_descriptor(
         debug!("Opening file: {:#?}", &file_path);
         let mut file = match File::open(&file_path) {
             Ok(value) => value,
-            Err(error) => panic!("Unable to open file, base path: {} file name: {} error: {}", base_path, file_name, error),
+            Err(error) => panic!(
+                "Unable to open file, base path: {} file name: {} error: {}",
+                base_path, file_name, error
+            ),
         };
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
@@ -126,7 +129,11 @@ fn load_external_descriptor(
         match file_config.extend {
             Some(ref base_file) => {
                 let parent_path_buf = Path::new(base_path).join(file_name).join("..");
-                let parent_path = file_path.parent().unwrap_or(&parent_path_buf).to_str().unwrap_or(".");
+                let parent_path = file_path
+                    .parent()
+                    .unwrap_or(&parent_path_buf)
+                    .to_str()
+                    .unwrap_or(".");
                 debug!("External config parent path: {}", &parent_path);
                 let base_file_config = load_external_descriptor(parent_path, base_file);
 
@@ -160,7 +167,12 @@ fn load_external_descriptor(
                     config_section.extend(&mut file_config.config.unwrap());
                 }
 
-                ExternalConfig { extend: None, config: Some(config_section), env: Some(all_env), tasks: Some(all_tasks) }
+                ExternalConfig {
+                    extend: None,
+                    config: Some(config_section),
+                    env: Some(all_env),
+                    tasks: Some(all_tasks),
+                }
             }
             None => file_config,
         }
@@ -205,11 +217,7 @@ fn load_default(experimental: bool) -> Config {
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub(crate) fn load(
-    file_name: &str,
-    env: Option<Vec<String>>,
-    experimental: bool,
-) -> Config {
+pub(crate) fn load(file_name: &str, env: Option<Vec<String>>, experimental: bool) -> Config {
     let default_config = load_default(experimental);
 
     let external_config: ExternalConfig = load_external_descriptor(".", file_name);
@@ -237,7 +245,10 @@ pub(crate) fn load(
                 debug!("Checking env pair: {}", &env_pair);
 
                 if env_part.len() == 2 {
-                    cli_env.insert(env_part[0].to_string(), EnvValue::Value(env_part[1].to_string()));
+                    cli_env.insert(
+                        env_part[0].to_string(),
+                        EnvValue::Value(env_part[1].to_string()),
+                    );
                 }
             }
 
@@ -251,7 +262,11 @@ pub(crate) fn load(
     let mut config_section = default_config.config.clone();
     config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
 
-    let config = Config { config: config_section, env: all_env, tasks: all_tasks };
+    let config = Config {
+        config: config_section,
+        env: all_env,
+        tasks: all_tasks,
+    };
 
     debug!("Loaded merged config: {:#?}", &config);
 

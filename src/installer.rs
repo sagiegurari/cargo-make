@@ -43,24 +43,22 @@ fn is_crate_installed(crate_name: &str) -> bool {
             found
         }
         Err(error) => {
-            error!("Unable to check if crate is installed: {} {:#?}", crate_name, &error);
+            error!(
+                "Unable to check if crate is installed: {} {:#?}",
+                crate_name, &error
+            );
             false
         }
     }
 }
 
-fn get_install_crate_args(
-    crate_name: &str,
-    args: &Option<Vec<String>>,
-) -> Vec<String> {
+fn get_install_crate_args(crate_name: &str, args: &Option<Vec<String>>) -> Vec<String> {
     let mut install_args = vec!["install".to_string()];
 
     match *args {
-        Some(ref args_vec) => {
-            for arg in args_vec.iter() {
-                install_args.push(arg.to_string());
-            }
-        }
+        Some(ref args_vec) => for arg in args_vec.iter() {
+            install_args.push(arg.to_string());
+        },
         None => debug!("No crate installation args defined."),
     };
 
@@ -95,7 +93,12 @@ pub(crate) fn install(task_config: &Task) {
                 }
             };
 
-            install_crate(cargo_command, crate_name, &task_config.install_crate_args, validate);
+            install_crate(
+                cargo_command,
+                crate_name,
+                &task_config.install_crate_args,
+                validate,
+            );
         }
         None => {
             match task_config.install_script {
@@ -113,7 +116,12 @@ pub(crate) fn install(task_config: &Task) {
                                         let mut crate_name = "cargo-".to_string();
                                         crate_name = crate_name + &args[0];
 
-                                        install_crate(&args[0], &crate_name, &task_config.install_crate_args, validate);
+                                        install_crate(
+                                            &args[0],
+                                            &crate_name,
+                                            &task_config.install_crate_args,
+                                            validate,
+                                        );
                                     }
                                     None => debug!("No installation script defined."),
                                 }

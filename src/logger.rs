@@ -25,7 +25,7 @@ use std::process::exit;
 pub(crate) enum Level {
     VERBOSE,
     INFO,
-    ERROR
+    ERROR,
 }
 
 fn get_level(level_name: &str) -> Level {

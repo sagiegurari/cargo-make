@@ -106,7 +106,7 @@ fn task_extend_both_have_misc_data() {
         dependencies: None,
         linux: None,
         windows: None,
-        mac: None
+        mac: None,
     };
 
     base.extend(&extended);
@@ -169,7 +169,7 @@ fn task_extend_extended_have_all_fields() {
         dependencies: None,
         linux: None,
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let mut env = HashMap::new();
@@ -185,7 +185,7 @@ fn task_extend_extended_have_all_fields() {
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
             env_not_set: None,
-            env: None
+            env: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -212,7 +212,7 @@ fn task_extend_extended_have_all_fields() {
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
                 env_not_set: None,
-                env: None
+                env: None,
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -223,7 +223,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
-            dependencies: Some(vec!["A".to_string()])
+            dependencies: Some(vec!["A".to_string()]),
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -236,7 +236,7 @@ fn task_extend_extended_have_all_fields() {
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
                 env_not_set: None,
-                env: None
+                env: None,
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -247,7 +247,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
-            dependencies: Some(vec!["A".to_string()])
+            dependencies: Some(vec!["A".to_string()]),
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
@@ -260,7 +260,7 @@ fn task_extend_extended_have_all_fields() {
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
                 env_not_set: None,
-                env: None
+                env: None,
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
@@ -271,8 +271,8 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             run_task: Some("task3".to_string()),
-            dependencies: Some(vec!["A".to_string()])
-        })
+            dependencies: Some(vec!["A".to_string()]),
+        }),
     };
 
     base.extend(&extended);
@@ -389,7 +389,7 @@ fn task_get_normalized_task_undefined() {
         description: Some("description".to_string()),
         linux: None,
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -456,7 +456,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
             env_not_set: None,
-            env: None
+            env: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -479,21 +479,26 @@ fn task_get_normalized_task_with_override_no_clear() {
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
                 env_not_set: None,
-                env: None
+                env: None,
             }),
             condition_script: Some(vec!["exit 0".to_string()]),
             force: Some(true),
             env: Some(env),
             cwd: Some("cwd2".to_string()),
-            install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
+            install_script: Some(vec![
+                "A".to_string(),
+                "B".to_string(),
+                "C".to_string(),
+                "D".to_string(),
+            ]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             run_task: Some("task2".to_string()),
-            dependencies: Some(vec!["1".to_string(), "2".to_string()])
+            dependencies: Some(vec!["1".to_string(), "2".to_string()]),
         }),
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -564,7 +569,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
             env_not_set: None,
-            env: None
+            env: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -583,25 +588,34 @@ fn task_get_normalized_task_with_override_clear_false() {
             disabled: Some(true),
             condition: Some(TaskCondition {
                 platforms: Some(vec!["linux".to_string()]),
-                channels: Some(vec!["nightly".to_string(), "stable".to_string(), "beta".to_string()]),
+                channels: Some(vec![
+                    "nightly".to_string(),
+                    "stable".to_string(),
+                    "beta".to_string(),
+                ]),
                 env_set: None,
                 env_not_set: None,
-                env: None
+                env: None,
             }),
             condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
             force: Some(true),
             env: Some(env),
             cwd: Some("cwd2".to_string()),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string(), "c3".to_string()]),
-            install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string()]),
+            install_script: Some(vec![
+                "A".to_string(),
+                "B".to_string(),
+                "C".to_string(),
+                "D".to_string(),
+            ]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             run_task: Some("task2".to_string()),
-            dependencies: Some(vec!["1".to_string(), "2".to_string()])
+            dependencies: Some(vec!["1".to_string(), "2".to_string()]),
         }),
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -668,7 +682,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
             env_not_set: None,
-            env: None
+            env: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -697,10 +711,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             script: None,
             script_runner: None,
             run_task: None,
-            dependencies: None
+            dependencies: None,
         }),
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -761,7 +775,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
             env_not_set: None,
-            env: None
+            env: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
@@ -790,10 +804,10 @@ fn task_get_normalized_task_with_override_clear_true() {
             script: None,
             script_runner: None,
             run_task: None,
-            dependencies: None
+            dependencies: None,
         }),
         windows: None,
-        mac: None
+        mac: None,
     };
 
     let normalized_task = task.get_normalized_task();

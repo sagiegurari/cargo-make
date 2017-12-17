@@ -42,9 +42,9 @@
 
     // On the search screen, so you remain on the last tab you opened.
     //
-    // 0 for "Types/modules"
-    // 1 for "As parameters"
-    // 2 for "As return value"
+    // 0 for "In Names"
+    // 1 for "In Parameters"
+    // 2 for "In Return Types"
     var currentTab = 0;
 
     function hasClass(elem, className) {
@@ -106,6 +106,30 @@
         return (elem.offsetParent === null)
     }
 
+    function showSidebar() {
+        var elems = document.getElementsByClassName("sidebar-elems")[0];
+        if (elems) {
+            elems.style.display = "block";
+        }
+        var sidebar = document.getElementsByClassName('sidebar')[0];
+        sidebar.style.position = 'fixed';
+        sidebar.style.width = '100%';
+        sidebar.style.marginLeft = '0';
+        document.getElementsByTagName("body")[0].style.marginTop = '45px';
+    }
+
+    function hideSidebar() {
+        var elems = document.getElementsByClassName("sidebar-elems")[0];
+        if (elems) {
+            elems.style.display = "";
+        }
+        var sidebar = document.getElementsByClassName('sidebar')[0];
+        sidebar.style.position = '';
+        sidebar.style.width = '';
+        sidebar.style.marginLeft = '';
+        document.getElementsByTagName("body")[0].style.marginTop = '';
+    }
+
     // used for special search precedence
     var TY_PRIMITIVE = itemTypes.indexOf("primitive");
 
@@ -119,8 +143,7 @@
             map(function(s) {
                 var pair = s.split("=");
                 params[decodeURIComponent(pair[0])] =
-                    typeof pair[1] === "undefined" ?
-                            null : decodeURIComponent(pair[1]);
+                    typeof pair[1] === "undefined" ? null : decodeURIComponent(pair[1]);
             });
         return params;
     }
@@ -131,6 +154,8 @@
     }
 
     function highlightSourceLines(ev) {
+        // If we're in mobile mode, we should add the sidebar in any case.
+        hideSidebar();
         var search = document.getElementById("search");
         var i, from, to, match = window.location.hash.match(/^#?(\d+)(?:-(\d+))?$/);
         if (match) {
@@ -886,24 +911,24 @@
                         searchWords[j].replace(/_/g, "").indexOf(val) > -1)
                     {
                         // filter type: ... queries
-                        if (typePassesFilter(typeFilter, ty) && results[fullId] === undefined) {
+                        if (typePassesFilter(typeFilter, ty.ty) && results[fullId] === undefined) {
                             index = searchWords[j].replace(/_/g, "").indexOf(val);
                         }
                     }
                     if ((lev = levenshtein(searchWords[j], val)) <= MAX_LEV_DISTANCE) {
-                        if (typePassesFilter(typeFilter, ty) === false) {
+                        if (typePassesFilter(typeFilter, ty.ty) === false) {
                             lev = MAX_LEV_DISTANCE + 1;
                         } else {
                             lev += 1;
                         }
                     }
                     if ((in_args = findArg(ty, valGenerics)) <= MAX_LEV_DISTANCE) {
-                        if (typePassesFilter(typeFilter, ty) === false) {
+                        if (typePassesFilter(typeFilter, ty.ty) === false) {
                             in_args = MAX_LEV_DISTANCE + 1;
                         }
                     }
                     if ((returned = checkReturned(ty, valGenerics)) <= MAX_LEV_DISTANCE) {
-                        if (typePassesFilter(typeFilter, ty) === false) {
+                        if (typePassesFilter(typeFilter, ty.ty) === false) {
                             returned = MAX_LEV_DISTANCE + 1;
                         }
                     }
@@ -1196,9 +1221,9 @@
             output = '<h1>Results for ' + escape(query.query) +
                 (query.type ? ' (type: ' + escape(query.type) + ')' : '') + '</h1>' +
                 '<div id="titles">' +
-                makeTabHeader(0, "Types/modules", results['others'].length) +
-                makeTabHeader(1, "As parameters", results['in_args'].length) +
-                makeTabHeader(2, "As return value", results['returned'].length) +
+                makeTabHeader(0, "In Names", results['others'].length) +
+                makeTabHeader(1, "In Parameters", results['in_args'].length) +
+                makeTabHeader(2, "In Return Types", results['returned'].length) +
                 '</div><div id="results">';
 
             output += addTab(results['others'], query);
@@ -1460,7 +1485,7 @@
 
     // delayed sidebar rendering.
     function initSidebarItems(items) {
-        var sidebar = document.getElementsByClassName('sidebar')[0];
+        var sidebar = document.getElementsByClassName('sidebar-elems')[0];
         var current = window.sidebarCurrent;
 
         function block(shortty, longty) {
@@ -1822,6 +1847,30 @@
             }
         };
     }
+
+    var params = getQueryStringParams();
+    if (params && params.search) {
+        addClass(document.getElementById("main"), "hidden");
+        var search = document.getElementById("search");
+        removeClass(search, "hidden");
+        search.innerHTML = '<h3 style="text-align: center;">Loading search results...</h3>';
+    }
+
+    var sidebar_menu = document.getElementsByClassName("sidebar-menu")[0];
+    if (sidebar_menu) {
+        sidebar_menu.onclick = function() {
+            var sidebar = document.getElementsByClassName('sidebar')[0];
+            if (sidebar.style.position === "fixed") {
+                hideSidebar();
+            } else {
+                showSidebar();
+            }
+        };
+    }
+
+    window.onresize = function() {
+        hideSidebar();
+    };
 }());
 
 // Sets the focus on the search bar at the top of the page

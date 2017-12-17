@@ -23,32 +23,26 @@ use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
 
-fn validate_condition(
-    flow_info: &FlowInfo,
-    step: &Step,
-) -> bool {
+fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition(&flow_info, &step)
 }
 
-fn run_sub_task(
-    flow_info: &FlowInfo,
-    sub_task: &str,
-) {
+fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
     let mut sub_flow_info = flow_info.clone();
     sub_flow_info.task = sub_task.to_string();
 
     run_flow(&sub_flow_info);
 }
 
-fn run_task(
-    flow_info: &FlowInfo,
-    step: &Step,
-) {
+fn run_task(flow_info: &FlowInfo, step: &Step) {
     info!("Running Task: {}", &step.name);
 
     if validate_condition(&flow_info, &step) {
         if !step.config.is_valid() {
-            error!("Invalid task, contains multiple actions.\n{:#?}", &step.config);
+            error!(
+                "Invalid task, contains multiple actions.\n{:#?}",
+                &step.config
+            );
         }
 
         let env = match step.config.env {
@@ -93,20 +87,14 @@ fn run_task(
     }
 }
 
-fn run_task_flow(
-    flow_info: &FlowInfo,
-    execution_plan: &ExecutionPlan,
-) {
+fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
     for step in &execution_plan.steps {
         run_task(&flow_info, &step);
     }
 }
 
 /// Returns the actual task name to invoke as tasks may have aliases
-fn get_task_name(
-    config: &Config,
-    name: &str,
-) -> String {
+fn get_task_name(config: &Config, name: &str) -> String {
     match config.tasks.get(name) {
         Some(task_config) => {
             let alias = task_config.get_alias();
@@ -138,11 +126,9 @@ fn create_execution_plan_for_step(
     match config.tasks.get(&actual_task) {
         Some(task_config) => {
             match task_config.dependencies {
-                Some(ref dependencies) => {
-                    for dependency in dependencies {
-                        create_execution_plan_for_step(&config, &dependency, steps, task_names, false);
-                    }
-                }
+                Some(ref dependencies) => for dependency in dependencies {
+                    create_execution_plan_for_step(&config, &dependency, steps, task_names, false);
+                },
                 _ => debug!("No dependencies found for task: {}", &task),
             };
 
@@ -152,7 +138,10 @@ fn create_execution_plan_for_step(
                 let add = !normalized_task.disabled.unwrap_or(false);
 
                 if add {
-                    steps.push(Step { name: task.to_string(), config: normalized_task });
+                    steps.push(Step {
+                        name: task.to_string(),
+                        config: normalized_task,
+                    });
                     task_names.insert(task.to_string());
                 }
             } else if root {
@@ -177,10 +166,7 @@ fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String>
     return members;
 }
 
-fn create_workspace_task(
-    crate_info: CrateInfo,
-    task: &str,
-) -> Task {
+fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let workspace = crate_info.workspace.unwrap();
     let members = workspace.members.unwrap_or(vec![]);
 
@@ -226,29 +212,26 @@ fn create_workspace_task(
 }
 
 /// Creates the full execution plan
-fn create_execution_plan(
-    config: &Config,
-    task: &str,
-    disable_workspace: bool,
-) -> ExecutionPlan {
+fn create_execution_plan(config: &Config, task: &str, disable_workspace: bool) -> ExecutionPlan {
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
 
     match config.config.init_task {
-        Some(ref task) => {
-            match config.tasks.get(task) {
-                Some(task_config) => {
-                    let mut clone_task = task_config.clone();
-                    let normalized_task = clone_task.get_normalized_task();
-                    let add = !normalized_task.disabled.unwrap_or(false);
+        Some(ref task) => match config.tasks.get(task) {
+            Some(task_config) => {
+                let mut clone_task = task_config.clone();
+                let normalized_task = clone_task.get_normalized_task();
+                let add = !normalized_task.disabled.unwrap_or(false);
 
-                    if add {
-                        steps.push(Step { name: task.to_string(), config: normalized_task });
-                    }
+                if add {
+                    steps.push(Step {
+                        name: task.to_string(),
+                        config: normalized_task,
+                    });
                 }
-                None => error!("Task not found: {}", &task),
             }
-        }
+            None => error!("Task not found: {}", &task),
+        },
         None => debug!("Init task not defined."),
     };
 
@@ -260,25 +243,29 @@ fn create_execution_plan(
     } else {
         let workspace_task = create_workspace_task(crate_info, task);
 
-        steps.push(Step { name: "workspace".to_string(), config: workspace_task });
+        steps.push(Step {
+            name: "workspace".to_string(),
+            config: workspace_task,
+        });
     }
 
     // always add end task even if already executed due to some depedency
     match config.config.end_task {
-        Some(ref task) => {
-            match config.tasks.get(task) {
-                Some(task_config) => {
-                    let mut clone_task = task_config.clone();
-                    let normalized_task = clone_task.get_normalized_task();
-                    let add = !normalized_task.disabled.unwrap_or(false);
+        Some(ref task) => match config.tasks.get(task) {
+            Some(task_config) => {
+                let mut clone_task = task_config.clone();
+                let normalized_task = clone_task.get_normalized_task();
+                let add = !normalized_task.disabled.unwrap_or(false);
 
-                    if add {
-                        steps.push(Step { name: task.to_string(), config: normalized_task });
-                    }
+                if add {
+                    steps.push(Step {
+                        name: task.to_string(),
+                        config: normalized_task,
+                    });
                 }
-                None => error!("Task not found: {}", &task),
             }
-        }
+            None => error!("Task not found: {}", &task),
+        },
         None => debug!("End task not defined."),
     };
 
@@ -286,7 +273,11 @@ fn create_execution_plan(
 }
 
 fn run_flow(flow_info: &FlowInfo) {
-    let execution_plan = create_execution_plan(&flow_info.config, &flow_info.task, flow_info.disable_workspace);
+    let execution_plan = create_execution_plan(
+        &flow_info.config,
+        &flow_info.task,
+        flow_info.disable_workspace,
+    );
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     run_task_flow(&flow_info, &execution_plan);
@@ -297,15 +288,15 @@ fn run_flow(flow_info: &FlowInfo) {
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(
-    config: Config,
-    task: &str,
-    env_info: EnvInfo,
-    disable_workspace: bool,
-) {
+pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, disable_workspace: bool) {
     let start_time = SystemTime::now();
 
-    let flow_info = FlowInfo { config, task: task.to_string(), env_info, disable_workspace };
+    let flow_info = FlowInfo {
+        config,
+        task: task.to_string(),
+        env_info,
+        disable_workspace,
+    };
 
     run_flow(&flow_info);
 
@@ -324,11 +315,7 @@ pub(crate) fn run(
 }
 
 /// Only prints the execution plan
-pub(crate) fn print(
-    config: &Config,
-    task: &str,
-    disable_workspace: bool,
-) {
+pub(crate) fn print(config: &Config, task: &str, disable_workspace: bool) {
     let execution_plan = create_execution_plan(&config, &task, disable_workspace);
     debug!("Created execution plan: {:#?}", &execution_plan);
 

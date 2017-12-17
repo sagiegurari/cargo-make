@@ -47,10 +47,7 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     }
 }
 
-fn evaluate_and_set_env(
-    key: &str,
-    value: &str,
-) {
+fn evaluate_and_set_env(key: &str, value: &str) {
     let mut value_string = value.to_string();
     let env_value = match value_string.find("${") {
         Some(_) => {
@@ -70,10 +67,7 @@ fn evaluate_and_set_env(
     env::set_var(&key, &env_value);
 }
 
-fn set_env_for_info(
-    key: &str,
-    env_value: &EnvValueInfo,
-) {
+fn set_env_for_info(key: &str, env_value: &EnvValueInfo) {
     let value = evaluate_env_value(&env_value);
 
     evaluate_and_set_env(&key, &value);
@@ -119,7 +113,10 @@ fn setup_env_for_crate() -> CrateInfo {
     }
 
     if package_info.description.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_DESCRIPTION", &package_info.description.unwrap());
+        env::set_var(
+            "CARGO_MAKE_CRATE_DESCRIPTION",
+            &package_info.description.unwrap(),
+        );
     }
 
     if package_info.license.is_some() {
@@ -127,7 +124,10 @@ fn setup_env_for_crate() -> CrateInfo {
     }
 
     if package_info.documentation.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_DOCUMENTATION", &package_info.documentation.unwrap());
+        env::set_var(
+            "CARGO_MAKE_CRATE_DOCUMENTATION",
+            &package_info.documentation.unwrap(),
+        );
     }
 
     if package_info.homepage.is_some() {
@@ -135,7 +135,10 @@ fn setup_env_for_crate() -> CrateInfo {
     }
 
     if package_info.repository.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository.unwrap());
+        env::set_var(
+            "CARGO_MAKE_CRATE_REPOSITORY",
+            &package_info.repository.unwrap(),
+        );
     }
 
     let has_dependencies = match crate_info.dependencies {
@@ -143,12 +146,11 @@ fn setup_env_for_crate() -> CrateInfo {
         None => false,
     };
 
-    let has_dependencies_var_value = if has_dependencies {
-        "TRUE"
-    } else {
-        "FALSE"
-    };
-    env::set_var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies_var_value);
+    let has_dependencies_var_value = if has_dependencies { "TRUE" } else { "FALSE" };
+    env::set_var(
+        "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
+        has_dependencies_var_value,
+    );
 
     let is_workspace_var_value = if crate_info.workspace.is_none() {
         "FALSE"
@@ -204,20 +206,34 @@ fn setup_env_for_rust() -> RustInfo {
         env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
     }
 
-    env::set_var("CARGO_MAKE_RUST_TARGET_ARCH", &rustinfo.target_arch.unwrap_or("unknown".to_string()));
-    env::set_var("CARGO_MAKE_RUST_TARGET_ENV", &rustinfo.target_env.unwrap_or("unknown".to_string()));
-    env::set_var("CARGO_MAKE_RUST_TARGET_OS", &rustinfo.target_os.unwrap_or("unknown".to_string()));
-    env::set_var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", &rustinfo.target_pointer_width.unwrap_or("unknown".to_string()));
-    env::set_var("CARGO_MAKE_RUST_TARGET_VENDOR", &rustinfo.target_vendor.unwrap_or("unknown".to_string()));
+    env::set_var(
+        "CARGO_MAKE_RUST_TARGET_ARCH",
+        &rustinfo.target_arch.unwrap_or("unknown".to_string()),
+    );
+    env::set_var(
+        "CARGO_MAKE_RUST_TARGET_ENV",
+        &rustinfo.target_env.unwrap_or("unknown".to_string()),
+    );
+    env::set_var(
+        "CARGO_MAKE_RUST_TARGET_OS",
+        &rustinfo.target_os.unwrap_or("unknown".to_string()),
+    );
+    env::set_var(
+        "CARGO_MAKE_RUST_TARGET_POINTER_WIDTH",
+        &rustinfo
+            .target_pointer_width
+            .unwrap_or("unknown".to_string()),
+    );
+    env::set_var(
+        "CARGO_MAKE_RUST_TARGET_VENDOR",
+        &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
+    );
 
     rust_info_clone
 }
 
 /// Sets up the env before the tasks execution.
-pub(crate) fn setup_env(
-    config: &Config,
-    task: &str,
-) -> EnvInfo {
+pub(crate) fn setup_env(config: &Config, task: &str) -> EnvInfo {
     initialize_env(config);
 
     env::set_var("CARGO_MAKE", "true");
@@ -232,7 +248,11 @@ pub(crate) fn setup_env(
     // load rust info
     let rust_info = setup_env_for_rust();
 
-    EnvInfo { rust_info, crate_info, git_info }
+    EnvInfo {
+        rust_info,
+        crate_info,
+        git_info,
+    }
 }
 
 pub(crate) fn setup_cwd(cwd: Option<&str>) {
@@ -242,12 +262,17 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
 
     let mut directory_path_buf = PathBuf::from(&directory);
     if !cfg!(windows) {
-        directory_path_buf = directory_path_buf.canonicalize().unwrap_or(directory_path_buf);
+        directory_path_buf = directory_path_buf
+            .canonicalize()
+            .unwrap_or(directory_path_buf);
     }
     let directory_path = directory_path_buf.as_path();
 
     match env::set_current_dir(&directory_path) {
-        Err(error) => error!("Unable to set current working directory to: {} {:#?}", &directory, error),
+        Err(error) => error!(
+            "Unable to set current working directory to: {} {:#?}",
+            &directory, error
+        ),
         _ => {
             env::set_var("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
 
@@ -256,10 +281,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub(crate) fn get_env(
-    key: &str,
-    default: &str,
-) -> String {
+pub(crate) fn get_env(key: &str, default: &str) -> String {
     match env::var(key) {
         Ok(value) => value.to_string(),
         _ => default.to_string(),

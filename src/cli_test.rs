@@ -15,7 +15,7 @@ fn run_empty_task() {
         disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -31,7 +31,7 @@ fn print_empty_task() {
         disable_check_for_updates: true,
         print_only: true,
         list_all_steps: false,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -47,7 +47,7 @@ fn list_empty_task() {
         disable_check_for_updates: true,
         print_only: false,
         list_all_steps: true,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -63,7 +63,7 @@ fn run_file_and_task() {
         disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -82,7 +82,7 @@ fn run_cwd_with_file() {
         disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -102,7 +102,7 @@ fn run_cwd_task_not_found() {
         disable_check_for_updates: true,
         print_only: false,
         list_all_steps: false,
-        experimental: false
+        experimental: false,
     });
 }
 
@@ -126,7 +126,16 @@ fn run_for_args_bad_subcommand() {
 fn run_for_args_valid() {
     let app = create_cli();
 
-    let matches = app.get_matches_from(vec!["cargo", "make", "--makefile", "./examples/dependencies.toml", "-t", "A", "-l", "error"]);
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/dependencies.toml",
+        "-t",
+        "A",
+        "-l",
+        "error",
+    ]);
 
     run_for_args(matches);
 }
@@ -135,7 +144,17 @@ fn run_for_args_valid() {
 fn run_for_args_log_level_override() {
     let app = create_cli();
 
-    let matches = app.get_matches_from(vec!["cargo", "make", "--makefile", "./examples/dependencies.toml", "-t", "A", "-l", "error", "-v"]);
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/dependencies.toml",
+        "-t",
+        "A",
+        "-l",
+        "error",
+        "-v",
+    ]);
 
     run_for_args(matches);
 }

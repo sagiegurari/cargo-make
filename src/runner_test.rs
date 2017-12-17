@@ -2,19 +2,28 @@ use super::*;
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
 use std::env;
-use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step, Task, Workspace};
+use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask,
+            Step, Task, Workspace};
 
 #[test]
 #[should_panic]
 fn get_task_name_not_found() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     get_task_name(&config, "test");
 }
 
 #[test]
 fn get_task_name_no_alias() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     config.tasks.insert("test".to_string(), Task::new());
 
@@ -25,7 +34,11 @@ fn get_task_name_no_alias() {
 
 #[test]
 fn get_task_name_alias() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     let mut task = Task::new();
     task.alias = Some("test2".to_string());
@@ -40,7 +53,11 @@ fn get_task_name_alias() {
 
 #[test]
 fn get_task_name_platform_alias() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     let mut task = Task::new();
     if cfg!(windows) {
@@ -65,7 +82,11 @@ fn create_execution_plan_single() {
     let mut config_section = ConfigSection::new();
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
-    let mut config = Config { config: config_section, env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: config_section,
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     config.tasks.insert("init".to_string(), Task::new());
     config.tasks.insert("end".to_string(), Task::new());
@@ -86,7 +107,11 @@ fn create_execution_plan_single_disabled() {
     let mut config_section = ConfigSection::new();
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
-    let mut config = Config { config: config_section, env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: config_section,
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     config.tasks.insert("init".to_string(), Task::new());
     config.tasks.insert("end".to_string(), Task::new());
@@ -104,7 +129,11 @@ fn create_execution_plan_single_disabled() {
 
 #[test]
 fn create_execution_plan_platform_disabled() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     let mut task = Task::new();
     task.linux = Some(PlatformOverrideTask {
@@ -123,7 +152,7 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        dependencies: None
+        dependencies: None,
     });
     task.windows = Some(PlatformOverrideTask {
         clear: Some(true),
@@ -141,7 +170,7 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        dependencies: None
+        dependencies: None,
     });
     task.mac = Some(PlatformOverrideTask {
         clear: Some(true),
@@ -159,7 +188,7 @@ fn create_execution_plan_platform_disabled() {
         script: None,
         script_runner: None,
         run_task: None,
-        dependencies: None
+        dependencies: None,
     });
 
     config.tasks.insert("test".to_string(), task);
@@ -170,7 +199,11 @@ fn create_execution_plan_platform_disabled() {
 
 #[test]
 fn create_execution_plan_workspace() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     let task = Task::new();
 
@@ -183,10 +216,13 @@ fn create_execution_plan_workspace() {
     assert_eq!(execution_plan.steps[0].name, "workspace");
 }
 
-
 #[test]
 fn create_execution_plan_noworkspace() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     let task = Task::new();
 
@@ -203,7 +239,10 @@ fn create_execution_plan_noworkspace() {
 fn create_workspace_task_no_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec![];
-    crate_info.workspace = Some(Workspace { members: Some(members), exclude: None });
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
 
     let task = create_workspace_task(crate_info, "some_task");
 
@@ -216,8 +255,15 @@ fn create_workspace_task_no_members() {
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_members() {
     let mut crate_info = CrateInfo::new();
-    let members = vec!["member1".to_string(), "member2".to_string(), "dir1/member3".to_string()];
-    crate_info.workspace = Some(Workspace { members: Some(members), exclude: None });
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
 
     let task = create_workspace_task(crate_info, "some_task");
 
@@ -229,8 +275,7 @@ cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
 cd -
 cd ./dir1/member3
 cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
-cd -"#
-        .to_string();
+cd -"#.to_string();
 
     let log_level = logger::get_log_level();
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
@@ -243,35 +288,57 @@ cd -"#
 #[test]
 #[should_panic]
 fn run_task_bad_script() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 1".to_string()]);
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_command() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.command = Some("echo".to_string());
     task.args = Some(vec!["test".to_string()]);
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
@@ -279,35 +346,57 @@ fn run_task_command() {
 #[test]
 #[should_panic]
 fn run_task_bad_command_valid_script() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.command = Some("bad12345".to_string());
     task.script = Some(vec!["exit 0".to_string()]);
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_no_command_valid_script() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
@@ -321,19 +410,30 @@ fn run_task_bad_run_task_valid_command() {
     let mut tasks = HashMap::new();
     tasks.insert("sub".to_string(), sub_task);
 
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks,
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.run_task = Some("sub".to_string());
     task.command = Some("echo".to_string());
     task.args = Some(vec!["test".to_string()]);
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
@@ -346,17 +446,28 @@ fn run_task_valid_run_task() {
     let mut tasks = HashMap::new();
     tasks.insert("sub".to_string(), sub_task);
 
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks,
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.run_task = Some("sub".to_string());
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
@@ -364,40 +475,65 @@ fn run_task_valid_run_task() {
 #[test]
 #[should_panic]
 fn run_task_invalid_task() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
     task.command = Some("echo".to_string());
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_set_env() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut env = HashMap::new();
-    env.insert("TEST_RUN_TASK_SET_ENV".to_string(), EnvValue::Value("VALID".to_string()));
+    env.insert(
+        "TEST_RUN_TASK_SET_ENV".to_string(),
+        EnvValue::Value("VALID".to_string()),
+    );
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
     task.env = Some(env);
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     env::set_var("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
@@ -409,36 +545,58 @@ fn run_task_set_env() {
 #[test]
 #[should_panic]
 fn run_task_cwd_no_such_dir() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
     task.cwd = Some("./bad/badagain".to_string());
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }
 
 #[test]
 fn run_task_cwd_dir_exists() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo { rust_info: RustInfo::new(), crate_info: CrateInfo::new(), git_info: GitInfo::new() },
-        disable_workspace: false
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
     };
 
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
     task.cwd = Some("./src".to_string());
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run_task(&flow_info, &step);
 }

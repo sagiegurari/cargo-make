@@ -28,22 +28,40 @@ fn evaluate_and_set_env_simple() {
 #[test]
 fn evaluate_and_set_env_exists() {
     env::set_var("eval_test1", "test");
-    evaluate_and_set_env("evaluate_and_set_env_exists", "testing: ${eval_test1} works");
-    assert_eq!(env::var("evaluate_and_set_env_exists").unwrap(), "testing: test works".to_string());
+    evaluate_and_set_env(
+        "evaluate_and_set_env_exists",
+        "testing: ${eval_test1} works",
+    );
+    assert_eq!(
+        env::var("evaluate_and_set_env_exists").unwrap(),
+        "testing: test works".to_string()
+    );
 }
 
 #[test]
 fn evaluate_and_set_env_not_exists() {
-    evaluate_and_set_env("evaluate_and_set_env_not_exists", "testing: ${eval_test_bad} works");
-    assert_eq!(env::var("evaluate_and_set_env_not_exists").unwrap(), "testing: ${eval_test_bad} works".to_string());
+    evaluate_and_set_env(
+        "evaluate_and_set_env_not_exists",
+        "testing: ${eval_test_bad} works",
+    );
+    assert_eq!(
+        env::var("evaluate_and_set_env_not_exists").unwrap(),
+        "testing: ${eval_test_bad} works".to_string()
+    );
 }
 
 #[test]
 fn evaluate_and_set_env_complex() {
     env::set_var("eval_test10", "10");
     env::set_var("eval_test20", "20");
-    evaluate_and_set_env("evaluate_and_set_env_complex", "checking 10 is ${eval_test10} empty is ${eval_test30} and 20 is ${eval_test20}");
-    assert_eq!(env::var("evaluate_and_set_env_complex").unwrap(), "checking 10 is 10 empty is ${eval_test30} and 20 is 20".to_string());
+    evaluate_and_set_env(
+        "evaluate_and_set_env_complex",
+        "checking 10 is ${eval_test10} empty is ${eval_test30} and 20 is ${eval_test20}",
+    );
+    assert_eq!(
+        env::var("evaluate_and_set_env_complex").unwrap(),
+        "checking 10 is 10 empty is ${eval_test30} and 20 is 20".to_string()
+    );
 }
 
 #[test]
@@ -57,7 +75,11 @@ fn setup_cwd_empty() {
 
 #[test]
 fn setup_env_empty() {
-    let config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
+    let config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
 
     setup_env(&config, "setup_env_empty1");
 
@@ -75,12 +97,28 @@ fn setup_env_empty() {
 
 #[test]
 fn setup_env_values() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    config.env.insert("MY_ENV_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
-    config.env.insert("MY_ENV_KEY2".to_string(), EnvValue::Value("MY_ENV_VALUE2".to_string()));
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
+    config.env.insert(
+        "MY_ENV_KEY".to_string(),
+        EnvValue::Value("MY_ENV_VALUE".to_string()),
+    );
+    config.env.insert(
+        "MY_ENV_KEY2".to_string(),
+        EnvValue::Value("MY_ENV_VALUE2".to_string()),
+    );
 
-    assert_eq!(env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
-    assert_eq!(env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
+    assert_eq!(
+        env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()),
+        "NONE".to_string()
+    );
+    assert_eq!(
+        env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()),
+        "NONE".to_string()
+    );
 
     setup_env(&config, "set_env_values");
 
@@ -90,15 +128,30 @@ fn setup_env_values() {
 
 #[test]
 fn setup_env_script() {
-    let mut config = Config { config: ConfigSection::new(), env: HashMap::new(), tasks: HashMap::new() };
-    config.env.insert("MY_ENV_SCRIPT_KEY".to_string(), EnvValue::Value("MY_ENV_VALUE".to_string()));
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
+    config.env.insert(
+        "MY_ENV_SCRIPT_KEY".to_string(),
+        EnvValue::Value("MY_ENV_VALUE".to_string()),
+    );
     config.env.insert(
         "MY_ENV_SCRIPT_KEY2".to_string(),
-        EnvValue::Info(EnvValueInfo { script: vec!["echo script1".to_string()] })
+        EnvValue::Info(EnvValueInfo {
+            script: vec!["echo script1".to_string()],
+        }),
     );
 
-    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap_or("NONE".to_string()), "NONE".to_string());
-    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap_or("NONE".to_string()), "NONE".to_string());
+    assert_eq!(
+        env::var("MY_ENV_SCRIPT_KEY").unwrap_or("NONE".to_string()),
+        "NONE".to_string()
+    );
+    assert_eq!(
+        env::var("MY_ENV_SCRIPT_KEY2").unwrap_or("NONE".to_string()),
+        "NONE".to_string()
+    );
 
     setup_env(&config, "set_env_values");
 
@@ -108,7 +161,9 @@ fn setup_env_script() {
 
 #[test]
 fn evaluate_env_value_valid() {
-    let output = evaluate_env_value(&EnvValueInfo { script: vec!["echo script1".to_string()] });
+    let output = evaluate_env_value(&EnvValueInfo {
+        script: vec!["echo script1".to_string()],
+    });
 
     assert_eq!(output, "script1".to_string());
 }
@@ -116,7 +171,9 @@ fn evaluate_env_value_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_empty() {
-    let output = evaluate_env_value(&EnvValueInfo { script: vec!["".to_string()] });
+    let output = evaluate_env_value(&EnvValueInfo {
+        script: vec!["".to_string()],
+    });
 
     assert_eq!(output, "".to_string());
 }
@@ -124,7 +181,9 @@ fn evaluate_env_value_empty() {
 #[test]
 #[should_panic]
 fn evaluate_env_error() {
-    evaluate_env_value(&EnvValueInfo { script: vec!["exit 1".to_string()] });
+    evaluate_env_value(&EnvValueInfo {
+        script: vec!["exit 1".to_string()],
+    });
 }
 
 #[test]
@@ -145,13 +204,31 @@ fn setup_env_for_crate_load_toml_found() {
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), env!("CARGO_PKG_VERSION"));
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), env!("CARGO_PKG_DESCRIPTION"));
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_VERSION").unwrap(),
+        env!("CARGO_PKG_VERSION")
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(),
+        env!("CARGO_PKG_DESCRIPTION")
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "https://sagiegurari.github.io/cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "https://sagiegurari.github.io/cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "https://github.com/sagiegurari/cargo-make.git");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(), "TRUE");
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(),
+        "https://sagiegurari.github.io/cargo-make"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(),
+        "https://sagiegurari.github.io/cargo-make"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(),
+        "https://github.com/sagiegurari/cargo-make.git"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        "TRUE"
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
     assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 }
@@ -187,7 +264,10 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(), "FALSE");
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        "FALSE"
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
     assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 
@@ -195,13 +275,31 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
 
     assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
     assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), env!("CARGO_PKG_VERSION"));
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), env!("CARGO_PKG_DESCRIPTION"));
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_VERSION").unwrap(),
+        env!("CARGO_PKG_VERSION")
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(),
+        env!("CARGO_PKG_DESCRIPTION")
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "https://sagiegurari.github.io/cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "https://sagiegurari.github.io/cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "https://github.com/sagiegurari/cargo-make.git");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(), "TRUE");
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(),
+        "https://sagiegurari.github.io/cargo-make"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(),
+        "https://sagiegurari.github.io/cargo-make"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(),
+        "https://github.com/sagiegurari/cargo-make.git"
+    );
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        "TRUE"
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "FALSE");
     assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
 }
@@ -232,9 +330,15 @@ fn setup_env_for_crate_workspace() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(), "FALSE");
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        "FALSE"
+    );
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "TRUE");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "member1,member2");
+    assert_eq!(
+        env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(),
+        "member1,member2"
+    );
 }
 
 #[test]
@@ -246,13 +350,22 @@ fn setup_env_for_git_repo_with_values() {
     let git_info = setup_env_for_git_repo();
 
     if git_info.branch.is_some() {
-        assert_eq!(env::var("CARGO_MAKE_GIT_BRANCH").unwrap(), git_info.branch.unwrap());
+        assert_eq!(
+            env::var("CARGO_MAKE_GIT_BRANCH").unwrap(),
+            git_info.branch.unwrap()
+        );
     }
     if git_info.user_name.is_some() {
-        assert_eq!(env::var("CARGO_MAKE_GIT_USER_NAME").unwrap(), git_info.user_name.unwrap());
+        assert_eq!(
+            env::var("CARGO_MAKE_GIT_USER_NAME").unwrap(),
+            git_info.user_name.unwrap()
+        );
     }
     if git_info.user_email.is_some() {
-        assert_eq!(env::var("CARGO_MAKE_GIT_USER_EMAIL").unwrap(), git_info.user_email.unwrap());
+        assert_eq!(
+            env::var("CARGO_MAKE_GIT_USER_EMAIL").unwrap(),
+            git_info.user_email.unwrap()
+        );
     }
 }
 

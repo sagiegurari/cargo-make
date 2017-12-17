@@ -20,29 +20,27 @@ enum EngineType {
     /// shell to windows batch conversion
     Shell2Batch,
     /// Unsupported type
-    Unsupported
+    Unsupported,
 }
 
 fn get_engine_type(task: &Task) -> EngineType {
     match task.script_runner {
-        Some(ref script_runner) => {
-            match task.script {
-                None => EngineType::Unsupported,
-                _ => {
-                    debug!("Checking script runner: {}", script_runner);
+        Some(ref script_runner) => match task.script {
+            None => EngineType::Unsupported,
+            _ => {
+                debug!("Checking script runner: {}", script_runner);
 
-                    if script_runner == "@rust" {
-                        debug!("Rust script detected.");
-                        EngineType::Rust
-                    } else if script_runner == "@shell" {
-                        debug!("Shell to batch detected.");
-                        EngineType::Shell2Batch
-                    } else {
-                        EngineType::Unsupported
-                    }
+                if script_runner == "@rust" {
+                    debug!("Rust script detected.");
+                    EngineType::Rust
+                } else if script_runner == "@shell" {
+                    debug!("Shell to batch detected.");
+                    EngineType::Shell2Batch
+                } else {
+                    EngineType::Unsupported
                 }
             }
-        }
+        },
         None => EngineType::Unsupported,
     }
 }

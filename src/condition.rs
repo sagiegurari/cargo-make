@@ -99,11 +99,16 @@ fn validate_platform(condition: &TaskCondition) -> bool {
         Some(platform_names) => {
             let platform_name = types::get_platform_name();
 
-            let index = platform_names.iter().position(|value| *value == platform_name);
+            let index = platform_names
+                .iter()
+                .position(|value| *value == platform_name);
 
             match index {
                 None => {
-                    debug!("Failed platform condition, current platform: {}", &platform_name);
+                    debug!(
+                        "Failed platform condition, current platform: {}",
+                        &platform_name
+                    );
                     false
                 }
                 _ => true,
@@ -113,45 +118,45 @@ fn validate_platform(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_channel(
-    condition: &TaskCondition,
-    flow_info: &FlowInfo,
-) -> bool {
+fn validate_channel(condition: &TaskCondition, flow_info: &FlowInfo) -> bool {
     let channels = condition.channels.clone();
     match channels {
-        Some(channel_names) => {
-            match flow_info.env_info.rust_info.channel {
-                Some(value) => {
-                    let index = match value {
-                        RustChannel::Stable => channel_names.iter().position(|value| *value == "stable".to_string()),
-                        RustChannel::Beta => channel_names.iter().position(|value| *value == "beta".to_string()),
-                        RustChannel::Nightly => channel_names.iter().position(|value| *value == "nightly".to_string()),
-                    };
+        Some(channel_names) => match flow_info.env_info.rust_info.channel {
+            Some(value) => {
+                let index = match value {
+                    RustChannel::Stable => channel_names
+                        .iter()
+                        .position(|value| *value == "stable".to_string()),
+                    RustChannel::Beta => channel_names
+                        .iter()
+                        .position(|value| *value == "beta".to_string()),
+                    RustChannel::Nightly => channel_names
+                        .iter()
+                        .position(|value| *value == "nightly".to_string()),
+                };
 
-                    match index {
-                        None => {
-                            debug!("Failed channel condition");
-                            false
-                        }
-                        _ => true,
+                match index {
+                    None => {
+                        debug!("Failed channel condition");
+                        false
                     }
+                    _ => true,
                 }
-                None => false,
             }
-        }
+            None => false,
+        },
         None => true,
     }
 }
 
-fn validate_criteria(
-    flow_info: &FlowInfo,
-    step: &Step,
-) -> bool {
+fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
     match step.config.condition {
         Some(ref condition) => {
             debug!("Checking task condition structure.");
 
-            validate_platform(&condition) && validate_channel(&condition, &flow_info) && validate_env(&condition) && validate_env_set(&condition) && validate_env_not_set(&condition)
+            validate_platform(&condition) && validate_channel(&condition, &flow_info)
+                && validate_env(&condition) && validate_env_set(&condition)
+                && validate_env_not_set(&condition)
         }
         None => true,
     }
@@ -174,9 +179,6 @@ fn validate_script(step: &Step) -> bool {
     }
 }
 
-pub(crate) fn validate_condition(
-    flow_info: &FlowInfo,
-    step: &Step,
-) -> bool {
+pub(crate) fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     validate_criteria(&flow_info, &step) && validate_script(&step)
 }

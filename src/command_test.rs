@@ -14,7 +14,6 @@ fn validate_exit_code_not_zero() {
     validate_exit_code(1);
 }
 
-
 #[test]
 fn validate_exit_code_zero() {
     validate_exit_code(0);
@@ -30,7 +29,10 @@ fn get_exit_code_error() {
 fn run_no_command() {
     let task = Task::new();
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -40,7 +42,10 @@ fn run_command() {
     let mut task = Task::new();
     task.command = Some("echo".to_string());
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -51,7 +56,10 @@ fn run_command_error() {
     let mut task = Task::new();
     task.command = Some("badbadbad".to_string());
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -62,7 +70,10 @@ fn run_command_error_force() {
     task.force = Some(true);
     task.command = Some("badbadbad".to_string());
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -72,7 +83,10 @@ fn run_script() {
     let mut task = Task::new();
     task.script = Some(vec!["echo 1".to_string()]);
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -83,7 +97,10 @@ fn run_script_error() {
     let mut task = Task::new();
     task.script = Some(vec!["exit 1".to_string()]);
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -94,7 +111,10 @@ fn run_script_error_force() {
     task.force = Some(true);
     task.script = Some(vec!["exit 1".to_string()]);
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }
@@ -106,7 +126,10 @@ fn run_script_custom_runner() {
     task.script = Some(vec!["echo test".to_string()]);
     task.script_runner = Some("bash".to_string());
 
-    let step = Step { name: "test".to_string(), config: task };
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
 
     run(&step);
 }

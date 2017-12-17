@@ -72,7 +72,10 @@ fn run_for_args(matches: ArgMatches) {
 
             cli_args.env = cmd_matches.values_of_lossy("env");
 
-            cli_args.build_file = cmd_matches.value_of("makefile").unwrap_or(&DEFAULT_TOML).to_string();
+            cli_args.build_file = cmd_matches
+                .value_of("makefile")
+                .unwrap_or(&DEFAULT_TOML)
+                .to_string();
 
             cli_args.cwd = match cmd_matches.value_of("cwd") {
                 Some(value) => Some(value.to_string()),
@@ -82,10 +85,14 @@ fn run_for_args(matches: ArgMatches) {
             cli_args.log_level = if cmd_matches.is_present("v") {
                 "verbose".to_string()
             } else {
-                cmd_matches.value_of("loglevel").unwrap_or(&DEFAULT_LOG_LEVEL).to_string()
+                cmd_matches
+                    .value_of("loglevel")
+                    .unwrap_or(&DEFAULT_LOG_LEVEL)
+                    .to_string()
             };
 
-            cli_args.disable_check_for_updates = cmd_matches.is_present("disable-check-for-updates");
+            cli_args.disable_check_for_updates =
+                cmd_matches.is_present("disable-check-for-updates");
             cli_args.experimental = cmd_matches.is_present("experimental");
             cli_args.print_only = cmd_matches.is_present("print-steps");
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");

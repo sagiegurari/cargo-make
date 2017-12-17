@@ -9,9 +9,9 @@ mod rsscript_test;
 
 use command;
 use installer;
-use rand::{Rng, thread_rng};
+use rand::{thread_rng, Rng};
 use std::env;
-use std::fs::{File, create_dir_all, remove_file};
+use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
 
 fn install_crate() {
@@ -29,7 +29,11 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
     // create parent directory
     match create_dir_all(&file_path) {
         Ok(_) => debug!("Created temporary directory."),
-        Err(error) => debug!("Unable to create temporary directory: {} {:#?}", &file_path.to_str().unwrap_or("???"), error),
+        Err(error) => debug!(
+            "Unable to create temporary directory: {} {:#?}",
+            &file_path.to_str().unwrap_or("???"),
+            error
+        ),
     };
 
     file_path.push(file_name);
@@ -41,7 +45,10 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
 
     let mut file = match File::create(&file_path) {
         Err(error) => {
-            error!("Unable to create rust file: {} {:#?}", &file_path_str, &error);
+            error!(
+                "Unable to create rust file: {} {:#?}",
+                &file_path_str, &error
+            );
             panic!("Unable to create rust file, error: {}", error);
         }
         Ok(file) => file,
@@ -51,7 +58,10 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
 
     match file.write_all(text.as_bytes()) {
         Err(error) => {
-            error!("Unable to write to rust file: {} {:#?}", &file_path_str, &error);
+            error!(
+                "Unable to write to rust file: {} {:#?}",
+                &file_path_str, &error
+            );
             panic!("Unable to write to rust file, error: {}", error);
         }
         Ok(_) => debug!("Written rust file text:\n{}", &text),
@@ -61,7 +71,11 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
 }
 
 fn run_file(file: &str) -> bool {
-    let exit_code = command::run_command("cargo", &Some(vec!["script".to_string(), file.to_string()]), false);
+    let exit_code = command::run_command(
+        "cargo",
+        &Some(vec!["script".to_string(), file.to_string()]),
+        false,
+    );
     debug!("Executed rust code, exit code: {}", exit_code);
 
     exit_code == 0

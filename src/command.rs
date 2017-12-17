@@ -15,10 +15,7 @@ use std::process::{Command, ExitStatus, Output, Stdio};
 use types::Step;
 
 /// Returns the exit code (-1 if no exit code found)
-pub(crate) fn get_exit_code(
-    exit_status: Result<ExitStatus, Error>,
-    force: bool,
-) -> i32 {
+pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool) -> i32 {
     match exit_status {
         Ok(code) => {
             if !code.success() {
@@ -40,10 +37,7 @@ pub(crate) fn get_exit_code(
     }
 }
 
-pub(crate) fn get_exit_code_from_output(
-    output: &io::Result<Output>,
-    force: bool,
-) -> i32 {
+pub(crate) fn get_exit_code_from_output(output: &io::Result<Output>, force: bool) -> i32 {
     match output {
         &Ok(ref output_struct) => get_exit_code(Ok(output_struct.status), force),
         &Err(ref error) => {
@@ -110,11 +104,9 @@ pub(crate) fn run_command_get_output(
     let mut command = Command::new(&command_string);
 
     match *args {
-        Some(ref args_vec) => {
-            for arg in args_vec.iter() {
-                command.arg(arg);
-            }
-        }
+        Some(ref args_vec) => for arg in args_vec.iter() {
+            command.arg(arg);
+        },
         None => debug!("No command args defined."),
     };
 
@@ -131,11 +123,7 @@ pub(crate) fn run_command_get_output(
 }
 
 /// Runs the requested command and panics in case of any error.
-pub(crate) fn run_command(
-    command_string: &str,
-    args: &Option<Vec<String>>,
-    validate: bool,
-) -> i32 {
+pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, validate: bool) -> i32 {
     let output = run_command_get_output(&command_string, &args, false);
 
     let exit_code = get_exit_code_from_output(&output, !validate);

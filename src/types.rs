@@ -43,7 +43,7 @@ pub struct CliArgs {
     /// Disables the update check during startup
     pub disable_check_for_updates: bool,
     /// Allows access unsupported experimental predefined tasks
-    pub experimental: bool
+    pub experimental: bool,
 }
 
 impl CliArgs {
@@ -59,7 +59,7 @@ impl CliArgs {
             print_only: false,
             list_all_steps: false,
             disable_check_for_updates: false,
-            experimental: false
+            experimental: false,
         }
     }
 }
@@ -72,13 +72,17 @@ pub struct GitInfo {
     /// user.name
     pub user_name: Option<String>,
     /// user.email
-    pub user_email: Option<String>
+    pub user_email: Option<String>,
 }
 
 impl GitInfo {
     /// Returns new instance
     pub fn new() -> GitInfo {
-        GitInfo { branch: None, user_name: None, user_email: None }
+        GitInfo {
+            branch: None,
+            user_name: None,
+            user_email: None,
+        }
     }
 }
 
@@ -88,13 +92,16 @@ pub struct Workspace {
     /// members paths
     pub members: Option<Vec<String>>,
     /// exclude paths
-    pub exclude: Option<Vec<String>>
+    pub exclude: Option<Vec<String>>,
 }
 
 impl Workspace {
     /// Creates and returns a new instance.
     pub fn new() -> Workspace {
-        Workspace { members: None, exclude: None }
+        Workspace {
+            members: None,
+            exclude: None,
+        }
     }
 }
 
@@ -114,7 +121,7 @@ pub struct PackageInfo {
     /// homepage link
     pub homepage: Option<String>,
     /// repository link
-    pub repository: Option<String>
+    pub repository: Option<String>,
 }
 
 impl PackageInfo {
@@ -127,7 +134,7 @@ impl PackageInfo {
             license: None,
             documentation: None,
             homepage: None,
-            repository: None
+            repository: None,
         }
     }
 }
@@ -136,7 +143,7 @@ impl PackageInfo {
 /// Holds crate dependency info.
 pub struct CrateDependencyInfo {
     /// Holds the dependency path
-    pub path: Option<String>
+    pub path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -146,7 +153,7 @@ pub enum CrateDependency {
     /// Holds the dependency version
     Version(String),
     /// Hold dependency info
-    Info(CrateDependencyInfo)
+    Info(CrateDependencyInfo),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -157,13 +164,17 @@ pub struct CrateInfo {
     /// workspace info
     pub workspace: Option<Workspace>,
     /// crate dependencies
-    pub dependencies: Option<HashMap<String, CrateDependency>>
+    pub dependencies: Option<HashMap<String, CrateDependency>>,
 }
 
 impl CrateInfo {
     /// Creates and returns a new instance.
     pub fn new() -> CrateInfo {
-        CrateInfo { package: None, workspace: None, dependencies: None }
+        CrateInfo {
+            package: None,
+            workspace: None,
+            dependencies: None,
+        }
     }
 }
 
@@ -175,7 +186,7 @@ pub struct EnvInfo {
     /// Crate info
     pub crate_info: CrateInfo,
     /// Git info
-    pub git_info: GitInfo
+    pub git_info: GitInfo,
 }
 
 #[derive(Debug, Clone)]
@@ -188,7 +199,7 @@ pub struct FlowInfo {
     /// The env info
     pub env_info: EnvInfo,
     /// Prevent workspace support
-    pub disable_workspace: bool
+    pub disable_workspace: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -203,14 +214,14 @@ pub struct TaskCondition {
     /// Environment variables which must not be defined
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
-    pub env: Option<HashMap<String, String>>
+    pub env: Option<HashMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct EnvValueInfo {
     /// The script to execute to get the env value
-    pub script: Vec<String>
+    pub script: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -220,7 +231,7 @@ pub enum EnvValue {
     /// The value as string
     Value(String),
     /// Script which will return the value
-    Info(EnvValueInfo)
+    Info(EnvValueInfo),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -271,7 +282,7 @@ pub struct Task {
     /// override task if runtime OS is Windows (takes precedence over alias)
     pub windows: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Mac (takes precedence over alias)
-    pub mac: Option<PlatformOverrideTask>
+    pub mac: Option<PlatformOverrideTask>,
 }
 
 impl Task {
@@ -300,7 +311,7 @@ impl Task {
             dependencies: None,
             linux: None,
             windows: None,
-            mac: None
+            mac: None,
         }
     }
 
@@ -309,10 +320,7 @@ impl Task {
     /// # Arguments
     ///
     /// * `task` - The task to copy from
-    pub fn extend(
-        self: &mut Task,
-        task: &Task,
-    ) {
+    pub fn extend(self: &mut Task, task: &Task) {
         if task.description.is_some() {
             self.description = task.description.clone();
         }
@@ -461,7 +469,7 @@ impl Task {
                     dependencies: override_task.dependencies.clone(),
                     linux: None,
                     windows: None,
-                    mac: None
+                    mac: None,
                 }
             }
             None => self.clone(),
@@ -489,12 +497,10 @@ impl Task {
 
         match alias {
             Some(os_alias) => Some(os_alias.clone()),
-            _ => {
-                match self.alias {
-                    Some(ref alias) => Some(alias.clone()),
-                    _ => None,
-                }
-            }
+            _ => match self.alias {
+                Some(ref alias) => Some(alias.clone()),
+                _ => None,
+            },
         }
     }
 
@@ -554,7 +560,7 @@ pub struct PlatformOverrideTask {
     /// The task name to execute
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>
+    pub dependencies: Option<Vec<String>>,
 }
 
 impl PlatformOverrideTask {
@@ -563,10 +569,7 @@ impl PlatformOverrideTask {
     /// # Arguments
     ///
     /// * `task` - The task to copy from
-    pub fn extend(
-        self: &mut PlatformOverrideTask,
-        task: &mut Task,
-    ) {
+    pub fn extend(self: &mut PlatformOverrideTask, task: &mut Task) {
         let copy_values = match self.clear {
             Some(value) => !value,
             None => true,
@@ -650,7 +653,7 @@ pub struct ConfigSection {
     /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
     pub windows_load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
-    pub mac_load_script: Option<Vec<String>>
+    pub mac_load_script: Option<Vec<String>>,
 }
 
 impl ConfigSection {
@@ -662,7 +665,7 @@ impl ConfigSection {
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,
-            mac_load_script: None
+            mac_load_script: None,
         }
     }
 
@@ -671,10 +674,7 @@ impl ConfigSection {
     /// # Arguments
     ///
     /// * `task` - The task to copy from
-    pub fn extend(
-        self: &mut ConfigSection,
-        extended: &mut ConfigSection,
-    ) {
+    pub fn extend(self: &mut ConfigSection, extended: &mut ConfigSection) {
         if extended.init_task.is_some() {
             self.init_task = extended.init_task.clone();
         }
@@ -734,7 +734,7 @@ pub struct Config {
     /// The env vars to setup before running the tasks
     pub env: HashMap<String, EnvValue>,
     /// All task definitions
-    pub tasks: HashMap<String, Task>
+    pub tasks: HashMap<String, Task>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -747,13 +747,18 @@ pub struct ExternalConfig {
     /// The env vars to setup before running the tasks
     pub env: Option<HashMap<String, EnvValue>>,
     /// All task definitions
-    pub tasks: Option<HashMap<String, Task>>
+    pub tasks: Option<HashMap<String, Task>>,
 }
 
 impl ExternalConfig {
     /// Creates and returns a new instance.
     pub fn new() -> ExternalConfig {
-        ExternalConfig { extend: None, config: None, env: None, tasks: None }
+        ExternalConfig {
+            extend: None,
+            config: None,
+            env: None,
+            tasks: None,
+        }
     }
 }
 
@@ -763,12 +768,12 @@ pub struct Step {
     /// The task name
     pub name: String,
     /// The task config
-    pub config: Task
+    pub config: Task,
 }
 
 #[derive(Debug)]
 /// Execution plan which defines all steps to run and the order to run them
 pub struct ExecutionPlan {
     /// A list of steps to execute
-    pub steps: Vec<Step>
+    pub steps: Vec<Step>,
 }
