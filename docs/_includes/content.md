@@ -418,7 +418,7 @@ If for example, you would like to add verbose output to it, you would just need 
 args = ["build", "--verbose"]
 ````
 
-If you want to disable some existing task (will not disable its dependencies), you can do it as follows:
+If you want to disable some existing task (will also disable its dependencies), you can do it as follows:
 
 ````toml
 [tasks.build]

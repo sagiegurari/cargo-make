@@ -128,6 +128,101 @@ fn create_execution_plan_single_disabled() {
 }
 
 #[test]
+fn create_execution_plan_with_dependencies() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create_execution_plan(&config, "test", false);
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
+}
+
+#[test]
+fn create_execution_plan_disabled_task_with_dependencies() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.disabled = Some(true);
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create_execution_plan(&config, "test", false);
+    assert_eq!(execution_plan.steps.len(), 2);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "end");
+}
+
+#[test]
+fn create_execution_plan_with_dependencies_disabled() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: HashMap::new(),
+        tasks: HashMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let mut task_dependency = Task::new();
+    task_dependency.disabled = Some(true);
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create_execution_plan(&config, "test", false);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test");
+    assert_eq!(execution_plan.steps[2].name, "end");
+}
+
+#[test]
 fn create_execution_plan_platform_disabled() {
     let mut config = Config {
         config: ConfigSection::new(),

@@ -125,27 +125,33 @@ fn create_execution_plan_for_step(
 
     match config.tasks.get(&actual_task) {
         Some(task_config) => {
-            match task_config.dependencies {
-                Some(ref dependencies) => for dependency in dependencies {
-                    create_execution_plan_for_step(&config, &dependency, steps, task_names, false);
-                },
-                _ => debug!("No dependencies found for task: {}", &task),
-            };
+            let mut clone_task = task_config.clone();
+            let normalized_task = clone_task.get_normalized_task();
+            let add = !normalized_task.disabled.unwrap_or(false);
 
-            if !task_names.contains(task) {
-                let mut clone_task = task_config.clone();
-                let normalized_task = clone_task.get_normalized_task();
-                let add = !normalized_task.disabled.unwrap_or(false);
+            if add {
+                match task_config.dependencies {
+                    Some(ref dependencies) => for dependency in dependencies {
+                        create_execution_plan_for_step(
+                            &config,
+                            &dependency,
+                            steps,
+                            task_names,
+                            false,
+                        );
+                    },
+                    _ => debug!("No dependencies found for task: {}", &task),
+                };
 
-                if add {
+                if !task_names.contains(task) {
                     steps.push(Step {
                         name: task.to_string(),
                         config: normalized_task,
                     });
                     task_names.insert(task.to_string());
+                } else if root {
+                    error!("Circular reference found for task: {}", &task);
                 }
-            } else if root {
-                error!("Circular reference found for task: {}", &task);
             }
         }
         None => error!("Task not found: {}", &task),
