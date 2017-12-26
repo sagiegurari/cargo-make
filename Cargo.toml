@@ -26,9 +26,9 @@ include = [
 [dependencies]
 ci_info = "^0.1.14"
 clap = "^2.29.0"
-fern = "^0.4.4"
+fern = "^0.5.0"
 glob = "^0.2.11"
-log = "^0.3.8"
+log = "^0.4.0"
 rand = "^0.4.1"
 run_script = "^0.1.10"
 rust_info = "^0.1.10"

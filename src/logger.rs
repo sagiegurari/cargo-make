@@ -8,7 +8,7 @@
 mod logger_test;
 
 use fern;
-use log::{LogLevel, LogLevelFilter};
+use log::{Level, LevelFilter};
 use std::env;
 use std::io::stdout;
 
@@ -22,19 +22,19 @@ use std::process::exit;
 
 #[derive(Debug, PartialEq)]
 /// The log levels
-pub(crate) enum Level {
+pub(crate) enum LogLevel {
     VERBOSE,
     INFO,
     ERROR,
 }
 
-fn get_level(level_name: &str) -> Level {
-    let mut level = Level::INFO;
+fn get_level(level_name: &str) -> LogLevel {
+    let mut level = LogLevel::INFO;
 
     if level_name == "verbose" {
-        level = Level::VERBOSE;
+        level = LogLevel::VERBOSE;
     } else if level_name == "error" {
-        level = Level::ERROR;
+        level = LogLevel::ERROR;
     }
 
     level
@@ -42,9 +42,9 @@ fn get_level(level_name: &str) -> Level {
 
 /// Returns the current logger level name
 pub(crate) fn get_log_level() -> String {
-    let level = if log_enabled!(LogLevel::Trace) {
+    let level = if log_enabled!(Level::Trace) {
         "verbose"
-    } else if log_enabled!(LogLevel::Info) {
+    } else if log_enabled!(Level::Info) {
         "info"
     } else {
         "error"
@@ -63,9 +63,9 @@ pub(crate) fn init(level_name: &str) {
     let level = get_level(level_name);
 
     let (log_level, level_name_value) = match level {
-        Level::VERBOSE => (LogLevelFilter::Trace, "verbose"),
-        Level::INFO => (LogLevelFilter::Info, "info"),
-        Level::ERROR => (LogLevelFilter::Error, "error"),
+        LogLevel::VERBOSE => (LevelFilter::Trace, "verbose"),
+        LogLevel::INFO => (LevelFilter::Info, "info"),
+        LogLevel::ERROR => (LevelFilter::Error, "error"),
     };
 
     env::set_var("CARGO_MAKE_LOG_LEVEL", level_name_value);
@@ -76,7 +76,7 @@ pub(crate) fn init(level_name: &str) {
             let record_level = record.level();
             out.finish(format_args!("[{}] {} - {}", &name, record_level, message));
 
-            if record_level == LogLevel::Error {
+            if record_level == Level::Error {
                 warn!("Build Failed.");
 
                 exit(1);
