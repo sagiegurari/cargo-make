@@ -51,19 +51,20 @@ fn load_branch(git_info: &mut GitInfo) {
     match result {
         Ok(output) => {
             let exit_code = command::get_exit_code(Ok(output.status), true);
-            command::validate_exit_code(exit_code);
 
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let lines: Vec<&str> = stdout.split('\n').collect();
-            for mut line in lines {
-                line = line.trim();
-
-                debug!("Checking: {}", &line);
-
-                if line.starts_with("*") {
-                    let parts: Vec<&str> = line.split(' ').collect();
-                    let value = parts[1];
-                    git_info.branch = Some(value.to_string());
+            if exit_code == 0 {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let lines: Vec<&str> = stdout.split('\n').collect();
+                for mut line in lines {
+                    line = line.trim();
+    
+                    debug!("Checking: {}", &line);
+    
+                    if line.starts_with("*") {
+                        let parts: Vec<&str> = line.split(' ').collect();
+                        let value = parts[1];
+                        git_info.branch = Some(value.to_string());
+                    }
                 }
             }
         }
