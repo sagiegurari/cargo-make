@@ -8,6 +8,7 @@ RUST_BACKTRACE = "full"
 KCOV_VERSION = "34"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
+CARGO_MAKE_KCOV_INTEGRATION_TEST_FILE_PATTERN = "test_*"
 
 [tasks.default]
 description = "Default task points to the development testing flow"
@@ -551,8 +552,8 @@ if [ -n "CARGO_MAKE_CRATE_FS_NAME" ]; then
     done
 fi
 
-echo "Running integration tests from directory: ${BINARY_DIRECTORY}"
-for file in ${BINARY_DIRECTORY}/test_*
+echo "Running integration tests from directory: ${BINARY_DIRECTORY} using test file pattern: ${KCOV_INTEGRATION_TEST_FILE_PATTERN}"
+for file in ${BINARY_DIRECTORY}/${CARGO_MAKE_KCOV_INTEGRATION_TEST_FILE_PATTERN}
 do
     if "$file" ; then
         echo "Running file: $file"
