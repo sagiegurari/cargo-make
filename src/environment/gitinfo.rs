@@ -57,9 +57,9 @@ fn load_branch(git_info: &mut GitInfo) {
                 let lines: Vec<&str> = stdout.split('\n').collect();
                 for mut line in lines {
                     line = line.trim();
-    
+
                     debug!("Checking: {}", &line);
-    
+
                     if line.starts_with("*") {
                         let parts: Vec<&str> = line.split(' ').collect();
                         let value = parts[1];
