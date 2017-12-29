@@ -857,12 +857,6 @@ CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"             # your choi
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end" # your choice of markers
 ````
 
-Override the default integration tests file pattern (currently defined as test_*):
-
-````toml
-CARGO_MAKE_KCOV_INTEGRATION_TEST_FILE_PATTERN = "my_tests_*"
-````
-
 <a name="usage-predefined-flows-cargo"></a>
 #### Cargo Commands and Plugins
 

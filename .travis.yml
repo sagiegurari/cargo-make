@@ -14,7 +14,6 @@ env:
     - RUST_BACKTRACE=1
     - RUSTFLAGS="-C link-dead-code"
     - CARGO_MAKE_RUN_CODECOV=true
-    - RUST_TEST_THREADS=1
 script:
   - cargo install --debug cargo-make
   - cargo make ci-flow
