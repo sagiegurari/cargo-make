@@ -793,7 +793,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ````yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.1
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.2
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ````
@@ -801,7 +801,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ````sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.1
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.2
 ````
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -912,12 +912,6 @@ Specify lines or regions of code to ignore:
 [env]
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"             # your choice of pattern(s)
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end" # your choice of markers
-````
-
-Override the default integration tests file pattern (currently defined as test_*):
-
-````toml
-CARGO_MAKE_KCOV_INTEGRATION_TEST_FILE_PATTERN = "my_tests_*"
 ````
 
 <a name="usage-predefined-flows-cargo"></a>
