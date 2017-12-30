@@ -525,11 +525,6 @@ else
     mkdir -p ./target/coverage
 fi
 
-BINARY_DIRECTORY=target/debug
-if [ -n "$CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY" ]; then
-    BINARY_DIRECTORY="${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/debug"
-fi
-
 KCOV_EXCLUDE_LINE_ARG=""
 if [ -n "$CARGO_MAKE_KCOV_EXCLUDE_LINE" ]; then
     KCOV_EXCLUDE_LINE_ARG="--exclude-line=${CARGO_MAKE_KCOV_EXCLUDE_LINE}"
@@ -540,14 +535,7 @@ if [ -n "$CARGO_MAKE_KCOV_EXCLUDE_REGION" ]; then
     KCOV_EXCLUDE_REGION_ARG="--exclude-region=${CARGO_MAKE_KCOV_EXCLUDE_REGION}"
 fi
 
-echo "Running tests from directory: ${BINARY_DIRECTORY}"
-for file in $(find "${BINARY_DIRECTORY}" -type f -maxdepth 1 | grep -v "\.d$\|\.rlib$\|\.so$" | grep -e "-[a-z0-9]*")
-do
-    if "$file" ; then
-        echo "Running file: $file"
-        kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ "$KCOV_EXCLUDE_LINE_ARG" "$KCOV_EXCLUDE_REGION_ARG" "$TARGET_DIRECTORY" "$file" || true
-    fi
-done
+kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ "$KCOV_EXCLUDE_LINE_ARG" "$KCOV_EXCLUDE_REGION_ARG" "$TARGET_DIRECTORY" cargo test || true
 '''
 ]
 
