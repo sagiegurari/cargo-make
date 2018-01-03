@@ -39,6 +39,7 @@
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
+        * [GitLab](#usage-ci-gitlab)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
@@ -839,6 +840,38 @@ build: false
 test_script:
   - cargo install --debug cargo-make
   - cargo make workspace-ci-flow --no-workspace
+````
+
+<a name="usage-ci-gitlab"></a>
+#### GitLab CI
+Add the following to your `gitlab-ci.yml` file:
+
+````yaml
+test:cargo:
+  script:
+  - cargo install --debug cargo-make
+  - cargo make ci-flow
+````
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+````yaml
+build: false
+
+test:cargo:
+  script:
+  - cargo install --debug cargo-make
+  - cargo make workspace-ci-flow --no-workspace
+````
+
+To upload your coverage information to codecov, you'll need to go to repo settings for your GitLab repo,
+[and add a secret variable](https://docs.gitlab.com/ce/ci/variables/README.html#secret-variables) with your codecov token for that repository.
+
+Then you can add the following in your `gitlab-ci.yml` to enable coverage support:
+
+````yaml
+variables:
+  CARGO_MAKE_RUN_CODECOV: "true"
 ````
 
 <a name="usage-predefined-flows"></a>
