@@ -937,7 +937,7 @@ In order to run coverage in a workspace project and package all member coverage 
 cargo make --no-workspace workspace-coverage
 ````
 
-If you are using **kcov**, you may declare the following environment variables in your Makefile.toml to customize the coverate task:
+If you are using **kcov**, you may declare the following environment variables in your Makefile.toml to customize the coverage task:
 
 Specify lines or regions of code to ignore:
 
@@ -945,6 +945,13 @@ Specify lines or regions of code to ignore:
 [env]
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "unreachable,kcov-ignore"             # your choice of pattern(s)
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end" # your choice of markers
+````
+
+By default, the binaries executed to collect coverage are filtered by a regular expression. You may override the following in case it does not match the binaries generated on your system:
+
+````toml
+[env]
+CARGO_MAKE_TEST_BINARY_FILTER = "${CARGO_MAKE_CRATE_NAME}-[a-z0-9]*$"
 ````
 
 <a name="usage-predefined-flows-cargo"></a>
