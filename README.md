@@ -951,7 +951,8 @@ By default, the binaries executed to collect coverage are filtered by a regular 
 
 ````toml
 [env]
-CARGO_MAKE_TEST_BINARY_FILTER = "${CARGO_MAKE_CRATE_NAME}-[a-z0-9]*$"
+# for example: cargo make filter regex would be cargo_make-[a-z0-9]*$
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
 ````
 
 <a name="usage-predefined-flows-cargo"></a>

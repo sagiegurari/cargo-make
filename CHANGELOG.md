@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2018-01-05  | v0.9.2  | Coverage test files user level pattern (#59 and #60) |
 | 2017-12-29  | v0.9.2  | Coverage will execute all test files without any need for specific naming conventions or configuration (#50 and #51) |
 | 2017-12-28  | v0.9.1  | Bug fixes for git info loading and coverage on workspace level (#49 and #52) |
 | 2017-12-18  | v0.9.0  | Disabled tasks should be skipped including dependencies (#47) |
