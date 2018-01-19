@@ -234,8 +234,28 @@ fn merge_tasks_extend_task() {
 }
 
 #[test]
+fn load_default_no_stable() {
+    let config = load_default(false, false);
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    task = config.tasks.get("init");
+    assert!(task.is_none());
+}
+
+#[test]
+fn load_default_with_stable() {
+    let config = load_default(true, false);
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    task = config.tasks.get("init");
+    assert!(task.is_some());
+}
+
+#[test]
 fn load_default_no_experimental() {
-    let config = load_default(false);
+    let config = load_default(true, false);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -245,7 +265,7 @@ fn load_default_no_experimental() {
 
 #[test]
 fn load_default_with_experimental() {
-    let config = load_default(true);
+    let config = load_default(true, true);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());

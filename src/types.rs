@@ -642,6 +642,8 @@ impl PlatformOverrideTask {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
+    /// If true, the default core tasks will not be loaded
+    pub skip_core_tasks: Option<bool>,
     /// Init task name which will be invoked at the start of every run
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
@@ -660,6 +662,7 @@ impl ConfigSection {
     /// Creates and returns a new instance.
     pub fn new() -> ConfigSection {
         ConfigSection {
+            skip_core_tasks: None,
             init_task: None,
             end_task: None,
             load_script: None,
@@ -675,12 +678,20 @@ impl ConfigSection {
     ///
     /// * `task` - The task to copy from
     pub fn extend(self: &mut ConfigSection, extended: &mut ConfigSection) {
+        if extended.skip_core_tasks.is_some() {
+            self.skip_core_tasks = extended.skip_core_tasks.clone();
+        }
+
         if extended.init_task.is_some() {
             self.init_task = extended.init_task.clone();
         }
 
         if extended.end_task.is_some() {
             self.end_task = extended.end_task.clone();
+        }
+
+        if extended.load_script.is_some() {
+            self.load_script = extended.load_script.clone();
         }
 
         if extended.linux_load_script.is_some() {
@@ -693,10 +704,6 @@ impl ConfigSection {
 
         if extended.mac_load_script.is_some() {
             self.mac_load_script = extended.mac_load_script.clone();
-        }
-
-        if extended.load_script.is_some() {
-            self.load_script = extended.load_script.clone();
         }
     }
 

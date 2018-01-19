@@ -902,6 +902,7 @@ fn task_is_valid_both_command_and_script() {
 fn config_section_new() {
     let config = ConfigSection::new();
 
+    assert!(config.skip_core_tasks.is_none());
     assert!(config.init_task.is_none());
     assert!(config.end_task.is_none());
     assert!(config.load_script.is_none());
@@ -915,6 +916,7 @@ fn config_section_extend_all_values() {
     let mut base = ConfigSection::new();
     let mut extended = ConfigSection::new();
 
+    base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.load_script = Some(vec!["base_info".to_string()]);
@@ -922,6 +924,7 @@ fn config_section_extend_all_values() {
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
     base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
 
+    extended.skip_core_tasks = Some(false);
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
     extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
@@ -931,6 +934,7 @@ fn config_section_extend_all_values() {
 
     base.extend(&mut extended);
 
+    assert!(!base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
@@ -944,6 +948,7 @@ fn config_section_extend_no_values() {
     let mut base = ConfigSection::new();
     let mut extended = ConfigSection::new();
 
+    base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
@@ -953,6 +958,7 @@ fn config_section_extend_no_values() {
 
     base.extend(&mut extended);
 
+    assert!(base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "base_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
@@ -966,6 +972,7 @@ fn config_section_extend_some_values() {
     let mut base = ConfigSection::new();
     let mut extended = ConfigSection::new();
 
+    base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
@@ -973,10 +980,12 @@ fn config_section_extend_some_values() {
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
     base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
 
+    extended.skip_core_tasks = Some(false);
     extended.init_task = Some("extended_init".to_string());
 
     base.extend(&mut extended);
 
+    assert!(!base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);

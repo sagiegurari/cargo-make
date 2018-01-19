@@ -1,0 +1,12 @@
+
+[config]
+init_task = "empty"
+end_task = "empty"
+
+[env]
+
+[tasks.empty]
+description = "Empty Task"
+
+[tasks.default]
+description = "Empty Task"

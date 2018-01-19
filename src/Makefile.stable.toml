@@ -2,6 +2,7 @@
 [config]
 init_task = "init"
 end_task = "end"
+skip_core_tasks = false
 
 [env]
 RUST_BACKTRACE = "full"
@@ -115,9 +116,6 @@ dependencies = [
     "copy-apidocs",
     "end-build-flow"
 ]
-
-[tasks.empty]
-description = "Empty Task"
 
 [tasks.init]
 description = "By default this task is invoked at the start of every cargo-make run."
