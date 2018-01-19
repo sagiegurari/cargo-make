@@ -109,24 +109,32 @@
     function showSidebar() {
         var elems = document.getElementsByClassName("sidebar-elems")[0];
         if (elems) {
-            elems.style.display = "block";
+            addClass(elems, "show-it");
         }
         var sidebar = document.getElementsByClassName('sidebar')[0];
-        sidebar.style.position = 'fixed';
-        sidebar.style.width = '100%';
-        sidebar.style.marginLeft = '0';
+        if (sidebar) {
+            addClass(sidebar, 'mobile');
+            var filler = document.getElementById("sidebar-filler");
+            if (!filler) {
+                var div = document.createElement("div");
+                div.id = "sidebar-filler";
+                sidebar.appendChild(div);
+            }
+        }
         document.getElementsByTagName("body")[0].style.marginTop = '45px';
     }
 
     function hideSidebar() {
         var elems = document.getElementsByClassName("sidebar-elems")[0];
         if (elems) {
-            elems.style.display = "";
+            removeClass(elems, "show-it");
         }
         var sidebar = document.getElementsByClassName('sidebar')[0];
-        sidebar.style.position = '';
-        sidebar.style.width = '';
-        sidebar.style.marginLeft = '';
+        removeClass(sidebar, 'mobile');
+        var filler = document.getElementById("sidebar-filler");
+        if (filler) {
+            filler.remove();
+        }
         document.getElementsByTagName("body")[0].style.marginTop = '';
     }
 
@@ -250,6 +258,7 @@
                 addClass(search, "hidden");
                 removeClass(document.getElementById("main"), "hidden");
             }
+            defocusSearchBar();
             break;
 
         case "s":
@@ -681,6 +690,9 @@
             }
 
             function checkPath(startsWith, lastElem, ty) {
+                if (startsWith.length === 0) {
+                    return 0;
+                }
                 var ret_lev = MAX_LEV_DISTANCE + 1;
                 var path = ty.path.split("::");
 
@@ -706,18 +718,7 @@
                         lev_total += lev;
                     }
                     if (aborted === false) {
-                        var extra = MAX_LEV_DISTANCE + 1;
-                        if (i + startsWith.length < path.length) {
-                            extra = levenshtein(path[i + startsWith.length], lastElem);
-                        }
-                        if (extra > MAX_LEV_DISTANCE) {
-                            extra = levenshtein(ty.name, lastElem);
-                        }
-                        if (extra < MAX_LEV_DISTANCE + 1) {
-                            lev_total += extra;
-                            ret_lev = Math.min(ret_lev,
-                                               Math.round(lev_total / (startsWith.length + 1)));
-                        }
+                        ret_lev = Math.min(ret_lev, Math.round(lev_total / startsWith.length));
                     }
                 }
                 return ret_lev;
@@ -934,6 +935,13 @@
                     }
 
                     lev += lev_add;
+                    if (lev > 0 && val.length > 3 && searchWords[j].startsWith(val)) {
+                        if (val.length < 6) {
+                            lev -= 1;
+                        } else {
+                            lev = 0;
+                        }
+                    }
                     if (in_args <= MAX_LEV_DISTANCE) {
                         if (results_in_args[fullId] === undefined) {
                             results_in_args[fullId] = {
@@ -1447,7 +1455,7 @@
 
         // Draw a convenient sidebar of known crates if we have a listing
         if (rootPath === '../') {
-            var sidebar = document.getElementsByClassName('sidebar')[0];
+            var sidebar = document.getElementsByClassName('sidebar-elems')[0];
             var div = document.createElement('div');
             div.className = 'block crate';
             div.innerHTML = '<h3>Crates</h3>';
@@ -1860,7 +1868,7 @@
     if (sidebar_menu) {
         sidebar_menu.onclick = function() {
             var sidebar = document.getElementsByClassName('sidebar')[0];
-            if (sidebar.style.position === "fixed") {
+            if (hasClass(sidebar, "mobile") === true) {
                 hideSidebar();
             } else {
                 showSidebar();
@@ -1876,4 +1884,9 @@
 // Sets the focus on the search bar at the top of the page
 function focusSearchBar() {
     document.getElementsByClassName('search-input')[0].focus();
+}
+
+// Removes the focus from the search bar
+function defocusSearchBar() {
+    document.getElementsByClassName('search-input')[0].blur();
 }

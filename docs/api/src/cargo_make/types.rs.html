@@ -823,6 +823,13 @@
 <span id="777">777</span>
 <span id="778">778</span>
 <span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1468,6 +1475,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the configuration found in the makefile toml config section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigSection</span> {
+    <span class="doccomment">/// If true, the default core tasks will not be loaded</span>
+    <span class="kw">pub</span> <span class="ident">skip_core_tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Init task name which will be invoked at the start of every run</span>
     <span class="kw">pub</span> <span class="ident">init_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// End task name which will be invoked at the end of every run</span>
@@ -1486,6 +1495,7 @@
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ConfigSection</span> {
         <span class="ident">ConfigSection</span> {
+            <span class="ident">skip_core_tasks</span>: <span class="prelude-val">None</span>,
             <span class="ident">init_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">end_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
@@ -1501,12 +1511,20 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `task` - The task to copy from</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extend</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ConfigSection</span>, <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ConfigSection</span>) {
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">skip_core_tasks</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">skip_core_tasks</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">skip_core_tasks</span>.<span class="ident">clone</span>();
+        }
+
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">init_task</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">init_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">init_task</span>.<span class="ident">clone</span>();
         }
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">end_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>();
         }
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">linux_load_script</span>.<span class="ident">is_some</span>() {
@@ -1519,10 +1537,6 @@
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">mac_load_script</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">mac_load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">mac_load_script</span>.<span class="ident">clone</span>();
-        }
-
-        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
-            <span class="self">self</span>.<span class="ident">load_script</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>();
         }
     }
 
