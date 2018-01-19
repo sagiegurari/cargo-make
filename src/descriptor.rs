@@ -183,18 +183,35 @@ fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig 
     }
 }
 
-fn load_default(experimental: bool) -> Config {
-    debug!("Loading default tasks.");
+fn load_default(stable: bool, experimental: bool) -> Config {
+    debug!("Loading base tasks.");
+    let base_descriptor = include_str!("Makefile.base.toml");
 
-    let default_descriptor = include_str!("Makefile.stable.toml");
-
-    let mut default_config: Config = match toml::from_str(default_descriptor) {
+    let mut base_config: Config = match toml::from_str(base_descriptor) {
         Ok(value) => value,
-        Err(error) => panic!("Unable to parse default descriptor, {}", error),
+        Err(error) => panic!("Unable to parse base descriptor, {}", error),
     };
-    debug!("Loaded default config: {:#?}", &default_config);
+    debug!("Loaded base config: {:#?}", &base_config);
+
+    if stable {
+        debug!("Loading stable tasks.");
+        let stable_descriptor = include_str!("Makefile.stable.toml");
+
+        let stable_config: Config = match toml::from_str(stable_descriptor) {
+            Ok(value) => value,
+            Err(error) => panic!("Unable to parse stable descriptor, {}", error),
+        };
+        debug!("Loaded stable config: {:#?}", &stable_config);
+
+        let mut base_tasks = base_config.tasks;
+        let mut stable_tasks = stable_config.tasks;
+        let all_tasks = merge_tasks(&mut base_tasks, &mut stable_tasks);
+
+        base_config.tasks = all_tasks;
+    }
 
     if experimental {
+        debug!("Loading experimental tasks.");
         let experimental_descriptor = include_str!("Makefile.beta.toml");
 
         let experimental_config: Config = match toml::from_str(experimental_descriptor) {
@@ -203,22 +220,27 @@ fn load_default(experimental: bool) -> Config {
         };
         debug!("Loaded experimental config: {:#?}", &experimental_config);
 
-        let mut default_tasks = default_config.tasks;
+        let mut base_tasks = base_config.tasks;
         let mut experimental_tasks = experimental_config.tasks;
-        let all_tasks = merge_tasks(&mut default_tasks, &mut experimental_tasks);
+        let all_tasks = merge_tasks(&mut base_tasks, &mut experimental_tasks);
 
-        default_config.tasks = all_tasks;
+        base_config.tasks = all_tasks;
     }
 
-    default_config
+    base_config
 }
 
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub(crate) fn load(file_name: &str, env: Option<Vec<String>>, experimental: bool) -> Config {
-    let default_config = load_default(experimental);
+fn load_descriptors(
+    file_name: &str,
+    env: Option<Vec<String>>,
+    stable: bool,
+    experimental: bool,
+) -> Config {
+    let default_config = load_default(stable, experimental);
 
     let external_config: ExternalConfig = load_external_descriptor(".", file_name);
 
@@ -269,6 +291,20 @@ pub(crate) fn load(file_name: &str, env: Option<Vec<String>>, experimental: bool
     };
 
     debug!("Loaded merged config: {:#?}", &config);
+
+    config
+}
+
+/// Loads the tasks descriptor.<br>
+/// It will first load the default descriptor which is defined in cargo-make internally and
+/// afterwards tries to find the external descriptor and load it as well.<br>
+/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+pub(crate) fn load(file_name: &str, env: Option<Vec<String>>, experimental: bool) -> Config {
+    let mut config = load_descriptors(&file_name, env.clone(), true, experimental);
+
+    if config.config.skip_core_tasks.unwrap_or(false) {
+        config = load_descriptors(&file_name, env.clone(), false, false);
+    }
 
     config
 }

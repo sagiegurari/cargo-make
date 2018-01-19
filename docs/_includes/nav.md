@@ -38,6 +38,7 @@
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
         * [Git Commands](#usage-predefined-flows-git)
         * [Flows/Other](#usage-predefined-flows-flows)
+        * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
     * [Workspace Support](#usage-workspace-support)
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
