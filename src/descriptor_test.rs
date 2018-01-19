@@ -234,6 +234,26 @@ fn merge_tasks_extend_task() {
 }
 
 #[test]
+fn load_no_stable() {
+    let config = load("./examples/skip_core_tasks.toml", None, false);
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    task = config.tasks.get("init");
+    assert!(task.is_none());
+}
+
+#[test]
+fn load_with_stable() {
+    let config = load("./examples/simple-example.toml", None, false);
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    task = config.tasks.get("init");
+    assert!(task.is_some());
+}
+
+#[test]
 fn load_default_no_stable() {
     let config = load_default(false, false);
 

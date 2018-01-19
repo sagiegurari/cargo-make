@@ -234,7 +234,7 @@ fn load_default(stable: bool, experimental: bool) -> Config {
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub(crate) fn load_descriptors(
+fn load_descriptors(
     file_name: &str,
     env: Option<Vec<String>>,
     stable: bool,
