@@ -237,6 +237,8 @@ fn merge_tasks_extend_task() {
 fn load_no_stable() {
     let config = load("./examples/skip_core_tasks.toml", None, false);
 
+    assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_none());
+
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
     task = config.tasks.get("init");
@@ -246,6 +248,8 @@ fn load_no_stable() {
 #[test]
 fn load_with_stable() {
     let config = load("./examples/simple-example.toml", None, false);
+
+    assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_some());
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());

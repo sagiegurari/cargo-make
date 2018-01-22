@@ -11,6 +11,9 @@ CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
 
+[tasks.empty]
+description = "Empty Task"
+
 [tasks.default]
 description = "Default task points to the development testing flow"
 alias = "dev-test-flow"

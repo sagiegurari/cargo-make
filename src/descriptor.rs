@@ -185,30 +185,18 @@ fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig 
 
 fn load_default(stable: bool, experimental: bool) -> Config {
     debug!("Loading base tasks.");
-    let base_descriptor = include_str!("Makefile.base.toml");
+
+    let base_descriptor = if stable {
+        include_str!("Makefile.stable.toml")
+    } else {
+        include_str!("Makefile.base.toml")
+    };
 
     let mut base_config: Config = match toml::from_str(base_descriptor) {
         Ok(value) => value,
         Err(error) => panic!("Unable to parse base descriptor, {}", error),
     };
     debug!("Loaded base config: {:#?}", &base_config);
-
-    if stable {
-        debug!("Loading stable tasks.");
-        let stable_descriptor = include_str!("Makefile.stable.toml");
-
-        let stable_config: Config = match toml::from_str(stable_descriptor) {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to parse stable descriptor, {}", error),
-        };
-        debug!("Loaded stable config: {:#?}", &stable_config);
-
-        let mut base_tasks = base_config.tasks;
-        let mut stable_tasks = stable_config.tasks;
-        let all_tasks = merge_tasks(&mut base_tasks, &mut stable_tasks);
-
-        base_config.tasks = all_tasks;
-    }
 
     if experimental {
         debug!("Loading experimental tasks.");
