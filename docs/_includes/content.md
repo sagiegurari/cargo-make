@@ -1115,7 +1115,9 @@ ARGS:
 ### Global Configuration
 Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file located at: ~/.cargo-make/config.toml
 
-The following example config.toml shows all possible configurations with their default values:
+The default location can be configured via CARGO_MAKE_HOME environment variable value.
+
+The following example config.toml shows all possible options with their default values:
 
 ```toml
 # The default log level if not defined by the --loglevel cli argument
@@ -1123,6 +1125,12 @@ log_level = "info"
 
 # The default task name if no task was provided as part of the cargo-make invocation
 default_task_name = "default"
+
+# Defines the minimum amount of time needed from the last update check.
+# If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
+# Valid values are: always, daily, weekly, monthly
+# If any other value is provided, it will be treated as always.
+update_check_interval = "always"
 ```
 
 <a name="descriptor-definition"></a>

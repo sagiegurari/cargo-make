@@ -71,6 +71,8 @@ pub struct GlobalConfig {
     pub log_level: Option<String>,
     /// Default task name
     pub default_task_name: Option<String>,
+    /// Update check interval (always, daily, weekly, monthly)
+    pub update_check_interval: Option<String>,
 }
 
 impl GlobalConfig {
@@ -79,6 +81,7 @@ impl GlobalConfig {
         GlobalConfig {
             log_level: None,
             default_task_name: None,
+            update_check_interval: None,
         }
     }
 }

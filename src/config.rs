@@ -15,7 +15,7 @@ use types::GlobalConfig;
 use std::env;
 
 fn load_from_path(directory: PathBuf) -> GlobalConfig {
-    let file_path = Path::new(&directory).join(".cargo-make/config.toml");
+    let file_path = Path::new(&directory).join("config.toml");
 
     if file_path.exists() {
         let mut file = match File::open(&file_path) {
@@ -42,8 +42,17 @@ fn load_from_path(directory: PathBuf) -> GlobalConfig {
 
 /// Returns the configuration
 pub(crate) fn load() -> GlobalConfig {
-    match env::home_dir() {
-        Some(path) => load_from_path(path),
-        None => GlobalConfig::new(),
+    match env::var("CARGO_MAKE_HOME") {
+        Ok(directory) => {
+            let path = PathBuf::from(directory);
+            load_from_path(path)
+        }
+        _ => match env::home_dir() {
+            Some(directory) => {
+                let path = directory.join(".cargo-make");
+                load_from_path(path)
+            }
+            None => GlobalConfig::new(),
+        },
     }
 }

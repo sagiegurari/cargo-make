@@ -22,6 +22,7 @@ fn global_config_new() {
 
     assert!(global_config.log_level.is_none());
     assert!(global_config.default_task_name.is_none());
+    assert!(global_config.update_check_interval.is_none());
 }
 
 #[test]
