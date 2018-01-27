@@ -1111,6 +1111,20 @@ ARGS:
     <TASK>
 ```
 
+<a name="cargo-make-global-config"></a>
+### Global Configuration
+Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file located at: ~/.cargo-make/config.toml
+
+The following example config.toml shows all possible configurations with their default values:
+
+```toml
+# The default log level if not defined by the --loglevel cli argument
+log_level = "info"
+
+# The default task name if no task was provided as part of the cargo-make invocation
+default_task_name = "default"
+```
+
 <a name="descriptor-definition"></a>
 ## Makefile Definition
 

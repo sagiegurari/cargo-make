@@ -1,7 +1,7 @@
 use super::*;
 use std::env;
 use std::path::Path;
-use types::CliArgs;
+use types::{CliArgs, GlobalConfig};
 
 #[test]
 fn run_empty_task() {
@@ -115,7 +115,8 @@ fn run_cli_panic() {
 #[test]
 #[should_panic]
 fn run_for_args_bad_subcommand() {
-    let app = create_cli();
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
 
     let matches = app.get_matches_from(vec!["bad"]);
 
@@ -124,7 +125,8 @@ fn run_for_args_bad_subcommand() {
 
 #[test]
 fn run_for_args_valid() {
-    let app = create_cli();
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -141,8 +143,21 @@ fn run_for_args_valid() {
 }
 
 #[test]
+fn run_for_args_with_global_config() {
+    let mut global_config = GlobalConfig::new();
+    global_config.log_level = Some("info".to_string());
+    global_config.default_task_name = Some("empty".to_string());
+    let app = create_cli(&global_config);
+
+    let matches = app.get_matches_from(vec!["cargo", "make"]);
+
+    run_for_args(matches);
+}
+
+#[test]
 fn run_for_args_log_level_override() {
-    let app = create_cli();
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -161,7 +176,8 @@ fn run_for_args_log_level_override() {
 
 #[test]
 fn run_for_args_set_env() {
-    let app = create_cli();
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
 
     env::set_var("ENV1_TEST", "EMPTY");
     env::set_var("ENV2_TEST", "EMPTY");
@@ -191,7 +207,8 @@ fn run_for_args_set_env() {
 
 #[test]
 fn run_for_args_print_only() {
-    let app = create_cli();
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
 
     let matches = app.get_matches_from(vec![
         "cargo",

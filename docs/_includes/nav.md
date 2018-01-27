@@ -43,6 +43,7 @@
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
+    * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)
 * [Badge](#badge)

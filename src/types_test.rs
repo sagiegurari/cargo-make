@@ -17,6 +17,14 @@ fn cli_args_new() {
 }
 
 #[test]
+fn global_config_new() {
+    let global_config = GlobalConfig::new();
+
+    assert!(global_config.log_level.is_none());
+    assert!(global_config.default_task_name.is_none());
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 

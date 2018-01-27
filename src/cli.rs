@@ -7,13 +7,14 @@
 #[path = "./cli_test.rs"]
 mod cli_test;
 
+use config;
 use ci_info;
 use clap::{App, Arg, ArgMatches, SubCommand};
 use descriptor;
 use environment;
 use logger;
 use runner;
-use types::CliArgs;
+use types::{CliArgs, GlobalConfig};
 use version;
 
 static NAME: &str = "make";
@@ -107,7 +108,16 @@ fn run_for_args(matches: ArgMatches) {
     }
 }
 
-fn create_cli<'a, 'b>() -> App<'a, 'b> {
+fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
+    let default_task_name = match global_config.default_task_name {
+        Some(ref value) => value.as_str().clone(),
+        None => &DEFAULT_TASK_NAME,
+    };
+    let default_log_level = match global_config.log_level {
+        Some(ref value) => value.as_str().clone(),
+        None => &DEFAULT_LOG_LEVEL,
+    };
+
     App::new("cargo").bin_name("cargo").subcommand(
         SubCommand::with_name(NAME)
             .version(VERSION)
@@ -118,21 +128,30 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                     .long("--makefile")
                     .value_name("FILE")
                     .help("The optional toml file containing the tasks definitions")
-                    .default_value(&DEFAULT_TOML)
+                    .default_value(&DEFAULT_TOML),
             )
             .arg(
                 Arg::with_name("task")
                     .short("-t")
                     .long("--task")
                     .value_name("TASK")
-                    .help("The task name to execute (can omit the flag if the task name is the last argument)")
-                    .default_value(&DEFAULT_TASK_NAME)
+                    .help(
+                        "The task name to execute \
+                         (can omit the flag if the task name is the last argument)",
+                    )
+                    .default_value(default_task_name),
             )
-            .arg(Arg::with_name("cwd").long("--cwd").value_name("DIRECTORY").help(
-                "Will set the current working directory. The search for the makefile will be from this directory if defined."
-            ))
+            .arg(
+                Arg::with_name("cwd")
+                    .long("--cwd")
+                    .value_name("DIRECTORY")
+                    .help(
+                        "Will set the current working directory. \
+                         The search for the makefile will be from this directory if defined.",
+                    ),
+            )
             .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
-                "Disable workspace support (tasks are triggered on workspace and not on members)"
+                "Disable workspace support (tasks are triggered on workspace and not on members)",
             ))
             .arg(
                 Arg::with_name("env")
@@ -142,33 +161,47 @@ fn create_cli<'a, 'b>() -> App<'a, 'b> {
                     .multiple(true)
                     .takes_value(true)
                     .number_of_values(1)
-                    .help("Set environment variables")
+                    .help("Set environment variables"),
             )
             .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
-                    .default_value(&DEFAULT_LOG_LEVEL)
+                    .default_value(default_log_level),
             )
-            .arg(Arg::with_name("v").short("-v").long("--verbose").help(
-                "Sets the log level to verbose (shorthand for --loglevel verbose)"
-            ))
-            .arg(Arg::with_name("experimental").long("--experimental").help(
-                "Allows access unsupported experimental predefined tasks."
-            ))
-            .arg(Arg::with_name("disable-check-for-updates").long("--disable-check-for-updates").help(
-                "Disables the update check during startup"
-            ))
+            .arg(
+                Arg::with_name("v")
+                    .short("-v")
+                    .long("--verbose")
+                    .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
+            )
+            .arg(
+                Arg::with_name("experimental")
+                    .long("--experimental")
+                    .help("Allows access unsupported experimental predefined tasks."),
+            )
+            .arg(
+                Arg::with_name("disable-check-for-updates")
+                    .long("--disable-check-for-updates")
+                    .help("Disables the update check during startup"),
+            )
             .arg(Arg::with_name("print-steps").long("--print-steps").help(
-                "Only prints the steps of the build in the order they will be invoked but without invoking them"
+                "Only prints the steps of the build in the order they will \
+                 be invoked but without invoking them",
             ))
-            .arg(Arg::with_name("list-steps").long("--list-all-steps").help("Lists all known steps"))
-            .arg(Arg::with_name("TASK"))
+            .arg(
+                Arg::with_name("list-steps")
+                    .long("--list-all-steps")
+                    .help("Lists all known steps"),
+            )
+            .arg(Arg::with_name("TASK")),
     )
 }
 
 /// Handles the command line arguments and executes the runner.
 pub(crate) fn run_cli() {
-    let app = create_cli();
+    let global_config = config::load();
+
+    let app = create_cli(&global_config);
 
     let matches = app.get_matches();
 

@@ -64,6 +64,25 @@ impl CliArgs {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds configuration info for cargo-make
+pub struct GlobalConfig {
+    /// Default log level
+    pub log_level: Option<String>,
+    /// Default task name
+    pub default_task_name: Option<String>,
+}
+
+impl GlobalConfig {
+    /// Returns new instance
+    pub fn new() -> GlobalConfig {
+        GlobalConfig {
+            log_level: None,
+            default_task_name: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 /// Holds git info for the given repo directory
 pub struct GitInfo {

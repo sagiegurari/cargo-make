@@ -2,6 +2,7 @@
 
 ### v0.10.0 (TODO)
 
+* Global configuration file to define default log level, task name and update check interval (#64)
 * Reformat changelog (#66)
 
 ### v0.9.5 (2018-01-22)
