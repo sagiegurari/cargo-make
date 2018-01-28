@@ -27,11 +27,11 @@ fn global_config_new() {
 }
 
 #[test]
-fn storage_new() {
-    let storage = Storage::new();
+fn cache_new() {
+    let cache = Cache::new();
 
-    assert!(storage.file_name.is_none());
-    assert!(storage.last_update_check.is_none());
+    assert!(cache.file_name.is_none());
+    assert!(cache.last_update_check.is_none());
 }
 
 #[test]

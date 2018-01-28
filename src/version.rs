@@ -12,7 +12,7 @@ use command;
 use semver::Version;
 use std::process::Command;
 use types::GlobalConfig;
-use storage;
+use cache;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -131,12 +131,12 @@ pub(crate) fn check() {
             if is_newer_found(&value) {
                 print_notification(&value);
 
-                let mut storage_data = storage::load();
+                let mut cache_data = cache::load();
                 let now = SystemTime::now();
                 match now.duration_since(UNIX_EPOCH) {
                     Ok(duration) => {
-                        storage_data.last_update_check = Some(duration.as_secs());
-                        storage::store(&storage_data);
+                        cache_data.last_update_check = Some(duration.as_secs());
+                        cache::store(&cache_data);
                     }
                     _ => (),
                 }
