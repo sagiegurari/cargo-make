@@ -1130,7 +1130,7 @@ default_task_name = "default"
 # If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
 # Valid values are: always, daily, weekly, monthly
 # If any other value is provided, it will be treated as always.
-update_check_interval = "always"
+update_check_minimum_interval = "always"
 ```
 
 <a name="descriptor-definition"></a>

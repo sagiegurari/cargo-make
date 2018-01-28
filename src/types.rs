@@ -65,23 +65,47 @@ impl CliArgs {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds persisted data used by cargo-make
+pub struct Storage {
+    /// File from which the storage file was loaded from
+    #[serde(skip)]
+    pub file_name: Option<String>,
+    /// Holds last update check with returned no updates result
+    pub last_update_check: Option<u64>,
+}
+
+impl Storage {
+    /// Returns new instance
+    pub fn new() -> Storage {
+        Storage {
+            file_name: None,
+            last_update_check: None,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds configuration info for cargo-make
 pub struct GlobalConfig {
+    /// File from which the global config was loaded from
+    #[serde(skip)]
+    pub file_name: Option<String>,
     /// Default log level
     pub log_level: Option<String>,
     /// Default task name
     pub default_task_name: Option<String>,
-    /// Update check interval (always, daily, weekly, monthly)
-    pub update_check_interval: Option<String>,
+    /// Update check minimum time from the previous check (always, daily, weekly, monthly)
+    pub update_check_minimum_interval: Option<String>,
 }
 
 impl GlobalConfig {
     /// Returns new instance
     pub fn new() -> GlobalConfig {
         GlobalConfig {
+            file_name: None,
             log_level: None,
             default_task_name: None,
-            update_check_interval: None,
+            update_check_minimum_interval: None,
         }
     }
 }
@@ -108,7 +132,7 @@ impl GitInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section
 pub struct Workspace {
     /// members paths
@@ -127,7 +151,7 @@ impl Workspace {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {
     /// name
@@ -161,14 +185,14 @@ impl PackageInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds crate dependency info.
 pub struct CrateDependencyInfo {
     /// Holds the dependency path
     pub path: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds crate dependency info.
 pub enum CrateDependency {
@@ -178,7 +202,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
@@ -224,7 +248,7 @@ pub struct FlowInfo {
     pub disable_workspace: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
     /// Platform names (linux, windows, mac)
@@ -239,14 +263,14 @@ pub struct TaskCondition {
     pub env: Option<HashMap<String, String>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct EnvValueInfo {
     /// The script to execute to get the env value
     pub script: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
 pub enum EnvValue {
@@ -256,7 +280,7 @@ pub enum EnvValue {
     Info(EnvValueInfo),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// Task description
@@ -548,7 +572,7 @@ impl Task {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds a single task configuration for a specific platform as an override of another task
 pub struct PlatformOverrideTask {
     /// if true, it should ignore all data in base task
@@ -661,7 +685,7 @@ impl PlatformOverrideTask {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
@@ -755,7 +779,7 @@ impl ConfigSection {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
     /// Runtime config
@@ -766,7 +790,7 @@ pub struct Config {
     pub tasks: HashMap<String, Task>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend

@@ -11,6 +11,9 @@ mod version_test;
 use command;
 use semver::Version;
 use std::process::Command;
+use types::GlobalConfig;
+use storage;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -107,6 +110,19 @@ fn print_notification(latest_string: &str) {
     warn!("#####################################################################");
 }
 
+pub(crate) fn should_check(global_config: &GlobalConfig) -> bool {
+    match global_config.update_check_minimum_interval {
+        Some(ref value) => {
+            if value == "daily" || value == "weekly" || value == "monthly" {
+                false
+            } else {
+                true
+            }
+        }
+        None => true,
+    }
+}
+
 pub(crate) fn check() {
     let latest = get_latest_version();
 
@@ -114,6 +130,16 @@ pub(crate) fn check() {
         Some(value) => {
             if is_newer_found(&value) {
                 print_notification(&value);
+
+                let mut storage_data = storage::load();
+                let now = SystemTime::now();
+                match now.duration_since(UNIX_EPOCH) {
+                    Ok(duration) => {
+                        storage_data.last_update_check = Some(duration.as_secs());
+                        storage::store(&storage_data);
+                    }
+                    _ => (),
+                }
             }
         }
         None => (),

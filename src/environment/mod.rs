@@ -287,3 +287,13 @@ pub(crate) fn get_env(key: &str, default: &str) -> String {
         _ => default.to_string(),
     }
 }
+
+pub(crate) fn get_cargo_make_home() -> Option<PathBuf> {
+    match env::var("CARGO_MAKE_HOME") {
+        Ok(directory) => Some(PathBuf::from(directory)),
+        _ => match env::home_dir() {
+            Some(directory) => Some(directory.join(".cargo-make")),
+            None => None,
+        },
+    }
+}

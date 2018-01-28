@@ -25,16 +25,19 @@ static DEFAULT_TOML: &str = "Makefile.toml";
 static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
 
-fn run(cli_args: CliArgs) {
+fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     logger::init(&cli_args.log_level);
 
     info!("cargo-{} {}", &NAME, &VERSION);
     debug!("Written By {}", &AUTHOR);
 
     debug!("Cli Args {:#?}", &cli_args);
+    debug!("Global Configuration {:#?}", &global_config);
 
     // only run check for updates if we are not in a CI env and user didn't ask to skip the check
-    if !cli_args.disable_check_for_updates && !ci_info::is_ci() {
+    if !cli_args.disable_check_for_updates && !ci_info::is_ci()
+        && version::should_check(&global_config)
+    {
         version::check();
     }
 
@@ -66,7 +69,7 @@ fn run(cli_args: CliArgs) {
 }
 
 /// Handles the command line arguments and executes the runner.
-fn run_for_args(matches: ArgMatches) {
+fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
     match matches.subcommand_matches(NAME) {
         Some(cmd_matches) => {
             let mut cli_args = CliArgs::new();
@@ -102,7 +105,7 @@ fn run_for_args(matches: ArgMatches) {
             let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
             cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
 
-            run(cli_args);
+            run(cli_args, global_config);
         }
         None => panic!("cargo-{} not invoked via cargo command.", NAME),
     }
@@ -205,5 +208,5 @@ pub(crate) fn run_cli() {
 
     let matches = app.get_matches();
 
-    run_for_args(matches);
+    run_for_args(matches, &global_config);
 }

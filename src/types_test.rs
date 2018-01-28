@@ -20,9 +20,18 @@ fn cli_args_new() {
 fn global_config_new() {
     let global_config = GlobalConfig::new();
 
+    assert!(global_config.file_name.is_none());
     assert!(global_config.log_level.is_none());
     assert!(global_config.default_task_name.is_none());
-    assert!(global_config.update_check_interval.is_none());
+    assert!(global_config.update_check_minimum_interval.is_none());
+}
+
+#[test]
+fn storage_new() {
+    let storage = Storage::new();
+
+    assert!(storage.file_name.is_none());
+    assert!(storage.last_update_check.is_none());
 }
 
 #[test]

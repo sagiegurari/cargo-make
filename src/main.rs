@@ -66,6 +66,7 @@ pub mod types;
 
 mod logger;
 mod config;
+mod storage;
 mod descriptor;
 mod environment;
 mod command;

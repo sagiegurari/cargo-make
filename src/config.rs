@@ -11,8 +11,8 @@ use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
+use environment;
 use types::GlobalConfig;
-use std::env;
 
 fn load_from_path(directory: PathBuf) -> GlobalConfig {
     let file_path = Path::new(&directory).join("config.toml");
@@ -29,9 +29,14 @@ fn load_from_path(directory: PathBuf) -> GlobalConfig {
         let mut config_str = String::new();
         file.read_to_string(&mut config_str).unwrap();
 
-        let global_config: GlobalConfig = match toml::from_str(&config_str) {
+        let mut global_config: GlobalConfig = match toml::from_str(&config_str) {
             Ok(value) => value,
             Err(error) => panic!("Unable to parse global configuration file, {}", error),
+        };
+
+        match file_path.to_str() {
+            Some(value) => global_config.file_name = Some(value.to_string()),
+            None => global_config.file_name = None,
         };
 
         global_config
@@ -42,17 +47,8 @@ fn load_from_path(directory: PathBuf) -> GlobalConfig {
 
 /// Returns the configuration
 pub(crate) fn load() -> GlobalConfig {
-    match env::var("CARGO_MAKE_HOME") {
-        Ok(directory) => {
-            let path = PathBuf::from(directory);
-            load_from_path(path)
-        }
-        _ => match env::home_dir() {
-            Some(directory) => {
-                let path = directory.join(".cargo-make");
-                load_from_path(path)
-            }
-            None => GlobalConfig::new(),
-        },
+    match environment::get_cargo_make_home() {
+        Some(directory) => load_from_path(directory),
+        None => GlobalConfig::new(),
     }
 }
