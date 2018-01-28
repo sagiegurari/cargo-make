@@ -64,9 +64,12 @@ impl CliArgs {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds persisted data used by cargo-make
 pub struct Storage {
+    /// File from which the storage file was loaded from
+    #[serde(skip)]
+    pub file_name: Option<String>,
     /// Holds last update check with returned no updates result
     pub last_update_check: Option<u64>,
 }
@@ -75,6 +78,7 @@ impl Storage {
     /// Returns new instance
     pub fn new() -> Storage {
         Storage {
+            file_name: None,
             last_update_check: None,
         }
     }
