@@ -25,7 +25,7 @@ fn load_from_path(directory: PathBuf) -> Storage {
                 file.read_to_string(&mut storage_str).unwrap();
 
                 let mut storage_data: Storage = match toml::from_str(&storage_str) {
-                    Ok(mut value) => value,
+                    Ok(value) => value,
                     _ => Storage::new(),
                 };
 
