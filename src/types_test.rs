@@ -30,7 +30,6 @@ fn global_config_new() {
 fn storage_new() {
     let storage = Storage::new();
 
-    assert!(storage.file_name.is_none());
     assert!(storage.last_update_check.is_none());
 }
 
