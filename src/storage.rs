@@ -16,7 +16,7 @@ use environment;
 use types::Storage;
 
 fn load_from_path(directory: PathBuf) -> Storage {
-    let file_path = Path::new(&directory).join(".storage.toml");
+    let file_path = Path::new(&directory).join("storage.toml");
 
     if file_path.exists() {
         match File::open(&file_path) {
@@ -55,7 +55,7 @@ pub(crate) fn load() -> Storage {
 pub(crate) fn store(storage_data: &Storage) {
     match environment::get_cargo_make_home() {
         Some(directory) => {
-            let file_name = directory.join(".storage.toml");
+            let file_name = directory.join("storage.toml");
 
             match File::open(&file_name) {
                 Ok(mut file) => match toml::to_string_pretty(storage_data) {
