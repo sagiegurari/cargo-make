@@ -1126,7 +1126,8 @@ log_level = "info"
 # The default task name if no task was provided as part of the cargo-make invocation
 default_task_name = "default"
 
-# Defines the minimum amount of time needed from the last update check.
+# cargo-make checks for updates during invocation.
+# This configuration defines the minimum amount of time which must pass before cargo-make invocations will try to check for updates.
 # If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
 # Valid values are: always, daily, weekly, monthly
 # If any other value is provided, it will be treated as always.
