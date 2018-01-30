@@ -17,6 +17,7 @@ fn load_from_path_exists() {
         global_config.update_check_minimum_interval.unwrap(),
         "daily".to_string()
     );
+    assert!(global_config.search_project_root.unwrap());
 }
 
 #[test]
@@ -28,6 +29,7 @@ fn load_from_path_not_exists() {
     assert!(global_config.log_level.is_none());
     assert!(global_config.default_task_name.is_none());
     assert!(global_config.update_check_minimum_interval.is_none());
+    assert!(!global_config.search_project_root.unwrap());
 }
 
 #[test]
@@ -47,10 +49,13 @@ fn load_with_cargo_home() {
         global_config.update_check_minimum_interval.unwrap(),
         "daily".to_string()
     );
+    assert!(global_config.search_project_root.unwrap());
 }
 
 #[test]
 fn load_without_cargo_home() {
     env::remove_var("CARGO_MAKE_HOME");
-    load();
+    let global_config = load();
+
+    assert!(global_config.search_project_root.is_some());
 }

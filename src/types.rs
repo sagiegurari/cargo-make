@@ -96,6 +96,8 @@ pub struct GlobalConfig {
     pub default_task_name: Option<String>,
     /// Update check minimum time from the previous check (always, daily, weekly, monthly)
     pub update_check_minimum_interval: Option<String>,
+    /// True to search for project root in parent directories if current cwd is not a project root
+    pub search_project_root: Option<bool>,
 }
 
 impl GlobalConfig {
@@ -106,6 +108,7 @@ impl GlobalConfig {
             log_level: None,
             default_task_name: None,
             update_check_minimum_interval: None,
+            search_project_root: Some(false),
         }
     }
 }

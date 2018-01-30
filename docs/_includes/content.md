@@ -1132,6 +1132,11 @@ default_task_name = "default"
 # Valid values are: always, daily, weekly, monthly
 # If any other value is provided, it will be treated as always.
 update_check_minimum_interval = "always"
+
+# If set to true and cwd was not provided in the command line arguments and the current cwd is not the project root (Cargo.toml not present),
+# cargo make will attempt to find the project root by searching the parent directories, until a directory with a Cargo.toml is found.
+# cargo make will set the cwd to that directory and will use any Makefile.toml found at that location.
+search_project_root = false
 ```
 
 <a name="descriptor-definition"></a>
