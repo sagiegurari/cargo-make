@@ -86,12 +86,16 @@ fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
                 None => None,
             };
 
+            let default_log_level = match global_config.log_level {
+                Some(ref value) => value.as_str().clone(),
+                None => &DEFAULT_LOG_LEVEL,
+            };
             cli_args.log_level = if cmd_matches.is_present("v") {
                 "verbose".to_string()
             } else {
                 cmd_matches
                     .value_of("loglevel")
-                    .unwrap_or(&DEFAULT_LOG_LEVEL)
+                    .unwrap_or(default_log_level)
                     .to_string()
             };
 
@@ -102,7 +106,11 @@ fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
             cli_args.list_all_steps = cmd_matches.is_present("list-steps");
 
-            let task = cmd_matches.value_of("task").unwrap_or(&DEFAULT_TASK_NAME);
+            let default_task_name = match global_config.default_task_name {
+                Some(ref value) => value.as_str().clone(),
+                None => &DEFAULT_TASK_NAME,
+            };
+            let task = cmd_matches.value_of("task").unwrap_or(default_task_name);
             cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
 
             run(cli_args, global_config);
