@@ -112,6 +112,75 @@ fn run_cwd_with_file() {
 }
 
 #[test]
+fn run_file_not_go_to_project_root() {
+    let mut global_config = GlobalConfig::new();
+    global_config.search_project_root = Some(false);
+
+    run(
+        CliArgs {
+            build_file: "./examples/dependencies.toml".to_string(),
+            task: "A".to_string(),
+            log_level: "error".to_string(),
+            cwd: None,
+            env: None,
+            disable_workspace: false,
+            disable_check_for_updates: true,
+            print_only: false,
+            list_all_steps: false,
+            experimental: false,
+        },
+        &global_config,
+    );
+}
+
+#[test]
+fn run_cwd_go_to_project_root_current_dir() {
+    let mut global_config = GlobalConfig::new();
+    global_config.search_project_root = Some(true);
+
+    run(
+        CliArgs {
+            build_file: "./examples/dependencies.toml".to_string(),
+            task: "A".to_string(),
+            log_level: "error".to_string(),
+            cwd: None,
+            env: None,
+            disable_workspace: false,
+            disable_check_for_updates: true,
+            print_only: false,
+            list_all_steps: false,
+            experimental: false,
+        },
+        &global_config,
+    );
+}
+
+#[test]
+fn run_cwd_go_to_project_root_child_dir() {
+    let mut global_config = GlobalConfig::new();
+    global_config.search_project_root = Some(true);
+
+    //let directory = Path::new("./examples");
+    //assert!(env::set_current_dir(&directory).is_ok());
+
+    run(
+        CliArgs {
+            build_file: "./examples/dependencies.toml".to_string(),
+            task: "A".to_string(),
+            log_level: "error".to_string(),
+            cwd: None,
+            env: None,
+            disable_workspace: false,
+            disable_check_for_updates: true,
+            print_only: false,
+            list_all_steps: false,
+            experimental: false,
+        },
+        &global_config,
+    );
+}
+
+#[test]
 #[should_panic]
 fn run_cwd_task_not_found() {
     let global_config = GlobalConfig::new();

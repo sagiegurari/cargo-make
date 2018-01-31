@@ -297,3 +297,7 @@ pub(crate) fn get_cargo_make_home() -> Option<PathBuf> {
         },
     }
 }
+
+pub(crate) fn get_project_root() -> Option<String> {
+    None
+}

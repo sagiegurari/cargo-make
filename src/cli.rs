@@ -41,7 +41,23 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         version::check();
     }
 
-    let cwd = match cli_args.cwd {
+    let cwd_string_option = match cli_args.cwd {
+        Some(value) => Some(value),
+        None => match global_config.search_project_root {
+            Some(search) => {
+                if search {
+                    match environment::get_project_root() {
+                        Some(value) => Some(value.clone()),
+                        None => None,
+                    }
+                } else {
+                    None
+                }
+            }
+            None => None,
+        },
+    };
+    let cwd = match cwd_string_option {
         Some(ref value) => Some(value.as_ref()),
         None => None,
     };
