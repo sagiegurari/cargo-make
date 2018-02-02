@@ -160,8 +160,8 @@ fn run_cwd_go_to_project_root_child_dir() {
     let mut global_config = GlobalConfig::new();
     global_config.search_project_root = Some(true);
 
-    //let directory = Path::new("./examples");
-    //assert!(env::set_current_dir(&directory).is_ok());
+    let directory = Path::new("./examples");
+    assert!(env::set_current_dir(&directory).is_ok());
 
     run(
         CliArgs {
