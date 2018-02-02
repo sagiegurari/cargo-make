@@ -65,6 +65,8 @@ extern crate toml;
 pub mod types;
 
 mod logger;
+mod config;
+mod cache;
 mod descriptor;
 mod environment;
 mod command;

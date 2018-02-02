@@ -112,3 +112,164 @@ fn is_newer_found_older_minor_newer_patch() {
 fn check_full() {
     check();
 }
+
+#[test]
+fn get_now_as_seconds_valid() {
+    let now = get_now_as_seconds();
+    assert!(now > 0);
+}
+
+#[test]
+fn has_amount_of_days_passed_from_last_check_zero_days() {
+    let passed = has_amount_of_days_passed_from_last_check(0, 1);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_from_last_check_false() {
+    let last_check = get_now_as_seconds();
+    let passed = has_amount_of_days_passed_from_last_check(1, last_check);
+    assert!(!passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_from_last_check_true_by_day() {
+    let last_check = get_now_as_seconds() - (4 * 24 * 60 * 60);
+    let passed = has_amount_of_days_passed_from_last_check(3, last_check);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_from_last_check_true_by_second() {
+    let last_check = get_now_as_seconds() - (24 * 60 * 60) - 1;
+    let passed = has_amount_of_days_passed_from_last_check(1, last_check);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_from_last_check_false_by_second() {
+    let last_check = get_now_as_seconds() - (24 * 60 * 60) + 1;
+    let passed = has_amount_of_days_passed_from_last_check(1, last_check);
+    assert!(!passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_none() {
+    let cache = Cache::new();
+    let passed = has_amount_of_days_passed(300, &cache);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_zero_days() {
+    let last_check = get_now_as_seconds();
+    let mut cache = Cache::new();
+    cache.last_update_check = Some(last_check);
+    let passed = has_amount_of_days_passed(0, &cache);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_false() {
+    let last_check = get_now_as_seconds();
+    let mut cache = Cache::new();
+    cache.last_update_check = Some(last_check);
+    let passed = has_amount_of_days_passed(1, &cache);
+    assert!(!passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_true_by_day() {
+    let last_check = get_now_as_seconds() - (4 * 24 * 60 * 60);
+    let mut cache = Cache::new();
+    cache.last_update_check = Some(last_check);
+    let passed = has_amount_of_days_passed(3, &cache);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_true_by_second() {
+    let last_check = get_now_as_seconds() - (24 * 60 * 60) - 1;
+    let mut cache = Cache::new();
+    cache.last_update_check = Some(last_check);
+    let passed = has_amount_of_days_passed(1, &cache);
+    assert!(passed);
+}
+
+#[test]
+fn has_amount_of_days_passed_false_by_second() {
+    let last_check = get_now_as_seconds() - (24 * 60 * 60) + 1;
+    let mut cache = Cache::new();
+    cache.last_update_check = Some(last_check);
+    let passed = has_amount_of_days_passed(1, &cache);
+    assert!(!passed);
+}
+
+#[test]
+fn get_days_none() {
+    let global_config = GlobalConfig::new();
+    let days = get_days(&global_config);
+    assert_eq!(days, 0);
+}
+
+#[test]
+fn get_days_always() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let days = get_days(&global_config);
+    assert_eq!(days, 0);
+}
+
+#[test]
+fn get_days_daily() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("daily".to_string());
+    let days = get_days(&global_config);
+    assert_eq!(days, 1);
+}
+
+#[test]
+fn get_days_weekly() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("weekly".to_string());
+    let days = get_days(&global_config);
+    assert_eq!(days, 7);
+}
+
+#[test]
+fn get_days_monthly() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("monthly".to_string());
+    let days = get_days(&global_config);
+    assert_eq!(days, 30);
+}
+
+#[test]
+fn get_days_unknown() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("bad123".to_string());
+    let days = get_days(&global_config);
+    assert_eq!(days, 0);
+}
+
+#[test]
+fn should_check_none() {
+    let global_config = GlobalConfig::new();
+    let check = should_check(&global_config);
+    assert!(check);
+}
+
+#[test]
+fn should_check_always() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let check = should_check(&global_config);
+    assert!(check);
+}
+
+#[test]
+fn should_check_other() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("weekly".to_string());
+    should_check(&global_config);
+}

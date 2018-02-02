@@ -17,6 +17,25 @@ fn cli_args_new() {
 }
 
 #[test]
+fn global_config_new() {
+    let global_config = GlobalConfig::new();
+
+    assert!(global_config.file_name.is_none());
+    assert!(global_config.log_level.is_none());
+    assert!(global_config.default_task_name.is_none());
+    assert!(global_config.update_check_minimum_interval.is_none());
+    assert!(!global_config.search_project_root.unwrap());
+}
+
+#[test]
+fn cache_new() {
+    let cache = Cache::new();
+
+    assert!(cache.file_name.is_none());
+    assert!(cache.last_update_check.is_none());
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 

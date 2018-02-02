@@ -15,7 +15,7 @@ use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::collections::HashMap;
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
@@ -285,5 +285,41 @@ pub(crate) fn get_env(key: &str, default: &str) -> String {
     match env::var(key) {
         Ok(value) => value.to_string(),
         _ => default.to_string(),
+    }
+}
+
+pub(crate) fn get_cargo_make_home() -> Option<PathBuf> {
+    match env::var("CARGO_MAKE_HOME") {
+        Ok(directory) => Some(PathBuf::from(directory)),
+        _ => match env::home_dir() {
+            Some(directory) => Some(directory.join(".cargo-make")),
+            None => None,
+        },
+    }
+}
+
+fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
+    let file_path = Path::new(directory).join("Cargo.toml");
+
+    if file_path.exists() {
+        match directory.to_str() {
+            Some(directory_string) => Some(directory_string.to_string()),
+            _ => None,
+        }
+    } else {
+        match directory.parent() {
+            Some(parent_directory) => {
+                let parent_directory_path = parent_directory.to_path_buf();
+                get_project_root_for_path(&parent_directory_path)
+            }
+            None => None,
+        }
+    }
+}
+
+pub(crate) fn get_project_root() -> Option<String> {
+    match env::current_dir() {
+        Ok(directory) => get_project_root_for_path(&directory),
+        _ => None,
     }
 }

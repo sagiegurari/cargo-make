@@ -11,6 +11,9 @@ mod version_test;
 use command;
 use semver::Version;
 use std::process::Command;
+use types::{Cache, GlobalConfig};
+use cache;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -107,6 +110,67 @@ fn print_notification(latest_string: &str) {
     warn!("#####################################################################");
 }
 
+fn get_now_as_seconds() -> u64 {
+    let now = SystemTime::now();
+    match now.duration_since(UNIX_EPOCH) {
+        Ok(duration) => duration.as_secs(),
+        _ => 0,
+    }
+}
+
+fn has_amount_of_days_passed_from_last_check(days: u64, last_check_seconds: u64) -> bool {
+    let now_seconds = get_now_as_seconds();
+    if now_seconds > 0 && days > 0 {
+        if last_check_seconds > now_seconds {
+            false
+        } else {
+            let diff_seconds = now_seconds - last_check_seconds;
+            let minimum_diff_seconds = days * 24 * 60 * 60;
+
+            diff_seconds >= minimum_diff_seconds
+        }
+    } else {
+        true
+    }
+}
+
+fn has_amount_of_days_passed(days: u64, cache_data: &Cache) -> bool {
+    match cache_data.last_update_check {
+        Some(last_check_seconds) => {
+            has_amount_of_days_passed_from_last_check(days, last_check_seconds)
+        }
+        None => true,
+    }
+}
+
+fn get_days(global_config: &GlobalConfig) -> u64 {
+    match global_config.update_check_minimum_interval {
+        Some(ref value) => {
+            if value == "daily" {
+                1
+            } else if value == "weekly" {
+                7
+            } else if value == "monthly" {
+                30
+            } else {
+                0
+            }
+        }
+        None => 0,
+    }
+}
+
+pub(crate) fn should_check(global_config: &GlobalConfig) -> bool {
+    let days = get_days(global_config);
+
+    if days > 0 {
+        let cache_data = cache::load();
+        has_amount_of_days_passed(1, &cache_data)
+    } else {
+        true
+    }
+}
+
 pub(crate) fn check() {
     let latest = get_latest_version();
 
@@ -114,6 +178,13 @@ pub(crate) fn check() {
         Some(value) => {
             if is_newer_found(&value) {
                 print_notification(&value);
+
+                let mut cache_data = cache::load();
+                let now = get_now_as_seconds();
+                if now > 0 {
+                    cache_data.last_update_check = Some(now);
+                    cache::store(&cache_data);
+                }
             }
         }
         None => (),

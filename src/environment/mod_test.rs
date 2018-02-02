@@ -397,3 +397,39 @@ fn setup_env_for_rust_simple_check() {
     assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() != "EMPTY");
     assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() != "EMPTY");
 }
+
+#[test]
+fn get_project_root_test() {
+    let directory = env::current_dir().unwrap().to_str().unwrap().to_string();
+    let project_root = get_project_root().unwrap();
+
+    assert_eq!(directory, project_root);
+}
+
+#[test]
+fn get_project_root_for_path_cwd() {
+    let path = env::current_dir().unwrap();
+    let directory = path.to_str().unwrap().to_string();
+    let project_root = get_project_root_for_path(&path).unwrap();
+
+    assert_eq!(directory, project_root);
+}
+
+#[test]
+fn get_project_root_for_path_sub_path() {
+    let path = env::current_dir().unwrap();
+    let directory = path.to_str().unwrap().to_string();
+    let search_path = path.join("examples/files");
+    let project_root = get_project_root_for_path(&search_path).unwrap();
+
+    assert_eq!(directory, project_root);
+}
+
+#[test]
+fn get_project_root_for_path_parent_path() {
+    let path = env::current_dir().unwrap();
+    let search_path = path.parent().unwrap().to_path_buf();
+    let project_root = get_project_root_for_path(&search_path);
+
+    assert!(project_root.is_none());
+}
