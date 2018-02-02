@@ -32,6 +32,7 @@ The articles are missing some of the new features which have been added after th
 * [Rust Task](#usage-task-command-script-task-examplerust)
 * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
 * [Full List of Predefined Flows](#usage-predefined-flows)
+* [Global Configuration](#cargo-make-global-config)
 
 <a name="usage"></a>
 ## Usage

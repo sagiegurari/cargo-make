@@ -830,6 +830,55 @@
 <span id="784">784</span>
 <span id="785">785</span>
 <span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -897,6 +946,55 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds persisted data used by cargo-make</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Cache</span> {
+    <span class="doccomment">/// File from which the cache file was loaded from</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Holds last update check with returned no updates result</span>
+    <span class="kw">pub</span> <span class="ident">last_update_check</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Cache</span> {
+    <span class="doccomment">/// Returns new instance</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Cache</span> {
+        <span class="ident">Cache</span> {
+            <span class="ident">file_name</span>: <span class="prelude-val">None</span>,
+            <span class="ident">last_update_check</span>: <span class="prelude-val">None</span>,
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds configuration info for cargo-make</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalConfig</span> {
+    <span class="doccomment">/// File from which the global config was loaded from</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Default log level</span>
+    <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Default task name</span>
+    <span class="kw">pub</span> <span class="ident">default_task_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Update check minimum time from the previous check (always, daily, weekly, monthly)</span>
+    <span class="kw">pub</span> <span class="ident">update_check_minimum_interval</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to search for project root in parent directories if current cwd is not a project root</span>
+    <span class="kw">pub</span> <span class="ident">search_project_root</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">GlobalConfig</span> {
+    <span class="doccomment">/// Returns new instance</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">GlobalConfig</span> {
+        <span class="ident">GlobalConfig</span> {
+            <span class="ident">file_name</span>: <span class="prelude-val">None</span>,
+            <span class="ident">log_level</span>: <span class="prelude-val">None</span>,
+            <span class="ident">default_task_name</span>: <span class="prelude-val">None</span>,
+            <span class="ident">update_check_minimum_interval</span>: <span class="prelude-val">None</span>,
+            <span class="ident">search_project_root</span>: <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+        }
+    }
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds git info for the given repo directory</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GitInfo</span> {
@@ -919,7 +1017,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// members paths</span>
@@ -938,7 +1036,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds crate package information loaded from the Cargo.toml file package section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PackageInfo</span> {
     <span class="doccomment">/// name</span>
@@ -972,14 +1070,14 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds crate dependency info.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateDependencyInfo</span> {
     <span class="doccomment">/// Holds the dependency path</span>
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds crate dependency info.</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CrateDependency</span> {
@@ -989,7 +1087,7 @@
     <span class="ident">Info</span>(<span class="ident">CrateDependencyInfo</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds crate information loaded from the Cargo.toml file.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// package info</span>
@@ -1035,7 +1133,7 @@
     <span class="kw">pub</span> <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds condition attributes</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaskCondition</span> {
     <span class="doccomment">/// Platform names (linux, windows, mac)</span>
@@ -1050,14 +1148,14 @@
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueInfo</span> {
     <span class="doccomment">/// The script to execute to get the env value</span>
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds the env value or script</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EnvValue</span> {
@@ -1067,7 +1165,7 @@
     <span class="ident">Info</span>(<span class="ident">EnvValueInfo</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
     <span class="doccomment">/// Task description</span>
@@ -1359,7 +1457,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration for a specific platform as an override of another task</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PlatformOverrideTask</span> {
     <span class="doccomment">/// if true, it should ignore all data in base task</span>
@@ -1472,7 +1570,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the configuration found in the makefile toml config section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// If true, the default core tasks will not be loaded</span>
@@ -1566,7 +1664,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the entire configuration such as task definitions and env vars</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Config</span> {
     <span class="doccomment">/// Runtime config</span>
@@ -1577,7 +1675,7 @@
     <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
 <span class="doccomment">/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// Path to another toml file to extend</span>

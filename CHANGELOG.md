@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.10.0 (TODO)
+### v0.10.0 (2018-02-02)
 
 * Search for makefile.toml in parent directories (#65)
 * Global configuration file to define default log level, task name (#64)

@@ -50,6 +50,7 @@
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Cli Options](#usage-cli)
+    * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)
 * [Badge](#badge)
@@ -91,6 +92,7 @@ The articles are missing some of the new features which have been added after th
 * [Rust Task](#usage-task-command-script-task-examplerust)
 * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
 * [Full List of Predefined Flows](#usage-predefined-flows)
+* [Global Configuration](#cargo-make-global-config)
 
 <a name="usage"></a>
 ## Usage
@@ -795,7 +797,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ```yml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.5
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.0
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
@@ -803,7 +805,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.9.5
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.0
 ```
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1168,6 +1170,34 @@ OPTIONS:
 
 ARGS:
     <TASK>
+```
+
+<a name="cargo-make-global-config"></a>
+### Global Configuration
+Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file located at: ~/.cargo-make/config.toml
+
+The default location can be configured via CARGO_MAKE_HOME environment variable value.
+
+The following example config.toml shows all possible options with their default values:
+
+```toml
+# The default log level if not defined by the --loglevel cli argument
+log_level = "info"
+
+# The default task name if no task was provided as part of the cargo-make invocation
+default_task_name = "default"
+
+# cargo-make checks for updates during invocation.
+# This configuration defines the minimum amount of time which must pass before cargo-make invocations will try to check for updates.
+# If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
+# Valid values are: always, daily, weekly, monthly
+# If any other value is provided, it will be treated as always.
+update_check_minimum_interval = "always"
+
+# If set to true and cwd was not provided in the command line arguments and the current cwd is not the project root (Cargo.toml not present),
+# cargo make will attempt to find the project root by searching the parent directories, until a directory with a Cargo.toml is found.
+# cargo make will set the cwd to that directory and will use any Makefile.toml found at that location.
+search_project_root = false
 ```
 
 <a name="descriptor-definition"></a>

@@ -220,6 +220,66 @@
 <span id="174">174</span>
 <span id="175">175</span>
 <span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -230,13 +290,14 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./cli_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">cli_test</span>;
 
+<span class="kw">use</span> <span class="ident">config</span>;
 <span class="kw">use</span> <span class="ident">ci_info</span>;
 <span class="kw">use</span> <span class="ident">clap</span>::{<span class="ident">App</span>, <span class="ident">Arg</span>, <span class="ident">ArgMatches</span>, <span class="ident">SubCommand</span>};
 <span class="kw">use</span> <span class="ident">descriptor</span>;
 <span class="kw">use</span> <span class="ident">environment</span>;
 <span class="kw">use</span> <span class="ident">logger</span>;
 <span class="kw">use</span> <span class="ident">runner</span>;
-<span class="kw">use</span> <span class="ident">types</span>::<span class="ident">CliArgs</span>;
+<span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
 <span class="kw">use</span> <span class="ident">version</span>;
 
 <span class="kw">static</span> <span class="ident">NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;make&quot;</span>;
@@ -247,20 +308,39 @@
 <span class="kw">static</span> <span class="ident">DEFAULT_LOG_LEVEL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;info&quot;</span>;
 <span class="kw">static</span> <span class="ident">DEFAULT_TASK_NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;default&quot;</span>;
 
-<span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">cli_args</span>: <span class="ident">CliArgs</span>) {
+<span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">cli_args</span>: <span class="ident">CliArgs</span>, <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) {
     <span class="ident">logger</span>::<span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">log_level</span>);
 
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;cargo-{} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">NAME</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>);
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Written By {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">AUTHOR</span>);
 
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Cli Args {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Global Configuration {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>);
 
     <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check</span>
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>() {
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
+        <span class="op">&amp;&amp;</span> <span class="ident">version</span>::<span class="ident">should_check</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>)
+    {
         <span class="ident">version</span>::<span class="ident">check</span>();
     }
 
-    <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">cwd</span> {
+    <span class="kw">let</span> <span class="ident">cwd_string_option</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">cwd</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">search</span>) <span class="op">=&gt;</span> {
+                <span class="kw">if</span> <span class="ident">search</span> {
+                    <span class="kw">match</span> <span class="ident">environment</span>::<span class="ident">get_project_root</span>() {
+                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                    }
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">None</span>
+                }
+            }
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        },
+    };
+    <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_string_option</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
@@ -288,7 +368,7 @@
 }
 
 <span class="doccomment">/// Handles the command line arguments and executes the runner.</span>
-<span class="kw">fn</span> <span class="ident">run_for_args</span>(<span class="ident">matches</span>: <span class="ident">ArgMatches</span>) {
+<span class="kw">fn</span> <span class="ident">run_for_args</span>(<span class="ident">matches</span>: <span class="ident">ArgMatches</span>, <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) {
     <span class="kw">match</span> <span class="ident">matches</span>.<span class="ident">subcommand_matches</span>(<span class="ident">NAME</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">cmd_matches</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_args</span> <span class="op">=</span> <span class="ident">CliArgs</span>::<span class="ident">new</span>();
@@ -305,12 +385,16 @@
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             };
 
+            <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>().<span class="ident">clone</span>(),
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+            };
             <span class="ident">cli_args</span>.<span class="ident">log_level</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;v&quot;</span>) {
                 <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>()
             } <span class="kw">else</span> {
                 <span class="ident">cmd_matches</span>
                     .<span class="ident">value_of</span>(<span class="string">&quot;loglevel&quot;</span>)
-                    .<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>)
+                    .<span class="ident">unwrap_or</span>(<span class="ident">default_log_level</span>)
                     .<span class="ident">to_string</span>()
             };
 
@@ -321,16 +405,29 @@
             <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;no-workspace&quot;</span>);
             <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;list-steps&quot;</span>);
 
-            <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;task&quot;</span>).<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>);
+            <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>().<span class="ident">clone</span>(),
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+            };
+            <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;task&quot;</span>).<span class="ident">unwrap_or</span>(<span class="ident">default_task_name</span>);
             <span class="ident">cli_args</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;TASK&quot;</span>).<span class="ident">unwrap_or</span>(<span class="ident">task</span>).<span class="ident">to_string</span>();
 
-            <span class="ident">run</span>(<span class="ident">cli_args</span>);
+            <span class="ident">run</span>(<span class="ident">cli_args</span>, <span class="ident">global_config</span>);
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;cargo-{} not invoked via cargo command.&quot;</span>, <span class="ident">NAME</span>),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">create_cli</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">create_cli</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">GlobalConfig</span>) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>().<span class="ident">clone</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+    };
+    <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>().<span class="ident">clone</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+    };
+
     <span class="ident">App</span>::<span class="ident">new</span>(<span class="string">&quot;cargo&quot;</span>).<span class="ident">bin_name</span>(<span class="string">&quot;cargo&quot;</span>).<span class="ident">subcommand</span>(
         <span class="ident">SubCommand</span>::<span class="ident">with_name</span>(<span class="ident">NAME</span>)
             .<span class="ident">version</span>(<span class="ident">VERSION</span>)
@@ -341,21 +438,30 @@
                     .<span class="ident">long</span>(<span class="string">&quot;--makefile&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>)
-                    .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TOML</span>)
+                    .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TOML</span>),
             )
             .<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;task&quot;</span>)
                     .<span class="ident">short</span>(<span class="string">&quot;-t&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--task&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;TASK&quot;</span>)
-                    .<span class="ident">help</span>(<span class="string">&quot;The task name to execute (can omit the flag if the task name is the last argument)&quot;</span>)
-                    .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>)
+                    .<span class="ident">help</span>(
+                        <span class="string">&quot;The task name to execute \
+                         (can omit the flag if the task name is the last argument)&quot;</span>,
+                    )
+                    .<span class="ident">default_value</span>(<span class="ident">default_task_name</span>),
             )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>).<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Will set the current working directory. The search for the makefile will be from this directory if defined.&quot;</span>
-            ))
+            .<span class="ident">arg</span>(
+                <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>)
+                    .<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>)
+                    .<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>)
+                    .<span class="ident">help</span>(
+                        <span class="string">&quot;Will set the current working directory. \
+                         The search for the makefile will be from this directory if defined.&quot;</span>,
+                    ),
+            )
             .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>
+                <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>,
             ))
             .<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;env&quot;</span>)
@@ -365,37 +471,51 @@
                     .<span class="ident">multiple</span>(<span class="bool-val">true</span>)
                     .<span class="ident">takes_value</span>(<span class="bool-val">true</span>)
                     .<span class="ident">number_of_values</span>(<span class="number">1</span>)
-                    .<span class="ident">help</span>(<span class="string">&quot;Set environment variables&quot;</span>)
+                    .<span class="ident">help</span>(<span class="string">&quot;Set environment variables&quot;</span>),
             )
             .<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">from_usage</span>(<span class="string">&quot;-l, --loglevel=[LOG LEVEL] &#39;The log level&#39;&quot;</span>)
                     .<span class="ident">possible_values</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;verbose&quot;</span>, <span class="string">&quot;info&quot;</span>, <span class="string">&quot;error&quot;</span>])
-                    .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>)
+                    .<span class="ident">default_value</span>(<span class="ident">default_log_level</span>),
             )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;v&quot;</span>).<span class="ident">short</span>(<span class="string">&quot;-v&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--verbose&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>
-            ))
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;experimental&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--experimental&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>
-            ))
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--disable-check-for-updates&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Disables the update check during startup&quot;</span>
-            ))
+            .<span class="ident">arg</span>(
+                <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;v&quot;</span>)
+                    .<span class="ident">short</span>(<span class="string">&quot;-v&quot;</span>)
+                    .<span class="ident">long</span>(<span class="string">&quot;--verbose&quot;</span>)
+                    .<span class="ident">help</span>(<span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>),
+            )
+            .<span class="ident">arg</span>(
+                <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;experimental&quot;</span>)
+                    .<span class="ident">long</span>(<span class="string">&quot;--experimental&quot;</span>)
+                    .<span class="ident">help</span>(<span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>),
+            )
+            .<span class="ident">arg</span>(
+                <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>)
+                    .<span class="ident">long</span>(<span class="string">&quot;--disable-check-for-updates&quot;</span>)
+                    .<span class="ident">help</span>(<span class="string">&quot;Disables the update check during startup&quot;</span>),
+            )
             .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;print-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--print-steps&quot;</span>).<span class="ident">help</span>(
-                <span class="string">&quot;Only prints the steps of the build in the order they will be invoked but without invoking them&quot;</span>
+                <span class="string">&quot;Only prints the steps of the build in the order they will \
+                 be invoked but without invoking them&quot;</span>,
             ))
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;list-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--list-all-steps&quot;</span>).<span class="ident">help</span>(<span class="string">&quot;Lists all known steps&quot;</span>))
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;TASK&quot;</span>))
+            .<span class="ident">arg</span>(
+                <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;list-steps&quot;</span>)
+                    .<span class="ident">long</span>(<span class="string">&quot;--list-all-steps&quot;</span>)
+                    .<span class="ident">help</span>(<span class="string">&quot;Lists all known steps&quot;</span>),
+            )
+            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;TASK&quot;</span>)),
     )
 }
 
 <span class="doccomment">/// Handles the command line arguments and executes the runner.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_cli</span>() {
-    <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="ident">create_cli</span>();
+    <span class="kw">let</span> <span class="ident">global_config</span> <span class="op">=</span> <span class="ident">config</span>::<span class="ident">load</span>();
+
+    <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="ident">create_cli</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>);
 
     <span class="kw">let</span> <span class="ident">matches</span> <span class="op">=</span> <span class="ident">app</span>.<span class="ident">get_matches</span>();
 
-    <span class="ident">run_for_args</span>(<span class="ident">matches</span>);
+    <span class="ident">run_for_args</span>(<span class="ident">matches</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>);
 }
 </pre>
 </section>
