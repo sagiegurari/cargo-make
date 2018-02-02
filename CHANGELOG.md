@@ -2,6 +2,7 @@
 
 ### v0.10.0 (TODO)
 
+* Search for makefile.toml in parent directories (#65)
 * Global configuration file to define default log level, task name (#64)
 * Check for update minimum interval definition in global configuration (#68)
 * Reformat changelog (#66)
