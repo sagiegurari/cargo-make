@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.10.1 (2018-02-08)
+### v0.10.2 (2018-02-08)
 
 * Check for update minimum interval definition in global configuration (#68)
 
