@@ -66,7 +66,7 @@ pub(crate) fn load() -> Cache {
 pub(crate) fn store(cache_data: &Cache) {
     match environment::get_cargo_make_home() {
         Some(directory) => {
-            let mut exists = if directory.exists() {
+            let exists = if directory.exists() {
                 true
             } else {
                 match create_dir_all(&directory) {
@@ -79,7 +79,7 @@ pub(crate) fn store(cache_data: &Cache) {
                 let file_name = directory.join("cache.toml");
 
                 let file_descriptor = match File::create(&file_name) {
-                    Ok(mut file) => Some(file),
+                    Ok(file) => Some(file),
                     Err(error) => {
                         info!(
                             "Error while creating cache file: {:#?}, error: {:#?}",
