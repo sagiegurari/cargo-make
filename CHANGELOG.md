@@ -1,10 +1,13 @@
 ## CHANGELOG
 
+### v0.10.1 (2018-02-08)
+
+* Check for update minimum interval definition in global configuration (#68)
+
 ### v0.10.0 (2018-02-02)
 
 * Search for makefile.toml in parent directories (#65)
 * Global configuration file to define default log level, task name (#64)
-* Check for update minimum interval definition in global configuration (#68)
 * Reformat changelog (#66)
 
 ### v0.9.5 (2018-01-22)

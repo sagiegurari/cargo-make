@@ -174,17 +174,17 @@ pub(crate) fn should_check(global_config: &GlobalConfig) -> bool {
 pub(crate) fn check() {
     let latest = get_latest_version();
 
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds();
+    if now > 0 {
+        cache_data.last_update_check = Some(now);
+        cache::store(&cache_data);
+    }
+
     match latest {
         Some(value) => {
             if is_newer_found(&value) {
                 print_notification(&value);
-
-                let mut cache_data = cache::load();
-                let now = get_now_as_seconds();
-                if now > 0 {
-                    cache_data.last_update_check = Some(now);
-                    cache::store(&cache_data);
-                }
             }
         }
         None => (),

@@ -7,7 +7,7 @@
 #[path = "./cache_test.rs"]
 mod cache_test;
 
-use std::fs::File;
+use std::fs::{create_dir_all, File};
 use std::io::Read;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
@@ -66,31 +66,50 @@ pub(crate) fn load() -> Cache {
 pub(crate) fn store(cache_data: &Cache) {
     match environment::get_cargo_make_home() {
         Some(directory) => {
-            let file_name = directory.join("cache.toml");
-
-            match File::open(&file_name) {
-                Ok(mut file) => match toml::to_string_pretty(cache_data) {
-                    Ok(toml_str) => {
-                        let data = toml_str.as_bytes();
-
-                        match file.write_all(data) {
-                            Err(error) => info!(
-                                "Error while writing to cache file: {:#?}, error: {:#?}",
-                                &file_name, error
-                            ),
-                            _ => (),
-                        }
-                    }
-                    Err(error) => info!(
-                        "Error during serialization of cache, file: {:#?}, error: {:#?}",
-                        &file_name, error
-                    ),
-                },
-                Err(error) => info!(
-                    "Error while creating/appending to cache file: {:#?}, error: {:#?}",
-                    &file_name, error
-                ),
+            let mut exists = if directory.exists() {
+                true
+            } else {
+                match create_dir_all(&directory) {
+                    Ok(_) => true,
+                    _ => false,
+                }
             };
+
+            if exists {
+                let file_name = directory.join("cache.toml");
+
+                let file_descriptor = match File::create(&file_name) {
+                    Ok(mut file) => Some(file),
+                    Err(error) => {
+                        info!(
+                            "Error while creating cache file: {:#?}, error: {:#?}",
+                            &file_name, error
+                        );
+                        None
+                    }
+                };
+
+                match file_descriptor {
+                    Some(mut file) => match toml::to_string_pretty(cache_data) {
+                        Ok(toml_str) => {
+                            let data = toml_str.as_bytes();
+
+                            match file.write_all(data) {
+                                Err(error) => info!(
+                                    "Error while writing to cache file: {:#?}, error: {:#?}",
+                                    &file_name, error
+                                ),
+                                _ => (),
+                            }
+                        }
+                        Err(error) => info!(
+                            "Error during serialization of cache, file: {:#?}, error: {:#?}",
+                            &file_name, error
+                        ),
+                    },
+                    _ => (),
+                };
+            }
         }
         None => (),
     }
