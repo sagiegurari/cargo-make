@@ -351,6 +351,8 @@ script = [
 If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
+*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined unless they are defined also as sub dependencies.*
+
 <a name="usage-task-command-script-task"></a>
 ### Commands, Scripts and Sub Tasks
 The actual operation that a task invokes can be defined in 3 ways.<br>
