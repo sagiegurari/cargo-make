@@ -351,6 +351,8 @@ script = [
 If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
+*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined unless they are defined also as sub dependencies.*
+
 <a name="usage-task-command-script-task"></a>
 ### Commands, Scripts and Sub Tasks
 The actual operation that a task invokes can be defined in 3 ways.<br>
@@ -658,6 +660,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds TRUE/FALSE based if there are dependencies defined in the Cargo.toml or not (defined as FALSE if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1191,8 +1194,8 @@ default_task_name = "default"
 # This configuration defines the minimum amount of time which must pass before cargo-make invocations will try to check for updates.
 # If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
 # Valid values are: always, daily, weekly, monthly
-# If any other value is provided, it will be treated as always.
-update_check_minimum_interval = "always"
+# If any other value is provided, it will be treated as weekly.
+update_check_minimum_interval = "weekly"
 
 # If set to true and cwd was not provided in the command line arguments and the current cwd is not the project root (Cargo.toml not present),
 # cargo make will attempt to find the project root by searching the parent directories, until a directory with a Cargo.toml is found.

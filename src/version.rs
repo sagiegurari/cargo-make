@@ -146,17 +146,18 @@ fn has_amount_of_days_passed(days: u64, cache_data: &Cache) -> bool {
 fn get_days(global_config: &GlobalConfig) -> u64 {
     match global_config.update_check_minimum_interval {
         Some(ref value) => {
-            if value == "daily" {
+            if value == "always" {
+                0
+            } else if value == "daily" {
                 1
-            } else if value == "weekly" {
-                7
             } else if value == "monthly" {
                 30
             } else {
-                0
+                // default to weekly
+                7
             }
         }
-        None => 0,
+        None => 7, // default to weekly
     }
 }
 

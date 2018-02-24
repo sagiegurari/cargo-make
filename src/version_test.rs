@@ -209,7 +209,7 @@ fn has_amount_of_days_passed_false_by_second() {
 fn get_days_none() {
     let global_config = GlobalConfig::new();
     let days = get_days(&global_config);
-    assert_eq!(days, 0);
+    assert_eq!(days, 7);
 }
 
 #[test]
@@ -249,14 +249,13 @@ fn get_days_unknown() {
     let mut global_config = GlobalConfig::new();
     global_config.update_check_minimum_interval = Some("bad123".to_string());
     let days = get_days(&global_config);
-    assert_eq!(days, 0);
+    assert_eq!(days, 7);
 }
 
 #[test]
 fn should_check_none() {
     let global_config = GlobalConfig::new();
-    let check = should_check(&global_config);
-    assert!(check);
+    should_check(&global_config);
 }
 
 #[test]

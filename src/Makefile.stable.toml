@@ -9,7 +9,7 @@ RUST_BACKTRACE = "full"
 KCOV_VERSION = "34"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
-CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[a-z0-9]*-[a-z0-9]*$"
 
 [tasks.empty]
 description = "Empty Task"
@@ -327,7 +327,7 @@ args = ["verify-project"]
 
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
-condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" = "TRUE" } }
 command = "cargo"
 args = ["audit"]
 

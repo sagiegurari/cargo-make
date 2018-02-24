@@ -164,6 +164,14 @@ fn setup_env_for_crate() -> CrateInfo {
     let members_string = members.join(",");
     env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
 
+    // check if Cargo.lock file exists in working directory
+    let lock_file = Path::new("Cargo.lock");
+    let lock_file_exists_var_value = if lock_file.exists() { "TRUE" } else { "FALSE" };
+    env::set_var(
+        "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS",
+        lock_file_exists_var_value,
+    );
+
     crate_info_clone
 }
 
