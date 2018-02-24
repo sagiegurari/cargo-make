@@ -1133,8 +1133,8 @@ default_task_name = "default"
 # This configuration defines the minimum amount of time which must pass before cargo-make invocations will try to check for updates.
 # If the minimum amount of time did not pass, cargo-make will not check for updates (same as --disable-check-for-updates)
 # Valid values are: always, daily, weekly, monthly
-# If any other value is provided, it will be treated as always.
-update_check_minimum_interval = "always"
+# If any other value is provided, it will be treated as weekly.
+update_check_minimum_interval = "weekly"
 
 # If set to true and cwd was not provided in the command line arguments and the current cwd is not the project root (Cargo.toml not present),
 # cargo make will attempt to find the project root by searching the parent directories, until a directory with a Cargo.toml is found.
