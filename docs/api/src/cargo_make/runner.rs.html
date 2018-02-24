@@ -10,8 +10,11 @@
     <title>runner.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../../dark.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
+    <script src="../../storage.js"></script>
     
 
     
@@ -33,6 +36,13 @@
         
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -373,6 +383,11 @@
 <span id="327">327</span>
 <span id="328">328</span>
 <span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -434,11 +449,16 @@
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">revert_directory</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">cwd</span> {
                     <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cwd</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
+                        <span class="kw">if</span> <span class="ident">cwd</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+                            <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span>
+                                <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
 
-                        <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="ident">cwd</span>));
+                            <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="ident">cwd</span>));
 
-                        <span class="ident">directory</span>
+                            <span class="ident">directory</span>
+                        } <span class="kw">else</span> {
+                            <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()
+                        }
                     }
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
                 };
@@ -717,20 +737,22 @@
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>↑</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>↓</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>↹</dt>
+                    <dt><kbd>↹</kbd></dt>
                     <dd>Switch tab</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt style="width:31px;">+ / -</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 

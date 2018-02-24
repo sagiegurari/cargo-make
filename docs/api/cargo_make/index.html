@@ -10,8 +10,11 @@
     <title>cargo_make - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../dark.css">
+    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <script src="../storage.js"></script>
     
 
     
@@ -33,6 +36,13 @@
         <p class='location'>Crate cargo_make</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'cargo_make', ty: 'mod', relpath: '../'};</script></div>
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -49,29 +59,23 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/cargo_make/main.rs.html#1-90' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'>
-<h1 id='cargo-make' class='section-header'><a href='#cargo-make'>cargo-make</a></h1>
+               </span><a class='srclink' href='../src/cargo_make/main.rs.html#1-92' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><h1 id="cargo-make" class="section-header"><a href="#cargo-make">cargo-make</a></h1>
 <p>Rust task runner and build tool.<br>
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
 A task is a command or a script to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
 With a simple toml based configuration file, you can define a multi platform build script that can run build, test,
 documentation generation, bench tests execution, security validations and more by running a single command.</p>
-
-<h2 id='installation' class='section-header'><a href='#installation'>Installation</a></h2>
+<h2 id="installation" class="section-header"><a href="#installation">Installation</a></h2>
 <p>In order to install, just run the following command</p>
-
 <pre><code class="language-sh">cargo install cargo-make
 </code></pre>
-
 <p>This will install cargo-make in your ~/.cargo/bin.<br>
 Make sure to add ~/.cargo/bin directory to your PATH variable.</p>
-
-<h1 id='contributing' class='section-header'><a href='#contributing'>Contributing</a></h1>
+<h1 id="contributing" class="section-header"><a href="#contributing">Contributing</a></h1>
 <p>See <a href="https://github.com/sagiegurari/simple_redis/blob/master/.github/CONTRIBUTING.md">contributing guide</a></p>
-
-<h1 id='license' class='section-header'><a href='#license'>License</a></h1>
+<h1 id="license" class="section-header"><a href="#license">License</a></h1>
 <p>Developed by Sagie Gur-Ari and licensed under the
 <a href="https://github.com/sagiegurari/simple_redis/blob/master/LICENSE">Apache 2</a> open source license.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
@@ -80,8 +84,8 @@ Make sure to add ~/.cargo/bin directory to your PATH variable.</p>
                            <td><a class="mod" href="types/index.html"
                                   title='mod cargo_make::types'>types</a></td>
                            <td class='docblock-short'>
-                                <h1 id='types' class='section-header'><a href='#types'>types</a></h1>
-<p>Defines the various types and aliases used by cargo-make.</p>
+                                <h1>types</h1>
+
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -96,20 +100,22 @@ Make sure to add ~/.cargo/bin directory to your PATH variable.</p>
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>↑</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>↓</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>↹</dt>
+                    <dt><kbd>↹</kbd></dt>
                     <dd>Switch tab</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt style="width:31px;">+ / -</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 

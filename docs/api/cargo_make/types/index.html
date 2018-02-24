@@ -10,8 +10,11 @@
     <title>cargo_make::types - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../../dark.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
+    <script src="../../storage.js"></script>
     
 
     
@@ -33,6 +36,13 @@
         <p class='location'>Module types</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>cargo_make</a></p><script>window.sidebarCurrent = {name: 'types', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -50,8 +60,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/cargo_make/types.rs.html#1-835' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'>
-<h1 id='types' class='section-header'><a href='#types'>types</a></h1>
+<div class='docblock'><h1 id="types" class="section-header"><a href="#types">types</a></h1>
 <p>Defines the various types and aliases used by cargo-make.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -60,6 +69,7 @@
                                   title='struct cargo_make::types::Cache'>Cache</a></td>
                            <td class='docblock-short'>
                                 <p>Holds persisted data used by cargo-make</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -67,6 +77,7 @@
                                   title='struct cargo_make::types::CliArgs'>CliArgs</a></td>
                            <td class='docblock-short'>
                                 <p>Holds CLI args</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -74,6 +85,7 @@
                                   title='struct cargo_make::types::Config'>Config</a></td>
                            <td class='docblock-short'>
                                 <p>Holds the entire configuration such as task definitions and env vars</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -81,6 +93,7 @@
                                   title='struct cargo_make::types::ConfigSection'>ConfigSection</a></td>
                            <td class='docblock-short'>
                                 <p>Holds the configuration found in the makefile toml config section.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -88,6 +101,7 @@
                                   title='struct cargo_make::types::CrateDependencyInfo'>CrateDependencyInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds crate dependency info.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -95,6 +109,7 @@
                                   title='struct cargo_make::types::CrateInfo'>CrateInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds crate information loaded from the Cargo.toml file.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -102,6 +117,7 @@
                                   title='struct cargo_make::types::EnvInfo'>EnvInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds env information</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -109,6 +125,7 @@
                                   title='struct cargo_make::types::EnvValueInfo'>EnvValueInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds a single task configuration such as command and dependencies list</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -116,6 +133,7 @@
                                   title='struct cargo_make::types::ExecutionPlan'>ExecutionPlan</a></td>
                            <td class='docblock-short'>
                                 <p>Execution plan which defines all steps to run and the order to run them</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -123,6 +141,7 @@
                                   title='struct cargo_make::types::ExternalConfig'>ExternalConfig</a></td>
                            <td class='docblock-short'>
                                 <p>Holds the entire externally read configuration such as task definitions and env vars where all values are optional</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -130,6 +149,7 @@
                                   title='struct cargo_make::types::FlowInfo'>FlowInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds flow information</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -137,6 +157,7 @@
                                   title='struct cargo_make::types::GitInfo'>GitInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds git info for the given repo directory</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -144,6 +165,7 @@
                                   title='struct cargo_make::types::GlobalConfig'>GlobalConfig</a></td>
                            <td class='docblock-short'>
                                 <p>Holds configuration info for cargo-make</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -151,6 +173,7 @@
                                   title='struct cargo_make::types::PackageInfo'>PackageInfo</a></td>
                            <td class='docblock-short'>
                                 <p>Holds crate package information loaded from the Cargo.toml file package section.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -158,6 +181,7 @@
                                   title='struct cargo_make::types::PlatformOverrideTask'>PlatformOverrideTask</a></td>
                            <td class='docblock-short'>
                                 <p>Holds a single task configuration for a specific platform as an override of another task</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -165,6 +189,7 @@
                                   title='struct cargo_make::types::Step'>Step</a></td>
                            <td class='docblock-short'>
                                 <p>Execution plan step to execute</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -172,6 +197,7 @@
                                   title='struct cargo_make::types::Task'>Task</a></td>
                            <td class='docblock-short'>
                                 <p>Holds a single task configuration such as command and dependencies list</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -179,13 +205,15 @@
                                   title='struct cargo_make::types::TaskCondition'>TaskCondition</a></td>
                            <td class='docblock-short'>
                                 <p>Holds condition attributes</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.Workspace.html"
                                   title='struct cargo_make::types::Workspace'>Workspace</a></td>
                            <td class='docblock-short'>
-                                <p>Holds crate workspace info, see <a href="http://doc.crates.io/manifest.html#the-workspace-section">http://doc.crates.io/manifest.html#the-workspace-section</a></p>
+                                <p>Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section</p>
+
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
@@ -194,6 +222,7 @@
                                   title='enum cargo_make::types::CrateDependency'>CrateDependency</a></td>
                            <td class='docblock-short'>
                                 <p>Holds crate dependency info.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -201,6 +230,7 @@
                                   title='enum cargo_make::types::EnvValue'>EnvValue</a></td>
                            <td class='docblock-short'>
                                 <p>Holds the env value or script</p>
+
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -209,6 +239,7 @@
                                   title='fn cargo_make::types::get_platform_name'>get_platform_name</a></td>
                            <td class='docblock-short'>
                                 <p>Returns the platform name</p>
+
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -223,20 +254,22 @@
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>↑</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>↓</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>↹</dt>
+                    <dt><kbd>↹</kbd></dt>
                     <dd>Switch tab</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt style="width:31px;">+ / -</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 

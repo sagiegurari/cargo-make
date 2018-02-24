@@ -1,5 +1,12 @@
 ## CHANGELOG
 
+### v0.10.3 (2018-02-24)
+
+* update_check_minimum_interval default changed be weekly (#76)
+* Added test_ files to kcov test coverage invocation
+* cargo make audit will only be invoked if a Cargo.lock file exists (#74)
+* Update dependencies documentation (#72)
+
 ### v0.10.2 (2018-02-08)
 
 * Check for update minimum interval definition in global configuration (#68)
