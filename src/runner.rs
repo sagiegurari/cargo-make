@@ -58,11 +58,16 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             None => {
                 let revert_directory = match step.config.cwd {
                     Some(ref cwd) => {
-                        let directory = environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
+                        if cwd.len() > 0 {
+                            let directory =
+                                environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-                        environment::setup_cwd(Some(cwd));
+                            environment::setup_cwd(Some(cwd));
 
-                        directory
+                            directory
+                        } else {
+                            "".to_string()
+                        }
                     }
                     None => "".to_string(),
                 };

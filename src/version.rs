@@ -153,11 +153,11 @@ fn get_days(global_config: &GlobalConfig) -> u64 {
             } else if value == "monthly" {
                 30
             } else {
-                //default to weekly
+                // default to weekly
                 7
             }
         }
-        None => 7, //default to weekly
+        None => 7, // default to weekly
     }
 }
 

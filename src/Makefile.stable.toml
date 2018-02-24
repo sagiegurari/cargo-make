@@ -327,7 +327,7 @@ args = ["verify-project"]
 
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
-condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" = "TRUE" } }
 command = "cargo"
 args = ["audit"]
 
