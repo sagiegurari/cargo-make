@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.10.4 (2018-02-26)
+
+* Fix composite environment variables resolution order (#78)
+
 ### v0.10.3 (2018-02-24)
 
 * update_check_minimum_interval default changed be weekly (#76)
