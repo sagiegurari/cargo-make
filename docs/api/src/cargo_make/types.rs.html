@@ -900,7 +900,7 @@
 <span class="kw">mod</span> <span class="ident">types_test</span>;
 
 <span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 
 <span class="doccomment">/// Returns the platform name</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_platform_name</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
@@ -1105,7 +1105,7 @@
     <span class="doccomment">/// workspace info</span>
     <span class="kw">pub</span> <span class="ident">workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Workspace</span><span class="op">&gt;</span>,
     <span class="doccomment">/// crate dependencies</span>
-    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">CrateDependency</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">CrateDependency</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CrateInfo</span> {
@@ -1155,7 +1155,7 @@
     <span class="doccomment">/// Environment variables which must not be defined</span>
     <span class="kw">pub</span> <span class="ident">env_not_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables and their values</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -1189,7 +1189,7 @@
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, task points to another task and all other properties are ignored</span>
@@ -1481,7 +1481,7 @@
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, the provided crate will be installed (if needed) before running the task</span>
@@ -1680,9 +1680,9 @@
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="ident">ConfigSection</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
-    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
@@ -1693,9 +1693,9 @@
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ConfigSection</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
-    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ExternalConfig</span> {

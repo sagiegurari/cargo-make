@@ -62,8 +62,8 @@
                </span><a class='srclink' href='../../src/cargo_make/types.rs.html#787-794' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Config {
     pub config: <a class="struct" href="../../cargo_make/types/struct.ConfigSection.html" title="struct cargo_make::types::ConfigSection">ConfigSection</a>,
-    pub env: <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="enum" href="../../cargo_make/types/enum.EnvValue.html" title="enum cargo_make::types::EnvValue">EnvValue</a>&gt;,
-    pub tasks: <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>&gt;,
+    pub env: <a class="struct" href="https://docs.rs/indexmap/0.4/indexmap/map/struct.IndexMap.html" title="struct indexmap::map::IndexMap">IndexMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="enum" href="../../cargo_make/types/enum.EnvValue.html" title="enum cargo_make::types::EnvValue">EnvValue</a>&gt;,
+    pub tasks: <a class="struct" href="https://docs.rs/indexmap/0.4/indexmap/map/struct.IndexMap.html" title="struct indexmap::map::IndexMap">IndexMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>&gt;,
 }</pre><div class='docblock'><p>Holds the entire configuration such as task definitions and env vars</p>
 </div><h2 id='fields' class='fields small-section-header'>
                        Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.config" class="structfield small-section-header">
@@ -74,12 +74,12 @@
 </div><span id="structfield.env" class="structfield small-section-header">
                            <a href="#structfield.env" class="anchor field"></a>
                            <span id="env.v" class='invisible'>
-                           <code>env: <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="enum" href="../../cargo_make/types/enum.EnvValue.html" title="enum cargo_make::types::EnvValue">EnvValue</a>&gt;</code>
+                           <code>env: <a class="struct" href="https://docs.rs/indexmap/0.4/indexmap/map/struct.IndexMap.html" title="struct indexmap::map::IndexMap">IndexMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="enum" href="../../cargo_make/types/enum.EnvValue.html" title="enum cargo_make::types::EnvValue">EnvValue</a>&gt;</code>
                            </span></span><div class='docblock'><p>The env vars to setup before running the tasks</p>
 </div><span id="structfield.tasks" class="structfield small-section-header">
                            <a href="#structfield.tasks" class="anchor field"></a>
                            <span id="tasks.v" class='invisible'>
-                           <code>tasks: <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>&gt;</code>
+                           <code>tasks: <a class="struct" href="https://docs.rs/indexmap/0.4/indexmap/map/struct.IndexMap.html" title="struct indexmap::map::IndexMap">IndexMap</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>, <a class="struct" href="../../cargo_make/types/struct.Task.html" title="struct cargo_make::types::Task">Task</a>&gt;</code>
                            </span></span><div class='docblock'><p>All task definitions</p>
 </div>
             <h2 id='implementations' class='small-section-header'>

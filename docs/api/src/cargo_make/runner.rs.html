@@ -409,7 +409,7 @@
 <span class="kw">use</span> <span class="ident">installer</span>;
 <span class="kw">use</span> <span class="ident">logger</span>;
 <span class="kw">use</span> <span class="ident">scriptengine</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">SystemTime</span>;
 <span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">FlowInfo</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
@@ -438,7 +438,7 @@
 
         <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">env</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>.<span class="ident">clone</span>(),
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">HashMap</span>::<span class="ident">new</span>(),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
         };
         <span class="ident">environment</span>::<span class="ident">set_env</span>(<span class="ident">env</span>);
 
