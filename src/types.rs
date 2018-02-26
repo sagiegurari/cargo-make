@@ -8,7 +8,7 @@
 mod types_test;
 
 use rust_info::types::RustInfo;
-use std::collections::HashMap;
+use indexmap::IndexMap;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {
@@ -213,7 +213,7 @@ pub struct CrateInfo {
     /// workspace info
     pub workspace: Option<Workspace>,
     /// crate dependencies
-    pub dependencies: Option<HashMap<String, CrateDependency>>,
+    pub dependencies: Option<IndexMap<String, CrateDependency>>,
 }
 
 impl CrateInfo {
@@ -263,7 +263,7 @@ pub struct TaskCondition {
     /// Environment variables which must not be defined
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<IndexMap<String, String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -297,7 +297,7 @@ pub struct Task {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, EnvValue>>,
+    pub env: Option<IndexMap<String, EnvValue>>,
     /// The working directory for the task to execute its command/script
     pub cwd: Option<String>,
     /// if defined, task points to another task and all other properties are ignored
@@ -589,7 +589,7 @@ pub struct PlatformOverrideTask {
     /// if true, any error while executing the task will be printed but will not break the build
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
-    pub env: Option<HashMap<String, EnvValue>>,
+    pub env: Option<IndexMap<String, EnvValue>>,
     /// The working directory for the task to execute its command/script
     pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
@@ -788,9 +788,9 @@ pub struct Config {
     /// Runtime config
     pub config: ConfigSection,
     /// The env vars to setup before running the tasks
-    pub env: HashMap<String, EnvValue>,
+    pub env: IndexMap<String, EnvValue>,
     /// All task definitions
-    pub tasks: HashMap<String, Task>,
+    pub tasks: IndexMap<String, Task>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -801,9 +801,9 @@ pub struct ExternalConfig {
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks
-    pub env: Option<HashMap<String, EnvValue>>,
+    pub env: Option<IndexMap<String, EnvValue>>,
     /// All task definitions
-    pub tasks: Option<HashMap<String, Task>>,
+    pub tasks: Option<IndexMap<String, Task>>,
 }
 
 impl ExternalConfig {

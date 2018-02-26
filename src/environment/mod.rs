@@ -13,7 +13,7 @@ mod mod_test;
 use command;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::env;
 use std::path::{Path, PathBuf};
 use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
@@ -74,7 +74,7 @@ fn set_env_for_info(key: &str, env_value: &EnvValueInfo) {
 }
 
 /// Updates the env based on the provided data
-pub(crate) fn set_env(env: HashMap<String, EnvValue>) {
+pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
     debug!("Setting Up Env.");
 
     for (key, env_value) in &env {

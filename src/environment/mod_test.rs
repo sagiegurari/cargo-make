@@ -1,7 +1,7 @@
 use super::*;
 
 use std::{thread, time};
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::env;
 use types::ConfigSection;
 
@@ -77,8 +77,8 @@ fn setup_cwd_empty() {
 fn setup_env_empty() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     setup_env(&config, "setup_env_empty1");
@@ -99,8 +99,8 @@ fn setup_env_empty() {
 fn setup_env_values() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     config.env.insert(
         "MY_ENV_KEY".to_string(),
@@ -130,8 +130,8 @@ fn setup_env_values() {
 fn setup_env_script() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     config.env.insert(
         "MY_ENV_SCRIPT_KEY".to_string(),

@@ -11,7 +11,7 @@
 mod descriptor_test;
 
 use command;
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -19,10 +19,10 @@ use toml;
 use types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 
 fn merge_env(
-    base: &mut HashMap<String, EnvValue>,
-    extended: &mut HashMap<String, EnvValue>,
-) -> HashMap<String, EnvValue> {
-    let mut merged = HashMap::<String, EnvValue>::new();
+    base: &mut IndexMap<String, EnvValue>,
+    extended: &mut IndexMap<String, EnvValue>,
+) -> IndexMap<String, EnvValue> {
+    let mut merged = IndexMap::<String, EnvValue>::new();
 
     for (key, value) in base.iter() {
         let key_str = key.to_string();
@@ -40,10 +40,10 @@ fn merge_env(
 }
 
 fn merge_tasks(
-    base: &mut HashMap<String, Task>,
-    extended: &mut HashMap<String, Task>,
-) -> HashMap<String, Task> {
-    let mut merged = HashMap::<String, Task>::new();
+    base: &mut IndexMap<String, Task>,
+    extended: &mut IndexMap<String, Task>,
+) -> IndexMap<String, Task> {
+    let mut merged = IndexMap::<String, Task>::new();
 
     for (key, value) in base.iter() {
         let key_str = key.to_string();
@@ -140,22 +140,22 @@ fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig 
                 // merge env
                 let mut base_env = match base_file_config.env {
                     Some(env) => env,
-                    None => HashMap::new(),
+                    None => IndexMap::new(),
                 };
                 let mut extended_env = match file_config.env {
                     Some(env) => env,
-                    None => HashMap::new(),
+                    None => IndexMap::new(),
                 };
                 let all_env = merge_env(&mut base_env, &mut extended_env);
 
                 // merge tasks
                 let mut base_tasks = match base_file_config.tasks {
                     Some(tasks) => tasks,
-                    None => HashMap::new(),
+                    None => IndexMap::new(),
                 };
                 let mut extended_tasks = match file_config.tasks {
                     Some(tasks) => tasks,
-                    None => HashMap::new(),
+                    None => IndexMap::new(),
                 };
                 let all_tasks = merge_tasks(&mut base_tasks, &mut extended_tasks);
 
@@ -234,13 +234,13 @@ fn load_descriptors(
 
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
-        None => HashMap::new(),
+        None => IndexMap::new(),
     };
     let mut default_tasks = default_config.tasks;
 
     let mut external_env = match external_config.env {
         Some(env) => env,
-        None => HashMap::new(),
+        None => IndexMap::new(),
     };
     let mut default_env = default_config.env;
 
@@ -248,7 +248,7 @@ fn load_descriptors(
     let mut all_env = merge_env(&mut default_env, &mut external_env);
     all_env = match env {
         Some(values) => {
-            let mut cli_env = HashMap::new();
+            let mut cli_env = IndexMap::new();
 
             for env_pair in &values {
                 let env_part: Vec<&str> = env_pair.split('=').collect();

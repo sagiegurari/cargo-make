@@ -52,6 +52,7 @@ extern crate ci_info;
 extern crate clap;
 extern crate fern;
 extern crate glob;
+extern crate indexmap;
 #[macro_use]
 extern crate log;
 extern crate rand;

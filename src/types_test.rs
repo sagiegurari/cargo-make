@@ -110,7 +110,7 @@ fn task_extend_both_have_misc_data() {
         condition: None,
         condition_script: None,
         force: Some(true),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: None,
         alias: Some("alias2".to_string()),
         linux_alias: None,
@@ -173,7 +173,7 @@ fn task_extend_extended_have_all_fields() {
         condition: None,
         condition_script: None,
         force: Some(true),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: None,
         alias: None,
         linux_alias: None,
@@ -191,7 +191,7 @@ fn task_extend_extended_have_all_fields() {
         mac: None,
     };
 
-    let mut env = HashMap::new();
+    let mut env = IndexMap::new();
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
     let extended = Task {
         install_crate: Some("my crate2".to_string()),
@@ -457,7 +457,7 @@ fn task_get_normalized_task_undefined() {
 #[test]
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_no_clear() {
-    let mut env = HashMap::new();
+    let mut env = IndexMap::new();
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
@@ -479,7 +479,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -570,7 +570,7 @@ fn task_get_normalized_task_with_override_no_clear() {
 #[test]
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_clear_false() {
-    let mut env = HashMap::new();
+    let mut env = IndexMap::new();
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
@@ -592,7 +592,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -705,7 +705,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
@@ -798,7 +798,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         force: Some(false),
-        env: Some(HashMap::new()),
+        env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
