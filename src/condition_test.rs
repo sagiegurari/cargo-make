@@ -1,6 +1,6 @@
 use super::*;
 use rust_info::types::{RustChannel, RustInfo};
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, Step, Task,
             TaskCondition};
 
@@ -164,7 +164,7 @@ fn validate_env_valid() {
     env::set_var("ENV_SET1", "");
     env::set_var("ENV_SET2", "value");
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "".to_string());
     env_values.insert("ENV_SET2".to_string(), "value".to_string());
 
@@ -183,7 +183,7 @@ fn validate_env_valid() {
 
 #[test]
 fn validate_env_invalid_not_found() {
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
     env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
 
@@ -204,7 +204,7 @@ fn validate_env_invalid_not_found() {
 fn validate_env_invalid_not_equal() {
     env::set_var("ENV_SET2", "value");
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET2".to_string(), "value2".to_string());
 
     let condition = TaskCondition {
@@ -225,7 +225,7 @@ fn validate_env_invalid_partial_found() {
     env::set_var("ENV_SET1", "good");
     env::set_var("ENV_SET2", "good");
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good".to_string());
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 
@@ -321,8 +321,8 @@ fn validate_platform_invalid() {
 fn validate_channel_valid() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
         config,
@@ -387,8 +387,8 @@ fn validate_channel_valid() {
 fn validate_channel_invalid() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
         config,
@@ -423,8 +423,8 @@ fn validate_criteria_empty() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -459,8 +459,8 @@ fn validate_criteria_valid_platform() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -499,8 +499,8 @@ fn validate_criteria_invalid_platform() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -535,8 +535,8 @@ fn validate_criteria_valid_channel() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
         config,
@@ -607,8 +607,8 @@ fn validate_criteria_invalid_channel() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
         config,
@@ -643,8 +643,8 @@ fn validate_condition_both_valid() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -684,8 +684,8 @@ fn validate_criteria_valid_script_invalid() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -725,8 +725,8 @@ fn validate_criteria_invalid_script_valid() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -762,8 +762,8 @@ fn validate_criteria_invalid_env_set() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -799,8 +799,8 @@ fn validate_criteria_invalid_env_not_set() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -838,8 +838,8 @@ fn validate_criteria_valid_env() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -855,7 +855,7 @@ fn validate_criteria_valid_env() {
     env::set_var("ENV_SET1", "good1");
     env::set_var("ENV_SET2", "good2");
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good1".to_string());
     env_values.insert("ENV_SET2".to_string(), "good2".to_string());
 
@@ -882,8 +882,8 @@ fn validate_criteria_invalid_env_not_found() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -896,7 +896,7 @@ fn validate_criteria_invalid_env_not_found() {
         disable_workspace: false,
     };
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("BAD_ENV_SET1".to_string(), "good".to_string());
     env_values.insert("BAD_ENV_SET2".to_string(), "bad".to_string());
 
@@ -923,8 +923,8 @@ fn validate_criteria_invalid_env_not_equal() {
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -940,7 +940,7 @@ fn validate_criteria_invalid_env_not_equal() {
     env::set_var("ENV_SET1", "good");
     env::set_var("ENV_SET2", "good");
 
-    let mut env_values = HashMap::<String, String>::new();
+    let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good".to_string());
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 

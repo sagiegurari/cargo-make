@@ -1,6 +1,6 @@
 use super::*;
 use rust_info::types::RustInfo;
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::env;
 use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask,
             Step, Task, Workspace};
@@ -10,8 +10,8 @@ use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, Plat
 fn get_task_name_not_found() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     get_task_name(&config, "test");
@@ -21,8 +21,8 @@ fn get_task_name_not_found() {
 fn get_task_name_no_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("test".to_string(), Task::new());
@@ -36,8 +36,8 @@ fn get_task_name_no_alias() {
 fn get_task_name_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     let mut task = Task::new();
@@ -55,8 +55,8 @@ fn get_task_name_alias() {
 fn get_task_name_platform_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     let mut task = Task::new();
@@ -84,8 +84,8 @@ fn create_execution_plan_single() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -109,8 +109,8 @@ fn create_execution_plan_single_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -134,8 +134,8 @@ fn create_execution_plan_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -166,8 +166,8 @@ fn create_execution_plan_disabled_task_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -197,8 +197,8 @@ fn create_execution_plan_with_dependencies_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -226,8 +226,8 @@ fn create_execution_plan_with_dependencies_disabled() {
 fn create_execution_plan_platform_disabled() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     let mut task = Task::new();
@@ -296,8 +296,8 @@ fn create_execution_plan_platform_disabled() {
 fn create_execution_plan_workspace() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     let task = Task::new();
@@ -315,8 +315,8 @@ fn create_execution_plan_workspace() {
 fn create_execution_plan_noworkspace() {
     let mut config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
 
     let task = Task::new();
@@ -385,8 +385,8 @@ cd -"#.to_string();
 fn run_task_bad_script() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -413,8 +413,8 @@ fn run_task_bad_script() {
 fn run_task_command() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -443,8 +443,8 @@ fn run_task_command() {
 fn run_task_bad_command_valid_script() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -472,8 +472,8 @@ fn run_task_bad_command_valid_script() {
 fn run_task_no_command_valid_script() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -502,12 +502,12 @@ fn run_task_bad_run_task_valid_command() {
     let mut sub_task = Task::new();
     sub_task.script = Some(vec!["exit 1".to_string()]);
 
-    let mut tasks = HashMap::new();
+    let mut tasks = IndexMap::new();
     tasks.insert("sub".to_string(), sub_task);
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
+        env: IndexMap::new(),
         tasks,
     };
     let flow_info = FlowInfo {
@@ -538,12 +538,12 @@ fn run_task_valid_run_task() {
     let mut sub_task = Task::new();
     sub_task.script = Some(vec!["exit 0".to_string()]);
 
-    let mut tasks = HashMap::new();
+    let mut tasks = IndexMap::new();
     tasks.insert("sub".to_string(), sub_task);
 
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
+        env: IndexMap::new(),
         tasks,
     };
     let flow_info = FlowInfo {
@@ -572,8 +572,8 @@ fn run_task_valid_run_task() {
 fn run_task_invalid_task() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -601,8 +601,8 @@ fn run_task_invalid_task() {
 fn run_task_set_env() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -615,7 +615,7 @@ fn run_task_set_env() {
         disable_workspace: false,
     };
 
-    let mut env = HashMap::new();
+    let mut env = IndexMap::new();
     env.insert(
         "TEST_RUN_TASK_SET_ENV".to_string(),
         EnvValue::Value("VALID".to_string()),
@@ -642,8 +642,8 @@ fn run_task_set_env() {
 fn run_task_cwd_no_such_dir() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,
@@ -671,8 +671,8 @@ fn run_task_cwd_no_such_dir() {
 fn run_task_cwd_dir_exists() {
     let config = Config {
         config: ConfigSection::new(),
-        env: HashMap::new(),
-        tasks: HashMap::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
         config,

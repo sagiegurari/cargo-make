@@ -1,5 +1,5 @@
 use super::*;
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use types::{CrateDependencyInfo, Workspace};
 
 #[test]
@@ -113,7 +113,7 @@ fn get_members_from_dependencies_none() {
 #[test]
 fn get_members_from_dependencies_empty() {
     let mut crate_info = CrateInfo::new();
-    crate_info.dependencies = Some(HashMap::new());
+    crate_info.dependencies = Some(IndexMap::new());
     let members = get_members_from_dependencies(&crate_info);
 
     assert_eq!(members.len(), 0);
@@ -121,7 +121,7 @@ fn get_members_from_dependencies_empty() {
 
 #[test]
 fn get_members_from_dependencies_only_versions() {
-    let mut dependencies = HashMap::new();
+    let mut dependencies = IndexMap::new();
     dependencies.insert(
         "test1".to_string(),
         CrateDependency::Version("1".to_string()),
@@ -140,7 +140,7 @@ fn get_members_from_dependencies_only_versions() {
 
 #[test]
 fn get_members_from_dependencies_no_paths() {
-    let mut dependencies = HashMap::new();
+    let mut dependencies = IndexMap::new();
     dependencies.insert(
         "test1".to_string(),
         CrateDependency::Version("1".to_string()),
@@ -163,10 +163,10 @@ fn get_members_from_dependencies_no_paths() {
 
 #[test]
 fn get_members_from_dependencies_no_workspace_paths() {
-    let mut info = HashMap::new();
+    let mut info = IndexMap::new();
     info.insert("path".to_string(), "somepath".to_string());
 
-    let mut dependencies = HashMap::new();
+    let mut dependencies = IndexMap::new();
     dependencies.insert(
         "test1".to_string(),
         CrateDependency::Version("1".to_string()),
@@ -189,7 +189,7 @@ fn get_members_from_dependencies_no_workspace_paths() {
 
 #[test]
 fn get_members_from_dependencies_workspace_paths() {
-    let mut dependencies = HashMap::new();
+    let mut dependencies = IndexMap::new();
     dependencies.insert(
         "test1".to_string(),
         CrateDependency::Version("1".to_string()),
@@ -491,7 +491,7 @@ fn load_workspace_members_no_workspace() {
 fn load_workspace_members_mixed() {
     let mut crate_info = CrateInfo::new();
 
-    let mut dependencies = HashMap::new();
+    let mut dependencies = IndexMap::new();
     dependencies.insert(
         "test1".to_string(),
         CrateDependency::Version("1".to_string()),

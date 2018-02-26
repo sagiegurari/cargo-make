@@ -18,7 +18,7 @@ use environment;
 use installer;
 use logger;
 use scriptengine;
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
 use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
@@ -47,7 +47,7 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
 
         let env = match step.config.env {
             Some(ref env) => env.clone(),
-            None => HashMap::new(),
+            None => IndexMap::new(),
         };
         environment::set_env(env);
 

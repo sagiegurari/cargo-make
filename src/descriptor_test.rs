@@ -2,8 +2,8 @@ use super::*;
 
 #[test]
 fn merge_env_both_empty() {
-    let mut map1 = HashMap::<String, EnvValue>::new();
-    let mut map2 = HashMap::<String, EnvValue>::new();
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
 
     let output = merge_env(&mut map1, &mut map2);
     assert_eq!(output.len(), 0);
@@ -11,8 +11,8 @@ fn merge_env_both_empty() {
 
 #[test]
 fn merge_env_first_empty() {
-    let mut map1 = HashMap::<String, EnvValue>::new();
-    let mut map2 = HashMap::<String, EnvValue>::new();
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
 
     map2.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
@@ -27,8 +27,8 @@ fn merge_env_first_empty() {
 
 #[test]
 fn merge_env_second_empty() {
-    let mut map1 = HashMap::<String, EnvValue>::new();
-    let mut map2 = HashMap::<String, EnvValue>::new();
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
 
     map1.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
@@ -43,8 +43,8 @@ fn merge_env_second_empty() {
 
 #[test]
 fn merge_env_both_with_values() {
-    let mut map1 = HashMap::<String, EnvValue>::new();
-    let mut map2 = HashMap::<String, EnvValue>::new();
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
 
     map1.insert("test1".to_string(), EnvValue::Value("value1".to_string()));
     map2.insert("test21".to_string(), EnvValue::Value("value21".to_string()));
@@ -71,8 +71,8 @@ fn merge_env_both_with_values() {
 
 #[test]
 fn merge_tasks_both_empty() {
-    let mut map1 = HashMap::<String, Task>::new();
-    let mut map2 = HashMap::<String, Task>::new();
+    let mut map1 = IndexMap::<String, Task>::new();
+    let mut map2 = IndexMap::<String, Task>::new();
 
     let output = merge_tasks(&mut map1, &mut map2);
     assert_eq!(output.len(), 0);
@@ -80,8 +80,8 @@ fn merge_tasks_both_empty() {
 
 #[test]
 fn merge_tasks_first_empty() {
-    let mut map1 = HashMap::<String, Task>::new();
-    let mut map2 = HashMap::<String, Task>::new();
+    let mut map1 = IndexMap::<String, Task>::new();
+    let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task = Task::new();
     task.install_crate = Some("my crate".to_string());
@@ -110,8 +110,8 @@ fn merge_tasks_first_empty() {
 
 #[test]
 fn merge_tasks_second_empty() {
-    let mut map1 = HashMap::<String, Task>::new();
-    let mut map2 = HashMap::<String, Task>::new();
+    let mut map1 = IndexMap::<String, Task>::new();
+    let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task = Task::new();
     task.install_crate = Some("my crate".to_string());
@@ -140,8 +140,8 @@ fn merge_tasks_second_empty() {
 
 #[test]
 fn merge_tasks_both_with_values() {
-    let mut map1 = HashMap::<String, Task>::new();
-    let mut map2 = HashMap::<String, Task>::new();
+    let mut map1 = IndexMap::<String, Task>::new();
+    let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task1 = Task::new();
     task1.install_crate = Some("my crate".to_string());
@@ -192,8 +192,8 @@ fn merge_tasks_both_with_values() {
 
 #[test]
 fn merge_tasks_extend_task() {
-    let mut map1 = HashMap::<String, Task>::new();
-    let mut map2 = HashMap::<String, Task>::new();
+    let mut map1 = IndexMap::<String, Task>::new();
+    let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task1 = Task::new();
     task1.disabled = Some(false);
