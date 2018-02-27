@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.10.5 (2018-02-27)
+
+* cargo make audit will only be invoked if a Cargo.lock file exists (#74)
+
 ### v0.10.4 (2018-02-26)
 
 * Fix composite environment variables resolution order (#78)
@@ -8,7 +12,6 @@
 
 * update_check_minimum_interval default changed be weekly (#76)
 * Added test_ files to kcov test coverage invocation
-* cargo make audit will only be invoked if a Cargo.lock file exists (#74)
 * Update dependencies documentation (#72)
 
 ### v0.10.2 (2018-02-08)

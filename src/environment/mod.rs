@@ -143,7 +143,7 @@ fn setup_env_for_crate() -> CrateInfo {
 
     let has_dependencies = match crate_info.dependencies {
         Some(ref dependencies) => dependencies.len() > 0,
-        None => false,
+        None => crate_info.workspace.is_some(),
     };
 
     let has_dependencies_var_value = if has_dependencies { "TRUE" } else { "FALSE" };

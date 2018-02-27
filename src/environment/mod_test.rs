@@ -332,7 +332,7 @@ fn setup_env_for_crate_workspace() {
     assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
     assert_eq!(
         env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
-        "FALSE"
+        "TRUE"
     );
     assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "TRUE");
     assert_eq!(
