@@ -25,7 +25,7 @@ include = [
 
 [dependencies]
 ci_info = "^0.1.15"
-clap = "^2.30.0"
+clap = "^2.31.1"
 fern = "^0.5.4"
 glob = "^0.2.11"
 indexmap = { version = "^0.4.1", features = ["serde-1"] }
@@ -34,9 +34,9 @@ rand = "^0.4.2"
 run_script = "^0.1.12"
 rust_info = "^0.1.11"
 semver = "^0.9.0"
-serde = "^1.0.27"
-serde_derive = "^1.0.27"
-shell2batch = "^0.1.12"
+serde = "^1.0.29"
+serde_derive = "^1.0.29"
+shell2batch = "^0.1.14"
 toml = "^0.4.5"
 
 [features]
