@@ -28,7 +28,7 @@ ci_info = "^0.1.15"
 clap = "^2.31.1"
 fern = "^0.5.4"
 glob = "^0.2.11"
-indexmap = { version = "^0.4.1", features = ["serde-1"] }
+indexmap = { version = "^1.0.0", features = ["serde-1"] }
 log = "^0.4.1"
 rand = "^0.4.2"
 run_script = "^0.1.12"
