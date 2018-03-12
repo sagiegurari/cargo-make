@@ -36,7 +36,7 @@ rust_info = "^0.1.11"
 semver = "^0.9.0"
 serde = "^1.0.29"
 serde_derive = "^1.0.29"
-shell2batch = "^0.1.14"
+shell2batch = "^0.1.15"
 toml = "^0.4.5"
 
 [features]
