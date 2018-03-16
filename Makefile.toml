@@ -19,3 +19,6 @@ sed -i "s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g" ./README.md
 
 [tasks.post-docs]
 linux_alias = "generate-readme"
+
+[tasks.format-stable]
+force = true #ignore errors when switching between rust versions

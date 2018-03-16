@@ -30,6 +30,12 @@ environment:
     - TARGET: x86_64-pc-windows-msvc
       CHANNEL: nightly
 
+allow_failures:
+  - TARGET: i686-pc-windows-gnu
+    CHANNEL: nightly
+  - TARGET: x86_64-pc-windows-gnu
+    CHANNEL: nightly
+
 install:
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
   - rustup-init.exe -yv --default-toolchain %channel% --default-host %target%
@@ -40,5 +46,4 @@ install:
 build: false
 
 test_script:
-  - cargo install --debug cargo-make
-  - cargo make ci-flow
+  - cargo run make ci-flow
