@@ -11,12 +11,12 @@
         private_no_mangle_statics, pub_use_of_private_extern_crate, renamed_and_removed_lints,
         safe_extern_statics, safe_packed_borrows, single_use_lifetime, stable_features,
         trivial_casts, trivial_numeric_casts, tyvar_behind_raw_pointer, unconditional_recursion,
-        unions_with_drop_fields, unknown_crate_types, unknown_lints, unreachable_code,
-        unreachable_patterns, unreachable_pub, unsafe_code, unstable_features, unused_allocation,
-        unused_assignments, unused_attributes, unused_comparisons, unused_doc_comment,
-        unused_extern_crates, unused_features, unused_import_braces, unused_imports,
-        unused_macros, unused_must_use, unused_mut, unused_parens, unused_qualifications,
-        unused_results, unused_unsafe, unused_variables, variant_size_differences, while_true)]
+        unions_with_drop_fields, unknown_crate_types, unreachable_code, unreachable_patterns,
+        unreachable_pub, unsafe_code, unstable_features, unused_allocation, unused_assignments,
+        unused_attributes, unused_comparisons, unused_doc_comment, unused_extern_crates,
+        unused_features, unused_import_braces, unused_imports, unused_macros, unused_must_use,
+        unused_mut, unused_parens, unused_qualifications, unused_results, unused_unsafe,
+        unused_variables, variant_size_differences, while_true)]
 #![warn(unknown_lints)]
 #![allow(box_pointers, elided_lifetime_in_path, missing_debug_implementations,
          single_use_lifetime, trivial_casts, unused_results, variant_size_differences, warnings)]
