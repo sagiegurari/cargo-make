@@ -16,8 +16,7 @@
         unused_assignments, unused_attributes, unused_comparisons, unused_doc_comment,
         unused_extern_crates, unused_features, unused_import_braces, unused_imports,
         unused_macros, unused_must_use, unused_mut, unused_parens, unused_qualifications,
-        unused_results, unused_unsafe, unused_variables, variant_size_differences, warnings,
-        while_true)]
+        unused_results, unused_unsafe, unused_variables, variant_size_differences, while_true)]
 #![warn(unknown_lints)]
 #![allow(box_pointers, elided_lifetime_in_path, missing_debug_implementations,
          single_use_lifetime, trivial_casts, unused_results, variant_size_differences, warnings)]
