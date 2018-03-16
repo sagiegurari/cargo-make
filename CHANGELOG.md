@@ -1,9 +1,5 @@
 ## CHANGELOG
 
-### v0.10.6 (2018-03-16)
-
-* Fix serde compilation issue on windows 64 build with rust nightly
-
 ### v0.10.5 (2018-02-27)
 
 * cargo make audit will only be invoked if a Cargo.lock file exists (#74)
