@@ -1,4 +1,7 @@
 
+[config]
+skip_core_tasks = true
+
 [tasks.hello-world]
 script = [
     "echo start...",
