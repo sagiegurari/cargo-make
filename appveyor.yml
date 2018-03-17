@@ -32,10 +32,7 @@ environment:
 
 matrix:
   allow_failures:
-    - TARGET: i686-pc-windows-gnu
-      CHANNEL: nightly
-    - TARGET: x86_64-pc-windows-gnu
-      CHANNEL: nightly
+    - CHANNEL: nightly
 
 install:
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
