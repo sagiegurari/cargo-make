@@ -25,7 +25,7 @@ include = [
 
 [dependencies]
 ci_info = "^0.1.15"
-clap = "^2.31.1"
+clap = "^2.31.2"
 fern = "^0.5.4"
 glob = "^0.2.11"
 indexmap = { version = "^1.0.0", features = ["serde-1"] }

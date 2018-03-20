@@ -793,7 +793,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow --no-workspace
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
@@ -845,7 +845,7 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow --no-workspace
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-gitlab"></a>
@@ -867,7 +867,7 @@ build: false
 test:cargo:
   script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow --no-workspace
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 To upload your coverage information to codecov, you'll need to go to repo settings for your GitLab repo,
