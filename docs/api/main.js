@@ -47,8 +47,6 @@
     // 2 for "In Return Types"
     var currentTab = 0;
 
-    var themesWidth = null;
-
     function hasClass(elem, className) {
         if (elem && className && elem.className) {
             var elemClass = elem.className;
@@ -123,9 +121,10 @@
                 sidebar.appendChild(div);
             }
         }
-        var themePicker = document.getElementsByClassName("theme-picker");
-        if (themePicker && themePicker.length > 0) {
-            themePicker[0].style.display = "none";
+        document.getElementsByTagName("body")[0].style.marginTop = '45px';
+        var themePicker = document.getElementById("theme-picker");
+        if (themePicker) {
+            themePicker.style.position = "fixed";
         }
     }
 
@@ -141,9 +140,9 @@
             filler.remove();
         }
         document.getElementsByTagName("body")[0].style.marginTop = '';
-        var themePicker = document.getElementsByClassName("theme-picker");
-        if (themePicker && themePicker.length > 0) {
-            themePicker[0].style.display = null;
+        var themePicker = document.getElementById("theme-picker");
+        if (themePicker) {
+            themePicker.style.position = "absolute";
         }
     }
 
@@ -1563,31 +1562,14 @@
     window.initSidebarItems = initSidebarItems;
 
     window.register_implementors = function(imp) {
-        var implementors = document.getElementById('implementors-list');
-        var synthetic_implementors = document.getElementById('synthetic-implementors-list');
-
+        var list = document.getElementById('implementors-list');
         var libs = Object.getOwnPropertyNames(imp);
         for (var i = 0; i < libs.length; ++i) {
             if (libs[i] === currentCrate) { continue; }
             var structs = imp[libs[i]];
-
-            struct_loop:
             for (var j = 0; j < structs.length; ++j) {
-                var struct = structs[j];
-
-                var list = struct.synthetic ? synthetic_implementors : implementors;
-
-                if (struct.synthetic) {
-                    for (var k = 0; k < struct.types.length; k++) {
-                        if (window.inlined_types.has(struct.types[k])) {
-                            continue struct_loop;
-                        }
-                        window.inlined_types.add(struct.types[k]);
-                    }
-                }
-
                 var code = document.createElement('code');
-                code.innerHTML = struct.text;
+                code.innerHTML = structs[j];
 
                 var x = code.getElementsByTagName('a');
                 for (var k = 0; k < x.length; k++) {
