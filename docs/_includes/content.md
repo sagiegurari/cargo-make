@@ -956,6 +956,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 * **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
 * **examples-ci-flow** - Compiles the examples if conditions are met.
 * **delete-lock** - Deletes the Cargo.lock file.
+* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
 * **coverage-flow** - Runs the full coverage flow.

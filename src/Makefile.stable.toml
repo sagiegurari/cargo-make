@@ -149,6 +149,13 @@ script = [
     "rm -f ./Cargo.lock"
 ]
 
+[tasks.upgrade-dependencies]
+description = "Rebuilds the crate with most updated dependencies."
+dependencies = [
+    "delete-lock",
+    "dev-test-flow"
+]
+
 [tasks.pre-format]
 
 [tasks.format-stable]
