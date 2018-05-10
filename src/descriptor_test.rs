@@ -1,5 +1,7 @@
 use super::*;
 
+use std::env;
+
 #[test]
 fn merge_env_both_empty() {
     let mut map1 = IndexMap::<String, EnvValue>::new();
@@ -234,6 +236,41 @@ fn merge_tasks_extend_task() {
 }
 
 #[test]
+fn load_descriptors_load_workspace_makefile() {
+    env::set_var(
+        "CARGO_MAKE_WORKSPACE_MAKEFILE",
+        "./examples/workspace/Makefile.toml",
+    );
+    let config = load_descriptors("./bad/bad.toml", None, false, false);
+    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+
+    let task = config.tasks.get("workspace-echo");
+    assert!(task.is_some());
+}
+
+#[test]
+fn load_descriptors_load_workspace_makefile_no_exists() {
+    env::set_var(
+        "CARGO_MAKE_WORKSPACE_MAKEFILE",
+        "./examples/workspace/Makefile2.toml",
+    );
+    let config = load_descriptors("./bad/bad.toml", None, false, false);
+    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+
+    let task = config.tasks.get("workspace-echo");
+    assert!(task.is_none());
+}
+
+#[test]
+fn load_descriptors_no_load_workspace_makefile() {
+    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+    let config = load_descriptors("./bad/bad.toml", None, false, false);
+
+    let task = config.tasks.get("workspace-echo");
+    assert!(task.is_none());
+}
+
+#[test]
 fn load_no_stable() {
     let config = load("./examples/skip_core_tasks.toml", None, false);
 
@@ -299,7 +336,7 @@ fn load_default_with_experimental() {
 
 #[test]
 fn load_external_descriptor_no_file() {
-    let config = load_external_descriptor(".", "bad_file.toml2");
+    let config = load_external_descriptor(".", "bad_file.toml2", false);
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -308,7 +345,7 @@ fn load_external_descriptor_no_file() {
 
 #[test]
 fn load_external_descriptor_simple_file() {
-    let config = load_external_descriptor(".", "./examples/alias.toml");
+    let config = load_external_descriptor(".", "./examples/alias.toml", false);
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -322,7 +359,7 @@ fn load_external_descriptor_simple_file() {
 
 #[test]
 fn load_external_descriptor_extending_file() {
-    let config = load_external_descriptor(".", "examples/extending.toml");
+    let config = load_external_descriptor(".", "examples/extending.toml", false);
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -342,7 +379,7 @@ fn load_external_descriptor_extending_file() {
 
 #[test]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let config = load_external_descriptor(".", "examples/files/extending.toml");
+    let config = load_external_descriptor(".", "examples/files/extending.toml", false);
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -367,6 +404,20 @@ fn load_external_descriptor_extending_file_sub_folder() {
     test_task = tasks.get("extended2").unwrap();
     alias = test_task.alias.clone();
     assert_eq!(alias.unwrap(), "extended");
+}
+
+#[test]
+fn load_external_descriptor_set_env() {
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    assert_eq!(env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap(), "EMPTY");
+
+    load_external_descriptor(".", "./examples/alias.toml", true);
+
+    assert!(
+        env::var("CARGO_MAKE_MAKEFILE_PATH")
+            .unwrap()
+            .ends_with("/examples/alias.toml")
+    );
 }
 
 #[test]

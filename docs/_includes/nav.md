@@ -17,6 +17,7 @@
         * [Rust Code](#usage-task-command-script-task-examplerust)
         * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
     * [Default Tasks and Extending](#usage-default-tasks)
+        * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)

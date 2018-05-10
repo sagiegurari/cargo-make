@@ -12,9 +12,10 @@ mod descriptor_test;
 
 use command;
 use indexmap::IndexMap;
+use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use toml;
 use types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 
@@ -98,7 +99,46 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
     }
 }
 
-fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig {
+fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig) -> ExternalConfig {
+    // merge env
+    let mut parent_env = match parent_config.env {
+        Some(env) => env,
+        None => IndexMap::new(),
+    };
+    let mut extended_env = match config.env {
+        Some(env) => env,
+        None => IndexMap::new(),
+    };
+    let all_env = merge_env(&mut parent_env, &mut extended_env);
+
+    // merge tasks
+    let mut parent_tasks = match parent_config.tasks {
+        Some(tasks) => tasks,
+        None => IndexMap::new(),
+    };
+    let mut extended_tasks = match config.tasks {
+        Some(tasks) => tasks,
+        None => IndexMap::new(),
+    };
+    let all_tasks = merge_tasks(&mut parent_tasks, &mut extended_tasks);
+
+    let mut config_section = ConfigSection::new();
+    if parent_config.config.is_some() {
+        config_section.extend(&mut parent_config.config.unwrap());
+    }
+    if config.config.is_some() {
+        config_section.extend(&mut config.config.unwrap());
+    }
+
+    ExternalConfig {
+        extend: None,
+        config: Some(config_section),
+        env: Some(all_env),
+        tasks: Some(all_tasks),
+    }
+}
+
+fn load_external_descriptor(base_path: &str, file_name: &str, set_env: bool) -> ExternalConfig {
     debug!(
         "Loading tasks from file: {} base directory: {}",
         &file_name, &base_path
@@ -107,6 +147,10 @@ fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig 
     let file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() {
+        if set_env {
+            env::set_var("CARGO_MAKE_MAKEFILE_PATH", &file_path);
+        }
+
         debug!("Opening file: {:#?}", &file_path);
         let mut file = match File::open(&file_path) {
             Ok(value) => value,
@@ -135,44 +179,10 @@ fn load_external_descriptor(base_path: &str, file_name: &str) -> ExternalConfig 
                     .to_str()
                     .unwrap_or(".");
                 debug!("External config parent path: {}", &parent_path);
-                let base_file_config = load_external_descriptor(parent_path, base_file);
+                let base_file_config = load_external_descriptor(parent_path, base_file, false);
 
-                // merge env
-                let mut base_env = match base_file_config.env {
-                    Some(env) => env,
-                    None => IndexMap::new(),
-                };
-                let mut extended_env = match file_config.env {
-                    Some(env) => env,
-                    None => IndexMap::new(),
-                };
-                let all_env = merge_env(&mut base_env, &mut extended_env);
-
-                // merge tasks
-                let mut base_tasks = match base_file_config.tasks {
-                    Some(tasks) => tasks,
-                    None => IndexMap::new(),
-                };
-                let mut extended_tasks = match file_config.tasks {
-                    Some(tasks) => tasks,
-                    None => IndexMap::new(),
-                };
-                let all_tasks = merge_tasks(&mut base_tasks, &mut extended_tasks);
-
-                let mut config_section = ConfigSection::new();
-                if base_file_config.config.is_some() {
-                    config_section.extend(&mut base_file_config.config.unwrap());
-                }
-                if file_config.config.is_some() {
-                    config_section.extend(&mut file_config.config.unwrap());
-                }
-
-                ExternalConfig {
-                    extend: None,
-                    config: Some(config_section),
-                    env: Some(all_env),
-                    tasks: Some(all_tasks),
-                }
+                // merge configs
+                merge_external_configs(file_config.clone(), base_file_config)
             }
             None => file_config,
         }
@@ -224,13 +234,41 @@ fn load_default(stable: bool, experimental: bool) -> Config {
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
 fn load_descriptors(
     file_name: &str,
-    env: Option<Vec<String>>,
+    env_map: Option<Vec<String>>,
     stable: bool,
     experimental: bool,
 ) -> Config {
     let default_config = load_default(stable, experimental);
 
-    let external_config: ExternalConfig = load_external_descriptor(".", file_name);
+    let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, true);
+
+    external_config = match env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
+        Ok(workspace_makefile) => {
+            let mut pathbuf = PathBuf::from(workspace_makefile);
+            match pathbuf.clone().file_name() {
+                Some(workspace_file_name) => match workspace_file_name.to_str() {
+                    Some(workspace_file_name_str) => {
+                        pathbuf.pop();
+
+                        match pathbuf.to_str() {
+                            Some(directory) => {
+                                let workspace_config = load_external_descriptor(
+                                    directory,
+                                    workspace_file_name_str,
+                                    false,
+                                );
+                                merge_external_configs(external_config, workspace_config)
+                            }
+                            _ => external_config,
+                        }
+                    }
+                    _ => external_config,
+                },
+                _ => external_config,
+            }
+        }
+        _ => external_config,
+    };
 
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
@@ -246,7 +284,7 @@ fn load_descriptors(
 
     // merge configs
     let mut all_env = merge_env(&mut default_env, &mut external_env);
-    all_env = match env {
+    all_env = match env_map {
         Some(values) => {
             let mut cli_env = IndexMap::new();
 
@@ -287,11 +325,11 @@ fn load_descriptors(
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub(crate) fn load(file_name: &str, env: Option<Vec<String>>, experimental: bool) -> Config {
-    let mut config = load_descriptors(&file_name, env.clone(), true, experimental);
+pub(crate) fn load(file_name: &str, env_map: Option<Vec<String>>, experimental: bool) -> Config {
+    let mut config = load_descriptors(&file_name, env_map.clone(), true, experimental);
 
     if config.config.skip_core_tasks.unwrap_or(false) {
-        config = load_descriptors(&file_name, env.clone(), false, false);
+        config = load_descriptors(&file_name, env_map.clone(), false, false);
     }
 
     config

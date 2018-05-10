@@ -442,6 +442,17 @@ The file path in the extend attribute is always relative to the current toml fil
 The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
 the extend attribute pointing to the workspace makefile.
 
+<a name="usage-workspace-extend"></a>
+#### Automatically Extend Workspace Makefile
+When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
+
+The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
+
+```toml
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
+```
+
 <a name="usage-load-scripts"></a>
 #### Load Scripts
 In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
@@ -543,7 +554,7 @@ cargo-make enables you to defined environment variables in several ways.
 #### Global Configuration
 You can define env vars to be set as part of the execution of the flow in the global env block for your makefile, for example:
 
-```yaml
+```toml
 [env]
 RUST_BACKTRACE = "1"
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
@@ -561,7 +572,7 @@ All environment variables defined in the env block and in the [default Makefile.
 #### Task
 Environment variables can be defined inside tasks using the env attribute, so when a task is invoked (after its dependencies), the environment variables will be set, for example:
 
-```yaml
+```toml
 [tasks.test-flow]
 env = { "SOME_ENV_VAR" = "value" }
 run_task = "actual-task"
@@ -738,7 +749,7 @@ script:
 
 For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
 
-```yml
+```yaml
 script:
   - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{{ site.version }}
   - chmod 777 ~/.cargo/bin/cargo-make
@@ -753,7 +764,7 @@ https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
 
-```yml
+```yaml
 env:
   global:
   - CARGO_MAKE_URL="https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v"

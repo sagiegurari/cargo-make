@@ -793,7 +793,7 @@ pub struct Config {
     pub tasks: IndexMap<String, Task>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend

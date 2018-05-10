@@ -20,8 +20,9 @@ use logger;
 use scriptengine;
 use indexmap::IndexMap;
 use std::collections::HashSet;
+use std::env;
 use std::time::SystemTime;
-use types::{Config, CrateInfo, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
+use types::{Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition(&flow_info, &step)
@@ -216,8 +217,27 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
         }
     }
 
+    // ONLY IF ENV VAR IS SET!!!
+    let task_env = if environment::get_env_as_bool("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", false) {
+        match env::var("CARGO_MAKE_MAKEFILE_PATH") {
+            Ok(makefile) => {
+                let mut env_map = IndexMap::new();
+                env_map.insert(
+                    "CARGO_MAKE_WORKSPACE_MAKEFILE".to_string(),
+                    EnvValue::Value(makefile.to_string()),
+                );
+
+                Some(env_map)
+            }
+            _ => None,
+        }
+    } else {
+        None
+    };
+
     let mut workspace_task = Task::new();
     workspace_task.script = Some(script_lines);
+    workspace_task.env = task_env;
 
     workspace_task
 }
