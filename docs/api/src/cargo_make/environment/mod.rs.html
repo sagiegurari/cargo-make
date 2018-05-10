@@ -10,7 +10,8 @@
     <title>mod.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css" id="themeStyle">
@@ -387,6 +388,19 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -433,14 +447,14 @@
                 <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()
             }
         }
-        _ <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
     }
 }
 
 <span class="kw">fn</span> <span class="ident">evaluate_and_set_env</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value_string</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">env_value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value_string</span>.<span class="ident">find</span>(<span class="string">&quot;${&quot;</span>) {
-        <span class="prelude-val">Some</span>(_) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
             <span class="kw">for</span> (<span class="ident">existing_key</span>, <span class="ident">existing_value</span>) <span class="kw">in</span> <span class="ident">env</span>::<span class="ident">vars</span>() {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">key_pattern</span> <span class="op">=</span> <span class="string">&quot;${&quot;</span>.<span class="ident">to_string</span>();
                 <span class="ident">key_pattern</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">existing_key</span>);
@@ -671,7 +685,7 @@
             <span class="string">&quot;Unable to set current working directory to: {} {:#?}&quot;</span>,
             <span class="kw-2">&amp;</span><span class="ident">directory</span>, <span class="ident">error</span>
         ),
-        _ <span class="op">=&gt;</span> {
+        <span class="kw">_</span> <span class="op">=&gt;</span> {
             <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="ident">directory_path</span>);
 
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Working directory changed to: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">directory</span>);
@@ -679,17 +693,30 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_env</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">default</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_env</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">default_value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">key</span>) {
         <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
-        _ <span class="op">=&gt;</span> <span class="ident">default</span>.<span class="ident">to_string</span>(),
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">default_value</span>.<span class="ident">to_string</span>(),
+    }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_env_as_bool</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">default_value</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">let</span> <span class="ident">default_str</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">default_value</span> { <span class="string">&quot;true&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;false&quot;</span> };
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">get_env</span>(<span class="ident">key</span>, <span class="ident">default_str</span>);
+    <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_lowercase</span>();
+
+    <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;true&quot;</span> <span class="op">||</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;yes&quot;</span> <span class="op">||</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;1&quot;</span> {
+        <span class="bool-val">true</span>
+    } <span class="kw">else</span> {
+        <span class="bool-val">false</span>
     }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_cargo_make_home</span>() <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;CARGO_MAKE_HOME&quot;</span>) {
         <span class="prelude-val">Ok</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">directory</span>)),
-        _ <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">home_dir</span>() {
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">home_dir</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">directory</span>.<span class="ident">join</span>(<span class="string">&quot;.cargo-make&quot;</span>)),
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         },
@@ -702,7 +729,7 @@
     <span class="kw">if</span> <span class="ident">file_path</span>.<span class="ident">exists</span>() {
         <span class="kw">match</span> <span class="ident">directory</span>.<span class="ident">to_str</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>.<span class="ident">to_string</span>()),
-            _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         }
     } <span class="kw">else</span> {
         <span class="kw">match</span> <span class="ident">directory</span>.<span class="ident">parent</span>() {
@@ -718,7 +745,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_project_root</span>() <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">current_dir</span>() {
         <span class="prelude-val">Ok</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> <span class="ident">get_project_root_for_path</span>(<span class="kw-2">&amp;</span><span class="ident">directory</span>),
-        _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     }
 }
 </pre>

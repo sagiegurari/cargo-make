@@ -10,7 +10,8 @@
     <title>crateinfo.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css" id="themeStyle">
@@ -262,13 +263,13 @@
                         <span class="ident">updated_path</span> <span class="op">=</span> <span class="ident">updated_path</span>.<span class="ident">replace</span>(<span class="string">&quot;\\&quot;</span>, <span class="string">&quot;/&quot;</span>);
                         <span class="ident">members</span>.<span class="ident">push</span>(<span class="ident">updated_path</span>);
                     }
-                    _ <span class="op">=&gt;</span> (),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
                 };
             }
 
             <span class="ident">members</span>
         }
-        _ <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     }
 }
 
@@ -314,7 +315,7 @@
                     }
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
                 },
-                _ <span class="op">=&gt;</span> (),
+                <span class="kw">_</span> <span class="op">=&gt;</span> (),
             };
         },
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
@@ -332,7 +333,7 @@
 
                     <span class="kw">match</span> <span class="ident">members</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">member</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">member</span> <span class="op">==</span> <span class="ident">member_string</span>) {
                         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">members</span>.<span class="ident">push</span>(<span class="ident">member_string</span>),
-                        _ <span class="op">=&gt;</span> (),
+                        <span class="kw">_</span> <span class="op">=&gt;</span> (),
                     }
                 },
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">workspace</span>.<span class="ident">members</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">new_members</span>),

@@ -10,7 +10,8 @@
     <title>command.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
@@ -297,7 +298,7 @@
 
     <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">output</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>) <span class="op">=&gt;</span> <span class="ident">output_struct</span>.<span class="number">0</span>,
-        _ <span class="op">=&gt;</span> <span class="op">-</span><span class="number">1</span>,
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="op">-</span><span class="number">1</span>,
     };
 
     <span class="kw">if</span> <span class="ident">validate</span> {

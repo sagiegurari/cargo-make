@@ -10,7 +10,8 @@
     <title>mod.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../../main.css" id="themeStyle">
@@ -150,7 +151,7 @@
     <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script_runner</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script_runner</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script</span> {
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>,
-            _ <span class="op">=&gt;</span> {
+            <span class="kw">_</span> <span class="op">=&gt;</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, <span class="ident">script_runner</span>);
 
                 <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@rust&quot;</span> {

@@ -110,6 +110,7 @@ h3.impl, h3.method, h4.method, h3.type, h4.type, h4.associatedconstant {
 }
 h3.impl, h3.method, h3.type {
 	margin-top: 15px;
+	padding-left: 15px;
 }
 
 h1, h2, h3, h4,
@@ -181,15 +182,19 @@ nav.sub {
 	overflow: auto;
 }
 
-.sidebar .current {
-	margin-right: -20px;
+.sidebar .block > ul > li {
+	margin-right: -10px;
 }
 
-.content, nav { max-width: 960px; }
+.content, nav {
+	max-width: 960px;
+}
 
 /* Everything else */
 
-.js-only, .hidden { display: none !important; }
+.js-only, .hidden {
+	display: none !important;
+}
 
 .sidebar img {
 	margin: 20px auto;
@@ -218,7 +223,9 @@ nav.sub {
 	border: none;
 }
 
-.location a:first-child { font-weight: 500; }
+.location a:first-child {
+	font-weight: 500;
+}
 
 .block {
 	padding: 0;
@@ -299,7 +306,9 @@ nav.sub {
 	-ms-user-select: none;
 	user-select: none;
 }
-.line-numbers span { cursor: pointer; }
+.line-numbers span {
+	cursor: pointer;
+}
 
 .docblock-short p {
 	display: inline;
@@ -317,7 +326,9 @@ nav.sub {
 	text-overflow: ellipsis;
 	margin: 0;
 }
-.docblock-short code { white-space: nowrap; }
+.docblock-short code {
+	white-space: nowrap;
+}
 
 .docblock h1, .docblock h2, .docblock h3, .docblock h4, .docblock h5 {
 	border-bottom: 1px solid;
@@ -384,7 +395,9 @@ h4 > code, h3 > code, .invisible > code {
 	display: inline-block;
 }
 
-#main { position: relative; }
+#main {
+	position: relative;
+}
 #main > .since {
 	top: inherit;
 	font-family: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -428,7 +441,9 @@ h4 > code, h3 > code, .invisible > code {
 	padding: 0;
 }
 
-.content .item-list li { margin-bottom: 1em; }
+.content .item-list li {
+	margin-bottom: 1em;
+}
 
 .content .multi-column {
 	-moz-column-count: 5;
@@ -508,10 +523,13 @@ a {
 .anchor {
 	display: none;
 	position: absolute;
-	left: -25px;
+	left: -7px;
 }
 .anchor.field {
-	left: -20px;
+	left: -5px;
+}
+.small-section-header > .anchor {
+	left: -28px;
 }
 .anchor:before {
 	content: '\2002\00a7\2002';
@@ -856,6 +874,7 @@ span.since {
 		display: block;
 		border-bottom: 1px solid;
 		border-right: 1px solid;
+		height: 45px;
 	}
 
 	.sidebar-elems {
@@ -875,11 +894,17 @@ span.since {
 	}
 
 	nav.sub {
-		margin: 0 auto;
+		width: calc(100% - 32px);
+		float: right;
 	}
 
 	.content {
 		margin-left: 0px;
+	}
+
+	#main {
+		margin-top: 45px;
+		padding: 0;
 	}
 
 	.content .in-band {
@@ -904,6 +929,10 @@ span.since {
 
 	.content .impl-items .method, .content .impl-items > .type, .impl-items > .associatedconstant {
 		display: flex;
+	}
+
+	.anchor {
+		display: none !important;
 	}
 }
 
@@ -1028,6 +1057,24 @@ h4 > .important-traits {
 
 	.show-it {
 		display: block;
+		width: 246px;
+	}
+
+	.show-it > .block.items {
+		margin: 8px 0;
+	}
+
+	.show-it > .block.items > ul {
+		margin: 0;
+	}
+
+	.show-it > .block.items > ul > li {
+		text-align: center;
+		margin: 2px 0;
+	}
+
+	.show-it > .block.items > ul > li > a {
+		font-size: 21px;
 	}
 
 	/* Because of ios, we need to actually have a full height sidebar title so the
@@ -1043,6 +1090,14 @@ h4 > .important-traits {
 		height: 45px;
 		z-index: -1;
 		border-bottom: 1px solid;
+	}
+
+	.collapse-toggle {
+		left: -20px;
+	}
+
+	.impl > .collapse-toggle {
+		left: -10px;
 	}
 }
 
@@ -1150,6 +1205,10 @@ kbd {
 	top: 19px;
 }
 
+.theme-picker button {
+	outline: none;
+}
+
 #theme-picker {
 	padding: 4px;
 	width: 27px;
@@ -1184,8 +1243,14 @@ kbd {
 
 @media (max-width: 700px) {
 	.theme-picker {
-		left: 109px;
-		top: 7px;
+		left: 10px;
+		top: 54px;
 		z-index: 1;
 	}
+}
+
+.hidden-by-impl-hider,
+.hidden-by-usual-hider {
+	/* important because of conflicting rule for small screens */
+	display: none !important;
 }

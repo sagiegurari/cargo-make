@@ -10,7 +10,8 @@
     <title>version.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
@@ -311,7 +312,7 @@
                 <span class="prelude-val">None</span>
             }
         }
-        _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     }
 }
 
@@ -338,10 +339,10 @@
                         <span class="bool-val">false</span>
                     }
                 }
-                _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             }
         }
-        _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
     }
 }
 
@@ -364,7 +365,7 @@
     <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
     <span class="kw">match</span> <span class="ident">now</span>.<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>) {
         <span class="prelude-val">Ok</span>(<span class="ident">duration</span>) <span class="op">=&gt;</span> <span class="ident">duration</span>.<span class="ident">as_secs</span>(),
-        _ <span class="op">=&gt;</span> <span class="number">0</span>,
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="number">0</span>,
     }
 }
 

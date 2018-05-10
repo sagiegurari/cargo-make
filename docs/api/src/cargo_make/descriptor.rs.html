@@ -10,7 +10,8 @@
     <title>descriptor.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../../dark.css">
     <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
@@ -363,6 +364,44 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -378,9 +417,10 @@
 
 <span class="kw">use</span> <span class="ident">command</span>;
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">toml</span>;
 <span class="kw">use</span> <span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">EnvValue</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
 
@@ -429,7 +469,7 @@
 
                 <span class="ident">merged_task</span>
             }
-            _ <span class="op">=&gt;</span> <span class="ident">task</span>,
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">task</span>,
         };
 
         <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">task</span>);
@@ -464,7 +504,46 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">load_external_descriptor</span>(<span class="ident">base_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+<span class="kw">fn</span> <span class="ident">merge_external_configs</span>(<span class="ident">config</span>: <span class="ident">ExternalConfig</span>, <span class="ident">parent_config</span>: <span class="ident">ExternalConfig</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+    <span class="comment">// merge env</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">env</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+    };
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">env</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+    };
+    <span class="kw">let</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env</span>);
+
+    <span class="comment">// merge tasks</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">tasks</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+    };
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+    };
+    <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_tasks</span>);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config_section</span> <span class="op">=</span> <span class="ident">ConfigSection</span>::<span class="ident">new</span>();
+    <span class="kw">if</span> <span class="ident">parent_config</span>.<span class="ident">config</span>.<span class="ident">is_some</span>() {
+        <span class="ident">config_section</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_config</span>.<span class="ident">config</span>.<span class="ident">unwrap</span>());
+    }
+    <span class="kw">if</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">is_some</span>() {
+        <span class="ident">config_section</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">unwrap</span>());
+    }
+
+    <span class="ident">ExternalConfig</span> {
+        <span class="ident">extend</span>: <span class="prelude-val">None</span>,
+        <span class="ident">config</span>: <span class="prelude-val">Some</span>(<span class="ident">config_section</span>),
+        <span class="ident">env</span>: <span class="prelude-val">Some</span>(<span class="ident">all_env</span>),
+        <span class="ident">tasks</span>: <span class="prelude-val">Some</span>(<span class="ident">all_tasks</span>),
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">load_external_descriptor</span>(<span class="ident">base_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">set_env</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
     <span class="macro">debug</span><span class="macro">!</span>(
         <span class="string">&quot;Loading tasks from file: {} base directory: {}&quot;</span>,
         <span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="kw-2">&amp;</span><span class="ident">base_path</span>
@@ -473,6 +552,10 @@
     <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="ident">base_path</span>).<span class="ident">join</span>(<span class="ident">file_name</span>);
 
     <span class="kw">if</span> <span class="ident">file_path</span>.<span class="ident">exists</span>() {
+        <span class="kw">if</span> <span class="ident">set_env</span> {
+            <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>);
+        }
+
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Opening file: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">file_path</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
@@ -501,44 +584,10 @@
                     .<span class="ident">to_str</span>()
                     .<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;External config parent path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">parent_path</span>);
-                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="ident">base_file</span>);
+                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="ident">base_file</span>, <span class="bool-val">false</span>);
 
-                <span class="comment">// merge env</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">base_file_config</span>.<span class="ident">env</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
-                };
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">file_config</span>.<span class="ident">env</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
-                };
-                <span class="kw">let</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env</span>);
-
-                <span class="comment">// merge tasks</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">base_file_config</span>.<span class="ident">tasks</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
-                };
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">file_config</span>.<span class="ident">tasks</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
-                };
-                <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_tasks</span>);
-
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config_section</span> <span class="op">=</span> <span class="ident">ConfigSection</span>::<span class="ident">new</span>();
-                <span class="kw">if</span> <span class="ident">base_file_config</span>.<span class="ident">config</span>.<span class="ident">is_some</span>() {
-                    <span class="ident">config_section</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_file_config</span>.<span class="ident">config</span>.<span class="ident">unwrap</span>());
-                }
-                <span class="kw">if</span> <span class="ident">file_config</span>.<span class="ident">config</span>.<span class="ident">is_some</span>() {
-                    <span class="ident">config_section</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">file_config</span>.<span class="ident">config</span>.<span class="ident">unwrap</span>());
-                }
-
-                <span class="ident">ExternalConfig</span> {
-                    <span class="ident">extend</span>: <span class="prelude-val">None</span>,
-                    <span class="ident">config</span>: <span class="prelude-val">Some</span>(<span class="ident">config_section</span>),
-                    <span class="ident">env</span>: <span class="prelude-val">Some</span>(<span class="ident">all_env</span>),
-                    <span class="ident">tasks</span>: <span class="prelude-val">Some</span>(<span class="ident">all_tasks</span>),
-                }
+                <span class="comment">// merge configs</span>
+                <span class="ident">merge_external_configs</span>(<span class="ident">file_config</span>.<span class="ident">clone</span>(), <span class="ident">base_file_config</span>)
             }
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">file_config</span>,
         }
@@ -590,13 +639,41 @@
 <span class="doccomment">/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.</span>
 <span class="kw">fn</span> <span class="ident">load_descriptors</span>(
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="ident">stable</span>: <span class="ident">bool</span>,
     <span class="ident">experimental</span>: <span class="ident">bool</span>,
 ) <span class="op">-&gt;</span> <span class="ident">Config</span> {
     <span class="kw">let</span> <span class="ident">default_config</span> <span class="op">=</span> <span class="ident">load_default</span>(<span class="ident">stable</span>, <span class="ident">experimental</span>);
 
-    <span class="kw">let</span> <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">file_name</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">file_name</span>, <span class="bool-val">true</span>);
+
+    <span class="ident">external_config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>) {
+        <span class="prelude-val">Ok</span>(<span class="ident">workspace_makefile</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pathbuf</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">workspace_makefile</span>);
+            <span class="kw">match</span> <span class="ident">pathbuf</span>.<span class="ident">clone</span>().<span class="ident">file_name</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">workspace_file_name</span>.<span class="ident">to_str</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name_str</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">pathbuf</span>.<span class="ident">pop</span>();
+
+                        <span class="kw">match</span> <span class="ident">pathbuf</span>.<span class="ident">to_str</span>() {
+                            <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> {
+                                <span class="kw">let</span> <span class="ident">workspace_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(
+                                    <span class="ident">directory</span>,
+                                    <span class="ident">workspace_file_name_str</span>,
+                                    <span class="bool-val">false</span>,
+                                );
+                                <span class="ident">merge_external_configs</span>(<span class="ident">external_config</span>, <span class="ident">workspace_config</span>)
+                            }
+                            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+                        }
+                    }
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+                },
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+            }
+        }
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+    };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">tasks</span> {
         <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
@@ -612,7 +689,7 @@
 
     <span class="comment">// merge configs</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">default_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_env</span>);
-    <span class="ident">all_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span> {
+    <span class="ident">all_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env_map</span> {
         <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_env</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>();
 
@@ -653,11 +730,11 @@
 <span class="doccomment">/// It will first load the default descriptor which is defined in cargo-make internally and</span>
 <span class="doccomment">/// afterwards tries to find the external descriptor and load it as well.&lt;br&gt;</span>
 <span class="doccomment">/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">experimental</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">Config</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>, <span class="ident">experimental</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">experimental</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">Config</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>, <span class="ident">experimental</span>);
 
     <span class="kw">if</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">skip_core_tasks</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
-        <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>);
+        <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>);
     }
 
     <span class="ident">config</span>

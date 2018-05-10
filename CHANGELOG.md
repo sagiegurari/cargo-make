@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.10.7 (2018-05-11)
+
+* support automatic workspace makefile extend #84
+* new task to rebuild lock file with most updated dependencies #83
+
 ### v0.10.6 (2018-03-20)
 
 * Fix script issues due to file permissions (#81)
