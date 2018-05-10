@@ -19,6 +19,60 @@ fn get_env_not_exists() {
 }
 
 #[test]
+fn get_env_as_bool_set_true() {
+    env::set_var("TEST_BOOL_TRUE", "true");
+    let output = get_env_as_bool("TEST_BOOL_TRUE", false);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_set_true_uppercase() {
+    env::set_var("TEST_BOOL_TRUE_UPPER", "TRUE");
+    let output = get_env_as_bool("TEST_BOOL_TRUE_UPPER", false);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_set_yes() {
+    env::set_var("TEST_BOOL_YES", "yes");
+    let output = get_env_as_bool("TEST_BOOL_YES", false);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_set_yes_uppercase() {
+    env::set_var("TEST_BOOL_YES_UPPER", "YES");
+    let output = get_env_as_bool("TEST_BOOL_YES_UPPER", false);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_set_1() {
+    env::set_var("TEST_BOOL_1", "1");
+    let output = get_env_as_bool("TEST_BOOL_1", false);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_set_false() {
+    env::set_var("TEST_BOOL_FALSE", "false");
+    let output = get_env_as_bool("TEST_BOOL_FALSE", true);
+    assert!(!output);
+}
+
+#[test]
+fn get_env_as_bool_default_true() {
+    let output = get_env_as_bool("TEST_BOOL_NO_EXISTS_TRUE", true);
+    assert!(output);
+}
+
+#[test]
+fn get_env_as_bool_default_false() {
+    let output = get_env_as_bool("TEST_BOOL_NO_EXISTS_FALSE", false);
+    assert!(!output);
+}
+
+#[test]
 fn evaluate_and_set_env_simple() {
     env::remove_var("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");

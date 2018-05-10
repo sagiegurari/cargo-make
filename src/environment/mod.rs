@@ -289,10 +289,23 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub(crate) fn get_env(key: &str, default: &str) -> String {
+pub(crate) fn get_env(key: &str, default_value: &str) -> String {
     match env::var(key) {
         Ok(value) => value.to_string(),
-        _ => default.to_string(),
+        _ => default_value.to_string(),
+    }
+}
+
+pub(crate) fn get_env_as_bool(key: &str, default_value: bool) -> bool {
+    let default_str = if default_value { "true" } else { "false" };
+
+    let mut value = get_env(key, default_str);
+    value = value.to_lowercase();
+
+    if value == "true" || value == "yes" || value == "1" {
+        true
+    } else {
+        false
     }
 }
 

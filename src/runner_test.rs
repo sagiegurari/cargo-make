@@ -344,6 +344,7 @@ fn create_workspace_task_no_members() {
     assert!(task.script.is_some());
     let script = task.script.unwrap();
     assert_eq!(script.join("\n"), "".to_string());
+    assert!(task.env.is_none());
 }
 
 #[test]
@@ -378,6 +379,32 @@ cd -"#.to_string();
     assert!(task.script.is_some());
     let script = task.script.unwrap();
     assert_eq!(script.join("\n"), expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+fn create_workspace_task_extend_workspace_makefile() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    env::set_var("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
+    let task = create_workspace_task(crate_info, "some_task");
+    env::set_var("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
+
+    assert!(task.script.is_some());
+    let script = task.script.unwrap();
+    assert_eq!(script.join("\n"), "".to_string());
+    assert!(task.env.is_some());
+    assert!(
+        task.env
+            .unwrap()
+            .get("CARGO_MAKE_WORKSPACE_MAKEFILE")
+            .is_some()
+    );
 }
 
 #[test]
