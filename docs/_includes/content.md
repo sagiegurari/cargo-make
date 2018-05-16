@@ -1102,7 +1102,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 <a name="usage-catching-errors"></a>
 ### Catching Errors
 By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
-However, there are scenarios in which you would like to run some sort of cleanups in case of any error in any task before the flow fails and finishes.<br>
+However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
 

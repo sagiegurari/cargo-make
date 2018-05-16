@@ -1,9 +1,13 @@
 ## CHANGELOG
 
+### v0.10.8
+
+* Add support for a catch/cleanup task in case of any errors #89
+
 ### v0.10.7 (2018-05-11)
 
-* support automatic workspace makefile extend #84
-* new task to rebuild lock file with most updated dependencies #83
+* Support automatic workspace makefile extend #84
+* New task to rebuild lock file with most updated dependencies #83
 
 ### v0.10.6 (2018-03-20)
 
@@ -35,11 +39,11 @@
 
 ### v0.9.5 (2018-01-22)
 
-* fixed critical loading issue due to #56
+* Fixed critical loading issue due to #56
 
 ### v0.9.4 (2018-01-19)
 
-* support new skip_core_tasks config flag (#56)
+* Support new skip_core_tasks config flag (#56)
 
 ### v0.9.3 (2018-01-05)
 
