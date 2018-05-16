@@ -15,6 +15,7 @@ fn run_empty_task() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -36,6 +37,7 @@ fn print_empty_task() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: true,
             list_all_steps: false,
@@ -57,6 +59,7 @@ fn list_empty_task() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: true,
@@ -78,6 +81,7 @@ fn run_file_and_task() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -102,6 +106,7 @@ fn run_cwd_with_file() {
             cwd: Some("..".to_string()),
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -124,6 +129,7 @@ fn run_file_not_go_to_project_root() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -146,6 +152,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -171,6 +178,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             cwd: None,
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -196,6 +204,7 @@ fn run_cwd_task_not_found() {
             cwd: Some("..".to_string()),
             env: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -319,8 +328,25 @@ fn run_for_args_print_only() {
         "-l",
         "error",
         "--no-workspace",
+        "--no-on-error",
         "--print-steps",
         "--experimental",
+    ]);
+
+    run_for_args(matches, &global_config);
+}
+
+#[test]
+#[should_panic]
+fn run_protected_flow_example() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/on_error.toml",
     ]);
 
     run_for_args(matches, &global_config);

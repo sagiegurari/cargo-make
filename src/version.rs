@@ -8,12 +8,12 @@
 #[path = "./version_test.rs"]
 mod version_test;
 
+use cache;
 use command;
 use semver::Version;
 use std::process::Command;
-use types::{Cache, GlobalConfig};
-use cache;
 use std::time::{SystemTime, UNIX_EPOCH};
+use types::{Cache, GlobalConfig};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 

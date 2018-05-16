@@ -15,14 +15,14 @@ mod runner_test;
 use command;
 use condition;
 use environment;
+use indexmap::IndexMap;
 use installer;
 use logger;
 use scriptengine;
-use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::env;
 use std::time::SystemTime;
-use types::{Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
+use types::{CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition(&flow_info, &step)
@@ -200,7 +200,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             cd_line.push_str(&member);
             script_lines.push(cd_line);
 
-            let mut make_line = "cargo make --disable-check-for-updates --loglevel=".to_string();
+            let mut make_line =
+                "cargo make --disable-check-for-updates --no-on-error --loglevel=".to_string();
             make_line.push_str(&log_level);
             make_line.push_str(" ");
             make_line.push_str(&task);
@@ -217,7 +218,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
         }
     }
 
-    // ONLY IF ENV VAR IS SET!!!
+    //only if environment variable is set
     let task_env = if environment::get_env_as_bool("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", false) {
         match env::var("CARGO_MAKE_MAKEFILE_PATH") {
             Ok(makefile) => {
@@ -240,6 +241,43 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     workspace_task.env = task_env;
 
     workspace_task
+}
+
+fn create_proxy_task(task: &str) -> Task {
+    //get log level name
+    let log_level = logger::get_log_level();
+
+    let mut log_level_arg = "--loglevel=".to_string();
+    log_level_arg.push_str(&log_level);
+
+    //setup common args
+    let mut args = vec![
+        "make".to_string(),
+        "--disable-check-for-updates".to_string(),
+        "--no-on-error".to_string(),
+        log_level_arg.to_string(),
+    ];
+
+    //get makefile location
+    match env::var("CARGO_MAKE_MAKEFILE_PATH") {
+        Ok(makefile_path) => {
+            if makefile_path.len() > 0 {
+                let mut makefile_arg = "--makefile=".to_string();
+                makefile_arg.push_str(&makefile_path);
+
+                args.push(makefile_arg.to_string());
+            }
+        }
+        _ => {}
+    };
+
+    args.push(task.to_string());
+
+    let mut proxy_task = Task::new();
+    proxy_task.command = Some("cargo".to_string());
+    proxy_task.args = Some(args);
+
+    proxy_task.get_normalized_task()
 }
 
 /// Creates the full execution plan
@@ -314,22 +352,48 @@ fn run_flow(flow_info: &FlowInfo) {
     run_task_flow(&flow_info, &execution_plan);
 }
 
+fn run_protected_flow(flow_info: &FlowInfo) {
+    let proxy_task = create_proxy_task(&flow_info.task);
+
+    let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false);
+
+    if exit_code != 0 {
+        match flow_info.config.config.on_error_task {
+            Some(ref on_error_task) => {
+                let mut error_flow_info = flow_info.clone();
+                error_flow_info.disable_on_error = true;
+                error_flow_info.task = on_error_task.clone();
+
+                run_flow(&error_flow_info);
+            }
+            _ => (),
+        };
+
+        error!("Task error detected, exit code: {}", &exit_code);
+    }
+}
+
 /// Runs the requested tasks.<br>
 /// The flow is as follows:
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, disable_workspace: bool) {
+pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliArgs) {
     let start_time = SystemTime::now();
 
     let flow_info = FlowInfo {
         config,
         task: task.to_string(),
         env_info,
-        disable_workspace,
+        disable_workspace: cli_args.disable_workspace,
+        disable_on_error: cli_args.disable_on_error,
     };
 
-    run_flow(&flow_info);
+    if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
+        run_flow(&flow_info);
+    } else {
+        run_protected_flow(&flow_info);
+    }
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {

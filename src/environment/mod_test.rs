@@ -1,8 +1,8 @@
 use super::*;
 
-use std::{thread, time};
 use indexmap::IndexMap;
 use std::env;
+use std::{thread, time};
 use types::ConfigSection;
 
 #[test]

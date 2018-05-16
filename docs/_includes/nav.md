@@ -43,6 +43,7 @@
     * [Workspace Support](#usage-workspace-support)
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
+    * [Catching Errors](#usage-catching-errors)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)

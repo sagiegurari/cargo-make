@@ -1,6 +1,6 @@
 use super::*;
-use std::path::PathBuf;
 use std::env;
+use std::path::PathBuf;
 
 #[test]
 fn load_from_path_exists() {

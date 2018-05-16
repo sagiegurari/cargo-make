@@ -3,17 +3,17 @@
 //! Sets up the env vars before running the tasks.
 //!
 
-mod gitinfo;
 pub(crate) mod crateinfo;
+mod gitinfo;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
 mod mod_test;
 
 use command;
+use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
-use indexmap::IndexMap;
 use std::env;
 use std::path::{Path, PathBuf};
 use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};

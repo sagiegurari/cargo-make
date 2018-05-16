@@ -1,9 +1,11 @@
 use super::*;
-use rust_info::types::RustInfo;
 use indexmap::IndexMap;
+use rust_info::types::RustInfo;
 use std::env;
-use types::{ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask,
-            Step, Task, Workspace};
+use types::{
+    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step,
+    Task, Workspace,
+};
 
 #[test]
 #[should_panic]
@@ -364,13 +366,13 @@ fn create_workspace_task_with_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
 cd -
 cd ./member2
-cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
 cd -
 cd ./dir1/member3
-cargo make --disable-check-for-updates --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
 cd -"#.to_string();
 
     let log_level = logger::get_log_level();
@@ -408,6 +410,55 @@ fn create_workspace_task_extend_workspace_makefile() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
+fn create_proxy_task_no_makefile() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::remove_var("CARGO_MAKE_MAKEFILE_PATH");
+    let task = create_proxy_task("some_task");
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut log_level_arg = "--loglevel=".to_string();
+    log_level_arg.push_str(&log_level);
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 5);
+    assert_eq!(args[0], "make".to_string());
+    assert_eq!(args[1], "--disable-check-for-updates".to_string());
+    assert_eq!(args[2], "--no-on-error".to_string());
+    assert_eq!(args[3], log_level_arg.to_string());
+    assert_eq!(args[4], "some_task".to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_proxy_task_with_makefile() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let task = create_proxy_task("some_task");
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut log_level_arg = "--loglevel=".to_string();
+    log_level_arg.push_str(&log_level);
+
+    let mut makefile_arg = "--makefile=".to_string();
+    makefile_arg.push_str(&makefile.clone());
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 6);
+    assert_eq!(args[0], "make".to_string());
+    assert_eq!(args[1], "--disable-check-for-updates".to_string());
+    assert_eq!(args[2], "--no-on-error".to_string());
+    assert_eq!(args[3], log_level_arg.to_string());
+    assert_eq!(args[4], makefile_arg.to_string());
+    assert_eq!(args[5], "some_task".to_string());
+}
+
+#[test]
 #[should_panic]
 fn run_task_bad_script() {
     let config = Config {
@@ -424,6 +475,7 @@ fn run_task_bad_script() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -452,6 +504,7 @@ fn run_task_command() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -482,6 +535,7 @@ fn run_task_bad_command_valid_script() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -511,6 +565,7 @@ fn run_task_no_command_valid_script() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -546,6 +601,7 @@ fn run_task_bad_run_task_valid_command() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -582,6 +638,7 @@ fn run_task_valid_run_task() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -611,6 +668,7 @@ fn run_task_invalid_task() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -640,6 +698,7 @@ fn run_task_set_env() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut env = IndexMap::new();
@@ -681,6 +740,7 @@ fn run_task_cwd_no_such_dir() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
@@ -710,6 +770,7 @@ fn run_task_cwd_dir_exists() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut task = Task::new();
