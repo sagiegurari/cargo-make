@@ -332,6 +332,26 @@ fn create_execution_plan_noworkspace() {
     assert_eq!(execution_plan.steps[0].name, "test");
 }
 
+fn update_member_path_get_expected() -> String {
+    if cfg!(windows) {
+        ".\\member\\".to_string()
+    } else {
+        "./member/".to_string()
+    }
+}
+
+#[test]
+fn update_member_path_unix() {
+    let output = update_member_path("./member/");
+    assert_eq!(output, update_member_path_get_expected());
+}
+
+#[test]
+fn update_member_path_windows() {
+    let output = update_member_path(".\\member\\");
+    assert_eq!(output, update_member_path_get_expected());
+}
+
 #[test]
 fn create_workspace_task_no_members() {
     let mut crate_info = CrateInfo::new();

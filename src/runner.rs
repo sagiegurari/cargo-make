@@ -21,6 +21,7 @@ use logger;
 use scriptengine;
 use std::collections::HashSet;
 use std::env;
+use std::path;
 use std::time::SystemTime;
 use types::{CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 
@@ -178,6 +179,16 @@ fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String>
     return members;
 }
 
+fn update_member_path(member: &str) -> String {
+    let os_separator = path::MAIN_SEPARATOR.to_string();
+
+    //convert to OS path separators
+    let mut member_path = str::replace(&member, "\\", &os_separator);
+    member_path = str::replace(&member_path, "/", &os_separator);
+
+    member_path
+}
+
 fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let workspace = crate_info.workspace.unwrap();
     let members = workspace.members.unwrap_or(vec![]);
@@ -192,12 +203,15 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
         if !skip_members.contains(member) {
             info!("Adding Member: {}.", &member);
 
+            //convert to OS path separators
+            let member_path = update_member_path(&member);
+
             let mut cd_line = if cfg!(windows) {
                 "PUSHD ".to_string()
             } else {
                 "cd ./".to_string()
             };
-            cd_line.push_str(&member);
+            cd_line.push_str(&member_path);
             script_lines.push(cd_line);
 
             let mut make_line =

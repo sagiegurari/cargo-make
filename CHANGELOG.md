@@ -3,6 +3,7 @@
 ### v0.10.8
 
 * Add support for a catch/cleanup task in case of any errors #89
+* Fix workspace member paths on windows #87
 
 ### v0.10.7 (2018-05-11)
 
