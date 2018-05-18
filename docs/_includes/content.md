@@ -34,6 +34,7 @@ The articles are missing some of the new features which have been added after th
 * [Full List of Predefined Flows](#usage-predefined-flows)
 * [Global Configuration](#cargo-make-global-config)
 * [Catching Errors](#usage-catching-errors)
+* [Env File](#usage-env-file)
 
 <a name="usage"></a>
 ## Usage
@@ -593,6 +594,27 @@ Environment variables can be defined in the command line using the --env/-e argu
 
 ```console
 cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
+```
+
+<a name="usage-env-file"></a>
+#### Env File
+It is also possible to provide an env file path as part of the cli args as follows:
+
+```console
+cargo make --env-file=./env/production.env
+```
+
+This allows to use the same Makefile.toml but with different environment variables loaded from different env files.
+
+The env file, is a simple key=value file.<br>
+In addition, you can define environment variables values based on other environment variables using the ${} syntax.<br>
+For example:
+
+```properties
+#just a comment...
+ENV1_TEST=TEST1
+ENV2_TEST=TEST2
+ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 ```
 
 <a name="usage-env-global"></a>

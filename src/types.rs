@@ -34,6 +34,8 @@ pub struct CliArgs {
     pub cwd: Option<String>,
     /// Environment variables
     pub env: Option<Vec<String>>,
+    /// Environment variables file
+    pub env_file: Option<String>,
     /// Prevent workspace support
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
@@ -57,6 +59,7 @@ impl CliArgs {
             log_level: "info".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
             disable_on_error: false,
             print_only: false,

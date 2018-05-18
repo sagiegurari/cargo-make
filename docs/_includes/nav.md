@@ -25,6 +25,7 @@
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)
         * [Command Line](#usage-env-cli)
+        * [Env File](#usage-env-file)
         * [Global](#usage-env-global)
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)

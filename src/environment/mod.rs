@@ -15,6 +15,8 @@ use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
+use std::fs::File;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
 
@@ -306,6 +308,51 @@ pub(crate) fn get_env_as_bool(key: &str, default_value: bool) -> bool {
         true
     } else {
         false
+    }
+}
+
+pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
+    match env_file {
+        Some(file_name) => {
+            let file_path = if file_name.starts_with(".") {
+                let base_path = get_env("CARGO_MAKE_WORKING_DIRECTORY", ".");
+                Path::new(&base_path).join(file_name)
+            } else {
+                Path::new(&file_name).to_path_buf()
+            };
+
+            if file_path.exists() {
+                debug!("Opening env file: {:#?}", &file_path);
+                let mut file = match File::open(&file_path) {
+                    Ok(value) => value,
+                    Err(error) => panic!(
+                        "Unable to open env file: {} error: {}",
+                        file_path.to_str().unwrap_or(""),
+                        error
+                    ),
+                };
+
+                let mut env_content = String::new();
+                file.read_to_string(&mut env_content).unwrap();
+
+                let mut env: Vec<String> = vec![];
+
+                let lines: Vec<&str> = env_content.split('\n').collect();
+
+                for mut line in lines {
+                    line = line.trim();
+
+                    if !line.starts_with("#") {
+                        env.push(line.to_string());
+                    }
+                }
+
+                Some(env)
+            } else {
+                None
+            }
+        }
+        None => None,
     }
 }
 

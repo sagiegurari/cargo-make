@@ -32,6 +32,7 @@
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)
         * [Command Line](#usage-env-cli)
+        * [Env File](#usage-env-file)
         * [Global](#usage-env-global)
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)
@@ -96,6 +97,7 @@ The articles are missing some of the new features which have been added after th
 * [Full List of Predefined Flows](#usage-predefined-flows)
 * [Global Configuration](#cargo-make-global-config)
 * [Catching Errors](#usage-catching-errors)
+* [Env File](#usage-env-file)
 
 <a name="usage"></a>
 ## Usage
@@ -657,6 +659,27 @@ Environment variables can be defined in the command line using the --env/-e argu
 cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
 ```
 
+<a name="usage-env-file"></a>
+#### Env File
+It is also possible to provide an env file path as part of the cli args as follows:
+
+```console
+cargo make --env-file=./env/production.env
+```
+
+This allows to use the same Makefile.toml but with different environment variables loaded from different env files.
+
+The env file, is a simple key=value file.<br>
+In addition, you can define environment variables values based on other environment variables using the ${} syntax.<br>
+For example:
+
+```properties
+#just a comment...
+ENV1_TEST=TEST1
+ENV2_TEST=TEST2
+ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
+```
+
 <a name="usage-env-global"></a>
 #### Global
 In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc:
@@ -1164,7 +1187,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 <a name="usage-catching-errors"></a>
 ### Catching Errors
 By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
-However, there are scenarios in which you would like to run some sort of cleanups in case of any error in any task before the flow fails and finishes.<br>
+However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
 

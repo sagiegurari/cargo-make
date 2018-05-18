@@ -69,7 +69,18 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     info!("Using Build File: {}", &build_file);
     info!("Task: {}", &task);
 
-    let env = cli_args.env.clone();
+    let env_file_entries = environment::parse_env_file(cli_args.env_file.clone());
+    let env_cli_entries = cli_args.env.clone();
+    let env = match env_file_entries {
+        Some(mut env_vec1) => match env_cli_entries {
+            Some(mut env_vec2) => {
+                env_vec1.append(&mut env_vec2);
+                Some(env_vec1)
+            }
+            None => Some(env_vec1),
+        },
+        None => env_cli_entries,
+    };
 
     let config = descriptor::load(&build_file, env, cli_args.experimental);
 
@@ -113,6 +124,11 @@ fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
                     .value_of("loglevel")
                     .unwrap_or(default_log_level)
                     .to_string()
+            };
+
+            cli_args.env_file = match cmd_matches.value_of("envfile") {
+                Some(value) => Some(value.to_string()),
+                None => None,
             };
 
             cli_args.disable_check_for_updates =
@@ -185,6 +201,13 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                 Arg::with_name("no-on-error")
                     .long("--no-on-error")
                     .help("Disable on error flow even if defined in config sections"),
+            )
+            .arg(
+                Arg::with_name("envfile")
+                    .long("--env-file")
+                    .value_name("FILE")
+                    .help("Set environment variables from provided file path")
+                    .default_value(&DEFAULT_TOML),
             )
             .arg(
                 Arg::with_name("env")

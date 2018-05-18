@@ -73,6 +73,35 @@ fn get_env_as_bool_default_false() {
 }
 
 #[test]
+fn parse_env_file_none() {
+    let output = parse_env_file(None);
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn parse_env_file_no_exists() {
+    let output = parse_env_file(Some("./bad.env".to_string()));
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn parse_env_file_exists() {
+    let output = parse_env_file(Some("./examples/test.env".to_string()));
+
+    assert!(output.is_some());
+
+    let env = output.unwrap();
+    assert_eq!(env.len(), 3);
+    assert_eq!(env[0], "ENV1_TEST=TEST1");
+    assert_eq!(
+        env[env.len() - 1],
+        "ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}"
+    );
+}
+
+#[test]
 fn evaluate_and_set_env_simple() {
     env::remove_var("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");

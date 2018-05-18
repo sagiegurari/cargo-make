@@ -9,6 +9,7 @@ fn cli_args_new() {
     assert_eq!(cli_args.log_level, "info");
     assert!(cli_args.cwd.is_none());
     assert!(cli_args.env.is_none());
+    assert!(cli_args.env_file.is_none());
     assert!(!cli_args.disable_workspace);
     assert!(!cli_args.disable_on_error);
     assert!(!cli_args.disable_check_for_updates);
