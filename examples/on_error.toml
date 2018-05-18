@@ -1,0 +1,16 @@
+
+[config]
+on_error_task = "catch"
+
+[tasks.default]
+alias = "error"
+
+[tasks.error]
+script = [
+    "exit 1"
+]
+
+[tasks.catch]
+script = [
+    "echo \"Doing cleanups in catch\""
+]

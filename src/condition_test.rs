@@ -1,8 +1,9 @@
 use super::*;
-use rust_info::types::{RustChannel, RustInfo};
 use indexmap::IndexMap;
-use types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, Step, Task,
-            TaskCondition};
+use rust_info::types::{RustChannel, RustInfo};
+use types::{
+    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, Step, Task, TaskCondition,
+};
 
 #[test]
 fn validate_env_set_empty() {
@@ -333,6 +334,7 @@ fn validate_channel_valid() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -399,6 +401,7 @@ fn validate_channel_invalid() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -435,6 +438,7 @@ fn validate_criteria_empty() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -471,6 +475,7 @@ fn validate_criteria_valid_platform() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -511,6 +516,7 @@ fn validate_criteria_invalid_platform() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -547,6 +553,7 @@ fn validate_criteria_valid_channel() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -619,6 +626,7 @@ fn validate_criteria_invalid_channel() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -655,6 +663,7 @@ fn validate_condition_both_valid() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -696,6 +705,7 @@ fn validate_criteria_valid_script_invalid() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -737,6 +747,7 @@ fn validate_criteria_invalid_script_valid() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -774,6 +785,7 @@ fn validate_criteria_invalid_env_set() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -811,6 +823,7 @@ fn validate_criteria_invalid_env_not_set() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     env::set_var("ENV_SET1", "bad");
@@ -850,6 +863,7 @@ fn validate_criteria_valid_env() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     env::set_var("ENV_SET1", "good1");
@@ -894,6 +908,7 @@ fn validate_criteria_invalid_env_not_found() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     let mut env_values = IndexMap::<String, String>::new();
@@ -935,6 +950,7 @@ fn validate_criteria_invalid_env_not_equal() {
             git_info: GitInfo::new(),
         },
         disable_workspace: false,
+        disable_on_error: false,
     };
 
     env::set_var("ENV_SET1", "good");

@@ -7,8 +7,8 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
-use rust_info::types::RustInfo;
 use indexmap::IndexMap;
+use rust_info::types::RustInfo;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {
@@ -34,8 +34,12 @@ pub struct CliArgs {
     pub cwd: Option<String>,
     /// Environment variables
     pub env: Option<Vec<String>>,
+    /// Environment variables file
+    pub env_file: Option<String>,
     /// Prevent workspace support
     pub disable_workspace: bool,
+    /// Prevent on error flow even if defined in config section
+    pub disable_on_error: bool,
     /// Only print the execution plan
     pub print_only: bool,
     /// List all known steps
@@ -55,7 +59,9 @@ impl CliArgs {
             log_level: "info".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             print_only: false,
             list_all_steps: false,
             disable_check_for_updates: false,
@@ -249,6 +255,8 @@ pub struct FlowInfo {
     pub env_info: EnvInfo,
     /// Prevent workspace support
     pub disable_workspace: bool,
+    /// Prevent on error flow even if defined in config section
+    pub disable_on_error: bool,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -697,6 +705,8 @@ pub struct ConfigSection {
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
     pub end_task: Option<String>,
+    /// The name of the task to run in case of any error during the invocation of the flow
+    pub on_error_task: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -714,6 +724,7 @@ impl ConfigSection {
             skip_core_tasks: None,
             init_task: None,
             end_task: None,
+            on_error_task: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,
@@ -737,6 +748,10 @@ impl ConfigSection {
 
         if extended.end_task.is_some() {
             self.end_task = extended.end_task.clone();
+        }
+
+        if extended.on_error_task.is_some() {
+            self.on_error_task = extended.on_error_task.clone();
         }
 
         if extended.load_script.is_some() {

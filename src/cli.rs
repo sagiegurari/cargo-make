@@ -7,9 +7,9 @@
 #[path = "./cli_test.rs"]
 mod cli_test;
 
-use config;
 use ci_info;
 use clap::{App, Arg, ArgMatches, SubCommand};
+use config;
 use descriptor;
 use environment;
 use logger;
@@ -41,7 +41,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         version::check();
     }
 
-    let cwd_string_option = match cli_args.cwd {
+    let cwd_string_option = match cli_args.cwd.clone() {
         Some(value) => Some(value),
         None => match global_config.search_project_root {
             Some(search) => {
@@ -69,7 +69,18 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     info!("Using Build File: {}", &build_file);
     info!("Task: {}", &task);
 
-    let env = cli_args.env.clone();
+    let env_file_entries = environment::parse_env_file(cli_args.env_file.clone());
+    let env_cli_entries = cli_args.env.clone();
+    let env = match env_file_entries {
+        Some(mut env_vec1) => match env_cli_entries {
+            Some(mut env_vec2) => {
+                env_vec1.append(&mut env_vec2);
+                Some(env_vec1)
+            }
+            None => Some(env_vec1),
+        },
+        None => env_cli_entries,
+    };
 
     let config = descriptor::load(&build_file, env, cli_args.experimental);
 
@@ -80,7 +91,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     } else if cli_args.print_only {
         runner::print(&config, &task, cli_args.disable_workspace);
     } else {
-        runner::run(config, &task, env_info, cli_args.disable_workspace);
+        runner::run(config, &task, env_info, &cli_args);
     }
 }
 
@@ -115,11 +126,17 @@ fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
                     .to_string()
             };
 
+            cli_args.env_file = match cmd_matches.value_of("envfile") {
+                Some(value) => Some(value.to_string()),
+                None => None,
+            };
+
             cli_args.disable_check_for_updates =
                 cmd_matches.is_present("disable-check-for-updates");
             cli_args.experimental = cmd_matches.is_present("experimental");
             cli_args.print_only = cmd_matches.is_present("print-steps");
             cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
+            cli_args.disable_on_error = cmd_matches.is_present("no-on-error");
             cli_args.list_all_steps = cmd_matches.is_present("list-steps");
 
             let default_task_name = match global_config.default_task_name {
@@ -180,6 +197,18 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
             .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
                 "Disable workspace support (tasks are triggered on workspace and not on members)",
             ))
+            .arg(
+                Arg::with_name("no-on-error")
+                    .long("--no-on-error")
+                    .help("Disable on error flow even if defined in config sections"),
+            )
+            .arg(
+                Arg::with_name("envfile")
+                    .long("--env-file")
+                    .value_name("FILE")
+                    .help("Set environment variables from provided file path")
+                    .default_value(&DEFAULT_TOML),
+            )
             .arg(
                 Arg::with_name("env")
                     .long("--env")

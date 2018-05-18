@@ -33,6 +33,8 @@ The articles are missing some of the new features which have been added after th
 * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
 * [Full List of Predefined Flows](#usage-predefined-flows)
 * [Global Configuration](#cargo-make-global-config)
+* [Catching Errors](#usage-catching-errors)
+* [Env File](#usage-env-file)
 
 <a name="usage"></a>
 ## Usage
@@ -594,6 +596,27 @@ Environment variables can be defined in the command line using the --env/-e argu
 cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
 ```
 
+<a name="usage-env-file"></a>
+#### Env File
+It is also possible to provide an env file path as part of the cli args as follows:
+
+```console
+cargo make --env-file=./env/production.env
+```
+
+This allows to use the same Makefile.toml but with different environment variables loaded from different env files.
+
+The env file, is a simple key=value file.<br>
+In addition, you can define environment variables values based on other environment variables using the ${} syntax.<br>
+For example:
+
+```properties
+#just a comment...
+ENV1_TEST=TEST1
+ENV2_TEST=TEST2
+ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
+```
+
 <a name="usage-env-global"></a>
 #### Global
 In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc:
@@ -1098,6 +1121,23 @@ Important to mention that init and end tasks invocation is different than other 
 
 Therefore it is not recommended to use the init/end tasks also inside your flows.
 
+<a name="usage-catching-errors"></a>
+### Catching Errors
+By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
+However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
+cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
+In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
+
+```toml
+[config]
+on_error_task = "catch"
+
+[tasks.catch]
+script = [
+    "echo \"Doing cleanups in catch\""
+]
+```
+
 <a name="usage-cli"></a>
 ### Cli Options
 These are the following options available while running cargo-make:
@@ -1111,17 +1151,22 @@ FLAGS:
         --experimental                 Allows access unsupported experimental predefined tasks.
     -h, --help                         Prints help information
         --list-all-steps               Lists all known steps
+        --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
+        --print-steps                  Only prints the steps of the build in the order they will be invoked but without
+                                       invoking them
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this directory if defined.
+        --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this
+                                  directory if defined.
     -e, --env <ENV>...            Set environment variables
-    -l, --loglevel <LOG LEVEL>    The log level [default: info]  [values: verbose, info, error]
+        --env-file <FILE>         Set environment variables from provided file path [default: Makefile.toml]
+    -l, --loglevel <LOG LEVEL>    The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
-    -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+    -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument)
+                                  [default: default]
 
 ARGS:
     <TASK>

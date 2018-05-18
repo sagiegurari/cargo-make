@@ -9,7 +9,9 @@ fn cli_args_new() {
     assert_eq!(cli_args.log_level, "info");
     assert!(cli_args.cwd.is_none());
     assert!(cli_args.env.is_none());
+    assert!(cli_args.env_file.is_none());
     assert!(!cli_args.disable_workspace);
+    assert!(!cli_args.disable_on_error);
     assert!(!cli_args.disable_check_for_updates);
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);
@@ -924,6 +926,7 @@ fn config_section_new() {
     assert!(config.skip_core_tasks.is_none());
     assert!(config.init_task.is_none());
     assert!(config.end_task.is_none());
+    assert!(config.on_error_task.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());
@@ -938,6 +941,7 @@ fn config_section_extend_all_values() {
     base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.on_error_task = Some("base_err".to_string());
     base.load_script = Some(vec!["base_info".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -946,6 +950,7 @@ fn config_section_extend_all_values() {
     extended.skip_core_tasks = Some(false);
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
+    extended.on_error_task = Some("extended_err".to_string());
     extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
     extended.linux_load_script = Some(vec!["extended_info".to_string()]);
     extended.windows_load_script = Some(vec!["extended_info".to_string()]);
@@ -956,6 +961,7 @@ fn config_section_extend_all_values() {
     assert!(!base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
+    assert_eq!(base.on_error_task.unwrap(), "extended_err".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 1);
     assert_eq!(base.windows_load_script.unwrap().len(), 1);
@@ -970,6 +976,7 @@ fn config_section_extend_no_values() {
     base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.on_error_task = Some("base_err".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -980,6 +987,7 @@ fn config_section_extend_no_values() {
     assert!(base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "base_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+    assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);
@@ -994,6 +1002,7 @@ fn config_section_extend_some_values() {
     base.skip_core_tasks = Some(true);
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
+    base.on_error_task = Some("base_err".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -1007,6 +1016,7 @@ fn config_section_extend_some_values() {
     assert!(!base.skip_core_tasks.unwrap());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
+    assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);

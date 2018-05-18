@@ -14,7 +14,9 @@ fn run_empty_task() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -35,7 +37,9 @@ fn print_empty_task() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: true,
             list_all_steps: false,
@@ -56,7 +60,9 @@ fn list_empty_task() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: true,
@@ -77,7 +83,9 @@ fn run_file_and_task() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -101,7 +109,9 @@ fn run_cwd_with_file() {
             log_level: "error".to_string(),
             cwd: Some("..".to_string()),
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -123,7 +133,9 @@ fn run_file_not_go_to_project_root() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -145,7 +157,9 @@ fn run_cwd_go_to_project_root_current_dir() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -170,7 +184,9 @@ fn run_cwd_go_to_project_root_child_dir() {
             log_level: "error".to_string(),
             cwd: None,
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -195,7 +211,9 @@ fn run_cwd_task_not_found() {
             log_level: "error".to_string(),
             cwd: Some("..".to_string()),
             env: None,
+            env_file: None,
             disable_workspace: false,
+            disable_on_error: false,
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
@@ -274,7 +292,7 @@ fn run_for_args_log_level_override() {
 }
 
 #[test]
-fn run_for_args_set_env() {
+fn run_for_args_set_env_values() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config);
 
@@ -305,6 +323,70 @@ fn run_for_args_set_env() {
 }
 
 #[test]
+fn run_for_args_set_env_via_file() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    env::set_var("ENV1_TEST", "EMPTY");
+    env::set_var("ENV2_TEST", "EMPTY");
+    env::set_var("ENV3_TEST", "EMPTY");
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--env-file=./examples/test.env",
+        "--verbose",
+        "--disable-check-for-updates",
+        "-t",
+        "empty",
+    ]);
+
+    run_for_args(matches, &global_config);
+
+    assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
+    assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
+    assert_eq!(env::var("ENV3_TEST").unwrap(), "VALUE OF ENV2 IS: TEST2");
+}
+
+#[test]
+fn run_for_args_set_env_both() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    env::set_var("ENV1_TEST", "EMPTY");
+    env::set_var("ENV2_TEST", "EMPTY");
+    env::set_var("ENV3_TEST", "EMPTY");
+    env::set_var("ENV4_TEST", "EMPTY");
+    env::set_var("ENV5_TEST", "EMPTY");
+    env::set_var("ENV6_TEST", "EMPTY");
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--env-file=./examples/test.env",
+        "--env",
+        "ENV4_TEST=TEST4",
+        "--env",
+        "ENV5_TEST=TEST5",
+        "-e",
+        "ENV6_TEST=TEST6",
+        "--verbose",
+        "--disable-check-for-updates",
+        "-t",
+        "empty",
+    ]);
+
+    run_for_args(matches, &global_config);
+
+    assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
+    assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
+    assert_eq!(env::var("ENV3_TEST").unwrap(), "VALUE OF ENV2 IS: TEST2");
+    assert_eq!(env::var("ENV4_TEST").unwrap(), "TEST4");
+    assert_eq!(env::var("ENV5_TEST").unwrap(), "TEST5");
+    assert_eq!(env::var("ENV6_TEST").unwrap(), "TEST6");
+}
+
+#[test]
 fn run_for_args_print_only() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config);
@@ -319,8 +401,25 @@ fn run_for_args_print_only() {
         "-l",
         "error",
         "--no-workspace",
+        "--no-on-error",
         "--print-steps",
         "--experimental",
+    ]);
+
+    run_for_args(matches, &global_config);
+}
+
+#[test]
+#[should_panic]
+fn run_protected_flow_example() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/on_error.toml",
     ]);
 
     run_for_args(matches, &global_config);

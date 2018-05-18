@@ -7,12 +7,12 @@
 #[path = "./cache_test.rs"]
 mod cache_test;
 
+use environment;
 use std::fs::{create_dir_all, File};
-use std::io::Read;
 use std::io::prelude::*;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
-use environment;
 use types::Cache;
 
 fn load_from_path(directory: PathBuf) -> Cache {

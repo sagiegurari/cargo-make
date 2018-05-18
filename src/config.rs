@@ -7,11 +7,11 @@
 #[path = "./config_test.rs"]
 mod config_test;
 
+use environment;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
-use environment;
 use types::GlobalConfig;
 
 fn load_from_path(directory: PathBuf) -> GlobalConfig {
