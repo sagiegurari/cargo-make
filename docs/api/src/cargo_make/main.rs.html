@@ -1,61 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/main.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>main.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css"
-          id="mainThemeStyle">
-    
-    <link rel="stylesheet" type="text/css" href="../../dark.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
-    <script src="../../storage.js"></script>
-    
-
-    
-    
-</head>
-<body class="rustdoc source">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <nav class="sidebar">
-        <div class="sidebar-menu">&#9776;</div>
-        
-        
-    </nav>
-
-    <div class="theme-picker">
-        <button id="theme-picker" aria-label="Pick another theme!">
-            <img src="../../brush.svg" width="18" alt="Pick another theme!">
-        </button>
-        <div id="theme-choices"></div>
-    </div>
-    <script src="../../theme.js"></script>
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/main.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>main.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
 <span id="2"> 2</span>
 <span id="3"> 3</span>
 <span id="4"> 4</span>
@@ -149,29 +92,39 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class="rust ">
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">anonymous_parameters</span>, <span class="ident">bare_trait_object</span>, <span class="ident">box_pointers</span>, <span class="ident">const_err</span>, <span class="ident">dead_code</span>, <span class="ident">deprecated</span>,
-        <span class="ident">elided_lifetime_in_path</span>, <span class="ident">exceeding_bitshifts</span>, <span class="ident">ignored_generic_bounds</span>,
-        <span class="ident">illegal_floating_point_literal_pattern</span>, <span class="ident">improper_ctypes</span>, <span class="ident">incoherent_fundamental_impls</span>,
-        <span class="ident">invalid_type_param_default</span>, <span class="ident">late_bound_lifetime_arguments</span>, <span class="ident">legacy_constructor_visibility</span>,
-        <span class="ident">legacy_directory_ownership</span>, <span class="ident">legacy_imports</span>, <span class="ident">missing_copy_implementations</span>,
-        <span class="ident">missing_debug_implementations</span>, <span class="ident">missing_docs</span>, <span class="ident">missing_fragment_specifier</span>,
-        <span class="ident">mutable_transmutes</span>, <span class="ident">no_mangle_const_items</span>, <span class="ident">no_mangle_generic_items</span>, <span class="ident">non_camel_case_types</span>,
-        <span class="ident">non_shorthand_field_patterns</span>, <span class="ident">non_snake_case</span>, <span class="ident">non_upper_case_globals</span>,
-        <span class="ident">overflowing_literals</span>, <span class="ident">parenthesized_params_in_types_and_modules</span>, <span class="ident">path_statements</span>,
-        <span class="ident">patterns_in_fns_without_body</span>, <span class="ident">plugin_as_library</span>, <span class="ident">private_in_public</span>, <span class="ident">private_no_mangle_fns</span>,
-        <span class="ident">private_no_mangle_statics</span>, <span class="ident">pub_use_of_private_extern_crate</span>, <span class="ident">renamed_and_removed_lints</span>,
-        <span class="ident">safe_extern_statics</span>, <span class="ident">safe_packed_borrows</span>, <span class="ident">single_use_lifetime</span>, <span class="ident">stable_features</span>,
-        <span class="ident">trivial_casts</span>, <span class="ident">trivial_numeric_casts</span>, <span class="ident">tyvar_behind_raw_pointer</span>, <span class="ident">unconditional_recursion</span>,
-        <span class="ident">unions_with_drop_fields</span>, <span class="ident">unknown_crate_types</span>, <span class="ident">unreachable_code</span>, <span class="ident">unreachable_patterns</span>,
-        <span class="ident">unreachable_pub</span>, <span class="ident">unsafe_code</span>, <span class="ident">unstable_features</span>, <span class="ident">unused_allocation</span>, <span class="ident">unused_assignments</span>,
-        <span class="ident">unused_attributes</span>, <span class="ident">unused_comparisons</span>, <span class="ident">unused_doc_comment</span>, <span class="ident">unused_extern_crates</span>,
-        <span class="ident">unused_features</span>, <span class="ident">unused_import_braces</span>, <span class="ident">unused_imports</span>, <span class="ident">unused_macros</span>, <span class="ident">unused_must_use</span>,
-        <span class="ident">unused_mut</span>, <span class="ident">unused_parens</span>, <span class="ident">unused_qualifications</span>, <span class="ident">unused_results</span>, <span class="ident">unused_unsafe</span>,
-        <span class="ident">unused_variables</span>, <span class="ident">variant_size_differences</span>, <span class="ident">while_true</span>)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(
+    <span class="ident">absolute_path_starting_with_module</span>, <span class="ident">anonymous_parameters</span>, <span class="ident">box_pointers</span>, <span class="ident">const_err</span>, <span class="ident">dead_code</span>,
+    <span class="ident">deprecated</span>, <span class="ident">elided_lifetime_in_path</span>, <span class="ident">exceeding_bitshifts</span>,
+    <span class="ident">illegal_floating_point_literal_pattern</span>, <span class="ident">improper_ctypes</span>, <span class="ident">incoherent_fundamental_impls</span>,
+    <span class="ident">invalid_type_param_default</span>, <span class="ident">late_bound_lifetime_arguments</span>, <span class="ident">legacy_constructor_visibility</span>,
+    <span class="ident">legacy_directory_ownership</span>, <span class="ident">legacy_imports</span>, <span class="ident">missing_copy_implementations</span>,
+    <span class="ident">missing_debug_implementations</span>, <span class="ident">missing_docs</span>, <span class="ident">missing_fragment_specifier</span>, <span class="ident">mutable_transmutes</span>,
+    <span class="ident">no_mangle_const_items</span>, <span class="ident">no_mangle_generic_items</span>, <span class="ident">non_camel_case_types</span>,
+    <span class="ident">non_shorthand_field_patterns</span>, <span class="ident">non_snake_case</span>, <span class="ident">non_upper_case_globals</span>, <span class="ident">overflowing_literals</span>,
+    <span class="ident">parenthesized_params_in_types_and_modules</span>, <span class="ident">path_statements</span>, <span class="ident">patterns_in_fns_without_body</span>,
+    <span class="ident">plugin_as_library</span>, <span class="ident">private_in_public</span>, <span class="ident">private_no_mangle_fns</span>, <span class="ident">private_no_mangle_statics</span>,
+    <span class="ident">pub_use_of_private_extern_crate</span>, <span class="ident">renamed_and_removed_lints</span>, <span class="ident">safe_extern_statics</span>,
+    <span class="ident">safe_packed_borrows</span>, <span class="ident">single_use_lifetime</span>, <span class="ident">stable_features</span>, <span class="ident">trivial_casts</span>, <span class="ident">trivial_numeric_casts</span>,
+    <span class="ident">type_alias_bounds</span>, <span class="ident">tyvar_behind_raw_pointer</span>, <span class="ident">unconditional_recursion</span>, <span class="ident">unions_with_drop_fields</span>,
+    <span class="ident">unknown_crate_types</span>, <span class="ident">unreachable_code</span>, <span class="ident">unreachable_patterns</span>, <span class="ident">unreachable_pub</span>, <span class="ident">unsafe_code</span>,
+    <span class="ident">unstable_features</span>, <span class="ident">unstable_name_collision</span>, <span class="ident">unused_allocation</span>, <span class="ident">unused_assignments</span>,
+    <span class="ident">unused_attributes</span>, <span class="ident">unused_comparisons</span>, <span class="ident">unused_doc_comment</span>, <span class="ident">unused_extern_crates</span>,
+    <span class="ident">unused_features</span>, <span class="ident">unused_import_braces</span>, <span class="ident">unused_imports</span>, <span class="ident">unused_macros</span>, <span class="ident">unused_must_use</span>,
+    <span class="ident">unused_mut</span>, <span class="ident">unused_parens</span>, <span class="ident">unused_qualifications</span>, <span class="ident">unused_results</span>, <span class="ident">unused_unsafe</span>,
+    <span class="ident">unused_variables</span>, <span class="ident">variant_size_differences</span>, <span class="ident">while_true</span>
+)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">unknown_lints</span>)]</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">box_pointers</span>, <span class="ident">elided_lifetime_in_path</span>, <span class="ident">missing_debug_implementations</span>,
-         <span class="ident">single_use_lifetime</span>, <span class="ident">trivial_casts</span>, <span class="ident">unused_results</span>, <span class="ident">variant_size_differences</span>, <span class="ident">warnings</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(
+    <span class="ident">bare_trait_object</span>, <span class="ident">box_pointers</span>, <span class="ident">elided_lifetime_in_path</span>, <span class="ident">missing_debug_implementations</span>,
+    <span class="ident">single_use_lifetime</span>, <span class="ident">trivial_casts</span>, <span class="ident">unnecessary_extern_crate</span>, <span class="ident">unused_results</span>,
+    <span class="ident">variant_size_differences</span>, <span class="ident">warnings</span>
+)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;clippy&quot;</span>, <span class="ident">feature</span>(<span class="ident">plugin</span>))]</span>
 
 <span class="doccomment">//! # cargo-make</span>
@@ -220,17 +173,17 @@
 <span class="comment">// make types public for docs</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span>;
 
-<span class="kw">mod</span> <span class="ident">logger</span>;
-<span class="kw">mod</span> <span class="ident">config</span>;
 <span class="kw">mod</span> <span class="ident">cache</span>;
+<span class="kw">mod</span> <span class="ident">cli</span>;
+<span class="kw">mod</span> <span class="ident">command</span>;
+<span class="kw">mod</span> <span class="ident">condition</span>;
+<span class="kw">mod</span> <span class="ident">config</span>;
 <span class="kw">mod</span> <span class="ident">descriptor</span>;
 <span class="kw">mod</span> <span class="ident">environment</span>;
-<span class="kw">mod</span> <span class="ident">command</span>;
 <span class="kw">mod</span> <span class="ident">installer</span>;
-<span class="kw">mod</span> <span class="ident">scriptengine</span>;
-<span class="kw">mod</span> <span class="ident">condition</span>;
+<span class="kw">mod</span> <span class="ident">logger</span>;
 <span class="kw">mod</span> <span class="ident">runner</span>;
-<span class="kw">mod</span> <span class="ident">cli</span>;
+<span class="kw">mod</span> <span class="ident">scriptengine</span>;
 <span class="kw">mod</span> <span class="ident">version</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -245,68 +198,4 @@
     <span class="ident">cli</span>::<span class="ident">run_cli</span>();
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <aside id="help" class="hidden">
-        <div>
-            <h1 class="hidden">Help</h1>
-
-            <div class="shortcuts">
-                <h2>Keyboard Shortcuts</h2>
-
-                <dl>
-                    <dt><kbd>?</kbd></dt>
-                    <dd>Show this help dialog</dd>
-                    <dt><kbd>S</kbd></dt>
-                    <dd>Focus the search field</dd>
-                    <dt><kbd>↑</kbd></dt>
-                    <dd>Move up in search results</dd>
-                    <dt><kbd>↓</kbd></dt>
-                    <dd>Move down in search results</dd>
-                    <dt><kbd>↹</kbd></dt>
-                    <dd>Switch tab</dd>
-                    <dt><kbd>&#9166;</kbd></dt>
-                    <dd>Go to active search result</dd>
-                    <dt><kbd>+</kbd></dt>
-                    <dd>Expand all sections</dd>
-                    <dt><kbd>-</kbd></dt>
-                    <dd>Collapse all sections</dd>
-                </dl>
-            </div>
-
-            <div class="infos">
-                <h2>Search Tricks</h2>
-
-                <p>
-                    Prefix searches with a type followed by a colon (e.g.
-                    <code>fn:</code>) to restrict the search to a given type.
-                </p>
-
-                <p>
-                    Accepted types are: <code>fn</code>, <code>mod</code>,
-                    <code>struct</code>, <code>enum</code>,
-                    <code>trait</code>, <code>type</code>, <code>macro</code>,
-                    and <code>const</code>.
-                </p>
-
-                <p>
-                    Search functions by type signature (e.g.
-                    <code>vec -> usize</code> or <code>* -> vec</code>)
-                </p>
-            </div>
-        </div>
-    </aside>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "cargo_make";
-    </script>
-    <script src="../../main.js"></script>
-    <script defer src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cargo_make";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

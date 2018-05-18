@@ -20,10 +20,11 @@ function onEach(arr, func) {
     if (arr && arr.length > 0 && func) {
         for (var i = 0; i < arr.length; i++) {
             if (func(arr[i]) === true) {
-                break;
+                return true;
             }
         }
     }
+    return false;
 }
 
 function updateLocalStorage(name, value) {
@@ -68,4 +69,4 @@ function switchTheme(styleElem, mainStyleElem, newTheme) {
     }
 }
 
-switchTheme(currentTheme, mainTheme, getCurrentValue('rustdoc-theme') || 'main');
+switchTheme(currentTheme, mainTheme, getCurrentValue('rustdoc-theme') || 'light');

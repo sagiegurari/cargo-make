@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.10.8
+### v0.10.8 (2018-05-18)
 
 * Add support for a catch/cleanup task in case of any errors #89
 * Load env vars from simple text files #88

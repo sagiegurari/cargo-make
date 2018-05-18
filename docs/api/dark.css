@@ -239,7 +239,7 @@ a.test-arrow:hover{
 }
 
 :target > code {
-	background: #FDFFD3;
+	background-color: #494a3d;
 }
 
 pre.compile_fail {
@@ -362,12 +362,13 @@ kbd {
 	box-shadow-color: #c6cbd1;
 }
 
-#theme-picker {
+#theme-picker, #settings-menu {
 	border-color: #e0e0e0;
 	background: #f0f0f0;
 }
 
-#theme-picker:hover, #theme-picker:focus {
+#theme-picker:hover, #theme-picker:focus,
+#settings-menu:hover, #settings-menu:focus {
 	border-color: #ffb900;
 }
 
@@ -388,4 +389,11 @@ kbd {
 	#theme-picker {
 		background: #f0f0f0;
 	}
+}
+
+#all-types {
+	background-color: #505050;
+}
+#all-types:hover {
+	background-color: #606060;
 }

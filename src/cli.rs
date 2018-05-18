@@ -206,8 +206,7 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                 Arg::with_name("envfile")
                     .long("--env-file")
                     .value_name("FILE")
-                    .help("Set environment variables from provided file path")
-                    .default_value(&DEFAULT_TOML),
+                    .help("Set environment variables from provided file"),
             )
             .arg(
                 Arg::with_name("env")

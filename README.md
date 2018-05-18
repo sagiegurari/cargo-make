@@ -837,7 +837,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ```yaml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.7
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.8
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
@@ -845,7 +845,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.7
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.8
 ```
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1225,13 +1225,14 @@ OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this
                                   directory if defined.
     -e, --env <ENV>...            Set environment variables
+        --env-file <FILE>         Set environment variables from provided file
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
     -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument)
                                   [default: default]
 
 ARGS:
-    <TASK>
+    <TASK> 
 ```
 
 <a name="cargo-make-global-config"></a>

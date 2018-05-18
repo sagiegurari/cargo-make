@@ -1,61 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/types.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>types.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css"
-          id="mainThemeStyle">
-    
-    <link rel="stylesheet" type="text/css" href="../../dark.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
-    <script src="../../storage.js"></script>
-    
-
-    
-    
-</head>
-<body class="rustdoc source">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <nav class="sidebar">
-        <div class="sidebar-menu">&#9776;</div>
-        
-        
-    </nav>
-
-    <div class="theme-picker">
-        <button id="theme-picker" aria-label="Pick another theme!">
-            <img src="../../brush.svg" width="18" alt="Pick another theme!">
-        </button>
-        <div id="theme-choices"></div>
-    </div>
-    <script src="../../theme.js"></script>
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -890,6 +833,21 @@
 <span id="833">833</span>
 <span id="834">834</span>
 <span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -900,8 +858,8 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./types_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">types_test</span>;
 
-<span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
+<span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
 
 <span class="doccomment">/// Returns the platform name</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_platform_name</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
@@ -927,8 +885,12 @@
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Environment variables</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Environment variables file</span>
+    <span class="kw">pub</span> <span class="ident">env_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Prevent workspace support</span>
     <span class="kw">pub</span> <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Prevent on error flow even if defined in config section</span>
+    <span class="kw">pub</span> <span class="ident">disable_on_error</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Only print the execution plan</span>
     <span class="kw">pub</span> <span class="ident">print_only</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// List all known steps</span>
@@ -948,7 +910,9 @@
             <span class="ident">log_level</span>: <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
+            <span class="ident">env_file</span>: <span class="prelude-val">None</span>,
             <span class="ident">disable_workspace</span>: <span class="bool-val">false</span>,
+            <span class="ident">disable_on_error</span>: <span class="bool-val">false</span>,
             <span class="ident">print_only</span>: <span class="bool-val">false</span>,
             <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>,
             <span class="ident">disable_check_for_updates</span>: <span class="bool-val">false</span>,
@@ -1142,6 +1106,8 @@
     <span class="kw">pub</span> <span class="ident">env_info</span>: <span class="ident">EnvInfo</span>,
     <span class="doccomment">/// Prevent workspace support</span>
     <span class="kw">pub</span> <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Prevent on error flow even if defined in config section</span>
+    <span class="kw">pub</span> <span class="ident">disable_on_error</span>: <span class="ident">bool</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -1590,6 +1556,8 @@
     <span class="kw">pub</span> <span class="ident">init_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// End task name which will be invoked at the end of every run</span>
     <span class="kw">pub</span> <span class="ident">end_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The name of the task to run in case of any error during the invocation of the flow</span>
+    <span class="kw">pub</span> <span class="ident">on_error_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
     <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Linux (takes precedence over load_script)</span>
@@ -1607,6 +1575,7 @@
             <span class="ident">skip_core_tasks</span>: <span class="prelude-val">None</span>,
             <span class="ident">init_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">end_task</span>: <span class="prelude-val">None</span>,
+            <span class="ident">on_error_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux_load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows_load_script</span>: <span class="prelude-val">None</span>,
@@ -1630,6 +1599,10 @@
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">end_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">end_task</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">on_error_task</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">on_error_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">on_error_task</span>.<span class="ident">clone</span>();
         }
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
@@ -1727,68 +1700,4 @@
     <span class="kw">pub</span> <span class="ident">steps</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>,
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <aside id="help" class="hidden">
-        <div>
-            <h1 class="hidden">Help</h1>
-
-            <div class="shortcuts">
-                <h2>Keyboard Shortcuts</h2>
-
-                <dl>
-                    <dt><kbd>?</kbd></dt>
-                    <dd>Show this help dialog</dd>
-                    <dt><kbd>S</kbd></dt>
-                    <dd>Focus the search field</dd>
-                    <dt><kbd>↑</kbd></dt>
-                    <dd>Move up in search results</dd>
-                    <dt><kbd>↓</kbd></dt>
-                    <dd>Move down in search results</dd>
-                    <dt><kbd>↹</kbd></dt>
-                    <dd>Switch tab</dd>
-                    <dt><kbd>&#9166;</kbd></dt>
-                    <dd>Go to active search result</dd>
-                    <dt><kbd>+</kbd></dt>
-                    <dd>Expand all sections</dd>
-                    <dt><kbd>-</kbd></dt>
-                    <dd>Collapse all sections</dd>
-                </dl>
-            </div>
-
-            <div class="infos">
-                <h2>Search Tricks</h2>
-
-                <p>
-                    Prefix searches with a type followed by a colon (e.g.
-                    <code>fn:</code>) to restrict the search to a given type.
-                </p>
-
-                <p>
-                    Accepted types are: <code>fn</code>, <code>mod</code>,
-                    <code>struct</code>, <code>enum</code>,
-                    <code>trait</code>, <code>type</code>, <code>macro</code>,
-                    and <code>const</code>.
-                </p>
-
-                <p>
-                    Search functions by type signature (e.g.
-                    <code>vec -> usize</code> or <code>* -> vec</code>)
-                </p>
-            </div>
-        </div>
-    </aside>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "cargo_make";
-    </script>
-    <script src="../../main.js"></script>
-    <script defer src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cargo_make";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
