@@ -1,6 +1,6 @@
 #![deny(
-    anonymous_parameters, bare_trait_object, box_pointers, const_err, dead_code, deprecated,
-    elided_lifetime_in_path, exceeding_bitshifts, ignored_generic_bounds,
+    absolute_path_starting_with_module, anonymous_parameters, box_pointers, const_err, dead_code,
+    deprecated, elided_lifetime_in_path, exceeding_bitshifts,
     illegal_floating_point_literal_pattern, improper_ctypes, incoherent_fundamental_impls,
     invalid_type_param_default, late_bound_lifetime_arguments, legacy_constructor_visibility,
     legacy_directory_ownership, legacy_imports, missing_copy_implementations,
@@ -11,17 +11,19 @@
     plugin_as_library, private_in_public, private_no_mangle_fns, private_no_mangle_statics,
     pub_use_of_private_extern_crate, renamed_and_removed_lints, safe_extern_statics,
     safe_packed_borrows, single_use_lifetime, stable_features, trivial_casts, trivial_numeric_casts,
-    tyvar_behind_raw_pointer, unconditional_recursion, unions_with_drop_fields, unknown_crate_types,
-    unreachable_code, unreachable_patterns, unreachable_pub, unsafe_code, unstable_features,
-    unused_allocation, unused_assignments, unused_attributes, unused_comparisons,
-    unused_doc_comment, unused_extern_crates, unused_features, unused_import_braces, unused_imports,
-    unused_macros, unused_must_use, unused_mut, unused_parens, unused_qualifications,
-    unused_results, unused_unsafe, unused_variables, variant_size_differences, while_true
+    type_alias_bounds, tyvar_behind_raw_pointer, unconditional_recursion, unions_with_drop_fields,
+    unknown_crate_types, unreachable_code, unreachable_patterns, unreachable_pub, unsafe_code,
+    unstable_features, unstable_name_collision, unused_allocation, unused_assignments,
+    unused_attributes, unused_comparisons, unused_doc_comment, unused_extern_crates,
+    unused_features, unused_import_braces, unused_imports, unused_macros, unused_must_use,
+    unused_mut, unused_parens, unused_qualifications, unused_results, unused_unsafe,
+    unused_variables, variant_size_differences, while_true
 )]
 #![warn(unknown_lints)]
 #![allow(
-    box_pointers, elided_lifetime_in_path, missing_debug_implementations, single_use_lifetime,
-    trivial_casts, unused_results, variant_size_differences, warnings
+    bare_trait_object, box_pointers, elided_lifetime_in_path, missing_debug_implementations,
+    single_use_lifetime, trivial_casts, unnecessary_extern_crate, unused_results,
+    variant_size_differences, warnings
 )]
 #![cfg_attr(feature = "clippy", feature(plugin))]
 

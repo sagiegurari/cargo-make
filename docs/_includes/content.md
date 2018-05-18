@@ -1162,6 +1162,7 @@ OPTIONS:
         --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this
                                   directory if defined.
     -e, --env <ENV>...            Set environment variables
+        --env-file <FILE>         Set environment variables from provided file path [default: Makefile.toml]
     -l, --loglevel <LOG LEVEL>    The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
     -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument)
