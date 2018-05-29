@@ -94,36 +94,30 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(
-    <span class="ident">absolute_path_starting_with_module</span>, <span class="ident">anonymous_parameters</span>, <span class="ident">box_pointers</span>, <span class="ident">const_err</span>, <span class="ident">dead_code</span>,
-    <span class="ident">deprecated</span>, <span class="ident">elided_lifetime_in_path</span>, <span class="ident">exceeding_bitshifts</span>,
+    <span class="ident">anonymous_parameters</span>, <span class="ident">const_err</span>, <span class="ident">dead_code</span>, <span class="ident">deprecated</span>, <span class="ident">exceeding_bitshifts</span>,
     <span class="ident">illegal_floating_point_literal_pattern</span>, <span class="ident">improper_ctypes</span>, <span class="ident">incoherent_fundamental_impls</span>,
     <span class="ident">invalid_type_param_default</span>, <span class="ident">late_bound_lifetime_arguments</span>, <span class="ident">legacy_constructor_visibility</span>,
-    <span class="ident">legacy_directory_ownership</span>, <span class="ident">legacy_imports</span>, <span class="ident">missing_copy_implementations</span>,
-    <span class="ident">missing_debug_implementations</span>, <span class="ident">missing_docs</span>, <span class="ident">missing_fragment_specifier</span>, <span class="ident">mutable_transmutes</span>,
-    <span class="ident">no_mangle_const_items</span>, <span class="ident">no_mangle_generic_items</span>, <span class="ident">non_camel_case_types</span>,
-    <span class="ident">non_shorthand_field_patterns</span>, <span class="ident">non_snake_case</span>, <span class="ident">non_upper_case_globals</span>, <span class="ident">overflowing_literals</span>,
-    <span class="ident">parenthesized_params_in_types_and_modules</span>, <span class="ident">path_statements</span>, <span class="ident">patterns_in_fns_without_body</span>,
-    <span class="ident">plugin_as_library</span>, <span class="ident">private_in_public</span>, <span class="ident">private_no_mangle_fns</span>, <span class="ident">private_no_mangle_statics</span>,
-    <span class="ident">pub_use_of_private_extern_crate</span>, <span class="ident">renamed_and_removed_lints</span>, <span class="ident">safe_extern_statics</span>,
-    <span class="ident">safe_packed_borrows</span>, <span class="ident">single_use_lifetime</span>, <span class="ident">stable_features</span>, <span class="ident">trivial_casts</span>, <span class="ident">trivial_numeric_casts</span>,
-    <span class="ident">type_alias_bounds</span>, <span class="ident">tyvar_behind_raw_pointer</span>, <span class="ident">unconditional_recursion</span>, <span class="ident">unions_with_drop_fields</span>,
-    <span class="ident">unknown_crate_types</span>, <span class="ident">unreachable_code</span>, <span class="ident">unreachable_patterns</span>, <span class="ident">unreachable_pub</span>, <span class="ident">unsafe_code</span>,
-    <span class="ident">unstable_features</span>, <span class="ident">unstable_name_collision</span>, <span class="ident">unused_allocation</span>, <span class="ident">unused_assignments</span>,
-    <span class="ident">unused_attributes</span>, <span class="ident">unused_comparisons</span>, <span class="ident">unused_doc_comment</span>, <span class="ident">unused_extern_crates</span>,
-    <span class="ident">unused_features</span>, <span class="ident">unused_import_braces</span>, <span class="ident">unused_imports</span>, <span class="ident">unused_macros</span>, <span class="ident">unused_must_use</span>,
-    <span class="ident">unused_mut</span>, <span class="ident">unused_parens</span>, <span class="ident">unused_qualifications</span>, <span class="ident">unused_results</span>, <span class="ident">unused_unsafe</span>,
-    <span class="ident">unused_variables</span>, <span class="ident">variant_size_differences</span>, <span class="ident">while_true</span>
+    <span class="ident">legacy_directory_ownership</span>, <span class="ident">missing_copy_implementations</span>, <span class="ident">missing_docs</span>,
+    <span class="ident">missing_fragment_specifier</span>, <span class="ident">mutable_transmutes</span>, <span class="ident">no_mangle_const_items</span>, <span class="ident">no_mangle_generic_items</span>,
+    <span class="ident">non_camel_case_types</span>, <span class="ident">non_shorthand_field_patterns</span>, <span class="ident">non_snake_case</span>, <span class="ident">non_upper_case_globals</span>,
+    <span class="ident">overflowing_literals</span>, <span class="ident">parenthesized_params_in_types_and_modules</span>, <span class="ident">path_statements</span>,
+    <span class="ident">patterns_in_fns_without_body</span>, <span class="ident">plugin_as_library</span>, <span class="ident">private_in_public</span>, <span class="ident">private_no_mangle_fns</span>,
+    <span class="ident">private_no_mangle_statics</span>, <span class="ident">pub_use_of_private_extern_crate</span>, <span class="ident">safe_extern_statics</span>,
+    <span class="ident">safe_packed_borrows</span>, <span class="ident">stable_features</span>, <span class="ident">trivial_casts</span>, <span class="ident">trivial_numeric_casts</span>, <span class="ident">type_alias_bounds</span>,
+    <span class="ident">tyvar_behind_raw_pointer</span>, <span class="ident">unconditional_recursion</span>, <span class="ident">unions_with_drop_fields</span>, <span class="ident">unknown_crate_types</span>,
+    <span class="ident">unreachable_code</span>, <span class="ident">unreachable_patterns</span>, <span class="ident">unreachable_pub</span>, <span class="ident">unsafe_code</span>, <span class="ident">unstable_features</span>,
+    <span class="ident">unstable_name_collisions</span>, <span class="ident">unused_allocation</span>, <span class="ident">unused_assignments</span>, <span class="ident">unused_attributes</span>,
+    <span class="ident">unused_comparisons</span>, <span class="ident">unused_doc_comments</span>, <span class="ident">unused_extern_crates</span>, <span class="ident">unused_features</span>,
+    <span class="ident">unused_import_braces</span>, <span class="ident">unused_imports</span>, <span class="ident">unused_macros</span>, <span class="ident">unused_must_use</span>, <span class="ident">unused_mut</span>, <span class="ident">unused_parens</span>,
+    <span class="ident">unused_qualifications</span>, <span class="ident">unused_unsafe</span>, <span class="ident">unused_variables</span>, <span class="ident">while_true</span>
 )]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">unknown_lints</span>)]</span>
 <span class="attribute">#![<span class="ident">allow</span>(
-    <span class="ident">bare_trait_object</span>, <span class="ident">box_pointers</span>, <span class="ident">elided_lifetime_in_path</span>, <span class="ident">missing_debug_implementations</span>,
-    <span class="ident">single_use_lifetime</span>, <span class="ident">trivial_casts</span>, <span class="ident">unnecessary_extern_crate</span>, <span class="ident">unused_results</span>,
-    <span class="ident">variant_size_differences</span>, <span class="ident">warnings</span>
+    <span class="ident">bare_trait_objects</span>, <span class="ident">box_pointers</span>, <span class="ident">elided_lifetimes_in_paths</span>, <span class="ident">missing_debug_implementations</span>,
+    <span class="ident">single_use_lifetimes</span>, <span class="ident">unused_results</span>, <span class="ident">variant_size_differences</span>, <span class="ident">warnings</span>,
+    <span class="ident">renamed_and_removed_lints</span>
 )]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;clippy&quot;</span>, <span class="ident">feature</span>(<span class="ident">plugin</span>))]</span>
 

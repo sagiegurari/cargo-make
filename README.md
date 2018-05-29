@@ -403,6 +403,20 @@ command = "cargo"
 args = ["build", "--verbose", "--all-features"]
 ```
 
+It is possible to provide environment variables as part of the command and arguments to be replaced in runtime with actual values, for example:
+
+```toml
+[env]
+SIMPLE = "SIMPLE VALUE"
+ECHO_CMD = "echo"
+
+[tasks.expand]
+command = "${ECHO_CMD}"
+args = [
+    "VALUE: ${SIMPLE}"
+]
+```
+
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
 Below simple script which prints hello world.
@@ -837,7 +851,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ```yaml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.8
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.11.0
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
@@ -845,7 +859,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.10.8
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.11.0
 ```
 
 In order to pull the latest prebuild cargo-make binary, use the following example:
@@ -1232,7 +1246,7 @@ OPTIONS:
                                   [default: default]
 
 ARGS:
-    <TASK> 
+    <TASK>
 ```
 
 <a name="cargo-make-global-config"></a>

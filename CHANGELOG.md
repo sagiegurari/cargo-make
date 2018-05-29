@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.11.0 (2018-05-29)
+
+* Support environment variable substitution in commands and arguments #92
+
 ### v0.10.8 (2018-05-18)
 
 * Add support for a catch/cleanup task in case of any errors #89
