@@ -340,6 +340,20 @@ command = "cargo"
 args = ["build", "--verbose", "--all-features"]
 ```
 
+It is possible to provide environment variables as part of the command and arguments to be replaced in runtime with actual values, for example:
+
+```toml
+[env]
+SIMPLE = "SIMPLE VALUE"
+ECHO_CMD = "echo"
+
+[tasks.expand]
+command = "${ECHO_CMD}"
+args = [
+    "VALUE: ${SIMPLE}"
+]
+```
+
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
 Below simple script which prints hello world.
@@ -1169,7 +1183,7 @@ OPTIONS:
                                   [default: default]
 
 ARGS:
-    <TASK> 
+    <TASK>
 ```
 
 <a name="cargo-make-global-config"></a>

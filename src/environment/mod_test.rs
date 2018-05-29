@@ -3,7 +3,7 @@ use super::*;
 use indexmap::IndexMap;
 use std::env;
 use std::{thread, time};
-use types::ConfigSection;
+use types::{ConfigSection, Task};
 
 #[test]
 fn get_env_exists() {
@@ -515,4 +515,71 @@ fn get_project_root_for_path_parent_path() {
     let project_root = get_project_root_for_path(&search_path);
 
     assert!(project_root.is_none());
+}
+
+#[test]
+fn expand_env_empty() {
+    let step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+    let updated_step = expand_env(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert!(updated_step.config.command.is_none());
+    assert!(updated_step.config.args.is_none());
+}
+
+#[test]
+fn expand_env_no_env_vars() {
+    let mut task = Task::new();
+    task.command = Some("command".to_string());
+    task.args = Some(vec![
+        "arg0".to_string(),
+        "arg1".to_string(),
+        "arg2".to_string(),
+        "arg3".to_string(),
+        "arg4".to_string(),
+    ]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+    let updated_step = expand_env(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert_eq!(updated_step.config.command.unwrap(), "command".to_string());
+    let args = updated_step.config.args.unwrap();
+    assert_eq!(args.len(), 5);
+    assert_eq!(args[3], "arg3".to_string());
+}
+
+#[test]
+fn expand_env_with_env_vars() {
+    env::set_var("TEST_ENV_EXPAND1", "ENV1");
+    env::set_var("TEST_ENV_EXPAND2", "ENV2");
+
+    let mut task = Task::new();
+    task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
+    task.args = Some(vec![
+        "arg0".to_string(),
+        "arg1".to_string(),
+        "arg2".to_string(),
+        "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
+        "arg4".to_string(),
+    ]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+    let updated_step = expand_env(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert_eq!(
+        updated_step.config.command.unwrap(),
+        "command-ENV1-ENV2".to_string()
+    );
+    let args = updated_step.config.args.unwrap();
+    assert_eq!(args.len(), 5);
+    assert_eq!(args[3], "arg3-ENV1-ENV2".to_string());
 }

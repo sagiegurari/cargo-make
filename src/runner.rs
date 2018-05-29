@@ -53,7 +53,9 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         };
         environment::set_env(env);
 
-        installer::install(&step.config);
+        let updated_step = environment::expand_env(&step);
+
+        installer::install(&updated_step.config);
 
         match step.config.run_task {
             Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
@@ -75,11 +77,11 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                 };
 
                 // try to invoke it as a none OS script
-                let script_runner_done = scriptengine::invoke(&step.config);
+                let script_runner_done = scriptengine::invoke(&updated_step.config);
 
                 // run as command or OS script
                 if !script_runner_done {
-                    command::run(&step)
+                    command::run(&updated_step)
                 };
 
                 // revert to original cwd

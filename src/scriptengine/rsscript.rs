@@ -9,10 +9,11 @@ mod rsscript_test;
 
 use command;
 use installer;
+use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use std::env;
 use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
+use std::{env, iter};
 
 fn install_crate() {
     // install dependencies
@@ -21,7 +22,11 @@ fn install_crate() {
 
 fn create_rust_file(rust_script: &Vec<String>) -> String {
     let name = env!("CARGO_PKG_NAME");
-    let file_name: String = thread_rng().gen_ascii_chars().take(10).collect();
+    let mut rng = thread_rng();
+    let file_name: String = iter::repeat(())
+        .map(|()| rng.sample(Alphanumeric))
+        .take(10)
+        .collect();
 
     let mut file_path = env::temp_dir();
     file_path.push(name);

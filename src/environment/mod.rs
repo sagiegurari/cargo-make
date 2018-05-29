@@ -18,7 +18,9 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use types::{Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Workspace};
+use types::{
+    Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Workspace,
+};
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     match command::run_script_get_output(&env_value.script, None, true) {
@@ -49,9 +51,9 @@ fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     }
 }
 
-fn evaluate_and_set_env(key: &str, value: &str) {
+fn expand_value(value: &str) -> String {
     let mut value_string = value.to_string();
-    let env_value = match value_string.find("${") {
+    match value_string.find("${") {
         Some(_) => {
             for (existing_key, existing_value) in env::vars() {
                 let mut key_pattern = "${".to_string();
@@ -61,10 +63,14 @@ fn evaluate_and_set_env(key: &str, value: &str) {
                 value_string = str::replace(&value_string, &key_pattern, &existing_value);
             }
 
-            value_string.as_str()
+            value_string
         }
-        None => value,
-    };
+        None => value_string,
+    }
+}
+
+fn evaluate_and_set_env(key: &str, value: &str) {
+    let env_value = expand_value(&value);
 
     env::set_var(&key, &env_value);
 }
@@ -389,5 +395,33 @@ pub(crate) fn get_project_root() -> Option<String> {
     match env::current_dir() {
         Ok(directory) => get_project_root_for_path(&directory),
         _ => None,
+    }
+}
+
+pub(crate) fn expand_env(step: &Step) -> Step {
+    //clone data before modify
+    let mut config = step.config.clone();
+
+    //update command by replacing any env vars
+    match config.command {
+        Some(value) => {
+            config.command = Some(expand_value(&value));
+        }
+        None => {}
+    };
+
+    //update args by replacing any env vars
+    match config.args {
+        Some(ref mut args) => {
+            for index in 0..args.len() {
+                args[index] = expand_value(&args[index]);
+            }
+        }
+        None => {}
+    };
+
+    Step {
+        name: step.name.clone(),
+        config,
     }
 }
