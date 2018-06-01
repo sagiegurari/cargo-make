@@ -21,6 +21,7 @@
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
+    * [Private Tasks](#usage-private-tasks)
     * [Environment Variables](#usage-env)
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)

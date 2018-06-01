@@ -335,13 +335,26 @@ pub(crate) fn load(file_name: &str, env_map: Option<Vec<String>>, experimental: 
     config
 }
 
-pub(crate) fn list_steps(config: &Config) {
+pub(crate) fn list_steps(config: &Config) -> u32 {
+    let mut count = 0;
+
     for (key, value) in config.tasks.iter() {
-        let description = match value.description {
-            Some(ref value) => value,
-            None => "No Description.",
+        let is_private = match value.private {
+            Some(private) => private,
+            None => false,
         };
 
-        println!("{}: {} ", &key, &description);
+        if !is_private {
+            count = count + 1;
+
+            let description = match value.description {
+                Some(ref value) => value,
+                None => "No Description.",
+            };
+
+            println!("{}: {} ", &key, &description);
+        }
     }
+
+    count
 }

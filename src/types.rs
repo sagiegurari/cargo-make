@@ -298,6 +298,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
+    pub private: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -348,6 +350,7 @@ impl Task {
         Task {
             description: None,
             disabled: None,
+            private: None,
             condition: None,
             condition_script: None,
             force: None,
@@ -384,6 +387,10 @@ impl Task {
 
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        }
+
+        if task.private.is_some() {
+            self.private = task.private.clone();
         }
 
         if task.condition.is_some() {
@@ -506,6 +513,7 @@ impl Task {
                 Task {
                     description: self.description.clone(),
                     disabled: override_task.disabled.clone(),
+                    private: override_task.private.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
@@ -590,6 +598,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
+    pub private: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -635,6 +645,10 @@ impl PlatformOverrideTask {
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
                 self.disabled = task.disabled.clone();
+            }
+
+            if self.private.is_none() && task.private.is_some() {
+                self.private = task.private.clone();
             }
 
             if self.condition.is_none() && task.condition.is_some() {

@@ -97,7 +97,7 @@ fn create_execution_plan_single() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -123,10 +123,59 @@ fn create_execution_plan_single_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
+}
+
+#[test]
+#[should_panic]
+fn create_execution_plan_single_private() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.private = Some(true);
+
+    config.tasks.insert("test-private".to_string(), task);
+
+    create_execution_plan(&config, "test-private", false, false);
+}
+
+#[test]
+fn create_execution_plan_single_allow_private() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.private = Some(true);
+
+    config.tasks.insert("test-private".to_string(), task);
+
+    let execution_plan = create_execution_plan(&config, "test-private", false, true);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test-private");
+    assert_eq!(execution_plan.steps[2].name, "end");
 }
 
 #[test]
@@ -153,7 +202,7 @@ fn create_execution_plan_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -186,7 +235,7 @@ fn create_execution_plan_disabled_task_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -217,7 +266,7 @@ fn create_execution_plan_with_dependencies_disabled() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -236,6 +285,7 @@ fn create_execution_plan_platform_disabled() {
     task.linux = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        private: Some(false),
         condition: None,
         condition_script: None,
         install_crate: None,
@@ -254,6 +304,7 @@ fn create_execution_plan_platform_disabled() {
     task.windows = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        private: Some(false),
         condition: None,
         condition_script: None,
         install_crate: None,
@@ -272,6 +323,7 @@ fn create_execution_plan_platform_disabled() {
     task.mac = Some(PlatformOverrideTask {
         clear: Some(true),
         disabled: Some(true),
+        private: Some(false),
         condition: None,
         condition_script: None,
         install_crate: None,
@@ -290,7 +342,7 @@ fn create_execution_plan_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
@@ -307,7 +359,7 @@ fn create_execution_plan_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create_execution_plan(&config, "test", false);
+    let execution_plan = create_execution_plan(&config, "test", false, true);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -326,7 +378,7 @@ fn create_execution_plan_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create_execution_plan(&config, "test", true);
+    let execution_plan = create_execution_plan(&config, "test", true, true);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");

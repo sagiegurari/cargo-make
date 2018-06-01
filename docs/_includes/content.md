@@ -562,6 +562,18 @@ This means, however, that you will have to redefine all attributes in the overri
 **To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
 
+<a name="usage-private-tasks"></a>
+### Private Tasks
+
+Private tasks are tasks that should only be invoked by other tasks and not directly from the cli.
+
+In order to define a task as private, add the **private** attribute with value true as follows:
+
+```toml
+[tasks.internal-task]
+private = true
+```
+
 <a name="usage-env"></a>
 ### Environment Variables
 cargo-make enables you to defined environment variables in several ways.
@@ -811,6 +823,8 @@ before_install:
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
+
+**Currently only arm compatible binaries are available.**
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
