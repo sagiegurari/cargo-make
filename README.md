@@ -99,6 +99,7 @@ The articles are missing some of the new features which have been added after th
 * [Global Configuration](#cargo-make-global-config)
 * [Catching Errors](#usage-catching-errors)
 * [Env File](#usage-env-file)
+* [Private Tasks](#usage-private-tasks)
 
 <a name="usage"></a>
 ## Usage
