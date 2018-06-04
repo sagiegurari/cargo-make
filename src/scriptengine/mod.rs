@@ -4,6 +4,7 @@
 //!
 
 mod rsscript;
+pub(crate) mod script_utils;
 mod shell_to_batch;
 
 #[cfg(test)]
