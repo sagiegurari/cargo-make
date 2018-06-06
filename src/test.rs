@@ -17,7 +17,7 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
 
 pub(crate) fn get_os_runner() -> String {
     if cfg!(windows) {
-        "cmd.exe".to_string()
+        "powershell.exe".to_string()
     } else {
         "sh".to_string()
     }
@@ -25,7 +25,7 @@ pub(crate) fn get_os_runner() -> String {
 
 pub(crate) fn get_os_extension() -> String {
     if cfg!(windows) {
-        "bat".to_string()
+        "ps1".to_string()
     } else {
         "sh".to_string()
     }

@@ -517,6 +517,15 @@ script = [
 console.log('Hello, World!');
 '''
 ]
+
+[tasks.powershell]
+script_runner = "powershell"
+script_extension = "ps1"
+script = [
+'''
+Write-Host "Hello, World!"
+'''
+]
 ```
 
 <a name="usage-default-tasks"></a>
