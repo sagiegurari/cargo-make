@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.11.1
+### v0.11.1 (2018-06-06)
 
 * Support writing tasks in various scripting languages #90
 * Internal private tasks #94
