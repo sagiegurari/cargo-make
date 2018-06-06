@@ -16,6 +16,7 @@
         * [Script](#usage-task-command-script-task-examplescript)
         * [Rust Code](#usage-task-command-script-task-examplerust)
         * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
+        * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
     * [Default Tasks and Extending](#usage-default-tasks)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)

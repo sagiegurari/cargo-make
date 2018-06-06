@@ -298,6 +298,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        script_extension: None,
         run_task: None,
         dependencies: None,
     });
@@ -317,6 +318,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        script_extension: None,
         run_task: None,
         dependencies: None,
     });
@@ -336,6 +338,7 @@ fn create_execution_plan_platform_disabled() {
         args: None,
         script: None,
         script_runner: None,
+        script_extension: None,
         run_task: None,
         dependencies: None,
     });

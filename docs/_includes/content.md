@@ -36,6 +36,7 @@ The articles are missing some of the new features which have been added after th
 * [Catching Errors](#usage-catching-errors)
 * [Env File](#usage-env-file)
 * [Private Tasks](#usage-private-tasks)
+* [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 
 <a name="usage"></a>
 ## Usage
@@ -413,6 +414,42 @@ script_runner = "@shell"
 script = [
 '''
 rm ./myfile.txt
+'''
+]
+```
+
+<a name="usage-task-command-script-task-examplegeneric"></a>
+#### Other Programming Languages
+cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
+Any runner which takes the form of ```command file``` (for example ```python ./program.py```) is supported.
+
+Below are few examples:
+
+```toml
+[tasks.python]
+script_runner = "python"
+script_extension = "py"
+script = [
+'''
+print("Hello, World!")
+'''
+]
+
+[tasks.perl]
+script_runner = "perl"
+script_extension = "pl"
+script = [
+'''
+print "Hello, World!\n";
+'''
+]
+
+[tasks.javascript]
+script_runner = "node"
+script_extension = "js"
+script = [
+'''
+console.log('Hello, World!');
 '''
 ]
 ```

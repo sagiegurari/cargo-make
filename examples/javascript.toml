@@ -1,0 +1,8 @@
+[tasks.javascript]
+script_runner = "node"
+script_extension = "js"
+script = [
+'''
+console.log('Hello, World!');
+'''
+]
