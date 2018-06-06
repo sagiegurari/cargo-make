@@ -35,6 +35,8 @@ The articles are missing some of the new features which have been added after th
 * [Global Configuration](#cargo-make-global-config)
 * [Catching Errors](#usage-catching-errors)
 * [Env File](#usage-env-file)
+* [Private Tasks](#usage-private-tasks)
+* [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 
 <a name="usage"></a>
 ## Usage
@@ -416,6 +418,51 @@ rm ./myfile.txt
 ]
 ```
 
+<a name="usage-task-command-script-task-examplegeneric"></a>
+#### Other Programming Languages
+cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
+Any runner which takes the form of ```command file``` (for example ```python ./program.py```) is supported.
+
+Below are few examples:
+
+```toml
+[tasks.python]
+script_runner = "python"
+script_extension = "py"
+script = [
+'''
+print("Hello, World!")
+'''
+]
+
+[tasks.perl]
+script_runner = "perl"
+script_extension = "pl"
+script = [
+'''
+print "Hello, World!\n";
+'''
+]
+
+[tasks.javascript]
+script_runner = "node"
+script_extension = "js"
+script = [
+'''
+console.log('Hello, World!');
+'''
+]
+
+[tasks.powershell]
+script_runner = "powershell"
+script_extension = "ps1"
+script = [
+'''
+Write-Host "Hello, World!"
+'''
+]
+```
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous examples.<br>
@@ -561,6 +608,18 @@ This means, however, that you will have to redefine all attributes in the overri
 **Important - alias comes before checking override task so if parent task has an alias it will be redirected to that task instead of the override.**<br>
 **To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
+
+<a name="usage-private-tasks"></a>
+### Private Tasks
+
+Private tasks are tasks that should only be invoked by other tasks and not directly from the cli.
+
+In order to define a task as private, add the **private** attribute with value true as follows:
+
+```toml
+[tasks.internal-task]
+private = true
+```
 
 <a name="usage-env"></a>
 ### Environment Variables
@@ -811,6 +870,8 @@ before_install:
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
+
+**Currently only arm compatible binaries are available.**
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor

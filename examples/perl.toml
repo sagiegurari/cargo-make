@@ -1,0 +1,8 @@
+[tasks.perl]
+script_runner = "perl"
+script_extension = "pl"
+script = [
+'''
+print "Hello, World!\n";
+'''
+]

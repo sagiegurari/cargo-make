@@ -1,0 +1,10 @@
+
+[tasks.public]
+description = "This is a public task that can be invoked via cli"
+dependencies = ["private"]
+
+[tasks.private]
+description = "This is a private task that can only be invoked by other tasks"
+private = true
+command = "echo"
+args = ["private..."]

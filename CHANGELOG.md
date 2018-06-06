@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.11.1
+
+* Support writing tasks in various scripting languages #90
+* Internal private tasks #94
+
 ### v0.11.0 (2018-05-29)
 
 * Support environment variable substitution in commands and arguments #92

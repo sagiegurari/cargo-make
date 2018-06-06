@@ -33,7 +33,7 @@ fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
     let mut sub_flow_info = flow_info.clone();
     sub_flow_info.task = sub_task.to_string();
 
-    run_flow(&sub_flow_info);
+    run_flow(&sub_flow_info, true);
 }
 
 fn run_task(flow_info: &FlowInfo, step: &Step) {
@@ -129,38 +129,49 @@ fn create_execution_plan_for_step(
     steps: &mut Vec<Step>,
     task_names: &mut HashSet<String>,
     root: bool,
+    allow_private: bool,
 ) {
     let actual_task = get_task_name(config, task);
 
     match config.tasks.get(&actual_task) {
         Some(task_config) => {
-            let mut clone_task = task_config.clone();
-            let normalized_task = clone_task.get_normalized_task();
-            let add = !normalized_task.disabled.unwrap_or(false);
+            let is_private = match task_config.private {
+                Some(value) => value,
+                None => false,
+            };
 
-            if add {
-                match task_config.dependencies {
-                    Some(ref dependencies) => for dependency in dependencies {
-                        create_execution_plan_for_step(
-                            &config,
-                            &dependency,
-                            steps,
-                            task_names,
-                            false,
-                        );
-                    },
-                    _ => debug!("No dependencies found for task: {}", &task),
-                };
+            if allow_private || !is_private {
+                let mut clone_task = task_config.clone();
+                let normalized_task = clone_task.get_normalized_task();
+                let add = !normalized_task.disabled.unwrap_or(false);
 
-                if !task_names.contains(task) {
-                    steps.push(Step {
-                        name: task.to_string(),
-                        config: normalized_task,
-                    });
-                    task_names.insert(task.to_string());
-                } else if root {
-                    error!("Circular reference found for task: {}", &task);
+                if add {
+                    match task_config.dependencies {
+                        Some(ref dependencies) => for dependency in dependencies {
+                            create_execution_plan_for_step(
+                                &config,
+                                &dependency,
+                                steps,
+                                task_names,
+                                false,
+                                true,
+                            );
+                        },
+                        _ => debug!("No dependencies found for task: {}", &task),
+                    };
+
+                    if !task_names.contains(task) {
+                        steps.push(Step {
+                            name: task.to_string(),
+                            config: normalized_task,
+                        });
+                        task_names.insert(task.to_string());
+                    } else if root {
+                        error!("Circular reference found for task: {}", &task);
+                    }
                 }
+            } else {
+                error!("Task not found: {}", &task);
             }
         }
         None => error!("Task not found: {}", &task),
@@ -297,7 +308,12 @@ fn create_proxy_task(task: &str) -> Task {
 }
 
 /// Creates the full execution plan
-fn create_execution_plan(config: &Config, task: &str, disable_workspace: bool) -> ExecutionPlan {
+fn create_execution_plan(
+    config: &Config,
+    task: &str,
+    disable_workspace: bool,
+    allow_private: bool,
+) -> ExecutionPlan {
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
 
@@ -324,7 +340,14 @@ fn create_execution_plan(config: &Config, task: &str, disable_workspace: bool) -
     let crate_info = environment::crateinfo::load();
 
     if disable_workspace || crate_info.workspace.is_none() {
-        create_execution_plan_for_step(&config, &task, &mut steps, &mut task_names, true);
+        create_execution_plan_for_step(
+            &config,
+            &task,
+            &mut steps,
+            &mut task_names,
+            true,
+            allow_private,
+        );
     } else {
         let workspace_task = create_workspace_task(crate_info, task);
 
@@ -357,11 +380,12 @@ fn create_execution_plan(config: &Config, task: &str, disable_workspace: bool) -
     ExecutionPlan { steps }
 }
 
-fn run_flow(flow_info: &FlowInfo) {
+fn run_flow(flow_info: &FlowInfo, allow_private: bool) {
     let execution_plan = create_execution_plan(
         &flow_info.config,
         &flow_info.task,
         flow_info.disable_workspace,
+        allow_private,
     );
     debug!("Created execution plan: {:#?}", &execution_plan);
 
@@ -380,7 +404,7 @@ fn run_protected_flow(flow_info: &FlowInfo) {
                 error_flow_info.disable_on_error = true;
                 error_flow_info.task = on_error_task.clone();
 
-                run_flow(&error_flow_info);
+                run_flow(&error_flow_info, false);
             }
             _ => (),
         };
@@ -406,7 +430,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
     };
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(&flow_info);
+        run_flow(&flow_info, false);
     } else {
         run_protected_flow(&flow_info);
     }
@@ -427,7 +451,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
 
 /// Only prints the execution plan
 pub(crate) fn print(config: &Config, task: &str, disable_workspace: bool) {
-    let execution_plan = create_execution_plan(&config, &task, disable_workspace);
+    let execution_plan = create_execution_plan(&config, &task, disable_workspace, false);
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     println!("{:#?}", &execution_plan);

@@ -14,3 +14,19 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
         false
     }
 }
+
+pub(crate) fn get_os_runner() -> String {
+    if cfg!(windows) {
+        "powershell.exe".to_string()
+    } else {
+        "sh".to_string()
+    }
+}
+
+pub(crate) fn get_os_extension() -> String {
+    if cfg!(windows) {
+        "ps1".to_string()
+    } else {
+        "sh".to_string()
+    }
+}

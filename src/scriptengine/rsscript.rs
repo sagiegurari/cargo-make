@@ -9,11 +9,7 @@ mod rsscript_test;
 
 use command;
 use installer;
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
-use std::fs::{create_dir_all, remove_file, File};
-use std::io::prelude::*;
-use std::{env, iter};
+use scriptengine::script_utils::{create_script_file, delete_file};
 
 fn install_crate() {
     // install dependencies
@@ -21,58 +17,7 @@ fn install_crate() {
 }
 
 fn create_rust_file(rust_script: &Vec<String>) -> String {
-    let name = env!("CARGO_PKG_NAME");
-    let mut rng = thread_rng();
-    let file_name: String = iter::repeat(())
-        .map(|()| rng.sample(Alphanumeric))
-        .take(10)
-        .collect();
-
-    let mut file_path = env::temp_dir();
-    file_path.push(name);
-
-    // create parent directory
-    match create_dir_all(&file_path) {
-        Ok(_) => debug!("Created temporary directory."),
-        Err(error) => debug!(
-            "Unable to create temporary directory: {} {:#?}",
-            &file_path.to_str().unwrap_or("???"),
-            error
-        ),
-    };
-
-    file_path.push(file_name);
-    file_path.set_extension("rs");
-
-    let file_path_str = &file_path.to_str().unwrap_or("???");
-
-    debug!("Creating temporary rust file: {}", &file_path_str);
-
-    let mut file = match File::create(&file_path) {
-        Err(error) => {
-            error!(
-                "Unable to create rust file: {} {:#?}",
-                &file_path_str, &error
-            );
-            panic!("Unable to create rust file, error: {}", error);
-        }
-        Ok(file) => file,
-    };
-
-    let text = rust_script.join("\n");
-
-    match file.write_all(text.as_bytes()) {
-        Err(error) => {
-            error!(
-                "Unable to write to rust file: {} {:#?}",
-                &file_path_str, &error
-            );
-            panic!("Unable to write to rust file, error: {}", error);
-        }
-        Ok(_) => debug!("Written rust file text:\n{}", &text),
-    }
-
-    file_path_str.to_string()
+    create_script_file(rust_script, "rs")
 }
 
 fn run_file(file: &str) -> bool {
@@ -93,10 +38,7 @@ pub(crate) fn execute(rust_script: &Vec<String>) {
 
     let valid = run_file(&file);
 
-    match remove_file(&file) {
-        Ok(_) => debug!("Temporary file deleted: {}", &file),
-        Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file, error),
-    };
+    delete_file(&file);
 
     if !valid {
         error!("Unable to execute rust code.");

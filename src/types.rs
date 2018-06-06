@@ -298,6 +298,8 @@ pub struct Task {
     pub description: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
+    pub private: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -330,6 +332,8 @@ pub struct Task {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The script file extension
+    pub script_extension: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
@@ -348,6 +352,7 @@ impl Task {
         Task {
             description: None,
             disabled: None,
+            private: None,
             condition: None,
             condition_script: None,
             force: None,
@@ -364,6 +369,7 @@ impl Task {
             args: None,
             script: None,
             script_runner: None,
+            script_extension: None,
             run_task: None,
             dependencies: None,
             linux: None,
@@ -384,6 +390,10 @@ impl Task {
 
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        }
+
+        if task.private.is_some() {
+            self.private = task.private.clone();
         }
 
         if task.condition.is_some() {
@@ -450,6 +460,10 @@ impl Task {
             self.script_runner = task.script_runner.clone();
         }
 
+        if task.script_extension.is_some() {
+            self.script_extension = task.script_extension.clone();
+        }
+
         if task.run_task.is_some() {
             self.run_task = task.run_task.clone();
         }
@@ -506,6 +520,7 @@ impl Task {
                 Task {
                     description: self.description.clone(),
                     disabled: override_task.disabled.clone(),
+                    private: override_task.private.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
@@ -522,6 +537,7 @@ impl Task {
                     args: override_task.args.clone(),
                     script: override_task.script.clone(),
                     script_runner: override_task.script_runner.clone(),
+                    script_extension: override_task.script_extension.clone(),
                     run_task: override_task.run_task.clone(),
                     dependencies: override_task.dependencies.clone(),
                     linux: None,
@@ -590,6 +606,8 @@ pub struct PlatformOverrideTask {
     pub clear: Option<bool>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
+    /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
+    pub private: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -614,6 +632,8 @@ pub struct PlatformOverrideTask {
     pub script: Option<Vec<String>>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The script file extension
+    pub script_extension: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
@@ -635,6 +655,10 @@ impl PlatformOverrideTask {
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
                 self.disabled = task.disabled.clone();
+            }
+
+            if self.private.is_none() && task.private.is_some() {
+                self.private = task.private.clone();
             }
 
             if self.condition.is_none() && task.condition.is_some() {
@@ -683,6 +707,10 @@ impl PlatformOverrideTask {
 
             if self.script_runner.is_none() && task.script_runner.is_some() {
                 self.script_runner = task.script_runner.clone();
+            }
+
+            if self.script_extension.is_none() && task.script_extension.is_some() {
+                self.script_extension = task.script_extension.clone();
             }
 
             if self.run_task.is_none() && task.run_task.is_some() {

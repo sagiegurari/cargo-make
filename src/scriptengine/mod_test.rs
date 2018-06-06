@@ -55,6 +55,18 @@ fn get_engine_type_shell_to_batch() {
 }
 
 #[test]
+fn get_engine_type_generic() {
+    let mut task = Task::new();
+    task.script_runner = Some("test1".to_string());
+    task.script_extension = Some("test2".to_string());
+    task.script = Some(vec!["test".to_string()]);
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Generic);
+}
+
+#[test]
 fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(vec!["test".to_string()]);
@@ -128,6 +140,31 @@ fn invoke_shell_to_batch_runner() {
 fn invoke_shell_to_batch_runner_error() {
     let mut task = Task::new();
     task.script_runner = Some("@shell".to_string());
+    task.script = Some(vec!["exit 1".to_string()]);
+
+    let output = invoke(&task);
+
+    assert!(output);
+}
+
+#[test]
+fn invoke_generic_runner() {
+    let mut task = Task::new();
+    task.script_runner = Some(test::get_os_runner());
+    task.script_extension = Some(test::get_os_extension());
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let output = invoke(&task);
+
+    assert!(output);
+}
+
+#[test]
+#[should_panic]
+fn invoke_generic_runner_error() {
+    let mut task = Task::new();
+    task.script_runner = Some(test::get_os_runner());
+    task.script_extension = Some(test::get_os_extension());
     task.script = Some(vec!["exit 1".to_string()]);
 
     let output = invoke(&task);
