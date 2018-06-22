@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.11.2 (2018-06-22)
+
+* Fix automatic workspace makefile extending #96
+
 ### v0.11.1 (2018-06-06)
 
 * Support writing tasks in various scripting languages #90
