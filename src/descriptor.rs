@@ -13,7 +13,7 @@ mod descriptor_test;
 use command;
 use indexmap::IndexMap;
 use std::env;
-use std::fs::File;
+use std::fs::{canonicalize, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
@@ -148,7 +148,12 @@ fn load_external_descriptor(base_path: &str, file_name: &str, set_env: bool) -> 
 
     if file_path.exists() {
         if set_env {
-            env::set_var("CARGO_MAKE_MAKEFILE_PATH", &file_path);
+            let absolute_file_path = match canonicalize(&file_path) {
+                Ok(result_path) => result_path,
+                _ => file_path.clone(),
+            };
+
+            env::set_var("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
         debug!("Opening file: {:#?}", &file_path);
