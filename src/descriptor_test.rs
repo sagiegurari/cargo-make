@@ -416,7 +416,7 @@ fn load_external_descriptor_set_env() {
     assert!(
         env::var("CARGO_MAKE_MAKEFILE_PATH")
             .unwrap()
-            .ends_with("/examples/alias.toml")
+            .ends_with("alias.toml")
     );
 }
 
