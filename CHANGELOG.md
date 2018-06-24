@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.11.3 (2018-06-24)
+
+* Fix workspace coverage not being generated #97
+
 ### v0.11.2 (2018-06-22)
 
 * Fix automatic workspace makefile extending #96
