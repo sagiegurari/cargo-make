@@ -250,8 +250,6 @@ fn setup_env_for_rust() -> RustInfo {
 
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(config: &Config, task: &str) -> EnvInfo {
-    initialize_env(config);
-
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
 
@@ -263,6 +261,9 @@ pub(crate) fn setup_env(config: &Config, task: &str) -> EnvInfo {
 
     // load rust info
     let rust_info = setup_env_for_rust();
+
+    // load env vars
+    initialize_env(config);
 
     EnvInfo {
         rust_info,
