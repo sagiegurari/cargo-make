@@ -11,6 +11,7 @@ mod gitinfo;
 mod mod_test;
 
 use command;
+use dirs;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -366,7 +367,7 @@ pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
 pub(crate) fn get_cargo_make_home() -> Option<PathBuf> {
     match env::var("CARGO_MAKE_HOME") {
         Ok(directory) => Some(PathBuf::from(directory)),
-        _ => match env::home_dir() {
+        _ => match dirs::home_dir() {
             Some(directory) => Some(directory.join(".cargo-make")),
             None => None,
         },

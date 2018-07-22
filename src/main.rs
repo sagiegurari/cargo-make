@@ -53,6 +53,7 @@
 
 extern crate ci_info;
 extern crate clap;
+extern crate dirs;
 extern crate fern;
 extern crate glob;
 extern crate indexmap;
