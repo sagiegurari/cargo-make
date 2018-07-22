@@ -41,6 +41,7 @@ fn cache_new() {
 fn task_new() {
     let task = Task::new();
 
+    assert!(task.clear.is_none());
     assert!(task.install_crate.is_none());
     assert!(task.install_crate_args.is_none());
     assert!(task.command.is_none());
@@ -108,6 +109,7 @@ fn task_extend_both_have_misc_data() {
     base.script = Some(vec!["1".to_string(), "2".to_string()]);
 
     let extended = Task {
+        clear: Some(false),
         install_crate: Some("my crate2".to_string()),
         command: None,
         description: None,
@@ -137,6 +139,7 @@ fn task_extend_both_have_misc_data() {
 
     base.extend(&extended);
 
+    assert!(!base.clear.unwrap());
     assert!(base.install_crate.is_some());
     assert!(base.command.is_some());
     assert!(base.description.is_none());
@@ -176,6 +179,7 @@ fn task_extend_both_have_misc_data() {
 #[test]
 fn task_extend_extended_have_all_fields() {
     let mut base = Task {
+        clear: Some(true),
         install_crate: Some("my crate1".to_string()),
         command: Some("test1".to_string()),
         description: None,
@@ -206,6 +210,7 @@ fn task_extend_extended_have_all_fields() {
     let mut env = IndexMap::new();
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
     let extended = Task {
+        clear: Some(false),
         install_crate: Some("my crate2".to_string()),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("test2".to_string()),
@@ -316,6 +321,7 @@ fn task_extend_extended_have_all_fields() {
 
     base.extend(&extended);
 
+    assert!(!base.clear.unwrap());
     assert!(base.install_crate.is_some());
     assert!(base.install_crate_args.is_some());
     assert!(base.command.is_some());
@@ -373,6 +379,297 @@ fn task_extend_extended_have_all_fields() {
 }
 
 #[test]
+fn task_extend_clear_with_no_data() {
+    let env = IndexMap::new();
+    let mut base = Task {
+        clear: Some(false),
+        install_crate: Some("my crate2".to_string()),
+        install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+        command: Some("test2".to_string()),
+        description: Some("description".to_string()),
+        disabled: Some(true),
+        private: Some(false),
+        condition: Some(TaskCondition {
+            platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None,
+        }),
+        condition_script: Some(vec!["exit 0".to_string()]),
+        force: Some(false),
+        env: Some(env.clone()),
+        cwd: Some("cwd".to_string()),
+        alias: Some("alias2".to_string()),
+        linux_alias: Some("linux".to_string()),
+        windows_alias: Some("windows".to_string()),
+        mac_alias: Some("mac".to_string()),
+        install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+        args: Some(vec!["a1".to_string(), "a2".to_string()]),
+        script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script_runner: Some("sh2".to_string()),
+        script_extension: Some("ext2".to_string()),
+        run_task: Some("task2".to_string()),
+        dependencies: Some(vec!["A".to_string()]),
+        linux: Some(PlatformOverrideTask {
+            clear: Some(true),
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+        windows: Some(PlatformOverrideTask {
+            clear: Some(false),
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+        mac: Some(PlatformOverrideTask {
+            clear: None,
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+    };
+
+    let mut extended = Task::new();
+    extended.clear = Some(true);
+
+    base.extend(&extended);
+
+    assert!(base.clear.unwrap());
+    assert!(base.install_crate.is_none());
+    assert!(base.command.is_none());
+    assert!(base.description.is_none());
+    assert!(base.disabled.is_none());
+    assert!(base.private.is_none());
+    assert!(base.condition.is_none());
+    assert!(base.condition_script.is_none());
+    assert!(base.force.is_none());
+    assert!(base.env.is_none());
+    assert!(base.cwd.is_none());
+    assert!(base.alias.is_none());
+    assert!(base.linux_alias.is_none());
+    assert!(base.windows_alias.is_none());
+    assert!(base.mac_alias.is_none());
+    assert!(base.install_crate_args.is_none());
+    assert!(base.install_script.is_none());
+    assert!(base.script_runner.is_none());
+    assert!(base.script_extension.is_none());
+    assert!(base.run_task.is_none());
+    assert!(base.args.is_none());
+    assert!(base.script.is_none());
+    assert!(base.dependencies.is_none());
+    assert!(base.linux.is_none());
+    assert!(base.windows.is_none());
+    assert!(base.mac.is_none());
+}
+
+#[test]
+fn task_extend_clear_with_all_data() {
+    let mut base = Task::new();
+
+    let env = IndexMap::new();
+    let extended = Task {
+        clear: Some(true),
+        install_crate: Some("my crate2".to_string()),
+        install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+        command: Some("test2".to_string()),
+        description: Some("description".to_string()),
+        disabled: Some(true),
+        private: Some(false),
+        condition: Some(TaskCondition {
+            platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+            channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None,
+        }),
+        condition_script: Some(vec!["exit 0".to_string()]),
+        force: Some(false),
+        env: Some(env.clone()),
+        cwd: Some("cwd".to_string()),
+        alias: Some("alias2".to_string()),
+        linux_alias: Some("linux".to_string()),
+        windows_alias: Some("windows".to_string()),
+        mac_alias: Some("mac".to_string()),
+        install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+        args: Some(vec!["a1".to_string(), "a2".to_string()]),
+        script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script_runner: Some("sh2".to_string()),
+        script_extension: Some("ext2".to_string()),
+        run_task: Some("task2".to_string()),
+        dependencies: Some(vec!["A".to_string()]),
+        linux: Some(PlatformOverrideTask {
+            clear: Some(true),
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+        windows: Some(PlatformOverrideTask {
+            clear: Some(false),
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+        mac: Some(PlatformOverrideTask {
+            clear: None,
+            install_crate: Some("my crate2".to_string()),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            condition: Some(TaskCondition {
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+            }),
+            condition_script: Some(vec!["exit 0".to_string()]),
+            force: Some(true),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script_runner: Some("sh3".to_string()),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some("task3".to_string()),
+            dependencies: Some(vec!["A".to_string()]),
+        }),
+    };
+
+    base.extend(&extended);
+
+    assert!(base.clear.unwrap());
+    assert!(base.install_crate.is_some());
+    assert!(base.command.is_some());
+    assert!(base.description.is_some());
+    assert!(base.disabled.is_some());
+    assert!(base.private.is_some());
+    assert!(base.condition.is_some());
+    assert!(base.condition_script.is_some());
+    assert!(base.force.is_some());
+    assert!(base.env.is_some());
+    assert!(base.cwd.is_some());
+    assert!(base.alias.is_some());
+    assert!(base.linux_alias.is_some());
+    assert!(base.windows_alias.is_some());
+    assert!(base.mac_alias.is_some());
+    assert!(base.install_crate_args.is_some());
+    assert!(base.install_script.is_some());
+    assert!(base.script_runner.is_some());
+    assert!(base.script_extension.is_some());
+    assert!(base.run_task.is_some());
+    assert!(base.args.is_some());
+    assert!(base.script.is_some());
+    assert!(base.dependencies.is_some());
+    assert!(base.linux.is_some());
+    assert!(base.windows.is_some());
+    assert!(base.mac.is_some());
+}
+
+#[test]
 fn task_get_alias_all_none() {
     let task = Task::new();
 
@@ -410,6 +707,7 @@ fn task_get_alias_platform_defined() {
 #[test]
 fn task_get_normalized_task_undefined() {
     let mut task = Task {
+        clear: Some(false),
         alias: Some("alias".to_string()),
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
@@ -439,6 +737,7 @@ fn task_get_normalized_task_undefined() {
 
     let normalized_task = task.get_normalized_task();
 
+    assert!(!normalized_task.clear.unwrap());
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.install_crate_args.is_none());
     assert!(normalized_task.command.is_some());
@@ -491,6 +790,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
+        clear: Some(true),
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
@@ -556,6 +856,7 @@ fn task_get_normalized_task_with_override_no_clear() {
 
     let normalized_task = task.get_normalized_task();
 
+    assert!(normalized_task.clear.unwrap());
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.install_crate_args.is_some());
     assert!(normalized_task.command.is_some());
@@ -612,6 +913,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
     let mut task = Task {
+        clear: Some(true),
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
@@ -681,6 +983,7 @@ fn task_get_normalized_task_with_override_clear_false() {
 
     let normalized_task = task.get_normalized_task();
 
+    assert!(normalized_task.clear.unwrap());
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.description.is_some());
@@ -734,6 +1037,7 @@ fn task_get_normalized_task_with_override_clear_false() {
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_clear_false_partial_override() {
     let mut task = Task {
+        clear: Some(true),
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
@@ -788,6 +1092,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
 
     let normalized_task = task.get_normalized_task();
 
+    assert!(normalized_task.clear.unwrap());
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.install_crate_args.is_some());
     assert!(normalized_task.command.is_some());
@@ -835,6 +1140,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
 #[cfg(target_os = "linux")]
 fn task_get_normalized_task_with_override_clear_true() {
     let mut task = Task {
+        clear: Some(true),
         alias: Some("bad".to_string()),
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
@@ -889,6 +1195,7 @@ fn task_get_normalized_task_with_override_clear_true() {
 
     let normalized_task = task.get_normalized_task();
 
+    assert!(normalized_task.clear.unwrap());
     assert!(normalized_task.install_crate.is_some());
     assert!(normalized_task.install_crate_args.is_none());
     assert!(normalized_task.command.is_none());

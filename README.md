@@ -557,7 +557,18 @@ disabled = true
 ```
 
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
-The default toml file comes with many steps and flows already built in, so it is worth to check it first.
+The default toml file comes with many steps and flows already built in, so it is worth to check it first.<br>
+
+In case you do want to delete all of the original task attributes in your extended task, you can use the clear attribute as follows:
+
+```toml
+[tasks.sometask]
+clear = true
+command = "echo"
+args = [
+    "extended task"
+]
+```
 
 You can also extend additional external files from your external file by using the extend attribute, for example:
 
