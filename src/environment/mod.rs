@@ -20,7 +20,8 @@ use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use types::{
-    Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Workspace,
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
+    Workspace,
 };
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
@@ -250,9 +251,21 @@ fn setup_env_for_rust() -> RustInfo {
 }
 
 /// Sets up the env before the tasks execution.
-pub(crate) fn setup_env(config: &Config, task: &str) -> EnvInfo {
+pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
+
+    let task_arguments = match cli_args.arguments {
+        Some(ref args) => {
+            if args.len() == 0 {
+                "".to_string()
+            } else {
+                args.join(";")
+            }
+        }
+        None => "".to_string(),
+    };
+    env::set_var("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
     // load crate info
     let crate_info = setup_env_for_crate();
@@ -400,6 +413,44 @@ pub(crate) fn get_project_root() -> Option<String> {
     }
 }
 
+fn expand_env_for_arguments(task: &mut Task) {
+    //update args by replacing any env vars
+    let updated_args = match task.args {
+        Some(ref args) => {
+            let mut expanded_args = vec![];
+
+            let task_args_str = get_env("CARGO_MAKE_TASK_ARGS", "").to_string();
+            let task_args: Vec<String> = if task_args_str.len() == 0 {
+                vec![]
+            } else {
+                let args_str: Vec<&str> = task_args_str.split(";").collect();
+                args_str.iter().map(|item| item.to_string()).collect()
+            };
+
+            for index in 0..args.len() {
+                if args[index] == "${*}" {
+                    if task_args_str.len() > 0 {
+                        for arg_index in 0..task_args.len() {
+                            expanded_args.push(task_args[arg_index].clone());
+                        }
+                    }
+                } else {
+                    expanded_args.push(args[index].clone());
+                }
+            }
+
+            for index in 0..expanded_args.len() {
+                expanded_args[index] = expand_value(&expanded_args[index]);
+            }
+
+            Some(expanded_args)
+        }
+        None => None,
+    };
+
+    task.args = updated_args;
+}
+
 pub(crate) fn expand_env(step: &Step) -> Step {
     //clone data before modify
     let mut config = step.config.clone();
@@ -413,14 +464,7 @@ pub(crate) fn expand_env(step: &Step) -> Step {
     };
 
     //update args by replacing any env vars
-    match config.args {
-        Some(ref mut args) => {
-            for index in 0..args.len() {
-                args[index] = expand_value(&args[index]);
-            }
-        }
-        None => {}
-    };
+    expand_env_for_arguments(&mut config);
 
     Step {
         name: step.name.clone(),

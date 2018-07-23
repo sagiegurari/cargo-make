@@ -16,6 +16,7 @@ fn cli_args_new() {
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);
     assert!(!cli_args.experimental);
+    assert!(cli_args.arguments.is_none());
 }
 
 #[test]

@@ -48,6 +48,8 @@ pub struct CliArgs {
     pub disable_check_for_updates: bool,
     /// Allows access unsupported experimental predefined tasks
     pub experimental: bool,
+    /// additional command line arguments
+    pub arguments: Option<Vec<String>>,
 }
 
 impl CliArgs {
@@ -66,6 +68,7 @@ impl CliArgs {
             list_all_steps: false,
             disable_check_for_updates: false,
             experimental: false,
+            arguments: None,
         }
     }
 }

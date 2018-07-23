@@ -356,6 +356,51 @@ args = [
 ]
 ```
 
+cargo-make cli also supports additional arguments which will be available to all tasks.<br>
+Following example task, will print those additional arguments:
+
+```toml
+[tasks.varargs]
+command = "echo"
+args = [
+    "args are:", "${*}"
+]
+```
+
+Invoking cargo-make with additional arguments would result in the following:
+
+```console
+> cargo make varargs arg1 arg2 arg3
+
+[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Task: varargs
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: varargs
+[cargo-make] INFO - Execute Command: "echo" "args are:" "arg1" "arg2" "arg3"
+args are: arg1 arg2 arg3
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+Invoking cargo-make without any additional arguments would result in the following:
+
+```console
+> cargo make varargs
+
+[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Task: varargs
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: varargs
+[cargo-make] INFO - Execute Command: "echo" "args are:"
+args are:
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
 Below simple script which prints hello world.
@@ -707,6 +752,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
+* **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
@@ -1230,7 +1276,7 @@ These are the following options available while running cargo-make:
 
 ```console
 USAGE:
-    cargo make [FLAGS] [OPTIONS] [TASK]
+    cargo make [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
         --disable-check-for-updates    Disables the update check during startup
@@ -1255,7 +1301,8 @@ OPTIONS:
                                   [default: default]
 
 ARGS:
-    <TASK>
+    <TASK>            The task name to execute
+    <TASK_ARGS>...    Task arguments which can be accessed in the task itself.
 ```
 
 <a name="cargo-make-global-config"></a>

@@ -1,0 +1,6 @@
+
+[tasks.varargs]
+command = "echo"
+args = [
+    "args are:", "${*}"
+]
