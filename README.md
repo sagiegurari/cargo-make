@@ -428,7 +428,7 @@ Following example task, will print those additional arguments:
 [tasks.varargs]
 command = "echo"
 args = [
-    "args are:", "${*}"
+    "args are:", "${@}"
 ]
 ```
 
