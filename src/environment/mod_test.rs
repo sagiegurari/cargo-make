@@ -619,7 +619,7 @@ fn expand_env_with_env_vars_and_task_args() {
     task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
     task.args = Some(vec![
         "arg0".to_string(),
-        "${*}".to_string(),
+        "${@}".to_string(),
         "arg1".to_string(),
         "arg2".to_string(),
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
@@ -655,7 +655,7 @@ fn expand_env_with_env_vars_and_empty_task_args() {
     task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
     task.args = Some(vec![
         "arg0".to_string(),
-        "${*}".to_string(),
+        "${@}".to_string(),
         "arg1".to_string(),
         "arg2".to_string(),
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),

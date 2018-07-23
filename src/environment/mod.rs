@@ -428,7 +428,7 @@ fn expand_env_for_arguments(task: &mut Task) {
             };
 
             for index in 0..args.len() {
-                if args[index] == "${*}" {
+                if args[index] == "${@}" {
                     if task_args_str.len() > 0 {
                         for arg_index in 0..task_args.len() {
                             expanded_args.push(task_args[arg_index].clone());
