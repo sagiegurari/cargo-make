@@ -63,6 +63,7 @@ pub(crate) fn validate_exit_code(code: i32) {
 pub(crate) fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
+    cli_arguments: &Vec<String>,
     capture_output: bool,
 ) -> Result<(i32, String, String), ScriptError> {
     let mut options = ScriptOptions::new();
@@ -71,16 +72,17 @@ pub(crate) fn run_script_get_output(
     options.exit_on_error = true;
     options.print_commands = true;
 
-    run_script::run(script_lines.join("\n").as_str(), &vec![], &options)
+    run_script::run(script_lines.join("\n").as_str(), cli_arguments, &options)
 }
 
 /// Runs the requested script text and panics in case of any script error.
 pub(crate) fn run_script(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
+    cli_arguments: &Vec<String>,
     validate: bool,
 ) -> i32 {
-    let output = run_script_get_output(&script_lines, script_runner, false);
+    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false);
 
     let exit_code = match output {
         Ok(output_struct) => output_struct.0,
@@ -136,7 +138,7 @@ pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, vali
 }
 
 /// Runs the given task command and if not defined, the task script.
-pub(crate) fn run(step: &Step) {
+pub(crate) fn run(step: &Step, cli_arguments: &Vec<String>) {
     let validate = !step.config.is_force();
 
     match step.config.command {
@@ -146,7 +148,12 @@ pub(crate) fn run(step: &Step) {
         None => {
             match step.config.script {
                 Some(ref script) => {
-                    run_script(script, step.config.script_runner.clone(), validate);
+                    run_script(
+                        script,
+                        step.config.script_runner.clone(),
+                        cli_arguments,
+                        validate,
+                    );
                     ()
                 }
                 None => debug!("No script defined."),

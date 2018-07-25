@@ -260,6 +260,8 @@ pub struct FlowInfo {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// additional command line arguments
+    pub cli_arguments: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

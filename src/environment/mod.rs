@@ -25,7 +25,7 @@ use types::{
 };
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
-    match command::run_script_get_output(&env_value.script, None, true) {
+    match command::run_script_get_output(&env_value.script, None, &vec![], true) {
         Ok(output) => {
             let exit_code = output.0;
             let stdout = output.1;

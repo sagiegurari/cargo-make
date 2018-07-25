@@ -71,7 +71,7 @@ fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(vec!["test".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(!output);
 }
@@ -81,7 +81,7 @@ fn invoke_no_script() {
     let mut task = Task::new();
     task.script_runner = Some("@rust".to_string());
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(!output);
 }
@@ -92,7 +92,7 @@ fn invoke_unsupported_runner() {
     task.script_runner = Some("@bad".to_string());
     task.script = Some(vec!["test".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(!output);
 }
@@ -104,7 +104,7 @@ fn invoke_rust_runner() {
         task.script_runner = Some("@rust".to_string());
         task.script = Some(vec!["fn main() {println!(\"test\");}".to_string()]);
 
-        let output = invoke(&task);
+        let output = invoke(&task, &vec![]);
 
         assert!(output);
     }
@@ -118,7 +118,7 @@ fn invoke_rust_runner_error() {
         task.script_runner = Some("@rust".to_string());
         task.script = Some(vec!["fn main() {bad!(\"test\");}".to_string()]);
 
-        let output = invoke(&task);
+        let output = invoke(&task, &vec![]);
 
         assert!(output);
     }
@@ -130,7 +130,7 @@ fn invoke_shell_to_batch_runner() {
     task.script_runner = Some("@shell".to_string());
     task.script = Some(vec!["echo test".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(output);
 }
@@ -142,7 +142,7 @@ fn invoke_shell_to_batch_runner_error() {
     task.script_runner = Some("@shell".to_string());
     task.script = Some(vec!["exit 1".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(output);
 }
@@ -154,7 +154,7 @@ fn invoke_generic_runner() {
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(vec!["echo test".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(output);
 }
@@ -167,7 +167,7 @@ fn invoke_generic_runner_error() {
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(vec!["exit 1".to_string()]);
 
-    let output = invoke(&task);
+    let output = invoke(&task, &vec![]);
 
     assert!(output);
 }

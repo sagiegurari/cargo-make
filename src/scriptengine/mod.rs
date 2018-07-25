@@ -53,7 +53,7 @@ fn get_engine_type(task: &Task) -> EngineType {
     }
 }
 
-pub(crate) fn invoke(task: &Task) -> bool {
+pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
     let engine_type = get_engine_type(&task);
 
     match engine_type {
@@ -65,7 +65,7 @@ pub(crate) fn invoke(task: &Task) -> bool {
         }
         EngineType::Shell2Batch => {
             let script = task.script.as_ref().unwrap();
-            shell_to_batch::execute(script);
+            shell_to_batch::execute(script, cli_arguments);
 
             true
         }

@@ -34,7 +34,7 @@ fn run_no_command() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -47,7 +47,7 @@ fn run_command() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -61,7 +61,7 @@ fn run_command_error() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -75,7 +75,7 @@ fn run_command_error_force() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -88,7 +88,7 @@ fn run_script() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -102,7 +102,7 @@ fn run_script_error() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -116,7 +116,7 @@ fn run_script_error_force() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }
 
 #[test]
@@ -131,5 +131,5 @@ fn run_script_custom_runner() {
         config: task,
     };
 
-    run(&step);
+    run(&step, &vec![]);
 }

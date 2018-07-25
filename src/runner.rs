@@ -76,12 +76,18 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                     None => "".to_string(),
                 };
 
+                // get cli arguments
+                let cli_arguments = match flow_info.cli_arguments {
+                    Some(ref args) => args.clone(),
+                    None => vec![],
+                };
+
                 // try to invoke it as a none OS script
-                let script_runner_done = scriptengine::invoke(&updated_step.config);
+                let script_runner_done = scriptengine::invoke(&updated_step.config, &cli_arguments);
 
                 // run as command or OS script
                 if !script_runner_done {
-                    command::run(&updated_step)
+                    command::run(&updated_step, &cli_arguments);
                 };
 
                 // revert to original cwd
@@ -427,6 +433,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         env_info,
         disable_workspace: cli_args.disable_workspace,
         disable_on_error: cli_args.disable_on_error,
+        cli_arguments: cli_args.arguments.clone(),
     };
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {

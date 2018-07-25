@@ -10,7 +10,7 @@ mod shell_to_batch_test;
 use command;
 use shell2batch;
 
-pub(crate) fn execute(script: &Vec<String>) {
+pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>) {
     if cfg!(windows) {
         let shell_script = script.join("\n");
         let windows_batch = shell2batch::convert(&shell_script);
@@ -20,8 +20,8 @@ pub(crate) fn execute(script: &Vec<String>) {
             .map(|string| string.to_string())
             .collect();
 
-        command::run_script(&windows_script_lines, None, true);
+        command::run_script(&windows_script_lines, None, cli_arguments, true);
     } else {
-        command::run_script(script, None, true);
+        command::run_script(script, None, cli_arguments, true);
     };
 }

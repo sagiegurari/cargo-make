@@ -551,6 +551,7 @@ fn run_task_bad_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -580,6 +581,7 @@ fn run_task_command() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -611,6 +613,7 @@ fn run_task_bad_command_valid_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -641,6 +644,7 @@ fn run_task_no_command_valid_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -677,6 +681,7 @@ fn run_task_bad_run_task_valid_command() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -714,6 +719,7 @@ fn run_task_valid_run_task() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -744,6 +750,7 @@ fn run_task_invalid_task() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -774,6 +781,7 @@ fn run_task_set_env() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut env = IndexMap::new();
@@ -816,6 +824,7 @@ fn run_task_cwd_no_such_dir() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();
@@ -846,6 +855,7 @@ fn run_task_cwd_dir_exists() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut task = Task::new();

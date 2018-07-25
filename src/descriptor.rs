@@ -82,7 +82,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    command::run_script(script, None, true);
+                    command::run_script(script, None, &vec![], true);
 
                     true
                 }
