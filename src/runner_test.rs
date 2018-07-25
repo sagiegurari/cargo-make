@@ -565,6 +565,69 @@ fn run_task_bad_script() {
 }
 
 #[test]
+#[should_panic]
+#[cfg(target_os = "linux")]
+fn run_task_script_with_args_error() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: Some(vec!["1".to_string()]),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit $1".to_string()]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn run_task_script_with_args_valid() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: Some(vec!["0".to_string()]),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit $1".to_string()]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
 fn run_task_command() {
     let config = Config {
         config: ConfigSection::new(),

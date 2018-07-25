@@ -10,3 +10,14 @@ command = "echo"
 args = [
     "args are:", "-o=${@}"
 ]
+
+[tasks.cli-args]
+script = [
+    "echo args are: ${@}"
+]
+
+[tasks.cli-args-shell]
+script_runner = "@shell"
+script = [
+    "echo args are: ${@}"
+]

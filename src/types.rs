@@ -303,6 +303,8 @@ pub struct Task {
     pub clear: Option<bool>,
     /// Task description
     pub description: Option<String>,
+    /// Category name used to document the task
+    pub category: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
@@ -359,6 +361,7 @@ impl Task {
         Task {
             clear: None,
             description: None,
+            category: None,
             disabled: None,
             private: None,
             condition: None,
@@ -405,6 +408,12 @@ impl Task {
             self.description = task.description.clone();
         } else if override_values {
             self.description = None;
+        }
+
+        if task.category.is_some() {
+            self.category = task.category.clone();
+        } else if override_values {
+            self.category = None;
         }
 
         if task.disabled.is_some() {
@@ -587,6 +596,7 @@ impl Task {
                 Task {
                     clear: self.clear.clone(),
                     description: self.description.clone(),
+                    category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
                     condition: override_task.condition.clone(),

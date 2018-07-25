@@ -133,3 +133,32 @@ fn run_script_custom_runner() {
 
     run(&step, &vec![]);
 }
+
+#[test]
+#[cfg(target_os = "linux")]
+fn run_script_cli_args_valid() {
+    let mut task = Task::new();
+    task.script = Some(vec!["exit $1".to_string()]);
+
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run(&step, &vec!["0".to_string()]);
+}
+
+#[test]
+#[should_panic]
+#[cfg(target_os = "linux")]
+fn run_script_cli_args_error() {
+    let mut task = Task::new();
+    task.script = Some(vec!["exit $1".to_string()]);
+
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run(&step, &vec!["1".to_string()]);
+}
