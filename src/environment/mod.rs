@@ -428,10 +428,18 @@ fn expand_env_for_arguments(task: &mut Task) {
             };
 
             for index in 0..args.len() {
-                if args[index] == "${@}" {
+                if args[index].contains("${@}") {
                     if task_args_str.len() > 0 {
-                        for arg_index in 0..task_args.len() {
-                            expanded_args.push(task_args[arg_index].clone());
+                        if args[index] == "${@}" {
+                            for arg_index in 0..task_args.len() {
+                                expanded_args.push(task_args[arg_index].clone());
+                            }
+                        } else {
+                            for arg_index in 0..task_args.len() {
+                                let value_string =
+                                    str::replace(&args[index], "${@}", &task_args[arg_index]);
+                                expanded_args.push(value_string);
+                            }
                         }
                     }
                 } else {

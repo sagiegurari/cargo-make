@@ -4,3 +4,9 @@ command = "echo"
 args = [
     "args are:", "${@}"
 ]
+
+[tasks.varargs-template]
+command = "echo"
+args = [
+    "args are:", "-o=${@}"
+]

@@ -620,6 +620,7 @@ fn expand_env_with_env_vars_and_task_args() {
     task.args = Some(vec![
         "arg0".to_string(),
         "${@}".to_string(),
+        "-o=${@}".to_string(),
         "arg1".to_string(),
         "arg2".to_string(),
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
@@ -637,12 +638,16 @@ fn expand_env_with_env_vars_and_task_args() {
         "command-ENV1-ENV2".to_string()
     );
     let args = updated_step.config.args.unwrap();
-    assert_eq!(args.len(), 9);
-    assert_eq!(args[7], "arg3-ENV1-ENV2".to_string());
+    assert_eq!(args.len(), 13);
+    assert_eq!(args[11], "arg3-ENV1-ENV2".to_string());
     assert_eq!(args[1], "targ1".to_string());
     assert_eq!(args[2], "targ2".to_string());
     assert_eq!(args[3], "targ3".to_string());
     assert_eq!(args[4], "targ4".to_string());
+    assert_eq!(args[5], "-o=targ1".to_string());
+    assert_eq!(args[6], "-o=targ2".to_string());
+    assert_eq!(args[7], "-o=targ3".to_string());
+    assert_eq!(args[8], "-o=targ4".to_string());
 }
 
 #[test]
@@ -656,6 +661,7 @@ fn expand_env_with_env_vars_and_empty_task_args() {
     task.args = Some(vec![
         "arg0".to_string(),
         "${@}".to_string(),
+        "-o=${@}".to_string(),
         "arg1".to_string(),
         "arg2".to_string(),
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),

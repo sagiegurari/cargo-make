@@ -401,6 +401,33 @@ args are:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+This can also be used for templating, for example:
+
+```toml
+[tasks.varargs]
+command = "echo"
+args = [
+    "args are:", "-o=${@}"
+]
+```
+
+Would output:
+
+```console
+> cargo make varargs arg1 arg2 arg3
+
+[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Task: varargs
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: varargs
+[cargo-make] INFO - Execute Command: "echo" "args are:" "arg1" "arg2" "arg3"
+args are: -o=arg1 -o=arg2 -o=arg3
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
 Below simple script which prints hello world.
