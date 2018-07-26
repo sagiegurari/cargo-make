@@ -587,6 +587,8 @@ fn main() {
 ]
 ```
 
+Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.
+
 <a name="usage-task-command-script-task-exampleshell2batch"></a>
 #### Cross Platform Shell
 In this example, when the **shell** task is invoked, the **script** content will be automatically converted to windows batch commands (in case we are on windows platform) and invoked.
