@@ -367,7 +367,7 @@ pub(crate) fn list_steps(config: &Config) -> u32 {
 
             let mut tasks_map = BTreeMap::new();
             match categories.get_mut(category) {
-                Some(mut value) => tasks_map.append(value),
+                Some(value) => tasks_map.append(value),
                 _ => (),
             };
 
