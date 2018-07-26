@@ -59,7 +59,7 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
     match engine_type {
         EngineType::Rust => {
             let script = task.script.as_ref().unwrap();
-            rsscript::execute(script);
+            rsscript::execute(script, cli_arguments);
 
             true
         }

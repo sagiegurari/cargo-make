@@ -21,3 +21,15 @@ script_runner = "@shell"
 script = [
     "echo args are: ${@}"
 ]
+
+[tasks.cli-args-rust]
+script_runner = "@rust"
+script = [
+'''
+use std::env;
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    println!("args are: {:?}", args);
+}
+'''
+]
