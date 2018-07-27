@@ -956,3 +956,107 @@ fn get_skipped_workspace_members_multiple() {
     assert!(members.contains(&"test2".to_string()));
     assert!(members.contains(&"test3".to_string()));
 }
+
+#[test]
+fn is_workspace_flow_true_default() {
+    let crate_info = CrateInfo::new();
+
+    let task = Task::new();
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(!workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_true_in_task() {
+    let crate_info = CrateInfo::new();
+
+    let mut task = Task::new();
+    task.workspace = Some(true);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(!workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_no_workspace() {
+    let crate_info = CrateInfo::new();
+
+    let mut task = Task::new();
+    task.workspace = Some(true);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(!workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_disabled_via_cli() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let mut task = Task::new();
+    task.workspace = Some(true);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info);
+
+    assert!(!workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_disabled_via_task() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let mut task = Task::new();
+    task.workspace = Some(false);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(!workspace_flow);
+}

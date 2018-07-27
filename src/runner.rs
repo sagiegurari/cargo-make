@@ -313,6 +313,32 @@ fn create_proxy_task(task: &str) -> Task {
     proxy_task.get_normalized_task()
 }
 
+fn is_workspace_flow(
+    config: &Config,
+    task: &str,
+    disable_workspace: bool,
+    crate_info: &CrateInfo,
+) -> bool {
+    // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
+    if disable_workspace || crate_info.workspace.is_none() {
+        false
+    } else {
+        // project is a workspace and wasn't disabled via cli, need to check requested task
+        let cli_task = match config.tasks.get(task) {
+            Some(task_config) => {
+                let mut clone_task = task_config.clone();
+                clone_task.get_normalized_task()
+            }
+            None => {
+                error!("Task not found: {}", &task);
+                panic!("Task not found: {}", &task);
+            }
+        };
+
+        cli_task.workspace.unwrap_or(true)
+    }
+}
+
 /// Creates the full execution plan
 fn create_execution_plan(
     config: &Config,
@@ -345,20 +371,16 @@ fn create_execution_plan(
     // load crate info and look for workspace info
     let crate_info = environment::crateinfo::load();
 
-    // check if root task has a 'no-workspace' flag
-    let cli_task = match config.tasks.get(task) {
-        Some(task_config) => {
-            let mut clone_task = task_config.clone();
-            clone_task.get_normalized_task()
-        }
-        None => {
-            error!("Task not found: {}", &task);
-            panic!("Task not found: {}", &task);
-        }
-    };
-    let disable_workspace_task_level = !cli_task.workspace.unwrap_or(true);
+    let workspace_flow = is_workspace_flow(&config, &task, disable_workspace, &crate_info);
 
-    if disable_workspace || disable_workspace_task_level || crate_info.workspace.is_none() {
+    if workspace_flow {
+        let workspace_task = create_workspace_task(crate_info, task);
+
+        steps.push(Step {
+            name: "workspace".to_string(),
+            config: workspace_task,
+        });
+    } else {
         create_execution_plan_for_step(
             &config,
             &task,
@@ -367,13 +389,6 @@ fn create_execution_plan(
             true,
             allow_private,
         );
-    } else {
-        let workspace_task = create_workspace_task(crate_info, task);
-
-        steps.push(Step {
-            name: "workspace".to_string(),
-            config: workspace_task,
-        });
     }
 
     // always add end task even if already executed due to some depedency
