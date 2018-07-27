@@ -309,6 +309,8 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
+    pub workspace: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -364,6 +366,7 @@ impl Task {
             category: None,
             disabled: None,
             private: None,
+            workspace: None,
             condition: None,
             condition_script: None,
             force: None,
@@ -426,6 +429,12 @@ impl Task {
             self.private = task.private.clone();
         } else if override_values {
             self.private = None;
+        }
+
+        if task.workspace.is_some() {
+            self.workspace = task.workspace.clone();
+        } else if override_values {
+            self.workspace = None;
         }
 
         if task.condition.is_some() {
@@ -599,6 +608,7 @@ impl Task {
                     category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    workspace: self.workspace.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),

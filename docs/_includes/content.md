@@ -973,7 +973,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
@@ -1027,7 +1027,7 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 <a name="usage-ci-gitlab"></a>
@@ -1049,7 +1049,7 @@ build: false
 test:cargo:
   script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 To upload your coverage information to codecov, you'll need to go to repo settings for your GitLab repo,
@@ -1415,6 +1415,16 @@ You can start this composite flow as follows:
 ```sh
 cargo make --no-workspace composite
 ```
+
+Another way to call a task on the workspace level and not for each member, is to define that task in the workspace Makefile.toml with **workspace** set to false as follows:
+
+```toml
+[tasks.ignore-members]
+workspace = false
+```
+
+Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
+This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.
 
 <a name="usage-workspace-support-skip-members"></a>
 #### Skipping Specific Members

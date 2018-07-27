@@ -52,6 +52,7 @@ fn task_new() {
     assert!(task.condition_script.is_none());
     assert!(task.description.is_none());
     assert!(task.category.is_none());
+    assert!(task.workspace.is_none());
     assert!(task.force.is_none());
     assert!(task.env.is_none());
     assert!(task.cwd.is_none());
@@ -116,6 +117,7 @@ fn task_extend_both_have_misc_data() {
         command: None,
         description: None,
         category: None,
+        workspace: None,
         disabled: Some(true),
         private: Some(true),
         condition: None,
@@ -147,6 +149,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.command.is_some());
     assert!(base.description.is_none());
     assert!(base.category.is_none());
+    assert!(base.workspace.is_none());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.condition.is_none());
@@ -188,6 +191,7 @@ fn task_extend_extended_have_all_fields() {
         command: Some("test1".to_string()),
         description: None,
         category: None,
+        workspace: None,
         disabled: Some(false),
         private: Some(true),
         condition: None,
@@ -221,6 +225,7 @@ fn task_extend_extended_have_all_fields() {
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
         condition: Some(TaskCondition {
@@ -333,6 +338,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.command.is_some());
     assert!(base.description.is_some());
     assert!(base.category.is_some());
+    assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.condition.is_some());
@@ -360,6 +366,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.command.unwrap(), "test2");
     assert_eq!(base.description.unwrap(), "description");
     assert_eq!(base.category.unwrap(), "category");
+    assert!(base.workspace.unwrap());
     assert!(base.disabled.unwrap());
     assert!(!base.private.unwrap());
     assert_eq!(base.condition_script.unwrap().len(), 1);
@@ -396,6 +403,7 @@ fn task_extend_clear_with_no_data() {
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(false),
         disabled: Some(true),
         private: Some(false),
         condition: Some(TaskCondition {
@@ -510,6 +518,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.command.is_none());
     assert!(base.description.is_none());
     assert!(base.category.is_none());
+    assert!(base.workspace.is_none());
     assert!(base.disabled.is_none());
     assert!(base.private.is_none());
     assert!(base.condition.is_none());
@@ -546,6 +555,7 @@ fn task_extend_clear_with_all_data() {
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
         condition: Some(TaskCondition {
@@ -657,6 +667,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.command.is_some());
     assert!(base.description.is_some());
     assert!(base.category.is_some());
+    assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.condition.is_some());
@@ -743,6 +754,7 @@ fn task_get_normalized_task_undefined() {
         dependencies: Some(vec!["1".to_string()]),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(false),
         linux: None,
         windows: None,
         mac: None,
@@ -774,6 +786,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
+    assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -782,6 +795,7 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
+    assert!(!normalized_task.workspace.unwrap());
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
     assert!(!normalized_task.force.unwrap_or(false));
@@ -815,6 +829,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         command: Some("command".to_string()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
         condition: Some(TaskCondition {
@@ -878,6 +893,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
+    assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
     assert!(normalized_task.condition.is_some());
@@ -905,6 +921,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
+    assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
     assert_eq!(normalized_task.condition_script.unwrap().len(), 1);
@@ -941,6 +958,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         command: Some("command".to_string()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
         condition: Some(TaskCondition {
@@ -1007,6 +1025,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
+    assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1034,6 +1053,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
+    assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
     assert_eq!(normalized_task.condition_script.unwrap().len(), 2);
@@ -1088,6 +1108,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         dependencies: Some(vec!["1".to_string()]),
         description: None,
         category: None,
+        workspace: None,
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
             install_crate: None,
@@ -1138,6 +1159,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.dependencies.is_some());
     assert!(normalized_task.description.is_none());
     assert!(normalized_task.category.is_none());
+    assert!(normalized_task.workspace.is_none());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -1193,6 +1215,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         dependencies: Some(vec!["1".to_string()]),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
+        workspace: Some(false),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some("linux_crate".to_string()),
@@ -1243,6 +1266,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.dependencies.is_none());
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
+    assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());

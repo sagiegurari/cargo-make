@@ -345,7 +345,20 @@ fn create_execution_plan(
     // load crate info and look for workspace info
     let crate_info = environment::crateinfo::load();
 
-    if disable_workspace || crate_info.workspace.is_none() {
+    // check if root task has a 'no-workspace' flag
+    let cli_task = match config.tasks.get(task) {
+        Some(task_config) => {
+            let mut clone_task = task_config.clone();
+            clone_task.get_normalized_task()
+        }
+        None => {
+            error!("Task not found: {}", &task);
+            panic!("Task not found: {}", &task);
+        }
+    };
+    let disable_workspace_task_level = !cli_task.workspace.unwrap_or(true);
+
+    if disable_workspace || disable_workspace_task_level || crate_info.workspace.is_none() {
         create_execution_plan_for_step(
             &config,
             &task,

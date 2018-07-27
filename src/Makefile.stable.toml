@@ -40,6 +40,7 @@ dependencies = [
 [tasks.workspace-ci-flow]
 description = "CI task will run CI flow for each member and merge coverage reports"
 category = "CI"
+workspace = false
 dependencies = [
     "pre-workspace-ci-flow",
     "workspace-members-ci",
