@@ -7,7 +7,9 @@
 #[path = "./cache_test.rs"]
 mod cache_test;
 
-use environment;
+use dirs;
+use legacy;
+use std::env;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::Read;
@@ -15,8 +17,10 @@ use std::path::{Path, PathBuf};
 use toml;
 use types::Cache;
 
+static CACHE_FILE: &'static str = "cache.toml";
+
 fn load_from_path(directory: PathBuf) -> Cache {
-    let file_path = Path::new(&directory).join("cache.toml");
+    let file_path = Path::new(&directory).join(CACHE_FILE);
 
     let mut cache_data = if file_path.exists() {
         match File::open(&file_path) {
@@ -54,9 +58,33 @@ fn load_from_path(directory: PathBuf) -> Cache {
     cache_data
 }
 
+fn get_cache_directory(migrate: bool) -> Option<PathBuf> {
+    match env::var("CARGO_MAKE_HOME") {
+        // if env is defined, it is taken as highest priority
+        Ok(directory) => Some(PathBuf::from(directory)),
+        _ => {
+            match dirs::cache_dir() {
+                Some(directory) => {
+                    let home_directory = directory.join(".cargo-make");
+
+                    let file_path = Path::new(&directory).join(CACHE_FILE);
+
+                    // migrate old data to new directory
+                    if !file_path.exists() && migrate {
+                        legacy::migrate(home_directory.clone(), CACHE_FILE);
+                    }
+
+                    Some(home_directory)
+                }
+                None => legacy::get_cargo_make_home(), // in case no dir is defined for system, default to old approach
+            }
+        }
+    }
+}
+
 /// Loads the persisted data
 pub(crate) fn load() -> Cache {
-    match environment::get_cargo_make_home() {
+    match get_cache_directory(true) {
         Some(directory) => load_from_path(directory),
         None => Cache::new(),
     }
@@ -64,7 +92,7 @@ pub(crate) fn load() -> Cache {
 
 /// Stores the data
 pub(crate) fn store(cache_data: &Cache) {
-    match environment::get_cargo_make_home() {
+    match get_cache_directory(false) {
         Some(directory) => {
             let exists = if directory.exists() {
                 true
@@ -76,7 +104,7 @@ pub(crate) fn store(cache_data: &Cache) {
             };
 
             if exists {
-                let file_name = directory.join("cache.toml");
+                let file_name = directory.join(CACHE_FILE);
 
                 let file_descriptor = match File::create(&file_name) {
                     Ok(file) => Some(file),

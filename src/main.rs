@@ -79,6 +79,7 @@ mod config;
 mod descriptor;
 mod environment;
 mod installer;
+mod legacy;
 mod logger;
 mod runner;
 mod scriptengine;

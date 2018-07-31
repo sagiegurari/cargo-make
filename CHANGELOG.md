@@ -5,6 +5,7 @@
 * Defining --no-workspace cli flag via task attribute #99
 * Support unsetting task attributes in extended Makefile #100
 * Support accepting arguments and passing them to commands and scripts #101
+* Follow XDG Base Directory Specification #105
 * Doc category for task list #102
 
 ### v0.11.3 (2018-06-24)

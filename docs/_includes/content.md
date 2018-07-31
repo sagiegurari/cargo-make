@@ -1539,9 +1539,16 @@ ARGS:
 
 <a name="cargo-make-global-config"></a>
 ### Global Configuration
-Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file located at: ~/.cargo-make/config.toml
+Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file config.toml located in the .cargo-make directory.
 
-The default location can be configured via CARGO_MAKE_HOME environment variable value.
+The .cargo-make directory location can be defined via CARGO_MAKE_HOME environment variable value.<br>
+If CARGO_MAKE_HOME has not been defined, the .cargo-make default location is:
+
+| OS      | Location                          |
+| ------- | --------------------------------- |
+| Linux   | $XDG_CONFIG_HOME or $HOME/.config |
+| Windows | RoamingAppData                    |
+| Mac     | $HOME/Library/Preferences         |
 
 The following example config.toml shows all possible options with their default values:
 
