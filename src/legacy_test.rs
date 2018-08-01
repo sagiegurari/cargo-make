@@ -71,6 +71,8 @@ fn migrate_from_directory_delete_legacy_directory() {
     assert!(done);
 
     assert!(target_directory.exists());
+    
+    #[cfg(target_os = "linux")]
     assert!(!legacy_directory.exists());
 
     let target_file = target_directory.join("test.txt");
