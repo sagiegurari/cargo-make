@@ -94,6 +94,9 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(
     <span class="ident">anonymous_parameters</span>, <span class="ident">const_err</span>, <span class="ident">dead_code</span>, <span class="ident">deprecated</span>, <span class="ident">exceeding_bitshifts</span>,
@@ -150,6 +153,7 @@
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">ci_info</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">clap</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">dirs</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fern</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">glob</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">indexmap</span>;
@@ -175,9 +179,11 @@
 <span class="kw">mod</span> <span class="ident">descriptor</span>;
 <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">mod</span> <span class="ident">installer</span>;
+<span class="kw">mod</span> <span class="ident">legacy</span>;
 <span class="kw">mod</span> <span class="ident">logger</span>;
 <span class="kw">mod</span> <span class="ident">runner</span>;
 <span class="kw">mod</span> <span class="ident">scriptengine</span>;
+<span class="kw">mod</span> <span class="ident">storage</span>;
 <span class="kw">mod</span> <span class="ident">version</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>

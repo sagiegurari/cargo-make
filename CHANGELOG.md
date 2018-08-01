@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.12.0
+### v0.12.0 (2018-08-02)
 
 * Defining --no-workspace cli flag via task attribute #99
 * Support unsetting task attributes in extended Makefile #100
