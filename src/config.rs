@@ -8,41 +8,18 @@
 mod config_test;
 
 use dirs;
-use legacy;
-use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use storage;
 use toml;
 use types::GlobalConfig;
 
 static CONFIG_FILE: &'static str = "config.toml";
 
 fn get_config_directory() -> Option<PathBuf> {
-    match env::var("CARGO_MAKE_HOME") {
-        // if env is defined, it is taken as highest priority
-        Ok(directory) => Some(PathBuf::from(directory)),
-        _ => {
-            match dirs::config_dir() {
-                Some(directory) => {
-                    info!("Config dir: {:#?}", &directory);
-                    let home_directory = directory.join(".cargo-make");
-
-                    let file_path = Path::new(&directory).join(CONFIG_FILE);
-
-                    // migrate old data to new directory
-                    if !file_path.exists() {
-                        legacy::migrate(home_directory.clone(), CONFIG_FILE);
-                    }
-
-                    Some(home_directory)
-                }
-                None =>
-                    // in case no dir is defined for system, default to old approach
-                    legacy::get_cargo_make_home(),
-            }
-        }
-    }
+    let os_directory = dirs::config_dir();
+    storage::get_storage_directory(os_directory, CONFIG_FILE, true)
 }
 
 fn load_from_path(directory: PathBuf) -> GlobalConfig {

@@ -8,12 +8,11 @@
 mod cache_test;
 
 use dirs;
-use legacy;
-use std::env;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use storage;
 use toml;
 use types::Cache;
 
@@ -59,27 +58,8 @@ fn load_from_path(directory: PathBuf) -> Cache {
 }
 
 fn get_cache_directory(migrate: bool) -> Option<PathBuf> {
-    match env::var("CARGO_MAKE_HOME") {
-        // if env is defined, it is taken as highest priority
-        Ok(directory) => Some(PathBuf::from(directory)),
-        _ => {
-            match dirs::cache_dir() {
-                Some(directory) => {
-                    let home_directory = directory.join(".cargo-make");
-
-                    let file_path = Path::new(&directory).join(CACHE_FILE);
-
-                    // migrate old data to new directory
-                    if !file_path.exists() && migrate {
-                        legacy::migrate(home_directory.clone(), CACHE_FILE);
-                    }
-
-                    Some(home_directory)
-                }
-                None => legacy::get_cargo_make_home(), // in case no dir is defined for system, default to old approach
-            }
-        }
-    }
+    let os_directory = dirs::cache_dir();
+    storage::get_storage_directory(os_directory, CACHE_FILE, migrate)
 }
 
 /// Loads the persisted data

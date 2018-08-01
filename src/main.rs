@@ -83,6 +83,7 @@ mod legacy;
 mod logger;
 mod runner;
 mod scriptengine;
+mod storage;
 mod version;
 
 #[cfg(test)]

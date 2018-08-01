@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[test]
 fn load_from_path_exists() {
-    let path = PathBuf::from("examples/.cargo-make");
+    let path = PathBuf::from("examples/cargo-make");
     let global_config = load_from_path(path);
 
     assert!(global_config.file_name.is_some());
@@ -35,7 +35,7 @@ fn load_from_path_not_exists() {
 #[test]
 fn load_with_cargo_home() {
     let path = env::current_dir().unwrap();
-    let directory = path.join("examples/.cargo-make");
+    let directory = path.join("examples/cargo-make");
     env::set_var("CARGO_MAKE_HOME", directory.to_str().unwrap());
     let global_config = load();
 
