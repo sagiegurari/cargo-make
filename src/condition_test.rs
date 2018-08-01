@@ -335,6 +335,7 @@ fn validate_channel_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -402,6 +403,7 @@ fn validate_channel_invalid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -439,6 +441,7 @@ fn validate_criteria_empty() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -476,6 +479,7 @@ fn validate_criteria_valid_platform() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -517,6 +521,7 @@ fn validate_criteria_invalid_platform() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -554,6 +559,7 @@ fn validate_criteria_valid_channel() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -627,6 +633,7 @@ fn validate_criteria_invalid_channel() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
@@ -664,6 +671,7 @@ fn validate_condition_both_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -706,6 +714,7 @@ fn validate_criteria_valid_script_invalid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -748,6 +757,7 @@ fn validate_criteria_invalid_script_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -786,6 +796,7 @@ fn validate_criteria_invalid_env_set() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     step.config.condition = Some(TaskCondition {
@@ -824,6 +835,7 @@ fn validate_criteria_invalid_env_not_set() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     env::set_var("ENV_SET1", "bad");
@@ -864,6 +876,7 @@ fn validate_criteria_valid_env() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     env::set_var("ENV_SET1", "good1");
@@ -909,6 +922,7 @@ fn validate_criteria_invalid_env_not_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     let mut env_values = IndexMap::<String, String>::new();
@@ -951,6 +965,7 @@ fn validate_criteria_invalid_env_not_equal() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        cli_arguments: None,
     };
 
     env::set_var("ENV_SET1", "good");

@@ -167,7 +167,8 @@ fn validate_script(step: &Step) -> bool {
         Some(ref script) => {
             debug!("Checking task condition script.");
 
-            let exit_code = command::run_script(&script, step.config.script_runner.clone(), false);
+            let exit_code =
+                command::run_script(&script, step.config.script_runner.clone(), &vec![], false);
 
             if exit_code == 0 {
                 true

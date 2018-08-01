@@ -84,7 +84,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
 
     let config = descriptor::load(&build_file, env, cli_args.experimental);
 
-    let env_info = environment::setup_env(&config, &task);
+    let env_info = environment::setup_env(&cli_args, &config, &task);
 
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
@@ -145,6 +145,15 @@ fn run_for_args(matches: ArgMatches, global_config: &GlobalConfig) {
             };
             let task = cmd_matches.value_of("task").unwrap_or(default_task_name);
             cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
+
+            cli_args.arguments = match cmd_matches.values_of("TASK_ARGS") {
+                Some(values) => {
+                    let args_str: Vec<&str> = values.collect();
+                    let args_strings = args_str.iter().map(|item| item.to_string()).collect();
+                    Some(args_strings)
+                }
+                None => None,
+            };
 
             run(cli_args, global_config);
         }
@@ -248,7 +257,12 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                     .long("--list-all-steps")
                     .help("Lists all known steps"),
             )
-            .arg(Arg::with_name("TASK")),
+            .arg(Arg::with_name("TASK").help("The task name to execute"))
+            .arg(
+                Arg::with_name("TASK_ARGS")
+                    .multiple(true)
+                    .help("Task arguments which can be accessed in the task itself."),
+            ),
     )
 }
 

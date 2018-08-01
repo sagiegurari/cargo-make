@@ -103,7 +103,12 @@ pub(crate) fn install(task_config: &Task) {
         None => {
             match task_config.install_script {
                 Some(ref script) => {
-                    command::run_script(&script, task_config.script_runner.clone(), validate);
+                    command::run_script(
+                        &script,
+                        task_config.script_runner.clone(),
+                        &vec![],
+                        validate,
+                    );
                     ()
                 }
                 None => {

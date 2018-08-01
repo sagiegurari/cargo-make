@@ -7,16 +7,19 @@
 #[path = "./cache_test.rs"]
 mod cache_test;
 
-use environment;
+use dirs;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use storage;
 use toml;
 use types::Cache;
 
+static CACHE_FILE: &'static str = "cache.toml";
+
 fn load_from_path(directory: PathBuf) -> Cache {
-    let file_path = Path::new(&directory).join("cache.toml");
+    let file_path = Path::new(&directory).join(CACHE_FILE);
 
     let mut cache_data = if file_path.exists() {
         match File::open(&file_path) {
@@ -54,9 +57,14 @@ fn load_from_path(directory: PathBuf) -> Cache {
     cache_data
 }
 
+fn get_cache_directory(migrate: bool) -> Option<PathBuf> {
+    let os_directory = dirs::cache_dir();
+    storage::get_storage_directory(os_directory, CACHE_FILE, migrate)
+}
+
 /// Loads the persisted data
 pub(crate) fn load() -> Cache {
-    match environment::get_cargo_make_home() {
+    match get_cache_directory(true) {
         Some(directory) => load_from_path(directory),
         None => Cache::new(),
     }
@@ -64,7 +72,7 @@ pub(crate) fn load() -> Cache {
 
 /// Stores the data
 pub(crate) fn store(cache_data: &Cache) {
-    match environment::get_cargo_make_home() {
+    match get_cache_directory(false) {
         Some(directory) => {
             let exists = if directory.exists() {
                 true
@@ -76,7 +84,7 @@ pub(crate) fn store(cache_data: &Cache) {
             };
 
             if exists {
-                let file_name = directory.join("cache.toml");
+                let file_name = directory.join(CACHE_FILE);
 
                 let file_descriptor = match File::create(&file_name) {
                     Ok(file) => Some(file),

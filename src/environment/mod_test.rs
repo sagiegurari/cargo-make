@@ -158,18 +158,20 @@ fn setup_cwd_empty() {
 
 #[test]
 fn setup_env_empty() {
+    let cli_args = CliArgs::new();
+
     let config = Config {
         config: ConfigSection::new(),
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
 
-    setup_env(&config, "setup_env_empty1");
+    setup_env(&cli_args, &config, "setup_env_empty1");
 
     let mut value = env::var("CARGO_MAKE_TASK");
     assert_eq!(value.unwrap(), "setup_env_empty1");
 
-    setup_env(&config, "setup_env_empty2");
+    setup_env(&cli_args, &config, "setup_env_empty2");
 
     let delay = time::Duration::from_millis(10);
     thread::sleep(delay);
@@ -179,7 +181,28 @@ fn setup_env_empty() {
 }
 
 #[test]
+fn setup_env_cli_arguments() {
+    let mut cli_args = CliArgs::new();
+    cli_args.arguments = Some(vec!["arg1".to_string(), "arg2".to_string()]);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
+
+    setup_env(&cli_args, &config, "setup_env_empty1");
+
+    let value = env::var("CARGO_MAKE_TASK_ARGS");
+    assert_eq!(value.unwrap(), "arg1;arg2");
+}
+
+#[test]
 fn setup_env_values() {
+    let cli_args = CliArgs::new();
+
     let mut config = Config {
         config: ConfigSection::new(),
         env: IndexMap::new(),
@@ -203,7 +226,7 @@ fn setup_env_values() {
         "NONE".to_string()
     );
 
-    setup_env(&config, "set_env_values");
+    setup_env(&cli_args, &config, "set_env_values");
 
     assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
     assert_eq!(env::var("MY_ENV_KEY2").unwrap(), "MY_ENV_VALUE2");
@@ -211,6 +234,8 @@ fn setup_env_values() {
 
 #[test]
 fn setup_env_script() {
+    let cli_args = CliArgs::new();
+
     let mut config = Config {
         config: ConfigSection::new(),
         env: IndexMap::new(),
@@ -236,7 +261,7 @@ fn setup_env_script() {
         "NONE".to_string()
     );
 
-    setup_env(&config, "set_env_values");
+    setup_env(&cli_args, &config, "set_env_values");
 
     assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap(), "MY_ENV_VALUE");
     assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap(), "script1");
@@ -563,6 +588,80 @@ fn expand_env_with_env_vars() {
     task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
     task.args = Some(vec![
         "arg0".to_string(),
+        "arg1".to_string(),
+        "arg2".to_string(),
+        "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
+        "arg4".to_string(),
+    ]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+    let updated_step = expand_env(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert_eq!(
+        updated_step.config.command.unwrap(),
+        "command-ENV1-ENV2".to_string()
+    );
+    let args = updated_step.config.args.unwrap();
+    assert_eq!(args.len(), 5);
+    assert_eq!(args[3], "arg3-ENV1-ENV2".to_string());
+}
+
+#[test]
+fn expand_env_with_env_vars_and_task_args() {
+    env::set_var("TEST_ENV_EXPAND1", "ENV1");
+    env::set_var("TEST_ENV_EXPAND2", "ENV2");
+    env::set_var("CARGO_MAKE_TASK_ARGS", "targ1;targ2;targ3;targ4");
+
+    let mut task = Task::new();
+    task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
+    task.args = Some(vec![
+        "arg0".to_string(),
+        "${@}".to_string(),
+        "-o=${@}".to_string(),
+        "arg1".to_string(),
+        "arg2".to_string(),
+        "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
+        "arg4".to_string(),
+    ]);
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+    let updated_step = expand_env(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert_eq!(
+        updated_step.config.command.unwrap(),
+        "command-ENV1-ENV2".to_string()
+    );
+    let args = updated_step.config.args.unwrap();
+    assert_eq!(args.len(), 13);
+    assert_eq!(args[11], "arg3-ENV1-ENV2".to_string());
+    assert_eq!(args[1], "targ1".to_string());
+    assert_eq!(args[2], "targ2".to_string());
+    assert_eq!(args[3], "targ3".to_string());
+    assert_eq!(args[4], "targ4".to_string());
+    assert_eq!(args[5], "-o=targ1".to_string());
+    assert_eq!(args[6], "-o=targ2".to_string());
+    assert_eq!(args[7], "-o=targ3".to_string());
+    assert_eq!(args[8], "-o=targ4".to_string());
+}
+
+#[test]
+fn expand_env_with_env_vars_and_empty_task_args() {
+    env::set_var("TEST_ENV_EXPAND1", "ENV1");
+    env::set_var("TEST_ENV_EXPAND2", "ENV2");
+    env::set_var("CARGO_MAKE_TASK_ARGS", "");
+
+    let mut task = Task::new();
+    task.command = Some("command-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string());
+    task.args = Some(vec![
+        "arg0".to_string(),
+        "${@}".to_string(),
+        "-o=${@}".to_string(),
         "arg1".to_string(),
         "arg2".to_string(),
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),

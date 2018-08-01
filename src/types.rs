@@ -48,6 +48,8 @@ pub struct CliArgs {
     pub disable_check_for_updates: bool,
     /// Allows access unsupported experimental predefined tasks
     pub experimental: bool,
+    /// additional command line arguments
+    pub arguments: Option<Vec<String>>,
 }
 
 impl CliArgs {
@@ -66,6 +68,7 @@ impl CliArgs {
             list_all_steps: false,
             disable_check_for_updates: false,
             experimental: false,
+            arguments: None,
         }
     }
 }
@@ -257,6 +260,8 @@ pub struct FlowInfo {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// additional command line arguments
+    pub cli_arguments: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -294,12 +299,18 @@ pub enum EnvValue {
 #[derive(Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
+    /// if true, it should ignore all data in base task
+    pub clear: Option<bool>,
     /// Task description
     pub description: Option<String>,
+    /// Category name used to document the task
+    pub category: Option<String>,
     /// if true, the command/script of this task will not be invoked, dependencies however will be
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
+    pub workspace: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -350,9 +361,12 @@ impl Task {
     /// Creates and returns a new instance.
     pub fn new() -> Task {
         Task {
+            clear: None,
             description: None,
+            category: None,
             disabled: None,
             private: None,
+            workspace: None,
             condition: None,
             condition_script: None,
             force: None,
@@ -384,104 +398,175 @@ impl Task {
     ///
     /// * `task` - The task to copy from
     pub fn extend(self: &mut Task, task: &Task) {
+        let override_values = match task.clear {
+            Some(value) => value,
+            None => false,
+        };
+
+        if task.clear.is_some() {
+            self.clear = task.clear.clone();
+        }
+
         if task.description.is_some() {
             self.description = task.description.clone();
+        } else if override_values {
+            self.description = None;
+        }
+
+        if task.category.is_some() {
+            self.category = task.category.clone();
+        } else if override_values {
+            self.category = None;
         }
 
         if task.disabled.is_some() {
             self.disabled = task.disabled.clone();
+        } else if override_values {
+            self.disabled = None;
         }
 
         if task.private.is_some() {
             self.private = task.private.clone();
+        } else if override_values {
+            self.private = None;
+        }
+
+        if task.workspace.is_some() {
+            self.workspace = task.workspace.clone();
+        } else if override_values {
+            self.workspace = None;
         }
 
         if task.condition.is_some() {
             self.condition = task.condition.clone();
+        } else if override_values {
+            self.condition = None;
         }
 
         if task.condition_script.is_some() {
             self.condition_script = task.condition_script.clone();
+        } else if override_values {
+            self.condition_script = None;
         }
 
         if task.force.is_some() {
             self.force = task.force.clone();
+        } else if override_values {
+            self.force = None;
         }
 
         if task.env.is_some() {
             self.env = task.env.clone();
+        } else if override_values {
+            self.env = None;
         }
 
         if task.cwd.is_some() {
             self.cwd = task.cwd.clone();
+        } else if override_values {
+            self.cwd = None;
         }
 
         if task.alias.is_some() {
             self.alias = task.alias.clone();
+        } else if override_values {
+            self.alias = None;
         }
 
         if task.linux_alias.is_some() {
             self.linux_alias = task.linux_alias.clone();
+        } else if override_values {
+            self.linux_alias = None;
         }
 
         if task.windows_alias.is_some() {
             self.windows_alias = task.windows_alias.clone();
+        } else if override_values {
+            self.windows_alias = None;
         }
 
         if task.mac_alias.is_some() {
             self.mac_alias = task.mac_alias.clone();
+        } else if override_values {
+            self.mac_alias = None;
         }
 
         if task.install_crate.is_some() {
             self.install_crate = task.install_crate.clone();
+        } else if override_values {
+            self.install_crate = None;
         }
 
         if task.install_crate_args.is_some() {
             self.install_crate_args = task.install_crate_args.clone();
+        } else if override_values {
+            self.install_crate_args = None;
         }
 
         if task.install_script.is_some() {
             self.install_script = task.install_script.clone();
+        } else if override_values {
+            self.install_script = None;
         }
 
         if task.command.is_some() {
             self.command = task.command.clone();
+        } else if override_values {
+            self.command = None;
         }
 
         if task.args.is_some() {
             self.args = task.args.clone();
+        } else if override_values {
+            self.args = None;
         }
 
         if task.script.is_some() {
             self.script = task.script.clone();
+        } else if override_values {
+            self.script = None;
         }
 
         if task.script_runner.is_some() {
             self.script_runner = task.script_runner.clone();
+        } else if override_values {
+            self.script_runner = None;
         }
 
         if task.script_extension.is_some() {
             self.script_extension = task.script_extension.clone();
+        } else if override_values {
+            self.script_extension = None;
         }
 
         if task.run_task.is_some() {
             self.run_task = task.run_task.clone();
+        } else if override_values {
+            self.run_task = None;
         }
 
         if task.dependencies.is_some() {
             self.dependencies = task.dependencies.clone();
+        } else if override_values {
+            self.dependencies = None;
         }
 
         if task.linux.is_some() {
             self.linux = task.linux.clone();
+        } else if override_values {
+            self.linux = None;
         }
 
         if task.windows.is_some() {
             self.windows = task.windows.clone();
+        } else if override_values {
+            self.windows = None;
         }
 
         if task.mac.is_some() {
             self.mac = task.mac.clone();
+        } else if override_values {
+            self.mac = None;
         }
     }
 
@@ -518,9 +603,12 @@ impl Task {
                 override_task.extend(self);
 
                 Task {
+                    clear: self.clear.clone(),
                     description: self.description.clone(),
+                    category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    workspace: self.workspace.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),

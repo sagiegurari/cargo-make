@@ -76,12 +76,18 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                     None => "".to_string(),
                 };
 
+                // get cli arguments
+                let cli_arguments = match flow_info.cli_arguments {
+                    Some(ref args) => args.clone(),
+                    None => vec![],
+                };
+
                 // try to invoke it as a none OS script
-                let script_runner_done = scriptengine::invoke(&updated_step.config);
+                let script_runner_done = scriptengine::invoke(&updated_step.config, &cli_arguments);
 
                 // run as command or OS script
                 if !script_runner_done {
-                    command::run(&updated_step)
+                    command::run(&updated_step, &cli_arguments);
                 };
 
                 // revert to original cwd
@@ -307,6 +313,32 @@ fn create_proxy_task(task: &str) -> Task {
     proxy_task.get_normalized_task()
 }
 
+fn is_workspace_flow(
+    config: &Config,
+    task: &str,
+    disable_workspace: bool,
+    crate_info: &CrateInfo,
+) -> bool {
+    // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
+    if disable_workspace || crate_info.workspace.is_none() {
+        false
+    } else {
+        // project is a workspace and wasn't disabled via cli, need to check requested task
+        let cli_task = match config.tasks.get(task) {
+            Some(task_config) => {
+                let mut clone_task = task_config.clone();
+                clone_task.get_normalized_task()
+            }
+            None => {
+                error!("Task not found: {}", &task);
+                panic!("Task not found: {}", &task);
+            }
+        };
+
+        cli_task.workspace.unwrap_or(true)
+    }
+}
+
 /// Creates the full execution plan
 fn create_execution_plan(
     config: &Config,
@@ -339,7 +371,16 @@ fn create_execution_plan(
     // load crate info and look for workspace info
     let crate_info = environment::crateinfo::load();
 
-    if disable_workspace || crate_info.workspace.is_none() {
+    let workspace_flow = is_workspace_flow(&config, &task, disable_workspace, &crate_info);
+
+    if workspace_flow {
+        let workspace_task = create_workspace_task(crate_info, task);
+
+        steps.push(Step {
+            name: "workspace".to_string(),
+            config: workspace_task,
+        });
+    } else {
         create_execution_plan_for_step(
             &config,
             &task,
@@ -348,13 +389,6 @@ fn create_execution_plan(
             true,
             allow_private,
         );
-    } else {
-        let workspace_task = create_workspace_task(crate_info, task);
-
-        steps.push(Step {
-            name: "workspace".to_string(),
-            config: workspace_task,
-        });
     }
 
     // always add end task even if already executed due to some depedency
@@ -427,6 +461,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         env_info,
         disable_workspace: cli_args.disable_workspace,
         disable_on_error: cli_args.disable_on_error,
+        cli_arguments: cli_args.arguments.clone(),
     };
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {

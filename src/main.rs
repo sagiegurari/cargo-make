@@ -53,6 +53,7 @@
 
 extern crate ci_info;
 extern crate clap;
+extern crate dirs;
 extern crate fern;
 extern crate glob;
 extern crate indexmap;
@@ -78,9 +79,11 @@ mod config;
 mod descriptor;
 mod environment;
 mod installer;
+mod legacy;
 mod logger;
 mod runner;
 mod scriptengine;
+mod storage;
 mod version;
 
 #[cfg(test)]

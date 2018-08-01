@@ -21,6 +21,7 @@ fn run_empty_task() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -44,6 +45,7 @@ fn print_empty_task() {
             print_only: true,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -67,6 +69,7 @@ fn list_empty_task() {
             print_only: false,
             list_all_steps: true,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -90,6 +93,7 @@ fn run_file_and_task() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -116,6 +120,7 @@ fn run_cwd_with_file() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -140,6 +145,7 @@ fn run_file_not_go_to_project_root() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -164,6 +170,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -191,6 +198,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -218,6 +226,7 @@ fn run_cwd_task_not_found() {
             print_only: false,
             list_all_steps: false,
             experimental: false,
+            arguments: None,
         },
         &global_config,
     );
@@ -250,10 +259,12 @@ fn run_for_args_valid() {
         "make",
         "--makefile",
         "./examples/dependencies.toml",
-        "-t",
-        "A",
         "-l",
         "error",
+        "A",
+        "arg1",
+        "arg2",
+        "arg3",
     ]);
 
     run_for_args(matches, &global_config);
@@ -423,4 +434,45 @@ fn run_protected_flow_example() {
     ]);
 
     run_for_args(matches, &global_config);
+}
+
+#[test]
+fn run_for_args_no_task_args() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--disable-check-for-updates",
+        "empty",
+    ]);
+
+    run_for_args(matches, &global_config);
+
+    assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "");
+}
+
+#[test]
+fn run_for_args_set_task_args() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config);
+
+    env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--disable-check-for-updates",
+        "empty",
+        "arg1",
+        "arg2",
+        "arg3",
+    ]);
+
+    run_for_args(matches, &global_config);
+
+    assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "arg1;arg2;arg3");
 }
