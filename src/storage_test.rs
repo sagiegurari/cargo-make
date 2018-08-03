@@ -17,6 +17,8 @@ fn get_storage_directory_with_env() {
 
     let directory = get_storage_directory(None, "test.txt", false).unwrap();
 
+    env::remove_var("CARGO_MAKE_HOME");
+
     assert_eq!(directory, env_directory);
 }
 

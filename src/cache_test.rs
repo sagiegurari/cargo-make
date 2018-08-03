@@ -26,6 +26,8 @@ fn load_with_cargo_home() {
     env::set_var("CARGO_MAKE_HOME", directory.to_str().unwrap());
     let cache_data = load();
 
+    env::remove_var("CARGO_MAKE_HOME");
+
     assert_eq!(cache_data.last_update_check.unwrap(), 1000u64);
 }
 

@@ -29,6 +29,9 @@ fn get_cargo_make_home_with_env() {
     env::set_var("CARGO_MAKE_HOME", directory.to_str().unwrap());
 
     let home = get_cargo_make_home().unwrap();
+
+    env::remove_var("CARGO_MAKE_HOME");
+
     assert_eq!(home, directory);
 }
 
