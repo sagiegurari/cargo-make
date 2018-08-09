@@ -438,7 +438,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.12.1
+[cargo-make] INFO - cargo-make 0.13.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -455,7 +455,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo-make 0.12.1
+[cargo-make] INFO - cargo-make 0.13.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -482,7 +482,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.12.1
+[cargo-make] INFO - cargo-make 0.13.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -535,7 +535,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.12.1
+[cargo-make] INFO - cargo-make 0.13.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -552,7 +552,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo-make 0.12.1
+[cargo-make] INFO - cargo-make 0.13.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -1046,7 +1046,7 @@ For faster cargo-make installation as part of the build, you can also pull the b
 
 ```yaml
 script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.12.1
+  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.13.0
   - chmod 777 ~/.cargo/bin/cargo-make
   - cargo-make make ci-flow
 ```
@@ -1054,7 +1054,7 @@ script:
 The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
 
 ```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.12.1
+https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.13.0
 ```
 
 In order to pull the latest prebuild cargo-make binary, use the following example:

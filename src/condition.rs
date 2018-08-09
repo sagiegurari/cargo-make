@@ -154,8 +154,10 @@ fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
         Some(ref condition) => {
             debug!("Checking task condition structure.");
 
-            validate_platform(&condition) && validate_channel(&condition, &flow_info)
-                && validate_env(&condition) && validate_env_set(&condition)
+            validate_platform(&condition)
+                && validate_channel(&condition, &flow_info)
+                && validate_env(&condition)
+                && validate_env_set(&condition)
                 && validate_env_not_set(&condition)
         }
         None => true,

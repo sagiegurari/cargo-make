@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.13.0 (2018-08-10)
+
+* Upgrade rustfmt support
+
 ### v0.12.1 (2018-08-09)
 
 * Support additional default coverage test patterns #107

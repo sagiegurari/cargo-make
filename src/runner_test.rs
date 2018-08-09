@@ -448,7 +448,8 @@ cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_
 cd -
 cd ./dir1/member3
 cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
-cd -"#.to_string();
+cd -"#
+        .to_string();
 
     let log_level = logger::get_log_level();
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);

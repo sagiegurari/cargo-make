@@ -194,7 +194,7 @@ category = "Development"
 condition = { channels = [ "nightly" ] }
 install_crate = "rustfmt-nightly"
 command = "cargo"
-args = ["fmt", "--", "--write-mode=overwrite"]
+args = ["fmt"]
 
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."

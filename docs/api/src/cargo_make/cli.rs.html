@@ -263,19 +263,6 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
-<span id="266">266</span>
-<span id="267">267</span>
-<span id="268">268</span>
-<span id="269">269</span>
-<span id="270">270</span>
-<span id="271">271</span>
-<span id="272">272</span>
-<span id="273">273</span>
-<span id="274">274</span>
-<span id="275">275</span>
-<span id="276">276</span>
-<span id="277">277</span>
-<span id="278">278</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -314,7 +301,8 @@
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Global Configuration {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>);
 
     <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check</span>
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span>
+        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
         <span class="op">&amp;&amp;</span> <span class="ident">version</span>::<span class="ident">should_check</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>)
     {
         <span class="ident">version</span>::<span class="ident">check</span>();
@@ -461,8 +449,7 @@
                     .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>)
                     .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TOML</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;task&quot;</span>)
                     .<span class="ident">short</span>(<span class="string">&quot;-t&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--task&quot;</span>)
@@ -470,10 +457,8 @@
                     .<span class="ident">help</span>(
                         <span class="string">&quot;The task name to execute \
                          (can omit the flag if the task name is the last argument)&quot;</span>,
-                    )
-                    .<span class="ident">default_value</span>(<span class="ident">default_task_name</span>),
-            )
-            .<span class="ident">arg</span>(
+                    ).<span class="ident">default_value</span>(<span class="ident">default_task_name</span>),
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>)
@@ -481,22 +466,18 @@
                         <span class="string">&quot;Will set the current working directory. \
                          The search for the makefile will be from this directory if defined.&quot;</span>,
                     ),
-            )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
+            ).<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
                 <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>,
-            ))
-            .<span class="ident">arg</span>(
+            )).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-on-error&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--no-on-error&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Disable on error flow even if defined in config sections&quot;</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;envfile&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--env-file&quot;</span>)
                     .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Set environment variables from provided file&quot;</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;env&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--env&quot;</span>)
                     .<span class="ident">short</span>(<span class="string">&quot;-e&quot;</span>)
@@ -505,38 +486,31 @@
                     .<span class="ident">takes_value</span>(<span class="bool-val">true</span>)
                     .<span class="ident">number_of_values</span>(<span class="number">1</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Set environment variables&quot;</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">from_usage</span>(<span class="string">&quot;-l, --loglevel=[LOG LEVEL] &#39;The log level&#39;&quot;</span>)
                     .<span class="ident">possible_values</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;verbose&quot;</span>, <span class="string">&quot;info&quot;</span>, <span class="string">&quot;error&quot;</span>])
                     .<span class="ident">default_value</span>(<span class="ident">default_log_level</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;v&quot;</span>)
                     .<span class="ident">short</span>(<span class="string">&quot;-v&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--verbose&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;experimental&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--experimental&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>),
-            )
-            .<span class="ident">arg</span>(
+            ).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--disable-check-for-updates&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Disables the update check during startup&quot;</span>),
-            )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;print-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--print-steps&quot;</span>).<span class="ident">help</span>(
+            ).<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;print-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--print-steps&quot;</span>).<span class="ident">help</span>(
                 <span class="string">&quot;Only prints the steps of the build in the order they will \
                  be invoked but without invoking them&quot;</span>,
-            ))
-            .<span class="ident">arg</span>(
+            )).<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;list-steps&quot;</span>)
                     .<span class="ident">long</span>(<span class="string">&quot;--list-all-steps&quot;</span>)
                     .<span class="ident">help</span>(<span class="string">&quot;Lists all known steps&quot;</span>),
-            )
-            .<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;TASK&quot;</span>).<span class="ident">help</span>(<span class="string">&quot;The task name to execute&quot;</span>))
+            ).<span class="ident">arg</span>(<span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;TASK&quot;</span>).<span class="ident">help</span>(<span class="string">&quot;The task name to execute&quot;</span>))
             .<span class="ident">arg</span>(
                 <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;TASK_ARGS&quot;</span>)
                     .<span class="ident">multiple</span>(<span class="bool-val">true</span>)
