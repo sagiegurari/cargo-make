@@ -18,7 +18,6 @@
     late_bound_lifetime_arguments,
     legacy_constructor_visibility,
     legacy_directory_ownership,
-    macro_use_extern_crate,
     missing_copy_implementations,
     missing_docs,
     missing_fragment_specifier,
@@ -79,7 +78,7 @@
     where_clauses_object_safety,
     while_true
 )]
-#![warn(unknown_lints)]
+#![warn(macro_use_extern_crate, unknown_lints)]
 #![allow(
     bare_trait_objects,
     box_pointers,
