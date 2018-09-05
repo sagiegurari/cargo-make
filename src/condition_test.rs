@@ -2,7 +2,8 @@ use super::*;
 use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
 use types::{
-    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, Step, Task, TaskCondition,
+    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustVersionCondition, Step, Task,
+    TaskCondition,
 };
 
 #[test]
@@ -13,6 +14,7 @@ fn validate_env_set_empty() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -31,6 +33,7 @@ fn validate_env_set_valid() {
         env_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -46,6 +49,7 @@ fn validate_env_set_invalid() {
         env_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -68,6 +72,7 @@ fn validate_env_set_invalid_partial_found() {
         ]),
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -83,6 +88,7 @@ fn validate_env_not_set_empty() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -98,6 +104,7 @@ fn validate_env_not_set_valid() {
         env_set: None,
         env_not_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -116,6 +123,7 @@ fn validate_env_not_set_invalid() {
         env_set: None,
         env_not_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -138,6 +146,7 @@ fn validate_env_not_set_invalid_partial_found() {
             "BAD_ENV_SET1".to_string(),
         ]),
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -153,6 +162,7 @@ fn validate_env_empty() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_env(&condition);
@@ -175,6 +185,7 @@ fn validate_env_valid() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     };
 
     let enabled = validate_env(&condition);
@@ -194,6 +205,7 @@ fn validate_env_invalid_not_found() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     };
 
     let enabled = validate_env(&condition);
@@ -214,6 +226,7 @@ fn validate_env_invalid_not_equal() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     };
 
     let enabled = validate_env(&condition);
@@ -236,6 +249,7 @@ fn validate_env_invalid_partial_found() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     };
 
     let enabled = validate_env(&condition);
@@ -296,6 +310,7 @@ fn validate_platform_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_platform(&condition);
@@ -311,6 +326,7 @@ fn validate_platform_invalid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
 
     let enabled = validate_platform(&condition);
@@ -349,6 +365,7 @@ fn validate_channel_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
     let mut enabled = validate_channel(&condition, &flow_info);
     assert!(enabled);
@@ -364,6 +381,7 @@ fn validate_channel_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
     enabled = validate_channel(&condition, &flow_info);
 
@@ -380,6 +398,7 @@ fn validate_channel_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
     enabled = validate_channel(&condition, &flow_info);
 
@@ -413,6 +432,7 @@ fn validate_channel_invalid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     };
     let enabled = validate_channel(&condition, &flow_info);
 
@@ -450,6 +470,7 @@ fn validate_criteria_empty() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
 
     let enabled = validate_criteria(&flow_info, &step);
@@ -492,6 +513,7 @@ fn validate_criteria_valid_platform() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
 
     let enabled = validate_criteria(&flow_info, &step);
@@ -530,6 +552,7 @@ fn validate_criteria_invalid_platform() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
 
     let enabled = validate_criteria(&flow_info, &step);
@@ -573,6 +596,7 @@ fn validate_criteria_valid_channel() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     let mut enabled = validate_criteria(&flow_info, &step);
 
@@ -589,6 +613,7 @@ fn validate_criteria_valid_channel() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     enabled = validate_criteria(&flow_info, &step);
 
@@ -605,6 +630,7 @@ fn validate_criteria_valid_channel() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     enabled = validate_criteria(&flow_info, &step);
 
@@ -643,6 +669,7 @@ fn validate_criteria_invalid_channel() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     let enabled = validate_criteria(&flow_info, &step);
 
@@ -684,6 +711,7 @@ fn validate_condition_both_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -727,6 +755,7 @@ fn validate_criteria_valid_script_invalid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 1".to_string()]);
 
@@ -766,6 +795,7 @@ fn validate_criteria_invalid_script_valid() {
         env_set: None,
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -805,6 +835,7 @@ fn validate_criteria_invalid_env_set() {
         env_set: Some(vec!["BAD_ENV_SET1".to_string()]),
         env_not_set: None,
         env: None,
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -846,6 +877,7 @@ fn validate_criteria_invalid_env_not_set() {
         env_set: None,
         env_not_set: Some(vec!["ENV_SET1".to_string()]),
         env: None,
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -892,6 +924,7 @@ fn validate_criteria_valid_env() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -935,6 +968,7 @@ fn validate_criteria_invalid_env_not_found() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -981,10 +1015,421 @@ fn validate_criteria_invalid_env_not_equal() {
         env_set: None,
         env_not_set: None,
         env: Some(env_values),
+        rust_version: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
     let enabled = validate_condition(&flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_criteria_valid_rust_version() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let rustinfo = rust_info::get();
+    let version = rustinfo.version.unwrap();
+
+    step.config.condition = Some(TaskCondition {
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env: None,
+        rust_version: Some(RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some(version),
+        }),
+    });
+
+    let enabled = validate_condition(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_criteria_invalid_rust_version() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let rustinfo = rust_info::get();
+    let mut version = rustinfo.version.unwrap();
+    version.push_str("1");
+
+    step.config.condition = Some(TaskCondition {
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env: None,
+        rust_version: Some(RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some(version),
+        }),
+    });
+
+    let enabled = validate_condition(&flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_no_rustinfo() {
+    let rustinfo = RustInfo::new();
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("2.0.0".to_string()),
+            max: Some("1.0.0".to_string()),
+            equal: Some("3.0.0".to_string()),
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_empty_condition() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_enabled() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("1.9.9".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_same() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("2.0.0".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_disabled_major() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("3.0.0".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_disabled_minor() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("2.1.0".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_disabled_patch() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("2.0.1".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_enabled() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("1.9.9".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_same() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_disabled_major() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("3.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_disabled_minor() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.1.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_disabled_patch() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.1".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_equal_same() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some("2.0.0".to_string()),
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_equal_not_same() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some("3.0.0".to_string()),
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_all_enabled() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("1.0.0".to_string()),
+            max: Some("3.0.0".to_string()),
+            equal: Some("2.0.0".to_string()),
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_no_condition() {
+    let condition = TaskCondition {
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_rust_version(&condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_with_valid_condition() {
+    let rustinfo = rust_info::get();
+    let version = rustinfo.version.unwrap();
+
+    let condition = TaskCondition {
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env: None,
+        rust_version: Some(RustVersionCondition {
+            min: Some(version.clone()),
+            max: Some(version.clone()),
+            equal: Some(version.clone()),
+        }),
+    };
+
+    let enabled = validate_rust_version(&condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_rust_version_with_invalid_condition() {
+    let rustinfo = rust_info::get();
+    let mut version = rustinfo.version.unwrap();
+    version.push_str("1");
+
+    let condition = TaskCondition {
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env: None,
+        rust_version: Some(RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some(version),
+        }),
+    };
+
+    let enabled = validate_rust_version(&condition);
 
     assert!(!enabled);
 }

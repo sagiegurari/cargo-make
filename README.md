@@ -103,6 +103,7 @@ The articles are missing some of the new features which have been added after th
 * [Env File](#usage-env-file)
 * [Private Tasks](#usage-private-tasks)
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
+* [Rust Version Conditions](#usage-conditions-structure)
 
 <a name="usage"></a>
 ## Usage
@@ -960,12 +961,13 @@ The following condition types are available:
 * **env_set** - List of environment variables that must be defined
 * **env_not_set** - List of environment variables that must not be defined
 * **env** - Map of environment variables that must be defined and equal to the provided values
+* **rust_version** - Optional definition of min, max and/or specific rust version
 
 Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
 ```
 
 <a name="usage-conditions-script"></a>

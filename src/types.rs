@@ -265,6 +265,17 @@ pub struct FlowInfo {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+/// Rust version condition structure
+pub struct RustVersionCondition {
+    /// min version number
+    pub min: Option<String>,
+    /// max version number
+    pub max: Option<String>,
+    /// specific version number
+    pub equal: Option<String>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
     /// Platform names (linux, windows, mac)
@@ -277,6 +288,8 @@ pub struct TaskCondition {
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
     pub env: Option<IndexMap<String, String>>,
+    /// Rust version condition
+    pub rust_version: Option<RustVersionCondition>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

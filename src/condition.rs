@@ -8,10 +8,12 @@
 mod condition_test;
 
 use command;
-use rust_info::types::RustChannel;
+use rust_info;
+use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use types;
-use types::{FlowInfo, Step, TaskCondition};
+use types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
+use version::is_newer;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();
@@ -149,6 +151,51 @@ fn validate_channel(condition: &TaskCondition, flow_info: &FlowInfo) -> bool {
     }
 }
 
+fn validate_rust_version_condition(rustinfo: RustInfo, condition: RustVersionCondition) -> bool {
+    if rustinfo.version.is_some() {
+        let current_version = rustinfo.version.unwrap();
+
+        let mut valid = match condition.min {
+            Some(version) => {
+                version == current_version || is_newer(&version, &current_version, true)
+            }
+            None => true,
+        };
+
+        if valid {
+            valid = match condition.max {
+                Some(version) => {
+                    version == current_version || is_newer(&current_version, &version, true)
+                }
+                None => true,
+            };
+        }
+
+        if valid {
+            valid = match condition.equal {
+                Some(version) => version == current_version,
+                None => true,
+            };
+        }
+
+        valid
+    } else {
+        true
+    }
+}
+
+fn validate_rust_version(condition: &TaskCondition) -> bool {
+    let rust_version = condition.rust_version.clone();
+    match rust_version {
+        Some(rust_version_condition) => {
+            let rustinfo = rust_info::get();
+
+            validate_rust_version_condition(rustinfo, rust_version_condition)
+        }
+        None => true,
+    }
+}
+
 fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
     match step.config.condition {
         Some(ref condition) => {
@@ -159,6 +206,7 @@ fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
                 && validate_env(&condition)
                 && validate_env_set(&condition)
                 && validate_env_not_set(&condition)
+                && validate_rust_version(&condition)
         }
         None => true,
     }

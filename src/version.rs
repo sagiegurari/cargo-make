@@ -65,34 +65,38 @@ fn get_latest_version() -> Option<String> {
     }
 }
 
-fn is_newer_found(latest_string: &str) -> bool {
-    debug!("Checking Version: {}", &latest_string);
+pub(crate) fn is_newer(old_string: &str, new_string: &str, default_result: bool) -> bool {
+    let old_version = Version::parse(old_string);
+    match old_version {
+        Ok(old_values) => {
+            let new_version = Version::parse(new_string);
 
-    let current = Version::parse(VERSION);
-    match current {
-        Ok(current_values) => {
-            let latest = Version::parse(latest_string);
-
-            match latest {
-                Ok(latest_values) => {
-                    if latest_values.major > current_values.major {
+            match new_version {
+                Ok(new_values) => {
+                    if new_values.major > old_values.major {
                         true
-                    } else if latest_values.major == current_values.major {
-                        if latest_values.minor > current_values.minor {
+                    } else if new_values.major == old_values.major {
+                        if new_values.minor > old_values.minor {
                             true
                         } else {
-                            latest_values.minor == current_values.minor
-                                && latest_values.patch > current_values.patch
+                            new_values.minor == old_values.minor
+                                && new_values.patch > old_values.patch
                         }
                     } else {
                         false
                     }
                 }
-                _ => false,
+                _ => default_result,
             }
         }
-        _ => false,
+        _ => default_result,
     }
+}
+
+fn is_newer_found(latest_string: &str) -> bool {
+    debug!("Checking Version: {}", &latest_string);
+
+    is_newer(&VERSION, &latest_string, false)
 }
 
 fn print_notification(latest_string: &str) {
