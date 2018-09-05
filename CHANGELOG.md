@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.14.0 (2018-09-05)
+
+* Condition support for rust version (min,max,eq) #110
+* Upgrade dependencies with possible backward compatability break
+
 ### v0.13.0 (2018-08-10)
 
 * Upgrade rustfmt support

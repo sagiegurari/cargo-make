@@ -964,6 +964,19 @@
 <span id="964">964</span>
 <span id="965">965</span>
 <span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1232,6 +1245,17 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Rust version condition structure</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RustVersionCondition</span> {
+    <span class="doccomment">/// min version number</span>
+    <span class="kw">pub</span> <span class="ident">min</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// max version number</span>
+    <span class="kw">pub</span> <span class="ident">max</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// specific version number</span>
+    <span class="kw">pub</span> <span class="ident">equal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds condition attributes</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaskCondition</span> {
     <span class="doccomment">/// Platform names (linux, windows, mac)</span>
@@ -1244,6 +1268,8 @@
     <span class="kw">pub</span> <span class="ident">env_not_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables and their values</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Rust version condition</span>
+    <span class="kw">pub</span> <span class="ident">rust_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustVersionCondition</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
