@@ -1217,7 +1217,8 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 * **clean** - Runs the cargo clean command.
 * **build** - Runs the rust compiler.
 * **build-verbose** - Runs the rust compiler with verbose output.
-* **build-release** - Runs release build.* **test** - Runs all available tests.
+* **build-release** - Runs release build.
+* **test** - Runs all available tests.
 * **test-verbose** - Runs all available tests with verbose output.
 * **bench** - Runs all available bench files.
 * **check** - Runs cargo check.
