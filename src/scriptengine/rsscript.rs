@@ -7,9 +7,9 @@
 #[path = "./rsscript_test.rs"]
 mod rsscript_test;
 
-use command;
-use installer;
-use scriptengine::script_utils::{create_script_file, delete_file};
+use crate::command;
+use crate::installer;
+use crate::scriptengine::script_utils::{create_script_file, delete_file};
 
 fn install_crate() {
     // install dependencies

@@ -12,18 +12,18 @@
 #[path = "./runner_test.rs"]
 mod runner_test;
 
-use command;
-use condition;
-use environment;
+use crate::command;
+use crate::condition;
+use crate::environment;
 use indexmap::IndexMap;
-use installer;
-use logger;
-use scriptengine;
+use crate::installer;
+use crate::logger;
+use crate::scriptengine;
 use std::collections::HashSet;
 use std::env;
 use std::path;
 use std::time::SystemTime;
-use types::{CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
+use crate::types::{CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition(&flow_info, &step)

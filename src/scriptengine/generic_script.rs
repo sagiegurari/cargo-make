@@ -7,8 +7,8 @@
 #[path = "./generic_script_test.rs"]
 mod generic_script_test;
 
-use command;
-use scriptengine::script_utils::{create_script_file, delete_file};
+use crate::command;
+use crate::scriptengine::script_utils::{create_script_file, delete_file};
 
 fn run_file(file: &str, runner: &String) -> bool {
     let exit_code = command::run_command(runner, &Some(vec![file.to_string()]), false);

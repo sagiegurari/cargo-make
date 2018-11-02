@@ -10,9 +10,9 @@
 #[path = "./installer_test.rs"]
 mod installer_test;
 
-use command;
+use crate::command;
 use std::process::Command;
-use types::Task;
+use crate::types::Task;
 
 fn is_crate_installed(crate_name: &str) -> bool {
     debug!("Getting list of installed cargo commands.");

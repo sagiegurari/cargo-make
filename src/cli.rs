@@ -9,13 +9,13 @@ mod cli_test;
 
 use ci_info;
 use clap::{App, Arg, ArgMatches, SubCommand};
-use config;
-use descriptor;
-use environment;
-use logger;
-use runner;
-use types::{CliArgs, GlobalConfig};
-use version;
+use crate::config;
+use crate::descriptor;
+use crate::environment;
+use crate::logger;
+use crate::runner;
+use crate::types::{CliArgs, GlobalConfig};
+use crate::version;
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");

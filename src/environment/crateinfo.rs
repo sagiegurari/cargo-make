@@ -12,7 +12,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
-use types::{CrateDependency, CrateInfo};
+use crate::types::{CrateDependency, CrateInfo};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {

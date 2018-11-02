@@ -11,9 +11,9 @@ use dirs;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use storage;
+use crate::storage;
 use toml;
-use types::GlobalConfig;
+use crate::types::GlobalConfig;
 
 static CONFIG_FILE: &'static str = "config.toml";
 

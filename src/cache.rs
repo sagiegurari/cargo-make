@@ -12,9 +12,9 @@ use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use storage;
+use crate::storage;
 use toml;
-use types::Cache;
+use crate::types::Cache;
 
 static CACHE_FILE: &'static str = "cache.toml";
 

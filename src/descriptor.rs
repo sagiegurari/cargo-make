@@ -10,7 +10,7 @@
 #[path = "./descriptor_test.rs"]
 mod descriptor_test;
 
-use command;
+use crate::command;
 use indexmap::IndexMap;
 use std::collections::BTreeMap;
 use std::env;
@@ -18,7 +18,7 @@ use std::fs::{canonicalize, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
-use types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
+use crate::types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 
 fn merge_env(
     base: &mut IndexMap<String, EnvValue>,

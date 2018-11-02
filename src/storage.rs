@@ -7,7 +7,7 @@
 #[path = "./storage_test.rs"]
 mod storage_test;
 
-use legacy;
+use crate::legacy;
 use std::env;
 use std::path::{Path, PathBuf};
 

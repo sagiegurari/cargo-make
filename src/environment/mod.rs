@@ -10,7 +10,7 @@ mod gitinfo;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use command;
+use crate::command;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -18,7 +18,7 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use types::{
+use crate::types::{
     CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
     Workspace,
 };
