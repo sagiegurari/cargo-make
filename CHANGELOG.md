@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.15.0
+
+* rustup integration #122
+
 ### v0.14.0 (2018-09-05)
 
 * Condition support for rust version (min,max,eq) #110
