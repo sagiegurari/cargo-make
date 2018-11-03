@@ -1,7 +1,7 @@
 use super::*;
+use crate::test;
 use std::fs::File;
 use std::io::{Read, Write};
-use test;
 
 #[test]
 #[cfg(target_os = "linux")]

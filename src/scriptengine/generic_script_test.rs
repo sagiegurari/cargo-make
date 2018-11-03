@@ -1,5 +1,5 @@
 use super::*;
-use test;
+use crate::test;
 
 #[test]
 fn execute_shell() {

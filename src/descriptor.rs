@@ -11,6 +11,7 @@
 mod descriptor_test;
 
 use crate::command;
+use crate::types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 use indexmap::IndexMap;
 use std::collections::BTreeMap;
 use std::env;
@@ -18,7 +19,6 @@ use std::fs::{canonicalize, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml;
-use crate::types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 
 fn merge_env(
     base: &mut IndexMap<String, EnvValue>,

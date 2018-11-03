@@ -1,5 +1,5 @@
 use super::*;
-use test;
+use crate::test;
 
 #[test]
 fn get_engine_type_no_runner() {

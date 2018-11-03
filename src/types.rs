@@ -310,6 +310,67 @@ pub enum EnvValue {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+/// Holds instructions how to install the crate
+pub struct InstallCrateInfo {
+    /// The provided crate to install
+    pub crate_name: String,
+    /// If defined, the provided component to install via rustup
+    pub rustup_component_name: Option<String>,
+    /// The binary file name to be used to test if the crate is already installed
+    pub binary: String,
+    /// Test argument that will be used to check that the crate is installed
+    pub test_arg: String,
+}
+
+impl PartialEq for InstallCrateInfo {
+    fn eq(&self, other: &InstallCrateInfo) -> bool {
+        if self.crate_name != other.crate_name {
+            false
+        } else if self.binary != other.binary {
+            false
+        } else if self.test_arg != other.test_arg {
+            false
+        } else {
+            match self.rustup_component_name {
+                Some(ref value) => match other.rustup_component_name {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.rustup_component_name {
+                    None => true,
+                    _ => false,
+                },
+            }
+        }
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Install crate name or params
+pub enum InstallCrate {
+    /// The value as string
+    Value(String),
+    /// Install crate params
+    Info(InstallCrateInfo),
+}
+
+impl PartialEq for InstallCrate {
+    fn eq(&self, other: &InstallCrate) -> bool {
+        match self {
+            InstallCrate::Value(value) => match other {
+                InstallCrate::Value(other_value) => value == other_value,
+                _ => false,
+            },
+            InstallCrate::Info(info) => match other {
+                InstallCrate::Info(other_info) => info == other_info,
+                _ => false,
+            },
+        }
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -343,7 +404,7 @@ pub struct Task {
     /// acts like alias if runtime OS is Mac (takes precedence over alias)
     pub mac_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
-    pub install_crate: Option<String>,
+    pub install_crate: Option<InstallCrate>,
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
@@ -720,7 +781,7 @@ pub struct PlatformOverrideTask {
     /// The working directory for the task to execute its command/script
     pub cwd: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
-    pub install_crate: Option<String>,
+    pub install_crate: Option<InstallCrate>,
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task

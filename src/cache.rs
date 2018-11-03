@@ -7,14 +7,14 @@
 #[path = "./cache_test.rs"]
 mod cache_test;
 
+use crate::storage;
+use crate::types::Cache;
 use dirs;
 use std::fs::{create_dir_all, File};
 use std::io::prelude::*;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use crate::storage;
 use toml;
-use crate::types::Cache;
 
 static CACHE_FILE: &'static str = "cache.toml";
 

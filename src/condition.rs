@@ -8,12 +8,12 @@
 mod condition_test;
 
 use crate::command;
-use rust_info;
-use rust_info::types::{RustChannel, RustInfo};
-use std::env;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
+use rust_info;
+use rust_info::types::{RustChannel, RustInfo};
+use std::env;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();

@@ -10,10 +10,10 @@ mod version_test;
 
 use crate::cache;
 use crate::command;
+use crate::types::{Cache, GlobalConfig};
 use semver::Version;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::types::{Cache, GlobalConfig};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 

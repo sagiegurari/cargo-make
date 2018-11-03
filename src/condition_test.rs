@@ -1,10 +1,10 @@
 use super::*;
-use indexmap::IndexMap;
-use rust_info::types::{RustChannel, RustInfo};
-use types::{
+use crate::types::{
     Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustVersionCondition, Step, Task,
     TaskCondition,
 };
+use indexmap::IndexMap;
+use rust_info::types::{RustChannel, RustInfo};
 
 #[test]
 fn validate_env_set_empty() {

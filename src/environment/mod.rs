@@ -11,6 +11,10 @@ mod gitinfo;
 mod mod_test;
 
 use crate::command;
+use crate::types::{
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
+    Workspace,
+};
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -18,10 +22,6 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
-    Workspace,
-};
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true) {

@@ -7,12 +7,12 @@
 #[path = "./command_test.rs"]
 mod command_test;
 
+use crate::types::Step;
 use run_script;
 use run_script::{ScriptError, ScriptOptions};
 use std::io;
 use std::io::Error;
 use std::process::{Command, ExitStatus, Output, Stdio};
-use crate::types::Step;
 
 /// Returns the exit code (-1 if no exit code found)
 pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool) -> i32 {

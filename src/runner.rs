@@ -15,15 +15,17 @@ mod runner_test;
 use crate::command;
 use crate::condition;
 use crate::environment;
-use indexmap::IndexMap;
 use crate::installer;
 use crate::logger;
 use crate::scriptengine;
+use crate::types::{
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task,
+};
+use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::env;
 use std::path;
 use std::time::SystemTime;
-use crate::types::{CliArgs, Config, CrateInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition(&flow_info, &step)

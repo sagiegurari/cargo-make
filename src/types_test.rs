@@ -39,6 +39,180 @@ fn cache_new() {
 }
 
 #[test]
+fn install_crate_info_eq_same_all() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("component".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("component".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_info_eq_same_no_component() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_info_eq_different_crate_name() {
+    let first = InstallCrateInfo {
+        crate_name: "test1".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test2".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_binary() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin1".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin2".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_test_arg() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help1".to_string(),
+        rustup_component_name: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help2".to_string(),
+        rustup_component_name: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_component_type() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_component_value() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value1".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value2".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_eq_same_value() {
+    let first = InstallCrate::Value("crate".to_string());
+    let second = InstallCrate::Value("crate".to_string());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_info() {
+    let info = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value".to_string()),
+    };
+    let first = InstallCrate::Info(info.clone());
+    let second = InstallCrate::Info(info.clone());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_different_value() {
+    let first = InstallCrate::Value("crate1".to_string());
+    let second = InstallCrate::Value("crate2".to_string());
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_eq_different_info() {
+    let first = InstallCrate::Info(InstallCrateInfo {
+        crate_name: "test1".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value".to_string()),
+    });
+    let second = InstallCrate::Info(InstallCrateInfo {
+        crate_name: "test2".to_string(),
+        binary: "bin".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("value".to_string()),
+    });
+
+    assert!(first != second);
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 
@@ -105,7 +279,7 @@ fn task_is_force_true() {
 #[test]
 fn task_extend_both_have_misc_data() {
     let mut base = Task::new();
-    base.install_crate = Some("my crate1".to_string());
+    base.install_crate = Some(InstallCrate::Value("my crate1".to_string()));
     base.command = Some("test1".to_string());
     base.disabled = Some(false);
     base.private = Some(false);
@@ -113,7 +287,7 @@ fn task_extend_both_have_misc_data() {
 
     let extended = Task {
         clear: Some(false),
-        install_crate: Some("my crate2".to_string()),
+        install_crate: Some(InstallCrate::Value("my crate2".to_string())),
         command: None,
         description: None,
         category: None,
@@ -173,7 +347,10 @@ fn task_extend_both_have_misc_data() {
     assert!(base.windows.is_none());
     assert!(base.mac.is_none());
 
-    assert_eq!(base.install_crate.unwrap(), "my crate2");
+    assert_eq!(
+        base.install_crate.unwrap(),
+        InstallCrate::Value("my crate2".to_string())
+    );
     assert_eq!(base.command.unwrap(), "test1");
     assert!(base.disabled.unwrap());
     assert!(base.private.unwrap());
@@ -187,7 +364,7 @@ fn task_extend_both_have_misc_data() {
 fn task_extend_extended_have_all_fields() {
     let mut base = Task {
         clear: Some(true),
-        install_crate: Some("my crate1".to_string()),
+        install_crate: Some(InstallCrate::Value("my crate1".to_string())),
         command: Some("test1".to_string()),
         description: None,
         category: None,
@@ -220,7 +397,7 @@ fn task_extend_extended_have_all_fields() {
     env.insert("test".to_string(), EnvValue::Value("value".to_string()));
     let extended = Task {
         clear: Some(false),
-        install_crate: Some("my crate2".to_string()),
+        install_crate: Some(InstallCrate::Value("my crate2".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
@@ -253,7 +430,7 @@ fn task_extend_extended_have_all_fields() {
         dependencies: Some(vec!["A".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -280,7 +457,7 @@ fn task_extend_extended_have_all_fields() {
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -307,7 +484,7 @@ fn task_extend_extended_have_all_fields() {
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -365,7 +542,10 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.windows.is_some());
     assert!(base.mac.is_some());
 
-    assert_eq!(base.install_crate.unwrap(), "my crate2");
+    assert_eq!(
+        base.install_crate.unwrap(),
+        InstallCrate::Value("my crate2".to_string())
+    );
     assert_eq!(base.install_crate_args.unwrap().len(), 2);
     assert_eq!(base.command.unwrap(), "test2");
     assert_eq!(base.description.unwrap(), "description");
@@ -402,7 +582,7 @@ fn task_extend_clear_with_no_data() {
     let env = IndexMap::new();
     let mut base = Task {
         clear: Some(false),
-        install_crate: Some("my crate2".to_string()),
+        install_crate: Some(InstallCrate::Value("my crate2".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
@@ -435,7 +615,7 @@ fn task_extend_clear_with_no_data() {
         dependencies: Some(vec!["A".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -462,7 +642,7 @@ fn task_extend_clear_with_no_data() {
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -489,7 +669,7 @@ fn task_extend_clear_with_no_data() {
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -558,7 +738,7 @@ fn task_extend_clear_with_all_data() {
     let env = IndexMap::new();
     let extended = Task {
         clear: Some(true),
-        install_crate: Some("my crate2".to_string()),
+        install_crate: Some(InstallCrate::Value("my crate2".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("test2".to_string()),
         description: Some("description".to_string()),
@@ -591,7 +771,7 @@ fn task_extend_clear_with_all_data() {
         dependencies: Some(vec!["A".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -618,7 +798,7 @@ fn task_extend_clear_with_all_data() {
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -645,7 +825,7 @@ fn task_extend_clear_with_all_data() {
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
-            install_crate: Some("my crate2".to_string()),
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
             command: Some("test2".to_string()),
             disabled: Some(true),
@@ -747,7 +927,7 @@ fn task_get_normalized_task_undefined() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
-        install_crate: Some("install_crate".to_string()),
+        install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: None,
         command: Some("command".to_string()),
         disabled: Some(false),
@@ -803,7 +983,10 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
-    assert_eq!(normalized_task.install_crate.unwrap(), "install_crate");
+    assert_eq!(
+        normalized_task.install_crate.unwrap(),
+        InstallCrate::Value("install_crate".to_string())
+    );
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
@@ -836,7 +1019,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
-        install_crate: Some("install_crate".to_string()),
+        install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
         description: Some("description".to_string()),
@@ -865,7 +1048,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: None,
-            install_crate: Some("linux_crate".to_string()),
+            install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string(), "c3".to_string()]),
             command: Some("linux_command".to_string()),
             disabled: Some(true),
@@ -930,7 +1113,10 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
-    assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
+    assert_eq!(
+        normalized_task.install_crate.unwrap(),
+        InstallCrate::Value("linux_crate".to_string())
+    );
     assert_eq!(normalized_task.install_crate_args.unwrap().len(), 3);
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
@@ -967,7 +1153,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
-        install_crate: Some("install_crate".to_string()),
+        install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
         description: Some("description".to_string()),
@@ -996,7 +1182,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         dependencies: Some(vec!["1".to_string()]),
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
-            install_crate: Some("linux_crate".to_string()),
+            install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
@@ -1065,7 +1251,10 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
-    assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
+    assert_eq!(
+        normalized_task.install_crate.unwrap(),
+        InstallCrate::Value("linux_crate".to_string())
+    );
     assert_eq!(normalized_task.command.unwrap(), "linux_command");
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
@@ -1099,7 +1288,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
-        install_crate: Some("install_crate".to_string()),
+        install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
         disabled: Some(false),
@@ -1181,7 +1370,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
-    assert_eq!(normalized_task.install_crate.unwrap(), "install_crate");
+    assert_eq!(
+        normalized_task.install_crate.unwrap(),
+        InstallCrate::Value("install_crate".to_string())
+    );
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
@@ -1207,7 +1399,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
-        install_crate: Some("install_crate".to_string()),
+        install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
         disabled: Some(false),
@@ -1236,7 +1428,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         workspace: Some(false),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
-            install_crate: Some("linux_crate".to_string()),
+            install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
             install_crate_args: None,
             command: None,
             disabled: None,
@@ -1289,7 +1481,10 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
-    assert_eq!(normalized_task.install_crate.unwrap(), "linux_crate");
+    assert_eq!(
+        normalized_task.install_crate.unwrap(),
+        InstallCrate::Value("linux_crate".to_string())
+    );
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
 }

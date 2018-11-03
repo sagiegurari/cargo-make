@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::types::InstallCrate;
 use std::env;
 
 #[test]
@@ -86,7 +87,7 @@ fn merge_tasks_first_empty() {
     let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task = Task::new();
-    task.install_crate = Some("my crate".to_string());
+    task.install_crate = Some(InstallCrate::Value("my crate".to_string()));
     task.command = Some("test".to_string());
 
     map2.insert("test".to_string(), task);
@@ -116,7 +117,7 @@ fn merge_tasks_second_empty() {
     let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task = Task::new();
-    task.install_crate = Some("my crate".to_string());
+    task.install_crate = Some(InstallCrate::Value("my crate".to_string()));
     task.command = Some("test".to_string());
 
     map1.insert("test".to_string(), task);
@@ -146,7 +147,7 @@ fn merge_tasks_both_with_values() {
     let mut map2 = IndexMap::<String, Task>::new();
 
     let mut task1 = Task::new();
-    task1.install_crate = Some("my crate".to_string());
+    task1.install_crate = Some(InstallCrate::Value("my crate".to_string()));
     task1.command = Some("test".to_string());
 
     map1.insert("test".to_string(), task1);
@@ -199,7 +200,7 @@ fn merge_tasks_extend_task() {
 
     let mut task1 = Task::new();
     task1.disabled = Some(false);
-    task1.install_crate = Some("my crate".to_string());
+    task1.install_crate = Some(InstallCrate::Value("my crate".to_string()));
     task1.command = Some("test1".to_string());
 
     map1.insert("test".to_string(), task1);
@@ -231,7 +232,10 @@ fn merge_tasks_extend_task() {
 
     let task_clone = task.clone();
     assert!(task_clone.disabled.unwrap());
-    assert_eq!(task_clone.install_crate.unwrap(), "my crate");
+    assert_eq!(
+        task_clone.install_crate.unwrap(),
+        InstallCrate::Value("my crate".to_string())
+    );
     assert_eq!(task_clone.command.unwrap(), "test2");
 }
 
