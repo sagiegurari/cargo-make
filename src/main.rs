@@ -41,7 +41,6 @@
     question_mark_macro_sep,
     safe_extern_statics,
     safe_packed_borrows,
-    stable_features,
     trivial_bounds,
     trivial_casts,
     trivial_numeric_casts,
@@ -55,7 +54,6 @@
     unreachable_patterns,
     unreachable_pub,
     unsafe_code,
-    unstable_features,
     unstable_name_collisions,
     unused_allocation,
     unused_assignments,
@@ -86,12 +84,15 @@
     missing_doc_code_examples,
     missing_debug_implementations,
     single_use_lifetimes,
+    stable_features,
+    unstable_features,
     unused_results,
     variant_size_differences,
     warnings,
     renamed_and_removed_lints
 )]
 #![cfg_attr(feature = "clippy", feature(plugin))]
+#![feature(crate_in_paths)]
 
 //! # cargo-make
 //!
