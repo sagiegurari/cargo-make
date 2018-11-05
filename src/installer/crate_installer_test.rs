@@ -13,6 +13,12 @@ fn is_crate_installed_false() {
 }
 
 #[test]
+fn is_crate_installed_non_zero() {
+    let output = is_crate_installed("exit", "1");
+    assert!(!output);
+}
+
+#[test]
 fn invoke_rustup_install_none() {
     let info = InstallCrateInfo {
         crate_name: "bad_crate_name".to_string(),
