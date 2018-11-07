@@ -1,14 +1,22 @@
 language: rust
-sudo: true
-rust:
-  - stable
-  - beta
-  - nightly
-  - 1.30.0
-os:
-  - linux
-  - osx
-  - windows
+matrix:
+  include:
+  - os: linux
+  - os: osx
+  - rust: stable
+  - rust: beta
+  - rust: nightly
+  - rust: 1.30.0
+  - env: DEPLOY=1 TARGET=x86_64-apple-darwin
+    script: cargo build --release --target $TARGET
+    os: osx
+  - env: DEPLOY=1 TARGET=x86_64-unknown-linux-musl OPENSSL_DIR=$HOME/openssl-musl
+    before_script: "./.ci/setup_musl.sh"
+    script: cargo build --release --target $TARGET
+    addons:
+      apt:
+        packages:
+        - musl-tools
 env:
   global:
     - RUST_BACKTRACE=1
@@ -20,3 +28,18 @@ matrix:
 script:
   - cargo install --debug cargo-make
   - cargo make ci-flow
+before_deploy:
+  - name="cargo-make-$TRAVIS_TAG-$TARGET"
+  - mkdir $name
+  - cp target/$TARGET/release/cargo-make $name/
+  - cp README.md LICENSE-* $name/
+  - zip -r $name.zip $name
+deploy:
+  api_key:
+    secure: <API KEY GOES HERE>
+  file_glob: true
+  file: cargo-make-$TRAVIS_TAG-$TARGET.zip
+  on:
+    condition: $DEPLOY = 1
+    tags: true
+  skip_cleanup: true
