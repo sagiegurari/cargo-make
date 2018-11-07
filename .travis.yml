@@ -3,6 +3,7 @@ matrix:
   include:
   - os: linux
   - os: osx
+  - os: windows
   - rust: stable
   - rust: beta
   - rust: nightly
@@ -10,6 +11,9 @@ matrix:
   - env: DEPLOY=1 TARGET=x86_64-apple-darwin
     script: cargo build --release --target $TARGET
     os: osx
+  - env: DEPLOY=1 TARGET=x86_64-pc-windows-msvc
+    script: cargo build --release --target $TARGET
+    os: windows
   - env: DEPLOY=1 TARGET=x86_64-unknown-linux-musl OPENSSL_DIR=$HOME/openssl-musl
     before_script: "./.ci/setup_musl.sh"
     script: cargo build --release --target $TARGET
