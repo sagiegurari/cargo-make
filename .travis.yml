@@ -9,12 +9,13 @@ matrix:
   - rust: nightly
   - rust: 1.30.0
   - env: DEPLOY=1 TARGET=x86_64-apple-darwin
-    script: cargo build --release --target $TARGET
     os: osx
-  - env: DEPLOY=1 TARGET=x86_64-pc-windows-msvc
     script: cargo build --release --target $TARGET
+  - env: DEPLOY=1 TARGET=x86_64-pc-windows-msvc
     os: windows
+    script: cargo build --release --target $TARGET
   - env: DEPLOY=1 TARGET=x86_64-unknown-linux-musl OPENSSL_DIR=$HOME/openssl-musl
+    os: linux
     before_script: "./.ci/setup_musl.sh"
     script: cargo build --release --target $TARGET
     addons:
