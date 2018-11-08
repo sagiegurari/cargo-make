@@ -37,7 +37,7 @@ before_deploy:
   - name="cargo-make-$TRAVIS_TAG-$TARGET"
   - mkdir $name
   - cp target/$TARGET/release/cargo-make $name/
-  - cp README.md LICENSE-* $name/
+  - cp README.md LICENSE* $name/
   - zip -r $name.zip $name
 deploy:
   api_key:
