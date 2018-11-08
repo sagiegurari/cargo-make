@@ -1,5 +1,7 @@
 language: rust
 matrix:
+  allow_failures:
+    - rust: nightly
   include:
   - os: linux
   - os: osx
@@ -27,9 +29,6 @@ env:
     - RUST_BACKTRACE=1
     - RUSTFLAGS="-C link-dead-code"
     - CARGO_MAKE_RUN_CODECOV=true
-matrix:
-  allow_failures:
-    - rust: nightly
 script:
   - cargo install --debug cargo-make
   - cargo make ci-flow
