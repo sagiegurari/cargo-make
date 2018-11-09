@@ -10,16 +10,21 @@ matrix:
   - rust: beta
   - rust: nightly
   - rust: 1.30.0
-  - env: DEPLOY=1 TARGET=x86_64-apple-darwin
+  - env: DEPLOY=1
     os: osx
-    script: cargo build --release --target $TARGET
-  - env: DEPLOY=1 TARGET=x86_64-pc-windows-msvc
+    script:
+      - cargo install --debug cargo-make
+      - cargo make binary-distribution-ci-flow --env TARGET=x86_64-apple-darwin
+  - env: DEPLOY=1
     os: windows
-    script: cargo build --release --target $TARGET
-  - env: DEPLOY=1 TARGET=x86_64-unknown-linux-musl OPENSSL_DIR=$HOME/openssl-musl
+    script:
+      - cargo install --debug cargo-make
+      - cargo make binary-distribution-ci-flow --env TARGET=x86_64-pc-windows-msvc
+  - env: DEPLOY=1
     os: linux
-    before_script: "./.ci/setup_musl.sh"
-    script: cargo build --release --target $TARGET
+    script:
+      - cargo install --debug cargo-make
+      - cargo make binary-distribution-ci-flow --env TARGET=x86_64-unknown-linux-musl
     addons:
       apt:
         packages:
@@ -32,17 +37,11 @@ env:
 script:
   - cargo install --debug cargo-make
   - cargo make ci-flow
-before_deploy:
-  - name="cargo-make-$TRAVIS_TAG-$TARGET"
-  - mkdir $name
-  - cp target/$TARGET/release/cargo-make $name/
-  - cp README.md LICENSE* $name/
-  - zip -r $name.zip $name
 deploy:
   api_key:
     secure: <API KEY GOES HERE>
   file_glob: true
-  file: cargo-make-$TRAVIS_TAG-$TARGET.zip
+  file: cargo-make-*.zip
   on:
     condition: $DEPLOY = 1
     tags: true
