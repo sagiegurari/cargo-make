@@ -66,21 +66,13 @@ windows_alias = "empty"
 description = "Sets up a musl build environment"
 windows_alias = "empty"
 mac_alias = "empty"
+condition = { env_set = [ "TARGET" ] }
 env = { "OPENSSL_DIR" = "$HOME/openssl-musl", "OPENSSL_VERSION" = "1.1.1" }
 script = ['''
-case "$TARGET" in
-    x86_64-*)
-        OPTIONS=(linux-x86_64)
-        ;;
-    i686-*)
-        OPTIONS=(linux-generic32 -m32 -Wl,-melf_i386)
-        ;;
-esac
-
 rustup target add "$TARGET"
 curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz | tar xzf -
 cd openssl-$OPENSSL_VERSION
-CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 "${OPTIONS[@]}" -fPIC
+CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
 make -j"$(nproc)"
 make install
 ''']
