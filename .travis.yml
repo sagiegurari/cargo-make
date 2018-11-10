@@ -7,28 +7,28 @@ matrix:
   - rust: stable
     os: linux
   - rust: stable
-    os: mac
+    os: osx
   - rust: stable
     os: windows
   # Beta
   - rust: beta
     os: linux
   - rust: beta
-    os: mac
+    os: osx
   - rust: beta
     os: windows
   # Nightly
   - rust: nightly
     os: linux
   - rust: nightly
-    os: mac
+    os: osx
   - rust: nightly
     os: windows
   # Minimum version
   - rust: 1.30.0
     os: linux
   - rust: 1.30.0
-    os: mac
+    os: osx
   - rust: 1.30.0
     os: windows
   # Deploy jobs
