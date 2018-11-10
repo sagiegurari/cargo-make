@@ -63,7 +63,7 @@ deploy:
   api_key:
     secure: <API KEY GOES HERE>
   file_glob: true
-  file: cargo-make-*.zip
+  file: *.zip
   on:
     condition: $DEPLOY = 1
     tags: true
