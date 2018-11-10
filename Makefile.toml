@@ -56,6 +56,15 @@ script = [
       "zip -r $NAME.zip $NAME",
 ]
 
+[tasks.travis-tag-zip-release.windows]
+script = [
+      "export NAME=\"cargo-make-$TRAVIS_TAG-$TARGET\"",
+      "mkdir $NAME",
+      "cp target/$TARGET/release/cargo-make $NAME/",
+      "cp README.md LICENSE $NAME/",
+      "powershell -Path -r $NAME -DestinationPath $NAME.zip ",
+]
+
 [tasks.setup-build-env]
 description = "Sets up any non-rust dependencies in the build environment"
 linux_alias = "setup-musl"
