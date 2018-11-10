@@ -7,6 +7,7 @@
 #[path = "./command_test.rs"]
 mod command_test;
 
+use crate::logger;
 use crate::types::Step;
 use run_script;
 use run_script::{ScriptError, ScriptOptions};
@@ -59,6 +60,20 @@ pub(crate) fn validate_exit_code(code: i32) {
     }
 }
 
+fn is_silent() -> bool {
+    let log_level = logger::get_log_level();
+    is_silent_for_level(log_level)
+}
+
+fn is_silent_for_level(log_level: String) -> bool {
+    let level = logger::get_level(&log_level);
+
+    match level {
+        logger::LogLevel::ERROR => true,
+        _ => false,
+    }
+}
+
 /// Runs the requested script text and returns its output.
 pub(crate) fn run_script_get_output(
     script_lines: &Vec<String>,
@@ -71,6 +86,11 @@ pub(crate) fn run_script_get_output(
     options.capture_output = capture_output;
     options.exit_on_error = true;
     options.print_commands = true;
+
+    if is_silent() {
+        options.capture_output = true;
+        options.print_commands = false;
+    }
 
     run_script::run(script_lines.join("\n").as_str(), cli_arguments, &options)
 }

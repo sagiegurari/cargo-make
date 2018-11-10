@@ -26,6 +26,30 @@ fn get_exit_code_error() {
 }
 
 #[test]
+fn is_silent_for_level_error() {
+    let silent = is_silent_for_level("error".to_string());
+    assert!(silent);
+}
+
+#[test]
+fn is_silent_for_level_info() {
+    let silent = is_silent_for_level("info".to_string());
+    assert!(!silent);
+}
+
+#[test]
+fn is_silent_for_level_debug() {
+    let silent = is_silent_for_level("debug".to_string());
+    assert!(!silent);
+}
+
+#[test]
+fn is_silent_for_level_other() {
+    let silent = is_silent_for_level("test".to_string());
+    assert!(!silent);
+}
+
+#[test]
 fn run_no_command() {
     let task = Task::new();
 

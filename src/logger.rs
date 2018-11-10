@@ -28,7 +28,7 @@ pub(crate) enum LogLevel {
     ERROR,
 }
 
-fn get_level(level_name: &str) -> LogLevel {
+pub(crate) fn get_level(level_name: &str) -> LogLevel {
     let mut level = LogLevel::INFO;
 
     if level_name == "verbose" {
