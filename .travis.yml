@@ -8,6 +8,7 @@ rust:
 os:
   - linux
   - osx
+  - windows
 env:
   global:
     - RUST_BACKTRACE=1

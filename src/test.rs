@@ -5,6 +5,13 @@ use std::env;
 use std::fs::{create_dir_all, remove_dir_all};
 use std::path::PathBuf;
 
+fn is_travis_ci() -> bool {
+    match env::var("TRAVIS") {
+        Ok(value) => value == "true",
+        _ => false,
+    }
+}
+
 pub(crate) fn should_test(panic_if_false: bool) -> bool {
     let rustinfo = rust_info::get();
     let rust_channel = rustinfo.channel.unwrap();
@@ -20,7 +27,11 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
 
 pub(crate) fn get_os_runner() -> String {
     if cfg!(windows) {
-        "powershell.exe".to_string()
+        if is_travis_ci() {
+            "sh".to_string()
+        } else {
+            "powershell.exe".to_string()
+        }
     } else {
         "sh".to_string()
     }
@@ -28,7 +39,11 @@ pub(crate) fn get_os_runner() -> String {
 
 pub(crate) fn get_os_extension() -> String {
     if cfg!(windows) {
-        "ps1".to_string()
+        if is_travis_ci() {
+            "sh".to_string()
+        } else {
+            "ps1".to_string()
+        }
     } else {
         "sh".to_string()
     }
