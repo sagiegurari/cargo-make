@@ -63,7 +63,7 @@ script = [
       "cp target/${TARGET}/release/cargo-make ${NAME}",
       "cp README.md ${NAME}",
       "cp LICENSE ${NAME}",
-      "powershell -Path -r ${NAME} -DestinationPath ${NAME}.zip",
+      "powershell Compress-Archive -Path ${NAME} -DestinationPath ${NAME}.zip",
 ]
 
 [tasks.setup-build-env]
