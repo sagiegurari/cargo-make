@@ -61,7 +61,8 @@ script = [
       "export NAME=\"cargo-make-$TRAVIS_TAG-$TARGET\"",
       "mkdir $NAME",
       "cp target/$TARGET/release/cargo-make $NAME/",
-      "cp README.md LICENSE $NAME/",
+      "cp README.md $NAME/",
+      "cp LICENSE $NAME/",
       "powershell -Path -r $NAME -DestinationPath $NAME.zip ",
 ]
 
