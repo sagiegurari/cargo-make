@@ -1,9 +1,9 @@
 use super::*;
 
+use crate::types::{ConfigSection, Task};
 use indexmap::IndexMap;
 use std::env;
 use std::{thread, time};
-use types::{ConfigSection, Task};
 
 #[test]
 fn get_env_exists() {

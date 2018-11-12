@@ -7,9 +7,9 @@
 #[path = "./gitinfo_test.rs"]
 mod gitinfo_test;
 
-use command;
+use crate::command;
+use crate::types::GitInfo;
 use std::process::Command;
-use types::GitInfo;
 
 fn load_from_git_config(git_info: &mut GitInfo) {
     let result = Command::new("git").arg("config").arg("--list").output();

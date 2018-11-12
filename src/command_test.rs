@@ -1,6 +1,6 @@
 use super::*;
+use crate::types::Task;
 use std::io::ErrorKind;
-use types::Task;
 
 #[test]
 #[should_panic]
@@ -23,6 +23,30 @@ fn validate_exit_code_zero() {
 #[should_panic]
 fn get_exit_code_error() {
     get_exit_code(Err(Error::new(ErrorKind::Other, "test")), false);
+}
+
+#[test]
+fn is_silent_for_level_error() {
+    let silent = is_silent_for_level("error".to_string());
+    assert!(silent);
+}
+
+#[test]
+fn is_silent_for_level_info() {
+    let silent = is_silent_for_level("info".to_string());
+    assert!(!silent);
+}
+
+#[test]
+fn is_silent_for_level_debug() {
+    let silent = is_silent_for_level("debug".to_string());
+    assert!(!silent);
+}
+
+#[test]
+fn is_silent_for_level_other() {
+    let silent = is_silent_for_level("test".to_string());
+    assert!(!silent);
 }
 
 #[test]

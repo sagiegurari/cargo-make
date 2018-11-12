@@ -7,7 +7,7 @@
 #[path = "./shell_to_batch_test.rs"]
 mod shell_to_batch_test;
 
-use command;
+use crate::command;
 use shell2batch;
 
 pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>) {

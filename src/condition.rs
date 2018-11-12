@@ -7,13 +7,13 @@
 #[path = "./condition_test.rs"]
 mod condition_test;
 
-use command;
+use crate::command;
+use crate::types;
+use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
+use crate::version::is_newer;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
-use types;
-use types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
-use version::is_newer;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();

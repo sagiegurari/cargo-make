@@ -7,13 +7,13 @@
 #[path = "./config_test.rs"]
 mod config_test;
 
+use crate::storage;
+use crate::types::GlobalConfig;
 use dirs;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use storage;
 use toml;
-use types::GlobalConfig;
 
 static CONFIG_FILE: &'static str = "config.toml";
 

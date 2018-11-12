@@ -12,7 +12,7 @@ mod shell_to_batch;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use types::Task;
+use crate::types::Task;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types

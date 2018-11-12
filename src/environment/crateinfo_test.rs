@@ -1,6 +1,6 @@
 use super::*;
+use crate::types::{CrateDependencyInfo, Workspace};
 use indexmap::IndexMap;
-use types::{CrateDependencyInfo, Workspace};
 
 #[test]
 fn crate_info_load() {

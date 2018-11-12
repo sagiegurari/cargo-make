@@ -7,12 +7,12 @@
 #[path = "./crateinfo_test.rs"]
 mod crateinfo_test;
 
+use crate::types::{CrateDependency, CrateInfo};
 use glob::glob;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use toml;
-use types::{CrateDependency, CrateInfo};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {

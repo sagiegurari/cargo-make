@@ -945,6 +945,82 @@ The first task **ci-coverage-flow** defines the condition that checks we are on 
 Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
 
+<a name="usage-installing-dependencies"></a>
+### Installing Dependencies
+
+Some tasks will require third party crates or other native tools.<br>
+cargo-make provides multiple ways to setup those dependencies before running the task.
+
+<a name="usage-installing-cargo-plugins"></a>
+#### Cargo Plugins
+
+When a task invokes a cargo plugin using the **command** attribute, for example:
+
+```toml
+[tasks.audit]
+command = "cargo"
+args = ["audit"]
+```
+
+cargo-make will first check the command is available.<br>
+Only if the command is not available, it will attempt to install it by running ```cargo install cargo-<first arg>```<br>
+In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.
+
+<a name="usage-installing-crates"></a>
+#### Crates
+
+cargo-make can verify third party crates are installed if the relevant installation info is provided.<br>
+First it will check the crate is installed, and only if not available it will attempt to install it.<br>
+Installation of third party crates is first done via rustup if the component name is provided.<br>
+If rustup failed or component name is not provided, it will resort to using cargo install command.<br>
+For example:
+
+```toml
+[tasks.format-nightly]
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
+command = "rustfmt"
+```
+
+In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
+to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
+
+<a name="usage-installing-native-dependencies"></a>
+#### Native Dependencies
+
+Native dependencies can also be installed, however it is up to the Makefile author to write the script which checks the dependency exists and if
+not, to install it correctly.<br>
+This is done by setting up an installation script in the **install_script** attribute of the task.<br>
+It is possible to use platform overrides to specify different installation scripts for linux/mac/windows platforms.<br>
+For example:
+
+```toml
+[tasks.coverage-kcov]
+windows_alias = "empty"
+install_script = [
+'''
+command -v kcov >/dev/null 2>&1 || {
+    if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        sudo apt-get update || true
+        sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
+
+        wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
+        unzip v$KCOV_VERSION.zip
+        cd kcov-$KCOV_VERSION
+        mkdir build
+        cd ./build
+        cmake ..
+        make
+        sudo make install
+        cd ../..
+        rm -rf kcov-$KCOV_VERSION
+    fi
+}
+'''
+]
+```
+
+This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>

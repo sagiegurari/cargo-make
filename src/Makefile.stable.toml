@@ -184,7 +184,7 @@ category = "Development"
 description = "Runs the cargo rustfmt plugin."
 category = "Development"
 condition = { channels = [ "stable", "beta" ] }
-install_crate = "rustfmt"
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
 command = "cargo"
 args = ["fmt", "--", "--write-mode=overwrite", "--force"]
 
@@ -192,7 +192,7 @@ args = ["fmt", "--", "--write-mode=overwrite", "--force"]
 description = "Runs the cargo rustfmt nightly plugin."
 category = "Development"
 condition = { channels = [ "nightly" ] }
-install_crate = "rustfmt-nightly"
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
 command = "cargo"
 args = ["fmt"]
 
@@ -419,7 +419,7 @@ category = "CI"
 [tasks.clippy]
 description = "Runs clippy code linter."
 category = "Test"
-install_crate = "clippy"
+install_crate = { crate_name = "clippy", rustup_component_name = "clippy-preview", binary = "cargo-clippy", test_arg = "--help" }
 command = "cargo"
 args = ["clippy"]
 

@@ -1,7 +1,7 @@
 use super::*;
+use crate::types::{CliArgs, GlobalConfig};
 use std::env;
 use std::path::Path;
-use types::{CliArgs, GlobalConfig};
 
 #[test]
 fn run_empty_task() {

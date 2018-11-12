@@ -1,11 +1,11 @@
 use super::*;
-use indexmap::IndexMap;
-use rust_info::types::RustInfo;
-use std::env;
-use types::{
+use crate::types::{
     ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step,
     Task, Workspace,
 };
+use indexmap::IndexMap;
+use rust_info::types::RustInfo;
+use std::env;
 
 #[test]
 #[should_panic]

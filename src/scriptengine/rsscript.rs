@@ -7,13 +7,13 @@
 #[path = "./rsscript_test.rs"]
 mod rsscript_test;
 
-use command;
-use installer;
-use scriptengine::script_utils::{create_script_file, delete_file};
+use crate::command;
+use crate::installer::cargo_plugin_installer;
+use crate::scriptengine::script_utils::{create_script_file, delete_file};
 
 fn install_crate() {
     // install dependencies
-    installer::install_crate("script", "cargo-script", &None, true);
+    cargo_plugin_installer::install_crate("script", "cargo-script", &None, true);
 }
 
 fn create_rust_file(rust_script: &Vec<String>) -> String {

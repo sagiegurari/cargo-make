@@ -1,16 +1,5 @@
 use super::*;
-
-#[test]
-fn is_crate_installed_true() {
-    let output = is_crate_installed("test");
-    assert!(output);
-}
-
-#[test]
-fn is_crate_installed_false() {
-    let output = is_crate_installed("badbadbad");
-    assert!(!output);
-}
+use crate::types::InstallCrateInfo;
 
 #[test]
 fn install_empty() {
@@ -22,7 +11,7 @@ fn install_empty() {
 #[test]
 fn install_crate_already_installed() {
     let mut task = Task::new();
-    task.install_crate = Some("test".to_string());
+    task.install_crate = Some(InstallCrate::Value("test".to_string()));
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
@@ -33,7 +22,7 @@ fn install_crate_already_installed() {
 #[should_panic]
 fn install_crate_missing_cargo_command() {
     let mut task = Task::new();
-    task.install_crate = Some("test".to_string());
+    task.install_crate = Some(InstallCrate::Value("test".to_string()));
     task.command = Some("cargo".to_string());
 
     install(&task);
@@ -59,35 +48,19 @@ fn install_crate_auto_detect_unable_to_install() {
 }
 
 #[test]
-fn get_install_crate_args_no_args() {
-    let all_args = get_install_crate_args("test123", &None);
+fn install_rustup() {
+    let info = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "cargo".to_string(),
+        test_arg: "--version".to_string(),
+        rustup_component_name: None,
+    };
 
-    assert_eq!(all_args.len(), 2);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "test123");
-}
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+    task.install_crate = Some(InstallCrate::Info(info));
 
-#[test]
-fn get_install_crate_args_empty_args() {
-    let all_args = get_install_crate_args("test123", &Some(vec![]));
-
-    assert_eq!(all_args.len(), 2);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "test123");
-}
-
-#[test]
-fn get_install_crate_args_with_args() {
-    let all_args = get_install_crate_args(
-        "test123",
-        &Some(vec!["arg1".to_string(), "arg2".to_string()]),
-    );
-
-    assert_eq!(all_args.len(), 4);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "arg1");
-    assert_eq!(all_args[2], "arg2");
-    assert_eq!(all_args[3], "test123");
+    install(&task);
 }
 
 #[test]
