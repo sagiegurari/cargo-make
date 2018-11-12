@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.15.0
+### v0.15.0 (2018-11-12)
 
 * rustup integration #122
 * add clippy rustup installation config #119
