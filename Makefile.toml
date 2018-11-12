@@ -44,7 +44,7 @@ args = [
 ]
 
 [tasks.zip-release-binary-for-target]
-description = "Zips up the release binary, README, and license(s)."
+description = "Zips up the release binary, README, and license(s)"
 category = "Publish"
 condition = { env_set = [ "TARGET" ] }
 env = { "OUTPUT_NAME" = "${CARGO_MAKE_CRATE_NAME}-v${CARGO_MAKE_CRATE_VERSION}-${TARGET}"}
