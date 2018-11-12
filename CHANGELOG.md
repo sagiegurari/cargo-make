@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.15.1 (2018-11-12)
+
+* Fix github release as part of travis build
+
 ### v0.15.0 (2018-11-12)
 
 * rustup integration #122
