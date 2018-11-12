@@ -28,7 +28,7 @@ dependencies = [
   "clean",
   "setup-build-env",
   "build-release-for-target",
-  "zip-release-binary-for-target",
+  "zip-release-binary-for-target"
 ]
 
 [tasks.build-release-for-target]
@@ -36,11 +36,11 @@ description = "Makes a release build for a given target"
 condition = { env_set = [ "TARGET" ] }
 command = "cargo"
 args = [
-    "build",
-    "--release",
-    "--all-features",
-    "--target",
-    "${TARGET}",
+  "build",
+  "--release",
+  "--all-features",
+  "--target",
+  "${TARGET}"
 ]
 
 [tasks.zip-release-binary-for-target]
@@ -50,20 +50,19 @@ condition = { env_set = [ "TARGET" ] }
 env = { "OUTPUT_NAME" = "${CARGO_MAKE_CRATE_NAME}-v${CARGO_MAKE_CRATE_VERSION}-${TARGET}"}
 script_runner = "@shell"
 script = [
-      "mkdir ${OUTPUT_NAME}",
-      "cp target/$TARGET/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}/",
-      "cp README.md LICENSE* ${OUTPUT_NAME}/",
-      "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
+  "mkdir ${OUTPUT_NAME}",
+  "cp target/$TARGET/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}/",
+  "cp README.md LICENSE* ${OUTPUT_NAME}/",
+  "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
 ]
 
 [tasks.zip-release-binary-for-target.windows]
 script = [
-      "mkdir ${OUTPUT_NAME}",
-      "cp target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}",
-      "cp README.md ${OUTPUT_NAME}",
-      "cp LICENSE ${OUTPUT_NAME}",
-      "powershell Compress-Archive -Path ${OUTPUT_NAME} -DestinationPath ${OUTPUT_NAME}.zip",
-
+  "mkdir ${OUTPUT_NAME}",
+  "cp target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}",
+  "cp README.md ${OUTPUT_NAME}",
+  "cp LICENSE ${OUTPUT_NAME}",
+  "powershell Compress-Archive -Path ${OUTPUT_NAME} -DestinationPath ${OUTPUT_NAME}.zip",
 ]
 
 [tasks.setup-build-env]
@@ -78,11 +77,13 @@ windows_alias = "empty"
 mac_alias = "empty"
 condition = { env_set = [ "TARGET" ] }
 env = { "OPENSSL_DIR" = "${HOME}/openssl-musl", "OPENSSL_VERSION" = "1.0.2l" }
-script = ['''
+script = [
+'''
 rustup target add "$TARGET"
 curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz | tar xzf -
 cd openssl-$OPENSSL_VERSION
 CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
 make -j"$(nproc)"
 make install
-''']
+'''
+]

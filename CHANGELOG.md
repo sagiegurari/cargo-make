@@ -3,6 +3,9 @@
 ### v0.15.0
 
 * rustup integration #122
+* add clippy rustup installation config #119
+* prevent script output if log level is error #117
+* Support uploading binaries to GitHub releases #127 (thanks @LegNeato)
 
 ### v0.14.0 (2018-09-05)
 
