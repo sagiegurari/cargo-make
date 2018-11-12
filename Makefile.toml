@@ -20,15 +20,15 @@ sed -i "s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g" ./README.md
 [tasks.post-docs]
 linux_alias = "generate-readme"
 
-[tasks.travis-zip-release-ci-flow]
-description = "Compiles the binary in release mode and zips it up for TravisCI deploy"
+[tasks.zip-release-ci-flow]
+description = "Compiles the binary in release mode and zips it up"
 category = "CI"
-condition = { env_set = [ "TRAVIS", "TARGET" ] }
+condition = { env_set = ["TARGET"] }
 dependencies = [
-  "clean",
+  #"clean",
   "setup-build-env",
   "build-release-for-target",
-  "travis-tag-zip-release",
+  "zip-release-binary-for-target",
 ]
 
 [tasks.build-release-for-target]
@@ -43,27 +43,26 @@ args = [
     "${TARGET}",
 ]
 
-[tasks.travis-tag-zip-release]
-description = "Zips up the release binary, README, and license(s) for a given TravisCI tag."
+[tasks.zip-release-binary-for-target]
+description = "Zips up the release binary, README, and license(s)."
 category = "Publish"
-condition = { env_set = [ "TRAVIS_TAG", "TARGET" ] }
+condition = { env_set = [ "TARGET" ] }
+env = { "OUTPUT_NAME" = "${CARGO_MAKE_CRATE_NAME}-v${CARGO_MAKE_CRATE_VERSION}-${TARGET}"}
 script_runner = "@shell"
 script = [
-      "export NAME=\"cargo-make-$TRAVIS_TAG-$TARGET\"",
-      "mkdir $NAME",
-      "cp target/$TARGET/release/cargo-make $NAME/",
-      "cp README.md LICENSE* $NAME/",
-      "zip -r $NAME.zip $NAME",
+      "mkdir ${OUTPUT_NAME}",
+      "cp target/$TARGET/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}/",
+      "cp README.md LICENSE* ${OUTPUT_NAME}/",
+      "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
 ]
 
-[tasks.travis-tag-zip-release.windows]
+[tasks.zip-release-binary-for-target.windows]
 script = [
-      "set NAME=cargo-make-${TRAVIS_TAG}-${TARGET}",
-      "mkdir $NAME",
-      "cp target/${TARGET}/release/cargo-make ${NAME}",
-      "cp README.md ${NAME}",
-      "cp LICENSE ${NAME}",
-      "powershell Compress-Archive -Path ${NAME} -DestinationPath ${NAME}.zip",
+      "mkdir ${OUTPUT_NAME}",
+      "cp target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}",
+      "cp README.md ${OUTPUT_NAME}",
+      "cp LICENSE ${OUTPUT_NAME}",
+      "powershell Compress-Archive -Path ${OUTPUT_NAME} -DestinationPath ${OUTPUT_NAME}.zip",
 
 ]
 

@@ -35,15 +35,15 @@ matrix:
   - env: DEPLOY=1
     os: osx
     script:
-      - cargo make travis-zip-release-ci-flow --env TARGET=x86_64-apple-darwin
+      - cargo make zip-release-ci-flow --env TARGET=x86_64-apple-darwin
   - env: DEPLOY=1
     os: windows
     script:
-      - cargo make travis-zip-release-ci-flow --env TARGET=x86_64-pc-windows-msvc
+      - cargo make zip-release-ci-flow --env TARGET=x86_64-pc-windows-msvc
   - env: DEPLOY=1
     os: linux
     script:
-      - cargo make travis-zip-release-ci-flow --env TARGET=x86_64-unknown-linux-musl
+      - cargo make zip-release-ci-flow --env TARGET=x86_64-unknown-linux-musl
     addons:
       apt:
         packages:
