@@ -64,7 +64,6 @@ script = [
       "cp README.md ${NAME}",
       "cp LICENSE ${NAME}",
       "powershell Compress-Archive -Path ${NAME} -DestinationPath ${NAME}.zip",
-      Compress-Archive -Path C:\Stuff -DestinationPath archive.zip
 
 ]
 
