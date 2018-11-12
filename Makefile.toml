@@ -25,7 +25,7 @@ description = "Compiles the binary in release mode and zips it up"
 category = "CI"
 condition = { env_set = ["TARGET"] }
 dependencies = [
-  #"clean",
+  "clean",
   "setup-build-env",
   "build-release-for-target",
   "zip-release-binary-for-target",
