@@ -59,10 +59,10 @@ script = [
 [tasks.zip-release-binary-for-target.windows]
 script = [
   "mkdir ${OUTPUT_NAME}",
-  "cp target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME} ${OUTPUT_NAME}",
+  "cp target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME}.exe ${OUTPUT_NAME}",
   "cp README.md ${OUTPUT_NAME}",
   "cp LICENSE ${OUTPUT_NAME}",
-  "powershell Compress-Archive -Path ${OUTPUT_NAME} -DestinationPath ${OUTPUT_NAME}.zip",
+  "powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip",
 ]
 
 [tasks.setup-build-env]
