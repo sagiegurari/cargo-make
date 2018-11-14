@@ -8,6 +8,7 @@
 
 * [Overview](#overview)
 * [Installation](#installation)
+    * [Binary Release](#installation-binary-release)
 * [Tutorial](#tutorial)
     * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
     * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
@@ -89,6 +90,14 @@ cargo install --force cargo-make
 
 This will install cargo-make in your ~/.cargo/bin.<br>
 Make sure to add ~/.cargo/bin directory to your PATH variable.
+
+<a name="installation-binary-release"></a>
+### Binary Release
+Binary releases are available in the github releases page.<br>
+The following binaries are available for each release:
+
+* x86_64-unknown-linux-musl
+* x86_64-apple-darwin
 
 <a name="tutorial"></a>
 ## Tutorial
@@ -1234,6 +1243,8 @@ before_install:
 ```
 
 **Currently only arm compatible binaries are available.**
+
+For x86 compatible binaries, see [Binary Release](#installation-binary-release) section.
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor

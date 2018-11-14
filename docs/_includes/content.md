@@ -17,6 +17,14 @@ cargo install --force cargo-make
 This will install cargo-make in your ~/.cargo/bin.<br>
 Make sure to add ~/.cargo/bin directory to your PATH variable.
 
+<a name="installation-binary-release"></a>
+### Binary Release
+Binary releases are available in the github releases page.<br>
+The following binaries are available for each release:
+
+* x86_64-unknown-linux-musl
+* x86_64-apple-darwin
+
 <a name="tutorial"></a>
 ## Tutorial
 Below is a list of articles which explain most of the cargo-make features.
@@ -1161,6 +1169,8 @@ before_install:
 ```
 
 **Currently only arm compatible binaries are available.**
+
+For x86 compatible binaries, see [Binary Release](#installation-binary-release) section.
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor

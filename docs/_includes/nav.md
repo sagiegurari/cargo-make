@@ -1,6 +1,7 @@
 
 * [Overview](#overview)
 * [Installation](#installation)
+    * [Binary Release](#installation-binary-release)
 * [Tutorial](#tutorial)
     * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
     * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
