@@ -32,12 +32,12 @@ glob = "^0.2.11"
 indexmap = { version = "^1.0.2", features = ["serde-1"] }
 log = "^0.4.6"
 rand = "^0.6.0"
-run_script = "^0.2.0"
+run_script = "^0.2.1"
 rust_info = "^0.2.0"
 semver = "^0.9.0"
 serde = "^1.0.80"
 serde_derive = "^1.0.80"
-shell2batch = "^0.2.2"
+shell2batch = "^0.2.3"
 toml = "^0.4.8"
 
 [features]
