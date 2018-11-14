@@ -204,6 +204,12 @@ dependencies = [
     "format-nightly"
 ]
 
+[tasks.check-format]
+description = "Runs cargo fmt to check appropriate code format."
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
+command = "cargo"
+args = ["fmt", "--", "--check"]
+
 [tasks.post-format]
 category = "Development"
 
