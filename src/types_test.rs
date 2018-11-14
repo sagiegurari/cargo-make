@@ -165,6 +165,134 @@ fn install_crate_info_eq_different_component_value() {
 }
 
 #[test]
+fn install_rustup_component_info_eq_same_all() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_same_no_binary() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: None,
+        test_arg: Some("--help".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: None,
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_same_no_test_arg() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: None,
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: None,
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_different_component() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component1".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component2".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_different_binary() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin1".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin2".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_different_binary_type() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: None,
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_different_test_arg() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--hel1p".to_string()),
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help2".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_rustup_component_info_eq_different_test_arg_type() {
+    let first = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: None,
+    };
+    let second = InstallRustupComponentInfo {
+        rustup_component_name: "component".to_string(),
+        binary: None,
+        test_arg: Some("--help".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
 fn install_crate_eq_same_value() {
     let first = InstallCrate::Value("crate".to_string());
     let second = InstallCrate::Value("crate".to_string());
@@ -180,8 +308,8 @@ fn install_crate_eq_same_info() {
         test_arg: "--help".to_string(),
         rustup_component_name: Some("value".to_string()),
     };
-    let first = InstallCrate::Info(info.clone());
-    let second = InstallCrate::Info(info.clone());
+    let first = InstallCrate::CrateInfo(info.clone());
+    let second = InstallCrate::CrateInfo(info.clone());
 
     assert_eq!(first, second);
 }
@@ -195,18 +323,34 @@ fn install_crate_eq_different_value() {
 }
 
 #[test]
-fn install_crate_eq_different_info() {
-    let first = InstallCrate::Info(InstallCrateInfo {
+fn install_crate_eq_different_crate_info() {
+    let first = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test1".to_string(),
         binary: "bin".to_string(),
         test_arg: "--help".to_string(),
         rustup_component_name: Some("value".to_string()),
     });
-    let second = InstallCrate::Info(InstallCrateInfo {
+    let second = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test2".to_string(),
         binary: "bin".to_string(),
         test_arg: "--help".to_string(),
         rustup_component_name: Some("value".to_string()),
+    });
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_eq_different_rustup_component_info() {
+    let first = InstallCrate::RustupComponentInfo(InstallRustupComponentInfo {
+        rustup_component_name: "component1".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
+    });
+    let second = InstallCrate::RustupComponentInfo(InstallRustupComponentInfo {
+        rustup_component_name: "component2".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some("--help".to_string()),
     });
 
     assert!(first != second);

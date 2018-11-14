@@ -43,6 +43,7 @@
     * [Installing Dependencies](#usage-installing-dependencies)
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
+        * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
@@ -1053,6 +1054,26 @@ command = "rustfmt"
 
 In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
 to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
+
+<a name="usage-installing-rustup-components"></a>
+#### Rustup Components
+
+Rustup components that do not deployed as crates or components which are pure sources, can also be installed via cargo-make.<br>
+The following example show how to install a rustup component with binaries:
+
+```toml
+[tasks.install-llvm-tools]
+install_crate = { rustup_component_name = "llvm-tools", binary = "llvm-nm", test_arg = "--help" }
+```
+
+However, some rustup components are pure sources and therefore in those cases, cargo-make cannot verify that they are already installed, and
+will attempt to install them each time.<br>
+Example:
+
+```toml
+[tasks.install-source-component]
+install_crate = { rustup_component_name = "some_source_only_component" }
+```
 
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies

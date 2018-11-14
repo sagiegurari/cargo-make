@@ -314,7 +314,7 @@ pub enum EnvValue {
 pub struct InstallCrateInfo {
     /// The provided crate to install
     pub crate_name: String,
-    /// If defined, the provided component to install via rustup
+    /// If defined, the component to install via rustup
     pub rustup_component_name: Option<String>,
     /// The binary file name to be used to test if the crate is already installed
     pub binary: String,
@@ -346,13 +346,60 @@ impl PartialEq for InstallCrateInfo {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+/// Holds instructions how to install a rustup component
+pub struct InstallRustupComponentInfo {
+    /// The component to install via rustup
+    pub rustup_component_name: String,
+    /// The binary file name to be used to test if the crate is already installed
+    pub binary: Option<String>,
+    /// Test argument that will be used to check that the crate is installed
+    pub test_arg: Option<String>,
+}
+
+impl PartialEq for InstallRustupComponentInfo {
+    fn eq(&self, other: &InstallRustupComponentInfo) -> bool {
+        if self.rustup_component_name != other.rustup_component_name {
+            false
+        } else {
+            let same = match self.binary {
+                Some(ref value) => match other.binary {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.binary {
+                    None => true,
+                    _ => false,
+                },
+            };
+
+            if same {
+                match self.test_arg {
+                    Some(ref value) => match other.test_arg {
+                        Some(ref other_value) => value == other_value,
+                        None => false,
+                    },
+                    None => match other.test_arg {
+                        None => true,
+                        _ => false,
+                    },
+                }
+            } else {
+                false
+            }
+        }
+    }
+}
+
+#[derive(Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Install crate name or params
 pub enum InstallCrate {
     /// The value as string
     Value(String),
     /// Install crate params
-    Info(InstallCrateInfo),
+    CrateInfo(InstallCrateInfo),
+    /// Install rustup component params
+    RustupComponentInfo(InstallRustupComponentInfo),
 }
 
 impl PartialEq for InstallCrate {
@@ -362,8 +409,12 @@ impl PartialEq for InstallCrate {
                 InstallCrate::Value(other_value) => value == other_value,
                 _ => false,
             },
-            InstallCrate::Info(info) => match other {
-                InstallCrate::Info(other_info) => info == other_info,
+            InstallCrate::CrateInfo(info) => match other {
+                InstallCrate::CrateInfo(other_info) => info == other_info,
+                _ => false,
+            },
+            InstallCrate::RustupComponentInfo(info) => match other {
+                InstallCrate::RustupComponentInfo(other_info) => info == other_info,
                 _ => false,
             },
         }

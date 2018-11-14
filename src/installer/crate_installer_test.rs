@@ -1,24 +1,6 @@
 use super::*;
 
 #[test]
-fn is_crate_installed_true() {
-    let output = is_crate_installed("cargo", "--version");
-    assert!(output);
-}
-
-#[test]
-fn is_crate_installed_false() {
-    let output = is_crate_installed("cargo_bad", "--version");
-    assert!(!output);
-}
-
-#[test]
-fn is_crate_installed_non_zero() {
-    let output = is_crate_installed("exit", "1");
-    assert!(!output);
-}
-
-#[test]
 fn invoke_rustup_install_none() {
     let info = InstallCrateInfo {
         crate_name: "bad_crate_name".to_string(),
@@ -57,7 +39,7 @@ fn invoke_cargo_install_test() {
 }
 
 #[test]
-fn install_crate_test() {
+fn install_test() {
     let info = InstallCrateInfo {
         crate_name: "bad_crate_name".to_string(),
         binary: "cargo_bad".to_string(),
@@ -65,5 +47,5 @@ fn install_crate_test() {
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
     };
 
-    install_crate(&info, &None, false);
+    install(&info, &None, false);
 }

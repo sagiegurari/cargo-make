@@ -36,6 +36,7 @@
     * [Installing Dependencies](#usage-installing-dependencies)
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
+        * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
