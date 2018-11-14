@@ -38,6 +38,8 @@
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
+        * [Installation Priorities](#usage-installing-dependencies-priorities)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)

@@ -45,6 +45,8 @@
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
+        * [Installation Priorities](#usage-installing-dependencies-priorities)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
@@ -1019,8 +1021,15 @@ We can't define the condition directly on the **codecov-flow** task, as it will 
 <a name="usage-installing-dependencies"></a>
 ### Installing Dependencies
 
-Some tasks will require third party crates or other native tools.<br>
+Some tasks will require third party crates, rustup components or other native tools.<br>
 cargo-make provides multiple ways to setup those dependencies before running the task.
+
+* [Cargo Plugins](#usage-installing-cargo-plugins)
+* [Crates](#usage-installing-crates)
+* [Rustup Components](#usage-installing-rustup-components)
+* [Native Dependencies](#usage-installing-native-dependencies)
+* [Installation Priorities](#usage-installing-dependencies-priorities)
+* [Multiple Installations](#usage-installing-dependencies-multiple)
 
 <a name="usage-installing-cargo-plugins"></a>
 #### Cargo Plugins
@@ -1035,7 +1044,8 @@ args = ["audit"]
 
 cargo-make will first check the command is available.<br>
 Only if the command is not available, it will attempt to install it by running ```cargo install cargo-<first arg>```<br>
-In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.
+In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
+You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
 <a name="usage-installing-crates"></a>
 #### Crates
@@ -1058,21 +1068,24 @@ to install via rustup the component **rustfmt-preview** and if failed, it will t
 <a name="usage-installing-rustup-components"></a>
 #### Rustup Components
 
-Rustup components that do not deployed as crates or components which are pure sources, can also be installed via cargo-make.<br>
+Rustup components that are not deployed as crates or components which are pure sources (no executable binary), can also be installed via cargo-make.<br>
 The following example show how to install a rustup component with binaries:
 
 ```toml
-[tasks.install-llvm-tools]
-install_crate = { rustup_component_name = "llvm-tools", binary = "llvm-nm", test_arg = "--help" }
+[tasks.install-rls]
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
 ```
 
-However, some rustup components are pure sources and therefore in those cases, cargo-make cannot verify that they are already installed, and
-will attempt to install them each time.<br>
+In this example, cargo-make will first check if **rls** binary is available and only if failed to execute it, it will
+install the **rls** component using rustup.<br>
+<br>
+Some rustup components are pure sources and therefore in those cases, cargo-make cannot verify that they are already installed, and
+will attempt to install them every time.<br>
 Example:
 
 ```toml
-[tasks.install-source-component]
-install_crate = { rustup_component_name = "some_source_only_component" }
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
 ```
 
 <a name="usage-installing-native-dependencies"></a>
@@ -1111,6 +1124,53 @@ command -v kcov >/dev/null 2>&1 || {
 ```
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
+
+<a name="usage-installing-dependencies-priorities"></a>
+### Installation Priorities
+
+Only one type of installation will be invoked per task.<br>
+The following defines the installation types sorted by priority for which cargo-make uses to decide which installation flow to invoke:
+
+* **install_crate** - Enables to install crates and rustup components.
+* **install_script** - Custom script which can be used to install or run anything that is needed by the task command.
+* **automatic cargo plugin** - In case the command is **cargo**, cargo-make will check which cargo plugin to automatically install (if needed).
+
+In case multiple installation types are defined (for example both install_crate and install_script) only one installation type will be invoked based on the above priority list.
+
+<a name="usage-installing-dependencies-multiple"></a>
+### Multiple Installations
+
+In some cases, tasks require multiple items installed in order to run properly.<br>
+For example, you might need rustup component **rls** and **rust-src** and cargo plugin **cargo-xbuild** at the same task.<br>
+In order to achieve this, you can split the task to invocation task and installation task and set the installation task as a dependency.<br>
+The following example defines a flow of two similar tasks that have the same dependencies: cargo-xbuild crate, rls rustup binary component and rust-src rustup sources only component.<br>
+You can have both rustup dependencies as an installation only tasks which are set as dependencies for the xbuild tasks.<br>
+Since dependencies are only invoked once, it will also ensure that those rustup components are not installed twice.
+
+```toml
+[tasks.install-rls]
+# install rls-preview only if needed
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
+
+[tasks.install-rust-src]
+# always install rust-src via rustup component add
+install_crate = { rustup_component_name = "rust-src" }
+
+[tasks.xbuild1]
+# run cargo xbuild, if xbuild is not installed, it will be automatically installed for you
+command = "cargo"
+args = [ "xbuild", "some arg" ]
+dependencies = [ "install-rls", "install-rust-src" ]
+
+[tasks.xbuild2]
+# run cargo xbuild, if xbuild is not installed, it will be automatically installed for you
+command = "cargo"
+args = [ "xbuild", "another arg" ]
+dependencies = [ "install-rls", "install-rust-src" ]
+
+[tasks.myflow]
+dependencies = [ "xbuild1", "xbuild2" ]
+```
 
 <a name="usage-ci"></a>
 ### Continuous Integration
