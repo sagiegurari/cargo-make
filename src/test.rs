@@ -61,6 +61,16 @@ pub(crate) fn get_temp_test_directory() -> PathBuf {
     directory
 }
 
+pub(crate) fn is_not_rust_stable() -> bool {
+    let rustinfo = rust_info::get();
+    let rust_channel = rustinfo.channel.unwrap();
+    match rust_channel {
+        RustChannel::Stable => false,
+        RustChannel::Beta => true,
+        RustChannel::Nightly => true,
+    }
+}
+
 pub(crate) fn get_toolchain() -> String {
     let rustinfo = rust_info::get();
     let rust_channel = rustinfo.channel.unwrap();

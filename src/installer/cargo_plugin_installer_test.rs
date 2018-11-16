@@ -15,18 +15,22 @@ fn is_crate_installed_false() {
 
 #[test]
 fn is_crate_installed_with_toolchain_true() {
-    let toolchain = test::get_toolchain();
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
 
-    let output = is_crate_installed(&Some(toolchain), "test");
-    assert!(output);
+        let output = is_crate_installed(&Some(toolchain), "test");
+        assert!(output);
+    }
 }
 
 #[test]
 fn is_crate_installed_with_toolchain_false() {
-    let toolchain = test::get_toolchain();
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
 
-    let output = is_crate_installed(&Some(toolchain), "badbadbad");
-    assert!(!output);
+        let output = is_crate_installed(&Some(toolchain), "badbadbad");
+        assert!(!output);
+    }
 }
 
 #[test]

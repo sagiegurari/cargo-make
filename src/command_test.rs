@@ -78,19 +78,21 @@ fn run_command() {
 
 #[test]
 fn run_command_for_toolchain() {
-    let toolchain = test::get_toolchain();
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
 
-    let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
-    task.toolchain = Some(toolchain.to_string());
+        let mut task = Task::new();
+        task.command = Some("echo".to_string());
+        task.args = Some(vec!["test".to_string()]);
+        task.toolchain = Some(toolchain.to_string());
 
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
+        let step = Step {
+            name: "test".to_string(),
+            config: task,
+        };
 
-    run(&step, &vec![]);
+        run(&step, &vec![]);
+    }
 }
 
 #[test]

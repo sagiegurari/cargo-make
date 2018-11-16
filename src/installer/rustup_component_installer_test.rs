@@ -21,18 +21,22 @@ fn is_installed_non_zero() {
 
 #[test]
 fn is_installed_with_toolchain_true() {
-    let toolchain = test::get_toolchain();
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
 
-    let output = is_installed(&Some(toolchain), "cargo", "--version");
-    assert!(output);
+        let output = is_installed(&Some(toolchain), "cargo", "--version");
+        assert!(output);
+    }
 }
 
 #[test]
 fn is_installed_with_toolchain_false() {
-    let toolchain = test::get_toolchain();
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
 
-    let output = is_installed(&Some(toolchain), "cargo_bad", "--version");
-    assert!(!output);
+        let output = is_installed(&Some(toolchain), "cargo_bad", "--version");
+        assert!(!output);
+    }
 }
 
 #[test]
