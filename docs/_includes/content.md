@@ -46,6 +46,7 @@ The articles are missing some of the new features which have been added after th
 * [Private Tasks](#usage-private-tasks)
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 * [Rust Version Conditions](#usage-conditions-structure)
+* [Toolchain](#usage-toochain)
 
 <a name="usage"></a>
 ## Usage
