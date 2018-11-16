@@ -216,6 +216,30 @@ dependencies = [
     "post-format"
 ]
 
+[tasks.check-format-stable]
+description = "Runs format check using the cargo rustfmt plugin."
+category = "Development"
+condition = { channels = [ "stable", "beta" ] }
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
+command = "cargo"
+args = ["fmt", "--", "--check"]
+
+[tasks.check-format-nightly]
+description = "Runs format check using the cargo rustfmt nightly plugin."
+category = "Development"
+condition = { channels = [ "nightly" ] }
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
+command = "cargo"
+args = ["fmt", "--", "--check"]
+
+[tasks.check-format]
+description = "Runs format check using the cargo rustfmt plugin."
+category = "Development"
+dependencies = [
+    "check-format-stable",
+    "check-format-nightly"
+]
+
 [tasks.pre-docs]
 category = "Documentation"
 
