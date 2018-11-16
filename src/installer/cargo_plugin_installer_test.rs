@@ -1,14 +1,31 @@
 use super::*;
+use crate::test;
 
 #[test]
 fn is_crate_installed_true() {
-    let output = is_crate_installed("test");
+    let output = is_crate_installed(&None, "test");
     assert!(output);
 }
 
 #[test]
 fn is_crate_installed_false() {
-    let output = is_crate_installed("badbadbad");
+    let output = is_crate_installed(&None, "badbadbad");
+    assert!(!output);
+}
+
+#[test]
+fn is_crate_installed_with_toolchain_true() {
+    let toolchain = test::get_toolchain();
+
+    let output = is_crate_installed(&Some(toolchain), "test");
+    assert!(output);
+}
+
+#[test]
+fn is_crate_installed_with_toolchain_false() {
+    let toolchain = test::get_toolchain();
+
+    let output = is_crate_installed(&Some(toolchain), "badbadbad");
     assert!(!output);
 }
 

@@ -8,11 +8,27 @@
 mod rustup_component_installer_test;
 
 use crate::command;
+use crate::toolchain::wrap_command;
 use crate::types::InstallRustupComponentInfo;
 use std::process::Command;
 
-pub(crate) fn is_installed(binary: &str, test_arg: &str) -> bool {
-    let result = Command::new(binary).arg(test_arg).output();
+pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_arg: &str) -> bool {
+    let mut command_struct = match toolchain {
+        Some(ref toolchain_string) => {
+            let command_spec = wrap_command(toolchain_string, binary, &None);
+            let mut cmd = Command::new(command_spec.command);
+
+            let args_vec = command_spec.args.unwrap();
+            for arg in args_vec.iter() {
+                cmd.arg(arg);
+            }
+
+            cmd
+        }
+        None => Command::new(binary),
+    };
+
+    let result = command_struct.arg(test_arg).output();
 
     match result {
         Ok(output) => {
@@ -34,12 +50,23 @@ pub(crate) fn is_installed(binary: &str, test_arg: &str) -> bool {
     }
 }
 
-pub(crate) fn invoke_rustup_install(info: &InstallRustupComponentInfo) -> bool {
-    let result = Command::new("rustup")
-        .arg("component")
-        .arg("add")
-        .arg(&info.rustup_component_name)
-        .output();
+pub(crate) fn invoke_rustup_install(
+    toolchain: &Option<String>,
+    info: &InstallRustupComponentInfo,
+) -> bool {
+    let mut command_spec = Command::new("rustup");
+    command_spec.arg("component");
+    command_spec.arg("add");
+
+    match toolchain {
+        Some(ref toolchain_string) => {
+            command_spec.arg("--toolchain");
+            command_spec.arg(toolchain_string);
+        }
+        None => {}
+    };
+
+    let result = command_spec.arg(&info.rustup_component_name).output();
 
     match result {
         Ok(output) => {
@@ -71,10 +98,14 @@ pub(crate) fn invoke_rustup_install(info: &InstallRustupComponentInfo) -> bool {
     }
 }
 
-pub(crate) fn install(info: &InstallRustupComponentInfo, validate: bool) -> bool {
+pub(crate) fn install(
+    toolchain: &Option<String>,
+    info: &InstallRustupComponentInfo,
+    validate: bool,
+) -> bool {
     let mut installed = match info.binary {
         Some(ref binary) => match info.test_arg {
-            Some(ref test_arg) => is_installed(binary, test_arg),
+            Some(ref test_arg) => is_installed(&toolchain, binary, test_arg),
             None => false,
         },
         None => false,
@@ -86,7 +117,7 @@ pub(crate) fn install(info: &InstallRustupComponentInfo, validate: bool) -> bool
             &info.rustup_component_name
         );
 
-        installed = invoke_rustup_install(&info);
+        installed = invoke_rustup_install(&toolchain, &info);
 
         if validate && !installed {
             error!(

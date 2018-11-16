@@ -1,20 +1,45 @@
 use super::*;
+use crate::test;
 
 #[test]
 fn is_installed_true() {
-    let output = is_installed("cargo", "--version");
+    let output = is_installed(&None, "cargo", "--version");
     assert!(output);
 }
 
 #[test]
 fn is_installed_false() {
-    let output = is_installed("cargo_bad", "--version");
+    let output = is_installed(&None, "cargo_bad", "--version");
     assert!(!output);
 }
 
 #[test]
 fn is_installed_non_zero() {
-    let output = is_installed("exit", "1");
+    let output = is_installed(&None, "exit", "1");
+    assert!(!output);
+}
+
+#[test]
+fn is_installed_with_toolchain_true() {
+    let toolchain = test::get_toolchain();
+
+    let output = is_installed(&Some(toolchain), "cargo", "--version");
+    assert!(output);
+}
+
+#[test]
+fn is_installed_with_toolchain_false() {
+    let toolchain = test::get_toolchain();
+
+    let output = is_installed(&Some(toolchain), "cargo_bad", "--version");
+    assert!(!output);
+}
+
+#[test]
+fn is_installed_with_toolchain_non_zero() {
+    let toolchain = test::get_toolchain();
+
+    let output = is_installed(&Some(toolchain), "exit", "1");
     assert!(!output);
 }
 
@@ -26,7 +51,21 @@ fn invoke_rustup_install_fail() {
         test_arg: Some("--help".to_string()),
     };
 
-    let output = invoke_rustup_install(&info);
+    let output = invoke_rustup_install(&None, &info);
+    assert!(!output);
+}
+
+#[test]
+fn invoke_rustup_install_with_toolchain_fail() {
+    let toolchain = test::get_toolchain();
+
+    let info = InstallRustupComponentInfo {
+        rustup_component_name: "unknown_rustup_component_test".to_string(),
+        binary: Some("cargo_bad".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+
+    let output = invoke_rustup_install(&Some(toolchain), &info);
     assert!(!output);
 }
 
@@ -38,6 +77,20 @@ fn install_test() {
         test_arg: Some("--help".to_string()),
     };
 
-    let output = install(&info, false);
+    let output = install(&None, &info, false);
+    assert!(!output);
+}
+
+#[test]
+fn install_with_toolchain_test() {
+    let toolchain = test::get_toolchain();
+
+    let info = InstallRustupComponentInfo {
+        rustup_component_name: "unknown_rustup_component_test".to_string(),
+        binary: Some("cargo_bad".to_string()),
+        test_arg: Some("--help".to_string()),
+    };
+
+    let output = install(&Some(toolchain), &info, false);
     assert!(!output);
 }

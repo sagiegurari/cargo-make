@@ -474,6 +474,8 @@ pub struct Task {
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
+    /// The rust toolchain used to invoke the command or install the needed crates/components
+    pub toolchain: Option<String>,
     /// override task if runtime OS is Linux (takes precedence over alias)
     pub linux: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Windows (takes precedence over alias)
@@ -511,6 +513,7 @@ impl Task {
             script_extension: None,
             run_task: None,
             dependencies: None,
+            toolchain: None,
             linux: None,
             windows: None,
             mac: None,
@@ -676,6 +679,12 @@ impl Task {
             self.dependencies = None;
         }
 
+        if task.toolchain.is_some() {
+            self.toolchain = task.toolchain.clone();
+        } else if override_values {
+            self.toolchain = None;
+        }
+
         if task.linux.is_some() {
             self.linux = task.linux.clone();
         } else if override_values {
@@ -753,6 +762,7 @@ impl Task {
                     script_extension: override_task.script_extension.clone(),
                     run_task: override_task.run_task.clone(),
                     dependencies: override_task.dependencies.clone(),
+                    toolchain: override_task.toolchain.clone(),
                     linux: None,
                     windows: None,
                     mac: None,
@@ -851,6 +861,8 @@ pub struct PlatformOverrideTask {
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
+    /// The rust toolchain used to invoke the command or install the needed crates/components
+    pub toolchain: Option<String>,
 }
 
 impl PlatformOverrideTask {
@@ -932,6 +944,10 @@ impl PlatformOverrideTask {
 
             if self.dependencies.is_none() && task.dependencies.is_some() {
                 self.dependencies = task.dependencies.clone();
+            }
+
+            if self.toolchain.is_none() && task.toolchain.is_some() {
+                self.toolchain = task.toolchain.clone();
             }
         }
     }
@@ -1088,4 +1104,13 @@ pub struct Step {
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>,
+}
+
+#[derive(Debug)]
+/// Command info
+pub struct CommandSpec {
+    /// The command to execute
+    pub command: String,
+    /// The command args
+    pub args: Option<Vec<String>>,
 }

@@ -1107,6 +1107,47 @@ dependencies = [ "install-rls", "install-rust-src" ]
 dependencies = [ "xbuild1", "xbuild2" ]
 ```
 
+<a name="usage-toochain"></a>
+### Toolchain
+cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
+the **toolchain** attribute as part of the task definition.<br>
+The following example shows how to print both stable and nightly rustc versions currently installed:
+
+```toml
+[tasks.rustc-version-stable]
+toolchain = "stable"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-nightly]
+toolchain = "nightly"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-flow]
+dependencies = [
+    "rustc-version-stable",
+    "rustc-version-nightly"
+]
+```
+
+An example output of the above **rustc-version-flow** is:
+
+```console
+[cargo-make] INFO - Task: rustc-version-flow
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: rustc-version-stable
+[cargo-make] INFO - Execute Command: "rustup" "run" "stable" "rustc" "--version"
+rustc 1.30.1 (1433507eb 2018-11-07)
+[cargo-make] INFO - Running Task: rustc-version-nightly
+[cargo-make] INFO - Execute Command: "rustup" "run" "nightly" "rustc" "--version"
+rustc 1.32.0-nightly (451987d86 2018-11-01)
+[cargo-make] INFO - Running Task: rustc-version-flow
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 2 seconds.
+```
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>

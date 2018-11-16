@@ -58,5 +58,17 @@ pub(crate) fn get_temp_test_directory() -> PathBuf {
     }
     create_dir_all(&directory).unwrap();
 
-    return directory;
+    directory
+}
+
+pub(crate) fn get_toolchain() -> String {
+    let rustinfo = rust_info::get();
+    let rust_channel = rustinfo.channel.unwrap();
+    let toolchain = match rust_channel {
+        RustChannel::Stable => "stable",
+        RustChannel::Beta => "beta",
+        RustChannel::Nightly => "nightly",
+    };
+
+    toolchain.to_string()
 }

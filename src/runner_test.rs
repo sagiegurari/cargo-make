@@ -301,6 +301,7 @@ fn create_execution_plan_platform_disabled() {
         script_extension: None,
         run_task: None,
         dependencies: None,
+        toolchain: None,
     });
     task.windows = Some(PlatformOverrideTask {
         clear: Some(true),
@@ -321,6 +322,7 @@ fn create_execution_plan_platform_disabled() {
         script_extension: None,
         run_task: None,
         dependencies: None,
+        toolchain: None,
     });
     task.mac = Some(PlatformOverrideTask {
         clear: Some(true),
@@ -341,6 +343,7 @@ fn create_execution_plan_platform_disabled() {
         script_extension: None,
         run_task: None,
         dependencies: None,
+        toolchain: None,
     });
 
     config.tasks.insert("test".to_string(), task);

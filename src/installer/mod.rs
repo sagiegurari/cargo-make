@@ -20,6 +20,11 @@ use crate::types::{InstallCrate, Task};
 pub(crate) fn install(task_config: &Task) {
     let validate = !task_config.is_force();
 
+    let toolchain = match task_config.toolchain {
+        Some(ref value) => Some(value.to_string()),
+        None => None,
+    };
+
     match task_config.install_crate {
         Some(ref install_crate_info) => match install_crate_info {
             InstallCrate::Value(ref crate_name) => {
@@ -32,17 +37,21 @@ pub(crate) fn install(task_config: &Task) {
                 };
 
                 cargo_plugin_installer::install_crate(
+                    &toolchain,
                     cargo_command,
                     crate_name,
                     &task_config.install_crate_args,
                     validate,
                 );
             }
-            InstallCrate::CrateInfo(ref install_info) => {
-                crate_installer::install(install_info, &task_config.install_crate_args, validate)
-            }
+            InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
+                &toolchain,
+                install_info,
+                &task_config.install_crate_args,
+                validate,
+            ),
             InstallCrate::RustupComponentInfo(ref install_info) => {
-                rustup_component_installer::install(install_info, validate);
+                rustup_component_installer::install(&toolchain, install_info, validate);
             }
         },
         None => {
@@ -67,6 +76,7 @@ pub(crate) fn install(task_config: &Task) {
                                         crate_name = crate_name + &args[0];
 
                                         cargo_plugin_installer::install_crate(
+                                            &toolchain,
                                             &args[0],
                                             &crate_name,
                                             &task_config.install_crate_args,

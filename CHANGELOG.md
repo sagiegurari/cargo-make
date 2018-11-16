@@ -3,6 +3,7 @@
 ### v0.15.2
 
 * Rustup integration for non-binary/non-cargo dependencies #139
+* Rust toolchain support #132
 * Add fmt check task #138
 
 ### v0.15.1 (2018-11-12)
