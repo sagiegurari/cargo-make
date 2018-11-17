@@ -24,6 +24,9 @@ The following binaries are available for each release:
 
 * x86_64-unknown-linux-musl
 * x86_64-apple-darwin
+* x86_64-pc-windows-msvc
+
+Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
 
 <a name="tutorial"></a>
 ## Tutorial
@@ -1172,7 +1175,7 @@ env:
     - CARGO_MAKE_RUN_CODECOV="true"
 ```
 
-You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/cargo-make/blob/master/.travis.yml)
+You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/rust_info/blob/master/.travis.yml)
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
@@ -1181,38 +1184,6 @@ script:
   - cargo install --debug cargo-make
   - cargo make --no-workspace workspace-ci-flow
 ```
-
-For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
-
-```yaml
-script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{{ site.version }}
-  - chmod 777 ~/.cargo/bin/cargo-make
-  - cargo-make make ci-flow
-```
-
-The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
-
-```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v{{ site.version }}
-```
-
-In order to pull the latest prebuild cargo-make binary, use the following example:
-
-```yaml
-env:
-  global:
-  - CARGO_MAKE_URL="https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v"
-
-before_install:
-  - curl -SsL $CARGO_MAKE_URL$(cargo search cargo-make | grep cargo-make | cut -d\" -f2) > ~/.cargo/bin/cargo-make
-  - chmod 777 ~/.cargo/bin/cargo-make
-  - cargo-make make ci-flow
-```
-
-**Currently only arm compatible binaries are available.**
-
-For x86 compatible binaries, see [Binary Release](#installation-binary-release) section.
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
