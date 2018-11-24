@@ -285,17 +285,33 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     }
 }
 
+fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
+    let mut path_str = directory_path_buf.to_str().unwrap_or(".");
+
+    let prefix = r"\\?\";
+    if path_str.starts_with(prefix) {
+        path_str = &path_str[prefix.len()..];
+        PathBuf::from(path_str)
+    } else {
+        directory_path_buf.clone()
+    }
+}
+
 pub(crate) fn setup_cwd(cwd: Option<&str>) {
     let directory = cwd.unwrap_or(".");
 
     debug!("Changing working directory to: {}", &directory);
 
     let mut directory_path_buf = PathBuf::from(&directory);
-    if !cfg!(windows) {
-        directory_path_buf = directory_path_buf
-            .canonicalize()
-            .unwrap_or(directory_path_buf);
+    directory_path_buf = directory_path_buf
+        .canonicalize()
+        .unwrap_or(directory_path_buf);
+
+    // remove UNC path for windows
+    if cfg!(windows) {
+        directory_path_buf = remove_unc_prefix(&directory_path_buf);
     }
+
     let directory_path = directory_path_buf.as_path();
 
     match env::set_current_dir(&directory_path) {
