@@ -8,6 +8,7 @@
 
 * [Overview](#overview)
 * [Installation](#installation)
+    * [Binary Release](#installation-binary-release)
 * [Tutorial](#tutorial)
     * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
     * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
@@ -43,7 +44,11 @@
     * [Installing Dependencies](#usage-installing-dependencies)
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
+        * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
+        * [Installation Priorities](#usage-installing-dependencies-priorities)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)(#usage-conditions-and-subtasks)
+    * [Toolchain](#usage-toochain)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
@@ -87,6 +92,17 @@ cargo install --force cargo-make
 This will install cargo-make in your ~/.cargo/bin.<br>
 Make sure to add ~/.cargo/bin directory to your PATH variable.
 
+<a name="installation-binary-release"></a>
+### Binary Release
+Binary releases are available in the github releases page.<br>
+The following binaries are available for each release:
+
+* x86_64-unknown-linux-musl
+* x86_64-apple-darwin
+* x86_64-pc-windows-msvc
+
+Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
+
 <a name="tutorial"></a>
 ## Tutorial
 Below is a list of articles which explain most of the cargo-make features.
@@ -108,6 +124,7 @@ The articles are missing some of the new features which have been added after th
 * [Private Tasks](#usage-private-tasks)
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 * [Rust Version Conditions](#usage-conditions-structure)
+* [Toolchain](#usage-toochain)
 
 <a name="usage"></a>
 ## Usage
@@ -1018,8 +1035,15 @@ We can't define the condition directly on the **codecov-flow** task, as it will 
 <a name="usage-installing-dependencies"></a>
 ### Installing Dependencies
 
-Some tasks will require third party crates or other native tools.<br>
+Some tasks will require third party crates, rustup components or other native tools.<br>
 cargo-make provides multiple ways to setup those dependencies before running the task.
+
+* [Cargo Plugins](#usage-installing-cargo-plugins)
+* [Crates](#usage-installing-crates)
+* [Rustup Components](#usage-installing-rustup-components)
+* [Native Dependencies](#usage-installing-native-dependencies)
+* [Installation Priorities](#usage-installing-dependencies-priorities)
+* [Multiple Installations](#usage-installing-dependencies-multiple)
 
 <a name="usage-installing-cargo-plugins"></a>
 #### Cargo Plugins
@@ -1034,7 +1058,8 @@ args = ["audit"]
 
 cargo-make will first check the command is available.<br>
 Only if the command is not available, it will attempt to install it by running ```cargo install cargo-<first arg>```<br>
-In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.
+In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
+You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
 <a name="usage-installing-crates"></a>
 #### Crates
@@ -1053,6 +1078,29 @@ command = "rustfmt"
 
 In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
 to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
+
+<a name="usage-installing-rustup-components"></a>
+#### Rustup Components
+
+Rustup components that are not deployed as crates or components which are pure sources (no executable binary), can also be installed via cargo-make.<br>
+The following example show how to install a rustup component with binaries:
+
+```toml
+[tasks.install-rls]
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
+```
+
+In this example, cargo-make will first check if **rls** binary is available and only if failed to execute it, it will
+install the **rls** component using rustup.<br>
+<br>
+Some rustup components are pure sources and therefore in those cases, cargo-make cannot verify that they are already installed, and
+will attempt to install them every time.<br>
+Example:
+
+```toml
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
+```
 
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies
@@ -1091,6 +1139,94 @@ command -v kcov >/dev/null 2>&1 || {
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
 
+<a name="usage-installing-dependencies-priorities"></a>
+### Installation Priorities
+
+Only one type of installation will be invoked per task.<br>
+The following defines the installation types sorted by priority for which cargo-make uses to decide which installation flow to invoke:
+
+* **install_crate** - Enables to install crates and rustup components.
+* **install_script** - Custom script which can be used to install or run anything that is needed by the task command.
+* **automatic cargo plugin** - In case the command is **cargo**, cargo-make will check which cargo plugin to automatically install (if needed).
+
+In case multiple installation types are defined (for example both install_crate and install_script) only one installation type will be invoked based on the above priority list.
+
+<a name="usage-installing-dependencies-multiple"></a>
+### Multiple Installations
+
+In some cases, tasks require multiple items installed in order to run properly.<br>
+For example, you might need rustup component **rls** and **rust-src** and cargo plugin **cargo-xbuild** at the same task.<br>
+In order to achieve this, you can split the task to invocation task and installation task and set the installation task as a dependency.<br>
+The following example defines a flow of two similar tasks that have the same dependencies: cargo-xbuild crate, rls rustup binary component and rust-src rustup sources only component.<br>
+You can have both rustup dependencies as an installation only tasks which are set as dependencies for the xbuild tasks.<br>
+Since dependencies are only invoked once, it will also ensure that those rustup components are not installed twice.
+
+```toml
+[tasks.install-rls]
+# install rls-preview only if needed
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
+
+[tasks.install-rust-src]
+# always install rust-src via rustup component add
+install_crate = { rustup_component_name = "rust-src" }
+
+[tasks.xbuild1]
+# run cargo xbuild, if xbuild is not installed, it will be automatically installed for you
+command = "cargo"
+args = [ "xbuild", "some arg" ]
+dependencies = [ "install-rls", "install-rust-src" ]
+
+[tasks.xbuild2]
+# run cargo xbuild, if xbuild is not installed, it will be automatically installed for you
+command = "cargo"
+args = [ "xbuild", "another arg" ]
+dependencies = [ "install-rls", "install-rust-src" ]
+
+[tasks.myflow]
+dependencies = [ "xbuild1", "xbuild2" ]
+```
+
+<a name="usage-toochain"></a>
+### Toolchain
+cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
+the **toolchain** attribute as part of the task definition.<br>
+The following example shows how to print both stable and nightly rustc versions currently installed:
+
+```toml
+[tasks.rustc-version-stable]
+toolchain = "stable"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-nightly]
+toolchain = "nightly"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-flow]
+dependencies = [
+    "rustc-version-stable",
+    "rustc-version-nightly"
+]
+```
+
+An example output of the above **rustc-version-flow** is:
+
+```console
+[cargo-make] INFO - Task: rustc-version-flow
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: rustc-version-stable
+[cargo-make] INFO - Execute Command: "rustup" "run" "stable" "rustc" "--version"
+rustc 1.30.1 (1433507eb 2018-11-07)
+[cargo-make] INFO - Running Task: rustc-version-nightly
+[cargo-make] INFO - Execute Command: "rustup" "run" "nightly" "rustc" "--version"
+rustc 1.32.0-nightly (451987d86 2018-11-01)
+[cargo-make] INFO - Running Task: rustc-version-flow
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 2 seconds.
+```
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
@@ -1114,7 +1250,7 @@ env:
     - CARGO_MAKE_RUN_CODECOV="true"
 ```
 
-You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/cargo-make/blob/master/.travis.yml)
+You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/rust_info/blob/master/.travis.yml)
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
@@ -1123,36 +1259,6 @@ script:
   - cargo install --debug cargo-make
   - cargo make --no-workspace workspace-ci-flow
 ```
-
-For faster cargo-make installation as part of the build, you can also pull the binary version of cargo-make directly and invoke it without running cargo install which should reduce your build time, as follows
-
-```yaml
-script:
-  - wget -O ~/.cargo/bin/cargo-make https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.15.1
-  - chmod 777 ~/.cargo/bin/cargo-make
-  - cargo-make make ci-flow
-```
-
-The specific version of cargo-make requested is defined in the suffix of the cargo-make file name in the form of: cargo-make_v[VERSION], for example
-
-```sh
-https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v0.15.1
-```
-
-In order to pull the latest prebuild cargo-make binary, use the following example:
-
-```yaml
-env:
-  global:
-  - CARGO_MAKE_URL="https://bintray.com/sagiegurari/cargo-make/download_file?file_path=cargo-make_v"
-
-before_install:
-  - curl -SsL $CARGO_MAKE_URL$(cargo search cargo-make | grep cargo-make | cut -d\" -f2) > ~/.cargo/bin/cargo-make
-  - chmod 777 ~/.cargo/bin/cargo-make
-  - cargo-make make ci-flow
-```
-
-**Currently only arm compatible binaries are available.**
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor

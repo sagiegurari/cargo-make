@@ -8,7 +8,8 @@
 mod command_test;
 
 use crate::logger;
-use crate::types::Step;
+use crate::toolchain;
+use crate::types::{CommandSpec, Step};
 use run_script;
 use run_script::{ScriptError, ScriptOptions};
 use std::io;
@@ -163,7 +164,17 @@ pub(crate) fn run(step: &Step, cli_arguments: &Vec<String>) {
 
     match step.config.command {
         Some(ref command_string) => {
-            run_command(&command_string, &step.config.args, validate);
+            let command_spec = match step.config.toolchain {
+                Some(ref toolchain) => {
+                    toolchain::wrap_command(&toolchain, &command_string, &step.config.args)
+                }
+                None => CommandSpec {
+                    command: command_string.to_string(),
+                    args: step.config.args.clone(),
+                },
+            };
+
+            run_command(&command_spec.command, &command_spec.args, validate);
         }
         None => {
             match step.config.script {

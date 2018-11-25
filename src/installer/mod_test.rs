@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::InstallCrateInfo;
+use crate::types::{InstallCrateInfo, InstallRustupComponentInfo};
 
 #[test]
 fn install_empty() {
@@ -48,7 +48,7 @@ fn install_crate_auto_detect_unable_to_install() {
 }
 
 #[test]
-fn install_rustup() {
+fn install_rustup_via_crate_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "cargo".to_string(),
@@ -58,7 +58,22 @@ fn install_rustup() {
 
     let mut task = Task::new();
     task.command = Some("test".to_string());
-    task.install_crate = Some(InstallCrate::Info(info));
+    task.install_crate = Some(InstallCrate::CrateInfo(info));
+
+    install(&task);
+}
+
+#[test]
+fn install_rustup_via_rustup_info() {
+    let info = InstallRustupComponentInfo {
+        rustup_component_name: "test".to_string(),
+        binary: Some("cargo".to_string()),
+        test_arg: Some("--version".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+    task.install_crate = Some(InstallCrate::RustupComponentInfo(info));
 
     install(&task);
 }

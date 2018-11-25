@@ -1,0 +1,16 @@
+
+[tasks.rustc-version-stable]
+toolchain = "stable"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-nightly]
+toolchain = "nightly"
+command = "rustc"
+args = [ "--version" ]
+
+[tasks.rustc-version-flow]
+dependencies = [
+    "rustc-version-stable",
+    "rustc-version-nightly"
+]

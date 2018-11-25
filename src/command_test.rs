@@ -1,4 +1,5 @@
 use super::*;
+use crate::test;
 use crate::types::Task;
 use std::io::ErrorKind;
 
@@ -65,6 +66,7 @@ fn run_no_command() {
 fn run_command() {
     let mut task = Task::new();
     task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
 
     let step = Step {
         name: "test".to_string(),
@@ -72,6 +74,25 @@ fn run_command() {
     };
 
     run(&step, &vec![]);
+}
+
+#[test]
+fn run_command_for_toolchain() {
+    if test::is_not_rust_stable() {
+        let toolchain = test::get_toolchain();
+
+        let mut task = Task::new();
+        task.command = Some("echo".to_string());
+        task.args = Some(vec!["test".to_string()]);
+        task.toolchain = Some(toolchain.to_string());
+
+        let step = Step {
+            name: "test".to_string(),
+            config: task,
+        };
+
+        run(&step, &vec![]);
+    }
 }
 
 #[test]

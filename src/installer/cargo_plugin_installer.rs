@@ -8,11 +8,28 @@
 mod cargo_plugin_installer_test;
 
 use crate::command;
+use crate::toolchain::wrap_command;
 use std::process::Command;
 
-fn is_crate_installed(crate_name: &str) -> bool {
+fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
     debug!("Getting list of installed cargo commands.");
-    let result = Command::new("cargo").arg("--list").output();
+
+    let mut command_struct = match toolchain {
+        Some(ref toolchain_string) => {
+            let command_spec = wrap_command(toolchain_string, "cargo", &None);
+            let mut cmd = Command::new(command_spec.command);
+
+            let args_vec = command_spec.args.unwrap();
+            for arg in args_vec.iter() {
+                cmd.arg(arg);
+            }
+
+            cmd
+        }
+        None => Command::new("cargo"),
+    };
+
+    let result = command_struct.arg("--list").output();
 
     match result {
         Ok(output) => {
@@ -72,14 +89,21 @@ pub(crate) fn get_install_crate_args(
 }
 
 pub(crate) fn install_crate(
+    toolchain: &Option<String>,
     cargo_command: &str,
     crate_name: &str,
     args: &Option<Vec<String>>,
     validate: bool,
 ) {
-    if !is_crate_installed(cargo_command) {
+    if !is_crate_installed(&toolchain, cargo_command) {
         let install_args = get_install_crate_args(crate_name, false, args);
 
-        command::run_command("cargo", &Some(install_args), validate);
+        match toolchain {
+            Some(ref toolchain_string) => {
+                let command_spec = wrap_command(&toolchain_string, "cargo", &Some(install_args));
+                command::run_command(&command_spec.command, &command_spec.args, validate)
+            }
+            None => command::run_command("cargo", &Some(install_args), validate),
+        };
     }
 }

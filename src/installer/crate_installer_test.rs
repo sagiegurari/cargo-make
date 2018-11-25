@@ -1,22 +1,5 @@
 use super::*;
-
-#[test]
-fn is_crate_installed_true() {
-    let output = is_crate_installed("cargo", "--version");
-    assert!(output);
-}
-
-#[test]
-fn is_crate_installed_false() {
-    let output = is_crate_installed("cargo_bad", "--version");
-    assert!(!output);
-}
-
-#[test]
-fn is_crate_installed_non_zero() {
-    let output = is_crate_installed("exit", "1");
-    assert!(!output);
-}
+use crate::test;
 
 #[test]
 fn invoke_rustup_install_none() {
@@ -27,7 +10,7 @@ fn invoke_rustup_install_none() {
         rustup_component_name: None,
     };
 
-    let output = invoke_rustup_install(&info);
+    let output = invoke_rustup_install(&None, &info);
     assert!(!output);
 }
 
@@ -40,7 +23,37 @@ fn invoke_rustup_install_fail() {
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
     };
 
-    let output = invoke_rustup_install(&info);
+    let output = invoke_rustup_install(&None, &info);
+    assert!(!output);
+}
+
+#[test]
+fn invoke_rustup_install_with_toolchain_none() {
+    let toolchain = test::get_toolchain();
+
+    let info = InstallCrateInfo {
+        crate_name: "bad_crate_name".to_string(),
+        binary: "test".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: None,
+    };
+
+    let output = invoke_rustup_install(&Some(toolchain), &info);
+    assert!(!output);
+}
+
+#[test]
+fn invoke_rustup_install_with_toolchain_fail() {
+    let toolchain = test::get_toolchain();
+
+    let info = InstallCrateInfo {
+        crate_name: "bad_crate_name".to_string(),
+        binary: "test".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("unknown_rustup_component_test".to_string()),
+    };
+
+    let output = invoke_rustup_install(&Some(toolchain), &info);
     assert!(!output);
 }
 
@@ -53,11 +66,13 @@ fn invoke_cargo_install_test() {
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
     };
 
-    invoke_cargo_install(&info, &None, false);
+    invoke_cargo_install(&None, &info, &None, false);
 }
 
 #[test]
-fn install_crate_test() {
+fn invoke_cargo_install_with_toolchain_test() {
+    let toolchain = test::get_toolchain();
+
     let info = InstallCrateInfo {
         crate_name: "bad_crate_name".to_string(),
         binary: "cargo_bad".to_string(),
@@ -65,5 +80,31 @@ fn install_crate_test() {
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
     };
 
-    install_crate(&info, &None, false);
+    invoke_cargo_install(&Some(toolchain), &info, &None, false);
+}
+
+#[test]
+fn install_test_test() {
+    let info = InstallCrateInfo {
+        crate_name: "bad_crate_name".to_string(),
+        binary: "cargo_bad".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("unknown_rustup_component_test".to_string()),
+    };
+
+    install(&None, &info, &None, false);
+}
+
+#[test]
+fn install_test_with_toolchain_test() {
+    let toolchain = test::get_toolchain();
+
+    let info = InstallCrateInfo {
+        crate_name: "bad_crate_name".to_string(),
+        binary: "cargo_bad".to_string(),
+        test_arg: "--help".to_string(),
+        rustup_component_name: Some("unknown_rustup_component_test".to_string()),
+    };
+
+    install(&Some(toolchain), &info, &None, false);
 }

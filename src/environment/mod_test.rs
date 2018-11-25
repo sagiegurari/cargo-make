@@ -682,3 +682,17 @@ fn expand_env_with_env_vars_and_empty_task_args() {
     assert_eq!(args.len(), 5);
     assert_eq!(args[3], "arg3-ENV1-ENV2".to_string());
 }
+
+#[test]
+fn remove_unc_prefix_found() {
+    let output = remove_unc_prefix(&PathBuf::from(r"\\?\C:\test"));
+
+    assert_eq!(output, PathBuf::from(r"C:\test"));
+}
+
+#[test]
+fn remove_unc_prefix_not_found() {
+    let output = remove_unc_prefix(&PathBuf::from(r"C:\test"));
+
+    assert_eq!(output, PathBuf::from(r"C:\test"));
+}

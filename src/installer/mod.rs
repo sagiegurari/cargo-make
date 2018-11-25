@@ -8,6 +8,7 @@
 
 pub(crate) mod cargo_plugin_installer;
 mod crate_installer;
+pub(crate) mod rustup_component_installer;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
@@ -18,6 +19,11 @@ use crate::types::{InstallCrate, Task};
 
 pub(crate) fn install(task_config: &Task) {
     let validate = !task_config.is_force();
+
+    let toolchain = match task_config.toolchain {
+        Some(ref value) => Some(value.to_string()),
+        None => None,
+    };
 
     match task_config.install_crate {
         Some(ref install_crate_info) => match install_crate_info {
@@ -31,17 +37,22 @@ pub(crate) fn install(task_config: &Task) {
                 };
 
                 cargo_plugin_installer::install_crate(
+                    &toolchain,
                     cargo_command,
                     crate_name,
                     &task_config.install_crate_args,
                     validate,
                 );
             }
-            InstallCrate::Info(ref install_info) => crate_installer::install_crate(
+            InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
+                &toolchain,
                 install_info,
                 &task_config.install_crate_args,
                 validate,
             ),
+            InstallCrate::RustupComponentInfo(ref install_info) => {
+                rustup_component_installer::install(&toolchain, install_info, validate);
+            }
         },
         None => {
             match task_config.install_script {
@@ -65,6 +76,7 @@ pub(crate) fn install(task_config: &Task) {
                                         crate_name = crate_name + &args[0];
 
                                         cargo_plugin_installer::install_crate(
+                                            &toolchain,
                                             &args[0],
                                             &crate_name,
                                             &task_config.install_crate_args,
