@@ -917,6 +917,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
+* **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *runrs*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)

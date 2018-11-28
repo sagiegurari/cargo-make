@@ -219,6 +219,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let skip_members_config = environment::get_env("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
     let skip_members = get_skipped_workspace_members(skip_members_config);
 
+    let cargo_make_command = environment::get_env("CARGO_MAKE_COMMAND", "cargo make");
+
     let mut script_lines = vec![];
     for member in &members {
         if !skip_members.contains(member) {
@@ -235,8 +237,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             cd_line.push_str(&member_path);
             script_lines.push(cd_line);
 
-            let mut make_line =
-                "cargo make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+            let mut make_line = cargo_make_command.to_string();
+            make_line.push_str(" --disable-check-for-updates --no-on-error --loglevel=");
             make_line.push_str(&log_level);
             make_line.push_str(" ");
             make_line.push_str(&task);
