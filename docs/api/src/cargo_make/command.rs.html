@@ -181,6 +181,17 @@
 <span id="181">181</span>
 <span id="182">182</span>
 <span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # command</span>
 <span class="doccomment">//!</span>
@@ -192,7 +203,8 @@
 <span class="kw">mod</span> <span class="ident">command_test</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logger</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::<span class="ident">Step</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">toolchain</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CommandSpec</span>, <span class="ident">Step</span>};
 <span class="kw">use</span> <span class="ident">run_script</span>;
 <span class="kw">use</span> <span class="ident">run_script</span>::{<span class="ident">ScriptError</span>, <span class="ident">ScriptOptions</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
@@ -347,7 +359,17 @@
 
     <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command_string</span>) <span class="op">=&gt;</span> {
-            <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
+            <span class="kw">let</span> <span class="ident">command_spec</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">toolchain</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">toolchain</span>::<span class="ident">wrap_command</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>)
+                }
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">CommandSpec</span> {
+                    <span class="ident">command</span>: <span class="ident">command_string</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">args</span>: <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>.<span class="ident">clone</span>(),
+                },
+            };
+
+            <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span> {

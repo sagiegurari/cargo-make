@@ -82,6 +82,18 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # installer</span>
 <span class="doccomment">//!</span>
@@ -93,6 +105,7 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">cargo_plugin_installer</span>;
 <span class="kw">mod</span> <span class="ident">crate_installer</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">rustup_component_installer</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./mod_test.rs&quot;</span>]</span>
@@ -103,6 +116,11 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">install</span>(<span class="ident">task_config</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) {
     <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task_config</span>.<span class="ident">is_force</span>();
+
+    <span class="kw">let</span> <span class="ident">toolchain</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">toolchain</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+    };
 
     <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">install_crate</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">install_crate_info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">install_crate_info</span> {
@@ -116,17 +134,22 @@
                 };
 
                 <span class="ident">cargo_plugin_installer</span>::<span class="ident">install_crate</span>(
+                    <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
                     <span class="ident">cargo_command</span>,
                     <span class="ident">crate_name</span>,
                     <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
                     <span class="ident">validate</span>,
                 );
             }
-            <span class="ident">InstallCrate</span>::<span class="ident">Info</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) <span class="op">=&gt;</span> <span class="ident">crate_installer</span>::<span class="ident">install_crate</span>(
+            <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) <span class="op">=&gt;</span> <span class="ident">crate_installer</span>::<span class="ident">install</span>(
+                <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
                 <span class="ident">install_info</span>,
                 <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
                 <span class="ident">validate</span>,
             ),
+            <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) <span class="op">=&gt;</span> {
+                <span class="ident">rustup_component_installer</span>::<span class="ident">install</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="ident">install_info</span>, <span class="ident">validate</span>);
+            }
         },
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">install_script</span> {
@@ -150,6 +173,7 @@
                                         <span class="ident">crate_name</span> <span class="op">=</span> <span class="ident">crate_name</span> <span class="op">+</span> <span class="kw-2">&amp;</span><span class="ident">args</span>[<span class="number">0</span>];
 
                                         <span class="ident">cargo_plugin_installer</span>::<span class="ident">install_crate</span>(
+                                            <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
                                             <span class="kw-2">&amp;</span><span class="ident">args</span>[<span class="number">0</span>],
                                             <span class="kw-2">&amp;</span><span class="ident">crate_name</span>,
                                             <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,

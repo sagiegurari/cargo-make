@@ -47,7 +47,7 @@
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
-        * [Multiple Installations](#usage-installing-dependencies-multiple)(#usage-conditions-and-subtasks)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Toolchain](#usage-toochain)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
@@ -460,7 +460,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.15.1
+[cargo-make] INFO - cargo-make 0.15.2
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -477,7 +477,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo-make 0.15.1
+[cargo-make] INFO - cargo-make 0.15.2
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -504,7 +504,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.15.1
+[cargo-make] INFO - cargo-make 0.15.2
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -557,7 +557,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make 0.15.1
+[cargo-make] INFO - cargo-make 0.15.2
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -574,7 +574,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo-make 0.15.1
+[cargo-make] INFO - cargo-make 0.15.2
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.

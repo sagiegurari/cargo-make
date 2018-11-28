@@ -1038,6 +1038,82 @@
 <span id="1038">1038</span>
 <span id="1039">1039</span>
 <span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1355,7 +1431,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InstallCrateInfo</span> {
     <span class="doccomment">/// The provided crate to install</span>
     <span class="kw">pub</span> <span class="ident">crate_name</span>: <span class="ident">String</span>,
-    <span class="doccomment">/// If defined, the provided component to install via rustup</span>
+    <span class="doccomment">/// If defined, the component to install via rustup</span>
     <span class="kw">pub</span> <span class="ident">rustup_component_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The binary file name to be used to test if the crate is already installed</span>
     <span class="kw">pub</span> <span class="ident">binary</span>: <span class="ident">String</span>,
@@ -1387,13 +1463,60 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds instructions how to install a rustup component</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InstallRustupComponentInfo</span> {
+    <span class="doccomment">/// The component to install via rustup</span>
+    <span class="kw">pub</span> <span class="ident">rustup_component_name</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The binary file name to be used to test if the crate is already installed</span>
+    <span class="kw">pub</span> <span class="ident">binary</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Test argument that will be used to check that the crate is installed</span>
+    <span class="kw">pub</span> <span class="ident">test_arg</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallRustupComponentInfo</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallRustupComponentInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+            <span class="bool-val">false</span>
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">binary</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+            };
+
+            <span class="kw">if</span> <span class="ident">same</span> {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">test_arg</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">test_arg</span> {
+                        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                    },
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">test_arg</span> {
+                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                    },
+                }
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
+            }
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Install crate name or params</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">InstallCrate</span> {
     <span class="doccomment">/// The value as string</span>
     <span class="ident">Value</span>(<span class="ident">String</span>),
     <span class="doccomment">/// Install crate params</span>
-    <span class="ident">Info</span>(<span class="ident">InstallCrateInfo</span>),
+    <span class="ident">CrateInfo</span>(<span class="ident">InstallCrateInfo</span>),
+    <span class="doccomment">/// Install rustup component params</span>
+    <span class="ident">RustupComponentInfo</span>(<span class="ident">InstallRustupComponentInfo</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCrate</span> {
@@ -1403,8 +1526,12 @@
                 <span class="ident">InstallCrate</span>::<span class="ident">Value</span>(<span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">InstallCrate</span>::<span class="ident">Info</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">InstallCrate</span>::<span class="ident">Info</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+            <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         }
@@ -1464,6 +1591,8 @@
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
+    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Linux (takes precedence over alias)</span>
     <span class="kw">pub</span> <span class="ident">linux</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Windows (takes precedence over alias)</span>
@@ -1501,6 +1630,7 @@
             <span class="ident">script_extension</span>: <span class="prelude-val">None</span>,
             <span class="ident">run_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">dependencies</span>: <span class="prelude-val">None</span>,
+            <span class="ident">toolchain</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows</span>: <span class="prelude-val">None</span>,
             <span class="ident">mac</span>: <span class="prelude-val">None</span>,
@@ -1666,6 +1796,12 @@
             <span class="self">self</span>.<span class="ident">dependencies</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         }
 
+        <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">toolchain</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">clone</span>();
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">override_values</span> {
+            <span class="self">self</span>.<span class="ident">toolchain</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+        }
+
         <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">linux</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">linux</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">linux</span>.<span class="ident">clone</span>();
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">override_values</span> {
@@ -1743,6 +1879,7 @@
                     <span class="ident">script_extension</span>: <span class="ident">override_task</span>.<span class="ident">script_extension</span>.<span class="ident">clone</span>(),
                     <span class="ident">run_task</span>: <span class="ident">override_task</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>(),
                     <span class="ident">dependencies</span>: <span class="ident">override_task</span>.<span class="ident">dependencies</span>.<span class="ident">clone</span>(),
+                    <span class="ident">toolchain</span>: <span class="ident">override_task</span>.<span class="ident">toolchain</span>.<span class="ident">clone</span>(),
                     <span class="ident">linux</span>: <span class="prelude-val">None</span>,
                     <span class="ident">windows</span>: <span class="prelude-val">None</span>,
                     <span class="ident">mac</span>: <span class="prelude-val">None</span>,
@@ -1841,6 +1978,8 @@
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
+    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PlatformOverrideTask</span> {
@@ -1922,6 +2061,10 @@
 
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dependencies</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">dependencies</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">clone</span>();
+            }
+
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">toolchain</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">toolchain</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">clone</span>();
             }
         }
     }
@@ -2078,6 +2221,15 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExecutionPlan</span> {
     <span class="doccomment">/// A list of steps to execute</span>
     <span class="kw">pub</span> <span class="ident">steps</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="doccomment">/// Command info</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CommandSpec</span> {
+    <span class="doccomment">/// The command to execute</span>
+    <span class="kw">pub</span> <span class="ident">command</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The command args</span>
+    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cargo_make";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

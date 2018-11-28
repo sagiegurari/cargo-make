@@ -40,7 +40,7 @@
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
-        * [Multiple Installations](#usage-installing-dependencies-multiple)(#usage-conditions-and-subtasks)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Toolchain](#usage-toochain)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)

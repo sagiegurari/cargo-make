@@ -1,10 +1,11 @@
 ## CHANGELOG
 
-### v0.15.2
+### v0.15.2 (2018-11-28)
 
 * Rustup integration for non-binary/non-cargo dependencies #139
 * Rust toolchain support #132
 * Add fmt check task #138
+* Support absolute path for CARGO_MAKE_WORKING_DIRECTORY on windows #142
 
 ### v0.15.1 (2018-11-12)
 
