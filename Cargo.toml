@@ -32,8 +32,8 @@ name = "cargo-make"
 path = "src/main.rs"
 
 [[bin]]
-name = "rsmake"
-path = "src/rsmake.rs"
+name = "makers"
+path = "src/makers.rs"
 
 [dependencies]
 ci_info = "^0.2.1"
