@@ -253,7 +253,7 @@ fn setup_env_for_rust() -> RustInfo {
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
-    
+
     env::set_var("CARGO_MAKE_COMMAND", &cli_args.command);
 
     let task_arguments = match cli_args.arguments {

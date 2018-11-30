@@ -162,6 +162,8 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
+**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'rsmake' command.**
+
 <a name="usage-task-dependencies-alias"></a>
 ### Tasks, Dependencies and Aliases
 In many cases, certain tasks depend on other tasks.<br>
@@ -842,7 +844,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
-* **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *runrs*)
+* **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *rsmake*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
@@ -1690,6 +1692,8 @@ These are the following options available while running cargo-make:
 ```console
 USAGE:
     cargo make [FLAGS] [OPTIONS] [--] [ARGS]
+    OR
+    rsmake [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
         --disable-check-for-updates    Disables the update check during startup

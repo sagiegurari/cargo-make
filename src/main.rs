@@ -31,6 +31,11 @@ extern crate cli;
 #[path = "./main_test.rs"]
 mod main_test;
 
+fn get_name() -> String {
+    return "make".to_string();
+}
+
 fn main() {
-    cli::run_cli("make".to_string(), true);
+    let name = get_name();
+    cli::run_cli(name, true);
 }
