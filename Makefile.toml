@@ -20,29 +20,6 @@ sed -i "s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g" ./README.md
 [tasks.post-docs]
 linux_alias = "generate-readme"
 
-[tasks.test-lib]
-category = "Test"
-command = "cargo"
-args = ["test", "--all-features", "--lib"]
-
-[tasks.test-cargo-make]
-category = "Test"
-command = "cargo"
-args = ["test", "--all-features", "--bin", "cargo-make"]
-
-[tasks.test-rsmake]
-category = "Test"
-command = "cargo"
-args = ["test", "--all-features", "--bin", "rsmake"]
-
-[tasks.test]
-clear = true
-dependencies = [
-    "test-lib",
-    "test-cargo-make",
-    "test-rsmake"
-]
-
 [tasks.zip-release-ci-flow]
 description = "Compiles the binary in release mode and zips it up"
 category = "CI"
