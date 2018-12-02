@@ -46,6 +46,7 @@
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
         * [GitLab](#usage-ci-gitlab)
+        * [CircleCI](#usage-ci-circleci)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
