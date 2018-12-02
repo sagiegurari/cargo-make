@@ -1241,6 +1241,30 @@ variables:
   CARGO_MAKE_RUN_CODECOV: "true"
 ```
 
+<a name="usage-ci-circleci"></a>
+#### CircleCI
+Add the following to your `.circleci/config.yml` file:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make ci-flow
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make --no-workspace workspace-ci-flow
+```
+
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>

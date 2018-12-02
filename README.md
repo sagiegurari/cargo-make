@@ -53,6 +53,7 @@
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
         * [GitLab](#usage-ci-gitlab)
+        * [CircleCI](#usage-ci-circleci)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
@@ -1314,6 +1315,30 @@ Then you can add the following in your `gitlab-ci.yml` to enable coverage suppor
 ```yaml
 variables:
   CARGO_MAKE_RUN_CODECOV: "true"
+```
+
+<a name="usage-ci-circleci"></a>
+#### CircleCI
+Add the following to your `.circleci/config.yml` file:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make ci-flow
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-predefined-flows"></a>

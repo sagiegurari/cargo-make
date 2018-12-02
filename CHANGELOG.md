@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.15.3
+
+* Add CircleCI docs #152
+
 ### v0.15.2 (2018-11-28)
 
 * Rustup integration for non-binary/non-cargo dependencies #139
