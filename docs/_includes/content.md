@@ -1491,6 +1491,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **git-add** - Runs the cargo add command.
 * **git-commit** - Runs git commit command.
 * **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
+* **git-delete-merged-branches** - Deletes any merged git branches 
 * **git-pull** - Runs git pull command.
 * **git-push** - Runs git push command.
 * **git-status** - Runs git status command.

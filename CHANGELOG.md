@@ -3,6 +3,7 @@
 ### v0.15.3
 
 * Add CircleCI docs #152
+* Delete merged branches as part of github release flow #154
 
 ### v0.15.2 (2018-11-28)
 
