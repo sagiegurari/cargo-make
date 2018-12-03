@@ -42,7 +42,11 @@ pub(crate) fn execute(script_text: &Vec<String>, runner: Option<String>, extensi
 }
 
 pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
-   match script.first() {
+    //todo: implement windows compatibility solution
+    if cfg!(windows) {
+       panic!("extracting script runner from shebang not supported in windows");
+    }
+    match script.first() {
        Some(s) => {
            let m: Vec<&str> = s.matches("#!").collect();
            if m.len() == 1 {
@@ -52,7 +56,7 @@ pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> 
            }
        },
        None => None,
-   }
+    }
 }
 
 pub(crate) fn extract_runner_from_shebang(shebang: String) -> String {
