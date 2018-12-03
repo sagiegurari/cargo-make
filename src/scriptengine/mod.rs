@@ -33,7 +33,6 @@ fn get_engine_type(task: &Task) -> EngineType {
             None => EngineType::Unsupported,
             _ => {
                 debug!("Checking script runner: {}", script_runner);
-
                 if script_runner == "@rust" {
                     debug!("Rust script detected.");
                     EngineType::Rust
@@ -49,7 +48,17 @@ fn get_engine_type(task: &Task) -> EngineType {
                 }
             }
         },
-        None => EngineType::Unsupported,
+        None => match task.script {
+            None => EngineType::Unsupported,
+            _ => {
+                if task.script_extension.is_some() {
+                    debug!("Generic script detected.");
+                    EngineType::Generic
+                } else {
+                    EngineType::Unsupported
+                }
+            }
+        },
     }
 }
 
@@ -71,7 +80,7 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
         }
         EngineType::Generic => {
             let script = task.script.as_ref().unwrap();
-            let runner = task.script_runner.clone().unwrap();
+            let runner = task.script_runner.clone();
             let extension = task.script_extension.clone().unwrap();
             generic_script::execute(script, runner, extension);
 

@@ -67,6 +67,18 @@ fn get_engine_type_generic() {
 }
 
 #[test]
+fn get_engine_type_generic_if_runner_is_none() {
+    let mut task = Task::new();
+    task.script_runner = None;
+    task.script_extension = Some("py".to_string());
+    task.script = Some(vec!["test".to_string()]);
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Generic);
+}
+
+#[test]
 fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(vec!["test".to_string()]);
@@ -166,6 +178,18 @@ fn invoke_generic_runner_error() {
     task.script_runner = Some(test::get_os_runner());
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(vec!["exit 1".to_string()]);
+
+    let output = invoke(&task, &vec![]);
+
+    assert!(output);
+}
+
+#[test]
+fn use_shebang_when_script_runner_not_specified() {
+    let mut task = Task::new();
+    task.script_runner = None;
+    task.script_extension = Some("py".to_string());
+    task.script = Some(vec!["#!/usr/bin/env python".to_string(), "print('test')".to_string()]);
 
     let output = invoke(&task, &vec![]);
 
