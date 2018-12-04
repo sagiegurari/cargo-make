@@ -185,11 +185,14 @@ fn invoke_generic_runner_error() {
 }
 
 #[test]
-fn use_shebang_when_script_runner_not_specified() {
+fn invoke_shebang_when_runner_not_specified() {
     let mut task = Task::new();
     task.script_runner = None;
     task.script_extension = Some("py".to_string());
-    task.script = Some(vec!["#!/usr/bin/env python".to_string(), "print('test')".to_string()]);
+    task.script = Some(vec![
+        "#!/usr/bin/env python".to_string(),
+        "print('test')".to_string(),
+    ]);
 
     let output = invoke(&task, &vec![]);
 

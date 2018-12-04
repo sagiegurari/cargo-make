@@ -7,8 +7,6 @@
 #[path = "./cli_test.rs"]
 mod cli_test;
 
-use ci_info;
-use clap::{App, Arg, ArgMatches, SubCommand};
 use crate::config;
 use crate::descriptor;
 use crate::environment;
@@ -16,6 +14,8 @@ use crate::logger;
 use crate::runner;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
+use ci_info;
+use clap::{App, Arg, ArgMatches, SubCommand};
 
 static NAME: &str = "make";
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -183,7 +183,8 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                     .value_name("FILE")
                     .help("The optional toml file containing the tasks definitions")
                     .default_value(&DEFAULT_TOML),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("task")
                     .short("-t")
                     .long("--task")
@@ -191,8 +192,10 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                     .help(
                         "The task name to execute \
                          (can omit the flag if the task name is the last argument)",
-                    ).default_value(default_task_name),
-            ).arg(
+                    )
+                    .default_value(default_task_name),
+            )
+            .arg(
                 Arg::with_name("cwd")
                     .long("--cwd")
                     .value_name("DIRECTORY")
@@ -200,18 +203,22 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                         "Will set the current working directory. \
                          The search for the makefile will be from this directory if defined.",
                     ),
-            ).arg(Arg::with_name("no-workspace").long("--no-workspace").help(
+            )
+            .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
                 "Disable workspace support (tasks are triggered on workspace and not on members)",
-            )).arg(
+            ))
+            .arg(
                 Arg::with_name("no-on-error")
                     .long("--no-on-error")
                     .help("Disable on error flow even if defined in config sections"),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("envfile")
                     .long("--env-file")
                     .value_name("FILE")
                     .help("Set environment variables from provided file"),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("env")
                     .long("--env")
                     .short("-e")
@@ -220,31 +227,38 @@ fn create_cli<'a, 'b>(global_config: &'a GlobalConfig) -> App<'a, 'b> {
                     .takes_value(true)
                     .number_of_values(1)
                     .help("Set environment variables"),
-            ).arg(
+            )
+            .arg(
                 Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                     .possible_values(&["verbose", "info", "error"])
                     .default_value(default_log_level),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("v")
                     .short("-v")
                     .long("--verbose")
                     .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("experimental")
                     .long("--experimental")
                     .help("Allows access unsupported experimental predefined tasks."),
-            ).arg(
+            )
+            .arg(
                 Arg::with_name("disable-check-for-updates")
                     .long("--disable-check-for-updates")
                     .help("Disables the update check during startup"),
-            ).arg(Arg::with_name("print-steps").long("--print-steps").help(
+            )
+            .arg(Arg::with_name("print-steps").long("--print-steps").help(
                 "Only prints the steps of the build in the order they will \
                  be invoked but without invoking them",
-            )).arg(
+            ))
+            .arg(
                 Arg::with_name("list-steps")
                     .long("--list-all-steps")
                     .help("Lists all known steps"),
-            ).arg(Arg::with_name("TASK").help("The task name to execute"))
+            )
+            .arg(Arg::with_name("TASK").help("The task name to execute"))
             .arg(
                 Arg::with_name("TASK_ARGS")
                     .multiple(true)

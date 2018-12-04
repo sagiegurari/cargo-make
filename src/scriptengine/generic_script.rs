@@ -22,14 +22,14 @@ pub(crate) fn execute(script_text: &Vec<String>, runner: Option<String>, extensi
     let file = create_script_file(script_text, &extension);
 
     let runner_string = match runner {
-        Some(s) => s,
-        None => {
-            match extract_runner_from_script(
-                script_text.clone()) {
-                Some(r) => r,
-                None => panic!("Script runner not specified in toml file or shebang line")
+        Some(script) => script,
+        None => match extract_runner_from_script(script_text.clone()) {
+            Some(script) => script,
+            None => {
+                error!("Script runner not specified in toml file or shebang line");
+                panic!("Script runner not specified in toml file or shebang line")
             }
-        }
+        },
     };
 
     let valid = run_file(&file, &runner_string);
@@ -42,25 +42,22 @@ pub(crate) fn execute(script_text: &Vec<String>, runner: Option<String>, extensi
 }
 
 pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
-    //todo: implement windows compatibility solution
     if cfg!(windows) {
-       panic!("extracting script runner from shebang not supported in windows");
+        return None;
     }
     match script.first() {
-       Some(s) => {
-           let m: Vec<&str> = s.matches("#!").collect();
-           if m.len() == 1 {
-               Some(extract_runner_from_shebang(s.to_string()))
-           } else {
-               None
-           }
-       },
-       None => None,
+        Some(s) => {
+            let m: Vec<&str> = s.matches("#!").collect();
+            if m.len() == 1 {
+                Some(extract_runner_from_shebang(s.to_string()))
+            } else {
+                None
+            }
+        }
+        None => None,
     }
 }
 
 pub(crate) fn extract_runner_from_shebang(shebang: String) -> String {
-    shebang.replace("#!", "" )
+    shebang.replace("#!", "")
 }
-
-

@@ -672,6 +672,28 @@ Write-Host "Hello, World!"
 ]
 ```
 
+<a name="shebang-line"></a>
+##### Shebang Line
+
+*Note: This feature will not currently supported on Windows*
+
+Scripts can be run using the shebang line. If a script_runner is not specified, cargo-make
+will use the shebang line to run the script runner.
+
+Below is an example:
+
+```toml
+[tasks.python]
+script_runner = "python"
+script_extension = "py"
+script = [
+'''
+    "#!/usr/bin/env python",
+    "print('test')"
+'''
+]
+```
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define the tasks that were shown in the previous examples.<br>

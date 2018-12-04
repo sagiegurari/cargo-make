@@ -20,6 +20,18 @@ fn execute_shell_hello() {
 }
 
 #[test]
+fn execute_python_hello() {
+    let script_test = vec![
+        "#!/usr/bin/env python".to_string(),
+        "print('hello from python')".to_string(),
+    ];
+    let extension = "py".to_string();
+    let runner = "usr/bin/env python".to_string();
+    execute(&script_test, Some(runner), extension);
+}
+
+#[test]
+#[should_panic]
 fn execute_shell_error() {
     execute(
         &vec!["exit 1".to_string()],
@@ -29,7 +41,7 @@ fn execute_shell_error() {
 }
 
 #[test]
-fn extract_shebang_line_from_script() {
+fn extract_runner_from_python_script() {
     let script_test = vec!["#!/usr/bin/env python".to_string(), "test".to_string()];
     let shebang = extract_runner_from_script(script_test).unwrap();
     assert_eq!("/usr/bin/env python", shebang);
@@ -41,20 +53,3 @@ fn extract_runner_from_shebang_line() {
     let runner = extract_runner_from_shebang(shebang);
     assert_eq!("/usr/bin/env python", runner);
 }
-
-
-#[test]
-fn execute_shell_with_shebang_line() {
-    let script_test = vec!["#!/usr/bin/env python".to_string(), "print('hello from python')".to_string()];
-    let extension = "py".to_string();
-    let runner = extract_runner_from_script(script_test.clone()).unwrap();
-    execute(
-        &script_test,
-        Some(runner),
-        extension,
-    );
-}
-
-
-
-
