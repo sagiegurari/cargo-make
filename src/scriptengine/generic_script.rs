@@ -41,23 +41,19 @@ pub(crate) fn execute(script_text: &Vec<String>, runner: Option<String>, extensi
     }
 }
 
-pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
+fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
     if cfg!(windows) {
-        return None;
+        return None
     }
     match script.first() {
-        Some(s) => {
-            let m: Vec<&str> = s.matches("#!").collect();
-            if m.len() == 1 {
-                Some(extract_runner_from_shebang(s.to_string()))
-            } else {
-                None
-            }
-        }
+        Some(line) => {
+            let shebang: Vec<&str> = line.matches("#!").collect();
+            Some(extract_runner_from_shebang(shebang.first().unwrap().to_string()))
+        },
         None => None,
     }
 }
 
-pub(crate) fn extract_runner_from_shebang(shebang: String) -> String {
+fn extract_runner_from_shebang(shebang: String) -> String {
     shebang.replace("#!", "")
 }
