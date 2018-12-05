@@ -59,9 +59,11 @@ script = [
 [tasks.zip-release-binary-for-target.windows]
 script = [
   "mkdir ${OUTPUT_NAME}",
-  "powershell copy-item -path target/release/${CARGO_MAKE_CRATE_NAME}.exe -destination ${OUTPUT_NAME}",
+  "dir target",
+  "powershell copy-item -path target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME}.exe -destination ${OUTPUT_NAME}",
   "powershell copy-item -path README.md -destination ${OUTPUT_NAME}",
-  "powershell copy-item -path cp LICENSE -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}",
+  "dir ${OUTPUT_NAME}",
   "powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip",
 ]
 
