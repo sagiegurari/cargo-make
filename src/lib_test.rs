@@ -9,6 +9,7 @@ fn run_empty_task() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "bad.toml".to_string(),
             task: "empty".to_string(),
             log_level: "error".to_string(),
@@ -33,6 +34,7 @@ fn print_empty_task() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "bad.toml".to_string(),
             task: "empty".to_string(),
             log_level: "error".to_string(),
@@ -57,6 +59,7 @@ fn list_empty_task() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "bad.toml".to_string(),
             task: "empty".to_string(),
             log_level: "error".to_string(),
@@ -81,6 +84,7 @@ fn run_file_and_task() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./examples/dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -108,6 +112,7 @@ fn run_cwd_with_file() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./examples/dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -133,6 +138,7 @@ fn run_file_not_go_to_project_root() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./examples/dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -158,6 +164,7 @@ fn run_cwd_go_to_project_root_current_dir() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./examples/dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -186,6 +193,7 @@ fn run_cwd_go_to_project_root_child_dir() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./examples/dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -214,6 +222,7 @@ fn run_cwd_task_not_found() {
 
     run(
         CliArgs {
+            command: "cargo make".to_string(),
             build_file: "./dependencies.toml".to_string(),
             task: "A".to_string(),
             log_level: "error".to_string(),
@@ -235,24 +244,24 @@ fn run_cwd_task_not_found() {
 #[test]
 #[should_panic]
 fn run_cli_panic() {
-    run_cli();
+    run_cli("make".to_string(), true);
 }
 
 #[test]
 #[should_panic]
 fn run_for_args_bad_subcommand() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec!["bad"]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
 fn run_for_args_valid() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -267,7 +276,7 @@ fn run_for_args_valid() {
         "arg3",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
@@ -275,17 +284,17 @@ fn run_for_args_with_global_config() {
     let mut global_config = GlobalConfig::new();
     global_config.log_level = Some("info".to_string());
     global_config.default_task_name = Some("empty".to_string());
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec!["cargo", "make"]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
 fn run_for_args_log_level_override() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -299,13 +308,13 @@ fn run_for_args_log_level_override() {
         "-v",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
 fn run_for_args_set_env_values() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     env::set_var("ENV1_TEST", "EMPTY");
     env::set_var("ENV2_TEST", "EMPTY");
@@ -326,7 +335,7 @@ fn run_for_args_set_env_values() {
         "empty",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
     assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
@@ -336,7 +345,7 @@ fn run_for_args_set_env_values() {
 #[test]
 fn run_for_args_set_env_via_file() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     env::set_var("ENV1_TEST", "EMPTY");
     env::set_var("ENV2_TEST", "EMPTY");
@@ -352,7 +361,7 @@ fn run_for_args_set_env_via_file() {
         "empty",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
     assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
@@ -362,7 +371,7 @@ fn run_for_args_set_env_via_file() {
 #[test]
 fn run_for_args_set_env_both() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     env::set_var("ENV1_TEST", "EMPTY");
     env::set_var("ENV2_TEST", "EMPTY");
@@ -387,7 +396,7 @@ fn run_for_args_set_env_both() {
         "empty",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
     assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
@@ -400,7 +409,7 @@ fn run_for_args_set_env_both() {
 #[test]
 fn run_for_args_print_only() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -417,14 +426,14 @@ fn run_for_args_print_only() {
         "--experimental",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
 #[should_panic]
 fn run_protected_flow_example() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -433,13 +442,13 @@ fn run_protected_flow_example() {
         "./examples/on_error.toml",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 }
 
 #[test]
 fn run_for_args_no_task_args() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
@@ -450,7 +459,7 @@ fn run_for_args_no_task_args() {
         "empty",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "");
 }
@@ -458,7 +467,7 @@ fn run_for_args_no_task_args() {
 #[test]
 fn run_for_args_set_task_args() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config);
+    let app = create_cli(&global_config, &"make".to_string(), true);
 
     env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
@@ -472,7 +481,7 @@ fn run_for_args_set_task_args() {
         "arg3",
     ]);
 
-    run_for_args(matches, &global_config);
+    run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "arg1;arg2;arg3");
 }

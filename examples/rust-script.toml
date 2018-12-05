@@ -13,3 +13,13 @@ fn main() {
 }
 '''
 ]
+
+[tasks.rust-simple]
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]

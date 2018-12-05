@@ -4,6 +4,7 @@ use super::*;
 fn cli_args_new() {
     let cli_args = CliArgs::new();
 
+    assert_eq!(cli_args.command, "");
     assert_eq!(cli_args.build_file, "Makefile.toml");
     assert_eq!(cli_args.task, "default");
     assert_eq!(cli_args.log_level, "info");

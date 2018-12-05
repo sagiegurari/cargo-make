@@ -254,6 +254,8 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     env::set_var("CARGO_MAKE", "true");
     env::set_var("CARGO_MAKE_TASK", &task);
 
+    env::set_var("CARGO_MAKE_COMMAND", &cli_args.command);
+
     let task_arguments = match cli_args.arguments {
         Some(ref args) => {
             if args.len() == 0 {
