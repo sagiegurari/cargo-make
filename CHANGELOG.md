@@ -2,8 +2,10 @@
 
 ### v0.15.3
 
+* Package additional executable without cargo dependency #69
 * Add CircleCI docs #152
 * Delete merged branches as part of github release flow #154
+* Fixed uploading windows binaries to GitHub releases #157
 
 ### v0.15.2 (2018-11-28)
 
