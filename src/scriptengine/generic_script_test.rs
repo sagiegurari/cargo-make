@@ -5,7 +5,7 @@ use crate::test;
 fn execute_shell() {
     execute(
         &vec!["exit 0".to_string()],
-        Some(test::get_os_runner()),
+        test::get_os_runner(),
         test::get_os_extension(),
     );
 }
@@ -14,20 +14,18 @@ fn execute_shell() {
 fn execute_shell_hello() {
     execute(
         &vec!["echo hello".to_string()],
-        Some(test::get_os_runner()),
+        test::get_os_runner(),
         test::get_os_extension(),
     );
 }
 
+#[cfg(target_os = "linux")]
 #[test]
-fn execute_python_hello() {
-    let script_test = vec![
-        "#!/usr/bin/env python".to_string(),
-        "print('hello from python')".to_string(),
-    ];
-    let extension = "py".to_string();
-    let runner = "usr/bin/env python".to_string();
-    execute(&script_test, Some(runner), extension);
+fn execute_shebang_bash_hello() {
+    let script_test = vec!["#!/usr/bin/env bash".to_string(), "echo hello".to_string()];
+    let extension = "sh".to_string();
+    let runner = "usr/bin/env bash".to_string();
+    execute(&script_test, runner, extension);
 }
 
 #[test]
@@ -35,21 +33,7 @@ fn execute_python_hello() {
 fn execute_shell_error() {
     execute(
         &vec!["exit 1".to_string()],
-        Some(test::get_os_runner()),
+        test::get_os_runner(),
         test::get_os_extension(),
     );
-}
-
-#[test]
-fn extract_runner_from_python_script() {
-    let script_test = vec!["#!/usr/bin/env python".to_string(), "test".to_string()];
-    let shebang = extract_runner_from_script(script_test).unwrap();
-    assert_eq!("/usr/bin/env python", shebang);
-}
-
-#[test]
-fn extract_runner_from_shebang_line() {
-    let shebang = "#!/usr/bin/env python".to_string();
-    let runner = extract_runner_from_shebang(shebang);
-    assert_eq!("/usr/bin/env python", runner);
 }

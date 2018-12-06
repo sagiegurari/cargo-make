@@ -74,3 +74,24 @@ pub(crate) fn delete_file(file: &str) {
         Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file, error),
     };
 }
+
+pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
+    if cfg!(windows) {
+        return None;
+    }
+    match script.first() {
+        Some(line) => {
+            let shebang: Vec<&str> = line.matches("#!").collect();
+            if shebang.len() >= 1 {
+                Some(extract_runner_from_shebang(line.clone().to_string()))
+            } else {
+                None
+            }
+        }
+        None => None,
+    }
+}
+
+fn extract_runner_from_shebang(shebang: String) -> String {
+    shebang.replace("#!", "")
+}

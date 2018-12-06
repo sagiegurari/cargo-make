@@ -25,40 +25,41 @@ enum EngineType {
     Generic,
     /// Unsupported type
     Unsupported,
+    /// Shebang script runner
+    Shebang,
 }
 
 fn get_engine_type(task: &Task) -> EngineType {
-    match task.script_runner {
-        Some(ref script_runner) => match task.script {
-            None => EngineType::Unsupported,
-            _ => {
-                debug!("Checking script runner: {}", script_runner);
-                if script_runner == "@rust" {
-                    debug!("Rust script detected.");
-                    EngineType::Rust
-                } else if script_runner == "@shell" {
-                    debug!("Shell to batch detected.");
-                    EngineType::Shell2Batch
-                } else if task.script_extension.is_some() {
-                    // if both script runner and extension is defined, we use generic script runner
-                    debug!("Generic script detected.");
-                    EngineType::Generic
-                } else {
-                    EngineType::Unsupported
-                }
+    match (
+        task.script_runner.clone(),
+        task.script_extension.clone(),
+        task.script.clone(),
+    ) {
+        (Some(script_runner), None, Some(_)) => {
+            debug!("Checking script runner: {}", script_runner);
+            if script_runner == "@rust" {
+                debug!("Rust script detected.");
+                EngineType::Rust
+            } else if script_runner == "@shell" {
+                debug!("Shell to batch detected.");
+                EngineType::Shell2Batch
+            } else {
+                EngineType::Unsupported
             }
-        },
-        None => match task.script {
-            None => EngineType::Unsupported,
-            _ => {
-                if task.script_extension.is_some() {
-                    debug!("Generic script detected.");
-                    EngineType::Generic
-                } else {
-                    EngineType::Unsupported
-                }
+        }
+        (Some(_), Some(_), Some(_)) => {
+            // if both script runner and extension is defined, we use generic script runner
+            debug!("Generic script detected.");
+            EngineType::Generic
+        }
+        (None, Some(_), Some(script)) => {
+            debug!("Generic script detected.");
+            match script_utils::extract_runner_from_script(script) {
+                Some(_) => EngineType::Shebang,
+                None => EngineType::Generic,
             }
-        },
+        }
+        (_, _, _) => EngineType::Unsupported,
     }
 }
 
@@ -80,7 +81,15 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
         }
         EngineType::Generic => {
             let script = task.script.as_ref().unwrap();
-            let runner = task.script_runner.clone();
+            let runner = task.script_runner.clone().unwrap();
+            let extension = task.script_extension.clone().unwrap();
+            generic_script::execute(script, runner, extension);
+
+            true
+        }
+        EngineType::Shebang => {
+            let script = task.script.as_ref().unwrap();
+            let runner = script_utils::extract_runner_from_script(script.clone()).unwrap();
             let extension = task.script_extension.clone().unwrap();
             generic_script::execute(script, runner, extension);
 

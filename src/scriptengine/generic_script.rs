@@ -18,42 +18,14 @@ fn run_file(file: &str, runner: &String) -> bool {
     exit_code == 0
 }
 
-pub(crate) fn execute(script_text: &Vec<String>, runner: Option<String>, extension: String) {
+pub(crate) fn execute(script_text: &Vec<String>, runner: String, extension: String) {
     let file = create_script_file(script_text, &extension);
 
-    let runner_string = match runner {
-        Some(script) => script,
-        None => match extract_runner_from_script(script_text.clone()) {
-            Some(script) => script,
-            None => {
-                error!("Script runner not specified in toml file or shebang line");
-                panic!("Script runner not specified in toml file or shebang line")
-            }
-        },
-    };
-
-    let valid = run_file(&file, &runner_string);
+    let valid = run_file(&file, &runner);
 
     delete_file(&file);
 
     if !valid {
         error!("Unable to execute generic script.");
     }
-}
-
-fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
-    if cfg!(windows) {
-        return None
-    }
-    match script.first() {
-        Some(line) => {
-            let shebang: Vec<&str> = line.matches("#!").collect();
-            Some(extract_runner_from_shebang(shebang.first().unwrap().to_string()))
-        },
-        None => None,
-    }
-}
-
-fn extract_runner_from_shebang(shebang: String) -> String {
-    shebang.replace("#!", "")
 }

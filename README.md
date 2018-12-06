@@ -675,7 +675,7 @@ Write-Host "Hello, World!"
 <a name="shebang-line"></a>
 ##### Shebang Line
 
-*Note: This feature will not currently supported on Windows*
+*Note: This feature is not currently supported on Windows*
 
 Scripts can be run using the shebang line. If a script_runner is not specified, cargo-make
 will use the shebang line to run the script runner.

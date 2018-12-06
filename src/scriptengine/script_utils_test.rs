@@ -11,3 +11,18 @@ fn create_script_file_and_delete() {
 
     assert_eq!("test\nend".to_string(), text);
 }
+
+#[test]
+fn extract_runner_from_bash_script() {
+    let script_test = vec!["#!/usr/bin/env bash".to_string(), "test".to_string()];
+    let shebang = extract_runner_from_script(script_test).unwrap();
+    assert_eq!("/usr/bin/env bash", shebang);
+}
+
+#[test]
+fn extract_runner_from_shebang_line() {
+    let shebang = "#!/usr/bin/env bash".to_string();
+    let runner = extract_runner_from_shebang(shebang);
+    println!("{}", runner);
+    assert_eq!("/usr/bin/env bash", runner);
+}
