@@ -76,9 +76,6 @@ pub(crate) fn delete_file(file: &str) {
 }
 
 pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
-    if cfg!(windows) {
-        return None;
-    }
     match script.first() {
         Some(line) => {
             let shebang: Vec<&str> = line.matches("#!").collect();
