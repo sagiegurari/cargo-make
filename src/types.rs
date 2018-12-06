@@ -7,6 +7,7 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
+use ci_info::types::Vendor;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 
@@ -239,6 +240,20 @@ impl CrateInfo {
     }
 }
 
+#[derive(Deserialize, Debug, Clone, Copy)]
+/// Holds information about the execution environment.
+pub struct ExecutionInfo {
+    /// the continuous integration vendor.
+    pub ci_vendor: Option<Vendor>,
+}
+
+impl ExecutionInfo {
+    /// Creates and returns a new instance.
+    pub fn new() -> ExecutionInfo {
+        ExecutionInfo { ci_vendor: None }
+    }
+}
+
 #[derive(Debug, Clone)]
 /// Holds env information
 pub struct EnvInfo {
@@ -248,6 +263,19 @@ pub struct EnvInfo {
     pub crate_info: CrateInfo,
     /// Git info
     pub git_info: GitInfo,
+    /// Execution info
+    pub execution_info: ExecutionInfo,
+}
+
+impl Default for EnvInfo {
+    fn default() -> EnvInfo {
+        EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            execution_info: ExecutionInfo::new(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

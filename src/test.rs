@@ -1,4 +1,5 @@
 use ci_info;
+use ci_info::types::Vendor;
 use rust_info;
 use rust_info::types::RustChannel;
 use std::env;
@@ -6,10 +7,12 @@ use std::fs::{create_dir_all, remove_dir_all};
 use std::path::PathBuf;
 
 fn is_travis_ci() -> bool {
-    match env::var("TRAVIS") {
-        Ok(value) => value == "true",
-        _ => false,
-    }
+    let info = ci_info::get();
+    return if let Some(vendor) = info.vendor {
+        vendor == Vendor::TRAVIS
+    } else {
+        false
+    };
 }
 
 pub(crate) fn should_test(panic_if_false: bool) -> bool {

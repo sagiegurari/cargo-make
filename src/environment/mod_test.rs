@@ -1,5 +1,6 @@
 use super::*;
 
+use ci_info::types::Vendor;
 use crate::types::{ConfigSection, Task};
 use indexmap::IndexMap;
 use std::env;
@@ -475,6 +476,27 @@ fn setup_env_for_git_repo_with_values() {
             git_info.user_email.unwrap()
         );
     }
+}
+
+#[test]
+fn setup_env_for_execution_ci_check() {
+    env::remove_var("CARGO_MAKE_IS_CI");
+    env::remove_var("TRAVIS");
+
+    let execution_info = setup_env_for_execution();
+    assert_ne!(execution_info.ci_vendor, Some(Vendor::TRAVIS));
+    assert_eq!(
+        env::var_os("CARGO_MAKE_IS_CI").unwrap(),
+        if ci_info::is_ci() { "TRUE" } else { "FALSE" }
+    );
+
+    env::remove_var("CARGO_MAKE_IS_CI");
+    env::set_var("TRAVIS", "true");
+    let execution_info = setup_env_for_execution();
+    // This check is brittle in CI and depends on travis taking precedence
+    // if run elsewhere.
+    assert_eq!(execution_info.ci_vendor, Some(Vendor::TRAVIS));
+    assert_eq!(env::var_os("CARGO_MAKE_IS_CI").unwrap(), "TRUE");
 }
 
 #[test]

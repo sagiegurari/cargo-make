@@ -1,10 +1,9 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step,
-    Task, Workspace,
+    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, PlatformOverrideTask, Step, Task,
+    Workspace,
 };
 use indexmap::IndexMap;
-use rust_info::types::RustInfo;
 use std::env;
 
 #[test]
@@ -548,11 +547,7 @@ fn run_task_bad_script() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -580,11 +575,7 @@ fn run_task_script_with_args_error() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: Some(vec!["1".to_string()]),
@@ -611,11 +602,7 @@ fn run_task_script_with_args_valid() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: Some(vec!["0".to_string()]),
@@ -641,11 +628,7 @@ fn run_task_command() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -673,11 +656,7 @@ fn run_task_bad_command_valid_script() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -704,11 +683,7 @@ fn run_task_no_command_valid_script() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -741,11 +716,7 @@ fn run_task_bad_run_task_valid_command() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -779,11 +750,7 @@ fn run_task_valid_run_task() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -810,11 +777,7 @@ fn run_task_invalid_task() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -841,11 +804,7 @@ fn run_task_set_env() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -884,11 +843,7 @@ fn run_task_cwd_no_such_dir() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -915,11 +870,7 @@ fn run_task_cwd_dir_exists() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,

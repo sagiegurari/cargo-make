@@ -4,6 +4,7 @@
 //!
 
 pub(crate) mod crateinfo;
+mod executioninfo;
 mod gitinfo;
 
 #[cfg(test)]
@@ -12,8 +13,8 @@ mod mod_test;
 
 use crate::command;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
-    Workspace,
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, ExecutionInfo, GitInfo,
+    PackageInfo, Step, Task, Workspace,
 };
 use indexmap::IndexMap;
 use rust_info;
@@ -203,6 +204,21 @@ fn setup_env_for_git_repo() -> GitInfo {
     git_info_clone
 }
 
+fn setup_env_for_execution() -> ExecutionInfo {
+    // Set if we are in CI or not.
+    let is_ci_var_value = if executioninfo::is_ci() {
+        "TRUE"
+    } else {
+        "FALSE"
+    };
+    env::set_var("CARGO_MAKE_IS_CI", is_ci_var_value);
+
+    // Set the name of the CI vendor if there is one.
+    let ci_vendor = executioninfo::current_ci_vendor();
+
+    ExecutionInfo { ci_vendor }
+}
+
 fn setup_env_for_rust() -> RustInfo {
     let rustinfo = rust_info::get();
     let rust_info_clone = rustinfo.clone();
@@ -277,6 +293,9 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     // load rust info
     let rust_info = setup_env_for_rust();
 
+    // load execution info
+    let execution_info = setup_env_for_execution();
+
     // load env vars
     initialize_env(config);
 
@@ -284,6 +303,7 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
         rust_info,
         crate_info,
         git_info,
+        execution_info,
     }
 }
 

@@ -36,7 +36,7 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
-ci_info = "^0.2.1"
+ci_info = { git = "https://github.com/sagiegurari/ci_info.git", features = ["serde-1"]}
 clap = "^2.32.0"
 dirs = "^1.0.4"
 fern = "^0.5.7"

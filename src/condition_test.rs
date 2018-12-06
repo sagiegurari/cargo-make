@@ -1,7 +1,6 @@
 use super::*;
 use crate::types::{
-    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustVersionCondition, Step, Task,
-    TaskCondition,
+    Config, ConfigSection, EnvInfo, FlowInfo, RustVersionCondition, Step, Task, TaskCondition,
 };
 use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
@@ -344,11 +343,7 @@ fn validate_channel_valid() {
     let mut flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -415,11 +410,7 @@ fn validate_channel_invalid() {
     let mut flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -454,11 +445,7 @@ fn validate_criteria_empty() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -493,11 +480,7 @@ fn validate_criteria_valid_platform() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -536,11 +519,7 @@ fn validate_criteria_invalid_platform() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -575,11 +554,7 @@ fn validate_criteria_valid_channel() {
     let mut flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -652,11 +627,7 @@ fn validate_criteria_invalid_channel() {
     let mut flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -691,11 +662,7 @@ fn validate_condition_both_valid() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -735,11 +702,7 @@ fn validate_criteria_valid_script_invalid() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -779,11 +742,7 @@ fn validate_criteria_invalid_script_valid() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -819,11 +778,7 @@ fn validate_criteria_invalid_env_set() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -859,11 +814,7 @@ fn validate_criteria_invalid_env_not_set() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -901,11 +852,7 @@ fn validate_criteria_valid_env() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -948,11 +895,7 @@ fn validate_criteria_invalid_env_not_found() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -992,11 +935,7 @@ fn validate_criteria_invalid_env_not_equal() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -1039,11 +978,7 @@ fn validate_criteria_valid_rust_version() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
@@ -1085,11 +1020,7 @@ fn validate_criteria_invalid_rust_version() {
     let flow_info = FlowInfo {
         config,
         task: "test".to_string(),
-        env_info: EnvInfo {
-            rust_info: RustInfo::new(),
-            crate_info: CrateInfo::new(),
-            git_info: GitInfo::new(),
-        },
+        env_info: EnvInfo::default(),
         disable_workspace: false,
         disable_on_error: false,
         cli_arguments: None,
