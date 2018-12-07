@@ -26,6 +26,12 @@ fn get_level_other() {
 
 #[test]
 #[should_panic]
+fn exit_test() {
+    exit(0);
+}
+
+#[test]
+#[should_panic]
 fn create_error() {
     init("error");
 

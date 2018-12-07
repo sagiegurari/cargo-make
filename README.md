@@ -9,12 +9,6 @@
 * [Overview](#overview)
 * [Installation](#installation)
     * [Binary Release](#installation-binary-release)
-* [Tutorial](#tutorial)
-    * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
-    * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
-    * [Environment Variables, Conditions, Sub Tasks and Mixing](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-3-of-5-environment-variables-conditions-3c740a837a01)
-    * [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
-    * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
     * [Tasks, Dependencies and Aliases](#usage-task-dependencies-alias)
@@ -53,6 +47,7 @@
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
         * [GitLab](#usage-ci-gitlab)
+        * [CircleCI](#usage-ci-circleci)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
@@ -68,6 +63,12 @@
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)
+* [Articles](#articles)
+    * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
+    * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
+    * [Environment Variables, Conditions, Sub Tasks and Mixing](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-3-of-5-environment-variables-conditions-3c740a837a01)
+    * [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
+    * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Contributing](.github/CONTRIBUTING.md)
@@ -90,7 +91,12 @@ cargo install --force cargo-make
 ```
 
 This will install cargo-make in your ~/.cargo/bin.<br>
-Make sure to add ~/.cargo/bin directory to your PATH variable.
+Make sure to add ~/.cargo/bin directory to your PATH variable.<br>
+<br>
+You will have two executables available: *cargo-make* and *makers*<br>
+
+* **cargo-make** - This is a cargo plugin invoked using ```cargo make ...```
+* **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
 
 <a name="installation-binary-release"></a>
 ### Binary Release
@@ -102,29 +108,6 @@ The following binaries are available for each release:
 * x86_64-pc-windows-msvc
 
 Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
-
-<a name="tutorial"></a>
-## Tutorial
-Below is a list of articles which explain most of the cargo-make features.
-
-* [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
-* [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
-* [Environment Variables, Conditions, Sub Tasks and Mixing](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-3-of-5-environment-variables-conditions-3c740a837a01)
-* [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
-* [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
-
-The articles are missing some of the new features which have been added after they were published, such as:
-
-* [Rust Task](#usage-task-command-script-task-examplerust)
-* [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
-* [Full List of Predefined Flows](#usage-predefined-flows)
-* [Global Configuration](#cargo-make-global-config)
-* [Catching Errors](#usage-catching-errors)
-* [Env File](#usage-env-file)
-* [Private Tasks](#usage-private-tasks)
-* [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
-* [Rust Version Conditions](#usage-conditions-structure)
-* [Toolchain](#usage-toochain)
 
 <a name="usage"></a>
 ## Usage
@@ -236,6 +219,8 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 We now created a build script that can run on any platform.
+
+**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'makers' command.**
 
 <a name="usage-task-dependencies-alias"></a>
 ### Tasks, Dependencies and Aliases
@@ -917,6 +902,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
+* **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
@@ -1316,6 +1302,30 @@ variables:
   CARGO_MAKE_RUN_CODECOV: "true"
 ```
 
+<a name="usage-ci-circleci"></a>
+#### CircleCI
+Add the following to your `.circleci/config.yml` file:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make ci-flow
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+```yaml
+- run:
+  name: install cargo-make
+  command: cargo install --debug cargo-make
+- run:
+  name: ci flow
+  command: cargo make --no-workspace workspace-ci-flow
+```
+
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
@@ -1539,6 +1549,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **git-add** - Runs the cargo add command.
 * **git-commit** - Runs git commit command.
 * **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
+* **git-delete-merged-branches** - Deletes any merged git branches
 * **git-pull** - Runs git pull command.
 * **git-push** - Runs git push command.
 * **git-status** - Runs git status command.
@@ -1764,6 +1775,8 @@ These are the following options available while running cargo-make:
 ```console
 USAGE:
     cargo make [FLAGS] [OPTIONS] [--] [ARGS]
+    OR
+    makers [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
         --disable-check-for-updates    Disables the update check during startup
@@ -1891,6 +1904,29 @@ dependencies = [
 ```
 
 This prevents flow task names to conflict with single command task names and quickly allow users to understand that this task is a flow definition.
+
+<a name="articles"></a>
+## Articles
+Below is a list of articles which explain most of the cargo-make features.
+
+* [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
+* [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
+* [Environment Variables, Conditions, Sub Tasks and Mixing](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-3-of-5-environment-variables-conditions-3c740a837a01)
+* [Workspace Support, Init/End Tasks and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
+* [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
+
+The articles are missing some of the new features which have been added after they were published, such as:
+
+* [Rust Task](#usage-task-command-script-task-examplerust)
+* [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
+* [Full List of Predefined Flows](#usage-predefined-flows)
+* [Global Configuration](#cargo-make-global-config)
+* [Catching Errors](#usage-catching-errors)
+* [Env File](#usage-env-file)
+* [Private Tasks](#usage-private-tasks)
+* [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
+* [Rust Version Conditions](#usage-conditions-structure)
+* [Toolchain](#usage-toochain)
 
 <a name="badge"></a>
 ## Badge

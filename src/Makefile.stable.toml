@@ -527,6 +527,16 @@ category = "Git"
 command = "git"
 args = ["pull"]
 
+[tasks.git-delete-merged-branches]
+description = "Deletes any merged git branches"
+category = "Git"
+force = true
+script = [
+'''
+git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
+'''
+]
+
 [tasks.pre-ci-flow]
 category = "CI"
 
@@ -770,6 +780,7 @@ dependencies = [
     "git-status",
     "git-commit-message",
     "git-push",
+    "git-delete-merged-branches",
     "github-publish-custom-name",
     "publish-flow",
     "upload-artifacts",
