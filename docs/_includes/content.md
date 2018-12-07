@@ -981,7 +981,7 @@ If rustup failed or component name is not provided, it will resort to using carg
 For example:
 
 ```toml
-[tasks.format-nightly]
+[tasks.rustfmt]
 install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
 command = "rustfmt"
 ```
@@ -1453,8 +1453,6 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **dev-watch-flow** - Alias for test-flow
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **format-nightly** - Runs the cargo rustfmt nightly plugin.
-* **format-stable** - Runs the cargo rustfmt plugin.
 * **post-format** - No Description.
 * **pre-format** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.

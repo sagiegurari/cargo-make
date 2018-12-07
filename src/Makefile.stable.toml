@@ -180,29 +180,12 @@ dependencies = [
 [tasks.pre-format]
 category = "Development"
 
-[tasks.format-stable]
-description = "Runs the cargo rustfmt plugin."
-category = "Development"
-condition = { channels = [ "stable", "beta" ] }
-install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
-command = "cargo"
-args = ["fmt", "--", "--write-mode=overwrite", "--force"]
-
-[tasks.format-nightly]
-description = "Runs the cargo rustfmt nightly plugin."
-category = "Development"
-condition = { channels = [ "nightly" ] }
-install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
-command = "cargo"
-args = ["fmt"]
-
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."
 category = "Development"
-dependencies = [
-    "format-stable",
-    "format-nightly"
-]
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
+command = "cargo"
+args = ["fmt"]
 
 [tasks.check-format]
 description = "Runs cargo fmt to check appropriate code format."

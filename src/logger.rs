@@ -58,7 +58,6 @@ pub(crate) fn get_log_level() -> String {
 /// # Arguments
 ///
 /// * `level_name` - The log level name ('verbose', 'info', 'error')
-/// ```
 pub(crate) fn init(level_name: &str) {
     let level = get_level(level_name);
 
