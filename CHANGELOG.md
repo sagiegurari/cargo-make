@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.15.3
+### v0.15.3 (2018-12-07)
 
 * Package additional executable without cargo dependency #69
 * Add CircleCI docs #152
