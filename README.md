@@ -100,7 +100,7 @@ You will have two executables available: *cargo-make* and *makers*<br>
 
 <a name="installation-binary-release"></a>
 ### Binary Release
-Binary releases are available in the github releases page.<br>
+Binary releases are available in the [github releases page](https://github.com/sagiegurari/cargo-make/releases).<br>
 The following binaries are available for each release:
 
 * x86_64-unknown-linux-musl
