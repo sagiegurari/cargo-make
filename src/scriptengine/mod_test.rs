@@ -67,6 +67,16 @@ fn get_engine_type_generic() {
 }
 
 #[test]
+fn get_engine_type_file_if_script_path_is_some() {
+    let mut task = Task::new();
+    task.script_path = Some("examples/hello.sh".to_string());
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::File);
+}
+
+#[test]
 fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(vec!["test".to_string()]);
@@ -166,6 +176,16 @@ fn invoke_generic_runner_error() {
     task.script_runner = Some(test::get_os_runner());
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(vec!["exit 1".to_string()]);
+
+    let output = invoke(&task, &vec![]);
+
+    assert!(output);
+}
+
+#[test]
+fn invoke_file_runner() {
+    let mut task = Task::new();
+    task.script_path = Some("examples/hello.sh".to_string());
 
     let output = invoke(&task, &vec![]);
 

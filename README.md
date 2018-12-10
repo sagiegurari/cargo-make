@@ -610,7 +610,43 @@ rm ./myfile.txt
 ]
 ```
 
-Same as OS scripts, the @shell runner also supports the cargo-make CLI arguments access.
+
+<a name="usage-task-command-script-task-examplefile"></a>
+#### External File
+
+*Note: This feature is not currently supported on Windows*
+
+Scripts in external files can be run by specifying the script path. A shebang line is required
+if a script runner has not been specified. The shebang line will only be used if no script runner
+is specified.
+
+Example task where the script runner has been specified:
+
+```toml
+[tasks.filescript]
+script_path = "examples/hello.sh"
+script_runner = "bash"
+script = [
+'''
+    "echo 'hello'"
+'''
+]
+```
+
+Example task where no script runner has  specified:
+
+```toml
+[tasks.filescript]
+script_path = "examples/hello.sh"
+script = [
+'''
+    "#!/usr/bin/env bash",
+    "echo 'hello'"
+'''
+]
+```
+
+
 
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
