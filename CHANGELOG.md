@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.0
+
+* Add format check and clippy to ci-flow #161 (thanks @D4nte)
+
 ### v0.15.3 (2018-12-07)
 
 * Package additional executable without cargo dependency #69
