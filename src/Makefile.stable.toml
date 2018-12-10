@@ -26,8 +26,8 @@ category = "CI"
 dependencies = [
     "pre-ci-flow",
     "pre-build",
-	"conditioned-check-format",
-	"conditioned-clippy",
+    "conditioned-check-format",
+    "conditioned-clippy",
     "build-verbose",
     "post-build",
     "pre-test",
