@@ -26,6 +26,8 @@ category = "CI"
 dependencies = [
     "pre-ci-flow",
     "pre-build",
+	"conditioned-check-format",
+	"conditioned-clippy",
     "build-verbose",
     "post-build",
     "pre-test",
@@ -189,9 +191,16 @@ args = ["fmt"]
 
 [tasks.check-format]
 description = "Runs cargo fmt to check appropriate code format."
+category = "Test"
 install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
 command = "cargo"
 args = ["fmt", "--", "--check"]
+
+[tasks.conditioned-check-format]
+description = "Runs cargo fmt --check if conditions are met."
+category = "Test"
+condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ] }
+run_task = "check-format"
 
 [tasks.post-format]
 category = "Development"
@@ -411,6 +420,12 @@ category = "Test"
 install_crate = { crate_name = "clippy", rustup_component_name = "clippy-preview", binary = "cargo-clippy", test_arg = "--help" }
 command = "cargo"
 args = ["clippy"]
+
+[tasks.conditioned-clippy]
+description = "Runs clippy code linter if conditions are met."
+category = "Test"
+condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ] }
+run_task = "clippy"
 
 [tasks.copy-apidocs]
 description = "Copies the generated documentation to the docs/api directory."
