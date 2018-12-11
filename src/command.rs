@@ -131,11 +131,9 @@ pub(crate) fn run_command_get_output(
     let mut command = Command::new(&command_string);
 
     match *args {
-        Some(ref args_vec) => {
-            for arg in args_vec.iter() {
+        Some(ref args_vec) => for arg in args_vec.iter() {
                 command.arg(arg);
             }
-        }
         None => debug!("No command args defined."),
     };
 

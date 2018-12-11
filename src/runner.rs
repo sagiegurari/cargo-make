@@ -155,8 +155,7 @@ fn create_execution_plan_for_step(
 
                 if add {
                     match task_config.dependencies {
-                        Some(ref dependencies) => {
-                            for dependency in dependencies {
+                        Some(ref dependencies) => for dependency in dependencies {
                                 create_execution_plan_for_step(
                                     &config,
                                     &dependency,
@@ -166,7 +165,6 @@ fn create_execution_plan_for_step(
                                     true,
                                 );
                             }
-                        }
                         _ => debug!("No dependencies found for task: {}", &task),
                     };
 

@@ -81,8 +81,7 @@ pub(crate) fn init(level_name: &str) {
 
                 exit(1);
             }
-        })
-        .level(log_level)
+        }).level(log_level)
         .chain(stdout())
         .apply();
 

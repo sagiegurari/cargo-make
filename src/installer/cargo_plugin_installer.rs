@@ -77,11 +77,9 @@ pub(crate) fn get_install_crate_args(
     }
 
     match *args {
-        Some(ref args_vec) => {
-            for arg in args_vec.iter() {
-                install_args.push(arg.to_string());
-            }
-        }
+        Some(ref args_vec) => for arg in args_vec.iter() {
+            install_args.push(arg.to_string());
+        },
         None => debug!("No crate installation args defined."),
     };
 
