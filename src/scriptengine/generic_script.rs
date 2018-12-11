@@ -12,7 +12,6 @@ use crate::scriptengine::script_utils::{create_script_file, delete_file};
 
 fn run_file(file: &str, runner: &String) -> bool {
     let exit_code = command::run_command(runner, &Some(vec![file.to_string()]), false);
-
     debug!("Executed generic script, exit code: {}", exit_code);
 
     exit_code == 0
