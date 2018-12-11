@@ -1,6 +1,7 @@
 
 [env]
 RUST_TEST_THREADS = "1"
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[a-z0-9]*$"
 
 [tasks.outdated]
 #do not break build due to child outdated dependencies also used as root dependencies
@@ -59,9 +60,11 @@ script = [
 [tasks.zip-release-binary-for-target.windows]
 script = [
   "mkdir ${OUTPUT_NAME}",
-  "powershell copy-item -path target/release/${CARGO_MAKE_CRATE_NAME}.exe -destination ${OUTPUT_NAME}",
+  "dir target",
+  "powershell copy-item -path target/${TARGET}/release/${CARGO_MAKE_CRATE_NAME}.exe -destination ${OUTPUT_NAME}",
   "powershell copy-item -path README.md -destination ${OUTPUT_NAME}",
-  "powershell copy-item -path cp LICENSE -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}",
+  "dir ${OUTPUT_NAME}",
   "powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip",
 ]
 

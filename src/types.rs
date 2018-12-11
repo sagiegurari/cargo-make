@@ -24,6 +24,8 @@ pub fn get_platform_name() -> String {
 #[derive(Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
+    /// The command name
+    pub command: String,
     /// The external Makefile.toml path
     pub build_file: String,
     /// The task to invoke
@@ -56,6 +58,7 @@ impl CliArgs {
     /// Creates and returns a new instance.
     pub fn new() -> CliArgs {
         CliArgs {
+            command: "".to_string(),
             build_file: "Makefile.toml".to_string(),
             task: "default".to_string(),
             log_level: "info".to_string(),
