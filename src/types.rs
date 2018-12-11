@@ -473,6 +473,8 @@ pub struct Task {
     pub script_runner: Option<String>,
     /// The script file extension
     pub script_extension: Option<String>,
+    /// The path of the script to be run
+    pub script_path: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
@@ -514,6 +516,7 @@ impl Task {
             script: None,
             script_runner: None,
             script_extension: None,
+            script_path: None,
             run_task: None,
             dependencies: None,
             toolchain: None,
@@ -763,6 +766,7 @@ impl Task {
                     script: override_task.script.clone(),
                     script_runner: override_task.script_runner.clone(),
                     script_extension: override_task.script_extension.clone(),
+                    script_path: override_task.script_path.clone(),
                     run_task: override_task.run_task.clone(),
                     dependencies: override_task.dependencies.clone(),
                     toolchain: override_task.toolchain.clone(),
@@ -860,6 +864,8 @@ pub struct PlatformOverrideTask {
     pub script_runner: Option<String>,
     /// The script file extension
     pub script_extension: Option<String>,
+    /// The path of the script to be run
+    pub script_path: Option<String>,
     /// The task name to execute
     pub run_task: Option<String>,
     /// A list of tasks to execute before this task
@@ -939,6 +945,10 @@ impl PlatformOverrideTask {
 
             if self.script_extension.is_none() && task.script_extension.is_some() {
                 self.script_extension = task.script_extension.clone();
+            }
+
+            if self.script_path.is_none() && task.script_path.is_some() {
+                self.script_path = task.script_path.clone();
             }
 
             if self.run_task.is_none() && task.run_task.is_some() {

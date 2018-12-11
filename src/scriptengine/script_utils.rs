@@ -11,6 +11,7 @@ use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
+use std::io::BufReader;
 use std::{env, iter};
 
 pub(crate) fn create_script_file(script_text: &Vec<String>, extension: &str) -> String {
@@ -73,4 +74,39 @@ pub(crate) fn delete_file(file: &str) {
         Ok(_) => debug!("Temporary file deleted: {}", &file),
         Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file, error),
     };
+}
+
+pub(crate) fn extract_runner_from_script(script: Vec<String>) -> Option<String> {
+    match script.first() {
+        Some(line) => {
+            let shebang: Vec<&str> = line.matches("#!").collect();
+            if shebang.len() >= 1 {
+                Some(extract_runner_from_shebang(line.clone().to_string()))
+            } else {
+                None
+            }
+        }
+        None => None,
+    }
+}
+
+fn extract_runner_from_shebang(shebang: String) -> String {
+    shebang.replace("#!", "")
+}
+
+pub(crate) fn extract_script_from_file(path: String) -> Vec<String> {
+    let file = File::open(path).expect("Something went wrong opening the file");
+    BufReader::new(file)
+        .lines()
+        .map(|line| line.expect("Could not parse line"))
+        .collect()
+}
+
+pub(crate) fn extract_runner_from_file(path: String) -> Option<String> {
+    let file = File::open(path).expect("Something went wrong opening the file");
+    let script: Vec<String> = BufReader::new(file)
+        .lines()
+        .map(|line| line.expect("Could not parse line"))
+        .collect();
+    extract_runner_from_script(script)
 }

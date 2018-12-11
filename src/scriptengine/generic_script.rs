@@ -12,6 +12,7 @@ use crate::scriptengine::script_utils::{create_script_file, delete_file};
 
 fn run_file(file: &str, runner: &String) -> bool {
     let exit_code = command::run_command(runner, &Some(vec![file.to_string()]), false);
+
     debug!("Executed generic script, exit code: {}", exit_code);
 
     exit_code == 0
@@ -27,4 +28,12 @@ pub(crate) fn execute(script_text: &Vec<String>, runner: String, extension: Stri
     if !valid {
         error!("Unable to execute generic script.");
     }
+}
+
+pub(crate) fn execute_file(script_text: &Vec<String>, runner: &String) -> bool {
+    let exit_code = command::run_command(runner, &Some(script_text.clone()), false);
+
+    debug!("Executed external script, exit code: {}", exit_code);
+
+    exit_code == 0
 }
