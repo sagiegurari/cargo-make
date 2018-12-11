@@ -132,8 +132,8 @@ pub(crate) fn run_command_get_output(
 
     match *args {
         Some(ref args_vec) => for arg in args_vec.iter() {
-                command.arg(arg);
-            }
+            command.arg(arg);
+        },
         None => debug!("No command args defined."),
     };
 

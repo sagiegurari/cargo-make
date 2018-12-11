@@ -610,6 +610,7 @@ rm ./myfile.txt
 ]
 ```
 
+Same as OS scripts, the @shell runner also supports the cargo-make CLI arguments access.
 
 <a name="usage-task-command-script-task-examplefile"></a>
 #### External File
