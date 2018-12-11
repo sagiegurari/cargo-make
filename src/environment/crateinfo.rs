@@ -91,16 +91,14 @@ fn add_members(crate_info: &mut CrateInfo, new_members: Vec<String>) {
     if new_members.len() > 0 {
         match crate_info.workspace {
             Some(ref mut workspace) => match workspace.members {
-                Some(ref mut members) => {
-for new_member in new_members.iter() {
-                        let member_string = new_member.to_string();
+                Some(ref mut members) => for new_member in new_members.iter() {
+                    let member_string = new_member.to_string();
 
-                        match members.iter().position(|member| *member == member_string) {
-                            None => members.push(member_string),
-                            _ => (),
-                        }
+                    match members.iter().position(|member| *member == member_string) {
+                        None => members.push(member_string),
+                        _ => (),
                     }
-                }
+                },
                 None => workspace.members = Some(new_members),
             },
             None => (), //not a workspace
@@ -114,23 +112,21 @@ fn remove_excludes(crate_info: &mut CrateInfo) -> bool {
     match crate_info.workspace {
         Some(ref mut workspace) => match workspace.exclude {
             Some(ref excludes) => match workspace.members {
-                Some(ref mut members) => {
-                    for exclude in excludes.iter() {
-                        let exclude_string = exclude.to_string();
+                Some(ref mut members) => for exclude in excludes.iter() {
+                    let exclude_string = exclude.to_string();
 
-                        let result = members.iter().position(|member| *member == exclude_string);
-                        match result {
-                            Some(index) => {
-                                members.remove(index);
+                    let result = members.iter().position(|member| *member == exclude_string);
+                    match result {
+                        Some(index) => {
+                            members.remove(index);
 
-                                removed = true;
+                            removed = true;
 
-                                ()
-                            }
-                            None => (),
-                        };
-                    }
-                }
+                            ()
+                        }
+                        None => (),
+                    };
+                },
                 None => (),
             },
             None => (),

@@ -481,8 +481,7 @@ fn create_workspace_task_extend_workspace_makefile() {
     assert_eq!(script.join("\n"), "".to_string());
     assert!(task.env.is_some());
     assert!(
-        task
-            .env
+        task.env
             .unwrap()
             .get("CARGO_MAKE_WORKSPACE_MAKEFILE")
             .is_some()
