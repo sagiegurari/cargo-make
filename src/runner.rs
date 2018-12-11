@@ -164,7 +164,7 @@ fn create_execution_plan_for_step(
                                 false,
                                 true,
                             );
-                        }
+                        },
                         _ => debug!("No dependencies found for task: {}", &task),
                     };
 
