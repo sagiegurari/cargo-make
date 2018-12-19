@@ -132,9 +132,11 @@ mod condition;
 mod config;
 mod descriptor;
 mod environment;
+mod execution_plan;
 mod installer;
 mod legacy;
 mod logger;
+mod print;
 mod runner;
 mod scriptengine;
 mod storage;
@@ -220,7 +222,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
     } else if cli_args.print_only {
-        runner::print(&config, &task, cli_args.disable_workspace);
+        print::print(&config, &task, cli_args.disable_workspace);
     } else {
         runner::run(config, &task, env_info, &cli_args);
     }
