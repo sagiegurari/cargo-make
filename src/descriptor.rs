@@ -139,7 +139,12 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
     }
 }
 
-fn load_external_descriptor(base_path: &str, file_name: &str, set_env: bool) -> ExternalConfig {
+fn load_external_descriptor(
+    base_path: &str,
+    file_name: &str,
+    force: bool,
+    set_env: bool,
+) -> ExternalConfig {
     debug!(
         "Loading tasks from file: {} base directory: {}",
         &file_name, &base_path
@@ -185,13 +190,17 @@ fn load_external_descriptor(base_path: &str, file_name: &str, set_env: bool) -> 
                     .to_str()
                     .unwrap_or(".");
                 debug!("External config parent path: {}", &parent_path);
-                let base_file_config = load_external_descriptor(parent_path, base_file, false);
+                let base_file_config =
+                    load_external_descriptor(parent_path, base_file, true, false);
 
                 // merge configs
                 merge_external_configs(file_config.clone(), base_file_config)
             }
             None => file_config,
         }
+    } else if force {
+        error!("Descriptor file: {:#?} not found.", &file_path);
+        panic!("Descriptor file: {:#?} not found.", &file_path);
     } else {
         info!("External file not found, skipping.");
 
@@ -240,13 +249,14 @@ fn load_default(stable: bool, experimental: bool) -> Config {
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
 fn load_descriptors(
     file_name: &str,
+    force: bool,
     env_map: Option<Vec<String>>,
     stable: bool,
     experimental: bool,
 ) -> Config {
     let default_config = load_default(stable, experimental);
 
-    let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, true);
+    let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, force, true);
 
     external_config = match env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
         Ok(workspace_makefile) => {
@@ -261,6 +271,7 @@ fn load_descriptors(
                                 let workspace_config = load_external_descriptor(
                                     directory,
                                     workspace_file_name_str,
+                                    false,
                                     false,
                                 );
                                 merge_external_configs(external_config, workspace_config)
@@ -331,11 +342,16 @@ fn load_descriptors(
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
-pub(crate) fn load(file_name: &str, env_map: Option<Vec<String>>, experimental: bool) -> Config {
-    let mut config = load_descriptors(&file_name, env_map.clone(), true, experimental);
+pub(crate) fn load(
+    file_name: &str,
+    force: bool,
+    env_map: Option<Vec<String>>,
+    experimental: bool,
+) -> Config {
+    let mut config = load_descriptors(&file_name, force, env_map.clone(), true, experimental);
 
     if config.config.skip_core_tasks.unwrap_or(false) {
-        config = load_descriptors(&file_name, env_map.clone(), false, false);
+        config = load_descriptors(&file_name, force, env_map.clone(), false, false);
     }
 
     config

@@ -1,0 +1,5 @@
+
+extend = "bad.toml"
+
+[tasks.extended]
+alias="D2"

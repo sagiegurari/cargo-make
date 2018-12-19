@@ -190,7 +190,11 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     };
     environment::setup_cwd(cwd);
 
-    let build_file = &cli_args.build_file;
+    let force_makefile = cli_args.build_file.is_some();
+    let build_file = &cli_args
+        .build_file
+        .clone()
+        .unwrap_or(DEFAULT_TOML.to_string());
     let task = &cli_args.task;
 
     info!("Using Build File: {}", &build_file);
@@ -209,7 +213,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => env_cli_entries,
     };
 
-    let config = descriptor::load(&build_file, env, cli_args.experimental);
+    let config = descriptor::load(&build_file, force_makefile, env, cli_args.experimental);
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
@@ -250,10 +254,15 @@ fn run_for_args(
 
     cli_args.env = cmd_matches.values_of_lossy("env");
 
-    cli_args.build_file = cmd_matches
-        .value_of("makefile")
-        .unwrap_or(&DEFAULT_TOML)
-        .to_string();
+    cli_args.build_file = if cmd_matches.occurrences_of("makefile") == 0 {
+        None
+    } else {
+        let makefile = cmd_matches
+            .value_of("makefile")
+            .unwrap_or(&DEFAULT_TOML)
+            .to_string();
+        Some(makefile)
+    };
 
     cli_args.cwd = match cmd_matches.value_of("cwd") {
         Some(value) => Some(value.to_string()),

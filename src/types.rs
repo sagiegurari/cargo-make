@@ -27,7 +27,7 @@ pub struct CliArgs {
     /// The command name
     pub command: String,
     /// The external Makefile.toml path
-    pub build_file: String,
+    pub build_file: Option<String>,
     /// The task to invoke
     pub task: String,
     /// Log level name
@@ -59,7 +59,7 @@ impl CliArgs {
     pub fn new() -> CliArgs {
         CliArgs {
             command: "".to_string(),
-            build_file: "Makefile.toml".to_string(),
+            build_file: None,
             task: "default".to_string(),
             log_level: "info".to_string(),
             cwd: None,
