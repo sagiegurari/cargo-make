@@ -24,6 +24,7 @@ fn run_makefile_not_found() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -49,6 +50,7 @@ fn run_empty_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -74,6 +76,7 @@ fn print_empty_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -99,6 +102,7 @@ fn list_empty_task() {
             list_all_steps: true,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -124,6 +128,7 @@ fn run_file_and_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -152,6 +157,7 @@ fn run_cwd_with_file() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -178,6 +184,7 @@ fn run_file_not_go_to_project_root() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -204,6 +211,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -233,6 +241,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -262,6 +271,7 @@ fn run_cwd_task_not_found() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );

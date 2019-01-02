@@ -5,6 +5,7 @@
 * Should abort on non existent makefile if provided on cli or on extends property #143 (**backward compatability break**)
 * Update format task for stable rust #160 (**backward compatability break**)
 * Add format check and clippy to ci-flow #161 (thanks @D4nte)
+* Add new print steps output format 'short-description' #121
 
 ### v0.15.3 (2018-12-07)
 

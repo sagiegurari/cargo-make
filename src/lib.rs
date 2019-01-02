@@ -154,7 +154,7 @@ static DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 static DEFAULT_TOML: &str = "Makefile.toml";
 static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
-static DEFAULT_FORMAT: &str = "default";
+static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     logger::init(&cli_args.log_level);
@@ -225,7 +225,12 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
     } else if cli_args.print_only {
-        print::print(&config, &task, cli_args.disable_workspace);
+        print::print(
+            &config,
+            &task,
+            &cli_args.output_format,
+            cli_args.disable_workspace,
+        );
     } else {
         runner::run(config, &task, env_info, &cli_args);
     }
@@ -291,6 +296,11 @@ fn run_for_args(
         Some(value) => Some(value.to_string()),
         None => None,
     };
+
+    cli_args.output_format = cmd_matches
+        .value_of("output-format")
+        .unwrap_or(DEFAULT_OUTPUT_FORMAT)
+        .to_string();
 
     cli_args.disable_check_for_updates = cmd_matches.is_present("disable-check-for-updates");
     cli_args.experimental = cmd_matches.is_present("experimental");
@@ -416,9 +426,9 @@ fn create_cli<'a, 'b>(
                 .help("Disables the update check during startup"),
         )
         .arg(
-            Arg::from_usage("--format=[FORMAT] 'The print steps format'")
-                .possible_values(&["default", "single-line"])
-                .default_value(DEFAULT_FORMAT),
+            Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print steps format'")
+                .possible_values(&["default", "short-description"])
+                .default_value(DEFAULT_OUTPUT_FORMAT),
         )
         .arg(Arg::with_name("print-steps").long("--print-steps").help(
             "Only prints the steps of the build in the order they will \

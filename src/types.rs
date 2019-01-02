@@ -52,6 +52,8 @@ pub struct CliArgs {
     pub experimental: bool,
     /// additional command line arguments
     pub arguments: Option<Vec<String>>,
+    /// Output format
+    pub output_format: String,
 }
 
 impl CliArgs {
@@ -72,6 +74,7 @@ impl CliArgs {
             disable_check_for_updates: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         }
     }
 }
