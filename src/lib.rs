@@ -154,6 +154,7 @@ static DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 static DEFAULT_TOML: &str = "Makefile.toml";
 static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
+static DEFAULT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     logger::init(&cli_args.log_level);
@@ -413,6 +414,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("disable-check-for-updates")
                 .long("--disable-check-for-updates")
                 .help("Disables the update check during startup"),
+        )
+        .arg(
+            Arg::from_usage("--format=[FORMAT] 'The print steps format'")
+                .possible_values(&["default", "single-line"])
+                .default_value(DEFAULT_FORMAT),
         )
         .arg(Arg::with_name("print-steps").long("--print-steps").help(
             "Only prints the steps of the build in the order they will \
