@@ -327,11 +327,10 @@ pub struct InstallCrateInfo {
 
 impl PartialEq for InstallCrateInfo {
     fn eq(&self, other: &InstallCrateInfo) -> bool {
-        if self.crate_name != other.crate_name {
-            false
-        } else if self.binary != other.binary {
-            false
-        } else if self.test_arg != other.test_arg {
+        if self.crate_name != other.crate_name
+            || self.binary != other.binary
+            || self.test_arg != other.test_arg
+        {
             false
         } else {
             match self.rustup_component_name {
