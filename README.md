@@ -915,6 +915,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CI** - Holds TRUE/FALSE based if the task is running in a continuous integration system (such as Travis CI).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1789,14 +1790,13 @@ FLAGS:
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this
-                                  directory if defined.
-    -e, --env <ENV>...            Set environment variables
-        --env-file <FILE>         Set environment variables from provided file
-    -l, --loglevel <LOG LEVEL>    The log level [default: info]  [possible values: verbose, info, error]
-        --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
-    -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument)
-                                  [default: default]
+        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be from this directory if defined.
+    -e, --env <ENV>...                     Set environment variables
+        --env-file <FILE>                  Set environment variables from provided file
+    -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
+        --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
+        --output-format <OUTPUT FORMAT>    The print steps format [default: default]  [possible values: default, short-description]
+    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
     <TASK>            The task name to execute

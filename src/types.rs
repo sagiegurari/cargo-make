@@ -7,6 +7,7 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
+use ci_info::types::CiInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 
@@ -251,6 +252,8 @@ pub struct EnvInfo {
     pub crate_info: CrateInfo,
     /// Git info
     pub git_info: GitInfo,
+    /// CI info
+    pub ci_info: CiInfo,
 }
 
 #[derive(Debug, Clone)]
