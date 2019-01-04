@@ -510,7 +510,7 @@ fn setup_env_for_rust_simple_check() {
 fn setup_env_for_ci_simple_check() {
     env::set_var("CARGO_MAKE_CI", "EMPTY");
 
-    assert!(env::var("CARGO_MAKE_CI").unwrap() == "EMPTY");
+    assert!(env::var("CARGO_MAKE_CI").unwrap(), "EMPTY");
 
     let ci = ci_info::is_ci();
     let env_value = if ci { "TRUE" } else { "FALSE" };
