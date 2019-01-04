@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.16.0
+### v0.16.0 (2019-01-04)
 
 * Should abort on non existent makefile if provided on cli or on extends property #143 (**backward compatability break**)
 * Update format task for stable rust #160 (**backward compatability break**)
