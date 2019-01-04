@@ -4,13 +4,14 @@ use std::env;
 use std::path::Path;
 
 #[test]
-fn run_empty_task() {
+#[should_panic]
+fn run_makefile_not_found() {
     let global_config = GlobalConfig::new();
 
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "bad.toml".to_string(),
+            build_file: Some("bad.toml".to_string()),
             task: "empty".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -23,6 +24,33 @@ fn run_empty_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
+        },
+        &global_config,
+    );
+}
+
+#[test]
+fn run_empty_task() {
+    let global_config = GlobalConfig::new();
+
+    run(
+        CliArgs {
+            command: "cargo make".to_string(),
+            build_file: None,
+            task: "empty".to_string(),
+            log_level: "error".to_string(),
+            cwd: None,
+            env: None,
+            env_file: None,
+            disable_workspace: false,
+            disable_on_error: false,
+            disable_check_for_updates: true,
+            print_only: false,
+            list_all_steps: false,
+            experimental: false,
+            arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -35,7 +63,7 @@ fn print_empty_task() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "bad.toml".to_string(),
+            build_file: None,
             task: "empty".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -48,6 +76,7 @@ fn print_empty_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -60,7 +89,7 @@ fn list_empty_task() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "bad.toml".to_string(),
+            build_file: None,
             task: "empty".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -73,6 +102,7 @@ fn list_empty_task() {
             list_all_steps: true,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -85,7 +115,7 @@ fn run_file_and_task() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./examples/dependencies.toml".to_string(),
+            build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -98,6 +128,7 @@ fn run_file_and_task() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -113,7 +144,7 @@ fn run_cwd_with_file() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./examples/dependencies.toml".to_string(),
+            build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: Some("..".to_string()),
@@ -126,6 +157,7 @@ fn run_cwd_with_file() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -139,7 +171,7 @@ fn run_file_not_go_to_project_root() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./examples/dependencies.toml".to_string(),
+            build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -152,6 +184,7 @@ fn run_file_not_go_to_project_root() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -165,7 +198,7 @@ fn run_cwd_go_to_project_root_current_dir() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./examples/dependencies.toml".to_string(),
+            build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -178,6 +211,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -194,7 +228,7 @@ fn run_cwd_go_to_project_root_child_dir() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./examples/dependencies.toml".to_string(),
+            build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: None,
@@ -207,6 +241,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );
@@ -223,7 +258,7 @@ fn run_cwd_task_not_found() {
     run(
         CliArgs {
             command: "cargo make".to_string(),
-            build_file: "./dependencies.toml".to_string(),
+            build_file: Some("./dependencies.toml".to_string()),
             task: "A".to_string(),
             log_level: "error".to_string(),
             cwd: Some("..".to_string()),
@@ -236,6 +271,7 @@ fn run_cwd_task_not_found() {
             list_all_steps: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         },
         &global_config,
     );

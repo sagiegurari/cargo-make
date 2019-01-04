@@ -15,6 +15,7 @@ use crate::types::{
     CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
     Workspace,
 };
+use ci_info::types::CiInfo;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -249,6 +250,16 @@ fn setup_env_for_rust() -> RustInfo {
     rust_info_clone
 }
 
+fn setup_env_for_ci() -> CiInfo {
+    let ci_info_struct = ci_info::get();
+
+    let ci_var_value = if ci_info_struct.ci { "TRUE" } else { "FALSE" };
+
+    env::set_var("CARGO_MAKE_CI", ci_var_value.to_string());
+
+    ci_info_struct
+}
+
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
     env::set_var("CARGO_MAKE", "true");
@@ -277,6 +288,9 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     // load rust info
     let rust_info = setup_env_for_rust();
 
+    // load CI info
+    let ci_info_struct = setup_env_for_ci();
+
     // load env vars
     initialize_env(config);
 
@@ -284,6 +298,7 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
         rust_info,
         crate_info,
         git_info,
+        ci_info: ci_info_struct,
     }
 }
 

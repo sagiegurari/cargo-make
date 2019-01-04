@@ -100,7 +100,7 @@ You will have two executables available: *cargo-make* and *makers*<br>
 
 <a name="installation-binary-release"></a>
 ### Binary Release
-Binary releases are available in the github releases page.<br>
+Binary releases are available in the [github releases page](https://github.com/sagiegurari/cargo-make/releases).<br>
 The following binaries are available for each release:
 
 * x86_64-unknown-linux-musl
@@ -915,6 +915,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CI** - Holds TRUE/FALSE based if the task is running in a continuous integration system (such as Travis CI).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1057,7 +1058,7 @@ If rustup failed or component name is not provided, it will resort to using carg
 For example:
 
 ```toml
-[tasks.format-nightly]
+[tasks.rustfmt]
 install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt-preview", binary = "rustfmt", test_arg = "--help" }
 command = "rustfmt"
 ```
@@ -1529,8 +1530,6 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **dev-watch-flow** - Alias for test-flow
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **format-nightly** - Runs the cargo rustfmt nightly plugin.
-* **format-stable** - Runs the cargo rustfmt plugin.
 * **post-format** - No Description.
 * **pre-format** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
@@ -1791,14 +1790,13 @@ FLAGS:
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>         Will set the current working directory. The search for the makefile will be from this
-                                  directory if defined.
-    -e, --env <ENV>...            Set environment variables
-        --env-file <FILE>         Set environment variables from provided file
-    -l, --loglevel <LOG LEVEL>    The log level [default: info]  [possible values: verbose, info, error]
-        --makefile <FILE>         The optional toml file containing the tasks definitions [default: Makefile.toml]
-    -t, --task <TASK>             The task name to execute (can omit the flag if the task name is the last argument)
-                                  [default: default]
+        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be from this directory if defined.
+    -e, --env <ENV>...                     Set environment variables
+        --env-file <FILE>                  Set environment variables from provided file
+    -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
+        --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
+        --output-format <OUTPUT FORMAT>    The print steps format [default: default]  [possible values: default, short-description]
+    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
     <TASK>            The task name to execute

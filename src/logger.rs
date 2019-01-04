@@ -58,7 +58,6 @@ pub(crate) fn get_log_level() -> String {
 /// # Arguments
 ///
 /// * `level_name` - The log level name ('verbose', 'info', 'error')
-/// ```
 pub(crate) fn init(level_name: &str) {
     let level = get_level(level_name);
 
@@ -81,7 +80,8 @@ pub(crate) fn init(level_name: &str) {
 
                 exit(1);
             }
-        }).level(log_level)
+        })
+        .level(log_level)
         .chain(stdout())
         .apply();
 

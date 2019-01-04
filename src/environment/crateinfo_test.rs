@@ -339,38 +339,30 @@ fn expand_glob_members_found() {
     let mut members = expand_glob_members("examples/*.toml");
 
     assert!(members.len() > 0);
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/env.toml")
-            .is_some()
-    );
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/env.toml")
+        .is_some());
 
     members = expand_glob_members("examples/*/*.toml");
 
     assert!(members.len() > 0);
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace2/Makefile.toml")
-            .is_some()
-    );
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace2/Makefile.toml")
+        .is_some());
 
     members = expand_glob_members("examples/workspace/member*");
 
     assert!(members.len() > 0);
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace/member1")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace/member2")
-            .is_some()
-    );
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace/member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace/member2")
+        .is_some());
 }
 
 #[test]
@@ -441,42 +433,30 @@ fn normalize_members_mixed() {
     workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_some());
     let members = workspace.members.unwrap();
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member1")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member2")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member3")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member4")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace/member1")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace/member2")
-            .is_some()
-    );
+    assert!(members
+        .iter()
+        .position(|member| member == "member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member3")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member4")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace/member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace/member2")
+        .is_some());
 }
 
 #[test]
@@ -548,41 +528,29 @@ fn load_workspace_members_mixed() {
     workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_some());
     let members = workspace.members.unwrap();
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "path1")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "path2")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member1")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member2")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "member4")
-            .is_some()
-    );
-    assert!(
-        members
-            .iter()
-            .position(|member| member == "examples/workspace/member1")
-            .is_some()
-    );
+    assert!(members
+        .iter()
+        .position(|member| member == "path1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "path2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member4")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "examples/workspace/member1")
+        .is_some());
     assert_eq!(members.len(), 7);
 }

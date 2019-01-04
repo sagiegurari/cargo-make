@@ -7,6 +7,7 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
+use ci_info::types::CiInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 
@@ -27,7 +28,7 @@ pub struct CliArgs {
     /// The command name
     pub command: String,
     /// The external Makefile.toml path
-    pub build_file: String,
+    pub build_file: Option<String>,
     /// The task to invoke
     pub task: String,
     /// Log level name
@@ -52,6 +53,8 @@ pub struct CliArgs {
     pub experimental: bool,
     /// additional command line arguments
     pub arguments: Option<Vec<String>>,
+    /// Output format
+    pub output_format: String,
 }
 
 impl CliArgs {
@@ -59,7 +62,7 @@ impl CliArgs {
     pub fn new() -> CliArgs {
         CliArgs {
             command: "".to_string(),
-            build_file: "Makefile.toml".to_string(),
+            build_file: None,
             task: "default".to_string(),
             log_level: "info".to_string(),
             cwd: None,
@@ -72,6 +75,7 @@ impl CliArgs {
             disable_check_for_updates: false,
             experimental: false,
             arguments: None,
+            output_format: "default".to_string(),
         }
     }
 }
@@ -248,6 +252,8 @@ pub struct EnvInfo {
     pub crate_info: CrateInfo,
     /// Git info
     pub git_info: GitInfo,
+    /// CI info
+    pub ci_info: CiInfo,
 }
 
 #[derive(Debug, Clone)]
@@ -327,11 +333,10 @@ pub struct InstallCrateInfo {
 
 impl PartialEq for InstallCrateInfo {
     fn eq(&self, other: &InstallCrateInfo) -> bool {
-        if self.crate_name != other.crate_name {
-            false
-        } else if self.binary != other.binary {
-            false
-        } else if self.test_arg != other.test_arg {
+        if self.crate_name != other.crate_name
+            || self.binary != other.binary
+            || self.test_arg != other.test_arg
+        {
             false
         } else {
             match self.rustup_component_name {

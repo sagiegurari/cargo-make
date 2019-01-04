@@ -4,7 +4,7 @@
     const_err,
     dead_code,
     deprecated,
-    duplicate_associated_type_bindings,
+    deprecated_in_future,
     duplicate_macro_exports,
     ellipsis_inclusive_range_patterns,
     exceeding_bitshifts,
@@ -30,11 +30,13 @@
     non_shorthand_field_patterns,
     non_snake_case,
     non_upper_case_globals,
+    order_dependent_trait_objects,
     overflowing_literals,
     parenthesized_params_in_types_and_modules,
     path_statements,
     patterns_in_fns_without_body,
     plugin_as_library,
+    private_doc_tests,
     private_in_public,
     proc_macro_derive_resolution_fallback,
     pub_use_of_private_extern_crate,
@@ -132,17 +134,19 @@ mod condition;
 mod config;
 mod descriptor;
 mod environment;
+mod execution_plan;
 mod installer;
 mod legacy;
 mod logger;
+mod print;
 mod runner;
 mod scriptengine;
 mod storage;
 mod toolchain;
 mod version;
 
-use clap::{App, Arg, ArgMatches, SubCommand};
 use crate::types::{CliArgs, GlobalConfig};
+use clap::{App, Arg, ArgMatches, SubCommand};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 static AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
@@ -150,6 +154,7 @@ static DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 static DEFAULT_TOML: &str = "Makefile.toml";
 static DEFAULT_LOG_LEVEL: &str = "info";
 static DEFAULT_TASK_NAME: &str = "default";
+static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     logger::init(&cli_args.log_level);
@@ -190,7 +195,11 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     };
     environment::setup_cwd(cwd);
 
-    let build_file = &cli_args.build_file;
+    let force_makefile = cli_args.build_file.is_some();
+    let build_file = &cli_args
+        .build_file
+        .clone()
+        .unwrap_or(DEFAULT_TOML.to_string());
     let task = &cli_args.task;
 
     info!("Using Build File: {}", &build_file);
@@ -209,14 +218,19 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => env_cli_entries,
     };
 
-    let config = descriptor::load(&build_file, env, cli_args.experimental);
+    let config = descriptor::load(&build_file, force_makefile, env, cli_args.experimental);
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
     if cli_args.list_all_steps {
         descriptor::list_steps(&config);
     } else if cli_args.print_only {
-        runner::print(&config, &task, cli_args.disable_workspace);
+        print::print(
+            &config,
+            &task,
+            &cli_args.output_format,
+            cli_args.disable_workspace,
+        );
     } else {
         runner::run(config, &task, env_info, &cli_args);
     }
@@ -250,10 +264,15 @@ fn run_for_args(
 
     cli_args.env = cmd_matches.values_of_lossy("env");
 
-    cli_args.build_file = cmd_matches
-        .value_of("makefile")
-        .unwrap_or(&DEFAULT_TOML)
-        .to_string();
+    cli_args.build_file = if cmd_matches.occurrences_of("makefile") == 0 {
+        None
+    } else {
+        let makefile = cmd_matches
+            .value_of("makefile")
+            .unwrap_or(&DEFAULT_TOML)
+            .to_string();
+        Some(makefile)
+    };
 
     cli_args.cwd = match cmd_matches.value_of("cwd") {
         Some(value) => Some(value.to_string()),
@@ -277,6 +296,11 @@ fn run_for_args(
         Some(value) => Some(value.to_string()),
         None => None,
     };
+
+    cli_args.output_format = cmd_matches
+        .value_of("output-format")
+        .unwrap_or(DEFAULT_OUTPUT_FORMAT)
+        .to_string();
 
     cli_args.disable_check_for_updates = cmd_matches.is_present("disable-check-for-updates");
     cli_args.experimental = cmd_matches.is_present("experimental");
@@ -335,7 +359,8 @@ fn create_cli<'a, 'b>(
                 .value_name("FILE")
                 .help("The optional toml file containing the tasks definitions")
                 .default_value(&DEFAULT_TOML),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("task")
                 .short("-t")
                 .long("--task")
@@ -343,8 +368,10 @@ fn create_cli<'a, 'b>(
                 .help(
                     "The task name to execute \
                      (can omit the flag if the task name is the last argument)",
-                ).default_value(default_task_name),
-        ).arg(
+                )
+                .default_value(default_task_name),
+        )
+        .arg(
             Arg::with_name("cwd")
                 .long("--cwd")
                 .value_name("DIRECTORY")
@@ -352,18 +379,22 @@ fn create_cli<'a, 'b>(
                     "Will set the current working directory. \
                      The search for the makefile will be from this directory if defined.",
                 ),
-        ).arg(Arg::with_name("no-workspace").long("--no-workspace").help(
+        )
+        .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
             "Disable workspace support (tasks are triggered on workspace and not on members)",
-        )).arg(
+        ))
+        .arg(
             Arg::with_name("no-on-error")
                 .long("--no-on-error")
                 .help("Disable on error flow even if defined in config sections"),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("envfile")
                 .long("--env-file")
                 .value_name("FILE")
                 .help("Set environment variables from provided file"),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("env")
                 .long("--env")
                 .short("-e")
@@ -372,31 +403,43 @@ fn create_cli<'a, 'b>(
                 .takes_value(true)
                 .number_of_values(1)
                 .help("Set environment variables"),
-        ).arg(
+        )
+        .arg(
             Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
                 .possible_values(&["verbose", "info", "error"])
                 .default_value(default_log_level),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("v")
                 .short("-v")
                 .long("--verbose")
                 .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("experimental")
                 .long("--experimental")
                 .help("Allows access unsupported experimental predefined tasks."),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("disable-check-for-updates")
                 .long("--disable-check-for-updates")
                 .help("Disables the update check during startup"),
-        ).arg(Arg::with_name("print-steps").long("--print-steps").help(
+        )
+        .arg(
+            Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print steps format'")
+                .possible_values(&["default", "short-description"])
+                .default_value(DEFAULT_OUTPUT_FORMAT),
+        )
+        .arg(Arg::with_name("print-steps").long("--print-steps").help(
             "Only prints the steps of the build in the order they will \
              be invoked but without invoking them",
-        )).arg(
+        ))
+        .arg(
             Arg::with_name("list-steps")
                 .long("--list-all-steps")
                 .help("Lists all known steps"),
-        ).arg(Arg::with_name("TASK").help("The task name to execute"))
+        )
+        .arg(Arg::with_name("TASK").help("The task name to execute"))
         .arg(
             Arg::with_name("TASK_ARGS")
                 .multiple(true)

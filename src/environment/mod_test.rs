@@ -507,6 +507,20 @@ fn setup_env_for_rust_simple_check() {
 }
 
 #[test]
+fn setup_env_for_ci_simple_check() {
+    env::set_var("CARGO_MAKE_CI", "EMPTY");
+
+    assert!(env::var("CARGO_MAKE_CI").unwrap(), "EMPTY");
+
+    let ci = ci_info::is_ci();
+    let env_value = if ci { "TRUE" } else { "FALSE" };
+
+    setup_env_for_ci();
+
+    assert_eq!(env::var("CARGO_MAKE_CI").unwrap(), env_value);
+}
+
+#[test]
 fn get_project_root_test() {
     let directory = env::current_dir().unwrap().to_str().unwrap().to_string();
     let project_root = get_project_root().unwrap();
