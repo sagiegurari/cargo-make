@@ -7,6 +7,7 @@
 * Add format check and clippy to ci-flow #161 (thanks @D4nte)
 * Add new print steps output format 'short-description' #121
 * Remove preview from clippy and rustfmt components #162 (**backward compatability break**)
+* Add new CARGO_MAKE_CI environment variable
 
 ### v0.15.3 (2018-12-07)
 
