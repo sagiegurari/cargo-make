@@ -1,4 +1,4 @@
 var ALIASES = {};
-ALIASES['cargo_make'] = {};
-ALIASES['cli'] = {};
-ALIASES['makers'] = {};
+ALIASES["cargo_make"] = {};
+ALIASES["cli"] = {};
+ALIASES["makers"] = {};
