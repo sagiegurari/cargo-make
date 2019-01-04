@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>descriptor.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>descriptor.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -387,6 +387,22 @@
 <span id="387">387</span>
 <span id="388">388</span>
 <span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -529,7 +545,12 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">load_external_descriptor</span>(<span class="ident">base_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">set_env</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+<span class="kw">fn</span> <span class="ident">load_external_descriptor</span>(
+    <span class="ident">base_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">force</span>: <span class="ident">bool</span>,
+    <span class="ident">set_env</span>: <span class="ident">bool</span>,
+) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
     <span class="macro">debug</span><span class="macro">!</span>(
         <span class="string">&quot;Loading tasks from file: {} base directory: {}&quot;</span>,
         <span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="kw-2">&amp;</span><span class="ident">base_path</span>
@@ -575,13 +596,17 @@
                     .<span class="ident">to_str</span>()
                     .<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;External config parent path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">parent_path</span>);
-                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="ident">base_file</span>, <span class="bool-val">false</span>);
+                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span>
+                    <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="ident">base_file</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
 
                 <span class="comment">// merge configs</span>
                 <span class="ident">merge_external_configs</span>(<span class="ident">file_config</span>.<span class="ident">clone</span>(), <span class="ident">base_file_config</span>)
             }
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">file_config</span>,
         }
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">force</span> {
+        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Descriptor file: {:#?} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>);
+        <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Descriptor file: {:#?} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>);
     } <span class="kw">else</span> {
         <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;External file not found, skipping.&quot;</span>);
 
@@ -630,13 +655,14 @@
 <span class="doccomment">/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.</span>
 <span class="kw">fn</span> <span class="ident">load_descriptors</span>(
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">force</span>: <span class="ident">bool</span>,
     <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="ident">stable</span>: <span class="ident">bool</span>,
     <span class="ident">experimental</span>: <span class="ident">bool</span>,
 ) <span class="op">-&gt;</span> <span class="ident">Config</span> {
     <span class="kw">let</span> <span class="ident">default_config</span> <span class="op">=</span> <span class="ident">load_default</span>(<span class="ident">stable</span>, <span class="ident">experimental</span>);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">file_name</span>, <span class="bool-val">true</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">file_name</span>, <span class="ident">force</span>, <span class="bool-val">true</span>);
 
     <span class="ident">external_config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>) {
         <span class="prelude-val">Ok</span>(<span class="ident">workspace_makefile</span>) <span class="op">=&gt;</span> {
@@ -651,6 +677,7 @@
                                 <span class="kw">let</span> <span class="ident">workspace_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(
                                     <span class="ident">directory</span>,
                                     <span class="ident">workspace_file_name_str</span>,
+                                    <span class="bool-val">false</span>,
                                     <span class="bool-val">false</span>,
                                 );
                                 <span class="ident">merge_external_configs</span>(<span class="ident">external_config</span>, <span class="ident">workspace_config</span>)
@@ -721,11 +748,16 @@
 <span class="doccomment">/// It will first load the default descriptor which is defined in cargo-make internally and</span>
 <span class="doccomment">/// afterwards tries to find the external descriptor and load it as well.&lt;br&gt;</span>
 <span class="doccomment">/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">experimental</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">Config</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>, <span class="ident">experimental</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>(
+    <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">force</span>: <span class="ident">bool</span>,
+    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">experimental</span>: <span class="ident">bool</span>,
+) <span class="op">-&gt;</span> <span class="ident">Config</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">force</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>, <span class="ident">experimental</span>);
 
     <span class="kw">if</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">skip_core_tasks</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
-        <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>);
+        <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">force</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>);
     }
 
     <span class="ident">config</span>
@@ -778,4 +810,4 @@
     <span class="ident">count</span>
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
