@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.1
+
+* Enable coverage for every Linux based CI system (**backward compatability break**)
+
 ### v0.16.0 (2019-01-04)
 
 * Should abort on non existent makefile if provided on cli or on extends property #143 (**backward compatability break**)
