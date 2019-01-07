@@ -1251,6 +1251,26 @@ When working with workspaces, in order to run the ci-flow for each member and pa
   command: cargo make --no-workspace workspace-ci-flow
 ```
 
+<a name="usage-ci-azure-pipelines"></a>
+#### Azure Pipelines
+Add the following to your `azure-pipelines.yml` file:
+
+```yaml
+- script: cargo install --debug cargo-make
+  displayName: install cargo-make
+- script: cargo make ci-flow
+  displayName: ci flow
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following setup:
+
+```yaml
+- script: cargo install --debug cargo-make
+  displayName: install cargo-make
+- script: cargo make --no-workspace workspace-ci-flow
+  displayName: ci flow
+```
+
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>

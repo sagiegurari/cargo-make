@@ -3,6 +3,7 @@
 ### v0.16.1
 
 * Enable coverage for every Linux based CI system (**backward compatability break**)
+* Document Azure Pipelines config #161
 
 ### v0.16.0 (2019-01-04)
 

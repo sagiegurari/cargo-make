@@ -41,6 +41,7 @@
         * [AppVeyor](#usage-ci-appveyor)
         * [GitLab](#usage-ci-gitlab)
         * [CircleCI](#usage-ci-circleci)
+        * [Azure Pipelines](#usage-ci-azure-pipelines)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
