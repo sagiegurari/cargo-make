@@ -23,6 +23,7 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use std::process::Output;
 
 fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true) {
@@ -500,4 +501,29 @@ pub(crate) fn expand_env(step: &Step) -> Step {
         name: step.name.clone(),
         config,
     }
+}
+
+fn get_env_var_name_for_task_output(name: &str) -> String {
+    let name_upper_case = name.to_uppercase();
+    let mut environment_var_name = "CARGO_MAKE_TASK_".to_string();
+    environment_var_name.push_str(&name_upper_case);
+    environment_var_name.push_str("_OUTPUT");
+
+    environment_var_name = environment_var_name.replace("-", "_");
+    environment_var_name = environment_var_name.replace(" ", "_");
+
+    environment_var_name
+}
+
+pub(crate) fn set_task_env_for_output(name: &str, output: &Output) {
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+
+    set_task_env_for_output_str(&name, &stdout);
+}
+
+pub(crate) fn set_task_env_for_output_str(name: &str, output: &str) {
+    let environment_var_name = get_env_var_name_for_task_output(&name);
+
+    env::set_var(&environment_var_name, &output);
+    env::set_var("CARGO_MAKE_TASK_OUTPUT_PREV", &output);
 }

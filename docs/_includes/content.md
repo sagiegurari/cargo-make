@@ -858,6 +858,11 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
 
+The following environment variables will be set by cargo-make after task execution:
+
+* **CARGO_MAKE_TASK_OUTPUT_PREV** - The command/script output of the last invoked task.
+* **CARGO_MAKE_TASK_<TASKNAME>_OUTPUT** - The command/script output of the task based on the task name (task name is converted to upper case and spaces and '-' characters are converted to '_').
+
 <a name="usage-conditions"></a>
 ### Conditions
 Conditions allow you to evaluate at runtime if to run a specific task or not.<br>

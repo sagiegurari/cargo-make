@@ -82,7 +82,8 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                 };
 
                 // try to invoke it as a none OS script
-                let script_runner_done = scriptengine::invoke(&updated_step.config, &cli_arguments);
+                let script_runner_done =
+                    scriptengine::invoke(&updated_step.name, &updated_step.config, &cli_arguments);
 
                 // run as command or OS script
                 if !script_runner_done {
