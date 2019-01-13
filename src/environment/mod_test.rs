@@ -710,24 +710,3 @@ fn remove_unc_prefix_not_found() {
 
     assert_eq!(output, PathBuf::from(r"C:\test"));
 }
-
-#[test]
-fn get_env_var_name_for_task_output_with_changes() {
-    let output = get_env_var_name_for_task_output("my-task name_lower");
-
-    assert_eq!(output, "CARGO_MAKE_TASK_MY_TASK_NAME_LOWER_OUTPUT");
-}
-
-#[test]
-fn set_task_env_for_output_str_with_name_changes() {
-    set_task_env_for_output_str("my-task name_lower", "some output");
-
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_MY_TASK_NAME_LOWER_OUTPUT").unwrap(),
-        "some output"
-    );
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_OUTPUT_PREV").unwrap(),
-        "some output"
-    );
-}

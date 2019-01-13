@@ -62,15 +62,14 @@ dependencies = [
 ]
 
 [tasks.dev-watch-flow]
-description = "Alias for test-flow"
+description = "Alias for default flow"
 category = "Development"
 alias = "test-flow"
 
 [tasks.watch-flow]
-description = "Watches for any file change and if any change is detected, it will invoke the test flow."
+description = "Watches for any file change and if any change is detected, it will invoke the default flow."
 category = "Development"
-command = "cargo"
-args = ["watch", "--exec", "make dev-watch-flow"]
+watch = true
 
 [tasks.pre-publish-clean-flow]
 description = "Clears old artifactes before publishing"

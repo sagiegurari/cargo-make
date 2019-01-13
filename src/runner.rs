@@ -35,6 +35,10 @@ fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
     run_flow(&sub_flow_info, true);
 }
 
+fn watch_task() {
+    //TODO impl
+}
+
 fn run_task(flow_info: &FlowInfo, step: &Step) {
     info!("Running Task: {}", &step.name);
 
@@ -54,49 +58,58 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
 
         let updated_step = environment::expand_env(&step);
 
-        installer::install(&updated_step.config);
-
-        match step.config.run_task {
-            Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
-            None => {
-                let revert_directory = match step.config.cwd {
-                    Some(ref cwd) => {
-                        if cwd.len() > 0 {
-                            let directory =
-                                environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
-
-                            environment::setup_cwd(Some(cwd));
-
-                            directory
-                        } else {
-                            "".to_string()
-                        }
-                    }
-                    None => "".to_string(),
-                };
-
-                // get cli arguments
-                let cli_arguments = match flow_info.cli_arguments {
-                    Some(ref args) => args.clone(),
-                    None => vec![],
-                };
-
-                // try to invoke it as a none OS script
-                let script_runner_done =
-                    scriptengine::invoke(&updated_step.name, &updated_step.config, &cli_arguments);
-
-                // run as command or OS script
-                if !script_runner_done {
-                    command::run(&updated_step, &cli_arguments);
-                };
-
-                // revert to original cwd
-                match step.config.cwd {
-                    Some(_) => environment::setup_cwd(Some(&revert_directory)),
-                    _ => (),
-                };
-            }
+        let watch = match step.config.watch {
+            Some(watch_bool) => watch_bool,
+            None => false,
         };
+
+        if watch {
+            watch_task();
+        } else {
+            installer::install(&updated_step.config);
+
+            match step.config.run_task {
+                Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
+                None => {
+                    let revert_directory = match step.config.cwd {
+                        Some(ref cwd) => {
+                            if cwd.len() > 0 {
+                                let directory =
+                                    environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
+
+                                environment::setup_cwd(Some(cwd));
+
+                                directory
+                            } else {
+                                "".to_string()
+                            }
+                        }
+                        None => "".to_string(),
+                    };
+
+                    // get cli arguments
+                    let cli_arguments = match flow_info.cli_arguments {
+                        Some(ref args) => args.clone(),
+                        None => vec![],
+                    };
+
+                    // try to invoke it as a none OS script
+                    let script_runner_done =
+                        scriptengine::invoke(&updated_step.config, &cli_arguments);
+
+                    // run as command or OS script
+                    if !script_runner_done {
+                        command::run(&updated_step, &cli_arguments);
+                    };
+
+                    // revert to original cwd
+                    match step.config.cwd {
+                        Some(_) => environment::setup_cwd(Some(&revert_directory)),
+                        _ => (),
+                    };
+                }
+            };
+        }
     } else {
         debug!("Task: {} disabled", &step.name);
     }

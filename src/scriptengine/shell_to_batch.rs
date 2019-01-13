@@ -10,13 +10,7 @@ mod shell_to_batch_test;
 use crate::command;
 use shell2batch;
 
-pub(crate) fn execute_and_update_env(
-    name: &str,
-    script: &Vec<String>,
-    cli_arguments: &Vec<String>,
-) {
-    let task_name = Some(name.to_string());
-
+pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>) {
     if cfg!(windows) {
         let shell_script = script.join("\n");
         let windows_batch = shell2batch::convert(&shell_script);
@@ -26,14 +20,8 @@ pub(crate) fn execute_and_update_env(
             .map(|string| string.to_string())
             .collect();
 
-        command::run_script_and_update_env(
-            task_name,
-            &windows_script_lines,
-            None,
-            cli_arguments,
-            true,
-        );
+        command::run_script(&windows_script_lines, None, cli_arguments, true);
     } else {
-        command::run_script_and_update_env(task_name, script, None, cli_arguments, true);
+        command::run_script(script, None, cli_arguments, true);
     };
 }

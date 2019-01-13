@@ -444,6 +444,8 @@ pub struct Task {
     pub private: Option<bool>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
+    /// set to true to watch for file changes and invoke the task operation
+    pub watch: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -502,6 +504,7 @@ impl Task {
             disabled: None,
             private: None,
             workspace: None,
+            watch: None,
             condition: None,
             condition_script: None,
             force: None,
@@ -571,6 +574,12 @@ impl Task {
             self.workspace = task.workspace.clone();
         } else if override_values {
             self.workspace = None;
+        }
+
+        if task.watch.is_some() {
+            self.watch = task.watch.clone();
+        } else if override_values {
+            self.watch = None;
         }
 
         if task.condition.is_some() {
@@ -751,6 +760,7 @@ impl Task {
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
                     workspace: self.workspace.clone(),
+                    watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
                     force: override_task.force.clone(),
@@ -839,6 +849,8 @@ pub struct PlatformOverrideTask {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// set to true to watch for file changes and invoke the task operation
+    pub watch: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -892,6 +904,10 @@ impl PlatformOverrideTask {
 
             if self.private.is_none() && task.private.is_some() {
                 self.private = task.private.clone();
+            }
+
+            if self.watch.is_none() && task.watch.is_some() {
+                self.watch = task.watch.clone();
             }
 
             if self.condition.is_none() && task.condition.is_some() {

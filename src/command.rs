@@ -7,7 +7,6 @@
 #[path = "./command_test.rs"]
 mod command_test;
 
-use crate::environment;
 use crate::logger;
 use crate::toolchain;
 use crate::types::{CommandSpec, Step};
@@ -100,19 +99,9 @@ pub(crate) fn run_script_get_output(
 
     run_script::run(script_lines.join("\n").as_str(), cli_arguments, &options)
 }
-/// Runs the requested command and panics in case of any error.
-pub(crate) fn run_script(
-    script_lines: &Vec<String>,
-    script_runner: Option<String>,
-    cli_arguments: &Vec<String>,
-    validate: bool,
-) -> i32 {
-    run_script_and_update_env(None, &script_lines, script_runner, &cli_arguments, validate)
-}
 
 /// Runs the requested script text and panics in case of any script error.
-pub(crate) fn run_script_and_update_env(
-    task_name: Option<String>,
+pub(crate) fn run_script(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     cli_arguments: &Vec<String>,
@@ -120,22 +109,14 @@ pub(crate) fn run_script_and_update_env(
 ) -> i32 {
     let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false);
 
-    let output_struct = match output {
-        Ok(output_struct_values) => (output_struct_values.0, output_struct_values.1),
-        _ => (-1, "".to_string()),
+    let exit_code = match output {
+        Ok(output_struct) => output_struct.0,
+        _ => -1,
     };
 
-    let exit_code = output_struct.0;
     if validate {
         validate_exit_code(exit_code);
     }
-
-    match task_name {
-        Some(ref task_name_string) => {
-            environment::set_task_env_for_output_str(&task_name_string, &output_struct.1)
-        }
-        None => {}
-    };
 
     exit_code
 }
@@ -172,16 +153,6 @@ pub(crate) fn run_command_get_output(
 
 /// Runs the requested command and panics in case of any error.
 pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, validate: bool) -> i32 {
-    run_command_and_update_env(None, &command_string, &args, validate)
-}
-
-/// Runs the requested command and panics in case of any error.
-fn run_command_and_update_env(
-    task_name: Option<String>,
-    command_string: &str,
-    args: &Option<Vec<String>>,
-    validate: bool,
-) -> i32 {
     let output = run_command_get_output(&command_string, &args, false);
 
     let exit_code = get_exit_code_from_output(&output, !validate);
@@ -189,16 +160,6 @@ fn run_command_and_update_env(
     if validate {
         validate_exit_code(exit_code);
     }
-
-    match task_name {
-        Some(ref task_name_string) => match output {
-            Ok(ref output_struct) => {
-                environment::set_task_env_for_output(&task_name_string, &output_struct)
-            }
-            _ => {}
-        },
-        None => {}
-    };
 
     exit_code
 }
@@ -219,18 +180,12 @@ pub(crate) fn run(step: &Step, cli_arguments: &Vec<String>) {
                 },
             };
 
-            run_command_and_update_env(
-                Some(step.name.clone()),
-                &command_spec.command,
-                &command_spec.args,
-                validate,
-            );
+            run_command(&command_spec.command, &command_spec.args, validate);
         }
         None => {
             match step.config.script {
                 Some(ref script) => {
-                    run_script_and_update_env(
-                        Some(step.name.clone()),
+                    run_script(
                         script,
                         step.config.script_runner.clone(),
                         cli_arguments,

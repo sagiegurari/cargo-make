@@ -12,7 +12,6 @@ mod shell_to_batch;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use crate::environment;
 use crate::types::Task;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -54,21 +53,19 @@ fn get_engine_type(task: &Task) -> EngineType {
     }
 }
 
-pub(crate) fn invoke(name: &str, task: &Task, cli_arguments: &Vec<String>) -> bool {
+pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
     let engine_type = get_engine_type(&task);
 
     match engine_type {
         EngineType::Rust => {
             let script = task.script.as_ref().unwrap();
-            let output = rsscript::execute(script, cli_arguments);
-
-            environment::set_task_env_for_output_str(&name, &output);
+            rsscript::execute(script, cli_arguments);
 
             true
         }
         EngineType::Shell2Batch => {
             let script = task.script.as_ref().unwrap();
-            shell_to_batch::execute_and_update_env(&name, script, cli_arguments);
+            shell_to_batch::execute(script, cli_arguments);
 
             true
         }
@@ -76,9 +73,7 @@ pub(crate) fn invoke(name: &str, task: &Task, cli_arguments: &Vec<String>) -> bo
             let script = task.script.as_ref().unwrap();
             let runner = task.script_runner.clone().unwrap();
             let extension = task.script_extension.clone().unwrap();
-            let output = generic_script::execute(script, runner, extension);
-
-            environment::set_task_env_for_output_str(&name, &output);
+            generic_script::execute(script, runner, extension);
 
             true
         }

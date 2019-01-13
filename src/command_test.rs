@@ -1,7 +1,6 @@
 use super::*;
 use crate::test;
 use crate::types::Task;
-use std::env;
 use std::io::ErrorKind;
 
 #[test]
@@ -65,12 +64,6 @@ fn run_no_command() {
 
 #[test]
 fn run_command() {
-    env::set_var("CARGO_MAKE_TASK_TEST_COMMAND_OUTPUT_ENV_OUTPUT", "EMPTY");
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_TEST_COMMAND_OUTPUT_ENV_OUTPUT").unwrap(),
-        "EMPTY"
-    );
-
     let mut task = Task::new();
     task.command = Some("echo".to_string());
     task.args = Some(vec!["test".to_string()]);
@@ -81,12 +74,6 @@ fn run_command() {
     };
 
     run(&step, &vec![]);
-
-    assert!(env::var("CARGO_MAKE_TASK_TEST_COMMAND_OUTPUT_ENV_OUTPUT").unwrap() != "EMPTY");
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_TEST_COMMAND_OUTPUT_ENV_OUTPUT").unwrap(),
-        env::var("CARGO_MAKE_TASK_OUTPUT_PREV").unwrap()
-    );
 }
 
 #[test]
@@ -138,12 +125,6 @@ fn run_command_error_force() {
 
 #[test]
 fn run_script() {
-    env::set_var("CARGO_MAKE_TASK_TEST_SCRIPT_OUTPUT_ENV_OUTPUT", "EMPTY");
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_TEST_SCRIPT_OUTPUT_ENV_OUTPUT").unwrap(),
-        "EMPTY"
-    );
-
     let mut task = Task::new();
     task.script = Some(vec!["echo 1".to_string()]);
 
@@ -153,12 +134,6 @@ fn run_script() {
     };
 
     run(&step, &vec![]);
-
-    assert!(env::var("CARGO_MAKE_TASK_TEST_SCRIPT_OUTPUT_ENV_OUTPUT").unwrap() != "EMPTY");
-    assert_eq!(
-        env::var("CARGO_MAKE_TASK_TEST_SCRIPT_OUTPUT_ENV_OUTPUT").unwrap(),
-        env::var("CARGO_MAKE_TASK_OUTPUT_PREV").unwrap()
-    );
 }
 
 #[test]
