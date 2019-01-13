@@ -917,8 +917,6 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds TRUE/FALSE based if the task is running in a continuous integration system (such as Travis CI).
-* **CARGO_MAKE_TASK_OUTPUT_PREV** - The command/script output of the last invoked task (updated after every relevant task invocation).
-* **CARGO_MAKE_TASK_[TASKNAME]_OUTPUT** - The command/script output of the task based on the task name (task name is converted to upper case and spaces and '-' characters are converted to '_').
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1476,7 +1474,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **build-flow** - Full sanity testing flow.
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-watch-flow** - Alias for test-flow
+* **dev-watch-flow** - Alias for default flow
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **clean-apidocs** - Delete API docs.
