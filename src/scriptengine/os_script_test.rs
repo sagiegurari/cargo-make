@@ -8,12 +8,14 @@ fn execute_shell() {
 
 #[test]
 fn execute_shell_with_runner() {
-    execute(
-        &vec!["exit 0".to_string()],
-        Some(test::get_os_runner()),
-        &vec![],
-        true,
-    );
+    if !test::is_windows_on_travis_ci() {
+        execute(
+            &vec!["exit 0".to_string()],
+            Some(test::get_os_runner()),
+            &vec![],
+            true,
+        );
+    }
 }
 
 #[test]

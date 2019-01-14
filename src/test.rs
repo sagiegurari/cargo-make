@@ -12,6 +12,14 @@ fn is_travis_ci() -> bool {
     }
 }
 
+pub(crate) fn is_windows_on_travis_ci() -> bool {
+    if cfg!(windows) {
+        is_travis_ci()
+    } else {
+        false
+    }
+}
+
 pub(crate) fn should_test(panic_if_false: bool) -> bool {
     let rustinfo = rust_info::get();
     let rust_channel = rustinfo.channel.unwrap();
