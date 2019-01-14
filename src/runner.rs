@@ -125,13 +125,13 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                         None => vec![],
                     };
 
-                    // try to invoke it as a none OS script
+                    // run script
                     let script_runner_done =
                         scriptengine::invoke(&updated_step.config, &cli_arguments);
 
-                    // run as command or OS script
+                    // run command
                     if !script_runner_done {
-                        command::run(&updated_step, &cli_arguments);
+                        command::run(&updated_step);
                     };
 
                     // revert to original cwd

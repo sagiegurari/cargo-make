@@ -17,14 +17,19 @@ fn run_file(file: &str, runner: &String) -> bool {
     exit_code == 0
 }
 
-pub(crate) fn execute(script_text: &Vec<String>, runner: String, extension: String) {
+pub(crate) fn execute(
+    script_text: &Vec<String>,
+    runner: String,
+    extension: String,
+    validate: bool,
+) {
     let file = create_script_file(script_text, &extension);
 
     let valid = run_file(&file, &runner);
 
     delete_file(&file);
 
-    if !valid {
+    if validate && !valid {
         error!("Unable to execute generic script.");
     }
 }

@@ -59,7 +59,7 @@ fn run_no_command() {
         config: task,
     };
 
-    run(&step, &vec![]);
+    run(&step);
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn run_command() {
         config: task,
     };
 
-    run(&step, &vec![]);
+    run(&step);
 }
 
 #[test]
@@ -91,7 +91,7 @@ fn run_command_for_toolchain() {
             config: task,
         };
 
-        run(&step, &vec![]);
+        run(&step);
     }
 }
 
@@ -106,7 +106,7 @@ fn run_command_error() {
         config: task,
     };
 
-    run(&step, &vec![]);
+    run(&step);
 }
 
 #[test]
@@ -120,90 +120,55 @@ fn run_command_error_force() {
         config: task,
     };
 
-    run(&step, &vec![]);
+    run(&step);
 }
 
 #[test]
-fn run_script() {
-    let mut task = Task::new();
-    task.script = Some(vec!["echo 1".to_string()]);
-
-    let step = Step {
-        name: "test_script_output_env".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec![]);
+fn run_script_valid() {
+    run_script(&vec!["echo 1".to_string()], None, &vec![], true);
 }
 
 #[test]
 #[should_panic]
 fn run_script_error() {
-    let mut task = Task::new();
-    task.script = Some(vec!["exit 1".to_string()]);
-
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec![]);
+    run_script(&vec!["exit 1".to_string()], None, &vec![], true);
 }
 
 #[test]
 fn run_script_error_force() {
-    let mut task = Task::new();
-    task.force = Some(true);
-    task.script = Some(vec!["exit 1".to_string()]);
-
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec![]);
+    run_script(&vec!["exit 1".to_string()], None, &vec![], false);
 }
 
 #[test]
 #[cfg(target_os = "linux")]
 fn run_script_custom_runner() {
-    let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
-    task.script_runner = Some("bash".to_string());
-
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec![]);
+    run_script(
+        &vec!["echo test".to_string()],
+        Some("bash".to_string()),
+        &vec![],
+        true,
+    );
 }
 
 #[test]
 #[cfg(target_os = "linux")]
 fn run_script_cli_args_valid() {
-    let mut task = Task::new();
-    task.script = Some(vec!["exit $1".to_string()]);
-
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec!["0".to_string()]);
+    run_script(
+        &vec!["exit $1".to_string()],
+        None,
+        &vec!["0".to_string()],
+        true,
+    );
 }
 
 #[test]
 #[should_panic]
 #[cfg(target_os = "linux")]
 fn run_script_cli_args_error() {
-    let mut task = Task::new();
-    task.script = Some(vec!["exit $1".to_string()]);
-
-    let step = Step {
-        name: "test".to_string(),
-        config: task,
-    };
-
-    run(&step, &vec!["1".to_string()]);
+    run_script(
+        &vec!["exit $1".to_string()],
+        None,
+        &vec!["1".to_string()],
+        true,
+    );
 }
