@@ -38,7 +38,7 @@ fn execute_runtime_panic() {
 
 #[test]
 fn execute_runtime_panic_no_validate() {
-    if test::should_test(true) {
+    if test::should_test(false) {
         execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
             &vec![],
