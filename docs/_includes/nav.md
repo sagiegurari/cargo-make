@@ -36,6 +36,7 @@
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Toolchain](#usage-toochain)
+    * [Watch](#usage-watch)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)

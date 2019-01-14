@@ -369,7 +369,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -386,7 +386,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -413,7 +413,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -466,13 +466,13 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
 [cargo-make] INFO - Running Task: cli-args
-+ cd /media/devhdd/projects/rust/cargo-make/examples
++ cd /projects/rust/cargo-make/examples
 + echo args are: arg1 arg2 arg3
 args are: arg1 arg2 arg3
 [cargo-make] INFO - Running Task: end
@@ -483,13 +483,13 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
 [cargo-make] INFO - Running Task: cli-args
-+ cd /media/devhdd/projects/rust/cargo-make/examples
++ cd /projects/rust/cargo-make/examples
 + echo args are:
 args are:
 [cargo-make] INFO - Running Task: end
@@ -1136,6 +1136,45 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Running Task: rustc-version-flow
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 2 seconds.
+```
+
+<a name="usage-watch"></a>
+### Watch
+Watching for changes in your project and firing a task via cargo-make is very easy.<br>
+Simply add the **watch** attribute for the task and set it to true and once the task is triggered, it will run every time a file changes in the project.<br>
+The process needs to be killed in order to stop the watch.
+
+Example:
+
+```toml
+[tasks.watch-example]
+command = "echo"
+args = [ "Triggered by watch" ]
+watch = true
+```
+
+Below is a sample output of invoking the task:
+
+```console
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: ./examples/watch.toml
+[cargo-make] INFO - Task: watch-example
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: watch-example
+[cargo-make] INFO - Running Task: watch-example-watch
+[cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
+[cargo-make] INFO - Task: watch-example
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: watch-example
+[cargo-make] INFO - Execute Command: "echo" "Triggered by watch"
+Triggered by watch
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+^C
 ```
 
 <a name="usage-ci"></a>
