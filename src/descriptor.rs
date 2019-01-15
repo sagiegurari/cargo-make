@@ -357,8 +357,10 @@ pub(crate) fn load(
     config
 }
 
-pub(crate) fn list_steps(config: &Config) -> u32 {
+pub(crate) fn list_steps(config: &Config, output_format: &str) -> u32 {
     let mut count = 0;
+
+    let markdown = output_format == "markdown";
 
     let mut categories = BTreeMap::new();
 
@@ -392,11 +394,19 @@ pub(crate) fn list_steps(config: &Config) -> u32 {
         }
     }
 
+    let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
-        println!("{}\n----------", category);
+        if markdown {
+            println!("##### {}\n", category);
+        } else {
+            println!("{}\n----------", category);
+        }
 
         for (key, description) in tasks {
-            println!("{}: {} ", &key, &description);
+            if markdown {
+                print!("* **");
+            }
+            println!("{}{} - {} ", &key, &post_key, &description);
         }
         println!("");
     }

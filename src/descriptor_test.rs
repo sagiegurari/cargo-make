@@ -492,7 +492,7 @@ fn list_steps_empty() {
         tasks,
     };
 
-    let count = list_steps(&config);
+    let count = list_steps(&config, "default");
 
     assert_eq!(count, 0);
 }
@@ -516,7 +516,7 @@ fn list_steps_all_public() {
         tasks,
     };
 
-    let count = list_steps(&config);
+    let count = list_steps(&config, "default");
 
     assert_eq!(count, 2);
 }
@@ -542,7 +542,7 @@ fn list_steps_all_private() {
         tasks,
     };
 
-    let count = list_steps(&config);
+    let count = list_steps(&config, "default");
 
     assert_eq!(count, 0);
 }
@@ -567,7 +567,7 @@ fn list_steps_mixed() {
         tasks,
     };
 
-    let count = list_steps(&config);
+    let count = list_steps(&config, "default");
 
     assert_eq!(count, 1);
 }

@@ -783,3 +783,21 @@ dependencies = [
     "upload-artifacts",
     "git-pull"
 ]
+
+[tasks.diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+alias = "git-diff-files"
+
+[tasks.git-diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+force = true
+condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
+command = "git"
+args = [
+    "diff",
+    "--no-index",
+    "${CARGO_MAKE_DIFF_FILE1}",
+    "${CARGO_MAKE_DIFF_FILE2}"
+]

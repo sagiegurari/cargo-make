@@ -223,7 +223,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
     if cli_args.list_all_steps {
-        descriptor::list_steps(&config);
+        descriptor::list_steps(&config, &cli_args.output_format);
     } else if cli_args.print_only {
         print::print(
             &config,
@@ -426,8 +426,8 @@ fn create_cli<'a, 'b>(
                 .help("Disables the update check during startup"),
         )
         .arg(
-            Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print steps format'")
-                .possible_values(&["default", "short-description"])
+            Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print/list steps format (some operations do not support all formats)'")
+                .possible_values(&["default", "short-description", "markdown"])
                 .default_value(DEFAULT_OUTPUT_FORMAT),
         )
         .arg(Arg::with_name("print-steps").long("--print-steps").help(

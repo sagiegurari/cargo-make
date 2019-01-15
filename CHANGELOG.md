@@ -5,6 +5,8 @@
 * Enable coverage for every Linux based CI system
 * Support task watch #118
 * Document Azure Pipelines config #161
+* New diff-files task which enables to diff 2 provided files
+* Command --list-all-steps now supports markdown output format
 
 ### v0.16.0 (2019-01-04)
 
