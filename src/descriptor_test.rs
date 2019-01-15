@@ -522,6 +522,30 @@ fn list_steps_all_public() {
 }
 
 #[test]
+fn list_steps_all_public_markdown() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    tasks.insert("1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    tasks.insert("2".to_string(), task2);
+
+    let config = Config {
+        config: config_section,
+        env,
+        tasks,
+    };
+
+    let count = list_steps(&config, "markdown");
+
+    assert_eq!(count, 2);
+}
+
+#[test]
 fn list_steps_all_private() {
     let config_section = ConfigSection::new();
     let env = IndexMap::<String, EnvValue>::new();
