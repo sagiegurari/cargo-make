@@ -305,8 +305,8 @@ fn load_not_found() {
 }
 
 #[test]
-fn load_default_no_stable() {
-    let config = load_default(false, false);
+fn load_internal_descriptors_no_stable() {
+    let config = load_internal_descriptors(false, false);
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -315,8 +315,8 @@ fn load_default_no_stable() {
 }
 
 #[test]
-fn load_default_with_stable() {
-    let config = load_default(true, false);
+fn load_internal_descriptors_with_stable() {
+    let config = load_internal_descriptors(true, false);
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -325,8 +325,8 @@ fn load_default_with_stable() {
 }
 
 #[test]
-fn load_default_no_experimental() {
-    let config = load_default(true, false);
+fn load_internal_descriptors_no_experimental() {
+    let config = load_internal_descriptors(true, false);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -335,8 +335,8 @@ fn load_default_no_experimental() {
 }
 
 #[test]
-fn load_default_with_experimental() {
-    let config = load_default(true, true);
+fn load_internal_descriptors_with_experimental() {
+    let config = load_internal_descriptors(true, true);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());

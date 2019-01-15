@@ -207,7 +207,7 @@ fn load_external_descriptor(
     }
 }
 
-fn load_default(stable: bool, experimental: bool) -> Config {
+fn load_internal_descriptors(stable: bool, experimental: bool) -> Config {
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {
@@ -253,7 +253,7 @@ fn load_descriptors(
     stable: bool,
     experimental: bool,
 ) -> Config {
-    let default_config = load_default(stable, experimental);
+    let default_config = load_internal_descriptors(stable, experimental);
 
     let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, force, true);
 
