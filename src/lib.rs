@@ -137,8 +137,9 @@ mod environment;
 mod execution_plan;
 mod installer;
 mod legacy;
+mod list_steps;
 mod logger;
-mod print;
+mod print_steps;
 mod runner;
 mod scriptengine;
 mod storage;
@@ -223,9 +224,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
     if cli_args.list_all_steps {
-        descriptor::list_steps(&config, &cli_args.output_format);
+        list_steps::run(&config, &cli_args.output_format);
     } else if cli_args.print_only {
-        print::print(
+        print_steps::print(
             &config,
             &task,
             &cli_args.output_format,

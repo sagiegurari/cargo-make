@@ -1,11 +1,11 @@
-//! # print
+//! # print_steps
 //!
 //! Prints the execution plan in multiple formats.
 //!
 
 #[cfg(test)]
-#[path = "./print_test.rs"]
-mod print_test;
+#[path = "./print_steps_test.rs"]
+mod print_steps_test;
 
 use crate::execution_plan::create as create_execution_plan;
 use crate::types::{Config, ExecutionPlan};
