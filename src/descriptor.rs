@@ -151,7 +151,7 @@ fn load_external_descriptor(
 
     let file_path = Path::new(base_path).join(file_name);
 
-    if file_path.exists() {
+    if file_path.exists() && file_path.is_file() {
         if set_env {
             let absolute_file_path = match canonicalize(&file_path) {
                 Ok(result_path) => result_path,
@@ -201,13 +201,13 @@ fn load_external_descriptor(
         error!("Descriptor file: {:#?} not found.", &file_path);
         panic!("Descriptor file: {:#?} not found.", &file_path);
     } else {
-        info!("External file not found, skipping.");
+        info!("External file not found or is not a file, skipping.");
 
         ExternalConfig::new()
     }
 }
 
-fn load_internal_descriptors(stable: bool, experimental: bool) -> Config {
+pub(crate) fn load_internal_descriptors(stable: bool, experimental: bool) -> Config {
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {

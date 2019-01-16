@@ -133,9 +133,11 @@ mod command;
 mod condition;
 mod config;
 mod descriptor;
+mod diff_steps;
 mod environment;
 mod execution_plan;
 mod installer;
+mod io;
 mod legacy;
 mod list_steps;
 mod logger;
@@ -219,12 +221,16 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => env_cli_entries,
     };
 
-    let config = descriptor::load(&build_file, force_makefile, env, cli_args.experimental);
+    let experimental = cli_args.experimental;
+    let config = descriptor::load(&build_file, force_makefile, env, experimental);
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
     if cli_args.list_all_steps {
         list_steps::run(&config, &cli_args.output_format);
+    } else if cli_args.diff_execution_plan {
+        let default_config = descriptor::load_internal_descriptors(true, experimental);
+        diff_steps::run(&default_config, &config, &task, &cli_args);
     } else if cli_args.print_only {
         print_steps::print(
             &config,
@@ -309,6 +315,7 @@ fn run_for_args(
     cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
     cli_args.disable_on_error = cmd_matches.is_present("no-on-error");
     cli_args.list_all_steps = cmd_matches.is_present("list-steps");
+    cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str().clone(),
@@ -439,6 +446,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("list-steps")
                 .long("--list-all-steps")
                 .help("Lists all known steps"),
+        )
+        .arg(
+            Arg::with_name("diff-steps")
+                .long("--diff-steps")
+                .help("Runs diff between custom flow and prebuilt flow (requires git)"),
         )
         .arg(Arg::with_name("TASK").help("The task name to execute"))
         .arg(

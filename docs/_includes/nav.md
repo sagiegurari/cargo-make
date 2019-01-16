@@ -54,6 +54,7 @@
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
+    * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)

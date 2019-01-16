@@ -16,6 +16,7 @@ fn cli_args_new() {
     assert!(!cli_args.disable_check_for_updates);
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);
+    assert!(!cli_args.diff_execution_plan);
     assert!(!cli_args.experimental);
     assert!(cli_args.arguments.is_none());
     assert_eq!(cli_args.output_format, "default");

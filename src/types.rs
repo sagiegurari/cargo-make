@@ -47,6 +47,8 @@ pub struct CliArgs {
     pub print_only: bool,
     /// List all known steps
     pub list_all_steps: bool,
+    /// Diff flows
+    pub diff_execution_plan: bool,
     /// Disables the update check during startup
     pub disable_check_for_updates: bool,
     /// Allows access unsupported experimental predefined tasks
@@ -72,6 +74,7 @@ impl CliArgs {
             disable_on_error: false,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             disable_check_for_updates: false,
             experimental: false,
             arguments: None,
@@ -151,7 +154,7 @@ impl GitInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section
 pub struct Workspace {
     /// members paths
@@ -170,7 +173,7 @@ impl Workspace {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {
     /// name
@@ -204,14 +207,14 @@ impl PackageInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate dependency info.
 pub struct CrateDependencyInfo {
     /// Holds the dependency path
     pub path: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds crate dependency info.
 pub enum CrateDependency {
@@ -221,7 +224,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
@@ -273,7 +276,7 @@ pub struct FlowInfo {
     pub cli_arguments: Option<Vec<String>>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Rust version condition structure
 pub struct RustVersionCondition {
     /// min version number
@@ -284,7 +287,7 @@ pub struct RustVersionCondition {
     pub equal: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
     /// Platform names (linux, windows, mac)
@@ -301,14 +304,14 @@ pub struct TaskCondition {
     pub rust_version: Option<RustVersionCondition>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct EnvValueInfo {
     /// The script to execute to get the env value
     pub script: Vec<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
 pub enum EnvValue {
@@ -318,7 +321,7 @@ pub enum EnvValue {
     Info(EnvValueInfo),
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds instructions how to install the crate
 pub struct InstallCrateInfo {
     /// The provided crate to install
@@ -353,7 +356,7 @@ impl PartialEq for InstallCrateInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds instructions how to install a rustup component
 pub struct InstallRustupComponentInfo {
     /// The component to install via rustup
@@ -398,7 +401,7 @@ impl PartialEq for InstallRustupComponentInfo {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Install crate name or params
 pub enum InstallCrate {
@@ -429,7 +432,7 @@ impl PartialEq for InstallCrate {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -840,7 +843,7 @@ impl Task {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration for a specific platform as an override of another task
 pub struct PlatformOverrideTask {
     /// if true, it should ignore all data in base task
@@ -977,7 +980,7 @@ impl PlatformOverrideTask {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
@@ -1078,7 +1081,7 @@ impl ConfigSection {
     }
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
     /// Runtime config
@@ -1089,7 +1092,7 @@ pub struct Config {
     pub tasks: IndexMap<String, Task>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend
@@ -1114,7 +1117,7 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name

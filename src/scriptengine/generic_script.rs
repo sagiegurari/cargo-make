@@ -8,7 +8,8 @@
 mod generic_script_test;
 
 use crate::command;
-use crate::scriptengine::script_utils::{create_script_file, delete_file};
+use crate::io::delete_file;
+use crate::scriptengine::script_utils::create_script_file;
 
 fn run_file(file: &str, runner: &String) -> bool {
     let exit_code = command::run_command(runner, &Some(vec![file.to_string()]), false);

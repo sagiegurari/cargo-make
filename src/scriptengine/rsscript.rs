@@ -9,7 +9,8 @@ mod rsscript_test;
 
 use crate::command;
 use crate::installer::cargo_plugin_installer;
-use crate::scriptengine::script_utils::{create_script_file, delete_file};
+use crate::io::delete_file;
+use crate::scriptengine::script_utils::create_script_file;
 
 fn install_crate() {
     // install dependencies
