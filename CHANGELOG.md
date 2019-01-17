@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.16.1
+### v0.16.1 (2019-01-17)
 
 * Enable coverage for every Linux based CI system
 * Support task watch #118

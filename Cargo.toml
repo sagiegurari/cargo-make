@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.16.0"
+version = "0.16.1"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -36,21 +36,21 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
-ci_info = "^0.3.1"
-clap = "^2.32.0"
-dirs = "^1.0.4"
-fern = "^0.5.7"
-glob = "^0.2.11"
-indexmap = { version = "^1.0.2", features = ["serde-1"] }
-log = "^0.4.6"
-rand = "^0.6.1"
-run_script = "^0.2.4"
-rust_info = "^0.2.2"
-semver = "^0.9.0"
-serde = "^1.0.84"
-serde_derive = "^1.0.84"
-shell2batch = "^0.2.6"
-toml = "^0.4.10"
+ci_info = "^0.3"
+clap = "^2.32"
+dirs = "^1.0"
+fern = "^0.5"
+glob = "^0.2"
+indexmap = { version = "^1.0", features = ["serde-1"] }
+log = "^0.4"
+rand = "^0.6"
+run_script = "^0.2"
+rust_info = "^0.2"
+semver = "^0.9"
+serde = "^1.0"
+serde_derive = "^1.0"
+shell2batch = "^0.2"
+toml = "^0.4"
 
 [badges.travis-ci]
 branch = "master"
