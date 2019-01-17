@@ -22,6 +22,7 @@ fn run_makefile_not_found() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -48,6 +49,7 @@ fn run_empty_task() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -74,6 +76,7 @@ fn print_empty_task() {
             disable_check_for_updates: true,
             print_only: true,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -100,6 +103,7 @@ fn list_empty_task() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: true,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -126,6 +130,7 @@ fn run_file_and_task() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -155,6 +160,7 @@ fn run_cwd_with_file() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -182,6 +188,7 @@ fn run_file_not_go_to_project_root() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -209,6 +216,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -239,6 +247,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -269,6 +278,7 @@ fn run_cwd_task_not_found() {
             disable_check_for_updates: true,
             print_only: false,
             list_all_steps: false,
+            diff_execution_plan: false,
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
@@ -460,6 +470,27 @@ fn run_for_args_print_only() {
         "--no-on-error",
         "--print-steps",
         "--experimental",
+    ]);
+
+    run_for_args(matches, &global_config, &"make".to_string(), true);
+}
+
+#[test]
+fn run_for_args_diff_steps() {
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config, &"make".to_string(), true);
+
+    let matches = app.get_matches_from(vec![
+        "cargo",
+        "make",
+        "--makefile",
+        "./examples/dependencies.toml",
+        "-t",
+        "empty",
+        "-l",
+        "error",
+        "--no-workspace",
+        "--diff-steps",
     ]);
 
     run_for_args(matches, &global_config, &"make".to_string(), true);

@@ -1,0 +1,16 @@
+
+[tasks.echo]
+env = { "ECHO_TEST" = "ECHO_ENV" }
+script = [
+    '''
+    echo watch triggered
+    echo ECHO_TEST: ${ECHO_TEST}
+    echo CARGO_MAKE_DISABLE_WATCH: ${CARGO_MAKE_DISABLE_WATCH}
+    '''
+]
+watch = true
+
+[tasks.watch-example]
+command = "echo"
+args = [ "Triggered by watch" ]
+watch = true

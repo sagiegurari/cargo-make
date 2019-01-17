@@ -164,8 +164,8 @@ pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, vali
     exit_code
 }
 
-/// Runs the given task command and if not defined, the task script.
-pub(crate) fn run(step: &Step, cli_arguments: &Vec<String>) {
+/// Runs the given task command.
+pub(crate) fn run(step: &Step) {
     let validate = !step.config.is_force();
 
     match step.config.command {
@@ -182,19 +182,6 @@ pub(crate) fn run(step: &Step, cli_arguments: &Vec<String>) {
 
             run_command(&command_spec.command, &command_spec.args, validate);
         }
-        None => {
-            match step.config.script {
-                Some(ref script) => {
-                    run_script(
-                        script,
-                        step.config.script_runner.clone(),
-                        cli_arguments,
-                        validate,
-                    );
-                    ()
-                }
-                None => debug!("No script defined."),
-            };
-        }
+        None => debug!("No command defined."),
     };
 }

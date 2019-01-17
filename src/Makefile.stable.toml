@@ -62,15 +62,14 @@ dependencies = [
 ]
 
 [tasks.dev-watch-flow]
-description = "Alias for test-flow"
+description = "Alias for default flow"
 category = "Development"
 alias = "test-flow"
 
 [tasks.watch-flow]
-description = "Watches for any file change and if any change is detected, it will invoke the test flow."
+description = "Watches for any file change and if any change is detected, it will invoke the default flow."
 category = "Development"
-command = "cargo"
-args = ["watch", "--exec", "make dev-watch-flow"]
+watch = true
 
 [tasks.pre-publish-clean-flow]
 description = "Clears old artifactes before publishing"
@@ -723,7 +722,7 @@ dependencies = [
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
 category = "CI"
-condition = { platforms = ["linux"], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.upload-artifacts]
@@ -783,4 +782,22 @@ dependencies = [
     "publish-flow",
     "upload-artifacts",
     "git-pull"
+]
+
+[tasks.diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+alias = "git-diff-files"
+
+[tasks.git-diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+force = true
+condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
+command = "git"
+args = [
+    "diff",
+    "--no-index",
+    "${CARGO_MAKE_DIFF_FILE1}",
+    "${CARGO_MAKE_DIFF_FILE2}"
 ]

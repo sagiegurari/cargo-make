@@ -13,7 +13,6 @@ mod descriptor_test;
 use crate::command;
 use crate::types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
 use indexmap::IndexMap;
-use std::collections::BTreeMap;
 use std::env;
 use std::fs::{canonicalize, File};
 use std::io::Read;
@@ -152,7 +151,7 @@ fn load_external_descriptor(
 
     let file_path = Path::new(base_path).join(file_name);
 
-    if file_path.exists() {
+    if file_path.exists() && file_path.is_file() {
         if set_env {
             let absolute_file_path = match canonicalize(&file_path) {
                 Ok(result_path) => result_path,
@@ -202,13 +201,13 @@ fn load_external_descriptor(
         error!("Descriptor file: {:#?} not found.", &file_path);
         panic!("Descriptor file: {:#?} not found.", &file_path);
     } else {
-        info!("External file not found, skipping.");
+        info!("External file not found or is not a file, skipping.");
 
         ExternalConfig::new()
     }
 }
 
-fn load_default(stable: bool, experimental: bool) -> Config {
+pub(crate) fn load_internal_descriptors(stable: bool, experimental: bool) -> Config {
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {
@@ -254,7 +253,7 @@ fn load_descriptors(
     stable: bool,
     experimental: bool,
 ) -> Config {
-    let default_config = load_default(stable, experimental);
+    let default_config = load_internal_descriptors(stable, experimental);
 
     let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, force, true);
 
@@ -355,51 +354,4 @@ pub(crate) fn load(
     }
 
     config
-}
-
-pub(crate) fn list_steps(config: &Config) -> u32 {
-    let mut count = 0;
-
-    let mut categories = BTreeMap::new();
-
-    for (key, value) in config.tasks.iter() {
-        let is_private = match value.private {
-            Some(private) => private,
-            None => false,
-        };
-
-        if !is_private {
-            count = count + 1;
-
-            let category = match value.category {
-                Some(ref value) => value,
-                None => "No Category",
-            };
-
-            let description = match value.description {
-                Some(ref value) => value,
-                None => "No Description.",
-            };
-
-            let mut tasks_map = BTreeMap::new();
-            match categories.get_mut(category) {
-                Some(value) => tasks_map.append(value),
-                _ => (),
-            };
-
-            tasks_map.insert(key.clone(), description.clone());
-            categories.insert(category, tasks_map);
-        }
-    }
-
-    for (category, tasks) in &categories {
-        println!("{}\n----------", category);
-
-        for (key, description) in tasks {
-            println!("{}: {} ", &key, &description);
-        }
-        println!("");
-    }
-
-    count
 }

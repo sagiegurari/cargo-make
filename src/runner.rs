@@ -19,7 +19,7 @@ use crate::execution_plan::create as create_execution_plan;
 use crate::installer;
 use crate::logger;
 use crate::scriptengine;
-use crate::types::{CliArgs, Config, EnvInfo, ExecutionPlan, FlowInfo, Step, Task};
+use crate::types::{CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 use indexmap::IndexMap;
 use std::env;
 use std::time::SystemTime;
@@ -33,6 +33,45 @@ fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
     sub_flow_info.task = sub_task.to_string();
 
     run_flow(&sub_flow_info, true);
+}
+
+fn create_watch_task_name(task: &str) -> String {
+    let mut watch_task_name = "".to_string();
+    watch_task_name.push_str(&task);
+    watch_task_name.push_str("-watch");
+
+    watch_task_name
+}
+
+fn create_watch_step(task: &str) -> Step {
+    let watch_task = create_watch_task(&task);
+
+    let watch_task_name = create_watch_task_name(&task);
+
+    Step {
+        name: watch_task_name,
+        config: watch_task,
+    }
+}
+
+fn watch_task(flow_info: &FlowInfo, task: &str) {
+    let step = create_watch_step(&task);
+
+    run_task(&flow_info, &step);
+}
+
+fn should_watch(task: &Task) -> bool {
+    match task.watch {
+        Some(watch_bool) => {
+            if watch_bool {
+                let disable_watch_env = environment::get_env("CARGO_MAKE_DISABLE_WATCH", "FALSE");
+                disable_watch_env != "TRUE"
+            } else {
+                false
+            }
+        }
+        None => false,
+    }
 }
 
 fn run_task(flow_info: &FlowInfo, step: &Step) {
@@ -54,48 +93,55 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
 
         let updated_step = environment::expand_env(&step);
 
-        installer::install(&updated_step.config);
+        let watch = should_watch(&step.config);
 
-        match step.config.run_task {
-            Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
-            None => {
-                let revert_directory = match step.config.cwd {
-                    Some(ref cwd) => {
-                        if cwd.len() > 0 {
-                            let directory =
-                                environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
+        if watch {
+            watch_task(&flow_info, &step.name);
+        } else {
+            installer::install(&updated_step.config);
 
-                            environment::setup_cwd(Some(cwd));
+            match step.config.run_task {
+                Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
+                None => {
+                    let revert_directory = match step.config.cwd {
+                        Some(ref cwd) => {
+                            if cwd.len() > 0 {
+                                let directory =
+                                    environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-                            directory
-                        } else {
-                            "".to_string()
+                                environment::setup_cwd(Some(cwd));
+
+                                directory
+                            } else {
+                                "".to_string()
+                            }
                         }
-                    }
-                    None => "".to_string(),
-                };
+                        None => "".to_string(),
+                    };
 
-                // get cli arguments
-                let cli_arguments = match flow_info.cli_arguments {
-                    Some(ref args) => args.clone(),
-                    None => vec![],
-                };
+                    // get cli arguments
+                    let cli_arguments = match flow_info.cli_arguments {
+                        Some(ref args) => args.clone(),
+                        None => vec![],
+                    };
 
-                // try to invoke it as a none OS script
-                let script_runner_done = scriptengine::invoke(&updated_step.config, &cli_arguments);
+                    // run script
+                    let script_runner_done =
+                        scriptengine::invoke(&updated_step.config, &cli_arguments);
 
-                // run as command or OS script
-                if !script_runner_done {
-                    command::run(&updated_step, &cli_arguments);
-                };
+                    // run command
+                    if !script_runner_done {
+                        command::run(&updated_step);
+                    };
 
-                // revert to original cwd
-                match step.config.cwd {
-                    Some(_) => environment::setup_cwd(Some(&revert_directory)),
-                    _ => (),
-                };
-            }
-        };
+                    // revert to original cwd
+                    match step.config.cwd {
+                        Some(_) => environment::setup_cwd(Some(&revert_directory)),
+                        _ => (),
+                    };
+                }
+            };
+        }
     } else {
         debug!("Task: {} disabled", &step.name);
     }
@@ -105,6 +151,30 @@ fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
     for step in &execution_plan.steps {
         run_task(&flow_info, &step);
     }
+}
+
+fn create_watch_task(task: &str) -> Task {
+    let mut task_config = create_proxy_task(&task);
+
+    let mut env_map = task_config.env.unwrap_or(IndexMap::new());
+    env_map.insert(
+        "CARGO_MAKE_DISABLE_WATCH".to_string(),
+        EnvValue::Value("TRUE".to_string()),
+    );
+    task_config.env = Some(env_map);
+
+    let make_args = task_config.args.unwrap();
+    let make_command = &make_args.join(" ");
+
+    let watch_args = vec![
+        "watch".to_string(),
+        "-q".to_string(),
+        "-x".to_string(),
+        make_command.to_string(),
+    ];
+    task_config.args = Some(watch_args);
+
+    task_config
 }
 
 fn create_proxy_task(task: &str) -> Task {

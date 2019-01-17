@@ -369,7 +369,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -386,7 +386,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -413,7 +413,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -466,13 +466,13 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
 [cargo-make] INFO - Running Task: cli-args
-+ cd /media/devhdd/projects/rust/cargo-make/examples
++ cd /projects/rust/cargo-make/examples
 + echo args are: arg1 arg2 arg3
 args are: arg1 arg2 arg3
 [cargo-make] INFO - Running Task: end
@@ -483,13 +483,13 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo-make {{ site.version }}
+[cargo-make] INFO - cargo make {{ site.version }}
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
 [cargo-make] INFO - Running Task: cli-args
-+ cd /media/devhdd/projects/rust/cargo-make/examples
++ cd /projects/rust/cargo-make/examples
 + echo args are:
 args are:
 [cargo-make] INFO - Running Task: end
@@ -899,7 +899,7 @@ Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
+condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
 ```
 
 <a name="usage-conditions-script"></a>
@@ -927,7 +927,7 @@ For example, if you have a coverage flow that should only be invoked on linux in
 ```toml
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
-condition = { platforms = ["linux"], env = { "TRAVIS" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.codecov-flow]
@@ -1138,6 +1138,45 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Build Done  in 2 seconds.
 ```
 
+<a name="usage-watch"></a>
+### Watch
+Watching for changes in your project and firing a task via cargo-make is very easy.<br>
+Simply add the **watch** attribute for the task and set it to true and once the task is triggered, it will run every time a file changes in the project.<br>
+The process needs to be killed in order to stop the watch.
+
+Example:
+
+```toml
+[tasks.watch-example]
+command = "echo"
+args = [ "Triggered by watch" ]
+watch = true
+```
+
+Below is a sample output of invoking the task:
+
+```console
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: ./examples/watch.toml
+[cargo-make] INFO - Task: watch-example
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: watch-example
+[cargo-make] INFO - Running Task: watch-example-watch
+[cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
+[cargo-make] INFO - Task: watch-example
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: watch-example
+[cargo-make] INFO - Execute Command: "echo" "Triggered by watch"
+Triggered by watch
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+^C
+```
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
@@ -1249,6 +1288,26 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 - run:
   name: ci flow
   command: cargo make --no-workspace workspace-ci-flow
+```
+
+<a name="usage-ci-azure-pipelines"></a>
+#### Azure Pipelines
+Add the following to your `azure-pipelines.yml` file:
+
+```yaml
+- script: cargo install --debug cargo-make
+  displayName: install cargo-make
+- script: cargo make ci-flow
+  displayName: ci flow
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following setup:
+
+```yaml
+- script: cargo install --debug cargo-make
+  displayName: install cargo-make
+- script: cargo make --no-workspace workspace-ci-flow
+  displayName: ci flow
 ```
 
 <a name="usage-predefined-flows"></a>
@@ -1377,7 +1436,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **build-flow** - Full sanity testing flow.
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-watch-flow** - Alias for test-flow
+* **dev-watch-flow** - Alias for default flow
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **clean-apidocs** - Delete API docs.
@@ -1439,6 +1498,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **verify-project** - Runs verify-project cargo plugin.
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
+* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up
 
 ##### Cleanup
 
@@ -1451,13 +1511,13 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 
 * **default** - Default task points to the development testing flow
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-watch-flow** - Alias for test-flow
+* **dev-watch-flow** - Alias for default flow
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
 * **post-format** - No Description.
 * **pre-format** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
-* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
+* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow.
 
 ##### Documentation
 
@@ -1490,6 +1550,13 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **end** - By default this task is invoked at the end of every cargo-make run.
 * **init** - By default this task is invoked at the start of every cargo-make run.
 
+##### No Category
+
+* **build-release-for-target** - Makes a release build for a given target
+* **generate-readme** - No Description.
+* **setup-build-env** - Sets up any non-rust dependencies in the build environment
+* **setup-musl** - Sets up a musl build environment
+
 ##### Publish
 
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
@@ -1506,6 +1573,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **publish** - Runs the cargo publish command.
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output.
+* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
 
 ##### Test
 
@@ -1517,10 +1585,13 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **check** - Runs cargo check.
 * **check-examples** - Runs cargo check for project examples.
 * **check-flow** - Runs cargo check flow.
+* **check-format** - Runs cargo fmt to check appropriate code format.
 * **check-tests** - Runs cargo check for project tests.
 * **clippy** - Runs clippy code linter.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
+* **conditioned-check-format** - Runs cargo fmt --check if conditions are met.
+* **conditioned-clippy** - Runs clippy code linter if conditions are met.
 * **coverage** - Runs coverage (by default using kcov).
 * **coverage-flow** - Runs the full coverage flow.
 * **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
@@ -1544,8 +1615,10 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 
 ##### Tools
 
+* **diff-files** - Run diff on two provided files.
 * **do-on-members** - Runs the requested task for every workspace member.
 * **empty** - Empty Task
+* **git-diff-files** - Run diff on two provided files.
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
@@ -1691,6 +1764,40 @@ script = [
 ]
 ```
 
+<a name="usage-diff-changes"></a>
+### Diff Changes
+Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
+
+Example Usage:
+
+```console
+cargo make --diff-steps --makefile ./examples/override_core.toml post-build
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: ./examples/override_core.toml
+[cargo-make] INFO - Task: post-build
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Printing diff...
+[cargo-make] INFO - Execute Command: "git" "diff" "--no-index" "/tmp/cargo-make/Lz7lFgjj0x.toml" "/tmp/cargo-make/uBpOa9THwD.toml"
+diff --git a/tmp/cargo-make/Lz7lFgjj0x.toml b/tmp/cargo-make/uBpOa9THwD.toml
+index 5152290..ba0ef1d 100644
+--- a/tmp/cargo-make/Lz7lFgjj0x.toml
++++ b/tmp/cargo-make/uBpOa9THwD.toml
+@@ -42,7 +42,9 @@
+         name: "post-build",
+         config: Task {
+             clear: None,
+-            description: None,
++            description: Some(
++                "Overide description"
++            ),
+             category: Some(
+                 "Build"
+             ),
+[cargo-make] INFO - Done
+```
+
+*Git is required to be available as it is used to diff the structures and output it to the console using standard git coloring scheme.*
+
 <a name="usage-cli"></a>
 ### Cli Options
 These are the following options available while running cargo-make:
@@ -1702,14 +1809,14 @@ USAGE:
     makers [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
+        --diff-steps                   Runs diff between custom flow and prebuilt flow (requires git)
         --disable-check-for-updates    Disables the update check during startup
         --experimental                 Allows access unsupported experimental predefined tasks.
     -h, --help                         Prints help information
         --list-all-steps               Lists all known steps
         --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps                  Only prints the steps of the build in the order they will be invoked but without
-                                       invoking them
+        --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 
@@ -1719,7 +1826,7 @@ OPTIONS:
         --env-file <FILE>                  Set environment variables from provided file
     -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
-        --output-format <OUTPUT FORMAT>    The print steps format [default: default]  [possible values: default, short-description]
+        --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown]
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
@@ -1849,6 +1956,9 @@ The articles are missing some of the new features which have been added after th
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 * [Rust Version Conditions](#usage-conditions-structure)
 * [Toolchain](#usage-toochain)
+* [Watch](#usage-watch)
+
+And more...
 
 <a name="badge"></a>
 ## Badge

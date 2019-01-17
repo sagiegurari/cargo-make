@@ -9,7 +9,8 @@ mod rsscript_test;
 
 use crate::command;
 use crate::installer::cargo_plugin_installer;
-use crate::scriptengine::script_utils::{create_script_file, delete_file};
+use crate::io::delete_file;
+use crate::scriptengine::script_utils::create_script_file;
 
 fn install_crate() {
     // install dependencies
@@ -31,7 +32,7 @@ fn run_file(file: &str, cli_arguments: &Vec<String>) -> bool {
     exit_code == 0
 }
 
-pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>) {
+pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
     install_crate();
 
     let file = create_rust_file(rust_script);
@@ -40,7 +41,7 @@ pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>) {
 
     delete_file(&file);
 
-    if !valid {
+    if validate && !valid {
         error!("Unable to execute rust code.");
     }
 }
