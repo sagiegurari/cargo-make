@@ -24,7 +24,6 @@
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Platform Override](#usage-platform-override)
-    * [Private Tasks](#usage-private-tasks)
     * [Environment Variables](#usage-env)
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)
@@ -42,7 +41,12 @@
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
+    * [Workspace Support](#usage-workspace-support)
+        * [Skipping Specific Members](#usage-workspace-support-skip-members)
     * [Toolchain](#usage-toochain)
+    * [Init and End tasks](#usage-init-end-tasks)
+    * [Catching Errors](#usage-catching-errors)
+    * [Private Tasks](#usage-private-tasks)
     * [Watch](#usage-watch)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
@@ -57,10 +61,6 @@
         * [Flows/Other](#usage-predefined-flows-flows)
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
-    * [Workspace Support](#usage-workspace-support)
-        * [Skipping Specific Members](#usage-workspace-support-skip-members)
-    * [Init and End tasks](#usage-init-end-tasks)
-    * [Catching Errors](#usage-catching-errors)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -817,18 +817,6 @@ This means, however, that you will have to redefine all attributes in the overri
 **To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
 
-<a name="usage-private-tasks"></a>
-### Private Tasks
-
-Private tasks are tasks that should only be invoked by other tasks and not directly from the cli.
-
-In order to define a task as private, add the **private** attribute with value true as follows:
-
-```toml
-[tasks.internal-task]
-private = true
-```
-
 <a name="usage-env"></a>
 ### Environment Variables
 cargo-make enables you to defined environment variables in several ways.
@@ -1176,6 +1164,97 @@ dependencies = [ "install-rls", "install-rust-src" ]
 dependencies = [ "xbuild1", "xbuild2" ]
 ```
 
+<a name="usage-workspace-support"></a>
+### Workspace Support
+In case cargo-make detects that the current working directory is a workspace crate (crate with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
+Instead, it will generate a task definition in runtime which will go to each member directory and invoke the requested task on that member.<br>
+For example if we have the following directory structure:
+
+```console
+workspace
+├── Cargo.toml
+├── member1
+│   └── Cargo.toml
+└── member2
+    └── Cargo.toml
+```
+
+And we ran ```cargo make mytask```, it will go to each workspace member directory and execute: ```cargo make mytask``` at that directory,
+where mytask is the original task that was requested on the workspace level.<br>
+The order of the members is defined by the member attribute in the workspace Cargo.toml.
+
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.
+
+In case you wish to run the tasks on the workspace level and not on the members, use the ```--no-workspace``` cli flag when running cargo make, for example:
+
+```sh
+cargo make --no-workspace mytask
+```
+
+You can define a composite flow that runs both workspace level tasks and member level tasks using this flag.<br>
+This is an example of a workspace level Makefile.toml which enables to run such a flow:
+
+```toml
+[tasks.composite]
+dependencies = ["member_flow", "workspace_flow"]
+
+[tasks.member_flow]
+command = "cargo"
+args = ["make", "member_task"]
+
+[tasks.workspace_flow]
+#run some workspace level command or flow
+```
+
+You can start this composite flow as follows:
+
+```sh
+cargo make --no-workspace composite
+```
+
+Another way to call a task on the workspace level and not for each member, is to define that task in the workspace Makefile.toml with **workspace** set to false as follows:
+
+```toml
+[tasks.ignore-members]
+workspace = false
+```
+
+Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
+This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.
+
+<a name="usage-workspace-support-skip-members"></a>
+#### Skipping Specific Members
+
+In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
+
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a ';' character), you can define if you want those members not to participate in the flow.
+
+In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
+
+```toml
+[env]
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
+```
+
+However there are some cases you will want to skip specific members only if a specific condition is met.
+
+For example, you want to build a member module only if we are running on a rust nightly compiler.
+
+This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
+
+```toml
+[tasks.workspace-task]
+condition = { channels = ["beta", "stable"] }
+env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+run_task = "do-on-members"
+```
+
+You will have to invoke this as a composite flow:
+
+```sh
+cargo make workspace-task --no-workspace
+```
+
 <a name="usage-toochain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
@@ -1215,6 +1294,61 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Running Task: rustc-version-flow
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 2 seconds.
+```
+
+<a name="usage-init-end-tasks"></a>
+### Init and End tasks
+Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
+An init task that gets invoked at the start of all flows and end task that is invoked at the end of all flows.<br>
+The names of the init and end tasks are defined in the config section in the toml file, the below shows the default settings:
+
+```toml
+[config]
+init_task = "init"
+end_task = "end"
+
+[tasks.init]
+
+[tasks.end]
+```
+
+By default the init and end tasks are empty and can be modified by external toml files or you can simply change the names of the init and end tasks in the external toml files to point to different tasks.<br>
+These tasks allow common actions to be invoked no matter what flow you are running.
+
+Important to mention that init and end tasks invocation is different than other tasks.
+
+* Aliases and dependencies are ignored
+* If the same task is defined in the executed flow, those tasks will be invoked multiple times
+
+Therefore it is not recommended to use the init/end tasks also inside your flows.
+
+<a name="usage-catching-errors"></a>
+### Catching Errors
+By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
+However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
+cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
+In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
+
+```toml
+[config]
+on_error_task = "catch"
+
+[tasks.catch]
+script = [
+    "echo \"Doing cleanups in catch\""
+]
+```
+
+<a name="usage-private-tasks"></a>
+### Private Tasks
+
+Private tasks are tasks that should only be invoked by other tasks and not directly from the cli.
+
+In order to define a task as private, add the **private** attribute with value true as follows:
+
+```toml
+[tasks.internal-task]
+private = true
 ```
 
 <a name="usage-watch"></a>
@@ -1709,140 +1843,6 @@ In order to prevent loading of internal core tasks and flows, simply add the fol
 skip_core_tasks = true
 ```
 
-<a name="usage-workspace-support"></a>
-### Workspace Support
-In case cargo-make detects that the current working directory is a workspace crate (crate with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
-Instead, it will generate a task definition in runtime which will go to each member directory and invoke the requested task on that member.<br>
-For example if we have the following directory structure:
-
-```console
-workspace
-├── Cargo.toml
-├── member1
-│   └── Cargo.toml
-└── member2
-    └── Cargo.toml
-```
-
-And we ran ```cargo make mytask```, it will go to each workspace member directory and execute: ```cargo make mytask``` at that directory,
-where mytask is the original task that was requested on the workspace level.<br>
-The order of the members is defined by the member attribute in the workspace Cargo.toml.
-
-We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.
-
-In case you wish to run the tasks on the workspace level and not on the members, use the ```--no-workspace``` cli flag when running cargo make, for example:
-
-```sh
-cargo make --no-workspace mytask
-```
-
-You can define a composite flow that runs both workspace level tasks and member level tasks using this flag.<br>
-This is an example of a workspace level Makefile.toml which enables to run such a flow:
-
-```toml
-[tasks.composite]
-dependencies = ["member_flow", "workspace_flow"]
-
-[tasks.member_flow]
-command = "cargo"
-args = ["make", "member_task"]
-
-[tasks.workspace_flow]
-#run some workspace level command or flow
-```
-
-You can start this composite flow as follows:
-
-```sh
-cargo make --no-workspace composite
-```
-
-Another way to call a task on the workspace level and not for each member, is to define that task in the workspace Makefile.toml with **workspace** set to false as follows:
-
-```toml
-[tasks.ignore-members]
-workspace = false
-```
-
-Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
-This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.
-
-<a name="usage-workspace-support-skip-members"></a>
-#### Skipping Specific Members
-
-In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
-
-By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a ';' character), you can define if you want those members not to participate in the flow.
-
-In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
-
-```toml
-[env]
-CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
-```
-
-However there are some cases you will want to skip specific members only if a specific condition is met.
-
-For example, you want to build a member module only if we are running on a rust nightly compiler.
-
-This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
-
-```toml
-[tasks.workspace-task]
-condition = { channels = ["beta", "stable"] }
-env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
-run_task = "do-on-members"
-```
-
-You will have to invoke this as a composite flow:
-
-```sh
-cargo make workspace-task --no-workspace
-```
-
-<a name="usage-init-end-tasks"></a>
-### Init and End tasks
-Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
-An init task that gets invoked at the start of all flows and end task that is invoked at the end of all flows.<br>
-The names of the init and end tasks are defined in the config section in the toml file, the below shows the default settings:
-
-```toml
-[config]
-init_task = "init"
-end_task = "end"
-
-[tasks.init]
-
-[tasks.end]
-```
-
-By default the init and end tasks are empty and can be modified by external toml files or you can simply change the names of the init and end tasks in the external toml files to point to different tasks.<br>
-These tasks allow common actions to be invoked no matter what flow you are running.
-
-Important to mention that init and end tasks invocation is different than other tasks.
-
-* Aliases and dependencies are ignored
-* If the same task is defined in the executed flow, those tasks will be invoked multiple times
-
-Therefore it is not recommended to use the init/end tasks also inside your flows.
-
-<a name="usage-catching-errors"></a>
-### Catching Errors
-By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
-However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
-cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
-In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
-
-```toml
-[config]
-on_error_task = "catch"
-
-[tasks.catch]
-script = [
-    "echo \"Doing cleanups in catch\""
-]
-```
-
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
@@ -1953,15 +1953,15 @@ search_project_root = false
 <a name="descriptor-definition"></a>
 ## Makefile Definition
 
-[Config Section](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.ConfigSection.html)
+[Config Section](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.ConfigSection.html)
 
-[Task](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.Task.html)
+[Task](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.Task.html)
 
-[Platform Override](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.PlatformOverrideTask.html)
+[Platform Override](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.PlatformOverrideTask.html)
 
-[Condition](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/struct.TaskCondition.html)
+[Condition](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.TaskCondition.html)
 
-More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cargo_make/types/index.html) section of the API documentation.
+More info can be found in the [types](https://sagiegurari.github.io/cargo-make/api/cli/types/index.html) section of the API documentation.
 
 <a name="task-name-conventions"></a>
 ## Task Naming Conventions
