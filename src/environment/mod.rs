@@ -12,8 +12,8 @@ mod mod_test;
 
 use crate::command;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueInfo, GitInfo, PackageInfo, Step, Task,
-    Workspace,
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueScript, GitInfo, PackageInfo, Step,
+    Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use indexmap::IndexMap;
@@ -24,7 +24,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-fn evaluate_env_value(env_value: &EnvValueInfo) -> String {
+fn evaluate_env_value(env_value: &EnvValueScript) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true) {
         Ok(output) => {
             let exit_code = output.0;
@@ -77,10 +77,20 @@ fn evaluate_and_set_env(key: &str, value: &str) {
     env::set_var(&key, &env_value);
 }
 
-fn set_env_for_info(key: &str, env_value: &EnvValueInfo) {
+fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     let value = evaluate_env_value(&env_value);
 
     evaluate_and_set_env(&key, &value);
+}
+
+fn set_env_for_profile(profile_name: &str, sub_env: &IndexMap<String, EnvValue>) {
+    let current_profile_name = get_env("CARGO_MAKE_PROFILE", "development");
+
+    if current_profile_name == profile_name.to_string() {
+        debug!("Setting Up Profile: {} Env.", &profile_name);
+
+        set_env(sub_env.clone());
+    }
 }
 
 /// Updates the env based on the provided data
@@ -92,7 +102,8 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
 
         match *env_value {
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
-            EnvValue::Info(ref info) => set_env_for_info(&key, info),
+            EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
+            EnvValue::Profile(ref sub_env) => set_env_for_profile(&key, sub_env),
         };
     }
 }

@@ -336,13 +336,18 @@ fn create_proxy_task_no_makefile() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
+    let mut profile_arg = "--profile=\"".to_string();
+    profile_arg.push_str(&profile::get());
+    profile_arg.push_str("\"");
+
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 5);
+    assert_eq!(args.len(), 6);
     assert_eq!(args[0], "make".to_string());
     assert_eq!(args[1], "--disable-check-for-updates".to_string());
     assert_eq!(args[2], "--no-on-error".to_string());
     assert_eq!(args[3], log_level_arg.to_string());
-    assert_eq!(args[4], "some_task".to_string());
+    assert_eq!(args[4], profile_arg.to_string());
+    assert_eq!(args[5], "some_task".to_string());
 }
 
 #[test]
@@ -358,17 +363,22 @@ fn create_proxy_task_with_makefile() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
-    let mut makefile_arg = "--makefile=".to_string();
+    let mut profile_arg = "--profile=\"".to_string();
+    profile_arg.push_str(&profile::get());
+    profile_arg.push_str("\"");
+
+    let mut makefile_arg = "--makefile ".to_string();
     makefile_arg.push_str(&makefile.clone());
 
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 6);
+    assert_eq!(args.len(), 7);
     assert_eq!(args[0], "make".to_string());
     assert_eq!(args[1], "--disable-check-for-updates".to_string());
     assert_eq!(args[2], "--no-on-error".to_string());
     assert_eq!(args[3], log_level_arg.to_string());
-    assert_eq!(args[4], makefile_arg.to_string());
-    assert_eq!(args[5], "some_task".to_string());
+    assert_eq!(args[4], profile_arg.to_string());
+    assert_eq!(args[5], makefile_arg.to_string());
+    assert_eq!(args[6], "some_task".to_string());
 }
 
 #[test]
@@ -894,7 +904,9 @@ fn create_watch_task_with_makefile() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --makefile=");
+    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str("\" --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 

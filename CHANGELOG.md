@@ -2,6 +2,7 @@
 
 ### v0.16.1
 
+* Profile support #174
 * Set travis deploy overwrite=true
 
 ### v0.16.1 (2019-01-17)

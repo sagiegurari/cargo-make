@@ -7,6 +7,7 @@ fn cli_args_new() {
     assert_eq!(cli_args.command, "");
     assert!(cli_args.build_file.is_none());
     assert_eq!(cli_args.task, "default");
+    assert!(cli_args.profile.is_none());
     assert_eq!(cli_args.log_level, "info");
     assert!(cli_args.cwd.is_none());
     assert!(cli_args.env.is_none());
@@ -564,6 +565,7 @@ fn task_extend_extended_have_all_fields() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -596,6 +598,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -625,6 +628,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -654,6 +658,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -761,6 +766,7 @@ fn task_extend_clear_with_no_data() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -793,6 +799,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -822,6 +829,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -851,6 +859,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -927,6 +936,7 @@ fn task_extend_clear_with_all_data() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -959,6 +969,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -988,6 +999,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1017,6 +1029,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1224,6 +1237,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1252,6 +1266,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1366,6 +1381,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1393,6 +1409,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string()]),
                 channels: Some(vec![
                     "nightly".to_string(),
@@ -1506,6 +1523,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1625,6 +1643,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,

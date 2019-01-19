@@ -8,6 +8,7 @@
 mod condition_test;
 
 use crate::command;
+use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
@@ -120,6 +121,31 @@ fn validate_platform(condition: &TaskCondition) -> bool {
     }
 }
 
+fn validate_profile(condition: &TaskCondition) -> bool {
+    let profiles = condition.profiles.clone();
+    match profiles {
+        Some(profile_names) => {
+            let profile_name = profile::get();
+
+            let index = profile_names
+                .iter()
+                .position(|value| *value == profile_name);
+
+            match index {
+                None => {
+                    debug!(
+                        "Failed profile condition, current profile: {}",
+                        &profile_name
+                    );
+                    false
+                }
+                _ => true,
+            }
+        }
+        None => true,
+    }
+}
+
 fn validate_channel(condition: &TaskCondition, flow_info: &FlowInfo) -> bool {
     let channels = condition.channels.clone();
     match channels {
@@ -202,6 +228,7 @@ fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
             debug!("Checking task condition structure.");
 
             validate_platform(&condition)
+                && validate_profile(&condition)
                 && validate_channel(&condition, &flow_info)
                 && validate_env(&condition)
                 && validate_env_set(&condition)

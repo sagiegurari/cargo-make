@@ -46,6 +46,9 @@
     * [Toolchain](#usage-toochain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
+    * [Profiles](#usage-profiles)
+        * [Environment Variables](#usage-profiles-env)
+        * [Conditions](#usage-profiles-conditions)
     * [Private Tasks](#usage-private-tasks)
     * [Watch](#usage-watch)
     * [Continuous Integration](#usage-ci)
@@ -832,12 +835,21 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 TEST1 = "value1"
 TEST2 = "value2"
 COMPOSITE = "${TEST1} ${TEST2}"
+
+# profile based environment override
+[env.development]
+DEV = "TRUE"
+
+[env.production]
+PROD = "TRUE"
 ```
 
 Environment variables can be defined as a simple key/value pair or key and the output (second line) of the provided script.
 In addition, you can define environment variables values based on other environment variables using the ${} syntax.
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
+
+See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>
 #### Task
@@ -895,6 +907,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
 * **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
+* **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
 * **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
@@ -955,6 +968,7 @@ script = [
 
 The following condition types are available:
 
+* **profile** - See [profiles](#usage-profiles) for more info
 * **platforms** - List of platform names (windows, linux, mac)
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
@@ -966,7 +980,7 @@ Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
+condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
 ```
 
 <a name="usage-conditions-script"></a>
@@ -1337,6 +1351,124 @@ on_error_task = "catch"
 script = [
     "echo \"Doing cleanups in catch\""
 ]
+```
+
+<a name="usage-profiles"></a>
+### Profiles
+
+Profiles are a useful tool used to define custom behaviour.<br>
+In order to set the execution profile, use the **--profile** or **-p** cli argument and provide the profile name.<br>
+Profile names are automatically converted to underscores and are trimmed.<br>
+If no profile name is provided, the profile will be defaulted to **development**.
+
+Example Setting Profile:
+
+```sh
+cargo make --profile production mytask
+```
+
+Profiles provide multiple capabilities:
+
+* [Environment variables](#usage-profiles-env) overrides
+* [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
+* [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
+
+<a name="usage-profiles-env"></a>
+#### Environment Variables
+
+Profiles enable you to define a new subset of environment variables that will only be set in runtime if the current profile matches the env profile.
+
+```toml
+[env]
+RUST_BACKTRACE = "1"
+EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+TEST1 = "value1"
+TEST2 = "value2"
+COMPOSITE = "${TEST1} ${TEST2}"
+
+# profile based environment override
+[env.development]
+DEV = "TRUE"
+
+[env.production]
+PROD = "TRUE"
+```
+
+Example:
+
+We have the following makefile with 2 profile based env maps
+
+```toml
+[env]
+COMMON = "COMMON"
+PROFILE_NAME = "${CARGO_MAKE_PROFILE}"
+
+[env.development]
+IS_DEV = "TRUE"
+IS_PROD = "FALSE"
+
+[env.production]
+IS_DEV = "FALSE"
+IS_PROD = "TRUE"
+
+[tasks.echo]
+script = [
+'''
+echo COMMON: ${COMMON}
+echo PROFILE_NAME: ${PROFILE_NAME}
+echo IS_DEV: ${IS_DEV}
+echo IS_PROD: ${IS_PROD}
+'''
+]
+```
+
+We run the **echo** task with **production** profile as follows:
+
+```sh
+cargo make --cwd ./examples --makefile profile.toml --profile production echo
+```
+
+Output:
+
+```console
+[cargo-make] INFO - cargo make 0.16.1
+[cargo-make] INFO - Using Build File: profile.toml
+[cargo-make] INFO - Task: echo
+[cargo-make] INFO - Profile: production
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: echo
++ cd /media/devhdd/projects/rust/cargo-make/examples
++ echo COMMON: COMMON
+COMMON: COMMON
++ echo PROFILE_NAME: production
+PROFILE_NAME: production
++ echo IS_DEV: FALSE
+IS_DEV: FALSE
++ echo IS_PROD: TRUE
+IS_PROD: TRUE
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-profiles-conditions"></a>
+#### Conditions
+
+[Conditions](#usage-conditions) enable you to trigger/skip tasks.<br>
+Conditions have built in support for profiles, so you can trigger/skip tasks based on the profile name.
+
+Example:
+
+```toml
+[tasks.echo-development]
+condition = { profiles = [ "development" ] }
+command = "echo"
+args = [ "running in development profile" ]
+
+[tasks.echo-production]
+condition = { profiles = [ "production" ] }
+command = "echo"
+args = [ "running in production profile" ]
 ```
 
 <a name="usage-private-tasks"></a>
@@ -2036,6 +2168,7 @@ The articles are missing some of the new features which have been added after th
 * [Rust Version Conditions](#usage-conditions-structure)
 * [Toolchain](#usage-toochain)
 * [Watch](#usage-watch)
+* [Profiles](#usage-profiles)
 
 And more...
 

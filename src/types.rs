@@ -31,6 +31,8 @@ pub struct CliArgs {
     pub build_file: Option<String>,
     /// The task to invoke
     pub task: String,
+    /// The profile name
+    pub profile: Option<String>,
     /// Log level name
     pub log_level: String,
     /// Current working directory
@@ -66,6 +68,7 @@ impl CliArgs {
             command: "".to_string(),
             build_file: None,
             task: "default".to_string(),
+            profile: None,
             log_level: "info".to_string(),
             cwd: None,
             env: None,
@@ -290,6 +293,8 @@ pub struct RustVersionCondition {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
+    /// Profile names (development, ...)
+    pub profiles: Option<Vec<String>>,
     /// Platform names (linux, windows, mac)
     pub platforms: Option<Vec<String>>,
     /// Channel names (stable, beta, nightly)
@@ -305,8 +310,8 @@ pub struct TaskCondition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds a single task configuration such as command and dependencies list
-pub struct EnvValueInfo {
+/// Env value provided by a script
+pub struct EnvValueScript {
     /// The script to execute to get the env value
     pub script: Vec<String>,
 }
@@ -318,7 +323,9 @@ pub enum EnvValue {
     /// The value as string
     Value(String),
     /// Script which will return the value
-    Info(EnvValueInfo),
+    Script(EnvValueScript),
+    /// Profile env
+    Profile(IndexMap<String, EnvValue>),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

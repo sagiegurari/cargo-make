@@ -247,7 +247,7 @@ fn setup_env_script() {
     );
     config.env.insert(
         "MY_ENV_SCRIPT_KEY2".to_string(),
-        EnvValue::Info(EnvValueInfo {
+        EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
         }),
     );
@@ -269,7 +269,7 @@ fn setup_env_script() {
 
 #[test]
 fn evaluate_env_value_valid() {
-    let output = evaluate_env_value(&EnvValueInfo {
+    let output = evaluate_env_value(&EnvValueScript {
         script: vec!["echo script1".to_string()],
     });
 
@@ -279,7 +279,7 @@ fn evaluate_env_value_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_empty() {
-    let output = evaluate_env_value(&EnvValueInfo {
+    let output = evaluate_env_value(&EnvValueScript {
         script: vec!["".to_string()],
     });
 
@@ -289,7 +289,7 @@ fn evaluate_env_value_empty() {
 #[test]
 #[should_panic]
 fn evaluate_env_error() {
-    evaluate_env_value(&EnvValueInfo {
+    evaluate_env_value(&EnvValueScript {
         script: vec!["exit 1".to_string()],
     });
 }

@@ -18,6 +18,7 @@ use crate::environment;
 use crate::execution_plan::create as create_execution_plan;
 use crate::installer;
 use crate::logger;
+use crate::profile;
 use crate::scriptengine;
 use crate::types::{CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
 use indexmap::IndexMap;
@@ -184,19 +185,27 @@ fn create_proxy_task(task: &str) -> Task {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
+    //get profile
+    let profile_name = profile::get();
+
+    let mut profile_arg = "--profile=\"".to_string();
+    profile_arg.push_str(&profile_name);
+    profile_arg.push_str("\"");
+
     //setup common args
     let mut args = vec![
         "make".to_string(),
         "--disable-check-for-updates".to_string(),
         "--no-on-error".to_string(),
         log_level_arg.to_string(),
+        profile_arg.to_string(),
     ];
 
     //get makefile location
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
         Ok(makefile_path) => {
             if makefile_path.len() > 0 {
-                let mut makefile_arg = "--makefile=".to_string();
+                let mut makefile_arg = "--makefile ".to_string();
                 makefile_arg.push_str(&makefile_path);
 
                 args.push(makefile_arg.to_string());
