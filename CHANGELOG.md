@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.1
+
+* Set travis deploy overwrite=true
+
 ### v0.16.1 (2019-01-17)
 
 * Enable coverage for every Linux based CI system
