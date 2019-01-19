@@ -86,11 +86,17 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             );
         }
 
+        //get profile
+        let profile_name = profile::get();
+
         let env = match step.config.env {
             Some(ref env) => env.clone(),
             None => IndexMap::new(),
         };
         environment::set_env(env);
+
+        //make sure profile env is not overwritten
+        profile::set(&profile_name);
 
         let updated_step = environment::expand_env(&step);
 
