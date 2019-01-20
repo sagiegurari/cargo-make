@@ -1,7 +1,7 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask, Step,
-    Task,
+    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, PlatformOverrideTask,
+    RunTaskInfo, Step, Task, TaskCondition,
 };
 use ci_info;
 use indexmap::IndexMap;
@@ -603,7 +603,7 @@ fn run_task_bad_run_task_valid_command() {
     };
 
     let mut task = Task::new();
-    task.run_task = Some("sub".to_string());
+    task.run_task = Some(RunTaskInfo::Name("sub".to_string()));
     task.command = Some("echo".to_string());
     task.args = Some(vec!["test".to_string()]);
     let step = Step {
@@ -642,7 +642,7 @@ fn run_task_valid_run_task() {
     };
 
     let mut task = Task::new();
-    task.run_task = Some("sub".to_string());
+    task.run_task = Some(RunTaskInfo::Name("sub".to_string()));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -934,4 +934,559 @@ fn create_watch_step_valid() {
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
+}
+
+#[test]
+fn run_sub_task_and_report_for_name() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Name("test".to_string());
+
+    let output = run_sub_task_and_report(&flow_info, &sub_task);
+
+    assert!(output);
+}
+
+#[test]
+#[should_panic]
+fn run_sub_task_and_report_for_name_not_found() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Name("test2".to_string());
+
+    run_sub_task_and_report(&flow_info, &sub_task);
+}
+
+#[test]
+fn run_sub_task_and_report_routing_empty() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Routing(vec![]);
+
+    let output = run_sub_task_and_report(&flow_info, &sub_task);
+
+    assert!(!output);
+}
+
+#[test]
+fn run_sub_task_and_report_routing_no_condition() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
+        name: "test".to_string(),
+        condition: None,
+        condition_script: None,
+    }]);
+
+    let output = run_sub_task_and_report(&flow_info, &sub_task);
+
+    assert!(output);
+}
+
+#[test]
+fn run_sub_task_and_report_routing_condition_not_met() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
+        name: "test".to_string(),
+        condition: Some(TaskCondition {
+            profiles: None,
+            platforms: None,
+            channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+            env_set: None,
+            env_not_set: None,
+            env: None,
+            rust_version: None,
+        }),
+        condition_script: None,
+    }]);
+
+    let output = run_sub_task_and_report(&flow_info, &sub_task);
+
+    assert!(!output);
+}
+
+#[test]
+#[should_panic]
+fn run_sub_task_and_report_routing_not_found() {
+    let mut task = Task::new();
+    task.script = Some(vec!["echo test".to_string()]);
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
+        name: "test2".to_string(),
+        condition: None,
+        condition_script: None,
+    }]);
+
+    run_sub_task_and_report(&flow_info, &sub_task);
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_empty() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(&flow_info, &vec![]);
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_condition_not_met() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![RunTaskRoutingInfo {
+            name: "test".to_string(),
+            condition: Some(TaskCondition {
+                profiles: None,
+                platforms: None,
+                channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env: None,
+                rust_version: None,
+            }),
+            condition_script: None,
+        }],
+    );
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_condition_found() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![RunTaskRoutingInfo {
+            name: "test".to_string(),
+            condition: Some(TaskCondition {
+                profiles: None,
+                platforms: None,
+                channels: None,
+                env_set: Some(vec!["CARGO_MAKE".to_string()]),
+                env_not_set: None,
+                env: None,
+                rust_version: None,
+            }),
+            condition_script: None,
+        }],
+    );
+
+    assert_eq!(output.unwrap(), "test");
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_script_not_met() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![RunTaskRoutingInfo {
+            name: "test".to_string(),
+            condition: None,
+            condition_script: Some(vec!["exit 1".to_string()]),
+        }],
+    );
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_script_found() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![RunTaskRoutingInfo {
+            name: "test".to_string(),
+            condition: None,
+            condition_script: Some(vec!["exit 0".to_string()]),
+        }],
+    );
+
+    assert_eq!(output.unwrap(), "test");
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_multiple_found() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![
+            RunTaskRoutingInfo {
+                name: "test1".to_string(),
+                condition: Some(TaskCondition {
+                    profiles: None,
+                    platforms: None,
+                    channels: None,
+                    env_set: Some(vec!["CARGO_MAKE".to_string()]),
+                    env_not_set: None,
+                    env: None,
+                    rust_version: None,
+                }),
+                condition_script: None,
+            },
+            RunTaskRoutingInfo {
+                name: "test2".to_string(),
+                condition: None,
+                condition_script: Some(vec!["exit 0".to_string()]),
+            },
+        ],
+    );
+
+    assert_eq!(output.unwrap(), "test1");
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_default() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![
+            RunTaskRoutingInfo {
+                name: "test1".to_string(),
+                condition: Some(TaskCondition {
+                    profiles: None,
+                    platforms: None,
+                    channels: None,
+                    env_set: None,
+                    env_not_set: Some(vec!["CARGO_MAKE".to_string()]),
+                    env: None,
+                    rust_version: None,
+                }),
+                condition_script: None,
+            },
+            RunTaskRoutingInfo {
+                name: "test2".to_string(),
+                condition: None,
+                condition_script: Some(vec!["exit 1".to_string()]),
+            },
+            RunTaskRoutingInfo {
+                name: "default".to_string(),
+                condition: None,
+                condition_script: None,
+            },
+        ],
+    );
+
+    assert_eq!(output.unwrap(), "default");
+}
+
+#[test]
+fn get_sub_task_name_for_routing_info_multiple() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        cli_arguments: None,
+    };
+
+    let output = get_sub_task_name_for_routing_info(
+        &flow_info,
+        &vec![
+            RunTaskRoutingInfo {
+                name: "test1".to_string(),
+                condition: Some(TaskCondition {
+                    profiles: None,
+                    platforms: None,
+                    channels: None,
+                    env_set: None,
+                    env_not_set: Some(vec!["CARGO_MAKE".to_string()]),
+                    env: None,
+                    rust_version: None,
+                }),
+                condition_script: None,
+            },
+            RunTaskRoutingInfo {
+                name: "test2".to_string(),
+                condition: None,
+                condition_script: Some(vec!["exit 1".to_string()]),
+            },
+            RunTaskRoutingInfo {
+                name: "test3".to_string(),
+                condition: None,
+                condition_script: Some(vec!["exit 0".to_string()]),
+            },
+            RunTaskRoutingInfo {
+                name: "default".to_string(),
+                condition: None,
+                condition_script: None,
+            },
+        ],
+    );
+
+    assert_eq!(output.unwrap(), "test3");
 }

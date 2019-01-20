@@ -440,6 +440,27 @@ impl PartialEq for InstallCrate {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds the rust routing information
+pub struct RunTaskRoutingInfo {
+    /// The task name
+    pub name: String,
+    /// if provided all condition values must be met in order for the task to be invoked
+    pub condition: Option<TaskCondition>,
+    /// if script exit code is not 0, the task will not be invoked
+    pub condition_script: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Run task info
+pub enum RunTaskInfo {
+    /// Task name
+    Name(String),
+    /// Task conditional selector
+    Routing(Vec<RunTaskRoutingInfo>),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -491,7 +512,7 @@ pub struct Task {
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
-    pub run_task: Option<String>,
+    pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
@@ -888,7 +909,7 @@ pub struct PlatformOverrideTask {
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
-    pub run_task: Option<String>,
+    pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components

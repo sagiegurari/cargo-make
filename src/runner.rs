@@ -20,20 +20,65 @@ use crate::installer;
 use crate::logger;
 use crate::profile;
 use crate::scriptengine;
-use crate::types::{CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
+use crate::types::{
+    CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo, RunTaskRoutingInfo,
+    Step, Task,
+};
 use indexmap::IndexMap;
 use std::env;
 use std::time::SystemTime;
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
-    condition::validate_condition(&flow_info, &step)
+    condition::validate_condition_for_step(&flow_info, &step)
 }
 
-fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
-    let mut sub_flow_info = flow_info.clone();
-    sub_flow_info.task = sub_task.to_string();
+fn get_sub_task_name_for_routing_info(
+    flow_info: &FlowInfo,
+    routing_info: &Vec<RunTaskRoutingInfo>,
+) -> Option<String> {
+    let mut task_name = None;
 
-    run_flow(&sub_flow_info, true);
+    for routing_step in routing_info {
+        let invoke = condition::validate_conditions(
+            &flow_info,
+            &routing_step.condition,
+            &routing_step.condition_script,
+            None,
+        );
+
+        if invoke {
+            task_name = Some(routing_step.name.clone());
+            break;
+        }
+    }
+
+    task_name
+}
+
+/// runs a sub task and returns true/false based if a sub task was actually invoked
+fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
+    let mut sub_flow_info = flow_info.clone();
+
+    let task_name = match sub_task {
+        RunTaskInfo::Name(ref name) => Some(name.to_string()),
+        RunTaskInfo::Routing(ref routing_info) => {
+            get_sub_task_name_for_routing_info(&flow_info, routing_info)
+        }
+    };
+
+    if task_name.is_some() {
+        sub_flow_info.task = task_name.unwrap();
+
+        run_flow(&sub_flow_info, true);
+
+        true
+    } else {
+        false
+    }
+}
+
+fn run_sub_task(flow_info: &FlowInfo, sub_task: &RunTaskInfo) {
+    run_sub_task_and_report(&flow_info, &sub_task);
 }
 
 fn create_watch_task_name(task: &str) -> String {

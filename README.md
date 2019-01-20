@@ -411,6 +411,37 @@ script = [
 run_task = "echo"
 ```
 
+A more complex example below demonstrates the ability to define multiple task names and optional conditions attached to each task.<br>
+The **first** task for which the conditions are met (or if no conditions are defined at all), will be invoked.<br>
+If no task conditions are met, no sub task will be invoked.<br>
+More on conditions can be found the [conditions section](#usage-conditions)
+
+```toml
+[tasks.test1]
+command = "echo"
+args = ["running test1"]
+
+[tasks.test2]
+command = "echo"
+args = ["running test2"]
+
+[tasks.test3]
+command = "echo"
+args = ["running test3"]
+
+[tasks.test-default]
+command = "echo"
+args = ["running test-default"]
+
+[tasks.test-routing]
+run_task = [
+    { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
+    { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
+    { name = "test3", condition_script = [ "somecommand" ] },
+    { name = "test-default" }
+]
+```
+
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
 For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
