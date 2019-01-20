@@ -10,3 +10,27 @@ condition = { rust_version = { min = "1.20.0", max = "1.30.0" } }
 script = [
     "echo \"rust version condition was met\""
 ]
+
+[tasks.test1]
+command = "echo"
+args = ["running test1"]
+
+[tasks.test2]
+command = "echo"
+args = ["running test2"]
+
+[tasks.test3]
+command = "echo"
+args = ["running test3"]
+
+[tasks.test-default]
+command = "echo"
+args = ["running test-default"]
+
+[tasks.test-routing]
+run_task = [
+    { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
+    { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
+    { name = "test3", condition_script = [ "somecommand" ] },
+    { name = "test-default" }
+]

@@ -34,7 +34,31 @@ fn merge_env(
     for (key, value) in extended.iter() {
         let key_str = key.to_string();
         let value_clone = value.clone();
-        merged.insert(key_str, value_clone);
+
+        if merged.contains_key(&key_str) {
+            let mut base_value = merged.remove(&key_str).unwrap();
+
+            match (base_value, value_clone.clone()) {
+                (
+                    EnvValue::Profile(ref base_profile_env),
+                    EnvValue::Profile(ref extended_profile_env),
+                ) => {
+                    let mut base_profile_env_mut = base_profile_env.clone();
+                    let mut extended_profile_env_mut = extended_profile_env.clone();
+
+                    let merged_sub_env =
+                        merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
+
+                    merged.insert(key_str, EnvValue::Profile(merged_sub_env));
+                }
+                _ => {
+                    merged.insert(key_str, value_clone);
+                    ()
+                }
+            };
+        } else {
+            merged.insert(key_str, value_clone);
+        }
     }
 
     merged

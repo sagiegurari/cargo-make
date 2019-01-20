@@ -8,6 +8,7 @@
 mod condition_test;
 
 use crate::command;
+use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
@@ -120,6 +121,31 @@ fn validate_platform(condition: &TaskCondition) -> bool {
     }
 }
 
+fn validate_profile(condition: &TaskCondition) -> bool {
+    let profiles = condition.profiles.clone();
+    match profiles {
+        Some(profile_names) => {
+            let profile_name = profile::get();
+
+            let index = profile_names
+                .iter()
+                .position(|value| *value == profile_name);
+
+            match index {
+                None => {
+                    debug!(
+                        "Failed profile condition, current profile: {}",
+                        &profile_name
+                    );
+                    false
+                }
+                _ => true,
+            }
+        }
+        None => true,
+    }
+}
+
 fn validate_channel(condition: &TaskCondition, flow_info: &FlowInfo) -> bool {
     let channels = condition.channels.clone();
     match channels {
@@ -196,29 +222,29 @@ fn validate_rust_version(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_criteria(flow_info: &FlowInfo, step: &Step) -> bool {
-    match step.config.condition {
-        Some(ref condition) => {
+fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) -> bool {
+    match condition {
+        Some(ref condition_struct) => {
             debug!("Checking task condition structure.");
 
-            validate_platform(&condition)
-                && validate_channel(&condition, &flow_info)
-                && validate_env(&condition)
-                && validate_env_set(&condition)
-                && validate_env_not_set(&condition)
-                && validate_rust_version(&condition)
+            validate_platform(&condition_struct)
+                && validate_profile(&condition_struct)
+                && validate_channel(&condition_struct, &flow_info)
+                && validate_env(&condition_struct)
+                && validate_env_set(&condition_struct)
+                && validate_env_not_set(&condition_struct)
+                && validate_rust_version(&condition_struct)
         }
         None => true,
     }
 }
 
-fn validate_script(step: &Step) -> bool {
-    match step.config.condition_script {
+fn validate_script(condition_script: &Option<Vec<String>>, script_runner: Option<String>) -> bool {
+    match condition_script {
         Some(ref script) => {
             debug!("Checking task condition script.");
 
-            let exit_code =
-                command::run_script(&script, step.config.script_runner.clone(), &vec![], false);
+            let exit_code = command::run_script(&script, script_runner, &vec![], false);
 
             if exit_code == 0 {
                 true
@@ -230,6 +256,20 @@ fn validate_script(step: &Step) -> bool {
     }
 }
 
-pub(crate) fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
-    validate_criteria(&flow_info, &step) && validate_script(&step)
+pub(crate) fn validate_conditions(
+    flow_info: &FlowInfo,
+    condition: &Option<TaskCondition>,
+    condition_script: &Option<Vec<String>>,
+    script_runner: Option<String>,
+) -> bool {
+    validate_criteria(&flow_info, &condition) && validate_script(&condition_script, script_runner)
+}
+
+pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> bool {
+    validate_conditions(
+        &flow_info,
+        &step.config.condition,
+        &step.config.condition_script,
+        step.config.script_runner.clone(),
+    )
 }

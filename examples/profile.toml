@@ -1,0 +1,32 @@
+
+[env]
+COMMON = "COMMON"
+PROFILE_NAME = "${CARGO_MAKE_PROFILE}"
+
+[env.development]
+IS_DEV = "TRUE"
+IS_PROD = "FALSE"
+
+[env.production]
+IS_DEV = "FALSE"
+IS_PROD = "TRUE"
+
+[tasks.echo]
+script = [
+'''
+echo COMMON: ${COMMON}
+echo PROFILE_NAME: ${PROFILE_NAME}
+echo IS_DEV: ${IS_DEV}
+echo IS_PROD: ${IS_PROD}
+'''
+]
+
+[tasks.echo-development]
+condition = { profiles = [ "development" ] }
+command = "echo"
+args = [ "running in development profile" ]
+
+[tasks.echo-production]
+condition = { profiles = [ "production" ] }
+command = "echo"
+args = [ "running in production profile" ]

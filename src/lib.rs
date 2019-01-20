@@ -142,6 +142,7 @@ mod legacy;
 mod list_steps;
 mod logger;
 mod print_steps;
+mod profile;
 mod runner;
 mod scriptengine;
 mod storage;
@@ -204,9 +205,15 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         .clone()
         .unwrap_or(DEFAULT_TOML.to_string());
     let task = &cli_args.task;
+    let profile_name = &cli_args
+        .profile
+        .clone()
+        .unwrap_or(profile::DEFAULT_PROFILE.to_string());
+    let normalized_profile_name = profile::set(&profile_name);
 
     info!("Using Build File: {}", &build_file);
     info!("Task: {}", &task);
+    info!("Profile: {}", &normalized_profile_name);
 
     let env_file_entries = environment::parse_env_file(cli_args.env_file.clone());
     let env_cli_entries = cli_args.env.clone();
@@ -225,6 +232,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let config = descriptor::load(&build_file, force_makefile, env, experimental);
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
+
+    // ensure profile env was not overridden
+    profile::set(&normalized_profile_name);
 
     if cli_args.list_all_steps {
         list_steps::run(&config, &cli_args.output_format);
@@ -309,6 +319,11 @@ fn run_for_args(
         .unwrap_or(DEFAULT_OUTPUT_FORMAT)
         .to_string();
 
+    let profile_name = cmd_matches
+        .value_of("profile".to_string())
+        .unwrap_or(profile::DEFAULT_PROFILE);
+    cli_args.profile = Some(profile_name.to_string());
+
     cli_args.disable_check_for_updates = cmd_matches.is_present("disable-check-for-updates");
     cli_args.experimental = cmd_matches.is_present("experimental");
     cli_args.print_only = cmd_matches.is_present("print-steps");
@@ -378,6 +393,16 @@ fn create_cli<'a, 'b>(
                      (can omit the flag if the task name is the last argument)",
                 )
                 .default_value(default_task_name),
+        )
+        .arg(
+            Arg::with_name("profile")
+                .short("-p")
+                .long("--profile")
+                .value_name("PROFILE")
+                .help(
+                    "The profile name (will be converted to lower case)",
+                )
+                .default_value(&profile::DEFAULT_PROFILE),
         )
         .arg(
             Arg::with_name("cwd")

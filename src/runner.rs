@@ -18,21 +18,67 @@ use crate::environment;
 use crate::execution_plan::create as create_execution_plan;
 use crate::installer;
 use crate::logger;
+use crate::profile;
 use crate::scriptengine;
-use crate::types::{CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, Step, Task};
+use crate::types::{
+    CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo, RunTaskRoutingInfo,
+    Step, Task,
+};
 use indexmap::IndexMap;
 use std::env;
 use std::time::SystemTime;
 
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
-    condition::validate_condition(&flow_info, &step)
+    condition::validate_condition_for_step(&flow_info, &step)
 }
 
-fn run_sub_task(flow_info: &FlowInfo, sub_task: &str) {
-    let mut sub_flow_info = flow_info.clone();
-    sub_flow_info.task = sub_task.to_string();
+fn get_sub_task_name_for_routing_info(
+    flow_info: &FlowInfo,
+    routing_info: &Vec<RunTaskRoutingInfo>,
+) -> Option<String> {
+    let mut task_name = None;
 
-    run_flow(&sub_flow_info, true);
+    for routing_step in routing_info {
+        let invoke = condition::validate_conditions(
+            &flow_info,
+            &routing_step.condition,
+            &routing_step.condition_script,
+            None,
+        );
+
+        if invoke {
+            task_name = Some(routing_step.name.clone());
+            break;
+        }
+    }
+
+    task_name
+}
+
+/// runs a sub task and returns true/false based if a sub task was actually invoked
+fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
+    let mut sub_flow_info = flow_info.clone();
+
+    let task_name = match sub_task {
+        RunTaskInfo::Name(ref name) => Some(name.to_string()),
+        RunTaskInfo::Routing(ref routing_info) => {
+            get_sub_task_name_for_routing_info(&flow_info, routing_info)
+        }
+    };
+
+    if task_name.is_some() {
+        sub_flow_info.task = task_name.unwrap();
+
+        run_flow(&sub_flow_info, true);
+
+        true
+    } else {
+        false
+    }
+}
+
+fn run_sub_task(flow_info: &FlowInfo, sub_task: &RunTaskInfo) {
+    run_sub_task_and_report(&flow_info, &sub_task);
 }
 
 fn create_watch_task_name(task: &str) -> String {
@@ -85,11 +131,17 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             );
         }
 
+        //get profile
+        let profile_name = profile::get();
+
         let env = match step.config.env {
             Some(ref env) => env.clone(),
             None => IndexMap::new(),
         };
         environment::set_env(env);
+
+        //make sure profile env is not overwritten
+        profile::set(&profile_name);
 
         let updated_step = environment::expand_env(&step);
 
@@ -184,19 +236,27 @@ fn create_proxy_task(task: &str) -> Task {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
+    //get profile
+    let profile_name = profile::get();
+
+    let mut profile_arg = "--profile=\"".to_string();
+    profile_arg.push_str(&profile_name);
+    profile_arg.push_str("\"");
+
     //setup common args
     let mut args = vec![
         "make".to_string(),
         "--disable-check-for-updates".to_string(),
         "--no-on-error".to_string(),
         log_level_arg.to_string(),
+        profile_arg.to_string(),
     ];
 
     //get makefile location
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
         Ok(makefile_path) => {
             if makefile_path.len() > 0 {
-                let mut makefile_arg = "--makefile=".to_string();
+                let mut makefile_arg = "--makefile ".to_string();
                 makefile_arg.push_str(&makefile_path);
 
                 args.push(makefile_arg.to_string());

@@ -7,6 +7,7 @@ fn cli_args_new() {
     assert_eq!(cli_args.command, "");
     assert!(cli_args.build_file.is_none());
     assert_eq!(cli_args.task, "default");
+    assert!(cli_args.profile.is_none());
     assert_eq!(cli_args.log_level, "info");
     assert!(cli_args.cwd.is_none());
     assert!(cli_args.env.is_none());
@@ -542,7 +543,7 @@ fn task_extend_extended_have_all_fields() {
         script: Some(vec!["1".to_string(), "2".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: None,
         toolchain: None,
         linux: None,
@@ -564,6 +565,7 @@ fn task_extend_extended_have_all_fields() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -584,7 +586,7 @@ fn task_extend_extended_have_all_fields() {
         script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
-        run_task: Some("task2".to_string()),
+        run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".to_string()]),
         toolchain: Some("toolchain".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -596,6 +598,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -612,7 +615,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -625,6 +628,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -641,7 +645,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -654,6 +658,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -670,7 +675,7 @@ fn task_extend_extended_have_all_fields() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -734,7 +739,11 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.script.unwrap().len(), 3);
     assert_eq!(base.script_runner.unwrap(), "sh2");
     assert_eq!(base.script_extension.unwrap(), "ext2");
-    assert_eq!(base.run_task.unwrap(), "task2");
+    let run_task_name = match base.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(base.dependencies.unwrap().len(), 1);
     assert_eq!(base.toolchain.unwrap(), "toolchain");
     assert!(base.linux.unwrap().clear.unwrap());
@@ -761,6 +770,7 @@ fn task_extend_clear_with_no_data() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -781,7 +791,7 @@ fn task_extend_clear_with_no_data() {
         script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
-        run_task: Some("task2".to_string()),
+        run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".to_string()]),
         toolchain: Some("toolchain".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -793,6 +803,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -809,7 +820,7 @@ fn task_extend_clear_with_no_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -822,6 +833,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -838,7 +850,7 @@ fn task_extend_clear_with_no_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -851,6 +863,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -867,7 +880,7 @@ fn task_extend_clear_with_no_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -927,6 +940,7 @@ fn task_extend_clear_with_all_data() {
         private: Some(false),
         watch: Some(false),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -947,7 +961,7 @@ fn task_extend_clear_with_all_data() {
         script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
-        run_task: Some("task2".to_string()),
+        run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".to_string()]),
         toolchain: Some("toolchain".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -959,6 +973,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -975,7 +990,7 @@ fn task_extend_clear_with_all_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -988,6 +1003,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1004,7 +1020,7 @@ fn task_extend_clear_with_all_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -1017,6 +1033,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1033,7 +1050,7 @@ fn task_extend_clear_with_all_data() {
             script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
-            run_task: Some("task3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".to_string()]),
             toolchain: Some("toolchain".to_string()),
         }),
@@ -1132,7 +1149,7 @@ fn task_get_normalized_task_undefined() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".to_string()]),
         toolchain: Some("toolchain2".to_string()),
         description: Some("description".to_string()),
@@ -1197,7 +1214,11 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext1");
-    assert_eq!(normalized_task.run_task.unwrap(), "task1");
+    let run_task_name = match normalized_task.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "task1".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
 }
@@ -1224,6 +1245,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1240,7 +1262,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".to_string()]),
         toolchain: Some("toolchain1".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -1252,6 +1274,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -1273,7 +1296,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             script_extension: Some("ext2".to_string()),
-            run_task: Some("task2".to_string()),
+            run_task: Some(RunTaskInfo::Name("task2".to_string())),
             dependencies: Some(vec!["1".to_string(), "2".to_string()]),
             toolchain: Some("toolchain2".to_string()),
         }),
@@ -1335,7 +1358,11 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext2");
-    assert_eq!(normalized_task.run_task.unwrap(), "task2");
+    let run_task_name = match normalized_task.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
 
@@ -1366,6 +1393,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1382,7 +1410,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".to_string()]),
         toolchain: Some("toolchain1".to_string()),
         linux: Some(PlatformOverrideTask {
@@ -1393,6 +1421,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             private: Some(false),
             watch: Some(false),
             condition: Some(TaskCondition {
+                profiles: Some(vec!["development".to_string()]),
                 platforms: Some(vec!["linux".to_string()]),
                 channels: Some(vec![
                     "nightly".to_string(),
@@ -1419,7 +1448,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
             script_runner: Some("sh2".to_string()),
             script_extension: Some("ext2".to_string()),
-            run_task: Some("task2".to_string()),
+            run_task: Some(RunTaskInfo::Name("task2".to_string())),
             dependencies: Some(vec!["1".to_string(), "2".to_string()]),
             toolchain: Some("toolchain2".to_string()),
         }),
@@ -1481,7 +1510,11 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext2");
-    assert_eq!(normalized_task.run_task.unwrap(), "task2");
+    let run_task_name = match normalized_task.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
 
@@ -1506,6 +1539,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1522,7 +1556,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".to_string()]),
         toolchain: Some("toolchain1".to_string()),
         description: None,
@@ -1604,7 +1638,11 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext1");
-    assert_eq!(normalized_task.run_task.unwrap(), "task1");
+    let run_task_name = match normalized_task.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "task1".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain1");
 }
@@ -1625,6 +1663,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         private: Some(true),
         watch: Some(true),
         condition: Some(TaskCondition {
+            profiles: Some(vec!["development".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -1641,7 +1680,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         script: Some(vec!["a".to_string(), "b".to_string()]),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
-        run_task: Some("task1".to_string()),
+        run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".to_string()]),
         toolchain: Some("toolchain1".to_string()),
         description: Some("description".to_string()),
@@ -1724,7 +1763,7 @@ fn task_is_valid_all_none() {
 #[test]
 fn task_is_valid_only_run_task() {
     let mut task = Task::new();
-    task.run_task = Some("test".to_string());
+    task.run_task = Some(RunTaskInfo::Name("test".to_string()));
 
     assert!(task.is_valid());
 }
@@ -1748,7 +1787,7 @@ fn task_is_valid_only_script() {
 #[test]
 fn task_is_valid_both_run_task_and_command() {
     let mut task = Task::new();
-    task.run_task = Some("test".to_string());
+    task.run_task = Some(RunTaskInfo::Name("test".to_string()));
     task.command = Some("test".to_string());
 
     assert!(!task.is_valid());
@@ -1757,7 +1796,7 @@ fn task_is_valid_both_run_task_and_command() {
 #[test]
 fn task_is_valid_both_run_task_and_script() {
     let mut task = Task::new();
-    task.run_task = Some("test".to_string());
+    task.run_task = Some(RunTaskInfo::Name("test".to_string()));
     task.script = Some(vec!["test".to_string()]);
 
     assert!(!task.is_valid());

@@ -31,6 +31,8 @@ pub struct CliArgs {
     pub build_file: Option<String>,
     /// The task to invoke
     pub task: String,
+    /// The profile name
+    pub profile: Option<String>,
     /// Log level name
     pub log_level: String,
     /// Current working directory
@@ -66,6 +68,7 @@ impl CliArgs {
             command: "".to_string(),
             build_file: None,
             task: "default".to_string(),
+            profile: None,
             log_level: "info".to_string(),
             cwd: None,
             env: None,
@@ -290,6 +293,8 @@ pub struct RustVersionCondition {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
+    /// Profile names (development, ...)
+    pub profiles: Option<Vec<String>>,
     /// Platform names (linux, windows, mac)
     pub platforms: Option<Vec<String>>,
     /// Channel names (stable, beta, nightly)
@@ -305,8 +310,8 @@ pub struct TaskCondition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds a single task configuration such as command and dependencies list
-pub struct EnvValueInfo {
+/// Env value provided by a script
+pub struct EnvValueScript {
     /// The script to execute to get the env value
     pub script: Vec<String>,
 }
@@ -318,7 +323,9 @@ pub enum EnvValue {
     /// The value as string
     Value(String),
     /// Script which will return the value
-    Info(EnvValueInfo),
+    Script(EnvValueScript),
+    /// Profile env
+    Profile(IndexMap<String, EnvValue>),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -433,6 +440,27 @@ impl PartialEq for InstallCrate {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds the rust routing information
+pub struct RunTaskRoutingInfo {
+    /// The task name
+    pub name: String,
+    /// if provided all condition values must be met in order for the task to be invoked
+    pub condition: Option<TaskCondition>,
+    /// if script exit code is not 0, the task will not be invoked
+    pub condition_script: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Run task info
+pub enum RunTaskInfo {
+    /// Task name
+    Name(String),
+    /// Task conditional selector
+    Routing(Vec<RunTaskRoutingInfo>),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -484,7 +512,7 @@ pub struct Task {
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
-    pub run_task: Option<String>,
+    pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
@@ -881,7 +909,7 @@ pub struct PlatformOverrideTask {
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
-    pub run_task: Option<String>,
+    pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<String>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
