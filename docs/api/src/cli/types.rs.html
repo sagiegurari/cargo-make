@@ -1141,6 +1141,34 @@
 <span id="1141">1141</span>
 <span id="1142">1142</span>
 <span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
+<span id="1161">1161</span>
+<span id="1162">1162</span>
+<span id="1163">1163</span>
+<span id="1164">1164</span>
+<span id="1165">1165</span>
+<span id="1166">1166</span>
+<span id="1167">1167</span>
+<span id="1168">1168</span>
+<span id="1169">1169</span>
+<span id="1170">1170</span>
+<span id="1171">1171</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1175,6 +1203,8 @@
     <span class="kw">pub</span> <span class="ident">build_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task to invoke</span>
     <span class="kw">pub</span> <span class="ident">task</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The profile name</span>
+    <span class="kw">pub</span> <span class="ident">profile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Log level name</span>
     <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Current working directory</span>
@@ -1210,6 +1240,7 @@
             <span class="ident">command</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">build_file</span>: <span class="prelude-val">None</span>,
             <span class="ident">task</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">profile</span>: <span class="prelude-val">None</span>,
             <span class="ident">log_level</span>: <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
@@ -1434,6 +1465,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds condition attributes</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaskCondition</span> {
+    <span class="doccomment">/// Profile names (development, ...)</span>
+    <span class="kw">pub</span> <span class="ident">profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Platform names (linux, windows, mac)</span>
     <span class="kw">pub</span> <span class="ident">platforms</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Channel names (stable, beta, nightly)</span>
@@ -1449,8 +1482,8 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueInfo</span> {
+<span class="doccomment">/// Env value provided by a script</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueScript</span> {
     <span class="doccomment">/// The script to execute to get the env value</span>
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
@@ -1462,7 +1495,9 @@
     <span class="doccomment">/// The value as string</span>
     <span class="ident">Value</span>(<span class="ident">String</span>),
     <span class="doccomment">/// Script which will return the value</span>
-    <span class="ident">Info</span>(<span class="ident">EnvValueInfo</span>),
+    <span class="ident">Script</span>(<span class="ident">EnvValueScript</span>),
+    <span class="doccomment">/// Profile env</span>
+    <span class="ident">Profile</span>(<span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -1577,6 +1612,27 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Holds the rust routing information</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RunTaskRoutingInfo</span> {
+    <span class="doccomment">/// The task name</span>
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked</span>
+    <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// if script exit code is not 0, the task will not be invoked</span>
+    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Run task info</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RunTaskInfo</span> {
+    <span class="doccomment">/// Task name</span>
+    <span class="ident">Name</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Task conditional selector</span>
+    <span class="ident">Routing</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RunTaskRoutingInfo</span><span class="op">&gt;</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
     <span class="doccomment">/// if true, it should ignore all data in base task</span>
@@ -1628,7 +1684,7 @@
     <span class="doccomment">/// The script file extension</span>
     <span class="kw">pub</span> <span class="ident">script_extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task name to execute</span>
-    <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RunTaskInfo</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
@@ -2025,7 +2081,7 @@
     <span class="doccomment">/// The script file extension</span>
     <span class="kw">pub</span> <span class="ident">script_extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task name to execute</span>
-    <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RunTaskInfo</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>

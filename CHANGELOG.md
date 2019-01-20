@@ -1,10 +1,11 @@
 ## CHANGELOG
 
-### v0.16.1
+### v0.16.2 (2019-01-20)
 
 * Profile support #174
 * Task routing #175
 * Set travis deploy overwrite=true
+* Fix broken links in documentation
 
 ### v0.16.1 (2019-01-17)
 

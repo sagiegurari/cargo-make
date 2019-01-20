@@ -476,6 +476,31 @@
 <span id="476">476</span>
 <span id="477">477</span>
 <span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(
     <span class="ident">absolute_paths_not_starting_with_crate</span>,
@@ -621,6 +646,7 @@
 <span class="kw">mod</span> <span class="ident">list_steps</span>;
 <span class="kw">mod</span> <span class="ident">logger</span>;
 <span class="kw">mod</span> <span class="ident">print_steps</span>;
+<span class="kw">mod</span> <span class="ident">profile</span>;
 <span class="kw">mod</span> <span class="ident">runner</span>;
 <span class="kw">mod</span> <span class="ident">scriptengine</span>;
 <span class="kw">mod</span> <span class="ident">storage</span>;
@@ -683,9 +709,15 @@
         .<span class="ident">clone</span>()
         .<span class="ident">unwrap_or</span>(<span class="ident">DEFAULT_TOML</span>.<span class="ident">to_string</span>());
     <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">task</span>;
+    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cli_args</span>
+        .<span class="ident">profile</span>
+        .<span class="ident">clone</span>()
+        .<span class="ident">unwrap_or</span>(<span class="ident">profile</span>::<span class="ident">DEFAULT_PROFILE</span>.<span class="ident">to_string</span>());
+    <span class="kw">let</span> <span class="ident">normalized_profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">set</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
 
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Using Build File: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">build_file</span>);
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
+    <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Profile: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
 
     <span class="kw">let</span> <span class="ident">env_file_entries</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">parse_env_file</span>(<span class="ident">cli_args</span>.<span class="ident">env_file</span>.<span class="ident">clone</span>());
     <span class="kw">let</span> <span class="ident">env_cli_entries</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
@@ -704,6 +736,9 @@
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">descriptor</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">build_file</span>, <span class="ident">force_makefile</span>, <span class="ident">env</span>, <span class="ident">experimental</span>);
 
     <span class="kw">let</span> <span class="ident">env_info</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">setup_env</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
+
+    <span class="comment">// ensure profile env was not overridden</span>
+    <span class="ident">profile</span>::<span class="ident">set</span>(<span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
 
     <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> {
         <span class="ident">list_steps</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_format</span>);
@@ -788,6 +823,11 @@
         .<span class="ident">unwrap_or</span>(<span class="ident">DEFAULT_OUTPUT_FORMAT</span>)
         .<span class="ident">to_string</span>();
 
+    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
+        .<span class="ident">value_of</span>(<span class="string">&quot;profile&quot;</span>.<span class="ident">to_string</span>())
+        .<span class="ident">unwrap_or</span>(<span class="ident">profile</span>::<span class="ident">DEFAULT_PROFILE</span>);
+    <span class="ident">cli_args</span>.<span class="ident">profile</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">profile_name</span>.<span class="ident">to_string</span>());
+
     <span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">experimental</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;experimental&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">print_only</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;print-steps&quot;</span>);
@@ -857,6 +897,16 @@
                      (can omit the flag if the task name is the last argument)&quot;</span>,
                 )
                 .<span class="ident">default_value</span>(<span class="ident">default_task_name</span>),
+        )
+        .<span class="ident">arg</span>(
+            <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;profile&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&quot;-p&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--profile&quot;</span>)
+                .<span class="ident">value_name</span>(<span class="string">&quot;PROFILE&quot;</span>)
+                .<span class="ident">help</span>(
+                    <span class="string">&quot;The profile name (will be converted to lower case)&quot;</span>,
+                )
+                .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">profile</span>::<span class="ident">DEFAULT_PROFILE</span>),
         )
         .<span class="ident">arg</span>(
             <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;cwd&quot;</span>)

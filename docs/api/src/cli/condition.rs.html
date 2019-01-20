@@ -233,6 +233,46 @@
 <span id="233">233</span>
 <span id="234">234</span>
 <span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # condition</span>
 <span class="doccomment">//!</span>
@@ -244,6 +284,7 @@
 <span class="kw">mod</span> <span class="ident">condition_test</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">profile</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">RustVersionCondition</span>, <span class="ident">Step</span>, <span class="ident">TaskCondition</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">version</span>::<span class="ident">is_newer</span>;
@@ -356,6 +397,31 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">validate_profile</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">let</span> <span class="ident">profiles</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">profiles</span>.<span class="ident">clone</span>();
+    <span class="kw">match</span> <span class="ident">profiles</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">profile_names</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">get</span>();
+
+            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">profile_names</span>
+                .<span class="ident">iter</span>()
+                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="ident">profile_name</span>);
+
+            <span class="kw">match</span> <span class="ident">index</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(
+                        <span class="string">&quot;Failed profile condition, current profile: {}&quot;</span>,
+                        <span class="kw-2">&amp;</span><span class="ident">profile_name</span>
+                    );
+                    <span class="bool-val">false</span>
+                }
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            }
+        }
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+    }
+}
+
 <span class="kw">fn</span> <span class="ident">validate_channel</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">channels</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">channels</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">channels</span> {
@@ -432,29 +498,29 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_criteria</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition</span>) <span class="op">=&gt;</span> {
+<span class="kw">fn</span> <span class="ident">validate_criteria</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">match</span> <span class="ident">condition</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition_struct</span>) <span class="op">=&gt;</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking task condition structure.&quot;</span>);
 
-            <span class="ident">validate_platform</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_channel</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_not_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_rust_version</span>(<span class="kw-2">&amp;</span><span class="ident">condition</span>)
+            <span class="ident">validate_platform</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_profile</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_channel</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="kw-2">&amp;</span><span class="ident">flow_info</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_env</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_not_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_rust_version</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_script</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition_script</span> {
+<span class="kw">fn</span> <span class="ident">validate_script</span>(<span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">match</span> <span class="ident">condition_script</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking task condition script.&quot;</span>);
 
-            <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
-                <span class="ident">command</span>::<span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">script</span>, <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[], <span class="bool-val">false</span>);
+            <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">command</span>::<span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">script</span>, <span class="ident">script_runner</span>, <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[], <span class="bool-val">false</span>);
 
             <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="bool-val">true</span>
@@ -466,8 +532,22 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_condition</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="ident">validate_criteria</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>) <span class="op">&amp;&amp;</span> <span class="ident">validate_script</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>)
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions</span>(
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
+    <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
+    <span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="ident">validate_criteria</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">condition</span>) <span class="op">&amp;&amp;</span> <span class="ident">validate_script</span>(<span class="kw-2">&amp;</span><span class="ident">condition_script</span>, <span class="ident">script_runner</span>)
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_condition_for_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="ident">validate_conditions</span>(
+        <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
+        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition</span>,
+        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition_script</span>,
+        <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(),
+    )
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
