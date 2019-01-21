@@ -105,15 +105,16 @@ fn invoke_no_script() {
 }
 
 #[test]
-#[cfg(not(windows))]
 fn invoke_os_runner() {
-    let mut task = Task::new();
-    task.script_runner = Some(test::get_os_runner());
-    task.script = Some(vec!["echo test".to_string()]);
-
-    let output = invoke(&task, &vec![]);
-
-    assert!(output);
+    if !test::is_windows_on_travis_ci() {
+        let mut task = Task::new();
+        task.script_runner = Some(test::get_os_runner());
+        task.script = Some(vec!["echo test".to_string()]);
+    
+        let output = invoke(&task, &vec![]);
+    
+        assert!(output);
+    }
 }
 
 #[test]
