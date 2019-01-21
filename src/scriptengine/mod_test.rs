@@ -105,6 +105,7 @@ fn invoke_no_script() {
 }
 
 #[test]
+#[cfg(not(windows))]
 fn invoke_os_runner() {
     let mut task = Task::new();
     task.script_runner = Some(test::get_os_runner());
