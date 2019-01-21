@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.4 (2019-01-21)
+
+* Fix broken coverage task
+
 ### v0.16.3 (2019-01-21)
 
 * Enable coverage implementation selection via env #180
