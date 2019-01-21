@@ -367,7 +367,7 @@ fn create_proxy_task_with_makefile() {
     profile_arg.push_str(&profile::get());
     profile_arg.push_str("\"");
 
-    let mut makefile_arg = "--makefile ".to_string();
+    let mut makefile_arg = "--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
 
     let args = task.args.unwrap();
@@ -906,7 +906,7 @@ fn create_watch_task_with_makefile() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile ");
+    make_command_line.push_str("\" --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
