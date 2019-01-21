@@ -49,7 +49,9 @@ fn get_engine_type(task: &Task) -> EngineType {
                         debug!("Generic script detected.");
                         EngineType::Generic
                     } else {
-                        EngineType::Unsupported
+                        // use default OS extension with custom runner
+                        debug!("OS script with custom runner detected.");
+                        EngineType::OS
                     }
                 }
                 None => EngineType::OS,

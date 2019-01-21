@@ -93,6 +93,8 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # scriptengine</span>
 <span class="doccomment">//!</span>
@@ -145,7 +147,9 @@
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Generic script detected.&quot;</span>);
                         <span class="ident">EngineType</span>::<span class="ident">Generic</span>
                     } <span class="kw">else</span> {
-                        <span class="ident">EngineType</span>::<span class="ident">Unsupported</span>
+                        <span class="comment">// use default OS extension with custom runner</span>
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;OS script with custom runner detected.&quot;</span>);
+                        <span class="ident">EngineType</span>::<span class="ident">OS</span>
                     }
                 }
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">EngineType</span>::<span class="ident">OS</span>,

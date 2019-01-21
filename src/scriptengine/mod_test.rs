@@ -31,14 +31,14 @@ fn get_engine_type_no_script() {
 }
 
 #[test]
-fn get_engine_type_unsupported_runner() {
+fn get_engine_type_runner_no_extension() {
     let mut task = Task::new();
     task.script_runner = Some("@bad".to_string());
     task.script = Some(vec!["test".to_string()]);
 
     let output = get_engine_type(&task);
 
-    assert_eq!(output, EngineType::Unsupported);
+    assert_eq!(output, EngineType::OS);
 }
 
 #[test]
@@ -105,14 +105,14 @@ fn invoke_no_script() {
 }
 
 #[test]
-fn invoke_unsupported_runner() {
+fn invoke_os_runner() {
     let mut task = Task::new();
-    task.script_runner = Some("@bad".to_string());
-    task.script = Some(vec!["test".to_string()]);
+    task.script_runner = Some(test::get_os_runner());
+    task.script = Some(vec!["echo test".to_string()]);
 
     let output = invoke(&task, &vec![]);
 
-    assert!(!output);
+    assert!(output);
 }
 
 #[test]
