@@ -482,7 +482,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -499,7 +499,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -526,7 +526,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -579,7 +579,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -596,7 +596,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -1462,7 +1462,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -1532,7 +1532,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1540,7 +1540,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1704,20 +1704,19 @@ The following are some of the main flows that can be used without any need of an
 <a name="usage-predefined-flows-coverage"></a>
 #### Coverage
 cargo-make has built in support for multiple coverage tasks.<br>
-Switching between them without modifying the flows is done by changing the main coverage task alias.
-
-Currently the main coverage task is defined as follows:
+Switching between them without modifying the flows is done by setting the coverage provider name in the **CARGO_MAKE_COVERAGE_PROVIDER** environment variable as follows:
 
 ```toml
-[tasks.coverage]
-alias = "coverage-kcov"
+[env]
+# can be defined as kcov, tarpaulin, ...
+CARGO_MAKE_COVERAGE_PROVIDER = "kcov"
 ```
 
-To switch to another provider simply change the alias to that specific task name, for example if we would like to use the already defined tarpaulin provider:
+In case you have a custom coverage task, it can be plugged into the coverage flow by changing the main coverage task alias, for example:
 
 ```toml
 [tasks.coverage]
-alias = "coverage-tarpaulin"
+alias = "coverage-some-custom-provider"
 ```
 
 You can run:
@@ -2014,7 +2013,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.16.2
+[cargo-make] INFO - cargo make 0.16.3
 [cargo-make] INFO - Using Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.

@@ -1,7 +1,8 @@
 ## CHANGELOG
 
-### v0.16.3
+### v0.16.3 (2019-01-21)
 
+* Enable coverage implementation selection via env #180
 * Fix on error and watch proxy tasks #179
 
 ### v0.16.2 (2019-01-20)
