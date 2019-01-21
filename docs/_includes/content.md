@@ -1622,20 +1622,19 @@ The following are some of the main flows that can be used without any need of an
 <a name="usage-predefined-flows-coverage"></a>
 #### Coverage
 cargo-make has built in support for multiple coverage tasks.<br>
-Switching between them without modifying the flows is done by changing the main coverage task alias.
-
-Currently the main coverage task is defined as follows:
+Switching between them without modifying the flows is done by setting the coverage provider name in the **CARGO_MAKE_COVERAGE_PROVIDER** environment variable as follows:
 
 ```toml
-[tasks.coverage]
-alias = "coverage-kcov"
+[env]
+# can be defined as kcov, tarpaulin, ...
+CARGO_MAKE_COVERAGE_PROVIDER = "kcov"
 ```
 
-To switch to another provider simply change the alias to that specific task name, for example if we would like to use the already defined tarpaulin provider:
+In case you have a custom coverage task, it can be plugged into the coverage flow by changing the main coverage task alias, for example:
 
 ```toml
 [tasks.coverage]
-alias = "coverage-tarpaulin"
+alias = "coverage-some-custom-provider"
 ```
 
 You can run:
