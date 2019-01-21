@@ -256,7 +256,7 @@ fn create_proxy_task(task: &str) -> Task {
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
         Ok(makefile_path) => {
             if makefile_path.len() > 0 {
-                let mut makefile_arg = "--makefile ".to_string();
+                let mut makefile_arg = "--makefile=".to_string();
                 makefile_arg.push_str(&makefile_path);
 
                 args.push(makefile_arg.to_string());

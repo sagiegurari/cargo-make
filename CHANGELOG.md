@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.3
+
+* Fix on error and watch proxy tasks #179
+
 ### v0.16.2 (2019-01-20)
 
 * Profile support #174

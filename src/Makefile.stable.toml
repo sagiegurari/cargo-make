@@ -608,7 +608,10 @@ category = "Test"
 [tasks.coverage]
 description = "Runs coverage (by default using kcov)."
 category = "Test"
-alias = "coverage-kcov"
+run_task = [
+    { name = "coverage-tarpaulin", condition = { platforms = ["linux"], env = { "CARGO_MAKE_COVERAGE_PROVIDER" = "tarpaulin" } } },
+    { name = "coverage-kcov", condition = { platforms = ["linux"] } },
+]
 
 [tasks.coverage-kcov]
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
