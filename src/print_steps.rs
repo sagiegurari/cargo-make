@@ -61,7 +61,7 @@ fn print_default(execution_plan: &ExecutionPlan) {
 
 /// Only prints the execution plan
 pub(crate) fn print(config: &Config, task: &str, output_format: &str, disable_workspace: bool) {
-    let execution_plan = create_execution_plan(&config, &task, disable_workspace, false);
+    let execution_plan = create_execution_plan(&config, &task, disable_workspace, false, false);
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     let print_format = get_format_type(&output_format);

@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::{ConfigSection, CrateInfo, Task, Workspace};
+use crate::types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
 use indexmap::IndexMap;
 use std::env;
 
@@ -299,4 +299,348 @@ fn is_workspace_flow_disabled_via_task() {
     let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
 
     assert!(!workspace_flow);
+}
+
+#[test]
+fn create_single() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test");
+    assert_eq!(execution_plan.steps[2].name, "end");
+}
+
+#[test]
+fn create_single_disabled() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.disabled = Some(true);
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 2);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "end");
+}
+
+#[test]
+#[should_panic]
+fn create_single_private() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.private = Some(true);
+
+    config.tasks.insert("test-private".to_string(), task);
+
+    create(&config, "test-private", false, false, false);
+}
+
+#[test]
+fn create_single_allow_private() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.private = Some(true);
+
+    config.tasks.insert("test-private".to_string(), task);
+
+    let execution_plan = create(&config, "test-private", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test-private");
+    assert_eq!(execution_plan.steps[2].name, "end");
+}
+
+#[test]
+fn create_with_dependencies() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
+}
+
+#[test]
+fn create_with_dependencies_sub_flow() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, true);
+    assert_eq!(execution_plan.steps.len(), 2);
+    assert_eq!(execution_plan.steps[0].name, "task_dependency");
+    assert_eq!(execution_plan.steps[1].name, "test");
+}
+
+#[test]
+fn create_disabled_task_with_dependencies() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.disabled = Some(true);
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 2);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "end");
+}
+
+#[test]
+fn create_with_dependencies_disabled() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".to_string()]);
+
+    let mut task_dependency = Task::new();
+    task_dependency.disabled = Some(true);
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test");
+    assert_eq!(execution_plan.steps[2].name, "end");
+}
+
+#[test]
+fn create_platform_disabled() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.linux = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        private: Some(false),
+        watch: Some(false),
+        condition: None,
+        condition_script: None,
+        install_crate: None,
+        install_crate_args: None,
+        command: None,
+        force: None,
+        env: None,
+        cwd: None,
+        install_script: None,
+        args: None,
+        script: None,
+        script_runner: None,
+        script_extension: None,
+        run_task: None,
+        dependencies: None,
+        toolchain: None,
+    });
+    task.windows = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        private: Some(false),
+        watch: Some(false),
+        condition: None,
+        condition_script: None,
+        install_crate: None,
+        install_crate_args: None,
+        command: None,
+        force: None,
+        env: None,
+        cwd: None,
+        install_script: None,
+        args: None,
+        script: None,
+        script_runner: None,
+        script_extension: None,
+        run_task: None,
+        dependencies: None,
+        toolchain: None,
+    });
+    task.mac = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        private: Some(false),
+        watch: Some(false),
+        condition: None,
+        condition_script: None,
+        install_crate: None,
+        install_crate_args: None,
+        command: None,
+        force: None,
+        env: None,
+        cwd: None,
+        install_script: None,
+        args: None,
+        script: None,
+        script_runner: None,
+        script_extension: None,
+        run_task: None,
+        dependencies: None,
+        toolchain: None,
+    });
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = create(&config, "test", false, true, false);
+    assert_eq!(execution_plan.steps.len(), 0);
+}
+
+#[test]
+fn create_workspace() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    env::set_current_dir("./examples/workspace").unwrap();
+    let execution_plan = create(&config, "test", false, true, false);
+    env::set_current_dir("../../").unwrap();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "workspace");
+}
+
+#[test]
+fn create_noworkspace() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    env::set_current_dir("./examples/workspace").unwrap();
+    let execution_plan = create(&config, "test", true, true, false);
+    env::set_current_dir("../../").unwrap();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "test");
 }

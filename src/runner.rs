@@ -274,12 +274,15 @@ fn create_proxy_task(task: &str) -> Task {
     proxy_task.get_normalized_task()
 }
 
-fn run_flow(flow_info: &FlowInfo, allow_private: bool) {
+fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
+    let allow_private = sub_flow;
+
     let execution_plan = create_execution_plan(
         &flow_info.config,
         &flow_info.task,
         flow_info.disable_workspace,
         allow_private,
+        sub_flow,
     );
     debug!("Created execution plan: {:#?}", &execution_plan);
 

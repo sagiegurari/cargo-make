@@ -110,9 +110,9 @@ fn invoke_os_runner() {
         let mut task = Task::new();
         task.script_runner = Some(test::get_os_runner());
         task.script = Some(vec!["echo test".to_string()]);
-    
+
         let output = invoke(&task, &vec![]);
-    
+
         assert!(output);
     }
 }
