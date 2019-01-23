@@ -7,13 +7,11 @@
 #[path = "./cli_test.rs"]
 mod cli_test;
 
+use crate::cli_commands;
 use crate::config;
 use crate::descriptor;
-use crate::diff_steps;
 use crate::environment;
-use crate::list_steps;
 use crate::logger;
-use crate::print_steps;
 use crate::profile;
 use crate::runner;
 use crate::types::{CliArgs, GlobalConfig};
@@ -105,12 +103,12 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     profile::set(&normalized_profile_name);
 
     if cli_args.list_all_steps {
-        list_steps::run(&config, &cli_args.output_format);
+        cli_commands::list_steps::run(&config, &cli_args.output_format);
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental);
-        diff_steps::run(&default_config, &config, &task, &cli_args);
+        cli_commands::diff_steps::run(&default_config, &config, &task, &cli_args);
     } else if cli_args.print_only {
-        print_steps::print(
+        cli_commands::print_steps::print(
             &config,
             &task,
             &cli_args.output_format,
