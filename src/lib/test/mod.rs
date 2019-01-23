@@ -1,3 +1,6 @@
+#[path = "./makefile_test.rs"]
+mod makefile_test;
+
 use ci_info;
 use rust_info;
 use rust_info::types::RustChannel;

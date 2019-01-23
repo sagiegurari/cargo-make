@@ -17,7 +17,7 @@ use crate::types::Task;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types
-enum EngineType {
+pub(crate) enum EngineType {
     /// OS native script
     OS,
     /// Rust language
@@ -30,7 +30,7 @@ enum EngineType {
     Unsupported,
 }
 
-fn get_engine_type(task: &Task) -> EngineType {
+pub(crate) fn get_engine_type(task: &Task) -> EngineType {
     match task.script {
         None => EngineType::Unsupported,
         _ => {

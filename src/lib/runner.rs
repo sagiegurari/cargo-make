@@ -32,7 +32,7 @@ fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition_for_step(&flow_info, &step)
 }
 
-fn get_sub_task_name_for_routing_info(
+pub(crate) fn get_sub_task_name_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
 ) -> Option<String> {

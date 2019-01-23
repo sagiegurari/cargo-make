@@ -18,11 +18,11 @@
 //! Make sure to add ~/.cargo/bin directory to your PATH variable.
 //!
 //! # Contributing
-//! See [contributing guide](https://github.com/sagiegurari/simple_redis/blob/master/.github/CONTRIBUTING.md)
+//! See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 //!
 //! # License
 //! Developed by Sagie Gur-Ari and licensed under the
-//! [Apache 2](https://github.com/sagiegurari/simple_redis/blob/master/LICENSE) open source license.
+//! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
 extern crate cli;
