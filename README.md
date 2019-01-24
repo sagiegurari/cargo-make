@@ -19,6 +19,7 @@
         * [Rust Code](#usage-task-command-script-task-examplerust)
         * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
         * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
+        * [Shebang Support](#usage-task-command-script-task-exampleshebang)
     * [Default Tasks and Extending](#usage-default-tasks)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
@@ -692,6 +693,70 @@ script = [
 Write-Host "Hello, World!"
 '''
 ]
+```
+
+<a name="usage-task-command-script-task-exampleshebang"></a>
+#### Shebang Support
+Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
+
+In case of windows, make sure not to use a runner which doesn't have the ```#``` character defined as comment (for example cmd.exe does not), which would lead to an error.
+
+Example task using bash:
+
+```toml
+[tasks.shebang-sh]
+script = [
+'''
+#!/usr/bin/env bash
+echo hello
+'''
+]
+```
+
+Output:
+
+```console
+> cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
+[cargo-make] INFO - cargo make 0.16.6
+[cargo-make] INFO - Using Build File: ./shebang.toml
+[cargo-make] INFO - Task: shebang-sh
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: shebang-sh
+[cargo-make] INFO - Execute Command: "/usr/bin/env" "bash" "/tmp/cargo-make/cJf6XEXrL9.sh"
+hello
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+Example task using python:
+
+```toml
+[tasks.shebang-python]
+script = [
+'''
+#!/usr/bin/env python3
+print("Hello, World!")
+'''
+]
+```
+
+Output:
+
+```console
+> cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
+[cargo-make] INFO - cargo make 0.16.6
+[cargo-make] INFO - Using Build File: ./shebang.toml
+[cargo-make] INFO - Task: shebang-python
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: shebang-python
+[cargo-make] INFO - Execute Command: "/usr/bin/env" "python3" "/tmp/cargo-make/Wy3QMJiQaS.sh"
+Hello, World!
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
 <a name="usage-default-tasks"></a>

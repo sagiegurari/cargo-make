@@ -1,0 +1,16 @@
+
+[tasks.shebang-sh]
+script = [
+'''
+#!/usr/bin/env bash
+echo hello
+'''
+]
+
+[tasks.shebang-python]
+script = [
+'''
+#!/usr/bin/env python3
+print("Hello, World!")
+'''
+]
