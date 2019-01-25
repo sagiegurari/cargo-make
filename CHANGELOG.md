@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.16.7
+### v0.16.7 (2019-01-25)
 
 * shebang line support #130 (thanks @SamuelMarks)
 * Prevent multiple calls for init/end #184
