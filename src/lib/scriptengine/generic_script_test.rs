@@ -51,6 +51,7 @@ fn execute_shell_empty_arguments() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 fn execute_shell_cli_arguments() {
     execute(
         &vec!["exit $1".to_string()],
@@ -64,6 +65,7 @@ fn execute_shell_cli_arguments() {
 
 #[test]
 #[should_panic]
+#[cfg(target_os = "linux")]
 fn execute_shell_cli_arguments_error() {
     execute(
         &vec!["exit $1".to_string()],
