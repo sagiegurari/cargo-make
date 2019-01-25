@@ -543,6 +543,7 @@ category = "CI"
 [tasks.do-on-members]
 description = "Runs the requested task for every workspace member."
 category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_MEMBER_TASK" ] }
 script_runner = "@shell"
 script = [
 '''

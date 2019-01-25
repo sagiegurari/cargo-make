@@ -25,7 +25,7 @@ include = [
 
 [lib]
 name = "cli"
-path = "src/lib.rs"
+path = "src/lib/mod.rs"
 
 [[bin]]
 name = "cargo-make"

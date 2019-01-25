@@ -32,11 +32,21 @@ pub(crate) fn run(
     task: &str,
     cli_args: &CliArgs,
 ) {
-    let internal_execution_plan =
-        create_execution_plan(internal_config, &task, cli_args.disable_workspace, true);
+    let internal_execution_plan = create_execution_plan(
+        internal_config,
+        &task,
+        cli_args.disable_workspace,
+        true,
+        false,
+    );
 
-    let external_execution_plan =
-        create_execution_plan(external_config, &task, cli_args.disable_workspace, true);
+    let external_execution_plan = create_execution_plan(
+        external_config,
+        &task,
+        cli_args.disable_workspace,
+        true,
+        false,
+    );
 
     let internal_file = create_file(
         &move |file: &mut File, file_path: &str| {

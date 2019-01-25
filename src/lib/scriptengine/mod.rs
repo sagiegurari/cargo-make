@@ -3,10 +3,11 @@
 //! Facade for all different non OS scripts.
 //!
 
-mod generic_script;
+pub(crate) mod generic_script;
 mod os_script;
 mod rsscript;
 pub(crate) mod script_utils;
+mod shebang_script;
 mod shell_to_batch;
 
 #[cfg(test)]
@@ -17,7 +18,7 @@ use crate::types::Task;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types
-enum EngineType {
+pub(crate) enum EngineType {
     /// OS native script
     OS,
     /// Rust language
@@ -26,14 +27,16 @@ enum EngineType {
     Shell2Batch,
     /// Generic script runner
     Generic,
+    /// Shebang script runner
+    Shebang,
     /// Unsupported type
     Unsupported,
 }
 
-fn get_engine_type(task: &Task) -> EngineType {
+pub(crate) fn get_engine_type(task: &Task) -> EngineType {
     match task.script {
         None => EngineType::Unsupported,
-        _ => {
+        Some(ref script) => {
             match task.script_runner {
                 Some(ref script_runner) => {
                     debug!("Checking script runner: {}", script_runner);
@@ -54,7 +57,14 @@ fn get_engine_type(task: &Task) -> EngineType {
                         EngineType::OS
                     }
                 }
-                None => EngineType::OS,
+                None => {
+                    // if no runner specified, try to extract it from script content
+                    if shebang_script::is_shebang_exists(script) {
+                        EngineType::Shebang
+                    } else {
+                        EngineType::OS
+                    }
+                }
             }
         }
     }
@@ -88,7 +98,14 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
             let script = task.script.as_ref().unwrap();
             let runner = task.script_runner.clone().unwrap();
             let extension = task.script_extension.clone().unwrap();
-            generic_script::execute(script, runner, extension, validate);
+            generic_script::execute(script, runner, extension, None, cli_arguments, validate);
+
+            true
+        }
+        EngineType::Shebang => {
+            let script = task.script.as_ref().unwrap();
+            let extension = task.script_extension.clone();
+            shebang_script::execute(script, &extension, cli_arguments, validate);
 
             true
         }

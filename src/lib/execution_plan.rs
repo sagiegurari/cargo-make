@@ -205,6 +205,7 @@ fn create_for_step(
                 }
             } else {
                 error!("Task not found: {}", &task);
+                panic!("Task not found: {}", &task);
             }
         }
         None => error!("Task not found: {}", &task),
@@ -217,28 +218,31 @@ pub(crate) fn create(
     task: &str,
     disable_workspace: bool,
     allow_private: bool,
+    sub_flow: bool,
 ) -> ExecutionPlan {
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
 
-    match config.config.init_task {
-        Some(ref task) => match config.tasks.get(task) {
-            Some(task_config) => {
-                let mut clone_task = task_config.clone();
-                let normalized_task = clone_task.get_normalized_task();
-                let add = !normalized_task.disabled.unwrap_or(false);
+    if !sub_flow {
+        match config.config.init_task {
+            Some(ref task) => match config.tasks.get(task) {
+                Some(task_config) => {
+                    let mut clone_task = task_config.clone();
+                    let normalized_task = clone_task.get_normalized_task();
+                    let add = !normalized_task.disabled.unwrap_or(false);
 
-                if add {
-                    steps.push(Step {
-                        name: task.to_string(),
-                        config: normalized_task,
-                    });
+                    if add {
+                        steps.push(Step {
+                            name: task.to_string(),
+                            config: normalized_task,
+                        });
+                    }
                 }
-            }
-            None => error!("Task not found: {}", &task),
-        },
-        None => debug!("Init task not defined."),
-    };
+                None => error!("Task not found: {}", &task),
+            },
+            None => debug!("Init task not defined."),
+        };
+    }
 
     // load crate info and look for workspace info
     let crate_info = environment::crateinfo::load();
@@ -263,25 +267,27 @@ pub(crate) fn create(
         );
     }
 
-    // always add end task even if already executed due to some depedency
-    match config.config.end_task {
-        Some(ref task) => match config.tasks.get(task) {
-            Some(task_config) => {
-                let mut clone_task = task_config.clone();
-                let normalized_task = clone_task.get_normalized_task();
-                let add = !normalized_task.disabled.unwrap_or(false);
+    if !sub_flow {
+        // always add end task even if already executed due to some depedency
+        match config.config.end_task {
+            Some(ref task) => match config.tasks.get(task) {
+                Some(task_config) => {
+                    let mut clone_task = task_config.clone();
+                    let normalized_task = clone_task.get_normalized_task();
+                    let add = !normalized_task.disabled.unwrap_or(false);
 
-                if add {
-                    steps.push(Step {
-                        name: task.to_string(),
-                        config: normalized_task,
-                    });
+                    if add {
+                        steps.push(Step {
+                            name: task.to_string(),
+                            config: normalized_task,
+                        });
+                    }
                 }
-            }
-            None => error!("Task not found: {}", &task),
-        },
-        None => debug!("End task not defined."),
-    };
+                None => error!("Task not found: {}", &task),
+            },
+            None => debug!("End task not defined."),
+        };
+    }
 
     ExecutionPlan { steps }
 }

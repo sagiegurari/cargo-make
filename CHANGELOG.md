@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.16.7
+
+* shebang line support #130 (thanks @SamuelMarks)
+* Prevent multiple calls for init/end #184
+* Test internal makefile coverage tasks #183
+
 ### v0.16.6 (2019-01-21)
 
 * Fix broken coverage task
