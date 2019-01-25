@@ -51,10 +51,15 @@ fn execute_shell_empty_arguments() {
 }
 
 #[test]
-#[cfg(target_os = "linux")]
 fn execute_shell_cli_arguments() {
+    let command = if cfg!(windows) {
+        "exit %1".to_string()
+    } else {
+        "exit $1".to_string()
+    };
+
     execute(
-        &vec!["exit $1".to_string()],
+        &vec![command],
         test::get_os_runner(),
         test::get_os_extension(),
         Some(vec![]),
@@ -65,10 +70,15 @@ fn execute_shell_cli_arguments() {
 
 #[test]
 #[should_panic]
-#[cfg(target_os = "linux")]
 fn execute_shell_cli_arguments_error() {
+    let command = if cfg!(windows) {
+        "exit %1".to_string()
+    } else {
+        "exit $1".to_string()
+    };
+
     execute(
-        &vec!["exit $1".to_string()],
+        &vec![command],
         test::get_os_runner(),
         test::get_os_extension(),
         Some(vec![]),
