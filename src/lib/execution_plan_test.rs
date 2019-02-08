@@ -644,3 +644,63 @@ fn create_noworkspace() {
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
 }
+
+#[test]
+fn should_skip_workspace_member_empty() {
+    let skipped_members = HashSet::new();
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_not_found_string() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_found_string() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("member".to_string());
+    skipped_members.insert("test3".to_string());
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(skip);
+}
+
+#[test]
+fn should_skip_workspace_member_not_found_glob() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+    skipped_members.insert("test/*".to_string());
+
+    let skip = should_skip_workspace_member("test1/member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_found_glob() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+    skipped_members.insert("members/*".to_string());
+
+    let skip = should_skip_workspace_member("members/test", &skipped_members);
+
+    assert!(skip);
+}

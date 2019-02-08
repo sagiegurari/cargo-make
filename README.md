@@ -1346,6 +1346,13 @@ In the below example we will skip member3 and member4 (should be defined in the 
 CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
 ```
 
+You can also define glob paths, for example:
+
+```toml
+[env]
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "tools/*"
+```
+
 However there are some cases you will want to skip specific members only if a specific condition is met.
 
 For example, you want to build a member module only if we are running on a rust nightly compiler.
