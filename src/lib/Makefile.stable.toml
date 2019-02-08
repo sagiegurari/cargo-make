@@ -805,3 +805,9 @@ args = [
     "${CARGO_MAKE_DIFF_FILE1}",
     "${CARGO_MAKE_DIFF_FILE2}"
 ]
+
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
+
+[tasks.install-rls]
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }

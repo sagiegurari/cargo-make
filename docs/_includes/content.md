@@ -2112,11 +2112,12 @@ More info can be found in the [types](https://sagiegurari.github.io/cargo-make/a
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with three types of tasks:
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with several types of tasks:
 
 * Single command or script task (for example ```cargo build```)
-* Tasks that come before or after the single command tasks
+* Tasks that come before or after the single command tasks (hooks)
 * Tasks that define flows using dependencies
+* Tasks which only install some dependency
 
 Single command tasks are named based on their command (in most cases), for example the task that runs cargo build is named build.
 
@@ -2156,6 +2157,13 @@ dependencies = [
 ```
 
 This prevents flow task names to conflict with single command task names and quickly allow users to understand that this task is a flow definition.
+
+Tasks which only install some dependency but do not invoke any command start with the **install-** prefix, for example:
+
+```toml
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
+```
 
 <a name="articles"></a>
 ## Articles
