@@ -1,7 +1,7 @@
 use super::*;
 use crate::types::{
     ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, RunTaskInfo, Step, Task,
-    TaskCondition,
+    TaskCondition, WatchOptions,
 };
 use ci_info;
 use indexmap::IndexMap;
@@ -509,7 +509,7 @@ fn should_watch_none_and_env_true() {
 fn should_watch_false_and_env_not_set() {
     env::remove_var("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
-    task.watch = Some(false);
+    task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
 
     assert!(!watch);
@@ -519,7 +519,7 @@ fn should_watch_false_and_env_not_set() {
 fn should_watch_false_and_env_false() {
     env::set_var("CARGO_MAKE_DISABLE_WATCH", "FALSE");
     let mut task = Task::new();
-    task.watch = Some(false);
+    task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
 
     assert!(!watch);
@@ -529,7 +529,7 @@ fn should_watch_false_and_env_false() {
 fn should_watch_false_and_env_true() {
     env::set_var("CARGO_MAKE_DISABLE_WATCH", "TRUE");
     let mut task = Task::new();
-    task.watch = Some(false);
+    task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
 
     assert!(!watch);
@@ -539,7 +539,7 @@ fn should_watch_false_and_env_true() {
 fn should_watch_true_and_env_not_set() {
     env::remove_var("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
-    task.watch = Some(true);
+    task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
 
     assert!(watch);
@@ -549,7 +549,7 @@ fn should_watch_true_and_env_not_set() {
 fn should_watch_true_and_env_false() {
     env::set_var("CARGO_MAKE_DISABLE_WATCH", "FALSE");
     let mut task = Task::new();
-    task.watch = Some(true);
+    task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
 
     assert!(watch);
@@ -559,7 +559,7 @@ fn should_watch_true_and_env_false() {
 fn should_watch_true_and_env_true() {
     env::set_var("CARGO_MAKE_DISABLE_WATCH", "TRUE");
     let mut task = Task::new();
-    task.watch = Some(true);
+    task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
 
     assert!(!watch);
@@ -577,7 +577,160 @@ fn create_watch_task_name_valid() {
 fn create_watch_task_with_makefile() {
     let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
-    let task = create_watch_task("some_task");
+    let task = create_watch_task("some_task", None);
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str(&makefile.clone());
+    make_command_line.push_str(" some_task");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 4);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "-x".to_string());
+    assert_eq!(args[3], make_command_line.to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_and_bool_options() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let task = create_watch_task("some_task", Some(TaskWatchOptions::Boolean(true)));
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str(&makefile.clone());
+    make_command_line.push_str(" some_task");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 4);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "-x".to_string());
+    assert_eq!(args[3], make_command_line.to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_and_empty_object_options() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    let watch_options = WatchOptions {
+        postpone: None,
+        ignore_pattern: None,
+        no_git_ignore: None,
+    };
+
+    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str(&makefile.clone());
+    make_command_line.push_str(" some_task");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 4);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "-x".to_string());
+    assert_eq!(args[3], make_command_line.to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_and_all_object_options() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    let watch_options = WatchOptions {
+        postpone: Some(true),
+        ignore_pattern: Some("tools/*".to_string()),
+        no_git_ignore: Some(true),
+    };
+
+    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str(&makefile.clone());
+    make_command_line.push_str(" some_task");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 8);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "--postpone".to_string());
+    assert_eq!(args[3], "-i".to_string());
+    assert_eq!(args[4], "tools/*".to_string());
+    assert_eq!(args[5], "--no-gitignore".to_string());
+    assert_eq!(args[6], "-x".to_string());
+    assert_eq!(args[7], make_command_line.to_string());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_and_false_object_options() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    let watch_options = WatchOptions {
+        postpone: Some(false),
+        ignore_pattern: None,
+        no_git_ignore: Some(false),
+    };
+
+    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "TRUE"),
@@ -606,7 +759,7 @@ fn create_watch_task_with_makefile() {
 
 #[test]
 fn create_watch_step_valid() {
-    let step = create_watch_step("test_watch_step");
+    let step = create_watch_step("test_watch_step", None);
     let task = step.config;
 
     assert_eq!(&step.name, "test_watch_step-watch");

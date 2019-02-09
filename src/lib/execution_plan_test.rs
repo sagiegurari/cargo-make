@@ -1,5 +1,7 @@
 use super::*;
-use crate::types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
+use crate::types::{
+    ConfigSection, CrateInfo, PlatformOverrideTask, Task, TaskWatchOptions, Workspace,
+};
 use indexmap::IndexMap;
 use std::env;
 
@@ -538,7 +540,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,
@@ -560,7 +562,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,
@@ -582,7 +584,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,

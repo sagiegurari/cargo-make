@@ -22,7 +22,7 @@ use crate::profile;
 use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo, RunTaskRoutingInfo,
-    Step, Task,
+    Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
@@ -89,8 +89,8 @@ fn create_watch_task_name(task: &str) -> String {
     watch_task_name
 }
 
-fn create_watch_step(task: &str) -> Step {
-    let watch_task = create_watch_task(&task);
+fn create_watch_step(task: &str, options: Option<TaskWatchOptions>) -> Step {
+    let watch_task = create_watch_task(&task, options);
 
     let watch_task_name = create_watch_task_name(&task);
 
@@ -100,22 +100,29 @@ fn create_watch_step(task: &str) -> Step {
     }
 }
 
-fn watch_task(flow_info: &FlowInfo, task: &str) {
-    let step = create_watch_step(&task);
+fn watch_task(flow_info: &FlowInfo, task: &str, options: Option<TaskWatchOptions>) {
+    let step = create_watch_step(&task, options);
 
     run_task(&flow_info, &step);
 }
 
+fn is_watch_enabled() -> bool {
+    let disable_watch_env = environment::get_env("CARGO_MAKE_DISABLE_WATCH", "FALSE");
+    disable_watch_env != "TRUE"
+}
+
 fn should_watch(task: &Task) -> bool {
     match task.watch {
-        Some(watch_bool) => {
-            if watch_bool {
-                let disable_watch_env = environment::get_env("CARGO_MAKE_DISABLE_WATCH", "FALSE");
-                disable_watch_env != "TRUE"
-            } else {
-                false
+        Some(ref watch_value) => match watch_value {
+            TaskWatchOptions::Boolean(watch_bool) => {
+                if *watch_bool {
+                    is_watch_enabled()
+                } else {
+                    false
+                }
             }
-        }
+            TaskWatchOptions::Options(_) => is_watch_enabled(),
+        },
         None => false,
     }
 }
@@ -148,7 +155,7 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         let watch = should_watch(&step.config);
 
         if watch {
-            watch_task(&flow_info, &step.name);
+            watch_task(&flow_info, &step.name, step.config.watch.clone());
         } else {
             installer::install(&updated_step.config);
 
@@ -205,7 +212,8 @@ fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
     }
 }
 
-fn create_watch_task(task: &str) -> Task {
+fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
+    //TODO USE OPTIONS!!!
     let mut task_config = create_proxy_task(&task);
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
@@ -218,12 +226,41 @@ fn create_watch_task(task: &str) -> Task {
     let make_args = task_config.args.unwrap();
     let make_command = &make_args.join(" ");
 
-    let watch_args = vec![
-        "watch".to_string(),
-        "-q".to_string(),
-        "-x".to_string(),
-        make_command.to_string(),
-    ];
+    let mut watch_args = vec!["watch".to_string(), "-q".to_string()];
+
+    match options {
+        Some(task_watch_options) => match task_watch_options {
+            TaskWatchOptions::Options(watch_options) => {
+                match watch_options.postpone {
+                    Some(value) => {
+                        if value {
+                            watch_args.push("--postpone".to_string());
+                        }
+                    }
+                    _ => (),
+                };
+
+                match watch_options.ignore_pattern {
+                    Some(value) => watch_args.extend_from_slice(&["-i".to_string(), value]),
+                    _ => (),
+                };
+
+                match watch_options.no_git_ignore {
+                    Some(value) => {
+                        if value {
+                            watch_args.push("--no-gitignore".to_string());
+                        }
+                    }
+                    _ => (),
+                };
+            }
+            _ => (),
+        },
+        _ => (),
+    }
+
+    watch_args.extend_from_slice(&["-x".to_string(), make_command.to_string()]);
+
     task_config.args = Some(watch_args);
 
     task_config

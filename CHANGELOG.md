@@ -2,6 +2,7 @@
 
 ### v0.16.8
 
+* Support additional watch options #188
 * Support glob paths in CARGO_MAKE_WORKSPACE_SKIP_MEMBERS #187
 * Add install-rust-src and install-rls to internal makefile #189
 

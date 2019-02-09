@@ -1542,6 +1542,15 @@ Triggered by watch
 ^C
 ```
 
+You can also fine tune the watch setup (which is based on **cargo-watch**) by providing an object to the **watch** attribute as follows:
+
+```toml
+[tasks.watch-args-example]
+command = "echo"
+args = [ "Triggered by watch" ]
+watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*" }
+```
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>

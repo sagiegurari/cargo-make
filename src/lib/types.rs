@@ -461,6 +461,87 @@ pub enum RunTaskInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds watch options
+pub struct WatchOptions {
+    /// Postpone first run until a file changes
+    pub postpone: Option<bool>,
+    /// Ignore a glob/gitignore-style pattern
+    pub ignore_pattern: Option<String>,
+    /// Do not use .gitignore files
+    pub no_git_ignore: Option<bool>,
+}
+
+impl PartialEq for WatchOptions {
+    fn eq(&self, other: &WatchOptions) -> bool {
+        let mut same = match self.postpone {
+            Some(ref value) => match other.postpone {
+                Some(ref other_value) => value == other_value,
+                None => false,
+            },
+            None => match other.postpone {
+                None => true,
+                _ => false,
+            },
+        };
+
+        same = if same {
+            match self.ignore_pattern {
+                Some(ref value) => match other.ignore_pattern {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.ignore_pattern {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
+        };
+
+        if same {
+            match self.no_git_ignore {
+                Some(ref value) => match other.no_git_ignore {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.no_git_ignore {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds watch options or simple true/false value
+pub enum TaskWatchOptions {
+    /// True/False to enable/disable watch
+    Boolean(bool),
+    /// Extended configuration for watch
+    Options(WatchOptions),
+}
+
+impl PartialEq for TaskWatchOptions {
+    fn eq(&self, other: &TaskWatchOptions) -> bool {
+        match self {
+            TaskWatchOptions::Boolean(value) => match other {
+                TaskWatchOptions::Boolean(other_value) => value == other_value,
+                _ => false,
+            },
+            TaskWatchOptions::Options(info) => match other {
+                TaskWatchOptions::Options(other_info) => info == other_info,
+                _ => false,
+            },
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -476,7 +557,7 @@ pub struct Task {
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
-    pub watch: Option<bool>,
+    pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
@@ -881,7 +962,7 @@ pub struct PlatformOverrideTask {
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
-    pub watch: Option<bool>,
+    pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
