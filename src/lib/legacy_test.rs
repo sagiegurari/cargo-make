@@ -85,3 +85,8 @@ fn migrate_from_directory_delete_legacy_directory() {
 
     assert_eq!(&file_text, "test 123");
 }
+
+#[test]
+fn show_deprecated_attriute_warning_valid() {
+    show_deprecated_attriute_warning("old", "new");
+}

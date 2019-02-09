@@ -769,11 +769,11 @@ If needed, you can override the load_script per platform using the **linux_load_
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
-For those tasks, you can add the force=true attribute.
+For those tasks, you can add the ignore_errors=true attribute.
 
 ```toml
 [tasks.unstable_task]
-force = true
+ignore_errors = true
 ```
 
 <a name="usage-platform-override"></a>
@@ -1358,7 +1358,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 
 <a name="usage-catching-errors"></a>
 ### Catching Errors
-By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
+By default any error in any task that does not have ```ignore_errors=true``` set to it, will cause the entire flow to fail.<br>
 However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:

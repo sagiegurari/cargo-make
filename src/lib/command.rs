@@ -166,7 +166,7 @@ pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, vali
 
 /// Runs the given task command.
 pub(crate) fn run(step: &Step) {
-    let validate = !step.config.is_force();
+    let validate = !step.config.should_ignore_errors();
 
     match step.config.command {
         Some(ref command_string) => {

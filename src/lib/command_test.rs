@@ -110,9 +110,9 @@ fn run_command_error() {
 }
 
 #[test]
-fn run_command_error_force() {
+fn run_command_error_ignore_errors() {
     let mut task = Task::new();
-    task.force = Some(true);
+    task.ignore_errors = Some(true);
     task.command = Some("badbadbad".to_string());
 
     let step = Step {

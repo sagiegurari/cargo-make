@@ -5,7 +5,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|$
 
 [tasks.outdated]
 #do not break build due to child outdated dependencies also used as root dependencies
-force = true
+ignore_errors = true
 
 [tasks.generate-readme]
 script = [
