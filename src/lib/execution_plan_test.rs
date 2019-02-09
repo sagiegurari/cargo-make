@@ -1,5 +1,7 @@
 use super::*;
-use crate::types::{ConfigSection, CrateInfo, PlatformOverrideTask, Task, Workspace};
+use crate::types::{
+    ConfigSection, CrateInfo, PlatformOverrideTask, Task, TaskWatchOptions, Workspace,
+};
 use indexmap::IndexMap;
 use std::env;
 
@@ -538,12 +540,13 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,
         install_crate_args: None,
         command: None,
+        ignore_errors: None,
         force: None,
         env: None,
         cwd: None,
@@ -560,12 +563,13 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,
         install_crate_args: None,
         command: None,
+        ignore_errors: None,
         force: None,
         env: None,
         cwd: None,
@@ -582,12 +586,13 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
-        watch: Some(false),
+        watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
         install_crate: None,
         install_crate_args: None,
         command: None,
+        ignore_errors: None,
         force: None,
         env: None,
         cwd: None,
@@ -643,4 +648,64 @@ fn create_noworkspace() {
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
+}
+
+#[test]
+fn should_skip_workspace_member_empty() {
+    let skipped_members = HashSet::new();
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_not_found_string() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_found_string() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("member".to_string());
+    skipped_members.insert("test3".to_string());
+
+    let skip = should_skip_workspace_member("member", &skipped_members);
+
+    assert!(skip);
+}
+
+#[test]
+fn should_skip_workspace_member_not_found_glob() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+    skipped_members.insert("test/*".to_string());
+
+    let skip = should_skip_workspace_member("test1/member", &skipped_members);
+
+    assert!(!skip);
+}
+
+#[test]
+fn should_skip_workspace_member_found_glob() {
+    let mut skipped_members = HashSet::new();
+    skipped_members.insert("test1".to_string());
+    skipped_members.insert("test2".to_string());
+    skipped_members.insert("test3".to_string());
+    skipped_members.insert("members/*".to_string());
+
+    let skip = should_skip_workspace_member("members/test", &skipped_members);
+
+    assert!(skip);
 }

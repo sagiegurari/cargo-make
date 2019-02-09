@@ -96,9 +96,9 @@ fn install_script_error() {
 }
 
 #[test]
-fn install_script_error_force() {
+fn install_script_error_ignore_errors() {
     let mut task = Task::new();
-    task.force = Some(true);
+    task.ignore_errors = Some(true);
     task.install_script = Some(vec!["exit 1".to_string()]);
 
     install(&task);

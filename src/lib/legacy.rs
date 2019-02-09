@@ -83,3 +83,10 @@ pub(crate) fn migrate(target_directory: PathBuf, file: &str) -> bool {
         None => true,
     };
 }
+
+pub(crate) fn show_deprecated_attriute_warning(old_attribute: &str, new_attribute: &str) {
+    warn!(
+        "[DEPRECATED] The attribute '{}' has been replaced with '{}'. Please update your makefile.",
+        old_attribute, new_attribute
+    );
+}

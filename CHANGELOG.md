@@ -1,8 +1,15 @@
 ## CHANGELOG
 
+### v0.16.8
+
+* Support additional watch options #188
+* Support glob paths in CARGO_MAKE_WORKSPACE_SKIP_MEMBERS #187
+* Add install-rust-src and install-rls to internal makefile #189
+* Renamed task 'force' attribute to 'ignore_errors' #120
+
 ### v0.16.7 (2019-01-25)
 
-* shebang line support #130 (thanks @SamuelMarks)
+* Shebang line support #130 (thanks @SamuelMarks)
 * Prevent multiple calls for init/end #184
 * Test internal makefile coverage tasks #183
 

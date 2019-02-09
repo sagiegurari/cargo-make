@@ -769,11 +769,11 @@ If needed, you can override the load_script per platform using the **linux_load_
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
-For those tasks, you can add the force=true attribute.
+For those tasks, you can add the ignore_errors=true attribute.
 
 ```toml
 [tasks.unstable_task]
-force = true
+ignore_errors = true
 ```
 
 <a name="usage-platform-override"></a>
@@ -1263,6 +1263,13 @@ In the below example we will skip member3 and member4 (should be defined in the 
 CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
 ```
 
+You can also define glob paths, for example:
+
+```toml
+[env]
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "tools/*"
+```
+
 However there are some cases you will want to skip specific members only if a specific condition is met.
 
 For example, you want to build a member module only if we are running on a rust nightly compiler.
@@ -1351,7 +1358,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 
 <a name="usage-catching-errors"></a>
 ### Catching Errors
-By default any error in any task that does not have ```force=true``` set to it, will cause the entire flow to fail.<br>
+By default any error in any task that does not have ```ignore_errors=true``` set to it, will cause the entire flow to fail.<br>
 However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
@@ -1533,6 +1540,15 @@ Triggered by watch
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
 ^C
+```
+
+You can also fine tune the watch setup (which is based on **cargo-watch**) by providing an object to the **watch** attribute as follows:
+
+```toml
+[tasks.watch-args-example]
+command = "echo"
+args = [ "Triggered by watch" ]
+watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*" }
 ```
 
 <a name="usage-ci"></a>
@@ -2112,11 +2128,12 @@ More info can be found in the [types](https://sagiegurari.github.io/cargo-make/a
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with three types of tasks:
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with several types of tasks:
 
 * Single command or script task (for example ```cargo build```)
-* Tasks that come before or after the single command tasks
+* Tasks that come before or after the single command tasks (hooks)
 * Tasks that define flows using dependencies
+* Tasks which only install some dependency
 
 Single command tasks are named based on their command (in most cases), for example the task that runs cargo build is named build.
 
@@ -2156,6 +2173,13 @@ dependencies = [
 ```
 
 This prevents flow task names to conflict with single command task names and quickly allow users to understand that this task is a flow definition.
+
+Tasks which only install some dependency but do not invoke any command start with the **install-** prefix, for example:
+
+```toml
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
+```
 
 <a name="articles"></a>
 ## Articles

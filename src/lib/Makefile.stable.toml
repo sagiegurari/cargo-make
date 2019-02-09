@@ -527,7 +527,7 @@ args = ["pull"]
 [tasks.git-delete-merged-branches]
 description = "Deletes any merged git branches"
 category = "Git"
-force = true
+ignore_errors = true
 script = [
 '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
@@ -796,7 +796,7 @@ alias = "git-diff-files"
 [tasks.git-diff-files]
 description = "Run diff on two provided files."
 category = "Tools"
-force = true
+ignore_errors = true
 condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
 command = "git"
 args = [
@@ -805,3 +805,9 @@ args = [
     "${CARGO_MAKE_DIFF_FILE1}",
     "${CARGO_MAKE_DIFF_FILE2}"
 ]
+
+[tasks.install-rust-src]
+install_crate = { rustup_component_name = "rust-src" }
+
+[tasks.install-rls]
+install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }

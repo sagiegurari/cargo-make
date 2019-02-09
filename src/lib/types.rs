@@ -7,6 +7,7 @@
 #[path = "./types_test.rs"]
 mod types_test;
 
+use crate::legacy;
 use ci_info::types::CiInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
@@ -461,6 +462,87 @@ pub enum RunTaskInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds watch options
+pub struct WatchOptions {
+    /// Postpone first run until a file changes
+    pub postpone: Option<bool>,
+    /// Ignore a glob/gitignore-style pattern
+    pub ignore_pattern: Option<String>,
+    /// Do not use .gitignore files
+    pub no_git_ignore: Option<bool>,
+}
+
+impl PartialEq for WatchOptions {
+    fn eq(&self, other: &WatchOptions) -> bool {
+        let mut same = match self.postpone {
+            Some(ref value) => match other.postpone {
+                Some(ref other_value) => value == other_value,
+                None => false,
+            },
+            None => match other.postpone {
+                None => true,
+                _ => false,
+            },
+        };
+
+        same = if same {
+            match self.ignore_pattern {
+                Some(ref value) => match other.ignore_pattern {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.ignore_pattern {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
+        };
+
+        if same {
+            match self.no_git_ignore {
+                Some(ref value) => match other.no_git_ignore {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.no_git_ignore {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds watch options or simple true/false value
+pub enum TaskWatchOptions {
+    /// True/False to enable/disable watch
+    Boolean(bool),
+    /// Extended configuration for watch
+    Options(WatchOptions),
+}
+
+impl PartialEq for TaskWatchOptions {
+    fn eq(&self, other: &TaskWatchOptions) -> bool {
+        match self {
+            TaskWatchOptions::Boolean(value) => match other {
+                TaskWatchOptions::Boolean(other_value) => value == other_value,
+                _ => false,
+            },
+            TaskWatchOptions::Options(info) => match other {
+                TaskWatchOptions::Options(other_info) => info == other_info,
+                _ => false,
+            },
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -476,12 +558,14 @@ pub struct Task {
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
-    pub watch: Option<bool>,
+    pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
+    pub ignore_errors: Option<bool>,
+    /// DEPRECATED, replaced with ignore_errors
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<IndexMap<String, EnvValue>>,
@@ -538,6 +622,7 @@ impl Task {
             watch: None,
             condition: None,
             condition_script: None,
+            ignore_errors: None,
             force: None,
             env: None,
             cwd: None,
@@ -623,6 +708,12 @@ impl Task {
             self.condition_script = task.condition_script.clone();
         } else if override_values {
             self.condition_script = None;
+        }
+
+        if task.ignore_errors.is_some() {
+            self.ignore_errors = task.ignore_errors.clone();
+        } else if override_values {
+            self.ignore_errors = None;
         }
 
         if task.force.is_some() {
@@ -752,9 +843,19 @@ impl Task {
         }
     }
 
-    /// Returns true if the task force attribute is defined and true
-    pub fn is_force(self: &Task) -> bool {
-        self.force.unwrap_or(false)
+    /// Returns true if the task ignore_errors attribute is defined and true
+    pub fn should_ignore_errors(self: &Task) -> bool {
+        match self.ignore_errors {
+            Some(value) => value,
+            None => match self.force {
+                Some(value) => {
+                    legacy::show_deprecated_attriute_warning("force", "ignore_errors");
+
+                    value
+                }
+                None => false,
+            },
+        }
     }
 
     /// Returns the override task definition based on the current platform.
@@ -794,6 +895,7 @@ impl Task {
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
+                    ignore_errors: override_task.ignore_errors.clone(),
                     force: override_task.force.clone(),
                     env: override_task.env.clone(),
                     cwd: override_task.cwd.clone(),
@@ -881,12 +983,14 @@ pub struct PlatformOverrideTask {
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
-    pub watch: Option<bool>,
+    pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
+    pub ignore_errors: Option<bool>,
+    /// DEPRECATED, replaced with ignore_errors
     pub force: Option<bool>,
     /// The env vars to setup before running the task commands
     pub env: Option<IndexMap<String, EnvValue>>,
@@ -947,6 +1051,10 @@ impl PlatformOverrideTask {
 
             if self.condition_script.is_none() && task.condition_script.is_some() {
                 self.condition_script = task.condition_script.clone();
+            }
+
+            if self.ignore_errors.is_none() && task.ignore_errors.is_some() {
+                self.ignore_errors = task.ignore_errors.clone();
             }
 
             if self.force.is_none() && task.force.is_some() {

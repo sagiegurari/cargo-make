@@ -10,6 +10,7 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, Step, Task};
+use glob::Pattern;
 use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::env;
@@ -47,6 +48,29 @@ fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String>
     return members;
 }
 
+fn should_skip_workspace_member(member: &str, skipped_members: &HashSet<String>) -> bool {
+    if skipped_members.contains(member) {
+        true
+    } else {
+        // search for globs
+        let mut skip = false;
+        for skipped_member in skipped_members {
+            if skipped_member.contains("*") {
+                skip = match Pattern::new(skipped_member) {
+                    Ok(pattern) => pattern.matches(&member),
+                    _ => false,
+                };
+
+                if skip {
+                    break;
+                }
+            }
+        }
+
+        skip
+    }
+}
+
 fn update_member_path(member: &str) -> String {
     let os_separator = path::MAIN_SEPARATOR.to_string();
 
@@ -70,7 +94,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
     let mut script_lines = vec![];
     for member in &members {
-        if !skip_members.contains(member) {
+        if !should_skip_workspace_member(&member, &skip_members) {
             info!("Adding Member: {}.", &member);
 
             //convert to OS path separators

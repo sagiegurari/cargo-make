@@ -18,7 +18,7 @@ use crate::command;
 use crate::types::{InstallCrate, Task};
 
 pub(crate) fn install(task_config: &Task) {
-    let validate = !task_config.is_force();
+    let validate = !task_config.should_ignore_errors();
 
     let toolchain = match task_config.toolchain {
         Some(ref value) => Some(value.to_string()),
