@@ -1,11 +1,7 @@
 
 [env]
 RUST_TEST_THREADS = "1"
-CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[a-z0-9]*$"
-
-[tasks.outdated]
-#do not break build due to child outdated dependencies also used as root dependencies
-ignore_errors = true
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 
 [tasks.generate-readme]
 script = [

@@ -346,6 +346,43 @@
 <span id="346">346</span>
 <span id="347">347</span>
 <span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -371,7 +408,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">scriptengine</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{
     <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">FlowInfo</span>, <span class="ident">RunTaskInfo</span>, <span class="ident">RunTaskRoutingInfo</span>,
-    <span class="ident">Step</span>, <span class="ident">Task</span>,
+    <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">TaskWatchOptions</span>,
 };
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
@@ -438,8 +475,8 @@
     <span class="ident">watch_task_name</span>
 }
 
-<span class="kw">fn</span> <span class="ident">create_watch_step</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Step</span> {
-    <span class="kw">let</span> <span class="ident">watch_task</span> <span class="op">=</span> <span class="ident">create_watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+<span class="kw">fn</span> <span class="ident">create_watch_step</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Step</span> {
+    <span class="kw">let</span> <span class="ident">watch_task</span> <span class="op">=</span> <span class="ident">create_watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>);
 
     <span class="kw">let</span> <span class="ident">watch_task_name</span> <span class="op">=</span> <span class="ident">create_watch_task_name</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
 
@@ -449,22 +486,29 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">watch_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_watch_step</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+<span class="kw">fn</span> <span class="ident">watch_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_watch_step</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>);
 
     <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
 }
 
+<span class="kw">fn</span> <span class="ident">is_watch_enabled</span>() <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">let</span> <span class="ident">disable_watch_env</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="string">&quot;FALSE&quot;</span>);
+    <span class="ident">disable_watch_env</span> <span class="op">!=</span> <span class="string">&quot;TRUE&quot;</span>
+}
+
 <span class="kw">fn</span> <span class="ident">should_watch</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">watch</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">watch_bool</span>) <span class="op">=&gt;</span> {
-            <span class="kw">if</span> <span class="ident">watch_bool</span> {
-                <span class="kw">let</span> <span class="ident">disable_watch_env</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="string">&quot;FALSE&quot;</span>);
-                <span class="ident">disable_watch_env</span> <span class="op">!=</span> <span class="string">&quot;TRUE&quot;</span>
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">watch_value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">watch_value</span> {
+            <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">watch_bool</span>) <span class="op">=&gt;</span> {
+                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">watch_bool</span> {
+                    <span class="ident">is_watch_enabled</span>()
+                } <span class="kw">else</span> {
+                    <span class="bool-val">false</span>
+                }
             }
-        }
+            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="ident">is_watch_enabled</span>(),
+        },
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
     }
 }
@@ -497,7 +541,7 @@
         <span class="kw">let</span> <span class="ident">watch</span> <span class="op">=</span> <span class="ident">should_watch</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>);
 
         <span class="kw">if</span> <span class="ident">watch</span> {
-            <span class="ident">watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+            <span class="ident">watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">watch</span>.<span class="ident">clone</span>());
         } <span class="kw">else</span> {
             <span class="ident">installer</span>::<span class="ident">install</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>.<span class="ident">config</span>);
 
@@ -554,7 +598,8 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">create_watch_task</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Task</span> {
+<span class="kw">fn</span> <span class="ident">create_watch_task</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Task</span> {
+    <span class="comment">//TODO USE OPTIONS!!!</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_config</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">env</span>.<span class="ident">unwrap_or</span>(<span class="ident">IndexMap</span>::<span class="ident">new</span>());
@@ -567,12 +612,41 @@
     <span class="kw">let</span> <span class="ident">make_args</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">args</span>.<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">make_command</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">make_args</span>.<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">watch_args</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-        <span class="string">&quot;watch&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="string">&quot;-q&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="string">&quot;-x&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">make_command</span>.<span class="ident">to_string</span>(),
-    ];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">watch_args</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;watch&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-q&quot;</span>.<span class="ident">to_string</span>()];
+
+    <span class="kw">match</span> <span class="ident">options</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">task_watch_options</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">task_watch_options</span> {
+            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">watch_options</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">postpone</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="ident">value</span> {
+                            <span class="ident">watch_args</span>.<span class="ident">push</span>(<span class="string">&quot;--postpone&quot;</span>.<span class="ident">to_string</span>());
+                        }
+                    }
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                };
+
+                <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">ignore_pattern</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">watch_args</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;-i&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">value</span>]),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                };
+
+                <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">no_git_ignore</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="ident">value</span> {
+                            <span class="ident">watch_args</span>.<span class="ident">push</span>(<span class="string">&quot;--no-gitignore&quot;</span>.<span class="ident">to_string</span>());
+                        }
+                    }
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                };
+            }
+            <span class="kw">_</span> <span class="op">=&gt;</span> (),
+        },
+        <span class="kw">_</span> <span class="op">=&gt;</span> (),
+    }
+
+    <span class="ident">watch_args</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;-x&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">make_command</span>.<span class="ident">to_string</span>()]);
+
     <span class="ident">task_config</span>.<span class="ident">args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">watch_args</span>);
 
     <span class="ident">task_config</span>

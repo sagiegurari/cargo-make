@@ -1,11 +1,12 @@
 ## CHANGELOG
 
-### v0.16.8
+### v0.16.8 (2019-02-09)
 
 * Support additional watch options #188
 * Support glob paths in CARGO_MAKE_WORKSPACE_SKIP_MEMBERS #187
 * Add install-rust-src and install-rls to internal makefile #189
 * Renamed task 'force' attribute to 'ignore_errors' #120
+* Split CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER to use CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER for easier customization
 
 ### v0.16.7 (2019-01-25)
 
