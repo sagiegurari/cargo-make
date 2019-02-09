@@ -1,12 +1,15 @@
 use super::*;
 use crate::types::{
     ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, RunTaskInfo, Step, Task,
-    TaskCondition, WatchOptions,
+    TaskCondition,
 };
 use ci_info;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 use std::env;
+
+#[cfg(target_os = "linux")]
+use crate::types::WatchOptions;
 
 #[test]
 #[cfg(target_os = "linux")]
