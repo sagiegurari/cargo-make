@@ -36,6 +36,8 @@ pub struct CliArgs {
     pub profile: Option<String>,
     /// Log level name
     pub log_level: String,
+    /// Disables colorful output
+    pub disable_color: bool,
     /// Current working directory
     pub cwd: Option<String>,
     /// Environment variables
@@ -71,6 +73,7 @@ impl CliArgs {
             task: "default".to_string(),
             profile: None,
             log_level: "info".to_string(),
+            disable_color: false,
             cwd: None,
             env: None,
             env_file: None,

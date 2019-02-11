@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.16.9
+
+* Colorful output and a new cli argument to disable color (--no-color) #191
+
 ### v0.16.8 (2019-02-09)
 
 * Support additional watch options #188
