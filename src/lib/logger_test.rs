@@ -102,56 +102,56 @@ fn get_formatted_name_no_color() {
 fn get_formatted_log_level_debug_with_color() {
     let output = get_formatted_log_level(&Level::Debug, true);
 
-    assert_eq!("verbose".cyan().bold(), output);
+    assert_eq!("VERBOSE".cyan().bold(), output);
 }
 
 #[test]
 fn get_formatted_log_level_info_with_color() {
     let output = get_formatted_log_level(&Level::Info, true);
 
-    assert_eq!("info".bold(), output);
+    assert_eq!("INFO".bold(), output);
 }
 
 #[test]
 fn get_formatted_log_level_warn_with_color() {
     let output = get_formatted_log_level(&Level::Warn, true);
 
-    assert_eq!("warn".yellow().bold(), output);
+    assert_eq!("WARN".yellow().bold(), output);
 }
 
 #[test]
 fn get_formatted_log_level_error_with_color() {
     let output = get_formatted_log_level(&Level::Error, true);
 
-    assert_eq!("error".red().bold(), output);
+    assert_eq!("ERROR".red().bold(), output);
 }
 
 #[test]
 fn get_formatted_log_level_debug_no_color() {
     let output = get_formatted_log_level(&Level::Debug, false);
 
-    assert_eq!("verbose".normal(), output);
+    assert_eq!("VERBOSE".normal(), output);
 }
 
 #[test]
 fn get_formatted_log_level_info_no_color() {
     let output = get_formatted_log_level(&Level::Info, false);
 
-    assert_eq!("info".normal(), output);
+    assert_eq!("INFO".normal(), output);
 }
 
 #[test]
 fn get_formatted_log_level_warn_no_color() {
     let output = get_formatted_log_level(&Level::Warn, false);
 
-    assert_eq!("warn".normal(), output);
+    assert_eq!("WARN".normal(), output);
 }
 
 #[test]
 fn get_formatted_log_level_error_no_color() {
     let output = get_formatted_log_level(&Level::Error, false);
 
-    assert_eq!("error".normal(), output);
+    assert_eq!("ERROR".normal(), output);
 }
 
 #[test]
