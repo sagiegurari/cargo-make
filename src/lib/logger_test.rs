@@ -109,7 +109,7 @@ fn get_formatted_log_level_debug_with_color() {
 fn get_formatted_log_level_info_with_color() {
     let output = get_formatted_log_level(&Level::Info, true);
 
-    assert_eq!("INFO".bold(), output);
+    assert_eq!("INFO".green().bold(), output);
 }
 
 #[test]

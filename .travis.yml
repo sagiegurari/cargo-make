@@ -56,7 +56,7 @@ env:
 before_script:
   - cargo install --debug cargo-make
 script:
-  - cargo run --bin cargo-make -- make ci-flow
+  - cargo make ci-flow
 deploy:
   provider: releases
   api_key:
