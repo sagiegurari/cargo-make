@@ -4,6 +4,7 @@
 
 * Colorful output and a new cli argument to disable color (--no-color) #191
 * Support multi line environment variables from script output #196
+* Reducing cargo-make info level output #194
 
 ### v0.16.8 (2019-02-09)
 

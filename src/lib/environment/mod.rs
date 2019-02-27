@@ -122,7 +122,7 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
 
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
-    info!("Setting Up Env.");
+    debug!("Setting Up Env.");
 
     set_env(config.env.clone());
 }

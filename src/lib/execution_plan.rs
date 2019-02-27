@@ -95,7 +95,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let mut script_lines = vec![];
     for member in &members {
         if !should_skip_workspace_member(&member, &skip_members) {
-            info!("Adding Member: {}.", &member);
+            debug!("Adding Member: {}.", &member);
 
             //convert to OS path separators
             let member_path = update_member_path(&member);
@@ -122,7 +122,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
                 script_lines.push("cd -".to_string());
             };
         } else {
-            info!("Skipping Member: {}.", &member);
+            debug!("Skipping Member: {}.", &member);
         }
     }
 

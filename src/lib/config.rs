@@ -24,7 +24,7 @@ fn get_config_directory() -> Option<PathBuf> {
 
 fn load_from_path(directory: PathBuf) -> GlobalConfig {
     let file_path = Path::new(&directory).join(CONFIG_FILE);
-    info!("Loading config from: {:#?}", &file_path);
+    debug!("Loading config from: {:#?}", &file_path);
 
     if file_path.exists() {
         let mut file = match File::open(&file_path) {
