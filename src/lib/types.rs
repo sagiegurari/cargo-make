@@ -318,6 +318,8 @@ pub struct TaskCondition {
 pub struct EnvValueScript {
     /// The script to execute to get the env value
     pub script: Vec<String>,
+    /// True/False to enable multi line env values
+    pub multi_line: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

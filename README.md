@@ -931,6 +931,7 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 TEST1 = "value1"
 TEST2 = "value2"
 COMPOSITE = "${TEST1} ${TEST2}"
+MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 
 # profile based environment override
 [env.development]

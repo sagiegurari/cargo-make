@@ -85,12 +85,16 @@ pub(crate) fn run_script_get_output(
     script_runner: Option<String>,
     cli_arguments: &Vec<String>,
     capture_output: bool,
+    print_commands: Option<bool>,
 ) -> Result<(i32, String, String), ScriptError> {
     let mut options = ScriptOptions::new();
     options.runner = script_runner.clone();
     options.capture_output = capture_output;
     options.exit_on_error = true;
-    options.print_commands = true;
+    options.print_commands = match print_commands {
+        Some(bool_value) => bool_value,
+        None => true,
+    };
 
     if is_silent() {
         options.capture_output = true;
@@ -107,7 +111,7 @@ pub(crate) fn run_script(
     cli_arguments: &Vec<String>,
     validate: bool,
 ) -> i32 {
-    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false);
+    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false, None);
 
     let exit_code = match output {
         Ok(output_struct) => output_struct.0,

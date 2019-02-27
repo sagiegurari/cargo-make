@@ -249,6 +249,7 @@ fn setup_env_script() {
         "MY_ENV_SCRIPT_KEY2".to_string(),
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
+            multi_line: None,
         }),
     );
 
@@ -271,6 +272,7 @@ fn setup_env_script() {
 fn evaluate_env_value_valid() {
     let output = evaluate_env_value(&EnvValueScript {
         script: vec!["echo script1".to_string()],
+        multi_line: None,
     });
 
     assert_eq!(output, "script1".to_string());
@@ -281,6 +283,7 @@ fn evaluate_env_value_valid() {
 fn evaluate_env_value_empty() {
     let output = evaluate_env_value(&EnvValueScript {
         script: vec!["".to_string()],
+        multi_line: None,
     });
 
     assert_eq!(output, "".to_string());
@@ -291,7 +294,29 @@ fn evaluate_env_value_empty() {
 fn evaluate_env_error() {
     evaluate_env_value(&EnvValueScript {
         script: vec!["exit 1".to_string()],
+        multi_line: None,
     });
+}
+
+#[test]
+fn evaluate_env_value_single_line() {
+    let output = evaluate_env_value(&EnvValueScript {
+        script: vec!["echo test".to_string()],
+        multi_line: Some(false),
+    });
+
+    assert!(output.contains("test"));
+}
+
+#[test]
+fn evaluate_env_value_multi_line() {
+    let output = evaluate_env_value(&EnvValueScript {
+        script: vec!["echo 1\necho 2".to_string()],
+        multi_line: Some(true),
+    });
+
+    assert!(output.contains("1"));
+    assert!(output.contains("2"));
 }
 
 #[test]
