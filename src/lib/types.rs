@@ -469,6 +469,8 @@ pub enum RunTaskInfo {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds watch options
 pub struct WatchOptions {
+    /// Watch version to install if not already installed
+    pub version: Option<String>,
     /// Postpone first run until a file changes
     pub postpone: Option<bool>,
     /// Ignore a glob/gitignore-style pattern
@@ -479,15 +481,30 @@ pub struct WatchOptions {
 
 impl PartialEq for WatchOptions {
     fn eq(&self, other: &WatchOptions) -> bool {
-        let mut same = match self.postpone {
-            Some(ref value) => match other.postpone {
+        let mut same = match self.version {
+            Some(ref value) => match other.version {
                 Some(ref other_value) => value == other_value,
                 None => false,
             },
-            None => match other.postpone {
+            None => match other.version {
                 None => true,
                 _ => false,
             },
+        };
+
+        same = if same {
+            match self.postpone {
+                Some(ref value) => match other.postpone {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.postpone {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
         };
 
         same = if same {
