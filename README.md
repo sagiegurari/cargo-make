@@ -21,6 +21,7 @@
         * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
         * [Shebang Support](#usage-task-command-script-task-exampleshebang)
     * [Default Tasks and Extending](#usage-default-tasks)
+        * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
@@ -483,7 +484,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -500,7 +501,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -527,7 +528,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -580,7 +581,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -597,7 +598,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -717,7 +718,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -746,7 +747,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -812,19 +813,8 @@ The file path in the extend attribute is always relative to the current toml fil
 The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
 the extend attribute pointing to the workspace makefile.
 
-<a name="usage-workspace-extend"></a>
-#### Automatically Extend Workspace Makefile
-When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
-
-The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
-
-```toml
-[env]
-CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
-```
-
 <a name="usage-workspace-extending-external-makefile"></a>
-#### Automatically Extend Workspace Makefile
+#### Extending External Makefiles
 In order for a makefile to extend additional external files from your external file by using the extend attribute, for example:
 
 ```toml
@@ -846,6 +836,17 @@ For example:
 
 ```toml
 extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "another_must_have_makefile.toml" } ]
+```
+
+<a name="usage-workspace-extend"></a>
+#### Automatically Extend Workspace Makefile
+When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
+
+The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
+
+```toml
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
 <a name="usage-load-scripts"></a>
@@ -1560,7 +1561,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -1630,7 +1631,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1638,7 +1639,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2121,7 +2122,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.16.9
+[cargo-make] INFO - cargo make 0.16.10
 [cargo-make] INFO - Using Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.

@@ -14,6 +14,7 @@
         * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
         * [Shebang Support](#usage-task-command-script-task-exampleshebang)
     * [Default Tasks and Extending](#usage-default-tasks)
+        * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)

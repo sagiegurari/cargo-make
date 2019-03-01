@@ -729,19 +729,8 @@ The file path in the extend attribute is always relative to the current toml fil
 The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
 the extend attribute pointing to the workspace makefile.
 
-<a name="usage-workspace-extend"></a>
-#### Automatically Extend Workspace Makefile
-When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
-
-The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
-
-```toml
-[env]
-CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
-```
-
 <a name="usage-workspace-extending-external-makefile"></a>
-#### Automatically Extend Workspace Makefile
+#### Extending External Makefiles
 In order for a makefile to extend additional external files from your external file by using the extend attribute, for example:
 
 ```toml
@@ -763,6 +752,17 @@ For example:
 
 ```toml
 extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "another_must_have_makefile.toml" } ]
+```
+
+<a name="usage-workspace-extend"></a>
+#### Automatically Extend Workspace Makefile
+When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
+
+The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
+
+```toml
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
 <a name="usage-load-scripts"></a>
