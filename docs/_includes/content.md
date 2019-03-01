@@ -740,6 +740,31 @@ The workspace level makefile **env** section must contain the following environm
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
+<a name="usage-workspace-extending-external-makefile"></a>
+#### Automatically Extend Workspace Makefile
+In order for a makefile to extend additional external files from your external file by using the extend attribute, for example:
+
+```toml
+extend = "my_common_makefile.toml"
+```
+
+The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.<br>
+The makefile pointed to in the extend attribute must exist or the build will fail.
+
+In order to define optional extending makefiles, you will need to pass the optional flag in addition to the path as follows:
+
+```toml
+extend = { path = "does_not_exist_makefile.toml", optional = true }
+```
+
+You can also define a list of makefiles to extend from.<br>
+All be loaded in the order you define.<br>
+For example:
+
+```toml
+extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "another_must_have_makefile.toml" } ]
+```
+
 <a name="usage-load-scripts"></a>
 #### Load Scripts
 In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
@@ -848,6 +873,7 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 TEST1 = "value1"
 TEST2 = "value2"
 COMPOSITE = "${TEST1} ${TEST2}"
+MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 
 # profile based environment override
 [env.development]
@@ -1982,6 +2008,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **test** - Runs all available tests.
 * **test-flow** - Runs pre/post hooks and cargo test.
 * **test-verbose** - Runs all available tests with verbose output.
+* **test-with-args** - Runs cargo test with command line arguments.
 * **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **workspace-coverage-pack** - Publishes all member coverage reports.
 * **workspace-members-coverage** - Runs the ci-flow for every workspace member.
@@ -2053,6 +2080,7 @@ FLAGS:
         --experimental                 Allows access unsupported experimental predefined tasks.
     -h, --help                         Prints help information
         --list-all-steps               Lists all known steps
+        --no-color                     Disables colorful output
         --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
         --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
@@ -2066,6 +2094,7 @@ OPTIONS:
     -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
         --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown]
+    -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:

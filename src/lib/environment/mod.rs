@@ -25,25 +25,36 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 
 fn evaluate_env_value(env_value: &EnvValueScript) -> String {
-    match command::run_script_get_output(&env_value.script, None, &vec![], true) {
+    match command::run_script_get_output(&env_value.script, None, &vec![], true, Some(false)) {
         Ok(output) => {
             let exit_code = output.0;
             let stdout = output.1;
 
             command::validate_exit_code(exit_code);
 
+            debug!("Env script stdout:\n{}", &stdout);
+
             if exit_code == 0 {
-                let mut lines: Vec<&str> = stdout.split("\n").collect();
-                lines.retain(|&line| line.len() > 0);
+                let multi_line = match env_value.multi_line {
+                    Some(bool_value) => bool_value,
+                    None => false,
+                };
 
-                if lines.len() > 0 {
-                    let line = lines[lines.len() - 1].to_string();
-
-                    let line_str = str::replace(&line, "\r", "");
-
-                    line_str.to_string()
+                if multi_line {
+                    stdout.to_string()
                 } else {
-                    "".to_string()
+                    let mut lines: Vec<&str> = stdout.split("\n").collect();
+                    lines.retain(|&line| line.len() > 0);
+
+                    if lines.len() > 0 {
+                        let line = lines[lines.len() - 1].to_string();
+
+                        let line_str = str::replace(&line, "\r", "");
+
+                        line_str.to_string()
+                    } else {
+                        "".to_string()
+                    }
                 }
             } else {
                 "".to_string()
@@ -74,6 +85,7 @@ fn expand_value(value: &str) -> String {
 fn evaluate_and_set_env(key: &str, value: &str) {
     let env_value = expand_value(&value);
 
+    debug!("Setting Env: {} Value: {}", &key, &env_value);
     env::set_var(&key, &env_value);
 }
 
@@ -110,7 +122,7 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
 
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
-    info!("Setting Up Env.");
+    debug!("Setting Up Env.");
 
     set_env(config.env.clone());
 }

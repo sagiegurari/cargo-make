@@ -38,6 +38,7 @@ path = "src/makers.rs"
 [dependencies]
 ci_info = "^0.3"
 clap = "^2.32"
+colored = "^1.7"
 dirs = "^1.0"
 fern = "^0.5"
 glob = "^0.2"

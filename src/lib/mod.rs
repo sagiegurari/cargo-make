@@ -124,6 +124,7 @@
 
 extern crate ci_info;
 extern crate clap;
+extern crate colored;
 extern crate dirs;
 extern crate fern;
 extern crate glob;

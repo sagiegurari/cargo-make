@@ -36,6 +36,8 @@ pub struct CliArgs {
     pub profile: Option<String>,
     /// Log level name
     pub log_level: String,
+    /// Disables colorful output
+    pub disable_color: bool,
     /// Current working directory
     pub cwd: Option<String>,
     /// Environment variables
@@ -71,6 +73,7 @@ impl CliArgs {
             task: "default".to_string(),
             profile: None,
             log_level: "info".to_string(),
+            disable_color: false,
             cwd: None,
             env: None,
             env_file: None,
@@ -315,6 +318,8 @@ pub struct TaskCondition {
 pub struct EnvValueScript {
     /// The script to execute to get the env value
     pub script: Vec<String>,
+    /// True/False to enable multi line env values
+    pub multi_line: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -464,6 +469,8 @@ pub enum RunTaskInfo {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds watch options
 pub struct WatchOptions {
+    /// Watch version to install if not already installed
+    pub version: Option<String>,
     /// Postpone first run until a file changes
     pub postpone: Option<bool>,
     /// Ignore a glob/gitignore-style pattern
@@ -474,15 +481,30 @@ pub struct WatchOptions {
 
 impl PartialEq for WatchOptions {
     fn eq(&self, other: &WatchOptions) -> bool {
-        let mut same = match self.postpone {
-            Some(ref value) => match other.postpone {
+        let mut same = match self.version {
+            Some(ref value) => match other.version {
                 Some(ref other_value) => value == other_value,
                 None => false,
             },
-            None => match other.postpone {
+            None => match other.version {
                 None => true,
                 _ => false,
             },
+        };
+
+        same = if same {
+            match self.postpone {
+                Some(ref value) => match other.postpone {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.postpone {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
         };
 
         same = if same {
@@ -1117,6 +1139,27 @@ impl PlatformOverrideTask {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Extend with more fine tuning options
+pub struct ExtendOptions {
+    /// Path to another makefile
+    pub path: String,
+    /// Enable optional extend (default to false)
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds makefile extend value
+pub enum Extend {
+    /// Path to another makefile
+    Path(String),
+    /// Extend options for more fine tune control
+    Options(ExtendOptions),
+    /// Multiple extends list
+    List(Vec<ExtendOptions>),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
@@ -1232,7 +1275,7 @@ pub struct Config {
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend
-    pub extend: Option<String>,
+    pub extend: Option<Extend>,
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks

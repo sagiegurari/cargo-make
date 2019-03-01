@@ -646,12 +646,16 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
+        version: None,
         postpone: None,
         ignore_pattern: None,
         no_git_ignore: None,
     };
 
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+
+    assert!(task.install_crate_args.is_some());
+    assert_eq!(task.install_crate_args.unwrap().len(), 2);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "TRUE"),
@@ -685,12 +689,18 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
+        version: Some("100.200.300.400".to_string()),
         postpone: Some(true),
         ignore_pattern: Some("tools/*".to_string()),
         no_git_ignore: Some(true),
     };
 
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+
+    assert!(task.install_crate_args.is_some());
+    let install_crate_args = task.install_crate_args.unwrap();
+    assert_eq!(install_crate_args[0], "--version");
+    assert_eq!(install_crate_args[1], "100.200.300.400");
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "TRUE"),
@@ -728,12 +738,16 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
+        version: None,
         postpone: Some(false),
         ignore_pattern: None,
         no_git_ignore: Some(false),
     };
 
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+
+    assert!(task.install_crate_args.is_some());
+    assert_eq!(task.install_crate_args.unwrap().len(), 2);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "TRUE"),

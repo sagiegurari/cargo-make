@@ -12,6 +12,7 @@ use crate::config;
 use crate::descriptor;
 use crate::environment;
 use crate::logger;
+use crate::logger::LoggerOptions;
 use crate::profile;
 use crate::runner;
 use crate::types::{CliArgs, GlobalConfig};
@@ -27,7 +28,10 @@ static DEFAULT_TASK_NAME: &str = "default";
 static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
-    logger::init(&cli_args.log_level);
+    logger::init(&LoggerOptions {
+        level: cli_args.log_level.clone(),
+        color: !cli_args.disable_color,
+    });
 
     info!("{} {}", &cli_args.command, &VERSION);
     debug!("Written By {}", &AUTHOR);
@@ -175,6 +179,8 @@ fn run_for_args(
             .to_string()
     };
 
+    cli_args.disable_color = cmd_matches.is_present("no-color");
+
     cli_args.env_file = match cmd_matches.value_of("envfile") {
         Some(value) => Some(value.to_string()),
         None => None,
@@ -313,6 +319,11 @@ fn create_cli<'a, 'b>(
                 .short("-v")
                 .long("--verbose")
                 .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
+        )
+        .arg(
+            Arg::with_name("no-color")
+                .long("--no-color")
+                .help("Disables colorful output"),
         )
         .arg(
             Arg::with_name("experimental")

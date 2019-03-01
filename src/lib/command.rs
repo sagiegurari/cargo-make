@@ -10,6 +10,7 @@ mod command_test;
 use crate::logger;
 use crate::toolchain;
 use crate::types::{CommandSpec, Step};
+use ci_info;
 use run_script;
 use run_script::{ScriptError, ScriptOptions};
 use std::io;
@@ -79,18 +80,44 @@ fn is_silent_for_level(log_level: String) -> bool {
     }
 }
 
+fn should_print_commands_by_default() -> bool {
+    let log_level = logger::get_log_level();
+
+    if should_print_commands_for_level(log_level) {
+        true
+    } else {
+        // if log level defaults to not printing the script commands
+        // we also check if we are running in a CI env.
+        // Users will not see the commands while CI builds will have the commands printed out.
+        ci_info::is_ci()
+    }
+}
+
+fn should_print_commands_for_level(log_level: String) -> bool {
+    let level = logger::get_level(&log_level);
+
+    match level {
+        logger::LogLevel::VERBOSE => true,
+        _ => false,
+    }
+}
+
 /// Runs the requested script text and returns its output.
 pub(crate) fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     cli_arguments: &Vec<String>,
     capture_output: bool,
+    print_commands: Option<bool>,
 ) -> Result<(i32, String, String), ScriptError> {
     let mut options = ScriptOptions::new();
     options.runner = script_runner.clone();
     options.capture_output = capture_output;
     options.exit_on_error = true;
-    options.print_commands = true;
+    options.print_commands = match print_commands {
+        Some(bool_value) => bool_value,
+        None => should_print_commands_by_default(),
+    };
 
     if is_silent() {
         options.capture_output = true;
@@ -107,7 +134,7 @@ pub(crate) fn run_script(
     cli_arguments: &Vec<String>,
     validate: bool,
 ) -> i32 {
-    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false);
+    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false, None);
 
     let exit_code = match output {
         Ok(output_struct) => output_struct.0,

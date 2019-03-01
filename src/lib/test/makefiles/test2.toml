@@ -1,0 +1,4 @@
+
+[tasks.test2]
+command = "echo"
+args = [ "test2" ]

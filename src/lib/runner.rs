@@ -213,7 +213,6 @@ fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    //TODO USE OPTIONS!!!
     let mut task_config = create_proxy_task(&task);
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
@@ -231,6 +230,12 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     match options {
         Some(task_watch_options) => match task_watch_options {
             TaskWatchOptions::Options(watch_options) => {
+                let watch_version = match watch_options.version {
+                    Some(value) => value.to_string(),
+                    _ => "7.0.8".to_string(), // currently certified version
+                };
+                task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
+
                 match watch_options.postpone {
                     Some(value) => {
                         if value {
