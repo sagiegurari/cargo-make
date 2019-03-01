@@ -1277,6 +1277,49 @@
 <span id="1277">1277</span>
 <span id="1278">1278</span>
 <span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
+<span id="1286">1286</span>
+<span id="1287">1287</span>
+<span id="1288">1288</span>
+<span id="1289">1289</span>
+<span id="1290">1290</span>
+<span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
+<span id="1294">1294</span>
+<span id="1295">1295</span>
+<span id="1296">1296</span>
+<span id="1297">1297</span>
+<span id="1298">1298</span>
+<span id="1299">1299</span>
+<span id="1300">1300</span>
+<span id="1301">1301</span>
+<span id="1302">1302</span>
+<span id="1303">1303</span>
+<span id="1304">1304</span>
+<span id="1305">1305</span>
+<span id="1306">1306</span>
+<span id="1307">1307</span>
+<span id="1308">1308</span>
+<span id="1309">1309</span>
+<span id="1310">1310</span>
+<span id="1311">1311</span>
+<span id="1312">1312</span>
+<span id="1313">1313</span>
+<span id="1314">1314</span>
+<span id="1315">1315</span>
+<span id="1316">1316</span>
+<span id="1317">1317</span>
+<span id="1318">1318</span>
+<span id="1319">1319</span>
+<span id="1320">1320</span>
+<span id="1321">1321</span>
+<span id="1322">1322</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1316,6 +1359,8 @@
     <span class="kw">pub</span> <span class="ident">profile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Log level name</span>
     <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Disables colorful output</span>
+    <span class="kw">pub</span> <span class="ident">disable_color</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Current working directory</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Environment variables</span>
@@ -1351,6 +1396,7 @@
             <span class="ident">task</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">profile</span>: <span class="prelude-val">None</span>,
             <span class="ident">log_level</span>: <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">disable_color</span>: <span class="bool-val">false</span>,
             <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
             <span class="ident">env_file</span>: <span class="prelude-val">None</span>,
@@ -1595,6 +1641,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueScript</span> {
     <span class="doccomment">/// The script to execute to get the env value</span>
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True/False to enable multi line env values</span>
+    <span class="kw">pub</span> <span class="ident">multi_line</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -1744,6 +1792,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds watch options</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WatchOptions</span> {
+    <span class="doccomment">/// Watch version to install if not already installed</span>
+    <span class="kw">pub</span> <span class="ident">version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Postpone first run until a file changes</span>
     <span class="kw">pub</span> <span class="ident">postpone</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Ignore a glob/gitignore-style pattern</span>
@@ -1754,15 +1804,30 @@
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">WatchOptions</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">WatchOptions</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">postpone</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
+        };
+
+        <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">postpone</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+            }
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
         };
 
         <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
@@ -2397,6 +2462,27 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Extend with more fine tuning options</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExtendOptions</span> {
+    <span class="doccomment">/// Path to another makefile</span>
+    <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Enable optional extend (default to false)</span>
+    <span class="kw">pub</span> <span class="ident">optional</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Holds makefile extend value</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Extend</span> {
+    <span class="doccomment">/// Path to another makefile</span>
+    <span class="ident">Path</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Extend options for more fine tune control</span>
+    <span class="ident">Options</span>(<span class="ident">ExtendOptions</span>),
+    <span class="doccomment">/// Multiple extends list</span>
+    <span class="ident">List</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ExtendOptions</span><span class="op">&gt;</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the configuration found in the makefile toml config section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// If true, the default core tasks will not be loaded</span>
@@ -2512,7 +2598,7 @@
 <span class="doccomment">/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// Path to another toml file to extend</span>
-    <span class="kw">pub</span> <span class="ident">extend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">extend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Extend</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ConfigSection</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>

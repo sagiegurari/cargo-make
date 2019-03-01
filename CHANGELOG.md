@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.16.9
+### v0.16.9 (2019-03-01)
 
 * Colorful output and a new cli argument to disable color (--no-color) #191
 * Support multiple extend #192

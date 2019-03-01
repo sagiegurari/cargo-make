@@ -483,7 +483,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -500,7 +500,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -527,7 +527,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -580,7 +580,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -597,7 +597,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -717,7 +717,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -746,7 +746,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -1560,7 +1560,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -1630,7 +1630,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1638,7 +1638,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2121,7 +2121,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.16.8
+[cargo-make] INFO - cargo make 0.16.9
 [cargo-make] INFO - Using Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.

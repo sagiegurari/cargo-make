@@ -379,6 +379,32 @@
 <span id="379">379</span>
 <span id="380">380</span>
 <span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -393,7 +419,7 @@
 <span class="kw">mod</span> <span class="ident">descriptor_test</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">EnvValue</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">EnvValue</span>, <span class="ident">Extend</span>, <span class="ident">ExternalConfig</span>, <span class="ident">Task</span>};
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::{<span class="ident">canonicalize</span>, <span class="ident">File</span>};
@@ -544,6 +570,32 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">load_descriptor_extended_makefiles</span>(<span class="ident">parent_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">extend_struct</span>: <span class="kw-2">&amp;</span><span class="ident">Extend</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+    <span class="kw">match</span> <span class="ident">extend_struct</span> {
+        <span class="ident">Extend</span>::<span class="ident">Path</span>(<span class="ident">base_file</span>) <span class="op">=&gt;</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="kw-2">&amp;</span><span class="ident">base_file</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+        <span class="ident">Extend</span>::<span class="ident">Options</span>(<span class="ident">extend_options</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="ident">force</span> <span class="op">=</span> <span class="op">!</span><span class="ident">extend_options</span>.<span class="ident">optional</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+            <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="kw-2">&amp;</span><span class="ident">extend_options</span>.<span class="ident">path</span>, <span class="ident">force</span>, <span class="bool-val">false</span>)
+        }
+        <span class="ident">Extend</span>::<span class="ident">List</span>(<span class="ident">extend_list</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ordered_list_config</span> <span class="op">=</span> <span class="ident">ExternalConfig</span>::<span class="ident">new</span>();
+
+            <span class="kw">for</span> <span class="ident">entry</span> <span class="kw">in</span> <span class="ident">extend_list</span>.<span class="ident">iter</span>() {
+                <span class="kw">let</span> <span class="ident">extend_options</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">entry_config</span> <span class="op">=</span> <span class="ident">load_descriptor_extended_makefiles</span>(
+                    <span class="ident">parent_path</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">Extend</span>::<span class="ident">Options</span>(<span class="ident">extend_options</span>),
+                );
+
+                <span class="comment">// merge configs</span>
+                <span class="ident">ordered_list_config</span> <span class="op">=</span> <span class="ident">merge_external_configs</span>(<span class="ident">entry_config</span>, <span class="ident">ordered_list_config</span>);
+            }
+
+            <span class="ident">ordered_list_config</span>
+        }
+    }
+}
+
 <span class="kw">fn</span> <span class="ident">load_external_descriptor</span>(
     <span class="ident">base_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
@@ -587,7 +639,7 @@
         <span class="ident">run_load_script</span>(<span class="kw-2">&amp;</span><span class="ident">file_config</span>);
 
         <span class="kw">match</span> <span class="ident">file_config</span>.<span class="ident">extend</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">base_file</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extend_struct</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">parent_path_buf</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="ident">base_path</span>).<span class="ident">join</span>(<span class="ident">file_name</span>).<span class="ident">join</span>(<span class="string">&quot;..&quot;</span>);
                 <span class="kw">let</span> <span class="ident">parent_path</span> <span class="op">=</span> <span class="ident">file_path</span>
                     .<span class="ident">parent</span>()
@@ -595,10 +647,10 @@
                     .<span class="ident">to_str</span>()
                     .<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;External config parent path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">parent_path</span>);
-                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span>
-                    <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="ident">base_file</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>);
 
-                <span class="comment">// merge configs</span>
+                <span class="kw">let</span> <span class="ident">base_file_config</span> <span class="op">=</span>
+                    <span class="ident">load_descriptor_extended_makefiles</span>(<span class="kw-2">&amp;</span><span class="ident">parent_path</span>, <span class="ident">extend_struct</span>);
+
                 <span class="ident">merge_external_configs</span>(<span class="ident">file_config</span>.<span class="ident">clone</span>(), <span class="ident">base_file_config</span>)
             }
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">file_config</span>,
