@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::InstallCrate;
+use crate::types::{ExtendOptions, InstallCrate};
 use std::env;
 
 #[test]
@@ -575,4 +575,170 @@ fn run_load_script_invalid_load_script() {
     external_config.config = Some(config);
 
     run_load_script(&external_config);
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_path_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let descriptor = load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Path("src/lib/test/makefiles/test1.toml".to_string()),
+    );
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+}
+
+#[test]
+#[should_panic]
+fn load_descriptor_extended_makefiles_path_not_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Path("src/lib/test/makefiles/bad.toml".to_string()),
+    );
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_options_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let descriptor = load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: None,
+        }),
+    );
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+}
+
+#[test]
+#[should_panic]
+fn load_descriptor_extended_makefiles_options_not_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/bad.toml".to_string(),
+            optional: None,
+        }),
+    );
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_options_exists_optional() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let descriptor = load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: Some(true),
+        }),
+    );
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_options_exists_not_optional() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let descriptor = load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: Some(false),
+        }),
+    );
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+}
+
+#[test]
+#[should_panic]
+fn load_descriptor_extended_makefiles_options_not_exists_optional() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let descriptor = load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/bad.toml".to_string(),
+            optional: Some(true),
+        }),
+    );
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(!tasks.contains_key("test1"));
+}
+
+#[test]
+#[should_panic]
+fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    load_descriptor_extended_makefiles(
+        &parent_path,
+        &Extend::Options(ExtendOptions {
+            path: "src/lib/test/makefiles/bad.toml".to_string(),
+            optional: Some(false),
+        }),
+    );
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_list_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let list = vec![
+        ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: Some(false),
+        },
+        ExtendOptions {
+            path: "src/lib/test/makefiles/test2.toml".to_string(),
+            optional: Some(false),
+        },
+    ];
+    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+    assert!(tasks.contains_key("test2"));
+}
+
+#[test]
+#[should_panic]
+fn load_descriptor_extended_makefiles_list_not_exists() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let list = vec![
+        ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: Some(false),
+        },
+        ExtendOptions {
+            path: "src/lib/test/makefiles/bad.toml".to_string(),
+            optional: Some(false),
+        },
+    ];
+    load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+}
+
+#[test]
+fn load_descriptor_extended_makefiles_list_exists_optional() {
+    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let list = vec![
+        ExtendOptions {
+            path: "src/lib/test/makefiles/test1.toml".to_string(),
+            optional: Some(false),
+        },
+        ExtendOptions {
+            path: "src/lib/test/makefiles/bad.toml".to_string(),
+            optional: Some(true),
+        },
+    ];
+    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+
+    let tasks = descriptor.tasks.unwrap();
+    assert!(tasks.contains_key("test1"));
+    assert!(!tasks.contains_key("test2"));
 }

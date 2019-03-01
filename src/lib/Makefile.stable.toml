@@ -274,6 +274,12 @@ category = "Test"
 command = "cargo"
 args = ["test", "--verbose", "--all-features"]
 
+[tasks.test-with-args]
+description = "Runs cargo test with command line arguments."
+category = "Test"
+command = "cargo"
+args = ["test", "${@}"]
+
 [tasks.post-test]
 category = "Test"
 

@@ -3,6 +3,9 @@
 ### v0.16.9
 
 * Colorful output and a new cli argument to disable color (--no-color) #191
+* Support multiple extend #192
+* Support optional extend #193
+* New test-with-args task to enable testing specific tests only
 * Support multi line environment variables from script output #196
 * Reducing cargo-make info level output #194
 * Locking default cargo watch version and supporting user defined version #195

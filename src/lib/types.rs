@@ -1139,6 +1139,27 @@ impl PlatformOverrideTask {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Extend with more fine tuning options
+pub struct ExtendOptions {
+    /// Path to another makefile
+    pub path: String,
+    /// Enable optional extend (default to false)
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds makefile extend value
+pub enum Extend {
+    /// Path to another makefile
+    Path(String),
+    /// Extend options for more fine tune control
+    Options(ExtendOptions),
+    /// Multiple extends list
+    List(Vec<ExtendOptions>),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
@@ -1254,7 +1275,7 @@ pub struct Config {
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend
-    pub extend: Option<String>,
+    pub extend: Option<Extend>,
     /// Runtime config
     pub config: Option<ConfigSection>,
     /// The env vars to setup before running the tasks

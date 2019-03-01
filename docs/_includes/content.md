@@ -740,6 +740,31 @@ The workspace level makefile **env** section must contain the following environm
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
+<a name="usage-workspace-extending-external-makefile"></a>
+#### Automatically Extend Workspace Makefile
+In order for a makefile to extend additional external files from your external file by using the extend attribute, for example:
+
+```toml
+extend = "my_common_makefile.toml"
+```
+
+The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.<br>
+The makefile pointed to in the extend attribute must exist or the build will fail.
+
+In order to define optional extending makefiles, you will need to pass the optional flag in addition to the path as follows:
+
+```toml
+extend = { path = "does_not_exist_makefile.toml", optional = true }
+```
+
+You can also define a list of makefiles to extend from.<br>
+All be loaded in the order you define.<br>
+For example:
+
+```toml
+extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "another_must_have_makefile.toml" } ]
+```
+
 <a name="usage-load-scripts"></a>
 #### Load Scripts
 In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
@@ -1983,6 +2008,7 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 * **test** - Runs all available tests.
 * **test-flow** - Runs pre/post hooks and cargo test.
 * **test-verbose** - Runs all available tests with verbose output.
+* **test-with-args** - Runs cargo test with command line arguments.
 * **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **workspace-coverage-pack** - Publishes all member coverage reports.
 * **workspace-members-coverage** - Runs the ci-flow for every workspace member.

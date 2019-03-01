@@ -11,7 +11,7 @@
 mod descriptor_test;
 
 use crate::command;
-use crate::types::{Config, ConfigSection, EnvValue, ExternalConfig, Task};
+use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, Task};
 use indexmap::IndexMap;
 use std::env;
 use std::fs::{canonicalize, File};
@@ -162,6 +162,32 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
     }
 }
 
+fn load_descriptor_extended_makefiles(parent_path: &str, extend_struct: &Extend) -> ExternalConfig {
+    match extend_struct {
+        Extend::Path(base_file) => load_external_descriptor(parent_path, &base_file, true, false),
+        Extend::Options(extend_options) => {
+            let force = !extend_options.optional.unwrap_or(false);
+            load_external_descriptor(parent_path, &extend_options.path, force, false)
+        }
+        Extend::List(extend_list) => {
+            let mut ordered_list_config = ExternalConfig::new();
+
+            for entry in extend_list.iter() {
+                let extend_options = entry.clone();
+                let entry_config = load_descriptor_extended_makefiles(
+                    parent_path,
+                    &Extend::Options(extend_options),
+                );
+
+                // merge configs
+                ordered_list_config = merge_external_configs(entry_config, ordered_list_config);
+            }
+
+            ordered_list_config
+        }
+    }
+}
+
 fn load_external_descriptor(
     base_path: &str,
     file_name: &str,
@@ -205,7 +231,7 @@ fn load_external_descriptor(
         run_load_script(&file_config);
 
         match file_config.extend {
-            Some(ref base_file) => {
+            Some(ref extend_struct) => {
                 let parent_path_buf = Path::new(base_path).join(file_name).join("..");
                 let parent_path = file_path
                     .parent()
@@ -213,10 +239,10 @@ fn load_external_descriptor(
                     .to_str()
                     .unwrap_or(".");
                 debug!("External config parent path: {}", &parent_path);
-                let base_file_config =
-                    load_external_descriptor(parent_path, base_file, true, false);
 
-                // merge configs
+                let base_file_config =
+                    load_descriptor_extended_makefiles(&parent_path, extend_struct);
+
                 merge_external_configs(file_config.clone(), base_file_config)
             }
             None => file_config,
