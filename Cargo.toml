@@ -36,7 +36,7 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
-ci_info = "^0.3"
+ci_info = "^0.4"
 clap = "^2.32"
 colored = "^1.7"
 dirs = "^1.0"
