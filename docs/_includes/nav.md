@@ -59,6 +59,7 @@
         * [Flows/Other](#usage-predefined-flows-flows)
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
+        * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)

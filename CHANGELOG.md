@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.17.0
+
+* Support internal core tasks modifications (private and namespacing) #201
+
 ### v0.16.10 (2019-03-01)
 
 * Fix docs

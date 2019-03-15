@@ -2030,6 +2030,21 @@ In order to prevent loading of internal core tasks and flows, simply add the fol
 skip_core_tasks = true
 ```
 
+<a name="usage-predefined-flows-modify"></a>
+#### Modifing Predefined Tasks/Flows
+
+It is possible to modify the internal core tasks.<br>
+All modifications are defines in the **config.modify_core_tasks** section.
+
+```toml
+[config.modify_core_tasks]
+# if true, all core tasks are set to private (default false)
+private = true 
+
+# if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
+namespace = "default"
+```
+
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.

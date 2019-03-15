@@ -66,6 +66,7 @@
         * [Flows/Other](#usage-predefined-flows-flows)
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
+        * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -2112,6 +2113,21 @@ In order to prevent loading of internal core tasks and flows, simply add the fol
 ```toml
 [config]
 skip_core_tasks = true
+```
+
+<a name="usage-predefined-flows-modify"></a>
+#### Modifing Predefined Tasks/Flows
+
+It is possible to modify the internal core tasks.<br>
+All modifications are defines in the **config.modify_core_tasks** section.
+
+```toml
+[config.modify_core_tasks]
+# if true, all core tasks are set to private (default false)
+private = true 
+
+# if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
+namespace = "default"
 ```
 
 <a name="usage-diff-changes"></a>

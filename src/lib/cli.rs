@@ -109,7 +109,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     if cli_args.list_all_steps {
         cli_commands::list_steps::run(&config, &cli_args.output_format);
     } else if cli_args.diff_execution_plan {
-        let default_config = descriptor::load_internal_descriptors(true, experimental);
+        let default_config = descriptor::load_internal_descriptors(true, experimental, None);
         cli_commands::diff_steps::run(&default_config, &config, &task, &cli_args);
     } else if cli_args.print_only {
         cli_commands::print_steps::print(

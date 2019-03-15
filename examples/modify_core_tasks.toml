@@ -1,0 +1,7 @@
+
+[config.modify_core_tasks]
+private = true
+namespace = "default"
+
+[tasks.empty2]
+run_task = "default::empty"
