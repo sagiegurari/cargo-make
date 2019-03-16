@@ -16,6 +16,7 @@ use crate::command;
 use crate::condition;
 use crate::environment;
 use crate::execution_plan::create as create_execution_plan;
+use crate::functions;
 use crate::installer;
 use crate::logger;
 use crate::profile;
@@ -150,7 +151,9 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         //make sure profile env is not overwritten
         profile::set(&profile_name);
 
-        let updated_step = environment::expand_env(&step);
+        // modify step using env and functions
+        let mut updated_step = functions::run(&step);
+        updated_step = environment::expand_env(&updated_step);
 
         let watch = should_watch(&step.config);
 

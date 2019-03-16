@@ -3,6 +3,7 @@
 ### v0.17.0
 
 * Support internal core tasks modifications (private and namespacing) #201
+* Support splitting command line argument to multiple arguments using functions #202
 
 ### v0.16.10 (2019-03-01)
 

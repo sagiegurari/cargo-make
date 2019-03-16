@@ -159,6 +159,7 @@ mod config;
 mod descriptor;
 mod environment;
 mod execution_plan;
+mod functions;
 mod installer;
 mod io;
 mod legacy;

@@ -2039,10 +2039,74 @@ All modifications are defines in the **config.modify_core_tasks** section.
 ```toml
 [config.modify_core_tasks]
 # if true, all core tasks are set to private (default false)
-private = true 
+private = true
 
 # if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
 namespace = "default"
+```
+
+<a name="usage-functions"></a>
+### Functions
+
+cargo-make comes with built in functions which help extend capabilities missing with environment variables.<br>
+Functions are not supported everywhere in the makefile and are currently only supported in command arguments array structure.<br>
+In order to define a function call, the following format is used ```@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)```<br>
+For example:
+
+```toml
+[tasks.split-example]
+command = "echo"
+args = ["@@split(ENV_VAR,|)"]
+```
+
+<a name="usage-functions-split"></a>
+#### Split
+
+The split function accepts two arguments:
+
+* environment variable name
+* split by character
+
+And returns an array of sub strings.<br>
+This enables to split an environment variable to multiple command arguments, for example:
+
+```toml
+[env]
+MULTIPLE_VALUES="1|2|3|4"
+
+[tasks.split]
+command = "echo"
+args = ["@@split(MULTIPLE_VALUES,|)"]
+
+[tasks.no-split]
+command = "echo"
+args = ["${MULTIPLE_VALUES}"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml split
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: split
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: split
+[cargo-make] INFO - Execute Command: "echo" "1" "2" "3" "4"
+1 2 3 4
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+
+> cargo make --cwd ./examples --makefile functions.toml no-split
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: no-split
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: no-split
+[cargo-make] INFO - Execute Command: "echo" "1|2|3|4"
+1|2|3|4
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
 <a name="usage-diff-changes"></a>

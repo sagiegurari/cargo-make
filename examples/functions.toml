@@ -1,0 +1,10 @@
+[env]
+MULTIPLE_VALUES="1|2|3|4"
+
+[tasks.split]
+command = "echo"
+args = ["@@split(MULTIPLE_VALUES,|)"]
+
+[tasks.no-split]
+command = "echo"
+args = ["${MULTIPLE_VALUES}"]
