@@ -2109,6 +2109,35 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+<a name="usage-functions-remove-empty"></a>
+#### Remove Empty
+
+The remove empty function accepts a single argument:
+
+* environment variable name
+
+And returns either an empty array in case the environment variable is not defined or is empty or it returns the actual environment variable value.
+
+```toml
+[tasks.remove-empty]
+command = "echo"
+args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml remove-empty
+[cargo-make] INFO - cargo make {{ site.version }}
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: remove-empty
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: remove-empty
+[cargo-make] INFO - Execute Command: "echo" "1" "2"
+1 2
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.

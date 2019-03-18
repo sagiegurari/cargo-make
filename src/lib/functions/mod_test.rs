@@ -15,15 +15,27 @@ fn run_function_not_exists() {
 }
 
 #[test]
-fn run_function_valid() {
-    env::set_var("TEST_FUNC_VALUE", "1,2,3,4");
+fn run_function_split() {
+    env::set_var("TEST_SPLIT_FUNC_MOD", "1,2,3,4");
 
     let output = run_function(
         "split",
-        &vec!["TEST_FUNC_VALUE".to_string(), ",".to_string()],
+        &vec!["TEST_SPLIT_FUNC_MOD".to_string(), ",".to_string()],
     );
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
+}
+
+#[test]
+fn run_function_remove_empty() {
+    env::set_var("TEST_REMOVE_EMPTY_FUNC_MOD", "");
+
+    let output = run_function(
+        "remove-empty",
+        &vec!["TEST_REMOVE_EMPTY_FUNC_MOD".to_string()],
+    );
+
+    assert_eq!(output.len(), 0);
 }
 
 #[test]

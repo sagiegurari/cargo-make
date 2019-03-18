@@ -69,6 +69,7 @@
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
+        * [Remove Empty](#usage-functions-remove-empty)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -2192,6 +2193,35 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Running Task: no-split
 [cargo-make] INFO - Execute Command: "echo" "1 2 3 4"
 1 2 3 4
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-functions-remove-empty"></a>
+#### Remove Empty
+
+The remove empty function accepts a single argument:
+
+* environment variable name
+
+And returns either an empty array in case the environment variable is not defined or is empty or it returns the actual environment variable value.
+
+```toml
+[tasks.remove-empty]
+command = "echo"
+args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml remove-empty
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: remove-empty
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: remove-empty
+[cargo-make] INFO - Execute Command: "echo" "1" "2"
+1 2
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```

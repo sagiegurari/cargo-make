@@ -8,3 +8,7 @@ args = ["@@split(MULTIPLE_VALUES,|)"]
 [tasks.no-split]
 command = "echo"
 args = ["${MULTIPLE_VALUES}"]
+
+[tasks.remove-empty]
+command = "echo"
+args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]

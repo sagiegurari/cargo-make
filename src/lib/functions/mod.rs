@@ -7,6 +7,7 @@
 #[path = "./mod_test.rs"]
 mod mod_test;
 
+mod remove_empty_func;
 mod split_func;
 
 use crate::types::{Step, Task};
@@ -14,6 +15,7 @@ use crate::types::{Step, Task};
 fn run_function(function_name: &str, function_args: &Vec<String>) -> Vec<String> {
     match function_name {
         "split" => split_func::invoke(function_args),
+        "remove-empty" => remove_empty_func::invoke(function_args),
         _ => {
             error!("Unknown function: {}", &function_name);
             panic!("Unknown function: {}", &function_name);

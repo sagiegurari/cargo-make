@@ -10,6 +10,12 @@ fn invoke_empty() {
 
 #[test]
 #[should_panic]
+fn invoke_invalid_too_many_args() {
+    invoke(&vec!["TEST".to_string(), "1".to_string(), "2".to_string()]);
+}
+
+#[test]
+#[should_panic]
 fn invoke_invalid_split_by_big() {
     invoke(&vec!["TEST".to_string(), "ab".to_string()]);
 }
