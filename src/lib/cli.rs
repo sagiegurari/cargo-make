@@ -201,6 +201,7 @@ fn run_for_args(
     cli_args.print_only = cmd_matches.is_present("print-steps");
     cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
     cli_args.disable_on_error = cmd_matches.is_present("no-on-error");
+    cli_args.allow_private = cmd_matches.is_present("allow-private");
     cli_args.list_all_steps = cmd_matches.is_present("list-steps");
     cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
@@ -292,6 +293,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("no-on-error")
                 .long("--no-on-error")
                 .help("Disable on error flow even if defined in config sections"),
+        )
+        .arg(
+            Arg::with_name("allow-private")
+                .long("--allow-private")
+                .help("Allow invocation of private tasks"),
         )
         .arg(
             Arg::with_name("envfile")

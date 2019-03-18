@@ -2154,6 +2154,7 @@ USAGE:
     makers [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
+        --allow-private                Allow invocation of private tasks
         --diff-steps                   Runs diff between custom flow and prebuilt flow (requires git)
         --disable-check-for-updates    Disables the update check during startup
         --experimental                 Allows access unsupported experimental predefined tasks.

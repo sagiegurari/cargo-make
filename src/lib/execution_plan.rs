@@ -109,7 +109,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             script_lines.push(cd_line);
 
             let mut make_line = cargo_make_command.to_string();
-            make_line.push_str(" --disable-check-for-updates --no-on-error --loglevel=");
+            make_line
+                .push_str(" --disable-check-for-updates --allow_private --no-on-error --loglevel=");
             make_line.push_str(&log_level);
             make_line.push_str(" ");
             make_line.push_str(&task);

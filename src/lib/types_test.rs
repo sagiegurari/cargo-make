@@ -15,6 +15,7 @@ fn cli_args_new() {
     assert!(cli_args.env_file.is_none());
     assert!(!cli_args.disable_workspace);
     assert!(!cli_args.disable_on_error);
+    assert!(!cli_args.allow_private);
     assert!(!cli_args.disable_check_for_updates);
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);

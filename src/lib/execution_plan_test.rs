@@ -156,13 +156,13 @@ fn create_workspace_task_with_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow_private --no-on-error --loglevel=LEVEL_NAME some_task
 cd -
 cd ./member2
-cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow_private --no-on-error --loglevel=LEVEL_NAME some_task
 cd -
 cd ./dir1/member3
-cargo make --disable-check-for-updates --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow_private --no-on-error --loglevel=LEVEL_NAME some_task
 cd -"#
         .to_string();
 

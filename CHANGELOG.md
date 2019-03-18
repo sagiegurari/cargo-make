@@ -4,6 +4,7 @@
 
 * Support internal core tasks modifications (private and namespacing) #201
 * Support splitting command line argument to multiple arguments using functions #202
+* Add support for namespaces for workspace builds #204
 
 ### v0.16.10 (2019-03-01)
 

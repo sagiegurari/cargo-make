@@ -260,7 +260,7 @@ fn load_external_descriptor(
 pub(crate) fn load_internal_descriptors(
     stable: bool,
     experimental: bool,
-    modif_config: Option<ModifyConfig>,
+    modify_config: Option<ModifyConfig>,
 ) -> Config {
     debug!("Loading base tasks.");
 
@@ -293,8 +293,24 @@ pub(crate) fn load_internal_descriptors(
         base_config.tasks = all_tasks;
     }
 
-    match modif_config {
-        Some(props) => base_config.apply(&props),
+    // reset
+    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", "");
+    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", "");
+
+    match modify_config {
+        Some(props) => {
+            base_config.apply(&props);
+
+            match props.namespace {
+                Some(ref namespace) => {
+                    let prefix = props.get_namespace_prefix();
+
+                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", &namespace);
+                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
+                }
+                None => (),
+            };
+        }
         None => (),
     };
 

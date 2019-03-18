@@ -31,6 +31,7 @@ fn create_flow_info(config: &Config) -> FlowInfo {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     }
 }

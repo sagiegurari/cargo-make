@@ -60,6 +60,8 @@ pub struct CliArgs {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// Allow invocation of private tasks
+    pub allow_private: bool,
     /// Only print the execution plan
     pub print_only: bool,
     /// List all known steps
@@ -91,6 +93,7 @@ impl CliArgs {
             env_file: None,
             disable_workspace: false,
             disable_on_error: false,
+            allow_private: false,
             print_only: false,
             list_all_steps: false,
             diff_execution_plan: false,
@@ -291,6 +294,8 @@ pub struct FlowInfo {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// Allow invocation of private tasks
+    pub allow_private: bool,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
 }
@@ -1268,6 +1273,14 @@ impl ModifyConfig {
                 Some(ref value) => value.len() > 0,
                 None => false,
             }
+        }
+    }
+
+    /// Returns the namespace prefix for task names
+    pub fn get_namespace_prefix(self: &ModifyConfig) -> String {
+        match self.namespace {
+            Some(ref value) => get_namespaced_task_name(value, ""),
+            None => "".to_string(),
         }
     }
 }

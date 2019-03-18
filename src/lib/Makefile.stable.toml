@@ -588,13 +588,13 @@ category = "CI"
 [tasks.workspace-members-ci]
 description = "Runs the ci-flow for every workspace member."
 category = "CI"
-env = { "CARGO_MAKE_MEMBER_TASK" = "ci-flow" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}ci-flow" }
 run_task = "do-on-members"
 
 [tasks.workspace-members-coverage]
 description = "Runs the ci-flow for every workspace member."
 category = "Test"
-env = { "CARGO_MAKE_MEMBER_TASK" = "coverage" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}coverage" }
 run_task = "do-on-members"
 
 [tasks.workspace-coverage]
