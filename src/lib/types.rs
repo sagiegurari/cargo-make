@@ -594,6 +594,8 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// Extend any task based on the defined name
+    pub extend: Option<String>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
@@ -657,6 +659,7 @@ impl Task {
             category: None,
             disabled: None,
             private: None,
+            extend: None,
             workspace: None,
             watch: None,
             condition: None,
@@ -700,6 +703,13 @@ impl Task {
         match modify_config.namespace {
             Some(ref namespace) => {
                 if namespace.len() > 0 {
+                    if self.extend.is_some() {
+                        self.extend = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.extend.clone().unwrap(),
+                        ));
+                    }
+
                     if self.alias.is_some() {
                         self.alias = Some(get_namespaced_task_name(
                             namespace,
@@ -801,6 +811,12 @@ impl Task {
             self.private = task.private.clone();
         } else if override_values {
             self.private = None;
+        }
+
+        if task.extend.is_some() {
+            self.extend = task.extend.clone();
+        } else if override_values {
+            self.extend = None;
         }
 
         if task.workspace.is_some() {
@@ -1008,6 +1024,7 @@ impl Task {
                     category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    extend: override_task.extend.clone(),
                     workspace: self.workspace.clone(),
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
@@ -1099,6 +1116,8 @@ pub struct PlatformOverrideTask {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// Extend any task based on the defined name
+    pub extend: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
     pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
@@ -1156,6 +1175,10 @@ impl PlatformOverrideTask {
 
             if self.private.is_none() && task.private.is_some() {
                 self.private = task.private.clone();
+            }
+
+            if self.extend.is_none() && task.extend.is_some() {
+                self.extend = task.extend.clone();
             }
 
             if self.watch.is_none() && task.watch.is_some() {

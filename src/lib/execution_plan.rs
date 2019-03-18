@@ -34,6 +34,37 @@ fn get_task_name(config: &Config, name: &str) -> String {
     }
 }
 
+fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
+    let actual_task_name = if support_alias {
+        get_task_name(config, name)
+    } else {
+        name.to_string()
+    };
+
+    match config.tasks.get(&actual_task_name) {
+        Some(task_config) => {
+            let mut clone_task = task_config.clone();
+            let normalized_task = clone_task.get_normalized_task();
+
+            match normalized_task.extend {
+                Some(ref extended_task_name) => {
+                    let mut extended_task =
+                        get_normalized_task(config, extended_task_name, support_alias);
+
+                    extended_task.extend(&normalized_task);
+
+                    extended_task
+                }
+                None => normalized_task,
+            }
+        }
+        None => {
+            error!("Task {} not found using name: {}", &name, &actual_task_name);
+            panic!("Task {} not found using name: {}", &name, &actual_task_name);
+        }
+    }
+}
+
 fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String> {
     let mut members = HashSet::new();
 
@@ -163,16 +194,7 @@ fn is_workspace_flow(
         false
     } else {
         // project is a workspace and wasn't disabled via cli, need to check requested task
-        let cli_task = match config.tasks.get(task) {
-            Some(task_config) => {
-                let mut clone_task = task_config.clone();
-                clone_task.get_normalized_task()
-            }
-            None => {
-                error!("Task not found: {}", &task);
-                panic!("Task not found: {}", &task);
-            }
-        };
+        let cli_task = get_normalized_task(config, task, true);
 
         cli_task.workspace.unwrap_or(true)
     }
@@ -187,53 +209,41 @@ fn create_for_step(
     root: bool,
     allow_private: bool,
 ) {
-    let actual_task = get_task_name(config, task);
+    let task_config = get_normalized_task(config, task, true);
 
-    match config.tasks.get(&actual_task) {
-        Some(task_config) => {
-            let is_private = match task_config.private {
-                Some(value) => value,
-                None => false,
-            };
+    debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
 
-            if allow_private || !is_private {
-                let mut clone_task = task_config.clone();
-                let normalized_task = clone_task.get_normalized_task();
-                let add = !normalized_task.disabled.unwrap_or(false);
+    let is_private = match task_config.private {
+        Some(value) => value,
+        None => false,
+    };
 
-                if add {
-                    match task_config.dependencies {
-                        Some(ref dependencies) => {
-                            for dependency in dependencies {
-                                create_for_step(
-                                    &config,
-                                    &dependency,
-                                    steps,
-                                    task_names,
-                                    false,
-                                    true,
-                                );
-                            }
-                        }
-                        _ => debug!("No dependencies found for task: {}", &task),
-                    };
+    if allow_private || !is_private {
+        let add = !task_config.disabled.unwrap_or(false);
 
-                    if !task_names.contains(task) {
-                        steps.push(Step {
-                            name: task.to_string(),
-                            config: normalized_task,
-                        });
-                        task_names.insert(task.to_string());
-                    } else if root {
-                        error!("Circular reference found for task: {}", &task);
+        if add {
+            match task_config.dependencies {
+                Some(ref dependencies) => {
+                    for dependency in dependencies {
+                        create_for_step(&config, &dependency, steps, task_names, false, true);
                     }
                 }
-            } else {
-                error!("Task not found: {}", &task);
-                panic!("Task not found: {}", &task);
+                _ => debug!("No dependencies found for task: {}", &task),
+            };
+
+            if !task_names.contains(task) {
+                steps.push(Step {
+                    name: task.to_string(),
+                    config: task_config,
+                });
+                task_names.insert(task.to_string());
+            } else if root {
+                error!("Circular reference found for task: {}", &task);
             }
         }
-        None => error!("Task not found: {}", &task),
+    } else {
+        error!("Task {} is private", &task);
+        panic!("Task {} is private", &task);
     }
 }
 
@@ -250,21 +260,17 @@ pub(crate) fn create(
 
     if !sub_flow {
         match config.config.init_task {
-            Some(ref task) => match config.tasks.get(task) {
-                Some(task_config) => {
-                    let mut clone_task = task_config.clone();
-                    let normalized_task = clone_task.get_normalized_task();
-                    let add = !normalized_task.disabled.unwrap_or(false);
+            Some(ref task) => {
+                let task_config = get_normalized_task(config, task, false);
+                let add = !task_config.disabled.unwrap_or(false);
 
-                    if add {
-                        steps.push(Step {
-                            name: task.to_string(),
-                            config: normalized_task,
-                        });
-                    }
+                if add {
+                    steps.push(Step {
+                        name: task.to_string(),
+                        config: task_config,
+                    });
                 }
-                None => error!("Task not found: {}", &task),
-            },
+            }
             None => debug!("Init task not defined."),
         };
     }
@@ -295,21 +301,17 @@ pub(crate) fn create(
     if !sub_flow {
         // always add end task even if already executed due to some depedency
         match config.config.end_task {
-            Some(ref task) => match config.tasks.get(task) {
-                Some(task_config) => {
-                    let mut clone_task = task_config.clone();
-                    let normalized_task = clone_task.get_normalized_task();
-                    let add = !normalized_task.disabled.unwrap_or(false);
+            Some(ref task) => {
+                let task_config = get_normalized_task(config, task, false);
+                let add = !task_config.disabled.unwrap_or(false);
 
-                    if add {
-                        steps.push(Step {
-                            name: task.to_string(),
-                            config: normalized_task,
-                        });
-                    }
+                if add {
+                    steps.push(Step {
+                        name: task.to_string(),
+                        config: task_config,
+                    });
                 }
-                None => error!("Task not found: {}", &task),
-            },
+            }
             None => debug!("End task not defined."),
         };
     }

@@ -25,7 +25,10 @@
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
     * [Ignoring Errors](#usage-ignoring-errors)
-    * [Platform Override](#usage-platform-override)
+    * [Extending Tasks](#usage-extending-tasks)
+        * [Task Override](#usage-task-override)
+        * [Platform Override](#usage-platform-override)
+        * [Extend Attribute](#usage-task-extend-attribute)
     * [Environment Variables](#usage-env)
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)
@@ -889,8 +892,52 @@ For those tasks, you can add the ignore_errors=true attribute.
 ignore_errors = true
 ```
 
+<a name="usage-extending-tasks"></a>
+### Extending Tasks
+
+There are multiple ways of extending tasks in the same or from extended makefiles.
+
+* [Task Override](#usage-task-override)
+* [Platform Override](#usage-platform-override)
+* [Extend Attribute](#usage-task-extend-attribute)
+
+<a name="usage-task-override"></a>
+#### Task Override
+cargo-make comes with many predefined tasks and flows that can be used without redefining them in your project.<br>
+However in some cases, you would like to change them a bit to fit your needs without rewriting the entire task.<br>
+Let’s take for example the **build** task which is predefined internally inside cargo-make as follows:
+
+```toml
+[tasks.build]
+description = "Runs the rust compiler."
+category = "Build"
+command = "cargo"
+args = ["build", "--all-features"]
+```
+
+If for example you do not want to use the **--all-features** mode, you can just change the args of the task in your external Makefile.toml as follows:
+
+```toml
+[tasks.build]
+args = ["build"]
+```
+
+When cargo-make starts up, it will load the external Makefile.toml and the internal makefile definitions and will merge them.<br>
+Since the external file overrides the internal definitions, only the args attribute for the **build** task which was redefined,
+will override the args attribute which was defined internally, and the actual result would be:
+
+```toml
+[tasks.build]
+description = "Runs the rust compiler."
+category = "Build"
+command = "cargo"
+args = ["build"]
+```
+
+The same process can be used to override tasks from other makefiles loaded using the extend keyword from [Extending External Makefiles](#usage-workspace-extending-external-makefile) section.
+
 <a name="usage-platform-override"></a>
-### Platform Override
+#### Platform Override
 In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>
 For example:
 
@@ -945,6 +992,56 @@ This means, however, that you will have to redefine all attributes in the overri
 **Important - alias comes before checking override task so if parent task has an alias it will be redirected to that task instead of the override.**<br>
 **To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
 **In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
+
+<a name="usage-task-extend-attribute"></a>
+#### Extend Attribute
+Until now, the override capability enabled to override the task with the same name from different makefile or in different platforms.<br>
+However, the **extend** keyword is also available on the task level and enables you to override any task by name.<br>
+Let's look at the following example:
+
+```toml
+[tasks.1]
+category = "1"
+description = "1"
+command = "echo"
+args = ["1"]
+
+[tasks.2]
+extend = "1"
+category = "2"
+args = ["2"]
+
+[tasks.3]
+extend = "2"
+args = ["3"]
+```
+
+When task **3** is loaded, it loads task **2** which loads task **1**.<br>
+The final task **3** definition would be:
+
+```toml
+[tasks.3]
+extend = "2"
+category = "2"
+description = "1"
+command = "echo"
+args = ["3"]
+```
+
+We run task **3** the output would be:
+
+```console
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: task_extend.toml
+[cargo-make] INFO - Task: 3
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: 3
+[cargo-make] INFO - Execute Command: "echo" "3"
+3
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
 
 <a name="usage-env"></a>
 ### Environment Variables

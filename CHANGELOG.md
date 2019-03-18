@@ -6,6 +6,7 @@
 * Support splitting command line argument to multiple arguments using functions #202
 * Add support for namespaces for workspace builds #204
 * New remove_empty function #205
+* Add extend capability for tasks #206
 
 ### v0.16.10 (2019-03-01)
 

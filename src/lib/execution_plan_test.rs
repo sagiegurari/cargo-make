@@ -540,6 +540,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -563,6 +564,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -586,6 +588,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -708,4 +711,91 @@ fn should_skip_workspace_member_found_glob() {
     let skip = should_skip_workspace_member("members/test", &skipped_members);
 
     assert!(skip);
+}
+
+#[test]
+fn get_normalized_task_multi_extend() {
+    let mut task1 = Task::new();
+    task1.category = Some("1".to_string());
+    task1.description = Some("1".to_string());
+    task1.command = Some("echo".to_string());
+    task1.args = Some(vec!["1".to_string()]);
+
+    let platform_task = PlatformOverrideTask {
+        clear: None,
+        disabled: None,
+        private: None,
+        extend: None,
+        watch: None,
+        condition: None,
+        condition_script: None,
+        install_crate: None,
+        install_crate_args: None,
+        command: None,
+        ignore_errors: None,
+        force: Some(true),
+        env: None,
+        cwd: None,
+        install_script: None,
+        args: None,
+        script: None,
+        script_runner: None,
+        script_extension: None,
+        run_task: None,
+        dependencies: None,
+        toolchain: None,
+    };
+
+    let mut task2 = Task::new();
+    task2.extend = Some("1".to_string());
+    task2.category = Some("2".to_string());
+    task2.args = Some(vec!["2".to_string()]);
+    task2.linux = Some(platform_task.clone());
+    task2.mac = Some(platform_task.clone());
+    task2.windows = Some(platform_task.clone());
+
+    let mut task3 = Task::new();
+    task3.extend = Some("2".to_string());
+    task3.args = Some(vec!["3".to_string()]);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("1".to_string(), task1);
+    config.tasks.insert("2".to_string(), task2);
+    config.tasks.insert("3".to_string(), task3);
+
+    let task = get_normalized_task(&config, "3", true);
+
+    assert_eq!(task.category.unwrap(), "2");
+    assert_eq!(task.description.unwrap(), "1");
+    assert_eq!(task.command.unwrap(), "echo");
+    assert_eq!(task.args.unwrap(), vec!["3".to_string()]);
+    assert_eq!(task.extend.unwrap(), "2");
+    assert!(task.force.unwrap());
+}
+
+#[test]
+fn get_normalized_task_simple() {
+    let mut task1 = Task::new();
+    task1.category = Some("1".to_string());
+    task1.description = Some("1".to_string());
+    task1.command = Some("echo".to_string());
+    task1.args = Some(vec!["1".to_string()]);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("1".to_string(), task1);
+
+    let task = get_normalized_task(&config, "1", true);
+
+    assert_eq!(task.category.unwrap(), "1");
+    assert_eq!(task.description.unwrap(), "1");
+    assert_eq!(task.command.unwrap(), "echo");
+    assert_eq!(task.args.unwrap(), vec!["1".to_string()]);
 }
