@@ -28,16 +28,24 @@ fn get_function_name(function_string: &str) -> Option<String> {
     }
 }
 
+fn get_function_argument(value: &str) -> String {
+    let str_value = if value.len() == 1 {
+        value
+    } else {
+        value.trim()
+    };
+
+    str_value.to_string()
+}
+
 fn get_function_arguments(function_string: &str) -> Option<Vec<String>> {
     if function_string.starts_with("(") && function_string.ends_with(")") {
-        let args_string = function_string[1..(function_string.len() - 1)]
-            .trim()
-            .to_string();
+        let args_string = function_string[1..(function_string.len() - 1)].to_string();
 
         let arguments = if args_string.len() > 0 {
             args_string
                 .split(",")
-                .map(|str_value| str_value.trim().to_string())
+                .map(|str_value| get_function_argument(&str_value))
                 .collect()
         } else {
             vec![]

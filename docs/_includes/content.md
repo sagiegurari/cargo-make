@@ -2072,11 +2072,11 @@ This enables to split an environment variable to multiple command arguments, for
 
 ```toml
 [env]
-MULTIPLE_VALUES="1|2|3|4"
+MULTIPLE_VALUES="1 2 3 4"
 
 [tasks.split]
 command = "echo"
-args = ["@@split(MULTIPLE_VALUES,|)"]
+args = ["@@split(MULTIPLE_VALUES, )"]
 
 [tasks.no-split]
 command = "echo"
@@ -2103,8 +2103,8 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
 [cargo-make] INFO - Running Task: no-split
-[cargo-make] INFO - Execute Command: "echo" "1|2|3|4"
-1|2|3|4
+[cargo-make] INFO - Execute Command: "echo" "1 2 3 4"
+1 2 3 4
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```

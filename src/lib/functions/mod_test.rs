@@ -41,6 +41,34 @@ fn get_function_name_invalid() {
 }
 
 #[test]
+fn get_function_argument_empty() {
+    let output = get_function_argument("");
+
+    assert_eq!(output, "");
+}
+
+#[test]
+fn get_function_argument_single_char() {
+    let output = get_function_argument(" ");
+
+    assert_eq!(output, " ");
+}
+
+#[test]
+fn get_function_argument_spaces() {
+    let output = get_function_argument("     ");
+
+    assert_eq!(output, "");
+}
+
+#[test]
+fn get_function_argument_mixed() {
+    let output = get_function_argument(" |");
+
+    assert_eq!(output, "|");
+}
+
+#[test]
 fn get_function_arguments_missing_start() {
     let output = get_function_arguments("1,2,3,4)");
 
@@ -85,9 +113,9 @@ fn get_function_arguments_multiple_with_spaces() {
 
 #[test]
 fn evaluate_and_run_valid() {
-    env::set_var("TEST_RUN_FUNC_VALUE", "1|2|3|4");
+    env::set_var("TEST_RUN_FUNC_VALUE", "1 2 3 4");
 
-    let output = evaluate_and_run("@@split(TEST_RUN_FUNC_VALUE, |)");
+    let output = evaluate_and_run("@@split(TEST_RUN_FUNC_VALUE, )");
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
@@ -112,7 +140,7 @@ fn modify_arguments_with_functions() {
     let mut task = Task::new();
     task.args = Some(vec![
         "start".to_string(),
-        "@@split(TEST_RUN_FUNC_VALUE, |)".to_string(),
+        "@@split(TEST_MOD_ARGS_FUNC_VALUE, |)".to_string(),
         "end".to_string(),
     ]);
 
@@ -123,12 +151,12 @@ fn modify_arguments_with_functions() {
 
 #[test]
 fn run_with_functions() {
-    env::set_var("TEST_STEP_FUNC_VALUE", "1|2|3|4");
+    env::set_var("TEST_STEP_FUNC_VALUE", "1 2 3 4");
 
     let mut task = Task::new();
     task.args = Some(vec![
         "start".to_string(),
-        "@@split(TEST_RUN_FUNC_VALUE, |)".to_string(),
+        "@@split(TEST_STEP_FUNC_VALUE, )".to_string(),
         "end".to_string(),
     ]);
     let mut step = Step {

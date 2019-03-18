@@ -21,10 +21,19 @@ fn invoke_invalid_split_by_empty() {
 }
 
 #[test]
-fn invoke_exists_splitted() {
+fn invoke_exists_splitted_comma() {
     env::set_var("TEST_SPLIT_VALUE", "1,2,3,4");
 
     let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), ",".to_string()]);
+
+    assert_eq!(output, vec!["1", "2", "3", "4"]);
+}
+
+#[test]
+fn invoke_exists_splitted_space() {
+    env::set_var("TEST_SPLIT_VALUE", "1 2 3 4");
+
+    let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), " ".to_string()]);
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
