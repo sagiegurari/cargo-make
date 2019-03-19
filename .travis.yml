@@ -53,8 +53,10 @@ env:
     - RUST_BACKTRACE=1
     - RUSTFLAGS="-C link-dead-code"
     - CARGO_MAKE_RUN_CODECOV=true
+before_script:
+  - cargo install --debug cargo-make
 script:
-  - cargo run --bin cargo-make -- make ci-flow
+  - cargo make ci-flow
 deploy:
   provider: releases
   api_key:
