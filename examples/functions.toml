@@ -1,5 +1,6 @@
 [env]
 MULTIPLE_VALUES="1|2|3|4"
+TRIM_VALUE="   123    "
 
 [tasks.split]
 command = "echo"
@@ -12,3 +13,7 @@ args = ["${MULTIPLE_VALUES}"]
 [tasks.remove-empty]
 command = "echo"
 args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
+
+[tasks.trim]
+command = "echo"
+args = ["@@trim(TRIM_VALUE)"]

@@ -2,11 +2,13 @@
 
 ### v0.17.0
 
+* Add extend capability for tasks #206
 * Support internal core tasks modifications (private and namespacing) #201
 * Support splitting command line argument to multiple arguments using functions #202
-* Add support for namespaces for workspace builds #204
 * New remove_empty function #205
-* Add extend capability for tasks #206
+* New trim function #208
+* Add support for namespaces for workspace builds #204
+* Add kcov version validation #203
 
 ### v0.16.10 (2019-03-01)
 

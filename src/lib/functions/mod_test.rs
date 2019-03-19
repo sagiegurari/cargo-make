@@ -39,6 +39,15 @@ fn run_function_remove_empty() {
 }
 
 #[test]
+fn run_function_trim() {
+    env::set_var("TEST_TRIM_FUNC_MOD", "    ");
+
+    let output = run_function("trim", &vec!["TEST_TRIM_FUNC_MOD".to_string()]);
+
+    assert_eq!(output.len(), 0);
+}
+
+#[test]
 fn get_function_name_valid() {
     let output = get_function_name("test(123)");
 

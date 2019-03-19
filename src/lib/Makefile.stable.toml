@@ -628,7 +628,12 @@ windows_alias = "empty"
 condition = { env_set = [ "KCOV_VERSION" ] }
 install_script = [
 '''
-command -v kcov >/dev/null 2>&1 || {
+# get help info to fetch all supported command line arguments
+KCOV_HELP_INFO=`kcov --help` || true
+
+# check needed arguments are supported, else install
+if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
+    # check we are on a supported platform
     if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
         sudo apt-get update || true
         sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
@@ -644,7 +649,7 @@ command -v kcov >/dev/null 2>&1 || {
         cd ../..
         rm -rf kcov-$KCOV_VERSION
     fi
-}
+fi
 '''
 ]
 script = [

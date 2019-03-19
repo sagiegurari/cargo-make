@@ -66,6 +66,7 @@
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
         * [Remove Empty](#usage-functions-remove-empty)
+        * [Trim](#usage-functions-trim)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)

@@ -7,8 +7,8 @@
 #[path = "./list_steps_test.rs"]
 mod list_steps_test;
 
-use crate::types::Config;
 use crate::execution_plan;
+use crate::types::Config;
 use std::collections::BTreeMap;
 
 pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
