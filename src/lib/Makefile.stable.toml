@@ -626,6 +626,7 @@ description = "Installs (if missing) and runs coverage using kcov (not supported
 category = "Test"
 windows_alias = "empty"
 condition = { env_set = [ "KCOV_VERSION" ] }
+script_runner = "bash"
 install_script = [
 '''
 # get help info to fetch all supported command line arguments
