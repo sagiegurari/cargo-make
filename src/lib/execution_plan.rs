@@ -34,7 +34,7 @@ fn get_task_name(config: &Config, name: &str) -> String {
     }
 }
 
-fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
+pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
     let actual_task_name = if support_alias {
         get_task_name(config, name)
     } else {
