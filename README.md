@@ -24,7 +24,6 @@
         * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
-    * [Ignoring Errors](#usage-ignoring-errors)
     * [Extending Tasks](#usage-extending-tasks)
         * [Task Override](#usage-task-override)
         * [Platform Override](#usage-platform-override)
@@ -35,6 +34,7 @@
         * [Command Line](#usage-env-cli)
         * [Env File](#usage-env-file)
         * [Global](#usage-env-global)
+    * [Ignoring Errors](#usage-ignoring-errors)
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)
         * [Scripts](#usage-conditions-script)
@@ -56,6 +56,10 @@
         * [Conditions](#usage-profiles-conditions)
     * [Private Tasks](#usage-private-tasks)
     * [Watch](#usage-watch)
+    * [Functions](#usage-functions)
+        * [Split](#usage-functions-split)
+        * [Remove Empty](#usage-functions-remove-empty)
+        * [Trim](#usage-functions-trim)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
@@ -70,10 +74,6 @@
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
-    * [Functions](#usage-functions)
-        * [Split](#usage-functions-split)
-        * [Remove Empty](#usage-functions-remove-empty)
-        * [Trim](#usage-functions-trim)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -96,7 +96,7 @@
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
 A task is a command, script, rust code or other sub tasks to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
-With a simple toml based configuration file, you can define a multi platform build script that can run build, test, generate documentation,run bench tests, run security validations and more, executed by running a single command.
+With a simple toml based configuration file, you can define a multi platform build script that can run build, test, generate documentation, run bench tests, run security validations and more, executed by running a single command.
 
 <a name="installation"></a>
 ## Installation
@@ -179,15 +179,16 @@ cargo make --makefile simple-example.toml my-flow
 The output would look something like this:
 
 ```console
-[cargo-make] info - Using Build File: simple-example.toml
-[cargo-make] info - Task: my-flow
-[cargo-make] info - Setting Up Env.
-[cargo-make] info - Running Task: format
-[cargo-make] info - Execute Command: "cargo" "fmt" "--" "--write-mode=overwrite"
-[cargo-make] info - Running Task: clean
-[cargo-make] info - Execute Command: "cargo" "clean"
-[cargo-make] info - Running Task: build
-[cargo-make] info - Execute Command: "cargo" "build"
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: simple-example.toml
+[cargo-make] INFO - Task: my-flow
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: format
+[cargo-make] INFO - Execute Command: "cargo" "fmt" "--" "--write-mode=overwrite"
+[cargo-make] INFO - Running Task: clean
+[cargo-make] INFO - Execute Command: "cargo" "clean"
+[cargo-make] INFO - Running Task: build
+[cargo-make] INFO - Execute Command: "cargo" "build"
    Compiling bitflags v0.9.1
    Compiling unicode-width v0.1.4
    Compiling quote v0.3.15
@@ -210,8 +211,8 @@ The output would look something like this:
    Compiling serde_derive v1.0.8
    Compiling cargo-make v0.1.2 (file:///home/ubuntu/workspace)
     Finished dev [unoptimized + debuginfo] target(s) in 79.75 secs
-[cargo-make] info - Running Task: test
-[cargo-make] info - Execute Command: "cargo" "test"
+[cargo-make] INFO - Running Task: test
+[cargo-make] INFO - Execute Command: "cargo" "test"
    Compiling cargo-make v0.1.2 (file:///home/ubuntu/workspace)
     Finished dev [unoptimized + debuginfo] target(s) in 5.1 secs
      Running target/debug/deps/cargo_make-d5f8d30d73043ede
@@ -230,8 +231,8 @@ test log::tests::create_error ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
-[cargo-make] info - Running Task: my-flow
-[cargo-make] info - Build done in 72 seconds.
+[cargo-make] INFO - Running Task: my-flow
+[cargo-make] INFO - Build done in 72 seconds.
 ```
 
 We now created a build script that can run on any platform.
@@ -294,14 +295,14 @@ Task D however will not be invoked twice.<br>
 The output of the execution will look something like this:
 
 ```console
-[cargo-make] info - Task: A
-[cargo-make] info - Setting Up Env.
-[cargo-make] info - Running Task: D
-[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/CNuU47tIix.sh"
+[cargo-make] INFO - Task: A
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: D
+[cargo-make] INFO - Execute Command: "sh" "/tmp/cargo-make/CNuU47tIix.sh"
 hello
-[cargo-make] info - Running Task: B
-[cargo-make] info - Running Task: C
-[cargo-make] info - Running Task: A
+[cargo-make] INFO - Running Task: B
+[cargo-make] INFO - Running Task: C
+[cargo-make] INFO - Running Task: A
 ```
 
 As you can see, 'hello' was printed once by task D as it was only invoked once.<br>
@@ -335,17 +336,17 @@ Now C depends on D2 and D2 is an alias for D.<br>
 Execution output of such make file would like as follows:
 
 ```console
-[cargo-make] info - Task: A
-[cargo-make] info - Setting Up Env.
-[cargo-make] info - Running Task: D
-[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/HP0UD7pgoX.sh"
+[cargo-make] INFO - Task: A
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: D
+[cargo-make] INFO - Execute Command: "sh" "/tmp/cargo-make/HP0UD7pgoX.sh"
 hello
-[cargo-make] info - Running Task: B
-[cargo-make] info - Running Task: D2
-[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/TuuZJkqCE2.sh"
+[cargo-make] INFO - Running Task: B
+[cargo-make] INFO - Running Task: D2
+[cargo-make] INFO - Execute Command: "sh" "/tmp/cargo-make/TuuZJkqCE2.sh"
 hello
-[cargo-make] info - Running Task: C
-[cargo-make] info - Running Task: A
+[cargo-make] INFO - Running Task: C
+[cargo-make] INFO - Running Task: A
 ```
 
 Now you can see that 'hello' was printed twice.
@@ -548,6 +549,8 @@ args are: -o=arg1 -o=arg2 -o=arg3
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+Command line arguments can also contain built in [functions which are explained later on in this document.](#usage-functions)
+
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
 Below simple script which prints hello world.
@@ -618,6 +621,8 @@ args are:
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
+
+**Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
@@ -770,7 +775,7 @@ Hello, World!
 
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
-There is no real need to define the tasks that were shown in the previous examples.<br>
+There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
 tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml).<br>
@@ -778,11 +783,13 @@ Lets take the build task definition which comes already in the default toml:
 
 ```toml
 [tasks.build]
+description = "Runs the rust compiler."
+category = "Build"
 command = "cargo"
-args = ["build"]
+args = ["build", "--all-features"]
 ```
 
-If for example, you would like to add verbose output to it, you would just need to change the args and add the --verbose as follows:
+If for example, you would like to add verbose output to it and remove the **--all-features** flag, you would just need to change the args and add the --verbose as follows:
 
 ```toml
 [tasks.build]
@@ -810,7 +817,7 @@ args = [
 ]
 ```
 
-You can also extend additional external files from your external file by using the extend attribute, for example:
+You can also extend additional external files from your external makefile by using the extend attribute, for example:
 
 ```toml
 extend = "my_common_makefile.toml"
@@ -839,7 +846,7 @@ extend = { path = "does_not_exist_makefile.toml", optional = true }
 ```
 
 You can also define a list of makefiles to extend from.<br>
-All be loaded in the order you define.<br>
+All will be loaded in the order you define.<br>
 For example:
 
 ```toml
@@ -857,11 +864,13 @@ The workspace level makefile **env** section must contain the following environm
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
+This allows you to maintina a single makefile for the entire workspace but having access to those custom tasks in every member crate.
+
 <a name="usage-load-scripts"></a>
 #### Load Scripts
 In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
 Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
-The extend however, only knows to find the extending files in the file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
+The extend however, only knows to find the extending files in the localt file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
 
 Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
 This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
@@ -882,16 +891,6 @@ load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
 
 You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
 If needed, you can override the load_script per platform using the **linux_load_script**, **windows_load_script** and **mac_load_script** attributes.
-
-<a name="usage-ignoring-errors"></a>
-### Ignoring Errors
-In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
-For those tasks, you can add the ignore_errors=true attribute.
-
-```toml
-[tasks.unstable_task]
-ignore_errors = true
-```
 
 <a name="usage-extending-tasks"></a>
 ### Extending Tasks
@@ -958,23 +957,23 @@ If you run cargo make with task 'hello-world' on linux, it would redirect to hel
 In linux the output would be:
 
 ```console
-[cargo-make] info - Task: hello-world
-[cargo-make] info - Setting Up Env.
-[cargo-make] info - Running Task: hello-world
-[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/kOUJfw8Vfc.sh"
+[cargo-make] INFO - Task: hello-world
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: hello-world
+[cargo-make] INFO - Execute Command: "sh" "/tmp/cargo-make/kOUJfw8Vfc.sh"
 Hello World From Linux
-[cargo-make] info - Build done in 0 seconds.
+[cargo-make] INFO - Build done in 0 seconds.
 ```
 
 While on other platforms
 
 ```console
-[cargo-make] info - Task: hello-world
-[cargo-make] info - Setting Up Env.
-[cargo-make] info - Running Task: hello-world
-[cargo-make] info - Execute Command: "sh" "/tmp/cargo-make/2gYnulOJLP.sh"
+[cargo-make] INFO - Task: hello-world
+[cargo-make] INFO - Setting Up Env.
+[cargo-make] INFO - Running Task: hello-world
+[cargo-make] INFO - Execute Command: "sh" "/tmp/cargo-make/2gYnulOJLP.sh"
 Hello World From Unknown
-[cargo-make] info - Build done in 0 seconds.
+[cargo-make] INFO - Build done in 0 seconds.
 ```
 
 In the override task you can define any attribute that will override the attribute of the parent task, while undefined attributes will use the value from the parent task and will not be modified.<br>
@@ -1046,7 +1045,14 @@ We run task **3** the output would be:
 
 <a name="usage-env"></a>
 ### Environment Variables
-cargo-make enables you to defined environment variables in several ways.
+cargo-make enables you to defined environment variables in several ways.<br>
+Environment variables can later be used in commands, scripts, conditions, functions and more, so it is important to have a powerful way to define them for your build.
+
+* [Global Configuration](#usage-env-config)
+* [Task](#usage-env-task)
+* [Command Line](#usage-env-cli)
+* [Env File](#usage-env-file)
+* [Global](#usage-env-global)
 
 <a name="usage-env-config"></a>
 #### Global Configuration
@@ -1163,6 +1169,16 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
 
+<a name="usage-ignoring-errors"></a>
+### Ignoring Errors
+In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
+For those tasks, you can add the ignore_errors=true attribute.
+
+```toml
+[tasks.unstable_task]
+ignore_errors = true
+```
+
 <a name="usage-conditions"></a>
 ### Conditions
 Conditions allow you to evaluate at runtime if to run a specific task or not.<br>
@@ -1171,8 +1187,8 @@ The task dependencies however are not affected by parent task condition outcome.
 
 There are two types of conditions:
 
-* Criteria
-* Scripts
+* [Criteria](#usage-conditions-structure)
+* [Scripts](#usage-conditions-script)
 
 The task runner will evaluate any condition defined and a task definition may contain both types at the same time.
 
@@ -1181,7 +1197,7 @@ The task runner will evaluate any condition defined and a task definition may co
 The condition attribute may define multiple parameters to validate.<br>
 All defined parameters must be valid for the condition as a whole to be true and enable the task to run.
 
-Below is an example of a condition script that checks that we are running on windows or linux (but not mac) and that we are running on beta or nightly (but not stable):
+Below is an example of a condition definition that checks that we are running on windows or linux (but not mac) and that we are running on beta or nightly (but not stable):
 
 ```toml
 [tasks.test-condition]
@@ -1228,7 +1244,7 @@ Condition scripts can be used to ensure that the task is only invoked if a speci
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
-For example, if you have a coverage flow that should only be invoked on linux in a travis build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
+For example, if you have a coverage flow that should only be invoked on linux in a CI build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
 
 ```toml
 [tasks.ci-coverage-flow]
@@ -1245,7 +1261,7 @@ dependencies = [
 ]
 ```
 
-The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a travis build and the CARGO_MAKE_RUN_CODECOV environment variable is set to "true".<br>
+The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a CI build and the CARGO_MAKE_RUN_CODECOV environment variable is set to "true".<br>
 Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
 
@@ -1763,6 +1779,179 @@ args = [ "Triggered by watch" ]
 watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*" }
 ```
 
+<a name="usage-functions"></a>
+### Functions
+
+cargo-make comes with built in functions which help extend capabilities missing with environment variables.<br>
+Functions are not supported everywhere in the makefile and are currently only supported in command arguments array structure.<br>
+In order to define a function call, the following format is used ```@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)```<br>
+For example:
+
+```toml
+[tasks.split-example]
+command = "echo"
+args = ["@@split(ENV_VAR,|)"]
+```
+
+Currently Supported Functions:
+
+* [Split](#usage-functions-split)
+* [Remove Empty](#usage-functions-remove-empty)
+* [Trim](#usage-functions-trim)
+
+<a name="usage-functions-split"></a>
+#### Split
+
+The split function accepts two arguments:
+
+* environment variable name
+* split by character
+
+And returns an array of sub strings.<br>
+This enables to split an environment variable to multiple command arguments, for example:
+
+```toml
+[env]
+MULTIPLE_VALUES="1 2 3 4"
+
+[tasks.split]
+command = "echo"
+args = ["@@split(MULTIPLE_VALUES, )"]
+
+[tasks.no-split]
+command = "echo"
+args = ["${MULTIPLE_VALUES}"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml split
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: split
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: split
+[cargo-make] INFO - Execute Command: "echo" "1" "2" "3" "4"
+1 2 3 4
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+
+> cargo make --cwd ./examples --makefile functions.toml no-split
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: no-split
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: no-split
+[cargo-make] INFO - Execute Command: "echo" "1 2 3 4"
+1 2 3 4
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-functions-remove-empty"></a>
+#### Remove Empty
+
+The remove empty function accepts a single argument:
+
+* environment variable name
+
+It will completely remove that command line argument in case the environment variable is not defined or is empty or it returns the actual environment variable value.
+
+```toml
+[tasks.remove-empty]
+command = "echo"
+args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml remove-empty
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: remove-empty
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: remove-empty
+[cargo-make] INFO - Execute Command: "echo" "1" "2"
+1 2
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-functions-trim"></a>
+#### Trim
+
+The trim function accepts the following arguments:
+
+* environment variable name
+* optionally a trim type: start/end (if not provided, it will trim both start and end)
+
+It will completely remove that command line argument in case the environment variable is not defined or after it is trimmed, it is empty or it returns the actual environment variable value.
+
+```toml
+[env]
+TRIM_VALUE="   123    "
+
+[tasks.trim]
+command = "echo"
+args = ["@@trim(TRIM_VALUE)"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml remove-empty
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: trim
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: trim
+[cargo-make] INFO - Execute Command: "echo" "123"
+123
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+Below are examples when using the start/end attributes:
+
+```toml
+[env]
+TRIM_VALUE="   123    "
+
+[tasks.trim-start]
+command = "echo"
+args = ["@@trim(TRIM_VALUE,start)"]
+
+[tasks.trim-end]
+command = "echo"
+args = ["@@trim(TRIM_VALUE,end)"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml trim-start
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: trim-start
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: trim-start
+[cargo-make] INFO - Execute Command: "echo" "123    "
+123
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+
+> cargo make --cwd ./examples --makefile functions.toml trim-end
+[cargo-make] INFO - cargo make 0.16.10
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: trim-end
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: init
+[cargo-make] INFO - Running Task: trim-end
+[cargo-make] INFO - Execute Command: "echo" "   123"
+   123
+[cargo-make] INFO - Running Task: end
+[cargo-make] INFO - Build Done  in 0 seconds.
+```
+
 <a name="usage-ci"></a>
 ### Continuous Integration
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
@@ -2231,137 +2420,6 @@ private = true
 
 # if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
 namespace = "default"
-```
-
-<a name="usage-functions"></a>
-### Functions
-
-cargo-make comes with built in functions which help extend capabilities missing with environment variables.<br>
-Functions are not supported everywhere in the makefile and are currently only supported in command arguments array structure.<br>
-In order to define a function call, the following format is used ```@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)```<br>
-For example:
-
-```toml
-[tasks.split-example]
-command = "echo"
-args = ["@@split(ENV_VAR,|)"]
-```
-
-Currently Supported Functions:
-
-* [Split](#usage-functions-split)
-* [Remove Empty](#usage-functions-remove-empty)
-* [Trim](#usage-functions-trim)
-
-<a name="usage-functions-split"></a>
-#### Split
-
-The split function accepts two arguments:
-
-* environment variable name
-* split by character
-
-And returns an array of sub strings.<br>
-This enables to split an environment variable to multiple command arguments, for example:
-
-```toml
-[env]
-MULTIPLE_VALUES="1 2 3 4"
-
-[tasks.split]
-command = "echo"
-args = ["@@split(MULTIPLE_VALUES, )"]
-
-[tasks.no-split]
-command = "echo"
-args = ["${MULTIPLE_VALUES}"]
-```
-
-```console
-> cargo make --cwd ./examples --makefile functions.toml split
-[cargo-make] INFO - cargo make 0.16.10
-[cargo-make] INFO - Using Build File: functions.toml
-[cargo-make] INFO - Task: split
-[cargo-make] INFO - Profile: development
-[cargo-make] INFO - Running Task: init
-[cargo-make] INFO - Running Task: split
-[cargo-make] INFO - Execute Command: "echo" "1" "2" "3" "4"
-1 2 3 4
-[cargo-make] INFO - Running Task: end
-[cargo-make] INFO - Build Done  in 0 seconds.
-
-> cargo make --cwd ./examples --makefile functions.toml no-split
-[cargo-make] INFO - cargo make 0.16.10
-[cargo-make] INFO - Using Build File: functions.toml
-[cargo-make] INFO - Task: no-split
-[cargo-make] INFO - Profile: development
-[cargo-make] INFO - Running Task: init
-[cargo-make] INFO - Running Task: no-split
-[cargo-make] INFO - Execute Command: "echo" "1 2 3 4"
-1 2 3 4
-[cargo-make] INFO - Running Task: end
-[cargo-make] INFO - Build Done  in 0 seconds.
-```
-
-<a name="usage-functions-remove-empty"></a>
-#### Remove Empty
-
-The remove empty function accepts a single argument:
-
-* environment variable name
-
-And returns either an empty array in case the environment variable is not defined or is empty or it returns the actual environment variable value.
-
-```toml
-[tasks.remove-empty]
-command = "echo"
-args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
-```
-
-```console
-> cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.16.10
-[cargo-make] INFO - Using Build File: functions.toml
-[cargo-make] INFO - Task: remove-empty
-[cargo-make] INFO - Profile: development
-[cargo-make] INFO - Running Task: init
-[cargo-make] INFO - Running Task: remove-empty
-[cargo-make] INFO - Execute Command: "echo" "1" "2"
-1 2
-[cargo-make] INFO - Running Task: end
-[cargo-make] INFO - Build Done  in 0 seconds.
-```
-
-<a name="usage-functions-trim"></a>
-#### Trim
-
-The trim function accepts a single argument:
-
-* environment variable name
-
-And returns either an empty array in case the environment variable is not defined or after it is trimmed, it is empty or it returns the actual environment variable value.
-
-```toml
-[env]
-TRIM_VALUE="   123    "
-
-[tasks.trim]
-command = "echo"
-args = ["@@trim(TRIM_VALUE)"]
-```
-
-```console
-> cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.16.10
-[cargo-make] INFO - Using Build File: functions.toml
-[cargo-make] INFO - Task: trim
-[cargo-make] INFO - Profile: development
-[cargo-make] INFO - Running Task: init
-[cargo-make] INFO - Running Task: trim
-[cargo-make] INFO - Execute Command: "echo" "123"
-123
-[cargo-make] INFO - Running Task: end
-[cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
 <a name="usage-diff-changes"></a>

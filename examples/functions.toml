@@ -17,3 +17,11 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 [tasks.trim]
 command = "echo"
 args = ["@@trim(TRIM_VALUE)"]
+
+[tasks.trim-start]
+command = "echo"
+args = ["@@trim(TRIM_VALUE,start)"]
+
+[tasks.trim-end]
+command = "echo"
+args = ["@@trim(TRIM_VALUE,end)"]

@@ -11,7 +11,13 @@ fn invoke_empty() {
 #[test]
 #[should_panic]
 fn invoke_invalid_too_many_args() {
-    invoke(&vec!["TEST".to_string(), "1".to_string()]);
+    invoke(&vec!["TEST".to_string(), "1".to_string(), "2".to_string()]);
+}
+
+#[test]
+#[should_panic]
+fn invoke_invalid_trim_type() {
+    invoke(&vec!["TEST".to_string(), "bad".to_string()]);
 }
 
 #[test]
@@ -55,4 +61,28 @@ fn invoke_partial_spaces() {
     let output = invoke(&vec!["TEST_TRIM_ALL_PARTIAL_SPACES".to_string()]);
 
     assert_eq!(output, vec!["123   123"]);
+}
+
+#[test]
+fn invoke_trim_start() {
+    env::set_var("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+
+    let output = invoke(&vec![
+        "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),
+        "start".to_string(),
+    ]);
+
+    assert_eq!(output, vec!["123   "]);
+}
+
+#[test]
+fn invoke_trim_end() {
+    env::set_var("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+
+    let output = invoke(&vec![
+        "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),
+        "end".to_string(),
+    ]);
+
+    assert_eq!(output, vec!["   123"]);
 }
