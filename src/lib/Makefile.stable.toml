@@ -636,6 +636,7 @@ KCOV_HELP_INFO=`kcov --help` || true
 if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
     # check we are on a supported platform
     if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        echo "Installing/Upgrading kcov..."
         sudo apt-get update || true
         sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
 
