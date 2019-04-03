@@ -7,6 +7,7 @@
 #[path = "./list_steps_test.rs"]
 mod list_steps_test;
 
+use crate::execution_plan;
 use crate::types::Config;
 use std::collections::BTreeMap;
 
@@ -17,8 +18,10 @@ pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
 
     let mut categories = BTreeMap::new();
 
-    for (key, value) in config.tasks.iter() {
-        let is_private = match value.private {
+    for key in config.tasks.keys() {
+        let task = execution_plan::get_normalized_task(&config, &key, true);
+
+        let is_private = match task.private {
             Some(private) => private,
             None => false,
         };
@@ -26,18 +29,18 @@ pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
         if !is_private {
             count = count + 1;
 
-            let category = match value.category {
-                Some(ref value) => value,
-                None => "No Category",
+            let category = match task.category {
+                Some(value) => value,
+                None => "No Category".to_string(),
             };
 
-            let description = match value.description {
-                Some(ref value) => value,
-                None => "No Description.",
+            let description = match task.description {
+                Some(value) => value,
+                None => "No Description.".to_string(),
             };
 
             let mut tasks_map = BTreeMap::new();
-            match categories.get_mut(category) {
+            match categories.get_mut(&category) {
                 Some(value) => tasks_map.append(value),
                 _ => (),
             };

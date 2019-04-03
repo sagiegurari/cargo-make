@@ -15,6 +15,7 @@ fn cli_args_new() {
     assert!(cli_args.env_file.is_none());
     assert!(!cli_args.disable_workspace);
     assert!(!cli_args.disable_on_error);
+    assert!(!cli_args.allow_private);
     assert!(!cli_args.disable_check_for_updates);
     assert!(!cli_args.print_only);
     assert!(!cli_args.list_all_steps);
@@ -371,6 +372,7 @@ fn task_new() {
     assert!(task.command.is_none());
     assert!(task.disabled.is_none());
     assert!(task.private.is_none());
+    assert!(task.extend.is_none());
     assert!(task.watch.is_none());
     assert!(task.condition.is_none());
     assert!(task.condition_script.is_none());
@@ -469,6 +471,7 @@ fn task_extend_both_have_misc_data() {
         workspace: None,
         disabled: Some(true),
         private: Some(true),
+        extend: None,
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
@@ -504,6 +507,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.extend.is_none());
     assert!(base.watch.is_some());
     assert!(base.condition.is_none());
     assert!(base.condition_script.is_none());
@@ -554,6 +558,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: None,
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
@@ -591,6 +596,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -625,6 +631,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -656,6 +663,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -687,6 +695,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -724,6 +733,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
     assert!(base.condition_script.is_some());
@@ -758,6 +768,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.unwrap());
     assert!(base.disabled.unwrap());
     assert!(!base.private.unwrap());
+    assert_eq!(base.extend.unwrap(), "extended");
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(false));
     assert_eq!(base.condition_script.unwrap().len(), 1);
     assert!(!base.ignore_errors.unwrap());
@@ -802,6 +813,7 @@ fn task_extend_clear_with_no_data() {
         workspace: Some(false),
         disabled: Some(true),
         private: Some(false),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -836,6 +848,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -867,6 +880,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -898,6 +912,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -937,6 +952,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_none());
     assert!(base.private.is_none());
+    assert!(base.extend.is_none());
     assert!(base.watch.is_none());
     assert!(base.condition.is_none());
     assert!(base.condition_script.is_none());
@@ -977,6 +993,7 @@ fn task_extend_clear_with_all_data() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -1011,6 +1028,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -1042,6 +1060,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -1073,6 +1092,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -1109,6 +1129,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
     assert!(base.condition_script.is_some());
@@ -1182,6 +1203,7 @@ fn task_get_normalized_task_undefined() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
@@ -1213,6 +1235,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
@@ -1249,6 +1272,7 @@ fn task_get_normalized_task_undefined() {
     assert!(!normalized_task.workspace.unwrap());
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
+    assert_eq!(normalized_task.extend.unwrap(), "base");
     assert_eq!(
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(true)
@@ -1293,6 +1317,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -1323,6 +1348,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -1367,6 +1393,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
@@ -1401,6 +1428,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(false)
@@ -1448,6 +1476,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -1477,6 +1506,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 profiles: Some(vec!["development".to_string()]),
@@ -1525,6 +1555,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
@@ -1559,6 +1590,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(false)
@@ -1601,6 +1633,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -1634,6 +1667,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             command: None,
             disabled: None,
             private: None,
+            extend: None,
             watch: None,
             condition: None,
             condition_script: None,
@@ -1662,6 +1696,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
@@ -1695,6 +1730,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
+    assert_eq!(normalized_task.extend.unwrap(), "base");
     assert_eq!(
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(true)
@@ -1732,6 +1768,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
             profiles: Some(vec!["development".to_string()]),
@@ -1765,6 +1802,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             command: None,
             disabled: None,
             private: None,
+            extend: None,
             watch: None,
             condition: None,
             condition_script: None,
@@ -1793,6 +1831,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.command.is_none());
     assert!(normalized_task.disabled.is_none());
     assert!(normalized_task.private.is_none());
+    assert!(normalized_task.extend.is_none());
     assert!(normalized_task.watch.is_none());
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
@@ -1890,6 +1929,7 @@ fn config_section_new() {
     let config = ConfigSection::new();
 
     assert!(config.skip_core_tasks.is_none());
+    assert!(config.modify_core_tasks.is_none());
     assert!(config.init_task.is_none());
     assert!(config.end_task.is_none());
     assert!(config.on_error_task.is_none());
@@ -1905,6 +1945,10 @@ fn config_section_extend_all_values() {
     let mut extended = ConfigSection::new();
 
     base.skip_core_tasks = Some(true);
+    base.modify_core_tasks = Some(ModifyConfig {
+        private: Some(true),
+        namespace: Some("base".to_string()),
+    });
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
@@ -1914,6 +1958,10 @@ fn config_section_extend_all_values() {
     base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
 
     extended.skip_core_tasks = Some(false);
+    extended.modify_core_tasks = Some(ModifyConfig {
+        private: Some(false),
+        namespace: Some("extended".to_string()),
+    });
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
     extended.on_error_task = Some("extended_err".to_string());
@@ -1925,6 +1973,9 @@ fn config_section_extend_all_values() {
     base.extend(&mut extended);
 
     assert!(!base.skip_core_tasks.unwrap());
+    let modify_core_tasks = base.modify_core_tasks.unwrap();
+    assert!(!modify_core_tasks.private.unwrap());
+    assert_eq!(modify_core_tasks.namespace.unwrap(), "extended".to_string());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "extended_err".to_string());
@@ -1940,6 +1991,10 @@ fn config_section_extend_no_values() {
     let mut extended = ConfigSection::new();
 
     base.skip_core_tasks = Some(true);
+    base.modify_core_tasks = Some(ModifyConfig {
+        private: Some(true),
+        namespace: Some("base".to_string()),
+    });
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
@@ -1951,6 +2006,9 @@ fn config_section_extend_no_values() {
     base.extend(&mut extended);
 
     assert!(base.skip_core_tasks.unwrap());
+    let modify_core_tasks = base.modify_core_tasks.unwrap();
+    assert!(modify_core_tasks.private.unwrap());
+    assert_eq!(modify_core_tasks.namespace.unwrap(), "base".to_string());
     assert_eq!(base.init_task.unwrap(), "base_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
@@ -1966,6 +2024,10 @@ fn config_section_extend_some_values() {
     let mut extended = ConfigSection::new();
 
     base.skip_core_tasks = Some(true);
+    base.modify_core_tasks = Some(ModifyConfig {
+        private: Some(true),
+        namespace: Some("base".to_string()),
+    });
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
@@ -1980,6 +2042,9 @@ fn config_section_extend_some_values() {
     base.extend(&mut extended);
 
     assert!(!base.skip_core_tasks.unwrap());
+    let modify_core_tasks = base.modify_core_tasks.unwrap();
+    assert!(modify_core_tasks.private.unwrap());
+    assert_eq!(modify_core_tasks.namespace.unwrap(), "base".to_string());
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
@@ -2047,4 +2112,341 @@ fn git_info_new() {
     assert!(git_info.branch.is_none());
     assert!(git_info.user_name.is_none());
     assert!(git_info.user_email.is_none());
+}
+
+#[test]
+fn get_namespaced_task_name_empty() {
+    let output = get_namespaced_task_name("", "my_task");
+
+    assert_eq!(output, "my_task");
+}
+
+#[test]
+fn get_namespaced_task_name_with_value() {
+    let output = get_namespaced_task_name("prefix", "my_task");
+
+    assert_eq!(output, "prefix::my_task");
+}
+
+#[test]
+fn task_apply_task_empty_modify_empty() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_task_empty_modify_private() {
+    let modify_config = ModifyConfig {
+        private: Some(true),
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.apply(&modify_config);
+
+    assert!(task.private.unwrap());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_task_empty_modify_not_private() {
+    let modify_config = ModifyConfig {
+        private: Some(false),
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_modify_empty() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.private = Some(true);
+    task.apply(&modify_config);
+
+    assert!(task.private.unwrap());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_modify_private() {
+    let modify_config = ModifyConfig {
+        private: Some(true),
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.private = Some(false);
+    task.apply(&modify_config);
+
+    assert!(task.private.unwrap());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_modify_not_private() {
+    let modify_config = ModifyConfig {
+        private: Some(false),
+        namespace: None,
+    };
+    let mut task = Task::new();
+    task.private = Some(true);
+    task.apply(&modify_config);
+
+    assert!(task.private.unwrap());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_task_empty_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+    let mut task = Task::new();
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    assert!(task.run_task.is_none());
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_no_run_task_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.alias = Some("alias".to_string());
+    task.linux_alias = Some("linux_alias".to_string());
+    task.windows_alias = Some("windows_alias".to_string());
+    task.mac_alias = Some("mac_alias".to_string());
+    task.dependencies = Some(vec!["dep1".to_string(), "dep2".to_string()]);
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert_eq!(task.alias.unwrap(), "default::alias");
+    assert_eq!(task.linux_alias.unwrap(), "default::linux_alias");
+    assert_eq!(task.windows_alias.unwrap(), "default::windows_alias");
+    assert_eq!(task.mac_alias.unwrap(), "default::mac_alias");
+    assert!(task.run_task.is_none());
+    assert_eq!(
+        task.dependencies.unwrap(),
+        vec!["default::dep1".to_string(), "default::dep2".to_string()]
+    );
+}
+
+#[test]
+fn task_apply_run_task_name_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Name("run_task1".to_string()));
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    let run_task_name = match task.run_task.unwrap() {
+        RunTaskInfo::Name(name) => name,
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(run_task_name, "default::run_task1");
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_run_task_routing_info_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
+        name: "run_task1".to_string(),
+        condition: None,
+        condition_script: None,
+    }]));
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    let routing_info = match task.run_task.unwrap() {
+        RunTaskInfo::Routing(ref mut info) => info.pop(),
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(routing_info.unwrap().name, "default::run_task1");
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn config_section_apply_config_empty_modify_empty() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: None,
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.apply(&modify_config);
+
+    assert!(config_section.init_task.is_none());
+    assert!(config_section.end_task.is_none());
+    assert!(config_section.on_error_task.is_none());
+}
+
+#[test]
+fn config_section_apply_config_empty_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.apply(&modify_config);
+
+    assert!(config_section.init_task.is_none());
+    assert!(config_section.end_task.is_none());
+    assert!(config_section.on_error_task.is_none());
+}
+
+#[test]
+fn config_section_apply_config_with_values_modify_empty() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: None,
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    config_section.on_error_task = Some("error".to_string());
+    config_section.apply(&modify_config);
+
+    assert_eq!(config_section.init_task.unwrap(), "init");
+    assert_eq!(config_section.end_task.unwrap(), "end");
+    assert_eq!(config_section.on_error_task.unwrap(), "error");
+}
+
+#[test]
+fn config_section_apply_config_with_values_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("config_ns".to_string()),
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    config_section.on_error_task = Some("error".to_string());
+    config_section.apply(&modify_config);
+
+    assert_eq!(config_section.init_task.unwrap(), "config_ns::init");
+    assert_eq!(config_section.end_task.unwrap(), "config_ns::end");
+    assert_eq!(config_section.on_error_task.unwrap(), "config_ns::error");
+}
+
+#[test]
+fn config_apply_modify_empty() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: None,
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    let mut tasks = IndexMap::new();
+    let mut task = Task::new();
+    task.private = Some(false);
+    tasks.insert("test".to_string(), task);
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks,
+    };
+    config.apply(&modify_config);
+
+    assert_eq!(config.config.init_task.unwrap(), "init");
+    assert_eq!(config.env.len(), 0);
+    assert_eq!(config.tasks.len(), 1);
+    assert!(!config.tasks.get("test").unwrap().private.unwrap());
+}
+
+#[test]
+fn config_apply_modify_all() {
+    let modify_config = ModifyConfig {
+        private: Some(true),
+        namespace: Some("all".to_string()),
+    };
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    let mut tasks = IndexMap::new();
+    let mut task = Task::new();
+    task.private = Some(false);
+    tasks.insert("test".to_string(), task);
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks,
+    };
+    config.apply(&modify_config);
+
+    assert_eq!(config.config.init_task.unwrap(), "all::init");
+    assert_eq!(config.env.len(), 0);
+    assert_eq!(config.tasks.len(), 1);
+    assert!(config.tasks.get("all::test").unwrap().private.unwrap());
 }

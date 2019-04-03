@@ -9,7 +9,7 @@ use ci_info;
 use rust_info::types::RustInfo;
 
 fn load_descriptor() -> Config {
-    descriptor::load_internal_descriptors(true, false)
+    descriptor::load_internal_descriptors(true, false, None)
 }
 
 fn get_task(name: &str, config: &Config) -> Task {
@@ -31,6 +31,7 @@ fn create_flow_info(config: &Config) -> FlowInfo {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     }
 }

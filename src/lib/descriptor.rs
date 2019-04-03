@@ -11,7 +11,7 @@
 mod descriptor_test;
 
 use crate::command;
-use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, Task};
+use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
 use indexmap::IndexMap;
 use std::env;
 use std::fs::{canonicalize, File};
@@ -257,7 +257,11 @@ fn load_external_descriptor(
     }
 }
 
-pub(crate) fn load_internal_descriptors(stable: bool, experimental: bool) -> Config {
+pub(crate) fn load_internal_descriptors(
+    stable: bool,
+    experimental: bool,
+    modify_config: Option<ModifyConfig>,
+) -> Config {
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {
@@ -289,6 +293,27 @@ pub(crate) fn load_internal_descriptors(stable: bool, experimental: bool) -> Con
         base_config.tasks = all_tasks;
     }
 
+    // reset
+    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", "");
+    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", "");
+
+    match modify_config {
+        Some(props) => {
+            base_config.apply(&props);
+
+            match props.namespace {
+                Some(ref namespace) => {
+                    let prefix = props.get_namespace_prefix();
+
+                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", &namespace);
+                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
+                }
+                None => (),
+            };
+        }
+        None => (),
+    };
+
     base_config
 }
 
@@ -302,8 +327,9 @@ fn load_descriptors(
     env_map: Option<Vec<String>>,
     stable: bool,
     experimental: bool,
+    modify_core_tasks: Option<ModifyConfig>,
 ) -> Config {
-    let default_config = load_internal_descriptors(stable, experimental);
+    let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
 
     let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, force, true);
 
@@ -397,10 +423,28 @@ pub(crate) fn load(
     env_map: Option<Vec<String>>,
     experimental: bool,
 ) -> Config {
-    let mut config = load_descriptors(&file_name, force, env_map.clone(), true, experimental);
+    let mut config = load_descriptors(&file_name, force, env_map.clone(), true, experimental, None);
 
     if config.config.skip_core_tasks.unwrap_or(false) {
-        config = load_descriptors(&file_name, force, env_map.clone(), false, false);
+        config = load_descriptors(&file_name, force, env_map.clone(), false, false, None);
+    } else {
+        let modify_core_tasks = config.config.modify_core_tasks.clone();
+
+        match modify_core_tasks {
+            Some(modify_config) => {
+                if modify_config.is_modifications_defined() {
+                    config = load_descriptors(
+                        &file_name,
+                        force,
+                        env_map.clone(),
+                        true,
+                        experimental,
+                        Some(modify_config),
+                    );
+                }
+            }
+            None => (),
+        };
     }
 
     config

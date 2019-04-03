@@ -23,6 +23,18 @@ pub fn get_platform_name() -> String {
     }
 }
 
+fn get_namespaced_task_name(namespace: &str, task: &str) -> String {
+    let mut namespaced_task = String::new();
+
+    if namespace.len() > 0 {
+        namespaced_task.push_str(namespace);
+        namespaced_task.push_str("::");
+    }
+    namespaced_task.push_str(task);
+
+    namespaced_task
+}
+
 #[derive(Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
@@ -48,6 +60,8 @@ pub struct CliArgs {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// Allow invocation of private tasks
+    pub allow_private: bool,
     /// Only print the execution plan
     pub print_only: bool,
     /// List all known steps
@@ -79,6 +93,7 @@ impl CliArgs {
             env_file: None,
             disable_workspace: false,
             disable_on_error: false,
+            allow_private: false,
             print_only: false,
             list_all_steps: false,
             diff_execution_plan: false,
@@ -279,6 +294,8 @@ pub struct FlowInfo {
     pub disable_workspace: bool,
     /// Prevent on error flow even if defined in config section
     pub disable_on_error: bool,
+    /// Allow invocation of private tasks
+    pub allow_private: bool,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
 }
@@ -577,6 +594,8 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// Extend any task based on the defined name
+    pub extend: Option<String>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
     /// set to true to watch for file changes and invoke the task operation
@@ -640,6 +659,7 @@ impl Task {
             category: None,
             disabled: None,
             private: None,
+            extend: None,
             workspace: None,
             watch: None,
             condition: None,
@@ -667,6 +687,91 @@ impl Task {
             windows: None,
             mac: None,
         }
+    }
+
+    /// Apply modifications
+    pub fn apply(self: &mut Task, modify_config: &ModifyConfig) {
+        match modify_config.private {
+            Some(value) => {
+                if value {
+                    self.private = Some(true);
+                }
+            }
+            None => (),
+        };
+
+        match modify_config.namespace {
+            Some(ref namespace) => {
+                if namespace.len() > 0 {
+                    if self.extend.is_some() {
+                        self.extend = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.extend.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.alias.is_some() {
+                        self.alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.linux_alias.is_some() {
+                        self.linux_alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.linux_alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.windows_alias.is_some() {
+                        self.windows_alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.windows_alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.mac_alias.is_some() {
+                        self.mac_alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.mac_alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.run_task.is_some() {
+                        let mut run_task = self.run_task.clone().unwrap();
+
+                        run_task = match run_task {
+                            RunTaskInfo::Name(value) => {
+                                RunTaskInfo::Name(get_namespaced_task_name(namespace, &value))
+                            }
+                            RunTaskInfo::Routing(mut routing_info_vector) => {
+                                for mut routing_info in &mut routing_info_vector {
+                                    routing_info.name =
+                                        get_namespaced_task_name(namespace, &routing_info.name);
+                                }
+
+                                RunTaskInfo::Routing(routing_info_vector)
+                            }
+                        };
+
+                        self.run_task = Some(run_task);
+                    }
+
+                    if self.dependencies.is_some() {
+                        let dependencies = self.dependencies.clone().unwrap();
+                        let mut modified_dependencies = vec![];
+
+                        for task in &dependencies {
+                            modified_dependencies.push(get_namespaced_task_name(namespace, &task));
+                        }
+
+                        self.dependencies = Some(modified_dependencies);
+                    }
+                }
+            }
+            None => (),
+        };
     }
 
     /// Copies values from the task into self.
@@ -706,6 +811,12 @@ impl Task {
             self.private = task.private.clone();
         } else if override_values {
             self.private = None;
+        }
+
+        if task.extend.is_some() {
+            self.extend = task.extend.clone();
+        } else if override_values {
+            self.extend = None;
         }
 
         if task.workspace.is_some() {
@@ -913,6 +1024,7 @@ impl Task {
                     category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    extend: override_task.extend.clone(),
                     workspace: self.workspace.clone(),
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
@@ -1004,6 +1116,8 @@ pub struct PlatformOverrideTask {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// Extend any task based on the defined name
+    pub extend: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
     pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
@@ -1061,6 +1175,10 @@ impl PlatformOverrideTask {
 
             if self.private.is_none() && task.private.is_some() {
                 self.private = task.private.clone();
+            }
+
+            if self.extend.is_none() && task.extend.is_some() {
+                self.extend = task.extend.clone();
             }
 
             if self.watch.is_none() && task.watch.is_some() {
@@ -1160,10 +1278,43 @@ pub enum Extend {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds properties to modify the core tasks
+pub struct ModifyConfig {
+    /// If true, all core tasks will be set to private (default false)
+    pub private: Option<bool>,
+    /// If set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
+    pub namespace: Option<String>,
+}
+
+impl ModifyConfig {
+    /// Returns true if config modifications is needed based on the current state
+    pub fn is_modifications_defined(self: &ModifyConfig) -> bool {
+        if self.private.unwrap_or(false) {
+            true
+        } else {
+            match self.namespace {
+                Some(ref value) => value.len() > 0,
+                None => false,
+            }
+        }
+    }
+
+    /// Returns the namespace prefix for task names
+    pub fn get_namespace_prefix(self: &ModifyConfig) -> String {
+        match self.namespace {
+            Some(ref value) => get_namespaced_task_name(value, ""),
+            None => "".to_string(),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
     pub skip_core_tasks: Option<bool>,
+    /// Modify core tasks config
+    pub modify_core_tasks: Option<ModifyConfig>,
     /// Init task name which will be invoked at the start of every run
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
@@ -1185,6 +1336,7 @@ impl ConfigSection {
     pub fn new() -> ConfigSection {
         ConfigSection {
             skip_core_tasks: None,
+            modify_core_tasks: None,
             init_task: None,
             end_task: None,
             on_error_task: None,
@@ -1192,6 +1344,35 @@ impl ConfigSection {
             linux_load_script: None,
             windows_load_script: None,
             mac_load_script: None,
+        }
+    }
+
+    /// Apply modifications
+    pub fn apply(self: &mut ConfigSection, modify_config: &ModifyConfig) {
+        match modify_config.namespace {
+            Some(ref namespace) => {
+                if self.init_task.is_some() {
+                    self.init_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.init_task.clone().unwrap(),
+                    ));
+                }
+
+                if self.end_task.is_some() {
+                    self.end_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.end_task.clone().unwrap(),
+                    ));
+                }
+
+                if self.on_error_task.is_some() {
+                    self.on_error_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.on_error_task.clone().unwrap(),
+                    ));
+                }
+            }
+            None => (),
         }
     }
 
@@ -1203,6 +1384,10 @@ impl ConfigSection {
     pub fn extend(self: &mut ConfigSection, extended: &mut ConfigSection) {
         if extended.skip_core_tasks.is_some() {
             self.skip_core_tasks = extended.skip_core_tasks.clone();
+        }
+
+        if extended.modify_core_tasks.is_some() {
+            self.modify_core_tasks = extended.modify_core_tasks.clone();
         }
 
         if extended.init_task.is_some() {
@@ -1269,6 +1454,31 @@ pub struct Config {
     pub env: IndexMap<String, EnvValue>,
     /// All task definitions
     pub tasks: IndexMap<String, Task>,
+}
+
+impl Config {
+    /// Apply modifications
+    pub fn apply(self: &mut Config, modify_config: &ModifyConfig) {
+        self.config.apply(&modify_config);
+
+        let namespace = match modify_config.namespace {
+            Some(ref namespace) => namespace,
+            None => "",
+        };
+
+        let mut modified_tasks = IndexMap::<String, Task>::new();
+
+        for (key, value) in self.tasks.iter() {
+            let namespaced_task = get_namespaced_task_name(namespace, &key);
+            let mut task = value.clone();
+
+            task.apply(&modify_config);
+
+            modified_tasks.insert(namespaced_task, task);
+        }
+
+        self.tasks = modified_tasks;
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

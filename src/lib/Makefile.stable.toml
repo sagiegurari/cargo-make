@@ -588,13 +588,13 @@ category = "CI"
 [tasks.workspace-members-ci]
 description = "Runs the ci-flow for every workspace member."
 category = "CI"
-env = { "CARGO_MAKE_MEMBER_TASK" = "ci-flow" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}ci-flow" }
 run_task = "do-on-members"
 
 [tasks.workspace-members-coverage]
 description = "Runs the ci-flow for every workspace member."
 category = "Test"
-env = { "CARGO_MAKE_MEMBER_TASK" = "coverage" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}coverage" }
 run_task = "do-on-members"
 
 [tasks.workspace-coverage]
@@ -626,10 +626,17 @@ description = "Installs (if missing) and runs coverage using kcov (not supported
 category = "Test"
 windows_alias = "empty"
 condition = { env_set = [ "KCOV_VERSION" ] }
+script_runner = "bash"
 install_script = [
 '''
-command -v kcov >/dev/null 2>&1 || {
+# get help info to fetch all supported command line arguments
+KCOV_HELP_INFO=`kcov --help` || true
+
+# check needed arguments are supported, else install
+if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
+    # check we are on a supported platform
     if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        echo "Installing/Upgrading kcov..."
         sudo apt-get update || true
         sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
 
@@ -644,7 +651,7 @@ command -v kcov >/dev/null 2>&1 || {
         cd ../..
         rm -rf kcov-$KCOV_VERSION
     fi
-}
+fi
 '''
 ]
 script = [

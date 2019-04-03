@@ -1,0 +1,18 @@
+
+[config]
+skip_core_tasks = true
+
+[tasks.1]
+category = "1"
+description = "1"
+command = "echo"
+args = ["1"]
+
+[tasks.2]
+extend = "1"
+category = "2"
+args = ["2"]
+
+[tasks.3]
+extend = "2"
+args = ["3"]

@@ -27,10 +27,16 @@ matrix:
   # Minimum version
   - rust: 1.30.0
     os: linux
+    script:
+      - cargo make ci-flow
   - rust: 1.30.0
     os: osx
+    script:
+      - cargo make ci-flow
   - rust: 1.30.0
     os: windows
+    script:
+      - cargo make ci-flow
   # Deploy jobs
   - env: DEPLOY=1
     os: osx
@@ -56,7 +62,7 @@ env:
 before_script:
   - cargo install --debug cargo-make
 script:
-  - cargo make ci-flow
+  - cargo run --bin cargo-make -- make ci-flow
 deploy:
   provider: releases
   api_key:

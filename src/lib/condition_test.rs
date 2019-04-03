@@ -390,6 +390,7 @@ fn validate_channel_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -465,6 +466,7 @@ fn validate_channel_invalid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -501,6 +503,7 @@ fn validate_criteria_empty() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -538,6 +541,7 @@ fn validate_criteria_valid_platform() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -579,6 +583,7 @@ fn validate_criteria_invalid_platform() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -616,6 +621,7 @@ fn validate_criteria_valid_profile() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -653,6 +659,7 @@ fn validate_criteria_invalid_profile() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -690,6 +697,7 @@ fn validate_criteria_valid_channel() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -772,6 +780,7 @@ fn validate_criteria_invalid_channel() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -815,6 +824,7 @@ fn validate_condition_for_step_both_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -861,6 +871,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -907,6 +918,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -949,6 +961,7 @@ fn validate_condition_for_step_invalid_env_set() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -991,6 +1004,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1035,6 +1049,7 @@ fn validate_condition_for_step_valid_env() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1084,6 +1099,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1130,6 +1146,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1179,6 +1196,7 @@ fn validate_condition_for_step_valid_rust_version() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1227,6 +1245,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 

@@ -16,6 +16,7 @@ use crate::command;
 use crate::condition;
 use crate::environment;
 use crate::execution_plan::create as create_execution_plan;
+use crate::functions;
 use crate::installer;
 use crate::logger;
 use crate::profile;
@@ -150,7 +151,9 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         //make sure profile env is not overwritten
         profile::set(&profile_name);
 
-        let updated_step = environment::expand_env(&step);
+        // modify step using env and functions
+        let mut updated_step = functions::run(&step);
+        updated_step = environment::expand_env(&updated_step);
 
         let watch = should_watch(&step.config);
 
@@ -213,7 +216,7 @@ fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    let mut task_config = create_proxy_task(&task);
+    let mut task_config = create_proxy_task(&task, true);
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
@@ -271,7 +274,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config
 }
 
-fn create_proxy_task(task: &str) -> Task {
+fn create_proxy_task(task: &str, allow_private: bool) -> Task {
     //get log level name
     let log_level = logger::get_log_level();
 
@@ -293,6 +296,10 @@ fn create_proxy_task(task: &str) -> Task {
         log_level_arg.to_string(),
         profile_arg.to_string(),
     ];
+
+    if allow_private {
+        args.push("--allow-private".to_string());
+    }
 
     //get makefile location
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
@@ -317,7 +324,7 @@ fn create_proxy_task(task: &str) -> Task {
 }
 
 fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
-    let allow_private = sub_flow;
+    let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = create_execution_plan(
         &flow_info.config,
@@ -332,7 +339,7 @@ fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
 }
 
 fn run_protected_flow(flow_info: &FlowInfo) {
-    let proxy_task = create_proxy_task(&flow_info.task);
+    let proxy_task = create_proxy_task(&flow_info.task, flow_info.allow_private);
 
     let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false);
 
@@ -366,6 +373,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         env_info,
         disable_workspace: cli_args.disable_workspace,
         disable_on_error: cli_args.disable_on_error,
+        allow_private: cli_args.allow_private,
         cli_arguments: cli_args.arguments.clone(),
     };
 

@@ -341,7 +341,7 @@ fn load_descriptors_load_workspace_makefile() {
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile.toml",
     );
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
     env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
@@ -354,7 +354,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile2.toml",
     );
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
     env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
@@ -364,7 +364,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
 #[test]
 fn load_descriptors_no_load_workspace_makefile() {
     env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
 
     let task = config.tasks.get("workspace-echo");
     assert!(task.is_none());
@@ -395,6 +395,21 @@ fn load_with_stable() {
 }
 
 #[test]
+fn load_with_modify() {
+    let config = load("./examples/modify_core_tasks.toml", true, None, false);
+
+    assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_some());
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_none());
+    task = config.tasks.get("default::empty");
+    assert!(task.is_some());
+    assert!(task.clone().unwrap().private.unwrap());
+    task = config.tasks.get("default::init");
+    assert!(task.is_some());
+}
+
+#[test]
 #[should_panic]
 fn load_not_found() {
     load("./examples/not-found.toml", true, None, false);
@@ -402,7 +417,7 @@ fn load_not_found() {
 
 #[test]
 fn load_internal_descriptors_no_stable() {
-    let config = load_internal_descriptors(false, false);
+    let config = load_internal_descriptors(false, false, None);
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -412,7 +427,7 @@ fn load_internal_descriptors_no_stable() {
 
 #[test]
 fn load_internal_descriptors_with_stable() {
-    let config = load_internal_descriptors(true, false);
+    let config = load_internal_descriptors(true, false, None);
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -422,7 +437,7 @@ fn load_internal_descriptors_with_stable() {
 
 #[test]
 fn load_internal_descriptors_no_experimental() {
-    let config = load_internal_descriptors(true, false);
+    let config = load_internal_descriptors(true, false, None);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -432,12 +447,73 @@ fn load_internal_descriptors_no_experimental() {
 
 #[test]
 fn load_internal_descriptors_with_experimental() {
-    let config = load_internal_descriptors(true, true);
+    let config = load_internal_descriptors(true, true, None);
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
     task = config.tasks.get("coverage-lcov");
     assert!(task.is_some());
+}
+
+#[test]
+fn load_internal_descriptors_modify_empty() {
+    let config = load_internal_descriptors(
+        true,
+        false,
+        Some(ModifyConfig {
+            private: None,
+            namespace: None,
+        }),
+    );
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.is_none());
+    task = config.tasks.get("init");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.is_none());
+}
+
+#[test]
+fn load_internal_descriptors_modify_private() {
+    let config = load_internal_descriptors(
+        true,
+        false,
+        Some(ModifyConfig {
+            private: Some(true),
+            namespace: None,
+        }),
+    );
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.unwrap());
+    task = config.tasks.get("init");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.unwrap());
+}
+
+#[test]
+fn load_internal_descriptors_modify_namespace() {
+    let config = load_internal_descriptors(
+        true,
+        false,
+        Some(ModifyConfig {
+            private: None,
+            namespace: Some("default".to_string()),
+        }),
+    );
+
+    let mut task = config.tasks.get("empty");
+    assert!(task.is_none());
+    task = config.tasks.get("default::empty");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.is_none());
+    task = config.tasks.get("init");
+    assert!(task.is_none());
+    task = config.tasks.get("default::init");
+    assert!(task.is_some());
+    assert!(task.unwrap().private.is_none());
 }
 
 #[test]

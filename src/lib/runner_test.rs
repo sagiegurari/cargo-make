@@ -16,7 +16,7 @@ use crate::types::WatchOptions;
 fn create_proxy_task_no_makefile() {
     let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
     env::remove_var("CARGO_MAKE_MAKEFILE_PATH");
-    let task = create_proxy_task("some_task");
+    let task = create_proxy_task("some_task", false);
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
@@ -44,7 +44,7 @@ fn create_proxy_task_no_makefile() {
 fn create_proxy_task_with_makefile() {
     let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
     env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
-    let task = create_proxy_task("some_task");
+    let task = create_proxy_task("some_task", false);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
 
@@ -71,6 +71,129 @@ fn create_proxy_task_with_makefile() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
+fn create_proxy_task_allow_private() {
+    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    env::remove_var("CARGO_MAKE_MAKEFILE_PATH");
+    let task = create_proxy_task("some_task", true);
+    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut log_level_arg = "--loglevel=".to_string();
+    log_level_arg.push_str(&log_level);
+
+    let mut profile_arg = "--profile=\"".to_string();
+    profile_arg.push_str(&profile::get());
+    profile_arg.push_str("\"");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 7);
+    assert_eq!(args[0], "make".to_string());
+    assert_eq!(args[1], "--disable-check-for-updates".to_string());
+    assert_eq!(args[2], "--no-on-error".to_string());
+    assert_eq!(args[3], log_level_arg.to_string());
+    assert_eq!(args[4], profile_arg.to_string());
+    assert_eq!(args[5], "--allow-private".to_string());
+    assert_eq!(args[6], "some_task".to_string());
+}
+
+#[test]
+#[should_panic]
+fn run_flow_private() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.private = Some(true);
+    config.tasks.insert("test".to_string(), task);
+
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        cli_arguments: None,
+    };
+
+    run_flow(&flow_info, false);
+}
+
+#[test]
+fn run_flow_private_sub_task() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.private = Some(true);
+    config.tasks.insert("test".to_string(), task);
+
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        cli_arguments: None,
+    };
+
+    run_flow(&flow_info, true);
+}
+
+#[test]
+fn run_flow_allow_private() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(vec!["exit 0".to_string()]);
+    task.private = Some(true);
+    config.tasks.insert("test".to_string(), task);
+
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: true,
+        cli_arguments: None,
+    };
+
+    run_flow(&flow_info, false);
+}
+
+#[test]
 #[should_panic]
 fn run_task_bad_script() {
     let config = Config {
@@ -89,6 +212,7 @@ fn run_task_bad_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -122,6 +246,7 @@ fn run_task_script_with_args_error() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: Some(vec!["1".to_string()]),
     };
 
@@ -154,6 +279,7 @@ fn run_task_script_with_args_valid() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: Some(vec!["0".to_string()]),
     };
 
@@ -185,6 +311,7 @@ fn run_task_command() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -218,6 +345,7 @@ fn run_task_bad_command_valid_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -250,6 +378,7 @@ fn run_task_no_command_valid_script() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -288,6 +417,7 @@ fn run_task_bad_run_task_valid_command() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -327,6 +457,7 @@ fn run_task_valid_run_task() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -359,6 +490,7 @@ fn run_task_invalid_task() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -391,6 +523,7 @@ fn run_task_set_env() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -435,6 +568,7 @@ fn run_task_cwd_no_such_dir() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -467,6 +601,7 @@ fn run_task_cwd_dir_exists() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -595,7 +730,7 @@ fn create_watch_task_with_makefile() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str("\" --allow-private --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -627,7 +762,7 @@ fn create_watch_task_with_makefile_and_bool_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str("\" --allow-private --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -670,7 +805,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str("\" --allow-private --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -715,7 +850,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str("\" --allow-private --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -762,7 +897,7 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --makefile=");
+    make_command_line.push_str("\" --allow-private --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -816,6 +951,7 @@ fn run_sub_task_and_report_for_name() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -851,6 +987,7 @@ fn run_sub_task_and_report_for_name_not_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -883,6 +1020,7 @@ fn run_sub_task_and_report_routing_empty() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -917,6 +1055,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -955,6 +1094,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1002,6 +1142,7 @@ fn run_sub_task_and_report_routing_not_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1032,6 +1173,7 @@ fn get_sub_task_name_for_routing_info_empty() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1058,6 +1200,7 @@ fn get_sub_task_name_for_routing_info_condition_not_met() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1099,6 +1242,7 @@ fn get_sub_task_name_for_routing_info_condition_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1140,6 +1284,7 @@ fn get_sub_task_name_for_routing_info_script_not_met() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1173,6 +1318,7 @@ fn get_sub_task_name_for_routing_info_script_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1206,6 +1352,7 @@ fn get_sub_task_name_for_routing_info_multiple_found() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1254,6 +1401,7 @@ fn get_sub_task_name_for_routing_info_default() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
@@ -1307,6 +1455,7 @@ fn get_sub_task_name_for_routing_info_multiple() {
         },
         disable_workspace: false,
         disable_on_error: false,
+        allow_private: false,
         cli_arguments: None,
     };
 
