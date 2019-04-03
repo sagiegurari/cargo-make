@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.17.0
+### v0.17.0 (2019-04-03)
 
 * Add extend capability for tasks #206
 * Support internal core tasks modifications (private and namespacing) #201
