@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.17.1 (2019-04-04)
+
+* Fix broken workspace support #210
+
 ### v0.17.0 (2019-04-03)
 
 * Add extend capability for tasks #206
