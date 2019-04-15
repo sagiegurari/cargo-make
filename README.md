@@ -778,7 +778,7 @@ Hello, World!
 There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
-tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml).<br>
+tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml).<br>
 Lets take the build task definition which comes already in the default toml:
 
 ```toml
@@ -1078,7 +1078,7 @@ PROD = "TRUE"
 Environment variables can be defined as a simple key/value pair or key and the output (second line) of the provided script.
 In addition, you can define environment variables values based on other environment variables using the ${} syntax.
 
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) will be set before running the tasks.
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.
 
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
@@ -2087,7 +2087,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
 * **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
@@ -2550,7 +2550,7 @@ More info can be found in the [types](https://sagiegurari.github.io/cargo-make/a
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml) file comes with several types of tasks:
+The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) file comes with several types of tasks:
 
 * Single command or script task (for example ```cargo build```)
 * Tasks that come before or after the single command tasks (hooks)
@@ -2576,7 +2576,7 @@ For example for task build the default toml also defines pre-build and post-buil
 [tasks.post-build]
 ```
 
-In the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/Makefile.stable.toml), all pre/post tasks are empty and are there as placeholders
+In the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml), all pre/post tasks are empty and are there as placeholders
 for external Makefile.toml to override so custom functionality can be defined easily before/after running a specific task.
 
 Flows are named with the flow suffix, for example: ci-flow
