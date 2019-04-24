@@ -89,9 +89,10 @@ fn makefile_coverage_test() {
         match run_task_info {
             RunTaskInfo::Routing(ref routing_info) => {
                 let flow_info = create_flow_info(&config);
-                let task_name =
-                    runner::get_sub_task_name_for_routing_info(&flow_info, routing_info);
+                let (task_name, fork) =
+                    runner::get_sub_task_info_for_routing_info(&flow_info, routing_info);
                 assert_eq!(task_name.unwrap(), "coverage-kcov");
+                assert!(!fork);
             }
             _ => panic!("makefile error"),
         };

@@ -33,12 +33,13 @@ fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     condition::validate_condition_for_step(&flow_info, &step)
 }
 
-pub(crate) fn get_sub_task_name_for_routing_info(
+pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
-) -> Option<String> {
+) -> (Option<String>, bool) {
     let mut task_name = None;
 
+    let mut fork = false;
     for routing_step in routing_info {
         let invoke = condition::validate_conditions(
             &flow_info,
@@ -49,28 +50,50 @@ pub(crate) fn get_sub_task_name_for_routing_info(
 
         if invoke {
             task_name = Some(routing_step.name.clone());
+            fork = routing_step.fork.unwrap_or(false);
             break;
         }
     }
 
-    task_name
+    (task_name, fork)
+}
+
+fn create_fork_step(flow_info: &FlowInfo) -> Step {
+    let fork_task = create_proxy_task(&flow_info.task, true);
+
+    Step {
+        name: "cargo_make_run_fork".to_string(),
+        config: fork_task,
+    }
+}
+
+fn run_forked_task(flow_info: &FlowInfo) {
+    // run task as a sub process
+    let step = create_fork_step(&flow_info);
+    run_task(&flow_info, &step);
 }
 
 /// runs a sub task and returns true/false based if a sub task was actually invoked
 fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
-    let mut sub_flow_info = flow_info.clone();
-
-    let task_name = match sub_task {
-        RunTaskInfo::Name(ref name) => Some(name.to_string()),
+    let (task_name, fork) = match sub_task {
+        RunTaskInfo::Name(ref name) => (Some(name.to_string()), false),
+        RunTaskInfo::Details(ref details) => {
+            (Some(details.name.clone()), details.fork.unwrap_or(false))
+        }
         RunTaskInfo::Routing(ref routing_info) => {
-            get_sub_task_name_for_routing_info(&flow_info, routing_info)
+            get_sub_task_info_for_routing_info(&flow_info, routing_info)
         }
     };
 
     if task_name.is_some() {
+        let mut sub_flow_info = flow_info.clone();
         sub_flow_info.task = task_name.unwrap();
 
-        run_flow(&sub_flow_info, true);
+        if fork {
+            run_forked_task(&sub_flow_info);
+        } else {
+            run_flow(&sub_flow_info, true);
+        }
 
         true
     } else {

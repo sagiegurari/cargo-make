@@ -463,10 +463,21 @@ impl PartialEq for InstallCrate {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Holds the rust routing information
+/// Holds the run task information
+pub struct RunTaskDetails {
+    /// The task name
+    pub name: String,
+    /// True to fork the task to a new sub process
+    pub fork: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds the run task routing information
 pub struct RunTaskRoutingInfo {
     /// The task name
     pub name: String,
+    /// True to fork the task to a new sub process
+    pub fork: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the task will not be invoked
@@ -479,6 +490,8 @@ pub struct RunTaskRoutingInfo {
 pub enum RunTaskInfo {
     /// Task name
     Name(String),
+    /// Run Task Info
+    Details(RunTaskDetails),
     /// Task conditional selector
     Routing(Vec<RunTaskRoutingInfo>),
 }
@@ -744,6 +757,12 @@ impl Task {
                         run_task = match run_task {
                             RunTaskInfo::Name(value) => {
                                 RunTaskInfo::Name(get_namespaced_task_name(namespace, &value))
+                            }
+                            RunTaskInfo::Details(mut run_task_details) => {
+                                run_task_details.name =
+                                    get_namespaced_task_name(namespace, &run_task_details.name);
+
+                                RunTaskInfo::Details(run_task_details)
                             }
                             RunTaskInfo::Routing(mut routing_info_vector) => {
                                 for mut routing_info in &mut routing_info_vector {

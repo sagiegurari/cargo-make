@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.17.2
+
+* Allow run_task to invoke the task as a sub process #214
+
 ### v0.17.1 (2019-04-04)
 
 * Fix broken workspace support #210

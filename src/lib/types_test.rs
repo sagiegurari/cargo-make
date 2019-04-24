@@ -2311,6 +2311,34 @@ fn task_apply_run_task_name_modify_namespace() {
 }
 
 #[test]
+fn task_apply_run_task_details_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Details(RunTaskDetails {
+        name: "run_task1".to_string(),
+        fork: None,
+    }));
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    let details = match task.run_task.unwrap() {
+        RunTaskInfo::Details(ref mut details) => details.clone(),
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(details.name, "default::run_task1");
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
 fn task_apply_run_task_routing_info_modify_namespace() {
     let modify_config = ModifyConfig {
         private: None,
@@ -2320,6 +2348,7 @@ fn task_apply_run_task_routing_info_modify_namespace() {
     let mut task = Task::new();
     task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: "run_task1".to_string(),
+        fork: None,
         condition: None,
         condition_script: None,
     }]));
