@@ -361,6 +361,19 @@ run_task = [
 ]
 ```
 
+It is also possible to run the sub task as a forked sub process using the **fork** attribute.<br>
+This prevents any environment changes done in the sub task to impact the rest of the flow in the parent process.<br>
+Example of invoking the sub task in a forked sub process:
+
+```toml
+[tasks.echo]
+command = "echo"
+args = ["hello world"]
+
+[tasks.fork-example]
+run_task = { name = "echo", fork = true }
+```
+
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
 For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:

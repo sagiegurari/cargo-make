@@ -36,7 +36,7 @@ fn merge_env(
         let value_clone = value.clone();
 
         if merged.contains_key(&key_str) {
-            let mut base_value = merged.remove(&key_str).unwrap();
+            let base_value = merged.remove(&key_str).unwrap();
 
             match (base_value, value_clone.clone()) {
                 (

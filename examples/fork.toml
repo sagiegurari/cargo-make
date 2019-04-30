@@ -1,0 +1,7 @@
+
+[tasks.echo]
+command = "echo"
+args = ["hello world"]
+
+[tasks.fork-example]
+run_task = { name = "echo", fork = true }

@@ -45,12 +45,12 @@ glob = "^0.3"
 indexmap = { version = "^1.0", features = ["serde-1"] }
 log = "^0.4"
 rand = "^0.6"
-run_script = "^0.2"
+run_script = "^0.3"
 rust_info = "^0.2"
 semver = "^0.9"
 serde = "^1.0"
 serde_derive = "^1.0"
-shell2batch = "^0.2"
+shell2batch = "^0.3"
 toml = "^0.5"
 
 [badges.travis-ci]
