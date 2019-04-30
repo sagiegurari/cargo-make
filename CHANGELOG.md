@@ -1,8 +1,9 @@
 ## CHANGELOG
 
-### v0.17.2
+### v0.18.0 (2019-04-30)
 
 * Allow run_task to invoke the task as a sub process #214
+* Upgrade shell2batch to fix path separator issue (**backward compatability break**)
 
 ### v0.17.1 (2019-04-04)
 

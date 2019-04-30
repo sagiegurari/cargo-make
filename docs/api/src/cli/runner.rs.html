@@ -396,6 +396,29 @@
 <span id="396">396</span>
 <span id="397">397</span>
 <span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -432,12 +455,13 @@
     <span class="ident">condition</span>::<span class="ident">validate_condition_for_step</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_sub_task_name_for_routing_info</span>(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_sub_task_info_for_routing_info</span>(
     <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">routing_info</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RunTaskRoutingInfo</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+) <span class="op">-&gt;</span> (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">bool</span>) {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_name</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fork</span> <span class="op">=</span> <span class="bool-val">false</span>;
     <span class="kw">for</span> <span class="ident">routing_step</span> <span class="kw">in</span> <span class="ident">routing_info</span> {
         <span class="kw">let</span> <span class="ident">invoke</span> <span class="op">=</span> <span class="ident">condition</span>::<span class="ident">validate_conditions</span>(
             <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
@@ -448,28 +472,50 @@
 
         <span class="kw">if</span> <span class="ident">invoke</span> {
             <span class="ident">task_name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">routing_step</span>.<span class="ident">name</span>.<span class="ident">clone</span>());
+            <span class="ident">fork</span> <span class="op">=</span> <span class="ident">routing_step</span>.<span class="ident">fork</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
             <span class="kw">break</span>;
         }
     }
 
-    <span class="ident">task_name</span>
+    (<span class="ident">task_name</span>, <span class="ident">fork</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">create_fork_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-&gt;</span> <span class="ident">Step</span> {
+    <span class="kw">let</span> <span class="ident">fork_task</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">task</span>, <span class="bool-val">true</span>);
+
+    <span class="ident">Step</span> {
+        <span class="ident">name</span>: <span class="string">&quot;cargo_make_run_fork&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="ident">config</span>: <span class="ident">fork_task</span>,
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">run_forked_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) {
+    <span class="comment">// run task as a sub process</span>
+    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_fork_step</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>);
+    <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
 }
 
 <span class="doccomment">/// runs a sub task and returns true/false based if a sub task was actually invoked</span>
 <span class="kw">fn</span> <span class="ident">run_sub_task_and_report</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">sub_task</span>: <span class="kw-2">&amp;</span><span class="ident">RunTaskInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
-
-    <span class="kw">let</span> <span class="ident">task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">sub_task</span> {
-        <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
+    <span class="kw">let</span> (<span class="ident">task_name</span>, <span class="ident">fork</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">sub_task</span> {
+        <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()), <span class="bool-val">false</span>),
+        <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">ref</span> <span class="ident">details</span>) <span class="op">=&gt;</span> {
+            (<span class="prelude-val">Some</span>(<span class="ident">details</span>.<span class="ident">name</span>.<span class="ident">clone</span>()), <span class="ident">details</span>.<span class="ident">fork</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>))
+        }
         <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">ref</span> <span class="ident">routing_info</span>) <span class="op">=&gt;</span> {
-            <span class="ident">get_sub_task_name_for_routing_info</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">routing_info</span>)
+            <span class="ident">get_sub_task_info_for_routing_info</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">routing_info</span>)
         }
     };
 
     <span class="kw">if</span> <span class="ident">task_name</span>.<span class="ident">is_some</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
         <span class="ident">sub_flow_info</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">task_name</span>.<span class="ident">unwrap</span>();
 
-        <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="bool-val">true</span>);
+        <span class="kw">if</span> <span class="ident">fork</span> {
+            <span class="ident">run_forked_task</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>);
+        } <span class="kw">else</span> {
+            <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="bool-val">true</span>);
+        }
 
         <span class="bool-val">true</span>
     } <span class="kw">else</span> {
