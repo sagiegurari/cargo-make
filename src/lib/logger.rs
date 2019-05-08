@@ -8,9 +8,9 @@
 mod logger_test;
 
 use colored::*;
+use envmnt;
 use fern;
 use log::{Level, LevelFilter};
-use std::env;
 use std::io::stdout;
 
 #[cfg(test)]
@@ -127,7 +127,7 @@ pub(crate) fn init(options: &LoggerOptions) {
     };
     let level_name_value = get_name_for_filter(&log_level);
 
-    env::set_var("CARGO_MAKE_LOG_LEVEL", &level_name_value);
+    envmnt::set("CARGO_MAKE_LOG_LEVEL", &level_name_value);
 
     let result = fern::Dispatch::new()
         .format(move |out, message, record| {

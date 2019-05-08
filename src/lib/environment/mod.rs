@@ -16,6 +16,7 @@ use crate::types::{
     Task, Workspace,
 };
 use ci_info::types::CiInfo;
+use envmnt;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -86,7 +87,7 @@ fn evaluate_and_set_env(key: &str, value: &str) {
     let env_value = expand_value(&value);
 
     debug!("Setting Env: {} Value: {}", &key, &env_value);
-    env::set_var(&key, &env_value);
+    envmnt::set(&key, &env_value);
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
@@ -135,40 +136,40 @@ fn setup_env_for_crate() -> CrateInfo {
 
     if package_info.name.is_some() {
         let crate_name = package_info.name.unwrap();
-        env::set_var("CARGO_MAKE_CRATE_NAME", &crate_name);
+        envmnt::set("CARGO_MAKE_CRATE_NAME", &crate_name);
 
         let crate_fs_name = str::replace(&crate_name, "-", "_");
-        env::set_var("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
+        envmnt::set("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
     }
 
     if package_info.version.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
+        envmnt::set("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
     }
 
     if package_info.description.is_some() {
-        env::set_var(
+        envmnt::set(
             "CARGO_MAKE_CRATE_DESCRIPTION",
             &package_info.description.unwrap(),
         );
     }
 
     if package_info.license.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
+        envmnt::set("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
     }
 
     if package_info.documentation.is_some() {
-        env::set_var(
+        envmnt::set(
             "CARGO_MAKE_CRATE_DOCUMENTATION",
             &package_info.documentation.unwrap(),
         );
     }
 
     if package_info.homepage.is_some() {
-        env::set_var("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
+        envmnt::set("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
     }
 
     if package_info.repository.is_some() {
-        env::set_var(
+        envmnt::set(
             "CARGO_MAKE_CRATE_REPOSITORY",
             &package_info.repository.unwrap(),
         );
@@ -180,7 +181,7 @@ fn setup_env_for_crate() -> CrateInfo {
     };
 
     let has_dependencies_var_value = if has_dependencies { "TRUE" } else { "FALSE" };
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
         has_dependencies_var_value,
     );
@@ -190,17 +191,17 @@ fn setup_env_for_crate() -> CrateInfo {
     } else {
         "TRUE"
     };
-    env::set_var("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
+    envmnt::set("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
     let members = workspace.members.unwrap_or(vec![]);
     let members_string = members.join(",");
-    env::set_var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
+    envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
 
     // check if Cargo.lock file exists in working directory
     let lock_file = Path::new("Cargo.lock");
     let lock_file_exists_var_value = if lock_file.exists() { "TRUE" } else { "FALSE" };
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS",
         lock_file_exists_var_value,
     );
@@ -213,15 +214,15 @@ fn setup_env_for_git_repo() -> GitInfo {
     let git_info_clone = git_info.clone();
 
     if git_info.branch.is_some() {
-        env::set_var("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
+        envmnt::set("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
     }
 
     if git_info.user_name.is_some() {
-        env::set_var("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name.unwrap());
+        envmnt::set("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name.unwrap());
     }
 
     if git_info.user_email.is_some() {
-        env::set_var("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
+        envmnt::set("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
     }
 
     git_info_clone
@@ -232,7 +233,7 @@ fn setup_env_for_rust() -> RustInfo {
     let rust_info_clone = rustinfo.clone();
 
     if rustinfo.version.is_some() {
-        env::set_var("CARGO_MAKE_RUST_VERSION", &rustinfo.version.unwrap());
+        envmnt::set("CARGO_MAKE_RUST_VERSION", &rustinfo.version.unwrap());
     }
 
     if rustinfo.channel.is_some() {
@@ -244,28 +245,28 @@ fn setup_env_for_rust() -> RustInfo {
             RustChannel::Nightly => "nightly",
         };
 
-        env::set_var("CARGO_MAKE_RUST_CHANNEL", channel.to_string());
+        envmnt::set("CARGO_MAKE_RUST_CHANNEL", channel);
     }
 
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_RUST_TARGET_ARCH",
         &rustinfo.target_arch.unwrap_or("unknown".to_string()),
     );
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_RUST_TARGET_ENV",
         &rustinfo.target_env.unwrap_or("unknown".to_string()),
     );
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_RUST_TARGET_OS",
         &rustinfo.target_os.unwrap_or("unknown".to_string()),
     );
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_RUST_TARGET_POINTER_WIDTH",
         &rustinfo
             .target_pointer_width
             .unwrap_or("unknown".to_string()),
     );
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_RUST_TARGET_VENDOR",
         &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
     );
@@ -278,17 +279,17 @@ fn setup_env_for_ci() -> CiInfo {
 
     let ci_var_value = if ci_info_struct.ci { "TRUE" } else { "FALSE" };
 
-    env::set_var("CARGO_MAKE_CI", ci_var_value.to_string());
+    envmnt::set("CARGO_MAKE_CI", ci_var_value);
 
     ci_info_struct
 }
 
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
-    env::set_var("CARGO_MAKE", "true");
-    env::set_var("CARGO_MAKE_TASK", &task);
+    envmnt::set("CARGO_MAKE", "true");
+    envmnt::set("CARGO_MAKE_TASK", &task);
 
-    env::set_var("CARGO_MAKE_COMMAND", &cli_args.command);
+    envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
 
     let task_arguments = match cli_args.arguments {
         Some(ref args) => {
@@ -300,7 +301,7 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
         }
         None => "".to_string(),
     };
-    env::set_var("CARGO_MAKE_TASK_ARGS", &task_arguments);
+    envmnt::set("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
     // load crate info
     let crate_info = setup_env_for_crate();
@@ -368,10 +369,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
 }
 
 pub(crate) fn get_env(key: &str, default_value: &str) -> String {
-    match env::var(key) {
-        Ok(value) => value.to_string(),
-        _ => default_value.to_string(),
-    }
+    envmnt::get_or(key, default_value)
 }
 
 pub(crate) fn get_env_as_bool(key: &str, default_value: bool) -> bool {

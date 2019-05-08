@@ -12,9 +12,9 @@ use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
+use envmnt;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
-use std::env;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();
@@ -24,16 +24,8 @@ fn validate_env(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for (key, current_value) in env_vars.iter() {
-                match env::var(key) {
-                    Ok(value) => {
-                        all_valid = value == current_value.to_string();
-                    }
-                    _ => {
-                        all_valid = false;
-                    }
-                };
-
-                if !all_valid {
+                if !envmnt::is_equal(key, current_value) {
+                    all_valid = false;
                     break;
                 }
             }
@@ -52,14 +44,8 @@ fn validate_env_set(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for key in env_vars.iter() {
-                match env::var(key) {
-                    Err(_) => {
-                        all_valid = false;
-                    }
-                    _ => (),
-                };
-
-                if !all_valid {
+                if !envmnt::exists(key) {
+                    all_valid = false;
                     break;
                 }
             }
@@ -78,14 +64,8 @@ fn validate_env_not_set(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for key in env_vars.iter() {
-                match env::var(key) {
-                    Ok(_) => {
-                        all_valid = false;
-                    }
-                    _ => (),
-                };
-
-                if !all_valid {
+                if envmnt::exists(key) {
+                    all_valid = false;
                     break;
                 }
             }

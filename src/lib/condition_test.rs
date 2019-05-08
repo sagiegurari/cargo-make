@@ -26,8 +26,8 @@ fn validate_env_set_empty() {
 
 #[test]
 fn validate_env_set_valid() {
-    env::set_var("ENV_SET1", "");
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
         profiles: None,
@@ -63,8 +63,8 @@ fn validate_env_set_invalid() {
 
 #[test]
 fn validate_env_set_invalid_partial_found() {
-    env::set_var("ENV_SET1", "");
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
         profiles: None,
@@ -121,8 +121,8 @@ fn validate_env_not_set_valid() {
 
 #[test]
 fn validate_env_not_set_invalid() {
-    env::set_var("ENV_SET1", "");
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
         profiles: None,
@@ -141,8 +141,8 @@ fn validate_env_not_set_invalid() {
 
 #[test]
 fn validate_env_not_set_invalid_partial_found() {
-    env::set_var("ENV_SET1", "");
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
         profiles: None,
@@ -182,8 +182,8 @@ fn validate_env_empty() {
 
 #[test]
 fn validate_env_valid() {
-    env::set_var("ENV_SET1", "");
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
 
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "".to_string());
@@ -227,7 +227,7 @@ fn validate_env_invalid_not_found() {
 
 #[test]
 fn validate_env_invalid_not_equal() {
-    env::set_var("ENV_SET2", "value");
+    envmnt::set("ENV_SET2", "value");
 
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET2".to_string(), "value2".to_string());
@@ -249,8 +249,8 @@ fn validate_env_invalid_not_equal() {
 
 #[test]
 fn validate_env_invalid_partial_found() {
-    env::set_var("ENV_SET1", "good");
-    env::set_var("ENV_SET2", "good");
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
 
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good".to_string());
@@ -1008,7 +1008,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         cli_arguments: None,
     };
 
-    env::set_var("ENV_SET1", "bad");
+    envmnt::set("ENV_SET1", "bad");
 
     step.config.condition = Some(TaskCondition {
         profiles: None,
@@ -1053,8 +1053,8 @@ fn validate_condition_for_step_valid_env() {
         cli_arguments: None,
     };
 
-    env::set_var("ENV_SET1", "good1");
-    env::set_var("ENV_SET2", "good2");
+    envmnt::set("ENV_SET1", "good1");
+    envmnt::set("ENV_SET2", "good2");
 
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good1".to_string());
@@ -1150,8 +1150,8 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         cli_arguments: None,
     };
 
-    env::set_var("ENV_SET1", "good");
-    env::set_var("ENV_SET2", "good");
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
 
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("ENV_SET1".to_string(), "good".to_string());
