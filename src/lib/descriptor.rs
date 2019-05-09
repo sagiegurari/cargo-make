@@ -209,7 +209,7 @@ fn load_external_descriptor(
                 _ => file_path.clone(),
             };
 
-            env::set_var("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
+            envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
         debug!("Opening file: {:#?}", &file_path);

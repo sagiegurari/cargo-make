@@ -361,7 +361,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             &directory, error
         ),
         _ => {
-            env::set_var("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
+            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
 
             debug!("Working directory changed to: {}", &directory);
         }
