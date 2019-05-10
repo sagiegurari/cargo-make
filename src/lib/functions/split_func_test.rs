@@ -1,6 +1,6 @@
 use super::*;
 
-use std::env;
+use envmnt;
 
 #[test]
 #[should_panic]
@@ -28,7 +28,7 @@ fn invoke_invalid_split_by_empty() {
 
 #[test]
 fn invoke_exists_splitted_comma() {
-    env::set_var("TEST_SPLIT_VALUE", "1,2,3,4");
+    envmnt::set("TEST_SPLIT_VALUE", "1,2,3,4");
 
     let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), ",".to_string()]);
 
@@ -37,7 +37,7 @@ fn invoke_exists_splitted_comma() {
 
 #[test]
 fn invoke_exists_splitted_space() {
-    env::set_var("TEST_SPLIT_VALUE", "1 2 3 4");
+    envmnt::set("TEST_SPLIT_VALUE", "1 2 3 4");
 
     let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), " ".to_string()]);
 
@@ -46,7 +46,7 @@ fn invoke_exists_splitted_space() {
 
 #[test]
 fn invoke_exists_not_splitted() {
-    env::set_var("TEST_SPLIT_VALUE", "1,2,3,4");
+    envmnt::set("TEST_SPLIT_VALUE", "1,2,3,4");
 
     let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), "|".to_string()]);
 

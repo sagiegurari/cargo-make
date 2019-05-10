@@ -1,6 +1,6 @@
 use super::*;
 
-use std::env;
+use envmnt;
 
 #[test]
 #[should_panic]
@@ -16,7 +16,7 @@ fn invoke_invalid_too_many_args() {
 
 #[test]
 fn invoke_exists_with_value() {
-    env::set_var("TEST_REMOVE_EMPTY_VALID", "abc");
+    envmnt::set("TEST_REMOVE_EMPTY_VALID", "abc");
 
     let output = invoke(&vec!["TEST_REMOVE_EMPTY_VALID".to_string()]);
 
@@ -25,7 +25,7 @@ fn invoke_exists_with_value() {
 
 #[test]
 fn invoke_exists_empty() {
-    env::set_var("TEST_REMOVE_EMPTY_EMPTY", "");
+    envmnt::set("TEST_REMOVE_EMPTY_EMPTY", "");
 
     let output = invoke(&vec!["TEST_REMOVE_EMPTY_EMPTY".to_string()]);
 

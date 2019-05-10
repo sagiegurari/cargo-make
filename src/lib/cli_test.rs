@@ -392,9 +392,9 @@ fn run_for_args_set_env_values() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
 
-    env::set_var("ENV1_TEST", "EMPTY");
-    env::set_var("ENV2_TEST", "EMPTY");
-    env::set_var("ENV3_TEST", "EMPTY");
+    envmnt::set("ENV1_TEST", "EMPTY");
+    envmnt::set("ENV2_TEST", "EMPTY");
+    envmnt::set("ENV3_TEST", "EMPTY");
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -423,9 +423,9 @@ fn run_for_args_set_env_via_file() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
 
-    env::set_var("ENV1_TEST", "EMPTY");
-    env::set_var("ENV2_TEST", "EMPTY");
-    env::set_var("ENV3_TEST", "EMPTY");
+    envmnt::set("ENV1_TEST", "EMPTY");
+    envmnt::set("ENV2_TEST", "EMPTY");
+    envmnt::set("ENV3_TEST", "EMPTY");
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -449,12 +449,12 @@ fn run_for_args_set_env_both() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
 
-    env::set_var("ENV1_TEST", "EMPTY");
-    env::set_var("ENV2_TEST", "EMPTY");
-    env::set_var("ENV3_TEST", "EMPTY");
-    env::set_var("ENV4_TEST", "EMPTY");
-    env::set_var("ENV5_TEST", "EMPTY");
-    env::set_var("ENV6_TEST", "EMPTY");
+    envmnt::set("ENV1_TEST", "EMPTY");
+    envmnt::set("ENV2_TEST", "EMPTY");
+    envmnt::set("ENV3_TEST", "EMPTY");
+    envmnt::set("ENV4_TEST", "EMPTY");
+    envmnt::set("ENV5_TEST", "EMPTY");
+    envmnt::set("ENV6_TEST", "EMPTY");
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -547,7 +547,7 @@ fn run_for_args_no_task_args() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
 
-    env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
+    envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
     let matches = app.get_matches_from(vec![
         "cargo",
@@ -566,7 +566,7 @@ fn run_for_args_set_task_args() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
 
-    env::set_var("CARGO_MAKE_TASK_ARGS", "EMPTY");
+    envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
     let matches = app.get_matches_from(vec![
         "cargo",

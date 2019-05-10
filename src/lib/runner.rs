@@ -131,8 +131,7 @@ fn watch_task(flow_info: &FlowInfo, task: &str, options: Option<TaskWatchOptions
 }
 
 fn is_watch_enabled() -> bool {
-    let disable_watch_env = environment::get_env("CARGO_MAKE_DISABLE_WATCH", "FALSE");
-    disable_watch_env != "TRUE"
+    !envmnt::is_or("CARGO_MAKE_DISABLE_WATCH", false)
 }
 
 fn should_watch(task: &Task) -> bool {
@@ -191,8 +190,7 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                     let revert_directory = match step.config.cwd {
                         Some(ref cwd) => {
                             if cwd.len() > 0 {
-                                let directory =
-                                    environment::get_env("CARGO_MAKE_WORKING_DIRECTORY", "");
+                                let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
                                 environment::setup_cwd(Some(cwd));
 
@@ -244,7 +242,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
         "CARGO_MAKE_DISABLE_WATCH".to_string(),
-        EnvValue::Value("TRUE".to_string()),
+        EnvValue::Value("true".to_string()),
     );
     task_config.env = Some(env_map);
 

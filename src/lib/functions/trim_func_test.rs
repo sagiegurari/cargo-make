@@ -1,6 +1,6 @@
 use super::*;
 
-use std::env;
+use envmnt;
 
 #[test]
 #[should_panic]
@@ -22,7 +22,7 @@ fn invoke_invalid_trim_type() {
 
 #[test]
 fn invoke_exists_with_value() {
-    env::set_var("TEST_TRIM_VALID", "abc");
+    envmnt::set("TEST_TRIM_VALID", "abc");
 
     let output = invoke(&vec!["TEST_TRIM_VALID".to_string()]);
 
@@ -31,7 +31,7 @@ fn invoke_exists_with_value() {
 
 #[test]
 fn invoke_exists_empty() {
-    env::set_var("TEST_TRIM_EMPTY", "");
+    envmnt::set("TEST_TRIM_EMPTY", "");
 
     let output = invoke(&vec!["TEST_TRIM_EMPTY".to_string()]);
 
@@ -47,7 +47,7 @@ fn invoke_not_exists() {
 
 #[test]
 fn invoke_all_spaces() {
-    env::set_var("TEST_TRIM_ALL_SPACES", "");
+    envmnt::set("TEST_TRIM_ALL_SPACES", "");
 
     let output = invoke(&vec!["TEST_TRIM_ALL_SPACES".to_string()]);
 
@@ -56,7 +56,7 @@ fn invoke_all_spaces() {
 
 #[test]
 fn invoke_partial_spaces() {
-    env::set_var("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   123   ");
+    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   123   ");
 
     let output = invoke(&vec!["TEST_TRIM_ALL_PARTIAL_SPACES".to_string()]);
 
@@ -65,7 +65,7 @@ fn invoke_partial_spaces() {
 
 #[test]
 fn invoke_trim_start() {
-    env::set_var("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
 
     let output = invoke(&vec![
         "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),
@@ -77,7 +77,7 @@ fn invoke_trim_start() {
 
 #[test]
 fn invoke_trim_end() {
-    env::set_var("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
 
     let output = invoke(&vec![
         "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),

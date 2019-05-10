@@ -337,12 +337,12 @@ fn merge_tasks_extend_task() {
 
 #[test]
 fn load_descriptors_load_workspace_makefile() {
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile.toml",
     );
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
-    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+    envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
     assert!(task.is_some());
@@ -350,12 +350,12 @@ fn load_descriptors_load_workspace_makefile() {
 
 #[test]
 fn load_descriptors_load_workspace_makefile_no_exists() {
-    env::set_var(
+    envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile2.toml",
     );
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
-    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+    envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
     assert!(task.is_none());
@@ -363,7 +363,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
 
 #[test]
 fn load_descriptors_no_load_workspace_makefile() {
-    env::remove_var("CARGO_MAKE_WORKSPACE_MAKEFILE");
+    envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
 
     let task = config.tasks.get("workspace-echo");
@@ -602,7 +602,7 @@ fn load_external_descriptor_extending_file_sub_folder() {
 
 #[test]
 fn load_external_descriptor_set_env() {
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     assert_eq!(env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap(), "EMPTY");
 
     load_external_descriptor(".", "./examples/alias.toml", true, true);

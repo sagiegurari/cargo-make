@@ -97,7 +97,7 @@ fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
 }
 
 fn set_env_for_profile(profile_name: &str, sub_env: &IndexMap<String, EnvValue>) {
-    let current_profile_name = get_env("CARGO_MAKE_PROFILE", "development");
+    let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
 
     if current_profile_name == profile_name.to_string() {
         debug!("Setting Up Profile: {} Env.", &profile_name);
@@ -180,18 +180,10 @@ fn setup_env_for_crate() -> CrateInfo {
         None => crate_info.workspace.is_some(),
     };
 
-    let has_dependencies_var_value = if has_dependencies { "TRUE" } else { "FALSE" };
-    envmnt::set(
-        "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
-        has_dependencies_var_value,
-    );
+    envmnt::set_bool("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies);
 
-    let is_workspace_var_value = if crate_info.workspace.is_none() {
-        "FALSE"
-    } else {
-        "TRUE"
-    };
-    envmnt::set("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
+    let is_workspace_var_value = !crate_info.workspace.is_none();
+    envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
     let members = workspace.members.unwrap_or(vec![]);
@@ -200,11 +192,8 @@ fn setup_env_for_crate() -> CrateInfo {
 
     // check if Cargo.lock file exists in working directory
     let lock_file = Path::new("Cargo.lock");
-    let lock_file_exists_var_value = if lock_file.exists() { "TRUE" } else { "FALSE" };
-    envmnt::set(
-        "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS",
-        lock_file_exists_var_value,
-    );
+    let lock_file_exists = lock_file.exists();
+    envmnt::set_bool("CARGO_MAKE_CRATE_LOCK_FILE_EXISTS", lock_file_exists);
 
     crate_info_clone
 }
@@ -277,7 +266,7 @@ fn setup_env_for_rust() -> RustInfo {
 fn setup_env_for_ci() -> CiInfo {
     let ci_info_struct = ci_info::get();
 
-    let ci_var_value = if ci_info_struct.ci { "TRUE" } else { "FALSE" };
+    let ci_var_value = if ci_info_struct.ci { "true" } else { "false" };
 
     envmnt::set("CARGO_MAKE_CI", ci_var_value);
 
@@ -368,28 +357,11 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub(crate) fn get_env(key: &str, default_value: &str) -> String {
-    envmnt::get_or(key, default_value)
-}
-
-pub(crate) fn get_env_as_bool(key: &str, default_value: bool) -> bool {
-    let default_str = if default_value { "true" } else { "false" };
-
-    let mut value = get_env(key, default_str);
-    value = value.to_lowercase();
-
-    if value == "true" || value == "yes" || value == "1" {
-        true
-    } else {
-        false
-    }
-}
-
 pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
     match env_file {
         Some(file_name) => {
             let file_path = if file_name.starts_with(".") {
-                let base_path = get_env("CARGO_MAKE_WORKING_DIRECTORY", ".");
+                let base_path = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", ".");
                 Path::new(&base_path).join(file_name)
             } else {
                 Path::new(&file_name).to_path_buf()
@@ -462,7 +434,7 @@ fn expand_env_for_arguments(task: &mut Task) {
         Some(ref args) => {
             let mut expanded_args = vec![];
 
-            let task_args_str = get_env("CARGO_MAKE_TASK_ARGS", "").to_string();
+            let task_args_str = envmnt::get_or("CARGO_MAKE_TASK_ARGS", "").to_string();
             let task_args: Vec<String> = if task_args_str.len() == 0 {
                 vec![]
             } else {

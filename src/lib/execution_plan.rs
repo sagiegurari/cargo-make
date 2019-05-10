@@ -10,6 +10,7 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, Step, Task};
+use envmnt;
 use glob::Pattern;
 use indexmap::IndexMap;
 use std::collections::HashSet;
@@ -118,7 +119,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
     let log_level = logger::get_log_level();
 
-    let skip_members_config = environment::get_env("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
+    let skip_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
     let skip_members = get_skipped_workspace_members(skip_members_config);
 
     let cargo_make_command = "cargo make";
@@ -159,7 +160,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     }
 
     //only if environment variable is set
-    let task_env = if environment::get_env_as_bool("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", false) {
+    let task_env = if envmnt::is_or("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", false) {
         match env::var("CARGO_MAKE_MAKEFILE_PATH") {
             Ok(makefile) => {
                 let mut env_map = IndexMap::new();

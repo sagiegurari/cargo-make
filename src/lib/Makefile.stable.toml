@@ -400,7 +400,7 @@ category = "CI"
 [tasks.audit]
 description = "Runs verify-audit cargo plugin."
 category = "CI"
-condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" = "TRUE" } }
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "true", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" = "true" } }
 command = "cargo"
 args = ["audit"]
 
@@ -413,7 +413,7 @@ category = "CI"
 [tasks.outdated]
 description = "Runs verify-outdated cargo plugin."
 category = "CI"
-condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "TRUE" } }
+condition = { env = { "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" = "true" } }
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
@@ -740,7 +740,7 @@ dependencies = [
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
 category = "CI"
-condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = "TRUE", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
 run_task = "codecov-flow"
 
 [tasks.upload-artifacts]
