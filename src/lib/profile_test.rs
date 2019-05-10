@@ -1,7 +1,5 @@
 use super::*;
 
-use std::env;
-
 #[test]
 fn get_not_defined() {
     envmnt::remove("CARGO_MAKE_PROFILE");
@@ -23,7 +21,7 @@ fn set_empty() {
     assert_eq!(output, "development".to_string());
     output = get();
     assert_eq!(output, "development".to_string());
-    output = env::var("CARGO_MAKE_PROFILE").unwrap();
+    output = envmnt::get_or_panic("CARGO_MAKE_PROFILE");
     assert_eq!(output, "development".to_string());
 }
 
@@ -34,7 +32,7 @@ fn set_spaces() {
     assert_eq!(output, "development".to_string());
     output = get();
     assert_eq!(output, "development".to_string());
-    output = env::var("CARGO_MAKE_PROFILE").unwrap();
+    output = envmnt::get_or_panic("CARGO_MAKE_PROFILE");
     assert_eq!(output, "development".to_string());
 }
 
@@ -45,6 +43,6 @@ fn set_mixed() {
     assert_eq!(output, "some profile name".to_string());
     output = get();
     assert_eq!(output, "some profile name".to_string());
-    output = env::var("CARGO_MAKE_PROFILE").unwrap();
+    output = envmnt::get_or_panic("CARGO_MAKE_PROFILE");
     assert_eq!(output, "some profile name".to_string());
 }

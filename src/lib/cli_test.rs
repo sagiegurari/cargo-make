@@ -413,9 +413,9 @@ fn run_for_args_set_env_values() {
 
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
-    assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
-    assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
-    assert_eq!(env::var("ENV3_TEST").unwrap(), "TEST3");
+    assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
+    assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV3_TEST"), "TEST3");
 }
 
 #[test]
@@ -439,9 +439,9 @@ fn run_for_args_set_env_via_file() {
 
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
-    assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
-    assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
-    assert_eq!(env::var("ENV3_TEST").unwrap(), "VALUE OF ENV2 IS: TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
+    assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV3_TEST"), "VALUE OF ENV2 IS: TEST2");
 }
 
 #[test]
@@ -474,12 +474,12 @@ fn run_for_args_set_env_both() {
 
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
-    assert_eq!(env::var("ENV1_TEST").unwrap(), "TEST1");
-    assert_eq!(env::var("ENV2_TEST").unwrap(), "TEST2");
-    assert_eq!(env::var("ENV3_TEST").unwrap(), "VALUE OF ENV2 IS: TEST2");
-    assert_eq!(env::var("ENV4_TEST").unwrap(), "TEST4");
-    assert_eq!(env::var("ENV5_TEST").unwrap(), "TEST5");
-    assert_eq!(env::var("ENV6_TEST").unwrap(), "TEST6");
+    assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
+    assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV3_TEST"), "VALUE OF ENV2 IS: TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV4_TEST"), "TEST4");
+    assert_eq!(envmnt::get_or_panic("ENV5_TEST"), "TEST5");
+    assert_eq!(envmnt::get_or_panic("ENV6_TEST"), "TEST6");
 }
 
 #[test]
@@ -558,7 +558,7 @@ fn run_for_args_no_task_args() {
 
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
-    assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"), "");
 }
 
 #[test]
@@ -580,5 +580,8 @@ fn run_for_args_set_task_args() {
 
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
-    assert_eq!(env::var("CARGO_MAKE_TASK_ARGS").unwrap(), "arg1;arg2;arg3");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
+        "arg1;arg2;arg3"
+    );
 }

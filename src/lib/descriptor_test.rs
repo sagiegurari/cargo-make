@@ -1,7 +1,6 @@
 use super::*;
 
 use crate::types::{ExtendOptions, InstallCrate};
-use std::env;
 
 #[test]
 fn merge_env_both_empty() {
@@ -603,13 +602,11 @@ fn load_external_descriptor_extending_file_sub_folder() {
 #[test]
 fn load_external_descriptor_set_env() {
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap(), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH"), "EMPTY");
 
     load_external_descriptor(".", "./examples/alias.toml", true, true);
 
-    assert!(env::var("CARGO_MAKE_MAKEFILE_PATH")
-        .unwrap()
-        .ends_with("alias.toml"));
+    assert!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH").ends_with("alias.toml"));
 }
 
 #[test]
@@ -655,7 +652,7 @@ fn run_load_script_invalid_load_script() {
 
 #[test]
 fn load_descriptor_extended_makefiles_path_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/test1.toml".to_string()),
@@ -668,7 +665,7 @@ fn load_descriptor_extended_makefiles_path_exists() {
 #[test]
 #[should_panic]
 fn load_descriptor_extended_makefiles_path_not_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/bad.toml".to_string()),
@@ -677,7 +674,7 @@ fn load_descriptor_extended_makefiles_path_not_exists() {
 
 #[test]
 fn load_descriptor_extended_makefiles_options_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -693,7 +690,7 @@ fn load_descriptor_extended_makefiles_options_exists() {
 #[test]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -705,7 +702,7 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
 
 #[test]
 fn load_descriptor_extended_makefiles_options_exists_optional() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -720,7 +717,7 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
 
 #[test]
 fn load_descriptor_extended_makefiles_options_exists_not_optional() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -736,7 +733,7 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
 #[test]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists_optional() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -752,7 +749,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
 #[test]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Options(ExtendOptions {
@@ -764,7 +761,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
 
 #[test]
 fn load_descriptor_extended_makefiles_list_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let list = vec![
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
@@ -785,7 +782,7 @@ fn load_descriptor_extended_makefiles_list_exists() {
 #[test]
 #[should_panic]
 fn load_descriptor_extended_makefiles_list_not_exists() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let list = vec![
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
@@ -801,7 +798,7 @@ fn load_descriptor_extended_makefiles_list_not_exists() {
 
 #[test]
 fn load_descriptor_extended_makefiles_list_exists_optional() {
-    let parent_path = env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap();
+    let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let list = vec![
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),

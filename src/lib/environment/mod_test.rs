@@ -38,7 +38,10 @@ fn parse_env_file_exists() {
 fn evaluate_and_set_env_simple() {
     envmnt::remove("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
-    assert_eq!(env::var("EVAL_SET_SIMPLE").unwrap(), "SIMPLE".to_string());
+    assert_eq!(
+        envmnt::get_or_panic("EVAL_SET_SIMPLE"),
+        "SIMPLE".to_string()
+    );
 }
 
 #[test]
@@ -49,7 +52,7 @@ fn evaluate_and_set_env_exists() {
         "testing: ${eval_test1} works",
     );
     assert_eq!(
-        env::var("evaluate_and_set_env_exists").unwrap(),
+        envmnt::get_or_panic("evaluate_and_set_env_exists"),
         "testing: test works".to_string()
     );
 }
@@ -61,7 +64,7 @@ fn evaluate_and_set_env_not_exists() {
         "testing: ${eval_test_bad} works",
     );
     assert_eq!(
-        env::var("evaluate_and_set_env_not_exists").unwrap(),
+        envmnt::get_or_panic("evaluate_and_set_env_not_exists"),
         "testing: ${eval_test_bad} works".to_string()
     );
 }
@@ -75,7 +78,7 @@ fn evaluate_and_set_env_complex() {
         "checking 10 is ${eval_test10} empty is ${eval_test30} and 20 is ${eval_test20}",
     );
     assert_eq!(
-        env::var("evaluate_and_set_env_complex").unwrap(),
+        envmnt::get_or_panic("evaluate_and_set_env_complex"),
         "checking 10 is 10 empty is ${eval_test30} and 20 is 20".to_string()
     );
 }
@@ -86,7 +89,7 @@ fn setup_cwd_empty() {
 
     setup_cwd(None);
 
-    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") != "EMPTY");
 }
 
 #[test]
@@ -101,16 +104,16 @@ fn setup_env_empty() {
 
     setup_env(&cli_args, &config, "setup_env_empty1");
 
-    let mut value = env::var("CARGO_MAKE_TASK");
-    assert_eq!(value.unwrap(), "setup_env_empty1");
+    let mut value = envmnt::get_or_panic("CARGO_MAKE_TASK");
+    assert_eq!(value, "setup_env_empty1");
 
     setup_env(&cli_args, &config, "setup_env_empty2");
 
     let delay = time::Duration::from_millis(10);
     thread::sleep(delay);
 
-    value = env::var("CARGO_MAKE_TASK");
-    assert_eq!(value.unwrap(), "setup_env_empty2");
+    value = envmnt::get_or_panic("CARGO_MAKE_TASK");
+    assert_eq!(value, "setup_env_empty2");
 }
 
 #[test]
@@ -128,8 +131,8 @@ fn setup_env_cli_arguments() {
 
     setup_env(&cli_args, &config, "setup_env_empty1");
 
-    let value = env::var("CARGO_MAKE_TASK_ARGS");
-    assert_eq!(value.unwrap(), "arg1;arg2");
+    let value = envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS");
+    assert_eq!(value, "arg1;arg2");
 }
 
 #[test]
@@ -150,19 +153,13 @@ fn setup_env_values() {
         EnvValue::Value("MY_ENV_VALUE2".to_string()),
     );
 
-    assert_eq!(
-        env::var("MY_ENV_KEY").unwrap_or("NONE".to_string()),
-        "NONE".to_string()
-    );
-    assert_eq!(
-        env::var("MY_ENV_KEY2").unwrap_or("NONE".to_string()),
-        "NONE".to_string()
-    );
+    assert_eq!(envmnt::get_or("MY_ENV_KEY", "NONE"), "NONE".to_string());
+    assert_eq!(envmnt::get_or("MY_ENV_KEY2", "NONE"), "NONE".to_string());
 
     setup_env(&cli_args, &config, "set_env_values");
 
-    assert_eq!(env::var("MY_ENV_KEY").unwrap(), "MY_ENV_VALUE");
-    assert_eq!(env::var("MY_ENV_KEY2").unwrap(), "MY_ENV_VALUE2");
+    assert_eq!(envmnt::get_or_panic("MY_ENV_KEY"), "MY_ENV_VALUE");
+    assert_eq!(envmnt::get_or_panic("MY_ENV_KEY2"), "MY_ENV_VALUE2");
 }
 
 #[test]
@@ -187,18 +184,18 @@ fn setup_env_script() {
     );
 
     assert_eq!(
-        env::var("MY_ENV_SCRIPT_KEY").unwrap_or("NONE".to_string()),
+        envmnt::get_or("MY_ENV_SCRIPT_KEY", "NONE"),
         "NONE".to_string()
     );
     assert_eq!(
-        env::var("MY_ENV_SCRIPT_KEY2").unwrap_or("NONE".to_string()),
+        envmnt::get_or("MY_ENV_SCRIPT_KEY2", "NONE"),
         "NONE".to_string()
     );
 
     setup_env(&cli_args, &config, "set_env_values");
 
-    assert_eq!(env::var("MY_ENV_SCRIPT_KEY").unwrap(), "MY_ENV_VALUE");
-    assert_eq!(env::var("MY_ENV_SCRIPT_KEY2").unwrap(), "script1");
+    assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY"), "MY_ENV_VALUE");
+    assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY2"), "script1");
 }
 
 #[test]
@@ -268,35 +265,47 @@ fn setup_env_for_crate_load_toml_found() {
 
     setup_env_for_crate();
 
-    assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_VERSION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_FS_NAME"),
+        "cargo_make"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_VERSION"),
         env!("CARGO_PKG_VERSION")
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DESCRIPTION"),
         env!("CARGO_PKG_DESCRIPTION")
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_LICENSE"),
+        "Apache-2.0"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DOCUMENTATION"),
         "https://sagiegurari.github.io/cargo-make"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HOMEPAGE"),
         "https://sagiegurari.github.io/cargo-make"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_REPOSITORY"),
         "https://github.com/sagiegurari/cargo-make.git"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HAS_DEPENDENCIES"),
         "true"
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "false");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_IS_WORKSPACE"),
+        "false"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS"),
+        ""
+    );
 }
 
 #[test]
@@ -314,60 +323,84 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
     envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
-    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") == "EMPTY");
 
     setup_cwd(Some("examples"));
     setup_env_for_crate();
     setup_cwd(Some(".."));
 
-    assert!(env::var("CARGO_MAKE_WORKING_DIRECTORY").unwrap() != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") != "EMPTY");
 
-    assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_FS_NAME"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_VERSION"), "EMPTY");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DESCRIPTION"),
+        "EMPTY"
+    );
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_LICENSE"), "EMPTY");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DOCUMENTATION"),
+        "EMPTY"
+    );
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_HOMEPAGE"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_REPOSITORY"), "EMPTY");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HAS_DEPENDENCIES"),
         "false"
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "false");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_IS_WORKSPACE"),
+        "false"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS"),
+        ""
+    );
 
     setup_env_for_crate();
 
-    assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "cargo-make");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "cargo_make");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_VERSION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_FS_NAME"),
+        "cargo_make"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_VERSION"),
         env!("CARGO_PKG_VERSION")
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DESCRIPTION"),
         env!("CARGO_PKG_DESCRIPTION")
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "Apache-2.0");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_LICENSE"),
+        "Apache-2.0"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DOCUMENTATION"),
         "https://sagiegurari.github.io/cargo-make"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HOMEPAGE"),
         "https://sagiegurari.github.io/cargo-make"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_REPOSITORY"),
         "https://github.com/sagiegurari/cargo-make.git"
     );
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HAS_DEPENDENCIES"),
         "true"
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "false");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(), "");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_IS_WORKSPACE"),
+        "false"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS"),
+        ""
+    );
 }
 
 #[test]
@@ -388,21 +421,30 @@ fn setup_env_for_crate_workspace() {
     setup_env_for_crate();
     setup_cwd(Some("../.."));
 
-    assert_eq!(env::var("CARGO_MAKE_CRATE_NAME").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_FS_NAME").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_VERSION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DESCRIPTION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_LICENSE").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_DOCUMENTATION").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_HOMEPAGE").unwrap(), "EMPTY");
-    assert_eq!(env::var("CARGO_MAKE_CRATE_REPOSITORY").unwrap(), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_FS_NAME"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_VERSION"), "EMPTY");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_HAS_DEPENDENCIES").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DESCRIPTION"),
+        "EMPTY"
+    );
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_LICENSE"), "EMPTY");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_DOCUMENTATION"),
+        "EMPTY"
+    );
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_HOMEPAGE"), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_REPOSITORY"), "EMPTY");
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_HAS_DEPENDENCIES"),
         "true"
     );
-    assert_eq!(env::var("CARGO_MAKE_CRATE_IS_WORKSPACE").unwrap(), "true");
     assert_eq!(
-        env::var("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap(),
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_IS_WORKSPACE"),
+        "true"
+    );
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS"),
         "member1,member2"
     );
 }
@@ -417,19 +459,19 @@ fn setup_env_for_git_repo_with_values() {
 
     if git_info.branch.is_some() {
         assert_eq!(
-            env::var("CARGO_MAKE_GIT_BRANCH").unwrap(),
+            envmnt::get_or_panic("CARGO_MAKE_GIT_BRANCH"),
             git_info.branch.unwrap()
         );
     }
     if git_info.user_name.is_some() {
         assert_eq!(
-            env::var("CARGO_MAKE_GIT_USER_NAME").unwrap(),
+            envmnt::get_or_panic("CARGO_MAKE_GIT_USER_NAME"),
             git_info.user_name.unwrap()
         );
     }
     if git_info.user_email.is_some() {
         assert_eq!(
-            env::var("CARGO_MAKE_GIT_USER_EMAIL").unwrap(),
+            envmnt::get_or_panic("CARGO_MAKE_GIT_USER_EMAIL"),
             git_info.user_email.unwrap()
         );
     }
@@ -445,37 +487,37 @@ fn setup_env_for_rust_simple_check() {
     envmnt::set("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_TARGET_VENDOR", "EMPTY");
 
-    assert!(env::var("CARGO_MAKE_RUST_VERSION").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_CHANNEL").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_ARCH").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_ENV").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_OS").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() == "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_ARCH") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_ENV") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") == "EMPTY");
 
     setup_env_for_rust();
 
-    assert!(env::var("CARGO_MAKE_RUST_VERSION").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_CHANNEL").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_ARCH").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_ENV").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_OS").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH").unwrap() != "EMPTY");
-    assert!(env::var("CARGO_MAKE_RUST_TARGET_VENDOR").unwrap() != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_ARCH") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_ENV") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") != "EMPTY");
 }
 
 #[test]
 fn setup_env_for_ci_simple_check() {
     envmnt::set("CARGO_MAKE_CI", "EMPTY");
 
-    assert_eq!(env::var("CARGO_MAKE_CI").unwrap(), "EMPTY");
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CI"), "EMPTY");
 
     let ci = ci_info::is_ci();
     let env_value = if ci { "true" } else { "false" };
 
     setup_env_for_ci();
 
-    assert_eq!(env::var("CARGO_MAKE_CI").unwrap(), env_value);
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CI"), env_value);
 }
 
 #[test]

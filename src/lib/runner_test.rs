@@ -6,7 +6,6 @@ use crate::types::{
 use ci_info;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
-use std::env;
 
 #[cfg(target_os = "linux")]
 use crate::types::WatchOptions;
@@ -14,7 +13,7 @@ use crate::types::WatchOptions;
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_no_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
     let task = create_proxy_task("some_task", false);
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
@@ -42,7 +41,7 @@ fn create_proxy_task_no_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_with_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_proxy_task("some_task", false);
 
@@ -73,7 +72,7 @@ fn create_proxy_task_with_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_allow_private() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
     let task = create_proxy_task("some_task", true);
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
@@ -546,7 +545,7 @@ fn run_task_set_env() {
 
     run_task(&flow_info, &step);
 
-    assert_eq!(env::var("TEST_RUN_TASK_SET_ENV").unwrap(), "VALID");
+    assert_eq!(envmnt::get_or_panic("TEST_RUN_TASK_SET_ENV"), "VALID");
 }
 
 #[test]
@@ -713,7 +712,7 @@ fn create_watch_task_name_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_watch_task("some_task", None);
 
@@ -745,7 +744,7 @@ fn create_watch_task_with_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_bool_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Boolean(true)));
 
@@ -777,7 +776,7 @@ fn create_watch_task_with_makefile_and_bool_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_empty_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
@@ -820,7 +819,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_all_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
@@ -869,7 +868,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_false_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
@@ -1682,7 +1681,7 @@ fn create_fork_step_valid() {
     profile_arg.push_str(&profile::get());
     profile_arg.push_str("\"");
 
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     let mut makefile_arg = "--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
 
