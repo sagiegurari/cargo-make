@@ -1,6 +1,6 @@
 use super::*;
 
-use std::env;
+use envmnt;
 
 #[test]
 #[should_panic]
@@ -16,7 +16,7 @@ fn run_function_not_exists() {
 
 #[test]
 fn run_function_split() {
-    env::set_var("TEST_SPLIT_FUNC_MOD", "1,2,3,4");
+    envmnt::set("TEST_SPLIT_FUNC_MOD", "1,2,3,4");
 
     let output = run_function(
         "split",
@@ -28,7 +28,7 @@ fn run_function_split() {
 
 #[test]
 fn run_function_remove_empty() {
-    env::set_var("TEST_REMOVE_EMPTY_FUNC_MOD", "");
+    envmnt::set("TEST_REMOVE_EMPTY_FUNC_MOD", "");
 
     let output = run_function(
         "remove-empty",
@@ -40,7 +40,7 @@ fn run_function_remove_empty() {
 
 #[test]
 fn run_function_trim() {
-    env::set_var("TEST_TRIM_FUNC_MOD", "    ");
+    envmnt::set("TEST_TRIM_FUNC_MOD", "    ");
 
     let output = run_function("trim", &vec!["TEST_TRIM_FUNC_MOD".to_string()]);
 
@@ -134,7 +134,7 @@ fn get_function_arguments_multiple_with_spaces() {
 
 #[test]
 fn evaluate_and_run_valid() {
-    env::set_var("TEST_RUN_FUNC_VALUE", "1 2 3 4");
+    envmnt::set("TEST_RUN_FUNC_VALUE", "1 2 3 4");
 
     let output = evaluate_and_run("@@split(TEST_RUN_FUNC_VALUE, )");
 
@@ -156,7 +156,7 @@ fn evaluate_and_run_no_function() {
 
 #[test]
 fn modify_arguments_with_functions() {
-    env::set_var("TEST_MOD_ARGS_FUNC_VALUE", "1|2|3|4");
+    envmnt::set("TEST_MOD_ARGS_FUNC_VALUE", "1|2|3|4");
 
     let mut task = Task::new();
     task.args = Some(vec![
@@ -172,7 +172,7 @@ fn modify_arguments_with_functions() {
 
 #[test]
 fn run_with_functions() {
-    env::set_var("TEST_STEP_FUNC_VALUE", "1 2 3 4");
+    envmnt::set("TEST_STEP_FUNC_VALUE", "1 2 3 4");
 
     let mut task = Task::new();
     task.args = Some(vec![

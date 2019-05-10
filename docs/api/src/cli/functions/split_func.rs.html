@@ -43,7 +43,7 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./split_func_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">split_func_test</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">environment</span>;
+<span class="kw">use</span> <span class="ident">envmnt</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">invoke</span>(<span class="ident">function_args</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">function_args</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="number">2</span> {
@@ -59,7 +59,7 @@
 
     <span class="kw">let</span> <span class="ident">split_by_char</span> <span class="op">=</span> <span class="ident">split_by</span>.<span class="ident">chars</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();
 
-    <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="kw-2">&amp;</span><span class="ident">env_key</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="kw-2">&amp;</span><span class="ident">env_key</span>, <span class="string">&quot;&quot;</span>);
 
     <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
         <span class="kw">let</span> <span class="ident">splitted</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">split</span>(<span class="ident">split_by_char</span>);

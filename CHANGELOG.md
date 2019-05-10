@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.19.0 (2019-05-10)
+
+* Support setting boolean environment variables #223
+* Added new env_true/env_false conditions #221
+* Normalize boolean env vars #220 (**backward compatability break**)
+
 ### v0.18.0 (2019-04-30)
 
 * Allow run_task to invoke the task as a sub process #214

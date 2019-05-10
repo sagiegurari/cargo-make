@@ -1067,11 +1067,11 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
-* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds TRUE/FALSE based if there are dependencies defined in the Cargo.toml or not (defined as FALSE if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
-* **CARGO_MAKE_CI** - Holds TRUE/FALSE based if the task is running in a continuous integration system (such as Travis CI).
+* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1135,6 +1135,8 @@ The following condition types are available:
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
 * **env_not_set** - List of environment variables that must not be defined
+* **env_true** - List of environment variables that must be defined and must not be set to any of the following (case insensitive): false, no, 0 or empty
+* **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **rust_version** - Optional definition of min, max and/or specific rust version
 

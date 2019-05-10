@@ -7,14 +7,13 @@
 #[path = "./profile_test.rs"]
 mod profile_test;
 
-use crate::environment;
-use std::env;
+use envmnt;
 
 static PROFILE_ENV_KEY: &str = "CARGO_MAKE_PROFILE";
 pub(crate) static DEFAULT_PROFILE: &str = "development";
 
 pub(crate) fn get() -> String {
-    environment::get_env(PROFILE_ENV_KEY, DEFAULT_PROFILE)
+    envmnt::get_or(PROFILE_ENV_KEY, DEFAULT_PROFILE)
 }
 
 pub(crate) fn set(profile: &str) -> String {
@@ -25,7 +24,7 @@ pub(crate) fn set(profile: &str) -> String {
         profile_normalized = DEFAULT_PROFILE.to_string();
     }
 
-    env::set_var(PROFILE_ENV_KEY, &profile_normalized);
+    envmnt::set(PROFILE_ENV_KEY, &profile_normalized);
 
     get()
 }

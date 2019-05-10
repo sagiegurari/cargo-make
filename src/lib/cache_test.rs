@@ -1,4 +1,5 @@
 use super::*;
+use envmnt;
 use std::env;
 use std::path::PathBuf;
 
@@ -23,16 +24,16 @@ fn load_from_path_not_exists() {
 fn load_with_cargo_home() {
     let path = env::current_dir().unwrap();
     let directory = path.join("examples/cargo-make");
-    env::set_var("CARGO_MAKE_HOME", directory.to_str().unwrap());
+    envmnt::set("CARGO_MAKE_HOME", directory.to_str().unwrap());
     let cache_data = load();
 
-    env::remove_var("CARGO_MAKE_HOME");
+    envmnt::remove("CARGO_MAKE_HOME");
 
     assert_eq!(cache_data.last_update_check.unwrap(), 1000u64);
 }
 
 #[test]
 fn load_without_cargo_home() {
-    env::remove_var("CARGO_MAKE_HOME");
+    envmnt::remove("CARGO_MAKE_HOME");
     load();
 }

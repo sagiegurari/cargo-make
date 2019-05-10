@@ -184,9 +184,9 @@ fn create_workspace_task_extend_workspace_makefile() {
         exclude: None,
     });
 
-    env::set_var("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
+    envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
     let task = create_workspace_task(crate_info, "some_task");
-    env::set_var("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
+    envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
 
     assert!(task.script.is_some());
     let script = task.script.unwrap();

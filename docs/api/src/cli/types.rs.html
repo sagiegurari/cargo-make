@@ -1549,6 +1549,12 @@
 <span id="1549">1549</span>
 <span id="1550">1550</span>
 <span id="1551">1551</span>
+<span id="1552">1552</span>
+<span id="1553">1553</span>
+<span id="1554">1554</span>
+<span id="1555">1555</span>
+<span id="1556">1556</span>
+<span id="1557">1557</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1878,6 +1884,10 @@
     <span class="kw">pub</span> <span class="ident">env_not_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables and their values</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Environment variables which are defined as true</span>
+    <span class="kw">pub</span> <span class="ident">env_true</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Environment variables which are defined as false</span>
+    <span class="kw">pub</span> <span class="ident">env_false</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Rust version condition</span>
     <span class="kw">pub</span> <span class="ident">rust_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustVersionCondition</span><span class="op">&gt;</span>,
 }
@@ -1897,6 +1907,8 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EnvValue</span> {
     <span class="doccomment">/// The value as string</span>
     <span class="ident">Value</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// The value as boolean</span>
+    <span class="ident">Boolean</span>(<span class="ident">bool</span>),
     <span class="doccomment">/// Script which will return the value</span>
     <span class="ident">Script</span>(<span class="ident">EnvValueScript</span>),
     <span class="doccomment">/// Profile env</span>

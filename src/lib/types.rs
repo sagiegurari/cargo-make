@@ -326,6 +326,10 @@ pub struct TaskCondition {
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
     pub env: Option<IndexMap<String, String>>,
+    /// Environment variables which are defined as true
+    pub env_true: Option<Vec<String>>,
+    /// Environment variables which are defined as false
+    pub env_false: Option<Vec<String>>,
     /// Rust version condition
     pub rust_version: Option<RustVersionCondition>,
 }
@@ -345,6 +349,8 @@ pub struct EnvValueScript {
 pub enum EnvValue {
     /// The value as string
     Value(String),
+    /// The value as boolean
+    Boolean(bool),
     /// Script which will return the value
     Script(EnvValueScript),
     /// Profile env

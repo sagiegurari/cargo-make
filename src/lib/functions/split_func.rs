@@ -7,7 +7,7 @@
 #[path = "./split_func_test.rs"]
 mod split_func_test;
 
-use crate::environment;
+use envmnt;
 
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 2 {
@@ -23,7 +23,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     let split_by_char = split_by.chars().next().unwrap();
 
-    let value = environment::get_env(&env_key, "");
+    let value = envmnt::get_or(&env_key, "");
 
     if value.len() > 0 {
         let splitted = value.split(split_by_char);

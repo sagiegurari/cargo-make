@@ -7,7 +7,7 @@
 #[path = "./remove_empty_func_test.rs"]
 mod remove_empty_func_test;
 
-use crate::environment;
+use envmnt;
 
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 1 {
@@ -16,7 +16,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     let env_key = function_args[0].clone();
 
-    let value = environment::get_env(&env_key, "");
+    let value = envmnt::get_or(&env_key, "");
 
     if value.len() > 0 {
         vec![value]

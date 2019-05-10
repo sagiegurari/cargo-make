@@ -417,8 +417,6 @@
 <span id="417">417</span>
 <span id="418">418</span>
 <span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -553,8 +551,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">is_watch_enabled</span>() <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">disable_watch_env</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="string">&quot;FALSE&quot;</span>);
-    <span class="ident">disable_watch_env</span> <span class="op">!=</span> <span class="string">&quot;TRUE&quot;</span>
+    <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="bool-val">false</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">should_watch</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -613,8 +610,7 @@
                     <span class="kw">let</span> <span class="ident">revert_directory</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">cwd</span> {
                         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cwd</span>) <span class="op">=&gt;</span> {
                             <span class="kw">if</span> <span class="ident">cwd</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                                <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span>
-                                    <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
+                                <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
 
                                 <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="ident">cwd</span>));
 
@@ -666,7 +662,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">env</span>.<span class="ident">unwrap_or</span>(<span class="ident">IndexMap</span>::<span class="ident">new</span>());
     <span class="ident">env_map</span>.<span class="ident">insert</span>(
         <span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="string">&quot;TRUE&quot;</span>.<span class="ident">to_string</span>()),
+        <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="string">&quot;true&quot;</span>.<span class="ident">to_string</span>()),
     );
     <span class="ident">task_config</span>.<span class="ident">env</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">env_map</span>);
 

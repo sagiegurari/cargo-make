@@ -6,7 +6,6 @@ use crate::types::{
 use ci_info;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
-use std::env;
 
 #[cfg(target_os = "linux")]
 use crate::types::WatchOptions;
@@ -14,10 +13,10 @@ use crate::types::WatchOptions;
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_no_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::remove_var("CARGO_MAKE_MAKEFILE_PATH");
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
     let task = create_proxy_task("some_task", false);
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
 
@@ -42,8 +41,8 @@ fn create_proxy_task_no_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_with_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_proxy_task("some_task", false);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
@@ -73,10 +72,10 @@ fn create_proxy_task_with_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_allow_private() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::remove_var("CARGO_MAKE_MAKEFILE_PATH");
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
     let task = create_proxy_task("some_task", true);
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
 
@@ -542,11 +541,11 @@ fn run_task_set_env() {
         config: task,
     };
 
-    env::set_var("TEST_RUN_TASK_SET_ENV", "EMPTY");
+    envmnt::set("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
     run_task(&flow_info, &step);
 
-    assert_eq!(env::var("TEST_RUN_TASK_SET_ENV").unwrap(), "VALID");
+    assert_eq!(envmnt::get_or_panic("TEST_RUN_TASK_SET_ENV"), "VALID");
 }
 
 #[test]
@@ -618,7 +617,7 @@ fn run_task_cwd_dir_exists() {
 
 #[test]
 fn should_watch_none_and_env_not_set() {
-    env::remove_var("CARGO_MAKE_DISABLE_WATCH");
+    envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let task = Task::new();
     let watch = should_watch(&task);
 
@@ -627,7 +626,7 @@ fn should_watch_none_and_env_not_set() {
 
 #[test]
 fn should_watch_none_and_env_false() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "FALSE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let task = Task::new();
     let watch = should_watch(&task);
 
@@ -636,7 +635,7 @@ fn should_watch_none_and_env_false() {
 
 #[test]
 fn should_watch_none_and_env_true() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "TRUE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let task = Task::new();
     let watch = should_watch(&task);
 
@@ -645,7 +644,7 @@ fn should_watch_none_and_env_true() {
 
 #[test]
 fn should_watch_false_and_env_not_set() {
-    env::remove_var("CARGO_MAKE_DISABLE_WATCH");
+    envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
@@ -655,7 +654,7 @@ fn should_watch_false_and_env_not_set() {
 
 #[test]
 fn should_watch_false_and_env_false() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "FALSE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
@@ -665,7 +664,7 @@ fn should_watch_false_and_env_false() {
 
 #[test]
 fn should_watch_false_and_env_true() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "TRUE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(false));
     let watch = should_watch(&task);
@@ -675,7 +674,7 @@ fn should_watch_false_and_env_true() {
 
 #[test]
 fn should_watch_true_and_env_not_set() {
-    env::remove_var("CARGO_MAKE_DISABLE_WATCH");
+    envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
@@ -685,7 +684,7 @@ fn should_watch_true_and_env_not_set() {
 
 #[test]
 fn should_watch_true_and_env_false() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "FALSE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
@@ -695,7 +694,7 @@ fn should_watch_true_and_env_false() {
 
 #[test]
 fn should_watch_true_and_env_true() {
-    env::set_var("CARGO_MAKE_DISABLE_WATCH", "TRUE");
+    envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let mut task = Task::new();
     task.watch = Some(TaskWatchOptions::Boolean(true));
     let watch = should_watch(&task);
@@ -713,12 +712,12 @@ fn create_watch_task_name_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_watch_task("some_task", None);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -745,12 +744,12 @@ fn create_watch_task_with_makefile() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_bool_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Boolean(true)));
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -777,8 +776,8 @@ fn create_watch_task_with_makefile_and_bool_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_empty_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
         version: None,
@@ -793,7 +792,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     assert_eq!(task.install_crate_args.unwrap().len(), 2);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -820,8 +819,8 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_all_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
         version: Some("100.200.300.400".to_string()),
@@ -838,7 +837,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     assert_eq!(install_crate_args[1], "100.200.300.400");
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -869,8 +868,8 @@ fn create_watch_task_with_makefile_and_all_object_options() {
 #[test]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_false_object_options() {
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
-    env::set_var("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     let watch_options = WatchOptions {
         version: None,
@@ -885,7 +884,7 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     assert_eq!(task.install_crate_args.unwrap().len(), 2);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -917,7 +916,7 @@ fn create_watch_step_valid() {
     assert_eq!(&step.name, "test_watch_step-watch");
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
-        EnvValue::Value(value) => assert_eq!(value, "TRUE"),
+        EnvValue::Value(value) => assert_eq!(value, "true"),
         _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
     };
 
@@ -1146,6 +1145,8 @@ fn run_sub_task_and_report_routing_condition_not_met() {
             channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -1257,6 +1258,8 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
                 channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
                 env_set: None,
                 env_not_set: None,
+                env_true: None,
+                env_false: None,
                 env: None,
                 rust_version: None,
             }),
@@ -1301,6 +1304,8 @@ fn get_sub_task_info_for_routing_info_condition_found() {
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
                 env_not_set: None,
+                env_true: None,
+                env_false: None,
                 env: None,
                 rust_version: None,
             }),
@@ -1418,6 +1423,8 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                     channels: None,
                     env_set: Some(vec!["CARGO_MAKE".to_string()]),
                     env_not_set: None,
+                    env_true: None,
+                    env_false: None,
                     env: None,
                     rust_version: None,
                 }),
@@ -1470,6 +1477,8 @@ fn get_sub_task_info_for_routing_info_default() {
                     channels: None,
                     env_set: None,
                     env_not_set: Some(vec!["CARGO_MAKE".to_string()]),
+                    env_true: None,
+                    env_false: None,
                     env: None,
                     rust_version: None,
                 }),
@@ -1528,6 +1537,8 @@ fn get_sub_task_info_for_routing_info_multiple() {
                     channels: None,
                     env_set: None,
                     env_not_set: Some(vec!["CARGO_MAKE".to_string()]),
+                    env_true: None,
+                    env_false: None,
                     env: None,
                     rust_version: None,
                 }),
@@ -1591,6 +1602,8 @@ fn get_sub_task_info_for_routing_info_fork_false() {
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
                 env_not_set: None,
+                env_true: None,
+                env_false: None,
                 env: None,
                 rust_version: None,
             }),
@@ -1635,6 +1648,8 @@ fn get_sub_task_info_for_routing_info_fork_true() {
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
                 env_not_set: None,
+                env_true: None,
+                env_false: None,
                 env: None,
                 rust_version: None,
             }),
@@ -1682,7 +1697,7 @@ fn create_fork_step_valid() {
     profile_arg.push_str(&profile::get());
     profile_arg.push_str("\"");
 
-    let makefile = env::var("CARGO_MAKE_MAKEFILE_PATH").unwrap_or("EMPTY".to_string());
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     let mut makefile_arg = "--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
 

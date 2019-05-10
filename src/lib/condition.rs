@@ -12,9 +12,9 @@ use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
+use envmnt;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
-use std::env;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();
@@ -24,16 +24,8 @@ fn validate_env(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for (key, current_value) in env_vars.iter() {
-                match env::var(key) {
-                    Ok(value) => {
-                        all_valid = value == current_value.to_string();
-                    }
-                    _ => {
-                        all_valid = false;
-                    }
-                };
-
-                if !all_valid {
+                if !envmnt::is_equal(key, current_value) {
+                    all_valid = false;
                     break;
                 }
             }
@@ -52,14 +44,8 @@ fn validate_env_set(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for key in env_vars.iter() {
-                match env::var(key) {
-                    Err(_) => {
-                        all_valid = false;
-                    }
-                    _ => (),
-                };
-
-                if !all_valid {
+                if !envmnt::exists(key) {
+                    all_valid = false;
                     break;
                 }
             }
@@ -78,14 +64,34 @@ fn validate_env_not_set(condition: &TaskCondition) -> bool {
             let mut all_valid = true;
 
             for key in env_vars.iter() {
-                match env::var(key) {
-                    Ok(_) => {
-                        all_valid = false;
-                    }
-                    _ => (),
-                };
+                if envmnt::exists(key) {
+                    all_valid = false;
+                    break;
+                }
+            }
 
-                if !all_valid {
+            all_valid
+        }
+        None => true,
+    }
+}
+
+fn validate_env_bool(condition: &TaskCondition, truthy: bool) -> bool {
+    let env = if truthy {
+        condition.env_true.clone()
+    } else {
+        condition.env_false.clone()
+    };
+
+    match env {
+        Some(env_vars) => {
+            let mut all_valid = true;
+
+            for key in env_vars.iter() {
+                let is_true = envmnt::is_or(key, !truthy);
+
+                if is_true != truthy {
+                    all_valid = false;
                     break;
                 }
             }
@@ -233,6 +239,8 @@ fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) ->
                 && validate_env(&condition_struct)
                 && validate_env_set(&condition_struct)
                 && validate_env_not_set(&condition_struct)
+                && validate_env_bool(&condition_struct, true)
+                && validate_env_bool(&condition_struct, false)
                 && validate_rust_version(&condition_struct)
         }
         None => true,

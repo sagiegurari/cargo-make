@@ -6,7 +6,7 @@ use std::io::{Read, Write};
 #[test]
 #[cfg(target_os = "linux")]
 fn get_legacy_cargo_make_home_linux() {
-    let mut home = env::var("HOME").unwrap();
+    let mut home = envmnt::get_or_panic("HOME");
     home.push_str("/.cargo-make");
     let cargo_make_home = get_legacy_cargo_make_home().unwrap();
 
@@ -15,7 +15,7 @@ fn get_legacy_cargo_make_home_linux() {
 
 #[test]
 fn get_cargo_make_home_no_env() {
-    env::remove_var("CARGO_MAKE_HOME");
+    envmnt::remove("CARGO_MAKE_HOME");
 
     let cargo_make_home = get_legacy_cargo_make_home().unwrap();
     let home = get_cargo_make_home().unwrap();
@@ -26,11 +26,11 @@ fn get_cargo_make_home_no_env() {
 fn get_cargo_make_home_with_env() {
     let path = env::current_dir().unwrap();
     let directory = path.join("examples/cargo-make");
-    env::set_var("CARGO_MAKE_HOME", directory.to_str().unwrap());
+    envmnt::set("CARGO_MAKE_HOME", directory.to_str().unwrap());
 
     let home = get_cargo_make_home().unwrap();
 
-    env::remove_var("CARGO_MAKE_HOME");
+    envmnt::remove("CARGO_MAKE_HOME");
 
     assert_eq!(home, directory);
 }

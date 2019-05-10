@@ -273,6 +273,14 @@
 <span id="273">273</span>
 <span id="274">274</span>
 <span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # condition</span>
 <span class="doccomment">//!</span>
@@ -288,9 +296,9 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">RustVersionCondition</span>, <span class="ident">Step</span>, <span class="ident">TaskCondition</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">version</span>::<span class="ident">is_newer</span>;
+<span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">rust_info</span>;
 <span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::{<span class="ident">RustChannel</span>, <span class="ident">RustInfo</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 
 <span class="kw">fn</span> <span class="ident">validate_env</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
@@ -300,16 +308,8 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">current_value</span>) <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">key</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
-                        <span class="ident">all_valid</span> <span class="op">=</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">current_value</span>.<span class="ident">to_string</span>();
-                    }
-                    <span class="kw">_</span> <span class="op">=&gt;</span> {
-                        <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                    }
-                };
-
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">all_valid</span> {
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">is_equal</span>(<span class="ident">key</span>, <span class="ident">current_value</span>) {
+                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
@@ -328,14 +328,8 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">key</span>) {
-                    <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
-                        <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                    }
-                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
-                };
-
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">all_valid</span> {
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="ident">key</span>) {
+                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
@@ -354,14 +348,34 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">key</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> {
-                        <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                    }
-                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
-                };
+                <span class="kw">if</span> <span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="ident">key</span>) {
+                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                    <span class="kw">break</span>;
+                }
+            }
 
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">all_valid</span> {
+            <span class="ident">all_valid</span>
+        }
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">validate_env_bool</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">truthy</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">truthy</span> {
+        <span class="ident">condition</span>.<span class="ident">env_true</span>.<span class="ident">clone</span>()
+    } <span class="kw">else</span> {
+        <span class="ident">condition</span>.<span class="ident">env_false</span>.<span class="ident">clone</span>()
+    };
+
+    <span class="kw">match</span> <span class="ident">env</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
+
+            <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
+                <span class="kw">let</span> <span class="ident">is_true</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="ident">key</span>, <span class="op">!</span><span class="ident">truthy</span>);
+
+                <span class="kw">if</span> <span class="ident">is_true</span> <span class="op">!=</span> <span class="ident">truthy</span> {
+                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
@@ -509,6 +523,8 @@
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_env</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_env_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_env_not_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_bool</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="bool-val">true</span>)
+                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_bool</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="bool-val">false</span>)
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_rust_version</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,

@@ -17,10 +17,7 @@ pub(crate) fn is_linux() -> bool {
 }
 
 fn is_travis_ci() -> bool {
-    match env::var("TRAVIS") {
-        Ok(value) => value == "true",
-        _ => false,
-    }
+    envmnt::is_or("TRAVIS", false)
 }
 
 pub(crate) fn is_windows_on_travis_ci() -> bool {

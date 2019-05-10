@@ -131,6 +131,7 @@ extern crate ci_info;
 extern crate clap;
 extern crate colored;
 extern crate dirs;
+extern crate envmnt;
 extern crate fern;
 extern crate glob;
 extern crate indexmap;

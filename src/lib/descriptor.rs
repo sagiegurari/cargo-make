@@ -12,6 +12,7 @@ mod descriptor_test;
 
 use crate::command;
 use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
+use envmnt;
 use indexmap::IndexMap;
 use std::env;
 use std::fs::{canonicalize, File};
@@ -208,7 +209,7 @@ fn load_external_descriptor(
                 _ => file_path.clone(),
             };
 
-            env::set_var("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
+            envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
         debug!("Opening file: {:#?}", &file_path);
@@ -294,8 +295,8 @@ pub(crate) fn load_internal_descriptors(
     }
 
     // reset
-    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", "");
-    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", "");
+    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE", "");
+    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", "");
 
     match modify_config {
         Some(props) => {
@@ -305,8 +306,8 @@ pub(crate) fn load_internal_descriptors(
                 Some(ref namespace) => {
                     let prefix = props.get_namespace_prefix();
 
-                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE", &namespace);
-                    env::set_var("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
+                    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE", &namespace);
+                    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
                 }
                 None => (),
             };

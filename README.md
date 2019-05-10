@@ -178,7 +178,7 @@ cargo make --makefile simple-example.toml my-flow
 The output would look something like this:
 
 ```console
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: simple-example.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
@@ -505,7 +505,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -522,7 +522,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -549,7 +549,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -604,7 +604,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -621,7 +621,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -743,7 +743,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -772,7 +772,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -1043,7 +1043,7 @@ args = ["3"]
 We run task **3** the output would be:
 
 ```console
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: task_extend.toml
 [cargo-make] INFO - Task: 3
 [cargo-make] INFO - Profile: development
@@ -1158,11 +1158,11 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
-* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds TRUE/FALSE based if there are dependencies defined in the Cargo.toml or not (defined as FALSE if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds TRUE/FALSE based if this is a workspace crate or not (defined even if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds TRUE/FALSE based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
-* **CARGO_MAKE_CI** - Holds TRUE/FALSE based if the task is running in a continuous integration system (such as Travis CI).
+* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1226,6 +1226,8 @@ The following condition types are available:
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
 * **env_not_set** - List of environment variables that must not be defined
+* **env_true** - List of environment variables that must be defined and must not be set to any of the following (case insensitive): false, no, 0 or empty
+* **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **rust_version** - Optional definition of min, max and/or specific rust version
 
@@ -1691,7 +1693,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -1761,7 +1763,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1769,7 +1771,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -1837,7 +1839,7 @@ args = ["${MULTIPLE_VALUES}"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml split
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: split
 [cargo-make] INFO - Profile: development
@@ -1849,7 +1851,7 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml no-split
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: no-split
 [cargo-make] INFO - Profile: development
@@ -1878,7 +1880,7 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: remove-empty
 [cargo-make] INFO - Profile: development
@@ -1911,7 +1913,7 @@ args = ["@@trim(TRIM_VALUE)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: trim
 [cargo-make] INFO - Profile: development
@@ -1940,7 +1942,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml trim-start
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: trim-start
 [cargo-make] INFO - Profile: development
@@ -1952,7 +1954,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml trim-end
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: functions.toml
 [cargo-make] INFO - Task: trim-end
 [cargo-make] INFO - Profile: development
@@ -2442,7 +2444,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.18.0
+[cargo-make] INFO - cargo make 0.19.0
 [cargo-make] INFO - Using Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.
