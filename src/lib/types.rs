@@ -349,6 +349,8 @@ pub struct EnvValueScript {
 pub enum EnvValue {
     /// The value as string
     Value(String),
+    /// The value as boolean
+    Boolean(bool),
     /// Script which will return the value
     Script(EnvValueScript),
     /// Profile env

@@ -783,7 +783,7 @@ script = [
 description = "Runs full sanity, generates github release and publishes the crate."
 category = "Publish"
 condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
-env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = "true" }
+env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = true }
 run_task = "build-publish-flow-no-validation"
 
 [tasks.build-publish-flow-no-validation]

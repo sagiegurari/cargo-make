@@ -90,6 +90,11 @@ fn evaluate_and_set_env(key: &str, value: &str) {
     envmnt::set(&key, &env_value);
 }
 
+fn set_env_for_bool(key: &str, value: bool) {
+    debug!("Setting Env: {} Value: {}", &key, &value);
+    envmnt::set_bool(&key, value);
+}
+
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     let value = evaluate_env_value(&env_value);
 
@@ -115,6 +120,7 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
 
         match *env_value {
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
+            EnvValue::Boolean(value) => set_env_for_bool(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Profile(ref sub_env) => set_env_for_profile(&key, sub_env),
         };

@@ -84,6 +84,51 @@ fn evaluate_and_set_env_complex() {
 }
 
 #[test]
+fn set_env_for_bool_false() {
+    envmnt::remove("BOOL_ENV_FALSE");
+    set_env_for_bool("BOOL_ENV_FALSE", false);
+    let output = envmnt::is_or("BOOL_ENV_FALSE", true);
+    assert!(!output);
+}
+
+#[test]
+fn set_env_for_bool_true() {
+    envmnt::remove("BOOL_ENV_FALSE");
+    set_env_for_bool("BOOL_ENV_FALSE", true);
+    let output = envmnt::is_or("BOOL_ENV_FALSE", false);
+    assert!(output);
+}
+
+#[test]
+fn set_env_multi_types() {
+    let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
+    let mut profile_env = IndexMap::<String, EnvValue>::new();
+    profile_env.insert(
+        "profile_env".to_string(),
+        EnvValue::Value("profile value".to_string()),
+    );
+
+    let mut env = IndexMap::new();
+    env.insert("value".to_string(), EnvValue::Value("test val".to_string()));
+    env.insert("bool".to_string(), EnvValue::Boolean(false));
+    env.insert(
+        "script".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script1".to_string()],
+            multi_line: None,
+        }),
+    );
+    env.insert(current_profile_name, EnvValue::Profile(profile_env));
+
+    set_env(env);
+
+    assert!(envmnt::is_equal("value", "test val"));
+    assert!(!envmnt::is_or("bool", true));
+    assert!(envmnt::is_equal("script", "script1"));
+    assert!(envmnt::is_equal("profile_env", "profile value"));
+}
+
+#[test]
 fn setup_cwd_empty() {
     envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
