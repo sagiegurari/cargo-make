@@ -318,6 +318,7 @@
 <span id="318">318</span>
 <span id="319">319</span>
 <span id="320">320</span>
+<span id="321">321</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # execution_plan</span>
 <span class="doccomment">//!</span>
@@ -331,6 +332,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">environment</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logger</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
+<span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">glob</span>::<span class="ident">Pattern</span>;
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
@@ -439,7 +441,7 @@
 
     <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_log_level</span>();
 
-    <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">get_env</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
     <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_skipped_workspace_members</span>(<span class="ident">skip_members_config</span>);
 
     <span class="kw">let</span> <span class="ident">cargo_make_command</span> <span class="op">=</span> <span class="string">&quot;cargo make&quot;</span>;
@@ -480,7 +482,7 @@
     }
 
     <span class="comment">//only if environment variable is set</span>
-    <span class="kw">let</span> <span class="ident">task_env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">environment</span>::<span class="ident">get_env_as_bool</span>(<span class="string">&quot;CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE&quot;</span>, <span class="bool-val">false</span>) {
+    <span class="kw">let</span> <span class="ident">task_env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="string">&quot;CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE&quot;</span>, <span class="bool-val">false</span>) {
         <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">makefile</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>();
