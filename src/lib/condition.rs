@@ -76,6 +76,32 @@ fn validate_env_not_set(condition: &TaskCondition) -> bool {
     }
 }
 
+fn validate_env_bool(condition: &TaskCondition, truthy: bool) -> bool {
+    let env = if truthy {
+        condition.env_true.clone()
+    } else {
+        condition.env_false.clone()
+    };
+
+    match env {
+        Some(env_vars) => {
+            let mut all_valid = true;
+
+            for key in env_vars.iter() {
+                let is_true = envmnt::is_or(key, !truthy);
+
+                if is_true != truthy {
+                    all_valid = false;
+                    break;
+                }
+            }
+
+            all_valid
+        }
+        None => true,
+    }
+}
+
 fn validate_platform(condition: &TaskCondition) -> bool {
     let platforms = condition.platforms.clone();
     match platforms {
@@ -213,6 +239,8 @@ fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) ->
                 && validate_env(&condition_struct)
                 && validate_env_set(&condition_struct)
                 && validate_env_not_set(&condition_struct)
+                && validate_env_bool(&condition_struct, true)
+                && validate_env_bool(&condition_struct, false)
                 && validate_rust_version(&condition_struct)
         }
         None => true,

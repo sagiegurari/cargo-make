@@ -1226,6 +1226,8 @@ The following condition types are available:
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
 * **env_not_set** - List of environment variables that must not be defined
+* **env_true** - List of environment variables that must be defined and must not be set to any of the following (case insensitive): false, no, 0 or empty
+* **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **rust_version** - Optional definition of min, max and/or specific rust version
 

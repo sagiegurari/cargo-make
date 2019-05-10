@@ -1,4 +1,8 @@
 
+[env]
+TRUE_ENV = "true"
+FALSE_ENV = "false"
+
 [tasks.test-condition]
 condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"] }
 script = [
@@ -33,4 +37,16 @@ run_task = [
     { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
     { name = "test3", condition_script = [ "somecommand" ] },
     { name = "test-default" }
+]
+
+[tasks.test-true-condition]
+condition = { env_true = ["TRUE_ENV"] }
+script = [
+    "echo \"condition was met\""
+]
+
+[tasks.test-false-condition]
+condition = { env_false = ["FALSE_ENV"] }
+script = [
+    "echo \"condition was met\""
 ]

@@ -15,6 +15,8 @@ fn validate_env_set_empty() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -35,6 +37,8 @@ fn validate_env_set_valid() {
         channels: None,
         env_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -52,6 +56,8 @@ fn validate_env_set_invalid() {
         channels: None,
         env_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -76,6 +82,8 @@ fn validate_env_set_invalid_partial_found() {
             "BAD_ENV_SET1".to_string(),
         ]),
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -93,6 +101,8 @@ fn validate_env_not_set_empty() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -110,6 +120,8 @@ fn validate_env_not_set_valid() {
         channels: None,
         env_set: None,
         env_not_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -130,6 +142,8 @@ fn validate_env_not_set_invalid() {
         channels: None,
         env_set: None,
         env_not_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -154,11 +168,227 @@ fn validate_env_not_set_invalid_partial_found() {
             "ENV_SET2".to_string(),
             "BAD_ENV_SET1".to_string(),
         ]),
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
 
     let enabled = validate_env_not_set(&condition);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_true_empty() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_true_valid() {
+    envmnt::set_bool("ENV_TRUE1", true);
+    envmnt::set_bool("ENV_TRUE2", true);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_true_invalid() {
+    envmnt::set_bool("ENV_TRUE1", false);
+    envmnt::set_bool("ENV_TRUE2", false);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_true_invalid_partial_found() {
+    envmnt::remove("ENV_TRUE1");
+    envmnt::set_bool("ENV_TRUE2", true);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_true_invalid_partial_valid() {
+    envmnt::set_bool("ENV_TRUE2", true);
+    envmnt::set_bool("ENV_TRUE2", false);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_false_empty() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_false_valid() {
+    envmnt::set_bool("ENV_FALSE1", false);
+    envmnt::set_bool("ENV_FALSE2", false);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_false_invalid() {
+    envmnt::set_bool("ENV_FALSE1", true);
+    envmnt::set_bool("ENV_FALSE2", true);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_false_invalid_partial_found() {
+    envmnt::remove("ENV_FALSE1");
+    envmnt::set_bool("ENV_FALSE2", false);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_bool_false_invalid_partial_valid() {
+    envmnt::set_bool("ENV_FALSE2", false);
+    envmnt::set_bool("ENV_FALSE2", true);
+
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        rust_version: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false);
 
     assert!(!enabled);
 }
@@ -171,6 +401,8 @@ fn validate_env_empty() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -195,6 +427,8 @@ fn validate_env_valid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     };
@@ -216,6 +450,8 @@ fn validate_env_invalid_not_found() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     };
@@ -238,6 +474,8 @@ fn validate_env_invalid_not_equal() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     };
@@ -262,6 +500,8 @@ fn validate_env_invalid_partial_found() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     };
@@ -306,6 +546,8 @@ fn validate_profile_valid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -325,6 +567,8 @@ fn validate_profile_invalid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -346,6 +590,8 @@ fn validate_platform_valid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -363,6 +609,8 @@ fn validate_platform_invalid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -405,6 +653,8 @@ fn validate_channel_valid() {
         ]),
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -422,6 +672,8 @@ fn validate_channel_valid() {
         ]),
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -440,6 +692,8 @@ fn validate_channel_valid() {
         ]),
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -477,6 +731,8 @@ fn validate_channel_invalid() {
         channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -515,6 +771,8 @@ fn validate_criteria_empty() {
             channels: None,
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -557,6 +815,8 @@ fn validate_criteria_valid_platform() {
             channels: None,
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -595,6 +855,8 @@ fn validate_criteria_invalid_platform() {
             channels: None,
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -633,6 +895,8 @@ fn validate_criteria_valid_profile() {
             channels: None,
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -671,6 +935,8 @@ fn validate_criteria_invalid_profile() {
             channels: None,
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -714,6 +980,8 @@ fn validate_criteria_valid_channel() {
             ]),
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -734,6 +1002,8 @@ fn validate_criteria_valid_channel() {
             ]),
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -754,6 +1024,8 @@ fn validate_criteria_valid_channel() {
             ]),
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -793,6 +1065,8 @@ fn validate_criteria_invalid_channel() {
             channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             env_set: None,
             env_not_set: None,
+            env_true: None,
+            env_false: None,
             env: None,
             rust_version: None,
         }),
@@ -838,6 +1112,8 @@ fn validate_condition_for_step_both_valid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     });
@@ -885,6 +1161,8 @@ fn validate_condition_for_step_valid_script_invalid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     });
@@ -928,6 +1206,8 @@ fn validate_condition_for_step_invalid_script_valid() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     });
@@ -971,6 +1251,8 @@ fn validate_condition_for_step_invalid_env_set() {
         channels: None,
         env_set: Some(vec!["BAD_ENV_SET1".to_string()]),
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     });
@@ -1016,6 +1298,8 @@ fn validate_condition_for_step_invalid_env_not_set() {
         channels: None,
         env_set: None,
         env_not_set: Some(vec!["ENV_SET1".to_string()]),
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     });
@@ -1066,6 +1350,8 @@ fn validate_condition_for_step_valid_env() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     });
@@ -1113,6 +1399,8 @@ fn validate_condition_for_step_invalid_env_not_found() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     });
@@ -1163,6 +1451,8 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: Some(env_values),
         rust_version: None,
     });
@@ -1209,6 +1499,8 @@ fn validate_condition_for_step_valid_rust_version() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: Some(RustVersionCondition {
             min: None,
@@ -1259,6 +1551,8 @@ fn validate_condition_for_step_invalid_rust_version() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: Some(RustVersionCondition {
             min: None,
@@ -1534,6 +1828,8 @@ fn validate_rust_version_no_condition() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: None,
     };
@@ -1554,6 +1850,8 @@ fn validate_rust_version_with_valid_condition() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: Some(RustVersionCondition {
             min: Some(version.clone()),
@@ -1579,6 +1877,8 @@ fn validate_rust_version_with_invalid_condition() {
         channels: None,
         env_set: None,
         env_not_set: None,
+        env_true: None,
+        env_false: None,
         env: None,
         rust_version: Some(RustVersionCondition {
             min: None,
