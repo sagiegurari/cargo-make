@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.19.0 (2019-05-10)
+### v0.19.1 (2019-05-10)
 
 * Support setting boolean environment variables #223
 * Added new env_true/env_false conditions #221
