@@ -466,7 +466,7 @@ fn run_for_args_set_env_both() {
         "ENV5_TEST=TEST5",
         "-e",
         "ENV6_TEST=TEST6",
-        "--verbose",
+        "--loglevel=error",
         "--disable-check-for-updates",
         "-t",
         "empty",

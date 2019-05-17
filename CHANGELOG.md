@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.19.1
+
+* Migrate env file parsing and loading to envmnt
+
 ### v0.19.1 (2019-05-10)
 
 * Support setting boolean environment variables #223

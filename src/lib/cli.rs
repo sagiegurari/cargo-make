@@ -85,18 +85,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     info!("Task: {}", &task);
     info!("Profile: {}", &normalized_profile_name);
 
-    let env_file_entries = environment::parse_env_file(cli_args.env_file.clone());
-    let env_cli_entries = cli_args.env.clone();
-    let env = match env_file_entries {
-        Some(mut env_vec1) => match env_cli_entries {
-            Some(mut env_vec2) => {
-                env_vec1.append(&mut env_vec2);
-                Some(env_vec1)
-            }
-            None => Some(env_vec1),
-        },
-        None => env_cli_entries,
-    };
+    environment::load_env_file(cli_args.env_file.clone());
+
+    let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
     let config = descriptor::load(&build_file, force_makefile, env, experimental);

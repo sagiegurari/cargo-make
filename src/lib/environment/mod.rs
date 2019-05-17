@@ -21,8 +21,6 @@ use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::path::{Path, PathBuf};
 
 fn evaluate_env_value(env_value: &EnvValueScript) -> String {
@@ -67,6 +65,7 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
 
 fn expand_value(value: &str) -> String {
     let mut value_string = value.to_string();
+
     match value_string.find("${") {
         Some(_) => {
             for (existing_key, existing_value) in env::vars() {
@@ -363,7 +362,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
+pub(crate) fn load_env_file(env_file: Option<String>) -> bool {
     match env_file {
         Some(file_name) => {
             let file_path = if file_name.starts_with(".") {
@@ -373,38 +372,28 @@ pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
                 Path::new(&file_name).to_path_buf()
             };
 
-            if file_path.exists() {
-                debug!("Opening env file: {:#?}", &file_path);
-                let mut file = match File::open(&file_path) {
-                    Ok(value) => value,
-                    Err(error) => panic!(
-                        "Unable to open env file: {} error: {}",
-                        file_path.to_str().unwrap_or(""),
-                        error
-                    ),
-                };
+            match file_path.to_str() {
+                Some(file_path_str) => {
+                    let evaluate_env_var = |value: String| expand_value(&value);
 
-                let mut env_content = String::new();
-                file.read_to_string(&mut env_content).unwrap();
-
-                let mut env: Vec<String> = vec![];
-
-                let lines: Vec<&str> = env_content.split('\n').collect();
-
-                for mut line in lines {
-                    line = line.trim();
-
-                    if !line.starts_with("#") {
-                        env.push(line.to_string());
+                    match envmnt::evaluate_and_load_file(file_path_str, evaluate_env_var) {
+                        Err(error) => {
+                            error!(
+                                "Unable to load env file: {} Error: {:#?}",
+                                &file_path_str, error
+                            );
+                            false
+                        }
+                        _ => {
+                            debug!("Loaded env file: {}", &file_path_str);
+                            true
+                        }
                     }
                 }
-
-                Some(env)
-            } else {
-                None
+                None => false,
             }
         }
-        None => None,
+        None => false,
     }
 }
 

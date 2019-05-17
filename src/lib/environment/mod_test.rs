@@ -6,32 +6,31 @@ use std::env;
 use std::{thread, time};
 
 #[test]
-fn parse_env_file_none() {
-    let output = parse_env_file(None);
+fn load_env_file_none() {
+    let output = load_env_file(None);
 
-    assert!(output.is_none());
+    assert!(!output);
 }
 
 #[test]
-fn parse_env_file_no_exists() {
-    let output = parse_env_file(Some("./bad.env".to_string()));
-
-    assert!(output.is_none());
+#[should_panic]
+fn load_env_file_no_exists() {
+    load_env_file(Some("./bad.env".to_string()));
 }
 
 #[test]
-fn parse_env_file_exists() {
-    let output = parse_env_file(Some("./examples/test.env".to_string()));
+fn load_env_file_exists() {
+    envmnt::remove("ENV1_TEST");
+    envmnt::remove("ENV2_TEST");
+    envmnt::remove("ENV3_TEST");
 
-    assert!(output.is_some());
+    let output = load_env_file(Some("./examples/test.env".to_string()));
 
-    let env = output.unwrap();
-    assert_eq!(env.len(), 3);
-    assert_eq!(env[0], "ENV1_TEST=TEST1");
-    assert_eq!(
-        env[env.len() - 1],
-        "ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}"
-    );
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "TEST1"));
+    assert!(envmnt::is_equal("ENV2_TEST", "TEST2"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: TEST2"));
 }
 
 #[test]
