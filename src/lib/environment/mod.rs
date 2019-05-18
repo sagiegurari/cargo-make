@@ -147,38 +147,15 @@ fn setup_env_for_crate() -> CrateInfo {
         envmnt::set("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
     }
 
-    if package_info.version.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
-    }
-
-    if package_info.description.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_DESCRIPTION",
-            &package_info.description.unwrap(),
-        );
-    }
-
-    if package_info.license.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
-    }
-
-    if package_info.documentation.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_DOCUMENTATION",
-            &package_info.documentation.unwrap(),
-        );
-    }
-
-    if package_info.homepage.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
-    }
-
-    if package_info.repository.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_REPOSITORY",
-            &package_info.repository.unwrap(),
-        );
-    }
+    envmnt::set_optional("CARGO_MAKE_CRATE_VERSION", &package_info.version);
+    envmnt::set_optional("CARGO_MAKE_CRATE_DESCRIPTION", &package_info.description);
+    envmnt::set_optional("CARGO_MAKE_CRATE_LICENSE", &package_info.license);
+    envmnt::set_optional(
+        "CARGO_MAKE_CRATE_DOCUMENTATION",
+        &package_info.documentation,
+    );
+    envmnt::set_optional("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage);
+    envmnt::set_optional("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository);
 
     let has_dependencies = match crate_info.dependencies {
         Some(ref dependencies) => dependencies.len() > 0,
@@ -207,17 +184,9 @@ fn setup_env_for_git_repo() -> GitInfo {
     let git_info = gitinfo::load();
     let git_info_clone = git_info.clone();
 
-    if git_info.branch.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
-    }
-
-    if git_info.user_name.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name.unwrap());
-    }
-
-    if git_info.user_email.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
-    }
+    envmnt::set_optional("CARGO_MAKE_GIT_BRANCH", &git_info.branch);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email);
 
     git_info_clone
 }
@@ -226,9 +195,7 @@ fn setup_env_for_rust() -> RustInfo {
     let rustinfo = rust_info::get();
     let rust_info_clone = rustinfo.clone();
 
-    if rustinfo.version.is_some() {
-        envmnt::set("CARGO_MAKE_RUST_VERSION", &rustinfo.version.unwrap());
-    }
+    envmnt::set_optional("CARGO_MAKE_RUST_VERSION", &rustinfo.version);
 
     if rustinfo.channel.is_some() {
         let channel_option = rustinfo.channel.unwrap();
