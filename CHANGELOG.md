@@ -1,7 +1,9 @@
 ## CHANGELOG
 
-### v0.19.1
+### v0.19.2
 
+* Allow to modify kcov include pattern #229
+* Improve kcov coverage binary filter pattern #230
 * Migrate env file parsing and loading to envmnt
 
 ### v0.19.1 (2019-05-10)
