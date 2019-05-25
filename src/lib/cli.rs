@@ -193,6 +193,7 @@ fn run_for_args(
     cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
     cli_args.disable_on_error = cmd_matches.is_present("no-on-error");
     cli_args.allow_private = cmd_matches.is_present("allow-private");
+    cli_args.skip_init_end_tasks = cmd_matches.is_present("skip-init-end-tasks");
     cli_args.list_all_steps = cmd_matches.is_present("list-steps");
     cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
@@ -289,6 +290,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("allow-private")
                 .long("--allow-private")
                 .help("Allow invocation of private tasks"),
+        )
+        .arg(
+            Arg::with_name("skip-init-end-tasks")
+                .long("--skip-init-end-tasks")
+                .help("If set, init and end tasks are skipped"),
         )
         .arg(
             Arg::with_name("envfile")

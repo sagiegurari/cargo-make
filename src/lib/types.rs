@@ -62,6 +62,8 @@ pub struct CliArgs {
     pub disable_on_error: bool,
     /// Allow invocation of private tasks
     pub allow_private: bool,
+    /// If true, the init and end tasks are skipped
+    pub skip_init_end_tasks: bool,
     /// Only print the execution plan
     pub print_only: bool,
     /// List all known steps
@@ -94,6 +96,7 @@ impl CliArgs {
             disable_workspace: false,
             disable_on_error: false,
             allow_private: false,
+            skip_init_end_tasks: false,
             print_only: false,
             list_all_steps: false,
             diff_execution_plan: false,
@@ -296,6 +299,8 @@ pub struct FlowInfo {
     pub disable_on_error: bool,
     /// Allow invocation of private tasks
     pub allow_private: bool,
+    /// If true, the init and end tasks are skipped
+    pub skip_init_end_tasks: bool,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
 }

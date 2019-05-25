@@ -59,7 +59,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
-    let fork_task = create_proxy_task(&flow_info.task, true);
+    let fork_task = create_proxy_task(&flow_info.task, true, true);
 
     Step {
         name: "cargo_make_run_fork".to_string(),
@@ -237,7 +237,7 @@ fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    let mut task_config = create_proxy_task(&task, true);
+    let mut task_config = create_proxy_task(&task, true, true);
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
@@ -295,7 +295,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config
 }
 
-fn create_proxy_task(task: &str, allow_private: bool) -> Task {
+fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool) -> Task {
     //get log level name
     let log_level = logger::get_log_level();
 
@@ -320,6 +320,10 @@ fn create_proxy_task(task: &str, allow_private: bool) -> Task {
 
     if allow_private {
         args.push("--allow-private".to_string());
+    }
+
+    if skip_init_end_tasks {
+        args.push("--skip-init-end-tasks".to_string());
     }
 
     //get makefile location
@@ -360,7 +364,11 @@ fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
 }
 
 fn run_protected_flow(flow_info: &FlowInfo) {
-    let proxy_task = create_proxy_task(&flow_info.task, flow_info.allow_private);
+    let proxy_task = create_proxy_task(
+        &flow_info.task,
+        flow_info.allow_private,
+        flow_info.skip_init_end_tasks,
+    );
 
     let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false);
 
@@ -395,6 +403,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         disable_workspace: cli_args.disable_workspace,
         disable_on_error: cli_args.disable_on_error,
         allow_private: cli_args.allow_private,
+        skip_init_end_tasks: cli_args.skip_init_end_tasks,
         cli_arguments: cli_args.arguments.clone(),
     };
 
