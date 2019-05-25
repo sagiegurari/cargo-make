@@ -381,9 +381,6 @@
 <span id="381">381</span>
 <span id="382">382</span>
 <span id="383">383</span>
-<span id="384">384</span>
-<span id="385">385</span>
-<span id="386">386</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -472,18 +469,9 @@
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Profile: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
 
-    <span class="kw">let</span> <span class="ident">env_file_entries</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">parse_env_file</span>(<span class="ident">cli_args</span>.<span class="ident">env_file</span>.<span class="ident">clone</span>());
-    <span class="kw">let</span> <span class="ident">env_cli_entries</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env_file_entries</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">env_vec1</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">env_cli_entries</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">env_vec2</span>) <span class="op">=&gt;</span> {
-                <span class="ident">env_vec1</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">env_vec2</span>);
-                <span class="prelude-val">Some</span>(<span class="ident">env_vec1</span>)
-            }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">env_vec1</span>),
-        },
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">env_cli_entries</span>,
-    };
+    <span class="ident">environment</span>::<span class="ident">load_env_file</span>(<span class="ident">cli_args</span>.<span class="ident">env_file</span>.<span class="ident">clone</span>());
+
+    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
 
     <span class="kw">let</span> <span class="ident">experimental</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">experimental</span>;
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">descriptor</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">build_file</span>, <span class="ident">force_makefile</span>, <span class="ident">env</span>, <span class="ident">experimental</span>);
@@ -589,6 +577,7 @@
     <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;no-workspace&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">disable_on_error</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;no-on-error&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">allow_private</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;allow-private&quot;</span>);
+    <span class="ident">cli_args</span>.<span class="ident">skip_init_end_tasks</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;skip-init-end-tasks&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;list-steps&quot;</span>);
     <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;diff-steps&quot;</span>);
 
@@ -685,6 +674,11 @@
             <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;allow-private&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--allow-private&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Allow invocation of private tasks&quot;</span>),
+        )
+        .<span class="ident">arg</span>(
+            <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;skip-init-end-tasks&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--skip-init-end-tasks&quot;</span>)
+                .<span class="ident">help</span>(<span class="string">&quot;If set, init and end tasks are skipped&quot;</span>),
         )
         .<span class="ident">arg</span>(
             <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;envfile&quot;</span>)

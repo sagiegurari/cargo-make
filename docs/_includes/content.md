@@ -2400,18 +2400,21 @@ FLAGS:
         --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
         --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
+        --skip-init-end-tasks          If set, init and end tasks are skipped
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be from this directory if defined.
+        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be
+                                           from this directory if defined.
     -e, --env <ENV>...                     Set environment variables
         --env-file <FILE>                  Set environment variables from provided file
     -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
         --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown]
     -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
-    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last
+                                           argument) [default: default]
 
 ARGS:
     <TASK>            The task name to execute

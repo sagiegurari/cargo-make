@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.19.2
+### v0.19.2 (2019-05-25)
 
 * Allow to modify kcov include pattern #229
 * Improve kcov coverage binary filter pattern #230

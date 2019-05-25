@@ -1555,6 +1555,11 @@
 <span id="1555">1555</span>
 <span id="1556">1556</span>
 <span id="1557">1557</span>
+<span id="1558">1558</span>
+<span id="1559">1559</span>
+<span id="1560">1560</span>
+<span id="1561">1561</span>
+<span id="1562">1562</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1620,6 +1625,8 @@
     <span class="kw">pub</span> <span class="ident">disable_on_error</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Allow invocation of private tasks</span>
     <span class="kw">pub</span> <span class="ident">allow_private</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// If true, the init and end tasks are skipped</span>
+    <span class="kw">pub</span> <span class="ident">skip_init_end_tasks</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Only print the execution plan</span>
     <span class="kw">pub</span> <span class="ident">print_only</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// List all known steps</span>
@@ -1652,6 +1659,7 @@
             <span class="ident">disable_workspace</span>: <span class="bool-val">false</span>,
             <span class="ident">disable_on_error</span>: <span class="bool-val">false</span>,
             <span class="ident">allow_private</span>: <span class="bool-val">false</span>,
+            <span class="ident">skip_init_end_tasks</span>: <span class="bool-val">false</span>,
             <span class="ident">print_only</span>: <span class="bool-val">false</span>,
             <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>,
             <span class="ident">diff_execution_plan</span>: <span class="bool-val">false</span>,
@@ -1854,6 +1862,8 @@
     <span class="kw">pub</span> <span class="ident">disable_on_error</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Allow invocation of private tasks</span>
     <span class="kw">pub</span> <span class="ident">allow_private</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// If true, the init and end tasks are skipped</span>
+    <span class="kw">pub</span> <span class="ident">skip_init_end_tasks</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// additional command line arguments</span>
     <span class="kw">pub</span> <span class="ident">cli_arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
