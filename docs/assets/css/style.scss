@@ -45,4 +45,14 @@ body {
             overflow-x: hidden;
         }
     }
+
+    @media screen and (max-width: 800px) {
+        .main-content {
+            padding: 0;
+        }
+
+        .site {
+            display: block;
+        }
+    }
 }
