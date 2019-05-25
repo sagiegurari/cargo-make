@@ -15,7 +15,7 @@ use crate::types::WatchOptions;
 fn create_proxy_task_no_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
-    let task = create_proxy_task("some_task", false);
+    let task = create_proxy_task("some_task", false, false);
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
@@ -43,7 +43,7 @@ fn create_proxy_task_no_makefile() {
 fn create_proxy_task_with_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
-    let task = create_proxy_task("some_task", false);
+    let task = create_proxy_task("some_task", false, false);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
 
@@ -74,7 +74,7 @@ fn create_proxy_task_with_makefile() {
 fn create_proxy_task_allow_private() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::remove("CARGO_MAKE_MAKEFILE_PATH");
-    let task = create_proxy_task("some_task", true);
+    let task = create_proxy_task("some_task", true, false);
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     assert_eq!(task.command.unwrap(), "cargo".to_string());
@@ -124,6 +124,7 @@ fn run_flow_private() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -155,6 +156,7 @@ fn run_flow_private_sub_task() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -186,6 +188,7 @@ fn run_flow_allow_private() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: true,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -212,6 +215,7 @@ fn run_task_bad_script() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -246,6 +250,7 @@ fn run_task_script_with_args_error() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: Some(vec!["1".to_string()]),
     };
 
@@ -279,6 +284,7 @@ fn run_task_script_with_args_valid() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: Some(vec!["0".to_string()]),
     };
 
@@ -311,6 +317,7 @@ fn run_task_command() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -345,6 +352,7 @@ fn run_task_bad_command_valid_script() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -378,6 +386,7 @@ fn run_task_no_command_valid_script() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -417,6 +426,7 @@ fn run_task_bad_run_task_valid_command() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -457,6 +467,7 @@ fn run_task_valid_run_task() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -490,6 +501,7 @@ fn run_task_invalid_task() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -523,6 +535,7 @@ fn run_task_set_env() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -568,6 +581,7 @@ fn run_task_cwd_no_such_dir() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -601,6 +615,7 @@ fn run_task_cwd_dir_exists() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -729,7 +744,7 @@ fn create_watch_task_with_makefile() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --makefile=");
+    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -761,7 +776,7 @@ fn create_watch_task_with_makefile_and_bool_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --makefile=");
+    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -804,7 +819,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --makefile=");
+    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -849,7 +864,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --makefile=");
+    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -896,7 +911,7 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=\"");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --makefile=");
+    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -951,6 +966,7 @@ fn run_sub_task_and_report_for_name() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -987,6 +1003,7 @@ fn run_sub_task_and_report_for_name_not_found() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1020,6 +1037,7 @@ fn run_sub_task_and_report_for_details() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1058,6 +1076,7 @@ fn run_sub_task_and_report_routing_empty() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1093,6 +1112,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1133,6 +1153,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1184,6 +1205,7 @@ fn run_sub_task_and_report_routing_not_found() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1216,6 +1238,7 @@ fn get_sub_task_info_for_routing_info_empty() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1244,6 +1267,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1290,6 +1314,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1336,6 +1361,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1372,6 +1398,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1408,6 +1435,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1462,6 +1490,7 @@ fn get_sub_task_info_for_routing_info_default() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1522,6 +1551,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1588,6 +1618,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1634,6 +1665,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1680,6 +1712,7 @@ fn create_fork_step_valid() {
         disable_workspace: false,
         disable_on_error: false,
         allow_private: false,
+        skip_init_end_tasks: false,
         cli_arguments: None,
     };
 
@@ -1702,13 +1735,14 @@ fn create_fork_step_valid() {
     makefile_arg.push_str(&makefile.clone());
 
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 8);
+    assert_eq!(args.len(), 9);
     assert_eq!(args[0], "make".to_string());
     assert_eq!(args[1], "--disable-check-for-updates".to_string());
     assert_eq!(args[2], "--no-on-error".to_string());
     assert_eq!(args[3], log_level_arg.to_string());
     assert_eq!(args[4], profile_arg.to_string());
     assert_eq!(args[5], "--allow-private".to_string());
-    assert_eq!(args[6], makefile_arg.to_string());
-    assert_eq!(args[7], "test".to_string());
+    assert_eq!(args[6], "--skip-init-end-tasks".to_string());
+    assert_eq!(args[7], makefile_arg.to_string());
+    assert_eq!(args[8], "test".to_string());
 }

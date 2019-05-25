@@ -9,7 +9,7 @@ RUST_BACKTRACE = "full"
 KCOV_VERSION = "34"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
-CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[a-z0-9]*$"
+CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 
 [tasks.empty]
@@ -627,6 +627,7 @@ category = "Test"
 windows_alias = "empty"
 condition = { env_set = [ "KCOV_VERSION" ] }
 script_runner = "bash"
+env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
 install_script = [
 '''
 # get help info to fetch all supported command line arguments
@@ -691,7 +692,7 @@ echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 for file in $(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
 do
     echo "Running coverage for file: $file"
-    kcov --include-pattern=${CARGO_MAKE_WORKING_DIRECTORY}/src/ ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
+    kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
 done
 '''
 ]

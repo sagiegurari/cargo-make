@@ -85,18 +85,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     info!("Task: {}", &task);
     info!("Profile: {}", &normalized_profile_name);
 
-    let env_file_entries = environment::parse_env_file(cli_args.env_file.clone());
-    let env_cli_entries = cli_args.env.clone();
-    let env = match env_file_entries {
-        Some(mut env_vec1) => match env_cli_entries {
-            Some(mut env_vec2) => {
-                env_vec1.append(&mut env_vec2);
-                Some(env_vec1)
-            }
-            None => Some(env_vec1),
-        },
-        None => env_cli_entries,
-    };
+    environment::load_env_file(cli_args.env_file.clone());
+
+    let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
     let config = descriptor::load(&build_file, force_makefile, env, experimental);
@@ -202,6 +193,7 @@ fn run_for_args(
     cli_args.disable_workspace = cmd_matches.is_present("no-workspace");
     cli_args.disable_on_error = cmd_matches.is_present("no-on-error");
     cli_args.allow_private = cmd_matches.is_present("allow-private");
+    cli_args.skip_init_end_tasks = cmd_matches.is_present("skip-init-end-tasks");
     cli_args.list_all_steps = cmd_matches.is_present("list-steps");
     cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
@@ -298,6 +290,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("allow-private")
                 .long("--allow-private")
                 .help("Allow invocation of private tasks"),
+        )
+        .arg(
+            Arg::with_name("skip-init-end-tasks")
+                .long("--skip-init-end-tasks")
+                .help("If set, init and end tasks are skipped"),
         )
         .arg(
             Arg::with_name("envfile")

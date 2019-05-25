@@ -21,8 +21,6 @@ use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::path::{Path, PathBuf};
 
 fn evaluate_env_value(env_value: &EnvValueScript) -> String {
@@ -67,6 +65,7 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
 
 fn expand_value(value: &str) -> String {
     let mut value_string = value.to_string();
+
     match value_string.find("${") {
         Some(_) => {
             for (existing_key, existing_value) in env::vars() {
@@ -148,38 +147,15 @@ fn setup_env_for_crate() -> CrateInfo {
         envmnt::set("CARGO_MAKE_CRATE_FS_NAME", &crate_fs_name);
     }
 
-    if package_info.version.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_VERSION", &package_info.version.unwrap());
-    }
-
-    if package_info.description.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_DESCRIPTION",
-            &package_info.description.unwrap(),
-        );
-    }
-
-    if package_info.license.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_LICENSE", &package_info.license.unwrap());
-    }
-
-    if package_info.documentation.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_DOCUMENTATION",
-            &package_info.documentation.unwrap(),
-        );
-    }
-
-    if package_info.homepage.is_some() {
-        envmnt::set("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage.unwrap());
-    }
-
-    if package_info.repository.is_some() {
-        envmnt::set(
-            "CARGO_MAKE_CRATE_REPOSITORY",
-            &package_info.repository.unwrap(),
-        );
-    }
+    envmnt::set_optional("CARGO_MAKE_CRATE_VERSION", &package_info.version);
+    envmnt::set_optional("CARGO_MAKE_CRATE_DESCRIPTION", &package_info.description);
+    envmnt::set_optional("CARGO_MAKE_CRATE_LICENSE", &package_info.license);
+    envmnt::set_optional(
+        "CARGO_MAKE_CRATE_DOCUMENTATION",
+        &package_info.documentation,
+    );
+    envmnt::set_optional("CARGO_MAKE_CRATE_HOMEPAGE", &package_info.homepage);
+    envmnt::set_optional("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository);
 
     let has_dependencies = match crate_info.dependencies {
         Some(ref dependencies) => dependencies.len() > 0,
@@ -208,17 +184,9 @@ fn setup_env_for_git_repo() -> GitInfo {
     let git_info = gitinfo::load();
     let git_info_clone = git_info.clone();
 
-    if git_info.branch.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_BRANCH", &git_info.branch.unwrap());
-    }
-
-    if git_info.user_name.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name.unwrap());
-    }
-
-    if git_info.user_email.is_some() {
-        envmnt::set("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email.unwrap());
-    }
+    envmnt::set_optional("CARGO_MAKE_GIT_BRANCH", &git_info.branch);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email);
 
     git_info_clone
 }
@@ -227,9 +195,7 @@ fn setup_env_for_rust() -> RustInfo {
     let rustinfo = rust_info::get();
     let rust_info_clone = rustinfo.clone();
 
-    if rustinfo.version.is_some() {
-        envmnt::set("CARGO_MAKE_RUST_VERSION", &rustinfo.version.unwrap());
-    }
+    envmnt::set_optional("CARGO_MAKE_RUST_VERSION", &rustinfo.version);
 
     if rustinfo.channel.is_some() {
         let channel_option = rustinfo.channel.unwrap();
@@ -363,7 +329,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     }
 }
 
-pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
+pub(crate) fn load_env_file(env_file: Option<String>) -> bool {
     match env_file {
         Some(file_name) => {
             let file_path = if file_name.starts_with(".") {
@@ -373,38 +339,28 @@ pub(crate) fn parse_env_file(env_file: Option<String>) -> Option<Vec<String>> {
                 Path::new(&file_name).to_path_buf()
             };
 
-            if file_path.exists() {
-                debug!("Opening env file: {:#?}", &file_path);
-                let mut file = match File::open(&file_path) {
-                    Ok(value) => value,
-                    Err(error) => panic!(
-                        "Unable to open env file: {} error: {}",
-                        file_path.to_str().unwrap_or(""),
-                        error
-                    ),
-                };
+            match file_path.to_str() {
+                Some(file_path_str) => {
+                    let evaluate_env_var = |value: String| expand_value(&value);
 
-                let mut env_content = String::new();
-                file.read_to_string(&mut env_content).unwrap();
-
-                let mut env: Vec<String> = vec![];
-
-                let lines: Vec<&str> = env_content.split('\n').collect();
-
-                for mut line in lines {
-                    line = line.trim();
-
-                    if !line.starts_with("#") {
-                        env.push(line.to_string());
+                    match envmnt::evaluate_and_load_file(file_path_str, evaluate_env_var) {
+                        Err(error) => {
+                            error!(
+                                "Unable to load env file: {} Error: {:#?}",
+                                &file_path_str, error
+                            );
+                            false
+                        }
+                        _ => {
+                            debug!("Loaded env file: {}", &file_path_str);
+                            true
+                        }
                     }
                 }
-
-                Some(env)
-            } else {
-                None
+                None => false,
             }
         }
-        None => None,
+        None => false,
     }
 }
 
