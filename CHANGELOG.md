@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.19.3
+### v0.19.3 (2019-05-27)
 
 * Fix clippy installation on nightly #236
 
