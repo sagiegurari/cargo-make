@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.19.3
+
+* Fix clippy installation on nightly #236
+
 ### v0.19.2 (2019-05-25)
 
 * Allow to modify kcov include pattern #229

@@ -420,10 +420,31 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 [tasks.post-outdated]
 category = "CI"
 
+[tasks.install-clippy-github]
+description = "Installs the latest clippy code linter via cargo install directly from github."
+category = "Test"
+command = "cargo"
+args = ["install", "--git", "https://github.com/rust-lang/rust-clippy/", "--force", "clippy"]
+
+[tasks.install-clippy-rustup]
+description = "Installs the clippy code linter via rustup."
+category = "Test"
+install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
+
+[tasks.install-clippy]
+description = "Installs the clippy code linter."
+category = "Test"
+run_task = [
+    { name = "install-clippy-github", condition = { channels = ["nightly"] } },
+    { name = "install-clippy-rustup" }
+]
+
 [tasks.clippy]
 description = "Runs clippy code linter."
 category = "Test"
-install_crate = { crate_name = "clippy", rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
+dependencies = [
+    "install-clippy"
+]
 command = "cargo"
 args = ["clippy"]
 
