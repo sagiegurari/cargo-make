@@ -424,8 +424,8 @@ category = "CI"
 description = "Installs the latest clippy code linter via cargo install directly from github."
 category = "Test"
 install_crate = "clippy"
-args = [ "clippy" ]
-install_crate_args = ["install", "--git", "https://github.com/rust-lang/rust-clippy/"]
+install_crate_args = ["--git", "https://github.com/rust-lang/rust-clippy/"]
+args = [ "clippy", "--help" ]
 
 [tasks.install-clippy-rustup]
 description = "Installs the clippy code linter via rustup."

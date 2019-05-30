@@ -65,6 +65,13 @@ fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
     }
 }
 
+fn should_skip_crate_name(args: &Option<Vec<String>>) -> bool {
+    match *args {
+        Some(ref args_vec) => args_vec.contains(&"--git".to_string()),
+        None => false,
+    }
+}
+
 pub(crate) fn get_install_crate_args(
     crate_name: &str,
     force: bool,
@@ -85,7 +92,10 @@ pub(crate) fn get_install_crate_args(
         None => debug!("No crate installation args defined."),
     };
 
-    install_args.push(crate_name.to_string());
+    let skip_crate_name = should_skip_crate_name(&args);
+    if !skip_crate_name {
+        install_args.push(crate_name.to_string());
+    }
 
     install_args
 }
