@@ -2,7 +2,6 @@ language: rust
 matrix:
   allow_failures:
     - rust: nightly
-    - rust: 1.31.0
   include:
   # Stable
   - rust: stable
