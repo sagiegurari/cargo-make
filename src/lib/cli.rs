@@ -92,6 +92,11 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let experimental = cli_args.experimental;
     let config = descriptor::load(&build_file, force_makefile, env, experimental);
 
+    match config.config.additional_profiles {
+        Some(ref profiles) => profile::set_additional(profiles),
+        None => profile::set_additional(&vec![]),
+    };
+
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
     // ensure profile env was not overridden

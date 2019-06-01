@@ -1060,6 +1060,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
+* **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
 * **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
@@ -1538,18 +1539,20 @@ Example Setting Profile:
 cargo make --profile production mytask
 ```
 
-Additional profiles can be defined in the config section but have limited support.
+Profiles provide multiple capabilities:
+
+* [Environment variables](#usage-profiles-env) overrides
+* [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
+* [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
+
+Additional profiles can be set in the config section but have limited support.
 
 ```toml
 [config]
 additional_profiles = ["second_profile", "another_profile"]
 ```
 
-Profiles provide multiple capabilities:
-
-* [Environment variables](#usage-profiles-env) overrides
-* [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
-* [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
+Additional profiles can be used to define additional environment blocks and they will be defined in a new environment variable **CARGO_MAKE_ADDITIONAL_PROFILES**
 
 <a name="usage-profiles-env"></a>
 #### Environment Variables
@@ -1643,6 +1646,8 @@ IS_OTHER_AVAILABLE = true
 
 ```
 
+This could be quite handy in having environment variable blocks which will enable/disable specific tasks.
+
 <a name="usage-profiles-conditions"></a>
 #### Conditions
 
@@ -1662,6 +1667,18 @@ condition = { profiles = [ "production" ] }
 command = "echo"
 args = [ "running in production profile" ]
 ```
+
+<a name="usage-profiles-built-in"></a>
+#### Built In Profiles
+
+cargo-make comes with few built in profiles to quickly enable additional conditional tasks.
+
+* **ci-coverage-tasks** - Will enable all code coverage tasks and setup rust compilation to remove dead code.
+* **ci-static-code-analysis-tasks** - Will enable all static code analysis tasks such as format checking and clippy as part of the CI flow (see special note about backward compatibility below).
+* **ci-all-build-tasks** - Will enable all extra compilation tasks (i.e. bench and example code) as part of the CI flow (see special note about backward compatibility below).
+
+*Some of these profiles may change in the future to enable more tasks which may break your build and by definition will never be backward compatible.*<br>
+*Use them with care.*
 
 <a name="usage-private-tasks"></a>
 ### Private Tasks
