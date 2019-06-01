@@ -54,6 +54,10 @@ matrix:
       apt:
         packages:
         - musl-tools
+env:
+  global:
+    - RUST_BACKTRACE=1
+    - RUSTFLAGS="-C link-dead-code"
 before_script:
   - cargo install --debug cargo-make
 script:
