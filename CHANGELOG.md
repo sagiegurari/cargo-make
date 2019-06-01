@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.19.4
+### v0.19.4 (2019-06-01)
 
 * Support additional profiles env blocks #240
 * Prevent reinstallation of clippy on nightly #239

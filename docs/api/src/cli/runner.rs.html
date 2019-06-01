@@ -685,7 +685,7 @@
             <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">watch_options</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">watch_version</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">version</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
-                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="string">&quot;7.0.8&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// currently certified version</span>
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="string">&quot;7.2.1&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// current version</span>
                 };
                 <span class="ident">task_config</span>.<span class="ident">install_crate_args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;--version&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">watch_version</span>]);
 
