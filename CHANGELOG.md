@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.19.4
+
+* Support additional profiles env blocks #240
+* Prevent reinstallation of clippy on nightly #239
+* Upgrade cargo-watch #241 (thanks @David-OConnor)
+
 ### v0.19.3 (2019-05-27)
 
 * Fix clippy installation on nightly #236

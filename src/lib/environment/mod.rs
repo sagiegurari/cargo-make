@@ -100,10 +100,20 @@ fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     evaluate_and_set_env(&key, &value);
 }
 
-fn set_env_for_profile(profile_name: &str, sub_env: &IndexMap<String, EnvValue>) {
+fn set_env_for_profile(
+    profile_name: &str,
+    sub_env: &IndexMap<String, EnvValue>,
+    additional_profiles: Option<&Vec<String>>,
+) {
     let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
+    let profile_name_string = profile_name.to_string();
 
-    if current_profile_name == profile_name.to_string() {
+    let found = match additional_profiles {
+        Some(profiles) => profiles.contains(&profile_name_string),
+        None => false,
+    };
+
+    if current_profile_name == profile_name_string || found {
         debug!("Setting Up Profile: {} Env.", &profile_name);
 
         set_env(sub_env.clone());
@@ -112,6 +122,11 @@ fn set_env_for_profile(profile_name: &str, sub_env: &IndexMap<String, EnvValue>)
 
 /// Updates the env based on the provided data
 pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
+    set_env_for_config(env, None)
+}
+
+/// Updates the env based on the provided data
+fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Option<&Vec<String>>) {
     debug!("Setting Up Env.");
 
     for (key, env_value) in &env {
@@ -121,16 +136,23 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
-            EnvValue::Profile(ref sub_env) => set_env_for_profile(&key, sub_env),
+            EnvValue::Profile(ref sub_env) => {
+                set_env_for_profile(&key, sub_env, additional_profiles)
+            }
         };
     }
 }
 
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
-    debug!("Setting Up Env.");
+    debug!("Initializing Env.");
 
-    set_env(config.env.clone());
+    let additional_profiles = match config.config.additional_profiles {
+        Some(ref profiles) => Some(profiles),
+        None => None,
+    };
+
+    set_env_for_config(config.env.clone(), additional_profiles);
 }
 
 fn setup_env_for_crate() -> CrateInfo {

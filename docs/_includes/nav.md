@@ -47,6 +47,7 @@
     * [Profiles](#usage-profiles)
         * [Environment Variables](#usage-profiles-env)
         * [Conditions](#usage-profiles-conditions)
+        * [Built In Profiles](#usage-profiles-built-in)
     * [Private Tasks](#usage-private-tasks)
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)

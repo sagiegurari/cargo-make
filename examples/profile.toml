@@ -2,6 +2,10 @@
 [env]
 COMMON = "COMMON"
 PROFILE_NAME = "${CARGO_MAKE_PROFILE}"
+IS_CI = false
+
+[config]
+additional_profiles = ["ci", "ci-all-tasks"]
 
 [env.development]
 IS_DEV = "TRUE"
@@ -11,6 +15,9 @@ IS_PROD = "FALSE"
 IS_DEV = "FALSE"
 IS_PROD = "TRUE"
 
+[env.ci]
+IS_CI = true
+
 [tasks.echo]
 script = [
 '''
@@ -18,6 +25,13 @@ echo COMMON: ${COMMON}
 echo PROFILE_NAME: ${PROFILE_NAME}
 echo IS_DEV: ${IS_DEV}
 echo IS_PROD: ${IS_PROD}
+echo IS_CI: ${IS_CI}
+
+
+echo CARGO_MAKE_RUN_CHECK_FORMAT: ${CARGO_MAKE_RUN_CHECK_FORMAT}
+echo CARGO_MAKE_RUN_BENCH: ${CARGO_MAKE_RUN_BENCH}
+echo CARGO_MAKE_RUN_CLIPPY: ${CARGO_MAKE_RUN_CLIPPY}
+echo CARGO_MAKE_RUN_CODECOV: ${CARGO_MAKE_RUN_CODECOV}
 '''
 ]
 

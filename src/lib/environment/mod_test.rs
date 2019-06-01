@@ -128,6 +128,51 @@ fn set_env_multi_types() {
 }
 
 #[test]
+fn set_env_for_profile_none_not_found() {
+    let mut env = IndexMap::new();
+    env.insert(
+        "TEST_PROFILE_NONE_NOT_FOUND".to_string(),
+        EnvValue::Boolean(true),
+    );
+
+    set_env_for_profile("test_profile", &env, None);
+
+    assert!(!envmnt::exists("TEST_PROFILE_NONE_NOT_FOUND"));
+}
+
+#[test]
+fn set_env_for_profile_some_not_found() {
+    let mut env = IndexMap::new();
+    env.insert(
+        "TEST_PROFILE_SOME_NOT_FOUND".to_string(),
+        EnvValue::Boolean(true),
+    );
+
+    set_env_for_profile(
+        "test_profile",
+        &env,
+        Some(&vec!["other_profile".to_string()]),
+    );
+
+    assert!(!envmnt::exists("TEST_PROFILE_SOME_NOT_FOUND"));
+}
+
+#[test]
+fn set_env_for_profile_some_found() {
+    let mut env = IndexMap::new();
+    env.insert("TEST_PROFILE_FOUND".to_string(), EnvValue::Boolean(true));
+
+    set_env_for_profile(
+        "test_profile",
+        &env,
+        Some(&vec!["test_profile".to_string()]),
+    );
+
+    assert!(envmnt::exists("TEST_PROFILE_FOUND"));
+    assert!(envmnt::is("TEST_PROFILE_FOUND"));
+}
+
+#[test]
 fn setup_cwd_empty() {
     envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 

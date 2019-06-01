@@ -101,3 +101,45 @@ fn get_install_crate_args_with_args_force() {
     assert_eq!(all_args[3], "arg2");
     assert_eq!(all_args[4], "test123");
 }
+
+#[test]
+fn get_install_crate_args_without_crate_name() {
+    let all_args = get_install_crate_args(
+        "test123",
+        false,
+        &Some(vec!["--git".to_string(), "arg2".to_string()]),
+    );
+
+    assert_eq!(all_args.len(), 3);
+    assert_eq!(all_args[0], "install");
+    assert_eq!(all_args[1], "--git");
+    assert_eq!(all_args[2], "arg2");
+}
+
+#[test]
+fn should_skip_crate_name_none() {
+    let output = should_skip_crate_name(&None);
+
+    assert!(!output);
+}
+
+#[test]
+fn should_skip_crate_name_empty() {
+    let output = should_skip_crate_name(&Some(vec![]));
+
+    assert!(!output);
+}
+
+#[test]
+fn should_skip_crate_name_false() {
+    let output = should_skip_crate_name(&Some(vec!["arg1".to_string(), "arg2".to_string()]));
+
+    assert!(!output);
+}
+
+#[test]
+fn should_skip_crate_name_git() {
+    let output = should_skip_crate_name(&Some(vec!["--git".to_string(), "arg2".to_string()]));
+
+    assert!(output);
+}

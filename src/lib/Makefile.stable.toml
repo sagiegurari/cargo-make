@@ -3,6 +3,7 @@
 init_task = "init"
 end_task = "end"
 skip_core_tasks = false
+additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
@@ -11,6 +12,21 @@ CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
+
+[env.none-thread-safe-tests]
+RUST_TEST_THREADS = "1"
+
+[env.ci-coverage-tasks]
+RUSTFLAGS = "-C link-dead-code"
+CARGO_MAKE_RUN_CODECOV = true
+
+[env.ci-static-code-analysis-tasks]
+CARGO_MAKE_RUN_CHECK_FORMAT = true
+CARGO_MAKE_RUN_CLIPPY = true
+
+[env.ci-all-build-tasks]
+CARGO_MAKE_BUILD_BENCH = true
+CARGO_MAKE_BUILD_EXAMPLES = true
 
 [tasks.empty]
 description = "Empty Task"
@@ -420,11 +436,12 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 [tasks.post-outdated]
 category = "CI"
 
-[tasks.install-clippy-github]
-description = "Installs the latest clippy code linter via cargo install directly from github."
+[tasks.install-clippy-any]
+description = "Installs the latest clippy code linter via cargo install via rustup or directly from github."
 category = "Test"
-command = "cargo"
-args = ["install", "--git", "https://github.com/rust-lang/rust-clippy/", "--force", "clippy"]
+install_crate = { crate_name = "clippy", rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
+install_crate_args = ["--git", "https://github.com/rust-lang/rust-clippy/"]
+args = [ "clippy", "--help" ]
 
 [tasks.install-clippy-rustup]
 description = "Installs the clippy code linter via rustup."
@@ -435,7 +452,7 @@ install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", tes
 description = "Installs the clippy code linter."
 category = "Test"
 run_task = [
-    { name = "install-clippy-github", condition = { channels = ["nightly"] } },
+    { name = "install-clippy-any", condition = { channels = ["nightly"] } },
     { name = "install-clippy-rustup" }
 ]
 

@@ -1060,6 +1060,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
+* **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
 * **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
@@ -1544,6 +1545,15 @@ Profiles provide multiple capabilities:
 * [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
 * [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
 
+Additional profiles can be set in the config section but have limited support.
+
+```toml
+[config]
+additional_profiles = ["second_profile", "another_profile"]
+```
+
+Additional profiles can be used to define additional environment blocks and they will be defined in a new environment variable **CARGO_MAKE_ADDITIONAL_PROFILES**
+
 <a name="usage-profiles-env"></a>
 #### Environment Variables
 
@@ -1622,6 +1632,22 @@ IS_PROD: TRUE
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+Additional profiles defined in the config section will also result in additional env blocks to be loaded, for example:
+
+```toml
+[config]
+additional_profiles = ["second_profile", "another_profile"]
+
+[env.second_profile]
+IS_SECOND_AVAILABLE = true
+
+[env.another_profile]
+IS_OTHER_AVAILABLE = true
+
+```
+
+This could be quite handy in having environment variable blocks which will enable/disable specific tasks.
+
 <a name="usage-profiles-conditions"></a>
 #### Conditions
 
@@ -1641,6 +1667,19 @@ condition = { profiles = [ "production" ] }
 command = "echo"
 args = [ "running in production profile" ]
 ```
+
+<a name="usage-profiles-built-in"></a>
+#### Built In Profiles
+
+cargo-make comes with few built in profiles to quickly enable additional conditional tasks.
+
+* **ci-coverage-tasks** - Will enable all code coverage tasks and setup rust compilation to remove dead code.
+* **none-thread-safe-tests** - Sets up rust test runner to a single thread
+* **ci-static-code-analysis-tasks** - Will enable all static code analysis tasks such as format checking and clippy as part of the CI flow (see special note about backward compatibility below).
+* **ci-all-build-tasks** - Will enable all extra compilation tasks (i.e. bench and example code) as part of the CI flow (see special note about backward compatibility below).
+
+*Some of these profiles may change in the future to enable more tasks which may break your build and by definition will never be backward compatible.*<br>
+*Use them with care.*
 
 <a name="usage-private-tasks"></a>
 ### Private Tasks
@@ -2275,46 +2314,46 @@ Full list of all predefined tasks (can be generated via ```cargo make --list-all
 
 ##### Test
 
-* **bench** - Runs all available bench files. 
-* **bench-compile** - Compiles all available bench files. 
-* **bench-conditioned-compile** - Compiles all available bench files if conditions are met. 
-* **bench-conditioned-flow** - Runs the bench flow if conditions are met. 
-* **bench-flow** - Runs a bench flow. 
-* **check** - Runs cargo check. 
-* **check-examples** - Runs cargo check for project examples. 
-* **check-flow** - Runs cargo check flow. 
-* **check-format** - Runs cargo fmt to check appropriate code format. 
-* **check-tests** - Runs cargo check for project tests. 
-* **clippy** - Runs clippy code linter. 
-* **codecov** - Runs codecov script to upload coverage results to codecov. 
-* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov. 
-* **conditioned-check-format** - Runs cargo fmt --check if conditions are met. 
-* **conditioned-clippy** - Runs clippy code linter if conditions are met. 
-* **coverage** - Runs coverage (by default using kcov). 
-* **coverage-flow** - Runs the full coverage flow. 
-* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows) 
-* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only) 
-* **dev-watch-flow** - Runs pre/post hooks and cargo test. 
-* **examples-compile** - Runs cargo build for project examples. 
-* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met. 
-* **install-clippy** - Installs the clippy code linter. 
-* **install-clippy-github** - Installs the latest clippy code linter via cargo install directly from github. 
-* **install-clippy-rustup** - Installs the clippy code linter via rustup. 
-* **post-bench** - No Description. 
-* **post-check** - No Description. 
-* **post-coverage** - No Description. 
-* **post-test** - No Description. 
-* **pre-bench** - No Description. 
-* **pre-check** - No Description. 
-* **pre-coverage** - No Description. 
-* **pre-test** - No Description. 
-* **test** - Runs all available tests. 
-* **test-flow** - Runs pre/post hooks and cargo test. 
-* **test-verbose** - Runs all available tests with verbose output. 
-* **test-with-args** - Runs cargo test with command line arguments. 
-* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow). 
-* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov. 
-* **workspace-members-coverage** - Runs the ci-flow for every workspace member. 
+* **bench** - Runs all available bench files.
+* **bench-compile** - Compiles all available bench files.
+* **bench-conditioned-compile** - Compiles all available bench files if conditions are met.
+* **bench-conditioned-flow** - Runs the bench flow if conditions are met.
+* **bench-flow** - Runs a bench flow.
+* **check** - Runs cargo check.
+* **check-examples** - Runs cargo check for project examples.
+* **check-flow** - Runs cargo check flow.
+* **check-format** - Runs cargo fmt to check appropriate code format.
+* **check-tests** - Runs cargo check for project tests.
+* **clippy** - Runs clippy code linter.
+* **codecov** - Runs codecov script to upload coverage results to codecov.
+* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
+* **conditioned-check-format** - Runs cargo fmt --check if conditions are met.
+* **conditioned-clippy** - Runs clippy code linter if conditions are met.
+* **coverage** - Runs coverage (by default using kcov).
+* **coverage-flow** - Runs the full coverage flow.
+* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
+* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
+* **dev-watch-flow** - Runs pre/post hooks and cargo test.
+* **examples-compile** - Runs cargo build for project examples.
+* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met.
+* **install-clippy** - Installs the clippy code linter.
+* **install-clippy-github** - Installs the latest clippy code linter via cargo install directly from github.
+* **install-clippy-rustup** - Installs the clippy code linter via rustup.
+* **post-bench** - No Description.
+* **post-check** - No Description.
+* **post-coverage** - No Description.
+* **post-test** - No Description.
+* **pre-bench** - No Description.
+* **pre-check** - No Description.
+* **pre-coverage** - No Description.
+* **pre-test** - No Description.
+* **test** - Runs all available tests.
+* **test-flow** - Runs pre/post hooks and cargo test.
+* **test-verbose** - Runs all available tests with verbose output.
+* **test-with-args** - Runs cargo test with command line arguments.
+* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
+* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.
+* **workspace-members-coverage** - Runs the ci-flow for every workspace member.
 
 ##### Tools
 
