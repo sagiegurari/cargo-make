@@ -40,7 +40,7 @@ ci_info = "^0.7"
 clap = "^2.32"
 colored = "^1.7"
 dirs = "^2.0"
-envmnt = "^0.4"
+envmnt = "^0.6"
 fern = "^0.5"
 glob = "^0.3"
 indexmap = { version = "^1.0", features = ["serde-1"] }
