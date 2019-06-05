@@ -191,8 +191,9 @@ fn setup_env_for_crate() -> CrateInfo {
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
     let members = workspace.members.unwrap_or(vec![]);
-    let members_string = members.join(",");
-    envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members_string);
+    let mut env_options = envmnt::ListOptions::new();
+    env_options.separator = Some(",".to_string());
+    envmnt::set_list_with_options("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members, &env_options);
 
     // check if Cargo.lock file exists in working directory
     let lock_file = Path::new("Cargo.lock");
@@ -274,17 +275,11 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
 
     envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
 
-    let task_arguments = match cli_args.arguments {
-        Some(ref args) => {
-            if args.len() == 0 {
-                "".to_string()
-            } else {
-                args.join(";")
-            }
-        }
-        None => "".to_string(),
+    let task_arguments = match cli_args.arguments.clone() {
+        Some(args) => args,
+        None => vec![],
     };
-    envmnt::set("CARGO_MAKE_TASK_ARGS", &task_arguments);
+    envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
     // load crate info
     let crate_info = setup_env_for_crate();
@@ -418,17 +413,14 @@ fn expand_env_for_arguments(task: &mut Task) {
         Some(ref args) => {
             let mut expanded_args = vec![];
 
-            let task_args_str = envmnt::get_or("CARGO_MAKE_TASK_ARGS", "").to_string();
-            let task_args: Vec<String> = if task_args_str.len() == 0 {
-                vec![]
-            } else {
-                let args_str: Vec<&str> = task_args_str.split(";").collect();
-                args_str.iter().map(|item| item.to_string()).collect()
+            let task_args = match envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
+                Some(list) => list,
+                None => vec![],
             };
 
             for index in 0..args.len() {
                 if args[index].contains("${@}") {
-                    if task_args_str.len() > 0 {
+                    if task_args.len() > 0 {
                         if args[index] == "${@}" {
                             for arg_index in 0..task_args.len() {
                                 expanded_args.push(task_args[arg_index].clone());

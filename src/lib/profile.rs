@@ -18,7 +18,7 @@ fn normalize_profile(profile: &str) -> String {
     profile_normalized.trim().to_string()
 }
 
-fn normalize_additional_profiles(profiles: &Vec<String>) -> String {
+fn normalize_additional_profiles(profiles: &Vec<String>) -> Vec<String> {
     let mut nomralized_profiles = vec![];
 
     for profile in profiles {
@@ -29,7 +29,7 @@ fn normalize_additional_profiles(profiles: &Vec<String>) -> String {
         }
     }
 
-    nomralized_profiles.join(";")
+    nomralized_profiles
 }
 
 pub(crate) fn get() -> String {
@@ -51,5 +51,5 @@ pub(crate) fn set(profile: &str) -> String {
 pub(crate) fn set_additional(profiles: &Vec<String>) {
     let nomralized_profiles = normalize_additional_profiles(&profiles);
 
-    envmnt::set(ADDITIONAL_PROFILES_ENV_KEY, &nomralized_profiles);
+    envmnt::set_list(ADDITIONAL_PROFILES_ENV_KEY, &nomralized_profiles);
 }
