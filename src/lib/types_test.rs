@@ -1971,6 +1971,7 @@ fn config_section_new() {
     assert!(config.end_task.is_none());
     assert!(config.on_error_task.is_none());
     assert!(config.additional_profiles.is_none());
+    assert!(config.min_version.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());
