@@ -12,6 +12,9 @@ CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
+CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "--all-features -- -D warnings"
+CARGO_MAKE_CLIPPY_NO_ARGS = ""
+CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
 
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"
@@ -463,7 +466,7 @@ dependencies = [
     "install-clippy"
 ]
 command = "cargo"
-args = ["clippy"]
+args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 
 [tasks.conditioned-clippy]
 description = "Runs clippy code linter if conditions are met."

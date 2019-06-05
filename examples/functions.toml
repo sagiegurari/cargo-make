@@ -1,6 +1,14 @@
+
+[config]
+skip_core_tasks = true
+
 [env]
-MULTIPLE_VALUES="1|2|3|4"
-TRIM_VALUE="   123    "
+MULTIPLE_VALUES = "1|2|3|4"
+TRIM_VALUE = "   123    "
+CARGO_MAKE_CLIPPY_ARGS = ""
+
+[env.ci]
+CARGO_MAKE_CLIPPY_ARGS = "--all-features -- -D warnings"
 
 [tasks.split]
 command = "echo"
@@ -25,3 +33,7 @@ args = ["@@trim(TRIM_VALUE,start)"]
 [tasks.trim-end]
 command = "echo"
 args = ["@@trim(TRIM_VALUE,end)"]
+
+[tasks.clippy]
+command = "echo"
+args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
