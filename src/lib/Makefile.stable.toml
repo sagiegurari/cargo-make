@@ -12,7 +12,9 @@ CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
-CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "--all-features -- -D warnings"
+CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
+CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
+CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "${CARGO_MAKE_CARGO_ALL_FEATURES} -- -D warnings"
 CARGO_MAKE_CLIPPY_NO_ARGS = ""
 CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
 
@@ -252,19 +254,19 @@ category = "Build"
 description = "Runs the rust compiler."
 category = "Build"
 command = "cargo"
-args = ["build", "--all-features"]
+args = ["build", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-verbose]
 description = "Runs the rust compiler with verbose output."
 category = "Build"
 command = "cargo"
-args = ["build", "--verbose", "--all-features"]
+args = ["build", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-release]
 description = "Runs release build."
 category = "Build"
 command = "cargo"
-args = ["build", "--release", "--all-features"]
+args = ["build", "--release", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.post-build]
 category = "Build"
@@ -276,7 +278,7 @@ category = "Test"
 description = "Runs all available tests."
 category = "Test"
 command = "cargo"
-args = ["test", "--all-features"]
+args = ["test", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.test-flow]
 description = "Runs pre/post hooks and cargo test."
@@ -291,7 +293,7 @@ dependencies = [
 description = "Runs all available tests with verbose output."
 category = "Test"
 command = "cargo"
-args = ["test", "--verbose", "--all-features"]
+args = ["test", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."
@@ -309,7 +311,7 @@ category = "Test"
 description = "Runs all available bench files."
 category = "Test"
 command = "cargo"
-args = ["bench", "--all-features"]
+args = ["bench", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.post-bench]
 category = "Test"
@@ -333,7 +335,7 @@ run_task = "bench-flow"
 description = "Compiles all available bench files."
 category = "Test"
 command = "cargo"
-args = ["build", "--benches", "--all-features"]
+args = ["build", "--benches", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.bench-conditioned-compile]
 description = "Compiles all available bench files if conditions are met."
