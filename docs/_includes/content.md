@@ -1929,6 +1929,17 @@ script:
   - cargo make ci-flow
 ```
 
+When caching `cargo`:
+
+```yaml
+cache: cargo
+script:
+  - which cargo-make || cargo install cargo-make
+  - cargo make ci-flow
+```
+
+*NOTE:* If you want to update cargo-make, then you need to clear the cache manually
+
 If you want to run code coverage and upload it to codecov, also define the following environment variable:
 
 ```yaml
@@ -2015,6 +2026,27 @@ Add the following to your `.circleci/config.yml` file:
   name: ci flow
   command: cargo make ci-flow
 ```
+
+When caching `cargo`:
+
+```yaml
+  - restore_cache:
+      key: project-cache
+  # ....
+  - run:
+    name: install cargo-make
+    command: which cargo-make || cargo install cargo-make
+  - run:
+    name: ci flow
+    command: cargo make ci-flow
+  # ....
+  - save_cache:
+      key: project-cache
+      paths:
+        - "~/.cargo"
+```
+
+*NOTE:* If you want to update cargo-make, then you need to clear the cache manually
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
