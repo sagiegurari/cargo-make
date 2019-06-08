@@ -2020,11 +2020,11 @@ Add the following to your `.circleci/config.yml` file:
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make ci-flow
+    name: ci flow
+    command: cargo make ci-flow
 ```
 
 When caching `cargo`:
@@ -2034,11 +2034,11 @@ When caching `cargo`:
       key: project-cache
   # ....
   - run:
-    name: install cargo-make
-    command: which cargo-make || cargo install cargo-make
+      name: install cargo-make
+      command: which cargo-make || cargo install cargo-make
   - run:
-    name: ci flow
-    command: cargo make ci-flow
+      name: ci flow
+      command: cargo make ci-flow
   # ....
   - save_cache:
       key: project-cache
@@ -2052,11 +2052,11 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make --no-workspace workspace-ci-flow
+    name: ci flow
+    command: cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-azure-pipelines"></a>
