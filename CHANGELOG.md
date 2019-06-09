@@ -1,11 +1,17 @@
 ## CHANGELOG
 
+### v0.19.5 (2019-06-09)
+
+* Specify cargo-make minimal version #243
+* Add ability to remove --all-features flag from build/test/bench tasks #248
+* Add ability to modify clippy arguments #246
+* Documentation - installing `cargo-make` when caching `cargo` #249 (thanks @elpiel)
+
 ### v0.19.4 (2019-06-01)
 
 * Support additional profiles env blocks #240
 * Prevent reinstallation of clippy on nightly #239
 * Upgrade cargo-watch #241 (thanks @David-OConnor)
-* Specify cargo-make minimal version #243
 
 ### v0.19.3 (2019-05-27)
 

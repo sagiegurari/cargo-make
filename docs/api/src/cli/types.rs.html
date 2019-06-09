@@ -1567,6 +1567,13 @@
 <span id="1567">1567</span>
 <span id="1568">1568</span>
 <span id="1569">1569</span>
+<span id="1570">1570</span>
+<span id="1571">1571</span>
+<span id="1572">1572</span>
+<span id="1573">1573</span>
+<span id="1574">1574</span>
+<span id="1575">1575</span>
+<span id="1576">1576</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2923,6 +2930,8 @@
     <span class="kw">pub</span> <span class="ident">on_error_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Additional profile names to load</span>
     <span class="kw">pub</span> <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Minimum cargo-make/makers version</span>
+    <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
     <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Linux (takes precedence over load_script)</span>
@@ -2943,6 +2952,7 @@
             <span class="ident">end_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">on_error_task</span>: <span class="prelude-val">None</span>,
             <span class="ident">additional_profiles</span>: <span class="prelude-val">None</span>,
+            <span class="ident">min_version</span>: <span class="prelude-val">None</span>,
             <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux_load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows_load_script</span>: <span class="prelude-val">None</span>,
@@ -3007,6 +3017,10 @@
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">additional_profiles</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">additional_profiles</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">additional_profiles</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">min_version</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">min_version</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">min_version</span>.<span class="ident">clone</span>();
         }
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">load_script</span>.<span class="ident">is_some</span>() {
