@@ -2388,7 +2388,7 @@ namespace = "default"
 ```
 
 <a name="usage-min-version"></a>
-### Mןinimal Version
+### Minimal Version
 In case you are using cargo-make features that are only available from a specific version, you can ensure the build will fail if it is invoked by an older cargo-make version.<br>
 In order to specify the minimal version, use the **min_version** in the config section as follows:
 

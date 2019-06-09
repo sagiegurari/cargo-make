@@ -74,7 +74,7 @@
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
-    * [Mןinimal Version](#usage-min-version)
+    * [Minimal Version](#usage-min-version)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -2481,7 +2481,7 @@ namespace = "default"
 ```
 
 <a name="usage-min-version"></a>
-### Mןinimal Version
+### Minimal Version
 In case you are using cargo-make features that are only available from a specific version, you can ensure the build will fail if it is invoked by an older cargo-make version.<br>
 In order to specify the minimal version, use the **min_version** in the config section as follows:
 
