@@ -1971,6 +1971,7 @@ fn config_section_new() {
     assert!(config.end_task.is_none());
     assert!(config.on_error_task.is_none());
     assert!(config.additional_profiles.is_none());
+    assert!(config.min_version.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());
@@ -1990,6 +1991,8 @@ fn config_section_extend_all_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
+    base.min_version = Some("1.0.0".to_string());
     base.load_script = Some(vec!["base_info".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2003,6 +2006,8 @@ fn config_section_extend_all_values() {
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
     extended.on_error_task = Some("extended_err".to_string());
+    extended.additional_profiles = Some(vec!["e1".to_string(), "e2".to_string()]);
+    extended.min_version = Some("2.0.0".to_string());
     extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
     extended.linux_load_script = Some(vec!["extended_info".to_string()]);
     extended.windows_load_script = Some(vec!["extended_info".to_string()]);
@@ -2017,6 +2022,11 @@ fn config_section_extend_all_values() {
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "extended_err".to_string());
+    assert_eq!(
+        base.additional_profiles.unwrap(),
+        vec!["e1".to_string(), "e2".to_string()]
+    );
+    assert_eq!(base.min_version.unwrap(), "2.0.0".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 1);
     assert_eq!(base.windows_load_script.unwrap().len(), 1);
@@ -2036,6 +2046,8 @@ fn config_section_extend_no_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
+    base.min_version = Some("1.0.0".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2050,6 +2062,11 @@ fn config_section_extend_no_values() {
     assert_eq!(base.init_task.unwrap(), "base_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
+    assert_eq!(
+        base.additional_profiles.unwrap(),
+        vec!["b1".to_string(), "b2".to_string()]
+    );
+    assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);
@@ -2069,6 +2086,8 @@ fn config_section_extend_some_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
+    base.min_version = Some("1.0.0".to_string());
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2086,6 +2105,11 @@ fn config_section_extend_some_values() {
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
+    assert_eq!(
+        base.additional_profiles.unwrap(),
+        vec!["b1".to_string(), "b2".to_string()]
+    );
+    assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);

@@ -5,6 +5,7 @@
 * Support additional profiles env blocks #240
 * Prevent reinstallation of clippy on nightly #239
 * Upgrade cargo-watch #241 (thanks @David-OConnor)
+* Specify cargo-make minimal version #243
 
 ### v0.19.3 (2019-05-27)
 

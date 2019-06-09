@@ -33,14 +33,15 @@ fn normalize_profile_case_and_spaces() {
 fn normalize_additional_profiles_empty() {
     let output = normalize_additional_profiles(&vec![]);
 
-    assert_eq!(output, "");
+    let vec: Vec<String> = vec![];
+    assert_eq!(output, vec);
 }
 
 #[test]
 fn normalize_additional_profiles_single() {
     let output = normalize_additional_profiles(&vec!["  TEst  ".to_string()]);
 
-    assert_eq!(output, "test");
+    assert_eq!(output, vec!["test".to_string()]);
 }
 
 #[test]
@@ -48,7 +49,7 @@ fn normalize_additional_profiles_multiple() {
     let output =
         normalize_additional_profiles(&vec!["  TEst  ".to_string(), "  test2  ".to_string()]);
 
-    assert_eq!(output, "test;test2");
+    assert_eq!(output, vec!["test".to_string(), "test2".to_string()]);
 }
 
 #[test]

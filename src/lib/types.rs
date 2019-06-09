@@ -1353,6 +1353,8 @@ pub struct ConfigSection {
     pub on_error_task: Option<String>,
     /// Additional profile names to load
     pub additional_profiles: Option<Vec<String>>,
+    /// Minimum cargo-make/makers version
+    pub min_version: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -1373,6 +1375,7 @@ impl ConfigSection {
             end_task: None,
             on_error_task: None,
             additional_profiles: None,
+            min_version: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,
@@ -1437,6 +1440,10 @@ impl ConfigSection {
 
         if extended.additional_profiles.is_some() {
             self.additional_profiles = extended.additional_profiles.clone();
+        }
+
+        if extended.min_version.is_some() {
+            self.min_version = extended.min_version.clone();
         }
 
         if extended.load_script.is_some() {

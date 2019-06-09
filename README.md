@@ -74,6 +74,7 @@
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
+    * [Minimal Version](#usage-min-version)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -2021,6 +2022,19 @@ script:
   - cargo make ci-flow
 ```
 
+This will use the latest cargo-make with all latest features.
+<br>
+When caching `cargo`:
+
+```yaml
+cache: cargo
+script:
+  - which cargo-make || cargo install cargo-make
+  - cargo make ci-flow
+```
+
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the travis cache*
+
 If you want to run code coverage and upload it to codecov, also define the following environment variable:
 
 ```yaml
@@ -2101,22 +2115,45 @@ Add the following to your `.circleci/config.yml` file:
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make ci-flow
+    name: ci flow
+    command: cargo make ci-flow
 ```
+
+This will use the latest cargo-make with all latest features.
+<br>
+When caching `cargo`:
+
+```yaml
+  - restore_cache:
+      key: project-cache
+  # ....
+  - run:
+      name: install cargo-make
+      command: which cargo-make || cargo install cargo-make
+  - run:
+      name: ci flow
+      command: cargo make ci-flow
+  # ....
+  - save_cache:
+      key: project-cache
+      paths:
+        - "~/.cargo"
+```
+
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the CircleCI cache*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make --no-workspace workspace-ci-flow
+    name: ci flow
+    command: cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-azure-pipelines"></a>
@@ -2477,6 +2514,16 @@ private = true
 
 # if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
 namespace = "default"
+```
+
+<a name="usage-min-version"></a>
+### Minimal Version
+In case you are using cargo-make features that are only available from a specific version, you can ensure the build will fail if it is invoked by an older cargo-make version.<br>
+In order to specify the minimal version, use the **min_version** in the config section as follows:
+
+```toml
+[config]
+min_version = "0.19.4"
 ```
 
 <a name="usage-diff-changes"></a>

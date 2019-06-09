@@ -93,10 +93,10 @@ pub(crate) fn is_newer(old_string: &str, new_string: &str, default_result: bool)
     }
 }
 
-fn is_newer_found(latest_string: &str) -> bool {
-    debug!("Checking Version: {}", &latest_string);
+pub(crate) fn is_newer_found(version_string: &str) -> bool {
+    debug!("Checking Version: {}", &version_string);
 
-    is_newer(&VERSION, &latest_string, false)
+    is_newer(&VERSION, &version_string, false)
 }
 
 fn print_notification(latest_string: &str) {
