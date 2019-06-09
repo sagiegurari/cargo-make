@@ -74,6 +74,7 @@
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
+    * [Mןinimal Version](#usage-min-version)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Global Configuration](#cargo-make-global-config)
@@ -2477,6 +2478,16 @@ private = true
 
 # if set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
 namespace = "default"
+```
+
+<a name="usage-min-version"></a>
+### Mןinimal Version
+In case you are using cargo-make features that are only available from a specific version, you can ensure the build will fail if it is invoked by an older cargo-make version.<br>
+In order to specify the minimal version, use the **min_version** in the config section as follows:
+
+```toml
+[config]
+min_version = "0.19.4"
 ```
 
 <a name="usage-diff-changes"></a>

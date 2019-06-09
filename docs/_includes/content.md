@@ -2387,6 +2387,16 @@ private = true
 namespace = "default"
 ```
 
+<a name="usage-min-version"></a>
+### Mןinimal Version
+In case you are using cargo-make features that are only available from a specific version, you can ensure the build will fail if it is invoked by an older cargo-make version.<br>
+In order to specify the minimal version, use the **min_version** in the config section as follows:
+
+```toml
+[config]
+min_version = "{{ site.version }}"
+```
+
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
