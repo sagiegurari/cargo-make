@@ -1929,6 +1929,8 @@ script:
   - cargo make ci-flow
 ```
 
+This will use the latest cargo-make with all latest features.
+<br>
 When caching `cargo`:
 
 ```yaml
@@ -1938,7 +1940,7 @@ script:
   - cargo make ci-flow
 ```
 
-*NOTE:* If you want to update cargo-make, then you need to clear the cache manually
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the travis cache*
 
 If you want to run code coverage and upload it to codecov, also define the following environment variable:
 
@@ -2027,6 +2029,8 @@ Add the following to your `.circleci/config.yml` file:
     command: cargo make ci-flow
 ```
 
+This will use the latest cargo-make with all latest features.
+<br>
 When caching `cargo`:
 
 ```yaml
@@ -2046,7 +2050,7 @@ When caching `cargo`:
         - "~/.cargo"
 ```
 
-*NOTE:* If you want to update cargo-make, then you need to clear the cache manually
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the CircleCI cache*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 

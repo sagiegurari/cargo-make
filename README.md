@@ -2022,6 +2022,19 @@ script:
   - cargo make ci-flow
 ```
 
+This will use the latest cargo-make with all latest features.
+<br>
+When caching `cargo`:
+
+```yaml
+cache: cargo
+script:
+  - which cargo-make || cargo install cargo-make
+  - cargo make ci-flow
+```
+
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the travis cache*
+
 If you want to run code coverage and upload it to codecov, also define the following environment variable:
 
 ```yaml
@@ -2102,22 +2115,45 @@ Add the following to your `.circleci/config.yml` file:
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make ci-flow
+    name: ci flow
+    command: cargo make ci-flow
 ```
+
+This will use the latest cargo-make with all latest features.
+<br>
+When caching `cargo`:
+
+```yaml
+  - restore_cache:
+      key: project-cache
+  # ....
+  - run:
+      name: install cargo-make
+      command: which cargo-make || cargo install cargo-make
+  - run:
+      name: ci flow
+      command: cargo make ci-flow
+  # ....
+  - save_cache:
+      key: project-cache
+      paths:
+        - "~/.cargo"
+```
+
+*NOTE: While using cache, in order to update cargo-make, you will need to manually clear the CircleCI cache*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
 ```yaml
 - run:
-  name: install cargo-make
-  command: cargo install --debug cargo-make
+    name: install cargo-make
+    command: cargo install --debug cargo-make
 - run:
-  name: ci flow
-  command: cargo make --no-workspace workspace-ci-flow
+    name: ci flow
+    command: cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-azure-pipelines"></a>
