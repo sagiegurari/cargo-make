@@ -1238,7 +1238,7 @@ Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
+condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
 ```
 
 <a name="usage-conditions-script"></a>
@@ -1366,23 +1366,52 @@ For example:
 windows_alias = "empty"
 install_script = [
 '''
-command -v kcov >/dev/null 2>&1 || {
+KCOV_INSTALLATION_DIRECTORY=""
+KCOV_BINARY_DIRECTORY=""
+if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+    mkdir -p ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
+    cd ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
+    KCOV_INSTALLATION_DIRECTORY="$(pwd)/"
+    cd -
+    echo "Kcov Installation Directory: ${KCOV_INSTALLATION_DIRECTORY}"
+    KCOV_BINARY_DIRECTORY="${KCOV_INSTALLATION_DIRECTORY}/build/src/"
+    echo "Kcov Binary Directory: ${KCOV_BINARY_DIRECTORY}"
+fi
+
+# get help info to fetch all supported command line arguments
+KCOV_HELP_INFO=`${KCOV_BINARY_DIRECTORY}kcov --help` || true
+
+# check needed arguments are supported, else install
+if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
+    # check we are on a supported platform
     if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+        echo "Installing/Upgrading kcov..."
         sudo apt-get update || true
         sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
 
-        wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
-        unzip v$KCOV_VERSION.zip
-        cd kcov-$KCOV_VERSION
-        mkdir build
+        mkdir -p ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+        cd ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+        KCOV_DOWNLOAD_DIRECTORY=$(pwd)
+
+        wget https://github.com/SimonKagstrom/kcov/archive/v${CARGO_MAKE_KCOV_VERSION}.zip
+        unzip v${CARGO_MAKE_KCOV_VERSION}.zip
+        cd kcov-${CARGO_MAKE_KCOV_VERSION}
+        mkdir -p build
         cd ./build
         cmake ..
         make
-        sudo make install
-        cd ../..
-        rm -rf kcov-$KCOV_VERSION
+
+        # if custom installation directory, leave kcov as local
+        if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+            cd ${KCOV_DOWNLOAD_DIRECTORY}/kcov-${CARGO_MAKE_KCOV_VERSION}
+            mv ./* ${KCOV_INSTALLATION_DIRECTORY}
+        else
+            sudo make install
+            cd ../..
+            rm -rf kcov-${CARGO_MAKE_KCOV_VERSION}
+        fi
     fi
-}
+fi
 '''
 ]
 ```
