@@ -676,7 +676,7 @@ install_script = [
 '''
 KCOV_INSTALLATION_DIRECTORY=""
 KCOV_BINARY_DIRECTORY=""
-if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then
     mkdir -p ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
     cd ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
     KCOV_INSTALLATION_DIRECTORY="$(pwd)/"
@@ -710,7 +710,7 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
         make
 
         # if custom installation directory, leave kcov as local
-        if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+        if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then
             cd ${KCOV_DOWNLOAD_DIRECTORY}/kcov-${CARGO_MAKE_KCOV_VERSION}
             mv ./* ${KCOV_INSTALLATION_DIRECTORY}
         else
@@ -727,7 +727,7 @@ script = [
 echo "Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
 
 KCOV_BINARY_DIRECTORY=""
-if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then
     cd ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
     KCOV_INSTALLATION_DIRECTORY="$(pwd)/"
     cd -
