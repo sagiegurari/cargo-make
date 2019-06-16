@@ -7,13 +7,6 @@ additional_profiles = [
 
 [env]
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
-CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov2"
-CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY = "./target/kcov3"
-CARGO_MAKE_RUN_CODECOV=true
-CARGO_MAKE_CI=true
-TRAVIS=true
-[tasks.test-verbose]
-disabled = true
 
 [tasks.generate-readme]
 script = [
