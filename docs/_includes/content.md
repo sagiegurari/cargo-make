@@ -2674,6 +2674,8 @@ The articles are missing some of the new features which have been added after th
 * [Toolchain](#usage-toochain)
 * [Watch](#usage-watch)
 * [Profiles](#usage-profiles)
+* [Functions](#usage-functions)
+* [Minimal Version](#usage-min-version)
 
 And more...
 

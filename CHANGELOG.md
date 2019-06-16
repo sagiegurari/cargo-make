@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.20.0
+### v0.20.0 (2019-06-16)
 
 * Control kcov installation directory #98
 * Caching kcov documentation #238
