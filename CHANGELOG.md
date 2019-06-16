@@ -3,6 +3,7 @@
 ### v0.20.0
 
 * Control kcov installation directory #98
+* Caching kcov documentation #238
 * Upgrade default kcov version to 36
 * Rename KCOV_VERSION to CARGO_MAKE_KCOV_VERSION (**backward compatability break**)
 

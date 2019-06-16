@@ -2074,6 +2074,8 @@ env:
 
 You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/rust_info/blob/master/.travis.yml)
 
+*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY environment variable to a location which is cached by travis.*
+
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
 ```yaml
@@ -2173,6 +2175,8 @@ When caching `cargo`:
 ```
 
 *NOTE: While using cache, in order to update cargo-make, you will need to manually clear the CircleCI cache*
+
+*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY environment variable to a location which is cached by CircleCI.*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
