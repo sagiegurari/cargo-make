@@ -7,9 +7,10 @@ additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
-KCOV_VERSION = "34"
+CARGO_MAKE_KCOV_VERSION = "36"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
+CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
@@ -668,13 +669,25 @@ run_task = [
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 category = "Test"
 windows_alias = "empty"
-condition = { env_set = [ "KCOV_VERSION" ] }
+condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
 install_script = [
 '''
+KCOV_INSTALLATION_DIRECTORY=""
+KCOV_BINARY_DIRECTORY=""
+if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+    mkdir -p ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
+    cd ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
+    KCOV_INSTALLATION_DIRECTORY="$(pwd)/"
+    cd -
+    echo "Kcov Installation Directory: ${KCOV_INSTALLATION_DIRECTORY}"
+    KCOV_BINARY_DIRECTORY="${KCOV_INSTALLATION_DIRECTORY}/build/src/"
+    echo "Kcov Binary Directory: ${KCOV_BINARY_DIRECTORY}"
+fi
+
 # get help info to fetch all supported command line arguments
-KCOV_HELP_INFO=`kcov --help` || true
+KCOV_HELP_INFO=`${KCOV_BINARY_DIRECTORY}kcov --help` || true
 
 # check needed arguments are supported, else install
 if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
@@ -684,16 +697,27 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
         sudo apt-get update || true
         sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
 
-        wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.zip
-        unzip v$KCOV_VERSION.zip
-        cd kcov-$KCOV_VERSION
-        mkdir build
+        mkdir -p ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+        cd ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+        KCOV_DOWNLOAD_DIRECTORY=$(pwd)
+
+        wget https://github.com/SimonKagstrom/kcov/archive/v${CARGO_MAKE_KCOV_VERSION}.zip
+        unzip v${CARGO_MAKE_KCOV_VERSION}.zip
+        cd kcov-${CARGO_MAKE_KCOV_VERSION}
+        mkdir -p build
         cd ./build
         cmake ..
         make
-        sudo make install
-        cd ../..
-        rm -rf kcov-$KCOV_VERSION
+
+        # if custom installation directory, leave kcov as local
+        if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+            cd ${KCOV_DOWNLOAD_DIRECTORY}/kcov-${CARGO_MAKE_KCOV_VERSION}
+            mv ./* ${KCOV_INSTALLATION_DIRECTORY}
+        else
+            sudo make install
+            cd ../..
+            rm -rf kcov-${CARGO_MAKE_KCOV_VERSION}
+        fi
     fi
 fi
 '''
@@ -701,6 +725,16 @@ fi
 script = [
 '''
 echo "Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
+
+KCOV_BINARY_DIRECTORY=""
+if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
+    cd ${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}
+    KCOV_INSTALLATION_DIRECTORY="$(pwd)/"
+    cd -
+    echo "Kcov Installation Directory: ${KCOV_INSTALLATION_DIRECTORY}"
+    KCOV_BINARY_DIRECTORY="${KCOV_INSTALLATION_DIRECTORY}/build/src/"
+    echo "Kcov Binary Directory: ${KCOV_BINARY_DIRECTORY}"
+fi
 
 TARGET_DIRECTORY="target/coverage"
 if [ -n "$CARGO_MAKE_COVERAGE_REPORT_DIRECTORY" ]; then
@@ -735,7 +769,7 @@ echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 for file in $(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
 do
     echo "Running coverage for file: $file"
-    kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
+    ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
 done
 '''
 ]

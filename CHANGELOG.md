@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.20.0
+
+* Control kcov installation directory #98
+* Upgrade default kcov version to 36
+* Rename KCOV_VERSION to CARGO_MAKE_KCOV_VERSION (**backward compatability break**)
+
 ### v0.19.5 (2019-06-09)
 
 * Specify cargo-make minimal version #243
