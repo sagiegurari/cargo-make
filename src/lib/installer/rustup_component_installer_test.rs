@@ -3,19 +3,19 @@ use crate::test;
 
 #[test]
 fn is_installed_true() {
-    let output = is_installed(&None, "cargo", "--version");
+    let output = is_installed(&None, "cargo", &["--version".to_string()]);
     assert!(output);
 }
 
 #[test]
 fn is_installed_false() {
-    let output = is_installed(&None, "cargo_bad", "--version");
+    let output = is_installed(&None, "cargo_bad", &["--version".to_string()]);
     assert!(!output);
 }
 
 #[test]
 fn is_installed_non_zero() {
-    let output = is_installed(&None, "exit", "1");
+    let output = is_installed(&None, "exit", &["1".to_string()]);
     assert!(!output);
 }
 
@@ -24,7 +24,7 @@ fn is_installed_with_toolchain_true() {
     if test::is_not_rust_stable() {
         let toolchain = test::get_toolchain();
 
-        let output = is_installed(&Some(toolchain), "cargo", "--version");
+        let output = is_installed(&Some(toolchain), "cargo", &["--version".to_string()]);
         assert!(output);
     }
 }
@@ -34,7 +34,7 @@ fn is_installed_with_toolchain_false() {
     if test::is_not_rust_stable() {
         let toolchain = test::get_toolchain();
 
-        let output = is_installed(&Some(toolchain), "cargo_bad", "--version");
+        let output = is_installed(&Some(toolchain), "cargo_bad", &["--version".to_string()]);
         assert!(!output);
     }
 }
@@ -43,7 +43,7 @@ fn is_installed_with_toolchain_false() {
 fn is_installed_with_toolchain_non_zero() {
     let toolchain = test::get_toolchain();
 
-    let output = is_installed(&Some(toolchain), "exit", "1");
+    let output = is_installed(&Some(toolchain), "exit", &["1".to_string()]);
     assert!(!output);
 }
 

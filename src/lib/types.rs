@@ -371,8 +371,45 @@ pub struct InstallCrateInfo {
     pub rustup_component_name: Option<String>,
     /// The binary file name to be used to test if the crate is already installed
     pub binary: String,
-    /// Test argument that will be used to check that the crate is installed
-    pub test_arg: String,
+    /// Test arguments that will be used to check that the crate is installed.
+    #[serde(deserialize_with = "deserialize_array_or_string")]
+    pub test_arg: Vec<String>,
+}
+
+// Deserialize into an array of strings. Allows both a single string (which will
+// become a single-element array) or a sequence of strings.
+fn deserialize_array_or_string<'de, D>(deserialize: D) -> Result<Vec<String>, D::Error>
+where D: serde::de::Deserializer<'de>
+{
+    struct StringVecVisitor;
+    impl<'de> serde::de::Visitor<'de> for StringVecVisitor {
+        type Value = Vec<String>;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("A string or an array of strings")
+        }
+
+        fn visit_str<E>(self, s: &str) -> Result<Self::Value, E>
+        where
+            E: serde::de::Error,
+        {
+            Ok(vec![s.to_string()])
+        }
+
+        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>
+        {
+            let mut v = Vec::with_capacity(seq.size_hint().unwrap_or(0));
+            while let Some(s) = seq.next_element()? {
+                v.push(s);
+            }
+
+            Ok(v)
+        }
+    }
+
+    deserialize.deserialize_any(StringVecVisitor)
 }
 
 impl PartialEq for InstallCrateInfo {

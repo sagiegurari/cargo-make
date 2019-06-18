@@ -52,7 +52,7 @@ fn install_rustup_via_crate_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "cargo".to_string(),
-        test_arg: "--version".to_string(),
+        test_arg: vec!["--version".to_string()],
         rustup_component_name: None,
     };
 

@@ -50,13 +50,13 @@ fn install_crate_info_eq_same_all() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("component".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("component".to_string()),
     };
 
@@ -68,13 +68,13 @@ fn install_crate_info_eq_same_no_component() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
 
@@ -86,13 +86,13 @@ fn install_crate_info_eq_different_crate_name() {
     let first = InstallCrateInfo {
         crate_name: "test1".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
     let second = InstallCrateInfo {
         crate_name: "test2".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
 
@@ -104,13 +104,13 @@ fn install_crate_info_eq_different_binary() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin1".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin2".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
 
@@ -122,13 +122,13 @@ fn install_crate_info_eq_different_test_arg() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help1".to_string(),
+        test_arg: vec!["--help1".to_string()],
         rustup_component_name: None,
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help2".to_string(),
+        test_arg: vec!["--help2".to_string()],
         rustup_component_name: None,
     };
 
@@ -140,13 +140,13 @@ fn install_crate_info_eq_different_component_type() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: None,
     };
 
@@ -158,13 +158,13 @@ fn install_crate_info_eq_different_component_value() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value1".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value2".to_string()),
     };
 
@@ -312,7 +312,7 @@ fn install_crate_eq_same_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value".to_string()),
     };
     let first = InstallCrate::CrateInfo(info.clone());
@@ -334,13 +334,13 @@ fn install_crate_eq_different_crate_info() {
     let first = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test1".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value".to_string()),
     });
     let second = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test2".to_string(),
         binary: "bin".to_string(),
-        test_arg: "--help".to_string(),
+        test_arg: vec!["--help".to_string()],
         rustup_component_name: Some("value".to_string()),
     });
 
