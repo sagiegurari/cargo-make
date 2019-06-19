@@ -348,6 +348,22 @@ fn install_crate_eq_different_crate_info() {
 }
 
 #[test]
+fn install_crate_info_deserialize_string_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(r#"crate_name = "mkisofs-rs"
+                                                   binary = "mkisofs-rs"
+                                                   test_arg = "--help""#).unwrap();
+    assert_eq!(info.test_arg, &["--help"]);
+}
+
+#[test]
+fn install_crate_info_deserialize_array_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(r#"crate_name = "mkisofs-rs"
+                                                   binary = "mkisofs-rs"
+                                                   test_arg = ["--help", "--test"]"#).unwrap();
+    assert_eq!(info.test_arg, &["--help", "--test"]);
+}
+
+#[test]
 fn install_crate_eq_different_rustup_component_info() {
     let first = InstallCrate::RustupComponentInfo(InstallRustupComponentInfo {
         rustup_component_name: "component1".to_string(),
