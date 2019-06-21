@@ -18,8 +18,7 @@ fn invoke_rustup_install(toolchain: &Option<String>, info: &InstallCrateInfo) ->
             let rustup_component_info = InstallRustupComponentInfo {
                 rustup_component_name: component.to_string(),
                 binary: Some(info.binary.clone()),
-                // InstallRustupComponentInfo only supports one argument right now.
-                test_arg: info.test_arg.get(0).cloned(),
+                test_arg: Some(info.test_arg.clone()),
             };
             rustup_component_installer::invoke_rustup_install(&toolchain, &rustup_component_info)
         }

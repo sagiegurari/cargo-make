@@ -362,6 +362,67 @@ pub enum EnvValue {
     Profile(IndexMap<String, EnvValue>),
 }
 
+/// Arguments used to check whether a crate or rustup component is installed.
+///
+/// Deserialize into an array of strings. Allows both a single string (which will
+/// become a single-element array) or a sequence of strings.
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
+#[serde(transparent)]
+pub struct TestArg {
+    /// Content of the arguments
+    pub inner: Vec<String>
+}
+
+impl std::ops::Deref for TestArg {
+    type Target = Vec<String>;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+impl std::ops::DerefMut for TestArg {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.inner
+    }
+}
+
+impl<'de> serde::de::Deserialize<'de> for TestArg
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::de::Deserializer<'de>,
+    {
+        struct StringVecVisitor;
+        impl<'de> serde::de::Visitor<'de> for StringVecVisitor {
+            type Value = TestArg;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("A string or an array of strings")
+            }
+
+            fn visit_str<E>(self, s: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(TestArg { inner: vec![s.to_string()] })
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: serde::de::SeqAccess<'de>
+            {
+                let mut v = Vec::with_capacity(seq.size_hint().unwrap_or(0));
+                while let Some(s) = seq.next_element()? {
+                    v.push(s);
+                }
+
+                Ok(TestArg { inner: v })
+            }
+        }
+        deserializer.deserialize_any(StringVecVisitor)
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds instructions how to install the crate
 pub struct InstallCrateInfo {
@@ -372,44 +433,7 @@ pub struct InstallCrateInfo {
     /// The binary file name to be used to test if the crate is already installed
     pub binary: String,
     /// Test arguments that will be used to check that the crate is installed.
-    #[serde(deserialize_with = "deserialize_array_or_string")]
-    pub test_arg: Vec<String>,
-}
-
-// Deserialize into an array of strings. Allows both a single string (which will
-// become a single-element array) or a sequence of strings.
-fn deserialize_array_or_string<'de, D>(deserialize: D) -> Result<Vec<String>, D::Error>
-where D: serde::de::Deserializer<'de>
-{
-    struct StringVecVisitor;
-    impl<'de> serde::de::Visitor<'de> for StringVecVisitor {
-        type Value = Vec<String>;
-
-        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("A string or an array of strings")
-        }
-
-        fn visit_str<E>(self, s: &str) -> Result<Self::Value, E>
-        where
-            E: serde::de::Error,
-        {
-            Ok(vec![s.to_string()])
-        }
-
-        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-        where
-            A: serde::de::SeqAccess<'de>
-        {
-            let mut v = Vec::with_capacity(seq.size_hint().unwrap_or(0));
-            while let Some(s) = seq.next_element()? {
-                v.push(s);
-            }
-
-            Ok(v)
-        }
-    }
-
-    deserialize.deserialize_any(StringVecVisitor)
+    pub test_arg: TestArg,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -442,7 +466,7 @@ pub struct InstallRustupComponentInfo {
     /// The binary file name to be used to test if the crate is already installed
     pub binary: Option<String>,
     /// Test argument that will be used to check that the crate is installed
-    pub test_arg: Option<String>,
+    pub test_arg: Option<TestArg>,
 }
 
 impl PartialEq for InstallRustupComponentInfo {
@@ -462,16 +486,7 @@ impl PartialEq for InstallRustupComponentInfo {
             };
 
             if same {
-                match self.test_arg {
-                    Some(ref value) => match other.test_arg {
-                        Some(ref other_value) => value == other_value,
-                        None => false,
-                    },
-                    None => match other.test_arg {
-                        None => true,
-                        _ => false,
-                    },
-                }
+                self.test_arg == other.test_arg
             } else {
                 false
             }

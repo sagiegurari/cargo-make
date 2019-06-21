@@ -105,7 +105,7 @@ pub(crate) fn install(
 ) -> bool {
     let mut installed = match info.binary {
         Some(ref binary) => match info.test_arg {
-            Some(ref test_arg) => is_installed(&toolchain, binary, std::slice::from_ref(test_arg)),
+            Some(ref test_arg) => is_installed(&toolchain, binary, test_arg),
             None => false,
         },
         None => false,
