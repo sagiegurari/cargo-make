@@ -12,7 +12,7 @@ use crate::toolchain::wrap_command;
 use crate::types::InstallRustupComponentInfo;
 use std::process::Command;
 
-pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_arg: &str) -> bool {
+pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: &[String]) -> bool {
     let mut command_struct = match toolchain {
         Some(ref toolchain_string) => {
             let command_spec = wrap_command(toolchain_string, binary, &None);
@@ -28,7 +28,7 @@ pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_arg: &
         None => Command::new(binary),
     };
 
-    let result = command_struct.arg(test_arg).output();
+    let result = command_struct.args(test_args).output();
 
     match result {
         Ok(output) => {

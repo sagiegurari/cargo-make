@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::{InstallCrateInfo, InstallRustupComponentInfo};
+use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, TestArg};
 
 #[test]
 fn install_empty() {
@@ -52,7 +52,9 @@ fn install_rustup_via_crate_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "cargo".to_string(),
-        test_arg: "--version".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--version".to_string()],
+        },
         rustup_component_name: None,
     };
 
@@ -68,7 +70,9 @@ fn install_rustup_via_rustup_info() {
     let info = InstallRustupComponentInfo {
         rustup_component_name: "test".to_string(),
         binary: Some("cargo".to_string()),
-        test_arg: Some("--version".to_string()),
+        test_arg: Some(TestArg {
+            inner: vec!["--version".to_string()],
+        }),
     };
 
     let mut task = Task::new();

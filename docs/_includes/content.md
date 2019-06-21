@@ -1236,6 +1236,18 @@ command = "rustfmt"
 In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
 to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
 
+If passing multiple arguments is necessary, `test_arg` may contain an array of arguments. For example:
+
+```toml
+[tasks.doc-upload]
+install_crate = { crate_name = "cargo-travis", binary = "cargo", test_arg = ["doc-upload", "--help"] }
+command = "cargo"
+args = ["doc-upload"]
+```
+
+In this example, cargo-make will test the presence of cargo-travis by running the command `cargo doc-upload --help`, and
+install the crate only if this command fails.
+
 <a name="usage-installing-rustup-components"></a>
 #### Rustup Components
 
