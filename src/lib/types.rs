@@ -370,7 +370,7 @@ pub enum EnvValue {
 #[serde(transparent)]
 pub struct TestArg {
     /// Content of the arguments
-    pub inner: Vec<String>
+    pub inner: Vec<String>,
 }
 
 impl std::ops::Deref for TestArg {
@@ -386,8 +386,7 @@ impl std::ops::DerefMut for TestArg {
     }
 }
 
-impl<'de> serde::de::Deserialize<'de> for TestArg
-{
+impl<'de> serde::de::Deserialize<'de> for TestArg {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::de::Deserializer<'de>,
@@ -404,12 +403,14 @@ impl<'de> serde::de::Deserialize<'de> for TestArg
             where
                 E: serde::de::Error,
             {
-                Ok(TestArg { inner: vec![s.to_string()] })
+                Ok(TestArg {
+                    inner: vec![s.to_string()],
+                })
             }
 
             fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
             where
-                A: serde::de::SeqAccess<'de>
+                A: serde::de::SeqAccess<'de>,
             {
                 let mut v = Vec::with_capacity(seq.size_hint().unwrap_or(0));
                 while let Some(s) = seq.next_element()? {

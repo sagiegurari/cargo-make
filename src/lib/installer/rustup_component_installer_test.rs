@@ -53,7 +53,9 @@ fn invoke_rustup_install_fail() {
     let info = InstallRustupComponentInfo {
         rustup_component_name: "unknown_rustup_component_test".to_string(),
         binary: Some("cargo_bad".to_string()),
-        test_arg: Some(TestArg { inner: vec!["--help".to_string()] }),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
     };
 
     let output = invoke_rustup_install(&None, &info);
@@ -67,7 +69,9 @@ fn invoke_rustup_install_with_toolchain_fail() {
     let info = InstallRustupComponentInfo {
         rustup_component_name: "unknown_rustup_component_test".to_string(),
         binary: Some("cargo_bad".to_string()),
-        test_arg: Some(TestArg { inner: vec!["--help".to_string()] }),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
     };
 
     let output = invoke_rustup_install(&Some(toolchain), &info);
@@ -79,7 +83,9 @@ fn install_test() {
     let info = InstallRustupComponentInfo {
         rustup_component_name: "unknown_rustup_component_test".to_string(),
         binary: Some("cargo_bad".to_string()),
-        test_arg: Some(TestArg { inner: vec!["--help".to_string()] }),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
     };
 
     let output = install(&None, &info, false);
@@ -93,7 +99,9 @@ fn install_with_toolchain_test() {
     let info = InstallRustupComponentInfo {
         rustup_component_name: "unknown_rustup_component_test".to_string(),
         binary: Some("cargo_bad".to_string()),
-        test_arg: Some(TestArg { inner: vec!["--help".to_string()] }),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
     };
 
     let output = install(&Some(toolchain), &info, false);
