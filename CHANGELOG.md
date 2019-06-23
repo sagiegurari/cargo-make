@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.21.0
+
+* Add support for multiple test_args when checking for installed crate #252 (thanks @roblabla)
+* Upgrade shell2batch (**backward compatability break**)
+
 ### v0.20.0 (2019-06-16)
 
 * Control kcov installation directory #98

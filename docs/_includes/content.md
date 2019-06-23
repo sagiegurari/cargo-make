@@ -583,7 +583,9 @@ rm ./myfile.txt
 ]
 ```
 
-Same as OS scripts, the @shell runner also supports the cargo-make CLI arguments access.
+Same as OS scripts, the @shell runner also supports the cargo-make CLI arguments access.<br>
+<br>
+See [shell2batch](https://github.com/sagiegurari/shell2batch) project for complete set of features.
 
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
