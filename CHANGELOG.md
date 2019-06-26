@@ -1,9 +1,9 @@
 ## CHANGELOG
 
-### v0.21.0
+### v0.21.0 (2019-06-26)
 
 * Add support for multiple test_args when checking for installed crate #252 (thanks @roblabla)
-* Upgrade shell2batch (**backward compatability break**)
+* Upgrade shell2batch for improved windows integration (**backward compatability break**)
 
 ### v0.20.0 (2019-06-16)
 
