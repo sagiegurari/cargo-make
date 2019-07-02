@@ -45,7 +45,7 @@ fern = "^0.5"
 glob = "^0.3"
 indexmap = { version = "^1.0", features = ["serde-1"] }
 log = "^0.4"
-rand = "^0.6"
+rand = "^0.7"
 run_script = "^0.3"
 rust_info = "^0.2"
 semver = "^0.9"
