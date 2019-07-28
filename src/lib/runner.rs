@@ -29,8 +29,44 @@ use indexmap::IndexMap;
 use std::env;
 use std::time::SystemTime;
 
+fn do_in_task_working_directory<F>(step: &Step, mut action: F)
+where
+    F: FnMut(),
+{
+    let revert_directory = match step.config.cwd {
+        Some(ref cwd) => {
+            if cwd.len() > 0 {
+                let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
+
+                environment::setup_cwd(Some(cwd));
+
+                directory
+            } else {
+                "".to_string()
+            }
+        }
+        None => "".to_string(),
+    };
+
+    action();
+
+    // revert to original cwd
+    match step.config.cwd {
+        Some(_) => environment::setup_cwd(Some(&revert_directory)),
+        _ => (),
+    };
+}
+
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
-    condition::validate_condition_for_step(&flow_info, &step)
+    let mut valid = true;
+
+    let do_validate = || {
+        valid = condition::validate_condition_for_step(&flow_info, &step);
+    };
+
+    do_in_task_working_directory(&step, do_validate);
+
+    valid
 }
 
 pub(crate) fn get_sub_task_info_for_routing_info(
@@ -182,46 +218,29 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         if watch {
             watch_task(&flow_info, &step.name, step.config.watch.clone());
         } else {
-            installer::install(&updated_step.config);
+            do_in_task_working_directory(&step, || {
+                installer::install(&updated_step.config);
+            });
 
             match step.config.run_task {
                 Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
                 None => {
-                    let revert_directory = match step.config.cwd {
-                        Some(ref cwd) => {
-                            if cwd.len() > 0 {
-                                let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
+                    do_in_task_working_directory(&step, || {
+                        // get cli arguments
+                        let cli_arguments = match flow_info.cli_arguments {
+                            Some(ref args) => args.clone(),
+                            None => vec![],
+                        };
 
-                                environment::setup_cwd(Some(cwd));
+                        // run script
+                        let script_runner_done =
+                            scriptengine::invoke(&updated_step.config, &cli_arguments);
 
-                                directory
-                            } else {
-                                "".to_string()
-                            }
-                        }
-                        None => "".to_string(),
-                    };
-
-                    // get cli arguments
-                    let cli_arguments = match flow_info.cli_arguments {
-                        Some(ref args) => args.clone(),
-                        None => vec![],
-                    };
-
-                    // run script
-                    let script_runner_done =
-                        scriptengine::invoke(&updated_step.config, &cli_arguments);
-
-                    // run command
-                    if !script_runner_done {
-                        command::run(&updated_step);
-                    };
-
-                    // revert to original cwd
-                    match step.config.cwd {
-                        Some(_) => environment::setup_cwd(Some(&revert_directory)),
-                        _ => (),
-                    };
+                        // run command
+                        if !script_runner_done {
+                            command::run(&updated_step);
+                        };
+                    });
                 }
             };
         }

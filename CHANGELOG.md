@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.22.0
+
+* Use task cwd in condition and installation scripts #259
+
 ### v0.21.0 (2019-06-26)
 
 * Add support for multiple test_args when checking for installed crate #252 (thanks @roblabla)
