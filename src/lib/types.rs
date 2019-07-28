@@ -1408,6 +1408,8 @@ pub struct ConfigSection {
     pub additional_profiles: Option<Vec<String>>,
     /// Minimum cargo-make/makers version
     pub min_version: Option<String>,
+    /// The task.workspace default value
+    pub default_to_workspace: Option<bool>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -1429,6 +1431,7 @@ impl ConfigSection {
             on_error_task: None,
             additional_profiles: None,
             min_version: None,
+            default_to_workspace: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,
@@ -1497,6 +1500,10 @@ impl ConfigSection {
 
         if extended.min_version.is_some() {
             self.min_version = extended.min_version.clone();
+        }
+
+        if extended.default_to_workspace.is_some() {
+            self.default_to_workspace = extended.default_to_workspace.clone();
         }
 
         if extended.load_script.is_some() {

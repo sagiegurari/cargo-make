@@ -197,7 +197,10 @@ fn is_workspace_flow(
         // project is a workspace and wasn't disabled via cli, need to check requested task
         let cli_task = get_normalized_task(config, task, true);
 
-        cli_task.workspace.unwrap_or(true)
+        // check for configured default workspace flag
+        let default_to_workspace = config.config.default_to_workspace.unwrap_or(true);
+
+        cli_task.workspace.unwrap_or(default_to_workspace)
     }
 }
 

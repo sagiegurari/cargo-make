@@ -1535,7 +1535,15 @@ workspace = false
 ```
 
 Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
-This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.
+This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.<br>
+By default the workspace flag for all tasks is set to true, but that can be configured differently in the config section as follows:
+
+```toml
+[config]
+default_to_workspace = false
+```
+
+In which case, workspace level support is **always** disabled unless a task defines **workspace=true**.
 
 <a name="usage-workspace-support-skip-members"></a>
 #### Skipping Specific Members
