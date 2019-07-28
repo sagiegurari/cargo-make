@@ -2,7 +2,7 @@
 
 ### v0.22.0
 
-* Use task cwd in condition and installation scripts #259
+* Use task cwd in condition and installation scripts #259 (**backward compatability break**)
 
 ### v0.21.0 (2019-06-26)
 
