@@ -324,9 +324,8 @@ fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool)
     //get profile
     let profile_name = profile::get();
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile_name);
-    profile_arg.push_str("\"");
 
     //setup common args
     let mut args = vec![

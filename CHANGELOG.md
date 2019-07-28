@@ -3,6 +3,7 @@
 ### v0.22.0
 
 * Use task cwd in condition and installation scripts #259 (**backward compatability break**)
+* Profile name passed incorrectly via forked sub tasks #263
 
 ### v0.21.0 (2019-06-26)
 
