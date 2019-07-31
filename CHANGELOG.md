@@ -3,7 +3,8 @@
 ### v0.22.0
 
 * Specify minimum version for tools/dependencies #265
-* Disable workspace support via makefile config #264
+* Globally disable workspace support via makefile config #264
+* Support additional rust script runners #216
 * Use task cwd in condition and installation scripts #259 (**backward compatability break**)
 * Profile name passed incorrectly via forked sub tasks #263
 

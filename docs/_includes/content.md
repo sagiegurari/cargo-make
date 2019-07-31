@@ -567,7 +567,42 @@ fn main() {
 ]
 ```
 
-Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.
+Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
+There are several different rust script runners currently available:
+
+* [cargo-script](https://crates.io/crates/cargo-script)
+* [cargo-play](https://crates.io/crates/cargo-play)
+
+By default, cargo-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
+This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
+For example:
+
+```toml
+[tasks.cargo-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-script" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]
+
+[tasks.cargo-play]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]
+```
+
+Keep in mind that dependencies used by the rust script are defined differently for each runner.<br>
+Please see the specific crate docs for learn more.
 
 <a name="usage-task-command-script-task-exampleshell2batch"></a>
 #### Cross Platform Shell

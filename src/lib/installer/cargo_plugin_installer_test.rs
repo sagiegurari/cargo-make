@@ -156,48 +156,52 @@ fn install_crate_already_installed_cargo_make() {
 
 #[test]
 fn install_crate_already_installed_min_version_equal() {
-    let version = crate_version_check::get_crate_version("cargo-make").unwrap();
-    let mut version_string = String::new();
-    version_string.push_str(&version.major.to_string());
-    version_string.push_str(".");
-    version_string.push_str(&version.minor.to_string());
-    version_string.push_str(".");
-    version_string.push_str(&version.patch.to_string());
+    if test::is_local_or_travis_ci() {
+        let version = crate_version_check::get_crate_version("cargo-make").unwrap();
+        let mut version_string = String::new();
+        version_string.push_str(&version.major.to_string());
+        version_string.push_str(".");
+        version_string.push_str(&version.minor.to_string());
+        version_string.push_str(".");
+        version_string.push_str(&version.patch.to_string());
 
-    install_crate(
-        &None,
-        "make",
-        "cargo-make",
-        &None,
-        true,
-        &Some(version_string),
-    );
+        install_crate(
+            &None,
+            "make",
+            "cargo-make",
+            &None,
+            true,
+            &Some(version_string),
+        );
+    }
 }
 
 #[test]
 fn install_crate_already_installed_min_version_smaller() {
-    let mut version = crate_version_check::get_crate_version("cargo-make").unwrap();
-    if version.patch > 0 {
-        version.patch = version.patch - 1;
-    } else if version.minor > 0 {
-        version.minor = version.minor - 1;
-    } else if version.major > 0 {
-        version.major = version.major - 1;
+    if test::is_local_or_travis_ci() {
+        let mut version = crate_version_check::get_crate_version("cargo-make").unwrap();
+        if version.patch > 0 {
+            version.patch = version.patch - 1;
+        } else if version.minor > 0 {
+            version.minor = version.minor - 1;
+        } else if version.major > 0 {
+            version.major = version.major - 1;
+        }
+
+        let mut version_string = String::new();
+        version_string.push_str(&version.major.to_string());
+        version_string.push_str(".");
+        version_string.push_str(&version.minor.to_string());
+        version_string.push_str(".");
+        version_string.push_str(&version.patch.to_string());
+
+        install_crate(
+            &None,
+            "make",
+            "cargo-make",
+            &None,
+            true,
+            &Some(version_string),
+        );
     }
-
-    let mut version_string = String::new();
-    version_string.push_str(&version.major.to_string());
-    version_string.push_str(".");
-    version_string.push_str(&version.minor.to_string());
-    version_string.push_str(".");
-    version_string.push_str(&version.patch.to_string());
-
-    install_crate(
-        &None,
-        "make",
-        "cargo-make",
-        &None,
-        true,
-        &Some(version_string),
-    );
 }
