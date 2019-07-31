@@ -36,6 +36,7 @@
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
+        * [Defining Minimal Version](#usage-installing-min-version)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)

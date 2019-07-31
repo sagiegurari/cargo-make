@@ -425,6 +425,34 @@ impl<'de> serde::de::Deserialize<'de> for TestArg {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds instructions how to install the cargo plugin
+pub struct InstallCargoPluginInfo {
+    /// The provided crate to install
+    pub crate_name: Option<String>,
+    /// Minimial version
+    pub min_version: String,
+}
+
+impl PartialEq for InstallCargoPluginInfo {
+    fn eq(&self, other: &InstallCargoPluginInfo) -> bool {
+        if self.min_version != other.min_version {
+            false
+        } else {
+            match self.crate_name {
+                Some(ref crate_name) => match other.crate_name {
+                    Some(ref other_crate_name) => crate_name == other_crate_name,
+                    None => false,
+                },
+                None => match other.crate_name {
+                    None => true,
+                    _ => false,
+                },
+            }
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds instructions how to install the crate
 pub struct InstallCrateInfo {
     /// The provided crate to install
@@ -435,6 +463,8 @@ pub struct InstallCrateInfo {
     pub binary: String,
     /// Test arguments that will be used to check that the crate is installed.
     pub test_arg: TestArg,
+    /// Minimial version
+    pub min_version: Option<String>,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -446,8 +476,23 @@ impl PartialEq for InstallCrateInfo {
             false
         } else {
             match self.rustup_component_name {
-                Some(ref value) => match other.rustup_component_name {
-                    Some(ref other_value) => value == other_value,
+                Some(ref rustup_component_name) => match other.rustup_component_name {
+                    Some(ref other_rustup_component_name) => {
+                        if rustup_component_name == other_rustup_component_name {
+                            match self.min_version {
+                                Some(ref min_version) => match other.min_version {
+                                    Some(ref other_min_version) => min_version == other_min_version,
+                                    None => false,
+                                },
+                                None => match other.min_version {
+                                    None => true,
+                                    _ => false,
+                                },
+                            }
+                        } else {
+                            false
+                        }
+                    }
                     None => false,
                 },
                 None => match other.rustup_component_name {
@@ -501,6 +546,8 @@ impl PartialEq for InstallRustupComponentInfo {
 pub enum InstallCrate {
     /// The value as string
     Value(String),
+    /// Install cargo plugin info
+    CargoPluginInfo(InstallCargoPluginInfo),
     /// Install crate params
     CrateInfo(InstallCrateInfo),
     /// Install rustup component params
@@ -512,6 +559,10 @@ impl PartialEq for InstallCrate {
         match self {
             InstallCrate::Value(value) => match other {
                 InstallCrate::Value(other_value) => value == other_value,
+                _ => false,
+            },
+            InstallCrate::CargoPluginInfo(info) => match other {
+                InstallCrate::CargoPluginInfo(other_info) => info == other_info,
                 _ => false,
             },
             InstallCrate::CrateInfo(info) => match other {

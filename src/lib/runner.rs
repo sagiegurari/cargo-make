@@ -433,7 +433,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {
-            let mut string = " in ".to_string();
+            let mut string = "in ".to_string();
             string.push_str(&elapsed.as_secs().to_string());
             string.push_str(" seconds");
 

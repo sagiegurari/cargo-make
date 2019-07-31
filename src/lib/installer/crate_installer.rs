@@ -8,6 +8,7 @@
 mod crate_installer_test;
 
 use crate::command;
+use crate::installer::crate_version_check;
 use crate::installer::{cargo_plugin_installer, rustup_component_installer};
 use crate::toolchain::wrap_command;
 use crate::types::{CommandSpec, InstallCrateInfo, InstallRustupComponentInfo};
@@ -46,13 +47,36 @@ fn invoke_cargo_install(
     command::run_command(&command_spec.command, &command_spec.args, validate);
 }
 
+fn is_crate_only_info(info: &InstallCrateInfo) -> bool {
+    match info.rustup_component_name {
+        Some(_) => true,
+        None => false,
+    }
+}
+
 pub(crate) fn install(
     toolchain: &Option<String>,
     info: &InstallCrateInfo,
     args: &Option<Vec<String>>,
     validate: bool,
 ) {
-    if !rustup_component_installer::is_installed(&toolchain, &info.binary, &info.test_arg) {
+    let installed =
+        rustup_component_installer::is_installed(&toolchain, &info.binary, &info.test_arg);
+    let crate_only_info = is_crate_only_info(&info);
+    let run_installation = if !installed {
+        true
+    } else if crate_only_info && toolchain.is_none() {
+        match info.min_version {
+            Some(ref version) => {
+                !crate_version_check::is_min_version_valid(&info.crate_name, version)
+            }
+            None => false,
+        }
+    } else {
+        false
+    };
+
+    if run_installation {
         debug!("Crate: {} not installed.", &info.crate_name);
 
         if !invoke_rustup_install(&toolchain, &info) {

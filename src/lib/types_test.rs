@@ -46,6 +46,76 @@ fn cache_new() {
 }
 
 #[test]
+fn install_cargo_plugin_info_eq_same_all() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_same_no_crate_name() {
+    let first = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_crate_name_type() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_crate_name_value() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test1".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: Some("test2".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_min_version_value() {
+    let first = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "2.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
 fn install_crate_info_eq_same_all() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -54,6 +124,7 @@ fn install_crate_info_eq_same_all() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -62,6 +133,7 @@ fn install_crate_info_eq_same_all() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert_eq!(first, second);
@@ -76,6 +148,7 @@ fn install_crate_info_eq_same_no_component() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -84,6 +157,31 @@ fn install_crate_info_eq_same_no_component() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_info_eq_same_no_min_version() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: None,
     };
 
     assert_eq!(first, second);
@@ -98,6 +196,7 @@ fn install_crate_info_eq_different_crate_name() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -106,6 +205,7 @@ fn install_crate_info_eq_different_crate_name() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -120,6 +220,7 @@ fn install_crate_info_eq_different_binary() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -128,6 +229,7 @@ fn install_crate_info_eq_different_binary() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -142,6 +244,7 @@ fn install_crate_info_eq_different_test_arg() {
             inner: vec!["--help1".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -150,6 +253,7 @@ fn install_crate_info_eq_different_test_arg() {
             inner: vec!["--help2".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -164,6 +268,7 @@ fn install_crate_info_eq_different_component_type() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -172,6 +277,7 @@ fn install_crate_info_eq_different_component_type() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -186,6 +292,7 @@ fn install_crate_info_eq_different_component_value() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value1".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -194,6 +301,55 @@ fn install_crate_info_eq_different_component_value() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value2".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_min_version_type() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_min_version_value() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -362,7 +518,19 @@ fn install_crate_eq_same_value() {
 }
 
 #[test]
-fn install_crate_eq_same_info() {
+fn install_crate_eq_same_cargo_plugin_info() {
+    let info = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let first = InstallCrate::CargoPluginInfo(info.clone());
+    let second = InstallCrate::CargoPluginInfo(info.clone());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_crate_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
@@ -370,9 +538,25 @@ fn install_crate_eq_same_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let first = InstallCrate::CrateInfo(info.clone());
     let second = InstallCrate::CrateInfo(info.clone());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_rustup_component_info() {
+    let info = InstallRustupComponentInfo {
+        rustup_component_name: "value".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
+    };
+    let first = InstallCrate::RustupComponentInfo(info.clone());
+    let second = InstallCrate::RustupComponentInfo(info.clone());
 
     assert_eq!(first, second);
 }
@@ -386,6 +570,20 @@ fn install_crate_eq_different_value() {
 }
 
 #[test]
+fn install_crate_eq_different_cargo_plugin_info() {
+    let first = InstallCrate::CargoPluginInfo(InstallCargoPluginInfo {
+        crate_name: Some("test1".to_string()),
+        min_version: "1.0.0".to_string(),
+    });
+    let second = InstallCrate::CargoPluginInfo(InstallCargoPluginInfo {
+        crate_name: Some("test2".to_string()),
+        min_version: "1.0.0".to_string(),
+    });
+
+    assert!(first != second);
+}
+
+#[test]
 fn install_crate_eq_different_crate_info() {
     let first = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test1".to_string(),
@@ -394,6 +592,7 @@ fn install_crate_eq_different_crate_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: None,
     });
     let second = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -402,74 +601,10 @@ fn install_crate_eq_different_crate_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: None,
     });
 
     assert!(first != second);
-}
-
-#[test]
-fn install_crate_info_deserialize_string_test_arg() {
-    let info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"
-                                                   test_arg = "--help""#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg, &["--help"]);
-}
-
-#[test]
-fn install_crate_info_deserialize_array_test_arg() {
-    let info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"
-                                                   test_arg = ["--help", "--test"]"#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg, &["--help", "--test"]);
-}
-
-#[test]
-#[should_panic]
-fn install_crate_info_deserialize_missing_test_arg() {
-    let _info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"#,
-    )
-    .unwrap();
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_string_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo-clippy"
-                                                             test_arg = "--help""#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg.unwrap(), &["--help"]);
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_array_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo"
-                                                             test_arg = ["clippy", "--help"]"#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg.unwrap(), &["clippy", "--help"]);
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_missing_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo""#,
-    )
-    .unwrap();
-
-    assert_eq!(info.test_arg, None);
 }
 
 #[test]
@@ -490,6 +625,83 @@ fn install_crate_eq_different_rustup_component_info() {
     });
 
     assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_deserialize_string_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs"
+        test_arg = "--help"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg, &["--help"]);
+}
+
+#[test]
+fn install_crate_info_deserialize_array_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs"
+        test_arg = ["--help", "--test"]
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg, &["--help", "--test"]);
+}
+
+#[test]
+#[should_panic]
+fn install_crate_info_deserialize_missing_test_arg() {
+    let _info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs
+        "#,
+    )
+    .unwrap();
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_string_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo-clippy"
+        test_arg = "--help"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg.unwrap(), &["--help"]);
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_array_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo"
+        test_arg = ["clippy", "--help"]
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg.unwrap(), &["clippy", "--help"]);
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_missing_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo"
+        "#,
+    )
+    .unwrap();
+
+    assert_eq!(info.test_arg, None);
 }
 
 #[test]

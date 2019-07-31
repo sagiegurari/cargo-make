@@ -1200,6 +1200,7 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Cargo Plugins](#usage-installing-cargo-plugins)
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
+* [Defining Minimal Version](#usage-installing-min-version)
 * [Native Dependencies](#usage-installing-native-dependencies)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -1272,6 +1273,29 @@ Example:
 [tasks.install-rust-src]
 install_crate = { rustup_component_name = "rust-src" }
 ```
+
+<a name="usage-installing-min-version"></a>
+#### Defining Minimal Version
+
+It is possible to define minimal version of depended crates, for example:
+
+```toml
+[tasks.simple-example]
+install_crate = { min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
+This ensures we are using a crate version that supports the feature we require for the build.<br>
+Currently there are few limitations when defining min_version:
+
+* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
+* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies
