@@ -546,12 +546,12 @@ impl PartialEq for InstallRustupComponentInfo {
 pub enum InstallCrate {
     /// The value as string
     Value(String),
-    /// Install cargo plugin info
-    CargoPluginInfo(InstallCargoPluginInfo),
     /// Install crate params
     CrateInfo(InstallCrateInfo),
     /// Install rustup component params
     RustupComponentInfo(InstallRustupComponentInfo),
+    /// Install cargo plugin info
+    CargoPluginInfo(InstallCargoPluginInfo),
 }
 
 impl PartialEq for InstallCrate {
