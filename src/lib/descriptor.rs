@@ -12,6 +12,7 @@ mod descriptor_test;
 
 use crate::command;
 use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
+use crate::version;
 use envmnt;
 use indexmap::IndexMap;
 use std::env;
@@ -163,7 +164,10 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
     }
 }
 
-fn load_descriptor_extended_makefiles(parent_path: &str, extend_struct: &Extend) -> ExternalConfig {
+fn load_descriptor_extended_makefiles(
+    parent_path: &str,
+    extend_struct: &Extend,
+) -> Result<ExternalConfig, String> {
     match extend_struct {
         Extend::Path(base_file) => load_external_descriptor(parent_path, &base_file, true, false),
         Extend::Options(extend_options) => {
@@ -178,13 +182,13 @@ fn load_descriptor_extended_makefiles(parent_path: &str, extend_struct: &Extend)
                 let entry_config = load_descriptor_extended_makefiles(
                     parent_path,
                     &Extend::Options(extend_options),
-                );
+                )?;
 
                 // merge configs
                 ordered_list_config = merge_external_configs(entry_config, ordered_list_config);
             }
 
-            ordered_list_config
+            Ok(ordered_list_config)
         }
     }
 }
@@ -194,7 +198,7 @@ fn load_external_descriptor(
     file_name: &str,
     force: bool,
     set_env: bool,
-) -> ExternalConfig {
+) -> Result<ExternalConfig, String> {
     debug!(
         "Loading tasks from file: {} base directory: {}",
         &file_name, &base_path
@@ -223,6 +227,19 @@ fn load_external_descriptor(
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
 
+        // Descriptor version-check
+        let value: toml::Value = toml::from_str(&external_descriptor)
+            .unwrap_or_else(|error| panic!("Unable to parse external descriptor, {}", error));
+        let min_version = value
+            .get("config")
+            .and_then(|config| config.get("min_version"))
+            .and_then(|min_ver| min_ver.as_str());
+        if let Some(ref min_version) = min_version {
+            if version::is_newer_found(&min_version) {
+                return Err(min_version.to_string());
+            }
+        }
+
         let file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
             Err(error) => panic!("Unable to parse external descriptor, {}", error),
@@ -242,11 +259,14 @@ fn load_external_descriptor(
                 debug!("External config parent path: {}", &parent_path);
 
                 let base_file_config =
-                    load_descriptor_extended_makefiles(&parent_path, extend_struct);
+                    load_descriptor_extended_makefiles(&parent_path, extend_struct)?;
 
-                merge_external_configs(file_config.clone(), base_file_config)
+                Ok(merge_external_configs(
+                    file_config.clone(),
+                    base_file_config,
+                ))
             }
-            None => file_config,
+            None => Ok(file_config),
         }
     } else if force {
         error!("Descriptor file: {:#?} not found.", &file_path);
@@ -254,7 +274,7 @@ fn load_external_descriptor(
     } else {
         info!("External file not found or is not a file, skipping.");
 
-        ExternalConfig::new()
+        Ok(ExternalConfig::new())
     }
 }
 
@@ -322,6 +342,8 @@ pub(crate) fn load_internal_descriptors(
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
 /// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+/// If one of the descriptor requires a newer version of cargo-make, returns an error with the
+/// minimum version required by the descriptor.
 fn load_descriptors(
     file_name: &str,
     force: bool,
@@ -329,10 +351,11 @@ fn load_descriptors(
     stable: bool,
     experimental: bool,
     modify_core_tasks: Option<ModifyConfig>,
-) -> Config {
+) -> Result<Config, String> {
     let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
 
-    let mut external_config: ExternalConfig = load_external_descriptor(".", file_name, force, true);
+    let mut external_config: ExternalConfig =
+        load_external_descriptor(".", file_name, force, true)?;
 
     external_config = match env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
         Ok(workspace_makefile) => {
@@ -349,7 +372,7 @@ fn load_descriptors(
                                     workspace_file_name_str,
                                     false,
                                     false,
-                                );
+                                )?;
                                 merge_external_configs(external_config, workspace_config)
                             }
                             _ => external_config,
@@ -411,23 +434,26 @@ fn load_descriptors(
 
     debug!("Loaded merged config: {:#?}", &config);
 
-    config
+    Ok(config)
 }
 
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
-/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+/// If an extenal descriptor exists, it will be loaded and extend the default descriptor. <br>
+/// If one of the descriptor requires a newer version of cargo-make, returns an error with the
+/// minimum version required by the descriptor.
 pub(crate) fn load(
     file_name: &str,
     force: bool,
     env_map: Option<Vec<String>>,
     experimental: bool,
-) -> Config {
-    let mut config = load_descriptors(&file_name, force, env_map.clone(), true, experimental, None);
+) -> Result<Config, String> {
+    let mut config =
+        load_descriptors(&file_name, force, env_map.clone(), true, experimental, None)?;
 
     if config.config.skip_core_tasks.unwrap_or(false) {
-        config = load_descriptors(&file_name, force, env_map.clone(), false, false, None);
+        config = load_descriptors(&file_name, force, env_map.clone(), false, false, None)?;
     } else {
         let modify_core_tasks = config.config.modify_core_tasks.clone();
 
@@ -441,12 +467,12 @@ pub(crate) fn load(
                         true,
                         experimental,
                         Some(modify_config),
-                    );
+                    )?;
                 }
             }
             None => (),
         };
     }
 
-    config
+    Ok(config)
 }
