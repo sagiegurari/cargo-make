@@ -340,7 +340,7 @@ fn load_descriptors_load_workspace_makefile() {
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile.toml",
     );
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
@@ -353,7 +353,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
         "./examples/workspace/Makefile2.toml",
     );
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
 
     let task = config.tasks.get("workspace-echo");
@@ -363,7 +363,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
 #[test]
 fn load_descriptors_no_load_workspace_makefile() {
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
-    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None);
+    let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
 
     let task = config.tasks.get("workspace-echo");
     assert!(task.is_none());
@@ -371,7 +371,7 @@ fn load_descriptors_no_load_workspace_makefile() {
 
 #[test]
 fn load_no_stable() {
-    let config = load("./examples/skip_core_tasks.toml", true, None, false);
+    let config = load("./examples/skip_core_tasks.toml", true, None, false).unwrap();
 
     assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_none());
 
@@ -383,7 +383,7 @@ fn load_no_stable() {
 
 #[test]
 fn load_with_stable() {
-    let config = load("./examples/simple-example.toml", true, None, false);
+    let config = load("./examples/simple-example.toml", true, None, false).unwrap();
 
     assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_some());
 
@@ -395,7 +395,7 @@ fn load_with_stable() {
 
 #[test]
 fn load_with_modify() {
-    let config = load("./examples/modify_core_tasks.toml", true, None, false);
+    let config = load("./examples/modify_core_tasks.toml", true, None, false).unwrap();
 
     assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_some());
 
@@ -411,7 +411,7 @@ fn load_with_modify() {
 #[test]
 #[should_panic]
 fn load_not_found() {
-    load("./examples/not-found.toml", true, None, false);
+    load("./examples/not-found.toml", true, None, false).unwrap();
 }
 
 #[test]
@@ -517,7 +517,7 @@ fn load_internal_descriptors_modify_namespace() {
 
 #[test]
 fn load_external_descriptor_no_file() {
-    let config = load_external_descriptor(".", "bad_file.toml2", false, false);
+    let config = load_external_descriptor(".", "bad_file.toml2", false, false).unwrap();
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -527,18 +527,18 @@ fn load_external_descriptor_no_file() {
 #[test]
 #[should_panic]
 fn load_external_descriptor_no_file_force() {
-    load_external_descriptor(".", "bad_file.toml2", true, false);
+    load_external_descriptor(".", "bad_file.toml2", true, false).unwrap();
 }
 
 #[test]
 #[should_panic]
 fn load_external_descriptor_extended_not_found_force() {
-    load_external_descriptor(".", "./examples/extends_not_found.toml", true, false);
+    load_external_descriptor(".", "./examples/extends_not_found.toml", true, false).unwrap();
 }
 
 #[test]
 fn load_external_descriptor_simple_file() {
-    let config = load_external_descriptor(".", "./examples/alias.toml", true, false);
+    let config = load_external_descriptor(".", "./examples/alias.toml", true, false).unwrap();
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -552,7 +552,7 @@ fn load_external_descriptor_simple_file() {
 
 #[test]
 fn load_external_descriptor_extending_file() {
-    let config = load_external_descriptor(".", "examples/extending.toml", true, false);
+    let config = load_external_descriptor(".", "examples/extending.toml", true, false).unwrap();
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -572,7 +572,7 @@ fn load_external_descriptor_extending_file() {
 
 #[test]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let config = load_external_descriptor(".", "examples/files/extending.toml", true, false);
+    let config = load_external_descriptor(".", "examples/files/extending.toml", true, false).unwrap();
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -604,7 +604,7 @@ fn load_external_descriptor_set_env() {
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH"), "EMPTY");
 
-    load_external_descriptor(".", "./examples/alias.toml", true, true);
+    load_external_descriptor(".", "./examples/alias.toml", true, true).unwrap();
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH").ends_with("alias.toml"));
 }
@@ -656,7 +656,7 @@ fn load_descriptor_extended_makefiles_path_exists() {
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/test1.toml".to_string()),
-    );
+    ).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -669,7 +669,7 @@ fn load_descriptor_extended_makefiles_path_not_exists() {
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/bad.toml".to_string()),
-    );
+    ).unwrap();
 }
 
 #[test]
@@ -681,7 +681,7 @@ fn load_descriptor_extended_makefiles_options_exists() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: None,
         }),
-    );
+    ).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -697,7 +697,7 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: None,
         }),
-    );
+    ).unwrap();
 }
 
 #[test]
@@ -709,7 +709,7 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(true),
         }),
-    );
+    ).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -724,7 +724,7 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
         }),
-    );
+    ).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -740,7 +740,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(true),
         }),
-    );
+    ).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(!tasks.contains_key("test1"));
@@ -756,7 +756,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(false),
         }),
-    );
+    ).unwrap();
 }
 
 #[test]
@@ -772,7 +772,7 @@ fn load_descriptor_extended_makefiles_list_exists() {
             optional: Some(false),
         },
     ];
-    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -793,7 +793,7 @@ fn load_descriptor_extended_makefiles_list_not_exists() {
             optional: Some(false),
         },
     ];
-    load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+    load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
 }
 
 #[test]
@@ -809,7 +809,7 @@ fn load_descriptor_extended_makefiles_list_exists_optional() {
             optional: Some(true),
         },
     ];
-    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list));
+    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
