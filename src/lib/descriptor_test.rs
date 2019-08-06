@@ -610,6 +610,23 @@ fn load_external_descriptor_set_env() {
 }
 
 #[test]
+fn load_external_descriptor_min_version_broken_makefile_nopanic() {
+    // Ensure that we can properly get the min_version of a descriptor that
+    // doesn't match our internal data-structures.
+    assert_eq!(
+        load_external_descriptor(".", "src/lib/test/makefiles/broken_makefile_minversion.toml", false, false).err(),
+        Some("999.999.999".into()));
+}
+
+#[test]
+#[should_panic]
+fn load_external_descriptor_broken_makefile_panic() {
+    // Ensure the descriptor we used in the test above is properly broken when
+    // it doesn't have a min_version
+    load_external_descriptor(".", "src/lib/test/makefiles/broken_makefile.toml", false, false).unwrap();
+}
+
+#[test]
 fn run_load_script_no_config_section() {
     let external_config = ExternalConfig::new();
 
