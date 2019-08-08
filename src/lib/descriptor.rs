@@ -193,6 +193,23 @@ fn load_descriptor_extended_makefiles(
     }
 }
 
+/// Ensure the Makefile's min_version, if present, is older than cargo-make's
+/// currently running version.
+fn check_makefile_minversion(external_descriptor: &str) -> Result<(), String> {
+    let value: toml::Value = toml::from_str(&external_descriptor)
+        .unwrap_or_else(|error| panic!("Unable to parse external descriptor, {}", error));
+    let min_version = value
+        .get("config")
+        .and_then(|config| config.get("min_version"))
+        .and_then(|min_ver| min_ver.as_str());
+    if let Some(ref min_version) = min_version {
+        if version::is_newer_found(&min_version) {
+            return Err(min_version.to_string());
+        }
+    }
+    Ok(())
+}
+
 fn load_external_descriptor(
     base_path: &str,
     file_name: &str,
@@ -227,18 +244,7 @@ fn load_external_descriptor(
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
 
-        // Descriptor version-check
-        let value: toml::Value = toml::from_str(&external_descriptor)
-            .unwrap_or_else(|error| panic!("Unable to parse external descriptor, {}", error));
-        let min_version = value
-            .get("config")
-            .and_then(|config| config.get("min_version"))
-            .and_then(|min_ver| min_ver.as_str());
-        if let Some(ref min_version) = min_version {
-            if version::is_newer_found(&min_version) {
-                return Err(min_version.to_string());
-            }
-        }
+        check_makefile_minversion(&external_descriptor)?;
 
         let file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
