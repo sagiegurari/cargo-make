@@ -49,8 +49,8 @@ fn invoke_cargo_install(
 
 fn is_crate_only_info(info: &InstallCrateInfo) -> bool {
     match info.rustup_component_name {
-        Some(_) => true,
-        None => false,
+        Some(_) => false,
+        None => true,
     }
 }
 

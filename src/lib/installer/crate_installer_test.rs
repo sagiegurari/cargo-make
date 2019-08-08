@@ -206,3 +206,37 @@ fn install_already_installed_crate_only_min_version_smaller() {
         install(&None, &info, &None, false);
     }
 }
+
+#[test]
+fn is_crate_only_info_with_rustup_component_name() {
+    let info = InstallCrateInfo {
+        crate_name: "crate_name".to_string(),
+        binary: "test".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: None,
+    };
+
+    let crate_only_info = is_crate_only_info(&info);
+
+    assert!(!crate_only_info);
+}
+
+#[test]
+fn is_crate_only_info_without_rustup_component_name() {
+    let info = InstallCrateInfo {
+        crate_name: "crate_name".to_string(),
+        binary: "test".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: None,
+        min_version: None,
+    };
+
+    let crate_only_info = is_crate_only_info(&info);
+
+    assert!(crate_only_info);
+}
