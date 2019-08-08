@@ -622,7 +622,8 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
 #[should_panic]
 fn load_external_descriptor_broken_makefile_panic() {
     // Ensure the descriptor we used in the test above is properly broken when
-    // it doesn't have a min_version
+    // it doesn't have a min_version. This is to ensure that the previous test
+    // is working properly - min_version is optional.
     load_external_descriptor(".", "src/lib/test/makefiles/broken_makefile.toml", false, false).unwrap();
 }
 
