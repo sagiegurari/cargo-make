@@ -195,23 +195,25 @@ fn load_descriptor_extended_makefiles(
 
 /// Ensure the Makefile's min_version, if present, is older than cargo-make's
 /// currently running version.
-fn check_makefile_minversion(external_descriptor: &str) -> Result<(), String> {
+fn check_makefile_min_version(external_descriptor: &str) -> Result<(), String> {
     let value: toml::Value = match toml::from_str(&external_descriptor) {
         Ok(value) => value,
         // If there's an error parsing the file, let the caller function figure
         // it out
-        Err(_) => return Ok(())
+        Err(_) => return Ok(()),
     };
 
     let min_version = value
         .get("config")
         .and_then(|config| config.get("min_version"))
         .and_then(|min_ver| min_ver.as_str());
+
     if let Some(ref min_version) = min_version {
         if version::is_newer_found(&min_version) {
             return Err(min_version.to_string());
         }
     }
+
     Ok(())
 }
 
@@ -249,7 +251,7 @@ fn load_external_descriptor(
         let mut external_descriptor = String::new();
         file.read_to_string(&mut external_descriptor).unwrap();
 
-        check_makefile_minversion(&external_descriptor)?;
+        check_makefile_min_version(&external_descriptor)?;
 
         let file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
