@@ -1,0 +1,6 @@
+[config]
+# Should always be above the current version.
+min_version = "999.999.999"
+
+[tasks.bootstrap]
+command = false

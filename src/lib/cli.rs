@@ -92,18 +92,18 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let experimental = cli_args.experimental;
     let config = descriptor::load(&build_file, force_makefile, env, experimental);
 
-    match config.config.min_version {
-        Some(ref min_version) => {
-            if version::is_newer_found(&min_version) {
-                error!(
-                    "{} version: {} does not meet minimum required version: {}",
-                    &cli_args.command, &VERSION, &min_version
-                );
-            }
-
-            ()
+    let config = match config {
+        Ok(config) => config,
+        Err(ref min_version) => {
+            error!(
+                "{} version: {} does not meet minimum required version: {}",
+                &cli_args.command, &VERSION, &min_version
+            );
+            panic!(
+                "{} version: {} does not meet minimum required version: {}",
+                &cli_args.command, &VERSION, &min_version
+            );
         }
-        None => (),
     };
 
     match config.config.additional_profiles {
