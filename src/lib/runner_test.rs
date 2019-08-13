@@ -1,7 +1,7 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, RunTaskDetails, RunTaskInfo,
-    Step, Task, TaskCondition,
+    ConfigSection, CrateInfo, DeprecationInfo, EnvInfo, EnvValue, FlowInfo, GitInfo,
+    RunTaskDetails, RunTaskInfo, Step, Task, TaskCondition,
 };
 use ci_info;
 use indexmap::IndexMap;
@@ -619,6 +619,76 @@ fn run_task_cwd_dir_exists() {
     let mut task = Task::new();
     task.script = Some(vec!["exit 0".to_string()]);
     task.cwd = Some("./src".to_string());
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+fn run_task_deprecated_message() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    task.deprecated = Some(DeprecationInfo::Message("test message".to_string()));
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+fn run_task_deprecated_flag() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    task.deprecated = Some(DeprecationInfo::Boolean(true));
     let step = Step {
         name: "test".to_string(),
         config: task,

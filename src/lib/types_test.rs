@@ -714,6 +714,7 @@ fn task_new() {
     assert!(task.command.is_none());
     assert!(task.disabled.is_none());
     assert!(task.private.is_none());
+    assert!(task.deprecated.is_none());
     assert!(task.extend.is_none());
     assert!(task.watch.is_none());
     assert!(task.condition.is_none());
@@ -801,6 +802,7 @@ fn task_extend_both_have_misc_data() {
     base.command = Some("test1".to_string());
     base.disabled = Some(false);
     base.private = Some(false);
+    base.deprecated = Some(DeprecationInfo::Message("base".to_string()));
     base.watch = Some(TaskWatchOptions::Boolean(false));
     base.script = Some(vec!["1".to_string(), "2".to_string()]);
 
@@ -813,6 +815,7 @@ fn task_extend_both_have_misc_data() {
         workspace: None,
         disabled: Some(true),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Message("extended".to_string())),
         extend: None,
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -849,6 +852,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_none());
     assert!(base.watch.is_some());
     assert!(base.condition.is_none());
@@ -881,6 +885,10 @@ fn task_extend_both_have_misc_data() {
     assert_eq!(base.command.unwrap(), "test1");
     assert!(base.disabled.unwrap());
     assert!(base.private.unwrap());
+    assert_eq!(
+        base.deprecated.unwrap(),
+        DeprecationInfo::Message("extended".to_string())
+    );
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(true));
     assert!(base.ignore_errors.unwrap());
     assert!(base.force.unwrap());
@@ -900,6 +908,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: None,
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -938,6 +947,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(false)),
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -975,6 +985,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1009,6 +1020,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1043,6 +1055,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1083,6 +1096,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
@@ -1118,6 +1132,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.unwrap());
     assert!(base.disabled.unwrap());
     assert!(!base.private.unwrap());
+    assert_eq!(base.deprecated.unwrap(), DeprecationInfo::Boolean(false));
     assert_eq!(base.extend.unwrap(), "extended");
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(false));
     assert_eq!(base.condition_script.unwrap().len(), 1);
@@ -1163,6 +1178,7 @@ fn task_extend_clear_with_no_data() {
         workspace: Some(false),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -1200,6 +1216,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1234,6 +1251,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1268,6 +1286,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1310,6 +1329,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_none());
     assert!(base.private.is_none());
+    assert!(base.deprecated.is_none());
     assert!(base.extend.is_none());
     assert!(base.watch.is_none());
     assert!(base.condition.is_none());
@@ -1351,6 +1371,7 @@ fn task_extend_clear_with_all_data() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -1388,6 +1409,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1422,6 +1444,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1456,6 +1479,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1495,6 +1519,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
@@ -1569,6 +1594,7 @@ fn task_get_normalized_task_undefined() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: None,
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -1601,6 +1627,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_none());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_none());
@@ -1683,6 +1710,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        deprecated: None,
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1716,6 +1744,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1763,6 +1792,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1798,6 +1828,10 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -1846,6 +1880,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(false)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1878,6 +1913,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1929,6 +1965,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1964,6 +2001,10 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -2007,6 +2048,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -2043,6 +2085,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             command: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             watch: None,
             condition: None,
@@ -2072,6 +2115,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -2106,6 +2150,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "base");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -2144,6 +2192,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -2180,6 +2229,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             command: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             watch: None,
             condition: None,
@@ -2209,6 +2259,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.command.is_none());
     assert!(normalized_task.disabled.is_none());
     assert!(normalized_task.private.is_none());
+    assert!(normalized_task.deprecated.is_none());
     assert!(normalized_task.extend.is_none());
     assert!(normalized_task.watch.is_none());
     assert!(normalized_task.condition.is_none());
@@ -2889,4 +2940,52 @@ fn config_apply_modify_all() {
     assert_eq!(config.env.len(), 0);
     assert_eq!(config.tasks.len(), 1);
     assert!(config.tasks.get("all::test").unwrap().private.unwrap());
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_bool_true() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Boolean(true);
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_bool_false() {
+    let value1 = DeprecationInfo::Boolean(false);
+    let value2 = DeprecationInfo::Boolean(false);
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_message() {
+    let value1 = DeprecationInfo::Message("test".to_string());
+    let value2 = DeprecationInfo::Message("test".to_string());
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_bool() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Boolean(false);
+
+    assert!(value1 != value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_message() {
+    let value1 = DeprecationInfo::Message("test1".to_string());
+    let value2 = DeprecationInfo::Message("test2".to_string());
+
+    assert!(value1 != value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_type() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Message("test2".to_string());
+
+    assert!(value1 != value2);
 }

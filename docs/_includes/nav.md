@@ -50,6 +50,7 @@
         * [Conditions](#usage-profiles-conditions)
         * [Built In Profiles](#usage-profiles-built-in)
     * [Private Tasks](#usage-private-tasks)
+    * [Deprecated Tasks](#usage-deprecated-tasks)
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)

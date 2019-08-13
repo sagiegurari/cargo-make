@@ -56,6 +56,7 @@
         * [Conditions](#usage-profiles-conditions)
         * [Built In Profiles](#usage-profiles-built-in)
     * [Private Tasks](#usage-private-tasks)
+    * [Deprecated Tasks](#usage-deprecated-tasks)
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
@@ -1897,6 +1898,52 @@ In order to define a task as private, add the **private** attribute with value t
 private = true
 ```
 
+<a name="usage-deprecated-tasks"></a>
+### Deprecated Tasks
+
+It is possible to mark tasks as deprecated in order to warn users that they should no longer use this task and switch to a newer/different task instead.<br>
+Once invoked, a warning message will be displayed with the deprecation information.<br>
+You can define a task deprecated by setting the **deprecated** to true or by providing a relevant message.<br>
+For example:
+
+```toml
+[tasks.legacy]
+deprecated = "Please use task OTHER instead"
+
+[tasks.legacy-extended]
+extend = "legacy"
+deprecated = false
+
+[tasks.legacy2]
+deprecated = true
+```
+
+When invoking **legacy** task for example, the output is:
+
+```console
+[cargo-make] INFO - cargo make 0.21.0
+[cargo-make] INFO - Using Build File: deprecated.toml
+[cargo-make] INFO - Task: legacy
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: legacy
+[cargo-make] WARN - Task: legacy is deprecated - Please use task OTHER instead
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
+```
+
+When listing tasks, deprecated tasks will contain this information as well:
+
+```console
+No Category
+----------
+default - Empty Task
+empty - Empty Task
+legacy - No Description. (deprecated - Please use task OTHER instead)
+legacy-extended - No Description.
+legacy2 - No Description. (deprecated)
+```
+
 <a name="usage-watch"></a>
 ### Watch
 Watching for changes in your project and firing a task via cargo-make is very easy.<br>
@@ -2851,6 +2898,7 @@ The articles are missing some of the new features which have been added after th
 * [Profiles](#usage-profiles)
 * [Functions](#usage-functions)
 * [Minimal Version](#usage-min-version)
+* [Deprecated Tasks](#usage-deprecated-tasks)
 
 And more...
 

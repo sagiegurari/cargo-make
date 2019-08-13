@@ -710,6 +710,31 @@ impl PartialEq for TaskWatchOptions {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds deprecation info such as true/false/message
+pub enum DeprecationInfo {
+    /// True/False flag (true is deprecated)
+    Boolean(bool),
+    /// Deprecation message
+    Message(String),
+}
+
+impl PartialEq for DeprecationInfo {
+    fn eq(&self, other: &DeprecationInfo) -> bool {
+        match self {
+            DeprecationInfo::Boolean(value) => match other {
+                DeprecationInfo::Boolean(other_value) => value == other_value,
+                _ => false,
+            },
+            DeprecationInfo::Message(message) => match other {
+                DeprecationInfo::Message(other_message) => message == other_message,
+                _ => false,
+            },
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -722,6 +747,8 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// if not false, this task is defined as deprecated
+    pub deprecated: Option<DeprecationInfo>,
     /// Extend any task based on the defined name
     pub extend: Option<String>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
@@ -787,6 +814,7 @@ impl Task {
             category: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             workspace: None,
             watch: None,
@@ -945,6 +973,12 @@ impl Task {
             self.private = task.private.clone();
         } else if override_values {
             self.private = None;
+        }
+
+        if task.deprecated.is_some() {
+            self.deprecated = task.deprecated.clone();
+        } else if override_values {
+            self.deprecated = None;
         }
 
         if task.extend.is_some() {
@@ -1158,6 +1192,7 @@ impl Task {
                     category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    deprecated: override_task.deprecated.clone(),
                     extend: override_task.extend.clone(),
                     workspace: self.workspace.clone(),
                     watch: override_task.watch.clone(),
@@ -1250,6 +1285,8 @@ pub struct PlatformOverrideTask {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// if not false, this task is defined as deprecated
+    pub deprecated: Option<DeprecationInfo>,
     /// Extend any task based on the defined name
     pub extend: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
@@ -1309,6 +1346,10 @@ impl PlatformOverrideTask {
 
             if self.private.is_none() && task.private.is_some() {
                 self.private = task.private.clone();
+            }
+
+            if self.deprecated.is_none() && task.deprecated.is_some() {
+                self.deprecated = task.deprecated.clone();
             }
 
             if self.extend.is_none() && task.extend.is_some() {

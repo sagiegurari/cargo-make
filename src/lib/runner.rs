@@ -22,8 +22,8 @@ use crate::logger;
 use crate::profile;
 use crate::scriptengine;
 use crate::types::{
-    CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo, RunTaskRoutingInfo,
-    Step, Task, TaskWatchOptions,
+    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo,
+    RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
@@ -196,6 +196,25 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
                 &step.config
             );
         }
+
+        let deprecated_info = step.config.deprecated.clone();
+        match deprecated_info {
+            Some(deprecated) => match deprecated {
+                DeprecationInfo::Boolean(value) => {
+                    if value {
+                        warn!("Task: {} is deprecated.", &step.name);
+                    }
+
+                    ()
+                }
+                DeprecationInfo::Message(ref message) => {
+                    warn!("Task: {} is deprecated - {}", &step.name, message);
+
+                    ()
+                }
+            },
+            None => (),
+        };
 
         //get profile
         let profile_name = profile::get();

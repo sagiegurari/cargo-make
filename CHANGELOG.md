@@ -5,6 +5,7 @@
 * Specify minimum version for tools/dependencies #265
 * Globally disable workspace support via makefile config #264
 * Support additional rust script runners #216
+* Ability to mark a task deprecated #270
 * Use task cwd in condition and installation scripts #259 (**backward compatability break**)
 * Check descriptor min_version before deserializing #268 (thanks @roblabla)
 * Profile name passed incorrectly via forked sub tasks #263

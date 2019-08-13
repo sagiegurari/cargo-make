@@ -106,6 +106,14 @@ fn run_mixed() {
     let mut task2 = Task::new();
     task2.description = Some("2".to_string());
     tasks.insert("2".to_string(), task2);
+    let mut task3 = Task::new();
+    task3.description = Some("3".to_string());
+    task3.deprecated = Some(DeprecationInfo::Boolean(true));
+    tasks.insert("3".to_string(), task3);
+    let mut task4 = Task::new();
+    task4.description = Some("4".to_string());
+    task4.deprecated = Some(DeprecationInfo::Message("test".to_string()));
+    tasks.insert("4".to_string(), task4);
 
     let config = Config {
         config: config_section,
@@ -115,5 +123,5 @@ fn run_mixed() {
 
     let count = run(&config, "default");
 
-    assert_eq!(count, 1);
+    assert_eq!(count, 3);
 }
