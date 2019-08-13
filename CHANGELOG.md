@@ -8,6 +8,7 @@
 * Use task cwd in condition and installation scripts #259 (**backward compatability break**)
 * Check descriptor min_version before deserializing #268 (thanks @roblabla)
 * Profile name passed incorrectly via forked sub tasks #263
+* Add support for dirty cargo publish
 
 ### v0.21.0 (2019-06-26)
 

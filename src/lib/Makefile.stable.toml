@@ -16,6 +16,9 @@ CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
 CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
+CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
+CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
+CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_NO_ARGS}"
 CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "${CARGO_MAKE_CARGO_ALL_FEATURES} -- -D warnings"
 CARGO_MAKE_CLIPPY_NO_ARGS = ""
 CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
@@ -23,6 +26,9 @@ CARGO_MAKE_RUST_SCRIPT_PROVIDER = "cargo-script"
 
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"
+
+[env.publish-allow-dirty]
+CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
 
 [env.ci-coverage-tasks]
 RUSTFLAGS = "-C link-dead-code"
@@ -510,7 +516,7 @@ category = "Publish"
 description = "Runs the cargo publish command."
 category = "Publish"
 command = "cargo"
-args = ["publish"]
+args = ["publish", "@@split(CARGO_MAKE_CARGO_PUBLISH_FLAGS, )"]
 
 [tasks.post-publish]
 category = "Publish"
