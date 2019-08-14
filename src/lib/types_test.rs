@@ -46,6 +46,76 @@ fn cache_new() {
 }
 
 #[test]
+fn install_cargo_plugin_info_eq_same_all() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_same_no_crate_name() {
+    let first = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_crate_name_type() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_crate_name_value() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test1".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: Some("test2".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_min_version_value() {
+    let first = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "1.0.0".to_string(),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: "2.0.0".to_string(),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
 fn install_crate_info_eq_same_all() {
     let first = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -54,6 +124,7 @@ fn install_crate_info_eq_same_all() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -62,6 +133,7 @@ fn install_crate_info_eq_same_all() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert_eq!(first, second);
@@ -76,6 +148,7 @@ fn install_crate_info_eq_same_no_component() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -84,6 +157,31 @@ fn install_crate_info_eq_same_no_component() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_info_eq_same_no_min_version() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: None,
     };
 
     assert_eq!(first, second);
@@ -98,6 +196,7 @@ fn install_crate_info_eq_different_crate_name() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -106,6 +205,7 @@ fn install_crate_info_eq_different_crate_name() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -120,6 +220,7 @@ fn install_crate_info_eq_different_binary() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -128,6 +229,7 @@ fn install_crate_info_eq_different_binary() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -142,6 +244,7 @@ fn install_crate_info_eq_different_test_arg() {
             inner: vec!["--help1".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -150,6 +253,7 @@ fn install_crate_info_eq_different_test_arg() {
             inner: vec!["--help2".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -164,6 +268,7 @@ fn install_crate_info_eq_different_component_type() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -172,6 +277,7 @@ fn install_crate_info_eq_different_component_type() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: None,
+        min_version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -186,6 +292,7 @@ fn install_crate_info_eq_different_component_value() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value1".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -194,6 +301,55 @@ fn install_crate_info_eq_different_component_value() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value2".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_min_version_type() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_min_version_value() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -362,7 +518,19 @@ fn install_crate_eq_same_value() {
 }
 
 #[test]
-fn install_crate_eq_same_info() {
+fn install_crate_eq_same_cargo_plugin_info() {
+    let info = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: "1.0.0".to_string(),
+    };
+    let first = InstallCrate::CargoPluginInfo(info.clone());
+    let second = InstallCrate::CargoPluginInfo(info.clone());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_crate_info() {
     let info = InstallCrateInfo {
         crate_name: "test".to_string(),
         binary: "bin".to_string(),
@@ -370,9 +538,25 @@ fn install_crate_eq_same_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
     };
     let first = InstallCrate::CrateInfo(info.clone());
     let second = InstallCrate::CrateInfo(info.clone());
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_rustup_component_info() {
+    let info = InstallRustupComponentInfo {
+        rustup_component_name: "value".to_string(),
+        binary: Some("bin".to_string()),
+        test_arg: Some(TestArg {
+            inner: vec!["--help".to_string()],
+        }),
+    };
+    let first = InstallCrate::RustupComponentInfo(info.clone());
+    let second = InstallCrate::RustupComponentInfo(info.clone());
 
     assert_eq!(first, second);
 }
@@ -386,6 +570,20 @@ fn install_crate_eq_different_value() {
 }
 
 #[test]
+fn install_crate_eq_different_cargo_plugin_info() {
+    let first = InstallCrate::CargoPluginInfo(InstallCargoPluginInfo {
+        crate_name: Some("test1".to_string()),
+        min_version: "1.0.0".to_string(),
+    });
+    let second = InstallCrate::CargoPluginInfo(InstallCargoPluginInfo {
+        crate_name: Some("test2".to_string()),
+        min_version: "1.0.0".to_string(),
+    });
+
+    assert!(first != second);
+}
+
+#[test]
 fn install_crate_eq_different_crate_info() {
     let first = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test1".to_string(),
@@ -394,6 +592,7 @@ fn install_crate_eq_different_crate_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: None,
     });
     let second = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -402,74 +601,10 @@ fn install_crate_eq_different_crate_info() {
             inner: vec!["--help".to_string()],
         },
         rustup_component_name: Some("value".to_string()),
+        min_version: None,
     });
 
     assert!(first != second);
-}
-
-#[test]
-fn install_crate_info_deserialize_string_test_arg() {
-    let info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"
-                                                   test_arg = "--help""#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg, &["--help"]);
-}
-
-#[test]
-fn install_crate_info_deserialize_array_test_arg() {
-    let info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"
-                                                   test_arg = ["--help", "--test"]"#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg, &["--help", "--test"]);
-}
-
-#[test]
-#[should_panic]
-fn install_crate_info_deserialize_missing_test_arg() {
-    let _info: InstallCrateInfo = toml::from_str(
-        r#"crate_name = "mkisofs-rs"
-                                                   binary = "mkisofs-rs"#,
-    )
-    .unwrap();
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_string_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo-clippy"
-                                                             test_arg = "--help""#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg.unwrap(), &["--help"]);
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_array_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo"
-                                                             test_arg = ["clippy", "--help"]"#,
-    )
-    .unwrap();
-    assert_eq!(*info.test_arg.unwrap(), &["clippy", "--help"]);
-}
-
-#[test]
-fn install_rustup_component_info_deserialize_missing_test_arg() {
-    let info: InstallRustupComponentInfo = toml::from_str(
-        r#"rustup_component_name = "clippy-preview"
-                                                             binary = "cargo""#,
-    )
-    .unwrap();
-
-    assert_eq!(info.test_arg, None);
 }
 
 #[test]
@@ -493,6 +628,83 @@ fn install_crate_eq_different_rustup_component_info() {
 }
 
 #[test]
+fn install_crate_info_deserialize_string_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs"
+        test_arg = "--help"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg, &["--help"]);
+}
+
+#[test]
+fn install_crate_info_deserialize_array_test_arg() {
+    let info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs"
+        test_arg = ["--help", "--test"]
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg, &["--help", "--test"]);
+}
+
+#[test]
+#[should_panic]
+fn install_crate_info_deserialize_missing_test_arg() {
+    let _info: InstallCrateInfo = toml::from_str(
+        r#"
+        crate_name = "mkisofs-rs"
+        binary = "mkisofs-rs
+        "#,
+    )
+    .unwrap();
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_string_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo-clippy"
+        test_arg = "--help"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg.unwrap(), &["--help"]);
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_array_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo"
+        test_arg = ["clippy", "--help"]
+        "#,
+    )
+    .unwrap();
+    assert_eq!(*info.test_arg.unwrap(), &["clippy", "--help"]);
+}
+
+#[test]
+fn install_rustup_component_info_deserialize_missing_test_arg() {
+    let info: InstallRustupComponentInfo = toml::from_str(
+        r#"
+        rustup_component_name = "clippy-preview"
+        binary = "cargo"
+        "#,
+    )
+    .unwrap();
+
+    assert_eq!(info.test_arg, None);
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 
@@ -502,6 +714,7 @@ fn task_new() {
     assert!(task.command.is_none());
     assert!(task.disabled.is_none());
     assert!(task.private.is_none());
+    assert!(task.deprecated.is_none());
     assert!(task.extend.is_none());
     assert!(task.watch.is_none());
     assert!(task.condition.is_none());
@@ -589,6 +802,7 @@ fn task_extend_both_have_misc_data() {
     base.command = Some("test1".to_string());
     base.disabled = Some(false);
     base.private = Some(false);
+    base.deprecated = Some(DeprecationInfo::Message("base".to_string()));
     base.watch = Some(TaskWatchOptions::Boolean(false));
     base.script = Some(vec!["1".to_string(), "2".to_string()]);
 
@@ -601,6 +815,7 @@ fn task_extend_both_have_misc_data() {
         workspace: None,
         disabled: Some(true),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Message("extended".to_string())),
         extend: None,
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -637,6 +852,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_none());
     assert!(base.watch.is_some());
     assert!(base.condition.is_none());
@@ -669,6 +885,10 @@ fn task_extend_both_have_misc_data() {
     assert_eq!(base.command.unwrap(), "test1");
     assert!(base.disabled.unwrap());
     assert!(base.private.unwrap());
+    assert_eq!(
+        base.deprecated.unwrap(),
+        DeprecationInfo::Message("extended".to_string())
+    );
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(true));
     assert!(base.ignore_errors.unwrap());
     assert!(base.force.unwrap());
@@ -688,6 +908,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: None,
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -726,6 +947,7 @@ fn task_extend_extended_have_all_fields() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(false)),
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -763,6 +985,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -797,6 +1020,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -831,6 +1055,7 @@ fn task_extend_extended_have_all_fields() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -871,6 +1096,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
@@ -906,6 +1132,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.workspace.unwrap());
     assert!(base.disabled.unwrap());
     assert!(!base.private.unwrap());
+    assert_eq!(base.deprecated.unwrap(), DeprecationInfo::Boolean(false));
     assert_eq!(base.extend.unwrap(), "extended");
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(false));
     assert_eq!(base.condition_script.unwrap().len(), 1);
@@ -951,6 +1178,7 @@ fn task_extend_clear_with_no_data() {
         workspace: Some(false),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -988,6 +1216,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1022,6 +1251,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1056,6 +1286,7 @@ fn task_extend_clear_with_no_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1098,6 +1329,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.workspace.is_none());
     assert!(base.disabled.is_none());
     assert!(base.private.is_none());
+    assert!(base.deprecated.is_none());
     assert!(base.extend.is_none());
     assert!(base.watch.is_none());
     assert!(base.condition.is_none());
@@ -1139,6 +1371,7 @@ fn task_extend_clear_with_all_data() {
         workspace: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
@@ -1176,6 +1409,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1210,6 +1444,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1244,6 +1479,7 @@ fn task_extend_clear_with_all_data() {
             command: Some("test2".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1283,6 +1519,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.workspace.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
+    assert!(base.deprecated.is_some());
     assert!(base.extend.is_some());
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
@@ -1357,6 +1594,7 @@ fn task_get_normalized_task_undefined() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: None,
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
@@ -1389,6 +1627,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_none());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_none());
@@ -1471,6 +1710,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        deprecated: None,
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1504,6 +1744,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1551,6 +1792,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1586,6 +1828,10 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -1634,6 +1880,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         workspace: Some(true),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(false)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1666,6 +1913,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             command: Some("linux_command".to_string()),
             disabled: Some(true),
             private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
@@ -1717,6 +1965,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1752,6 +2001,10 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.workspace.unwrap());
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "linux");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -1795,6 +2048,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1831,6 +2085,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             command: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             watch: None,
             condition: None,
@@ -1860,6 +2115,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.command.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
+    assert!(normalized_task.deprecated.is_some());
     assert!(normalized_task.extend.is_some());
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
@@ -1894,6 +2150,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.command.unwrap(), "command");
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
+    assert_eq!(
+        normalized_task.deprecated.unwrap(),
+        DeprecationInfo::Boolean(true)
+    );
     assert_eq!(normalized_task.extend.unwrap(), "base");
     assert_eq!(
         normalized_task.watch.unwrap(),
@@ -1932,6 +2192,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         command: Some("command".to_string()),
         disabled: Some(false),
         private: Some(true),
+        deprecated: Some(DeprecationInfo::Boolean(true)),
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
@@ -1968,6 +2229,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             command: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             watch: None,
             condition: None,
@@ -1997,6 +2259,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.command.is_none());
     assert!(normalized_task.disabled.is_none());
     assert!(normalized_task.private.is_none());
+    assert!(normalized_task.deprecated.is_none());
     assert!(normalized_task.extend.is_none());
     assert!(normalized_task.watch.is_none());
     assert!(normalized_task.condition.is_none());
@@ -2101,6 +2364,7 @@ fn config_section_new() {
     assert!(config.on_error_task.is_none());
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
+    assert!(config.default_to_workspace.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());
@@ -2122,6 +2386,7 @@ fn config_section_extend_all_values() {
     base.on_error_task = Some("base_err".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
+    base.default_to_workspace = Some(true);
     base.load_script = Some(vec!["base_info".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2137,6 +2402,7 @@ fn config_section_extend_all_values() {
     extended.on_error_task = Some("extended_err".to_string());
     extended.additional_profiles = Some(vec!["e1".to_string(), "e2".to_string()]);
     extended.min_version = Some("2.0.0".to_string());
+    extended.default_to_workspace = Some(false);
     extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
     extended.linux_load_script = Some(vec!["extended_info".to_string()]);
     extended.windows_load_script = Some(vec!["extended_info".to_string()]);
@@ -2156,6 +2422,7 @@ fn config_section_extend_all_values() {
         vec!["e1".to_string(), "e2".to_string()]
     );
     assert_eq!(base.min_version.unwrap(), "2.0.0".to_string());
+    assert!(!base.default_to_workspace.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 1);
     assert_eq!(base.windows_load_script.unwrap().len(), 1);
@@ -2177,6 +2444,7 @@ fn config_section_extend_no_values() {
     base.on_error_task = Some("base_err".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
+    base.default_to_workspace = Some(true);
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2196,6 +2464,7 @@ fn config_section_extend_no_values() {
         vec!["b1".to_string(), "b2".to_string()]
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
+    assert!(base.default_to_workspace.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);
@@ -2217,6 +2486,7 @@ fn config_section_extend_some_values() {
     base.on_error_task = Some("base_err".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
+    base.default_to_workspace = Some(true);
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
     base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
@@ -2239,6 +2509,7 @@ fn config_section_extend_some_values() {
         vec!["b1".to_string(), "b2".to_string()]
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
+    assert!(base.default_to_workspace.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
     assert_eq!(base.windows_load_script.unwrap().len(), 2);
@@ -2669,4 +2940,52 @@ fn config_apply_modify_all() {
     assert_eq!(config.env.len(), 0);
     assert_eq!(config.tasks.len(), 1);
     assert!(config.tasks.get("all::test").unwrap().private.unwrap());
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_bool_true() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Boolean(true);
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_bool_false() {
+    let value1 = DeprecationInfo::Boolean(false);
+    let value2 = DeprecationInfo::Boolean(false);
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_same_message() {
+    let value1 = DeprecationInfo::Message("test".to_string());
+    let value2 = DeprecationInfo::Message("test".to_string());
+
+    assert_eq!(value1, value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_bool() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Boolean(false);
+
+    assert!(value1 != value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_message() {
+    let value1 = DeprecationInfo::Message("test1".to_string());
+    let value2 = DeprecationInfo::Message("test2".to_string());
+
+    assert!(value1 != value2);
+}
+
+#[test]
+fn deprecation_info_partial_eq_diff_type() {
+    let value1 = DeprecationInfo::Boolean(true);
+    let value2 = DeprecationInfo::Message("test2".to_string());
+
+    assert!(value1 != value2);
 }

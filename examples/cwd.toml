@@ -1,10 +1,26 @@
 
 [tasks.cwd]
 command = "pwd"
+condition_script = [
+    "echo pwd during condition:",
+    "pwd"
+]
+install_script = [
+    "echo pwd during installation:",
+    "pwd"
+]
 
 [tasks.change-cwd]
 command = "pwd"
 cwd = "./examples/files"
+condition_script = [
+    "echo pwd during condition:",
+    "pwd"
+]
+install_script = [
+    "echo pwd during installation:",
+    "pwd"
+]
 
 [tasks.back-again]
 alias = "cwd"

@@ -201,7 +201,12 @@ fn create_workspace_task_extend_workspace_makefile() {
 
 #[test]
 fn is_workspace_flow_true_default() {
-    let crate_info = CrateInfo::new();
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
 
     let task = Task::new();
 
@@ -214,12 +219,69 @@ fn is_workspace_flow_true_default() {
 
     let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
 
+    assert!(workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_false_in_config() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let task = Task::new();
+
+    let mut config_section = ConfigSection::new();
+    config_section.default_to_workspace = Some(false);
+
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
     assert!(!workspace_flow);
 }
 
 #[test]
+fn is_workspace_flow_true_in_config() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let task = Task::new();
+
+    let mut config_section = ConfigSection::new();
+    config_section.default_to_workspace = Some(true);
+
+    let mut config = Config {
+        config: config_section,
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(workspace_flow);
+}
+
+#[test]
 fn is_workspace_flow_true_in_task() {
-    let crate_info = CrateInfo::new();
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
 
     let mut task = Task::new();
     task.workspace = Some(true);
@@ -233,7 +295,7 @@ fn is_workspace_flow_true_in_task() {
 
     let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
 
-    assert!(!workspace_flow);
+    assert!(workspace_flow);
 }
 
 #[test]
@@ -540,6 +602,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: None,
         extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
@@ -564,6 +627,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: None,
         extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
@@ -588,6 +652,7 @@ fn create_platform_disabled() {
         clear: Some(true),
         disabled: Some(true),
         private: Some(false),
+        deprecated: None,
         extend: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
@@ -725,6 +790,7 @@ fn get_normalized_task_multi_extend() {
         clear: None,
         disabled: None,
         private: None,
+        deprecated: None,
         extend: None,
         watch: None,
         condition: None,

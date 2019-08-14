@@ -1,0 +1,13 @@
+
+[config]
+skip_core_tasks = true
+
+[tasks.legacy]
+deprecated = "Please use task OTHER instead"
+
+[tasks.legacy-extended]
+extend = "legacy"
+deprecated = false
+
+[tasks.legacy2]
+deprecated = true

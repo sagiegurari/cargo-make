@@ -90,9 +90,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
-    let config = descriptor::load(&build_file, force_makefile, env, experimental);
+    let descriptor_load_result = descriptor::load(&build_file, force_makefile, env, experimental);
 
-    let config = match config {
+    let config = match descriptor_load_result {
         Ok(config) => config,
         Err(ref min_version) => {
             error!(

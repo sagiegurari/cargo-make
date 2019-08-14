@@ -2,6 +2,62 @@ use super::*;
 use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, TestArg};
 
 #[test]
+fn get_cargo_plugin_info_from_command_no_command() {
+    let task = Task::new();
+
+    let value = get_cargo_plugin_info_from_command(&task);
+
+    assert!(value.is_none());
+}
+
+#[test]
+fn get_cargo_plugin_info_from_command_not_cargo_command() {
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+
+    let value = get_cargo_plugin_info_from_command(&task);
+
+    assert!(value.is_none());
+}
+
+#[test]
+fn get_cargo_plugin_info_from_command_no_args() {
+    let mut task = Task::new();
+    task.command = Some("cargo".to_string());
+    task.args = None;
+
+    let value = get_cargo_plugin_info_from_command(&task);
+
+    assert!(value.is_none());
+}
+
+#[test]
+fn get_cargo_plugin_info_from_command_empty_args() {
+    let mut task = Task::new();
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec![]);
+
+    let value = get_cargo_plugin_info_from_command(&task);
+
+    assert!(value.is_none());
+}
+
+#[test]
+fn get_cargo_plugin_info_from_command_valid() {
+    let mut task = Task::new();
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+
+    let value = get_cargo_plugin_info_from_command(&task);
+
+    let (command, crate_name) = value.unwrap();
+
+    assert_eq!(command, "test");
+    assert_eq!(crate_name, "cargo-test");
+}
+
+#[test]
 fn install_empty() {
     let task = Task::new();
 
@@ -56,6 +112,7 @@ fn install_rustup_via_crate_info() {
             inner: vec!["--version".to_string()],
         },
         rustup_component_name: None,
+        min_version: None,
     };
 
     let mut task = Task::new();

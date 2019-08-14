@@ -1,5 +1,17 @@
 ## CHANGELOG
 
+### v0.22.0
+
+* Specify minimum version for tools/dependencies #265
+* Globally disable workspace support via makefile config #264
+* Support additional rust script runners #216
+* Ability to mark a task deprecated #270
+* Use task cwd in condition and installation scripts #259 (**backward compatability break**)
+* Check descriptor min_version before deserializing #268 (thanks @roblabla)
+* Profile name passed incorrectly via forked sub tasks #263
+* Add support for deleting lock file before publishing
+* Add support for dirty cargo publish
+
 ### v0.21.0 (2019-06-26)
 
 * Add support for multiple test_args when checking for installed crate #252 (thanks @roblabla)

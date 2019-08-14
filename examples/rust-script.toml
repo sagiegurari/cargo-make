@@ -23,3 +23,25 @@ fn main() {
 }
 '''
 ]
+
+[tasks.cargo-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-script" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]
+
+[tasks.cargo-play]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]

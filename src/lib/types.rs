@@ -425,6 +425,34 @@ impl<'de> serde::de::Deserialize<'de> for TestArg {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Holds instructions how to install the cargo plugin
+pub struct InstallCargoPluginInfo {
+    /// The provided crate to install
+    pub crate_name: Option<String>,
+    /// Minimial version
+    pub min_version: String,
+}
+
+impl PartialEq for InstallCargoPluginInfo {
+    fn eq(&self, other: &InstallCargoPluginInfo) -> bool {
+        if self.min_version != other.min_version {
+            false
+        } else {
+            match self.crate_name {
+                Some(ref crate_name) => match other.crate_name {
+                    Some(ref other_crate_name) => crate_name == other_crate_name,
+                    None => false,
+                },
+                None => match other.crate_name {
+                    None => true,
+                    _ => false,
+                },
+            }
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds instructions how to install the crate
 pub struct InstallCrateInfo {
     /// The provided crate to install
@@ -435,6 +463,8 @@ pub struct InstallCrateInfo {
     pub binary: String,
     /// Test arguments that will be used to check that the crate is installed.
     pub test_arg: TestArg,
+    /// Minimial version
+    pub min_version: Option<String>,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -446,8 +476,23 @@ impl PartialEq for InstallCrateInfo {
             false
         } else {
             match self.rustup_component_name {
-                Some(ref value) => match other.rustup_component_name {
-                    Some(ref other_value) => value == other_value,
+                Some(ref rustup_component_name) => match other.rustup_component_name {
+                    Some(ref other_rustup_component_name) => {
+                        if rustup_component_name == other_rustup_component_name {
+                            match self.min_version {
+                                Some(ref min_version) => match other.min_version {
+                                    Some(ref other_min_version) => min_version == other_min_version,
+                                    None => false,
+                                },
+                                None => match other.min_version {
+                                    None => true,
+                                    _ => false,
+                                },
+                            }
+                        } else {
+                            false
+                        }
+                    }
                     None => false,
                 },
                 None => match other.rustup_component_name {
@@ -505,6 +550,8 @@ pub enum InstallCrate {
     CrateInfo(InstallCrateInfo),
     /// Install rustup component params
     RustupComponentInfo(InstallRustupComponentInfo),
+    /// Install cargo plugin info
+    CargoPluginInfo(InstallCargoPluginInfo),
 }
 
 impl PartialEq for InstallCrate {
@@ -512,6 +559,10 @@ impl PartialEq for InstallCrate {
         match self {
             InstallCrate::Value(value) => match other {
                 InstallCrate::Value(other_value) => value == other_value,
+                _ => false,
+            },
+            InstallCrate::CargoPluginInfo(info) => match other {
+                InstallCrate::CargoPluginInfo(other_info) => info == other_info,
                 _ => false,
             },
             InstallCrate::CrateInfo(info) => match other {
@@ -659,6 +710,31 @@ impl PartialEq for TaskWatchOptions {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds deprecation info such as true/false/message
+pub enum DeprecationInfo {
+    /// True/False flag (true is deprecated)
+    Boolean(bool),
+    /// Deprecation message
+    Message(String),
+}
+
+impl PartialEq for DeprecationInfo {
+    fn eq(&self, other: &DeprecationInfo) -> bool {
+        match self {
+            DeprecationInfo::Boolean(value) => match other {
+                DeprecationInfo::Boolean(other_value) => value == other_value,
+                _ => false,
+            },
+            DeprecationInfo::Message(message) => match other {
+                DeprecationInfo::Message(other_message) => message == other_message,
+                _ => false,
+            },
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -671,6 +747,8 @@ pub struct Task {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// if not false, this task is defined as deprecated
+    pub deprecated: Option<DeprecationInfo>,
     /// Extend any task based on the defined name
     pub extend: Option<String>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
@@ -736,6 +814,7 @@ impl Task {
             category: None,
             disabled: None,
             private: None,
+            deprecated: None,
             extend: None,
             workspace: None,
             watch: None,
@@ -894,6 +973,12 @@ impl Task {
             self.private = task.private.clone();
         } else if override_values {
             self.private = None;
+        }
+
+        if task.deprecated.is_some() {
+            self.deprecated = task.deprecated.clone();
+        } else if override_values {
+            self.deprecated = None;
         }
 
         if task.extend.is_some() {
@@ -1107,6 +1192,7 @@ impl Task {
                     category: self.category.clone(),
                     disabled: override_task.disabled.clone(),
                     private: override_task.private.clone(),
+                    deprecated: override_task.deprecated.clone(),
                     extend: override_task.extend.clone(),
                     workspace: self.workspace.clone(),
                     watch: override_task.watch.clone(),
@@ -1199,6 +1285,8 @@ pub struct PlatformOverrideTask {
     pub disabled: Option<bool>,
     /// if true, the task is hidden from the list of available tasks and also cannot be invoked directly from cli
     pub private: Option<bool>,
+    /// if not false, this task is defined as deprecated
+    pub deprecated: Option<DeprecationInfo>,
     /// Extend any task based on the defined name
     pub extend: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
@@ -1258,6 +1346,10 @@ impl PlatformOverrideTask {
 
             if self.private.is_none() && task.private.is_some() {
                 self.private = task.private.clone();
+            }
+
+            if self.deprecated.is_none() && task.deprecated.is_some() {
+                self.deprecated = task.deprecated.clone();
             }
 
             if self.extend.is_none() && task.extend.is_some() {
@@ -1408,6 +1500,8 @@ pub struct ConfigSection {
     pub additional_profiles: Option<Vec<String>>,
     /// Minimum cargo-make/makers version
     pub min_version: Option<String>,
+    /// The task.workspace default value
+    pub default_to_workspace: Option<bool>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -1429,6 +1523,7 @@ impl ConfigSection {
             on_error_task: None,
             additional_profiles: None,
             min_version: None,
+            default_to_workspace: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,
@@ -1497,6 +1592,10 @@ impl ConfigSection {
 
         if extended.min_version.is_some() {
             self.min_version = extended.min_version.clone();
+        }
+
+        if extended.default_to_workspace.is_some() {
+            self.default_to_workspace = extended.default_to_workspace.clone();
         }
 
         if extended.load_script.is_some() {

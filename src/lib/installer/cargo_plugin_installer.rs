@@ -8,6 +8,7 @@
 mod cargo_plugin_installer_test;
 
 use crate::command;
+use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
 use std::process::Command;
 
@@ -106,9 +107,30 @@ pub(crate) fn install_crate(
     crate_name: &str,
     args: &Option<Vec<String>>,
     validate: bool,
+    min_version: &Option<String>,
 ) {
-    if !is_crate_installed(&toolchain, cargo_command) {
-        let install_args = get_install_crate_args(crate_name, false, args);
+    let installed = is_crate_installed(&toolchain, cargo_command);
+    let mut force = false;
+    let run_installation = if !installed {
+        true
+    } else if toolchain.is_none() {
+        match *min_version {
+            Some(ref version) => {
+                if crate_version_check::is_min_version_valid(&crate_name, version) {
+                    false
+                } else {
+                    force = true;
+                    true
+                }
+            }
+            None => false,
+        }
+    } else {
+        false
+    };
+
+    if run_installation {
+        let install_args = get_install_crate_args(crate_name, force, args);
 
         match toolchain {
             Some(ref toolchain_string) => {

@@ -1,6 +1,6 @@
 # cargo-make
 
-[![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make) [![Build Status](https://travis-ci.org/sagiegurari/cargo-make.svg)](http://travis-ci.org/sagiegurari/cargo-make) [![Build status](https://ci.appveyor.com/api/projects/status/knyrs33tyjqgt06u?svg=true)](https://ci.appveyor.com/project/sagiegurari/cargo-make) [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make) [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make) [ ![Download](https://api.bintray.com/packages/sagiegurari/cargo-make/linux/images/download.svg) ](https://bintray.com/sagiegurari/cargo-make/linux/_latestVersion)<br>
+[![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make) [![Build Status](https://travis-ci.org/sagiegurari/cargo-make.svg)](http://travis-ci.org/sagiegurari/cargo-make) [![Build status](https://ci.appveyor.com/api/projects/status/qxejm16vmt2uxs1p?svg=true)](https://ci.appveyor.com/project/sagiegurari/cargo-make) [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make) [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) [![downloads](https://img.shields.io/crates/d/cargo-make.svg)](https://crates.io/crates/cargo-make) [ ![Download](https://api.bintray.com/packages/sagiegurari/cargo-make/linux/images/download.svg) ](https://bintray.com/sagiegurari/cargo-make/linux/_latestVersion)<br>
 [![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
@@ -42,6 +42,7 @@
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
+        * [Defining Minimal Version](#usage-installing-min-version)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -55,6 +56,7 @@
         * [Conditions](#usage-profiles-conditions)
         * [Built In Profiles](#usage-profiles-built-in)
     * [Private Tasks](#usage-private-tasks)
+    * [Deprecated Tasks](#usage-deprecated-tasks)
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
@@ -68,9 +70,6 @@
         * [Azure Pipelines](#usage-ci-azure-pipelines)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
-        * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
-        * [Git Commands](#usage-predefined-flows-git)
-        * [Flows/Other](#usage-predefined-flows-flows)
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
@@ -660,7 +659,42 @@ fn main() {
 ]
 ```
 
-Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.
+Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
+There are several different rust script runners currently available:
+
+* [cargo-script](https://crates.io/crates/cargo-script)
+* [cargo-play](https://crates.io/crates/cargo-play)
+
+By default, cargo-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
+This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
+For example:
+
+```toml
+[tasks.cargo-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-script" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]
+
+[tasks.cargo-play]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
+script_runner = "@rust"
+script = [
+'''
+fn main() {
+    println!("test");
+}
+'''
+]
+```
+
+Keep in mind that dependencies used by the rust script are defined differently for each runner.<br>
+Please see the specific crate docs for learn more.
 
 <a name="usage-task-command-script-task-exampleshell2batch"></a>
 #### Cross Platform Shell
@@ -1293,6 +1327,7 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Cargo Plugins](#usage-installing-cargo-plugins)
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
+* [Defining Minimal Version](#usage-installing-min-version)
 * [Native Dependencies](#usage-installing-native-dependencies)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -1365,6 +1400,29 @@ Example:
 [tasks.install-rust-src]
 install_crate = { rustup_component_name = "rust-src" }
 ```
+
+<a name="usage-installing-min-version"></a>
+#### Defining Minimal Version
+
+It is possible to define minimal version of depended crates, for example:
+
+```toml
+[tasks.simple-example]
+install_crate = { min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
+This ensures we are using a crate version that supports the feature we require for the build.<br>
+Currently there are few limitations when defining min_version:
+
+* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
+* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies
@@ -1535,7 +1593,15 @@ workspace = false
 ```
 
 Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
-This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.
+This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.<br>
+By default the workspace flag for all tasks is set to true, but that can be configured differently in the config section as follows:
+
+```toml
+[config]
+default_to_workspace = false
+```
+
+In which case, workspace level support is **always** disabled unless a task defines **workspace=true**.
 
 <a name="usage-workspace-support-skip-members"></a>
 #### Skipping Specific Members
@@ -1827,6 +1893,52 @@ In order to define a task as private, add the **private** attribute with value t
 ```toml
 [tasks.internal-task]
 private = true
+```
+
+<a name="usage-deprecated-tasks"></a>
+### Deprecated Tasks
+
+It is possible to mark tasks as deprecated in order to warn users that they should no longer use this task and switch to a newer/different task instead.<br>
+Once invoked, a warning message will be displayed with the deprecation information.<br>
+You can define a task deprecated by setting the **deprecated** to true or by providing a relevant message.<br>
+For example:
+
+```toml
+[tasks.legacy]
+deprecated = "Please use task OTHER instead"
+
+[tasks.legacy-extended]
+extend = "legacy"
+deprecated = false
+
+[tasks.legacy2]
+deprecated = true
+```
+
+When invoking **legacy** task for example, the output is:
+
+```console
+[cargo-make] INFO - cargo make 0.21.0
+[cargo-make] INFO - Using Build File: deprecated.toml
+[cargo-make] INFO - Task: legacy
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: legacy
+[cargo-make] WARN - Task: legacy is deprecated - Please use task OTHER instead
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
+```
+
+When listing tasks, deprecated tasks will contain this information as well:
+
+```console
+No Category
+----------
+default - Empty Task
+empty - Empty Task
+legacy - No Description. (deprecated - Please use task OTHER instead)
+legacy-extended - No Description.
+legacy2 - No Description. (deprecated)
 ```
 
 <a name="usage-watch"></a>
@@ -2303,240 +2415,171 @@ By default, the binaries executed to collect coverage are filtered by a regular 
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
 ```
 
-<a name="usage-predefined-flows-cargo"></a>
-#### Cargo Commands and Plugins
-
-* **clean** - Runs the cargo clean command.
-* **build** - Runs the rust compiler.
-* **build-verbose** - Runs the rust compiler with verbose output.
-* **build-release** - Runs release build.
-* **test** - Runs all available tests.
-* **test-verbose** - Runs all available tests with verbose output.
-* **bench** - Runs all available bench files.
-* **check** - Runs cargo check.
-* **check-tests** - Runs cargo check for project tests.
-* **check-examples** - Runs cargo check for project examples.
-* **docs** - Generate rust documentation.
-* **package** - Runs the cargo package command.
-* **publish** - Runs the cargo publish command.
-* **format** - Runs the cargo rustfmt plugin.
-* **outdated** - Runs verify-outdated cargo plugin.
-* **verify-project** - Runs verify-project cargo plugin.
-* **audit** - Runs verify-audit cargo plugin.
-* **clippy** - Runs clippy code linter.
-
-<a name="usage-predefined-flows-git"></a>
-#### Git Commands
-
-* **git-status** - Runs git status command.
-* **git-add** - Runs the cargo add command.
-* **git-commit** - Runs git commit command.
-* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
-* **git-push** - Runs git push command.
-* **git-pull** - Runs git pull command.
-* **github-publish** - Creates a new github release.
-* **github-publish-custom-name** - Creates a new github release.
-
-<a name="usage-predefined-flows-flows"></a>
-#### Flows/Other
-
-* **empty** - Empty Task
-* **init** - By default this task is invoked at the start of every cargo-make run.
-* **end** - By default this task is invoked at the end of every cargo-make run.
-* **default** - Default task points to the development testing flow
-* **ci-flow** - CI task will run cargo build and cargo test with verbose output
-* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
-* **build-flow** - Full sanity testing flow.
-* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-watch-flow** - Alias for default flow
-* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
-* **copy-apidocs** - Copies the generated documentation to the docs/api directory.
-* **clean-apidocs** - Delete API docs.
-* **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
-* **bench-flow** - Runs a bench flow.
-* **check-flow** - Runs cargo check flow.
-* **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
-* **examples-ci-flow** - Compiles the examples if conditions are met.
-* **delete-lock** - Deletes the Cargo.lock file.
-* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
-* **codecov** - Runs codecov script to upload coverage results to codecov.
-* **coverage** - Runs coverage (by default using kcov).
-* **coverage-flow** - Runs the full coverage flow.
-* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
-* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
-* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
-* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
-* **workspace-members-ci** - Runs the ci-flow for every workspace member.
-* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
-* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output.
-* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
-
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 
-Full list of all predefined tasks (can be generated via ```cargo make --list-all-steps```)
+Full list of all predefined tasks (generated via ```cargo make --list-all-steps```)
 
 ##### Build
 
-* **build** - Runs the rust compiler.
-* **build-flow** - Full sanity testing flow.
-* **build-release** - Runs release build.
-* **build-verbose** - Runs the rust compiler with verbose output.
-* **end-build-flow** - No Description.
-* **init-build-flow** - No Description.
-* **post-build** - No Description.
-* **pre-build** - No Description.
+* **build** - Runs the rust compiler. 
+* **build-flow** - Full sanity testing flow. 
+* **build-release** - Runs release build. 
+* **build-verbose** - Runs the rust compiler with verbose output. 
+* **end-build-flow** - No Description. 
+* **init-build-flow** - No Description. 
+* **post-build** - No Description. 
+* **pre-build** - No Description. 
 
 ##### CI
 
-* **audit** - Runs verify-audit cargo plugin.
-* **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
-* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
-* **ci-flow** - CI task will run cargo build and cargo test with verbose output
-* **examples-ci-flow** - Compiles the examples if conditions are met.
-* **outdated** - Runs verify-outdated cargo plugin.
-* **post-audit** - No Description.
-* **post-ci-flow** - No Description.
-* **post-outdated** - No Description.
-* **post-verify-project** - No Description.
-* **post-workspace-ci-flow** - No Description.
-* **pre-audit** - No Description.
-* **pre-ci-flow** - No Description.
-* **pre-outdated** - No Description.
-* **pre-verify-project** - No Description.
-* **pre-workspace-ci-flow** - No Description.
-* **verify-project** - Runs verify-project cargo plugin.
-* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
-* **workspace-members-ci** - Runs the ci-flow for every workspace member.
-* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up
+* **audit** - Runs verify-audit cargo plugin. 
+* **bench-ci-flow** - Runs/Compiles the benches if conditions are met. 
+* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov. 
+* **ci-flow** - CI task will run cargo build and cargo test with verbose output 
+* **examples-ci-flow** - Compiles the examples if conditions are met. 
+* **outdated** - Runs verify-outdated cargo plugin. 
+* **post-audit** - No Description. 
+* **post-ci-flow** - No Description. 
+* **post-outdated** - No Description. 
+* **post-verify-project** - No Description. 
+* **post-workspace-ci-flow** - No Description. 
+* **pre-audit** - No Description. 
+* **pre-ci-flow** - No Description. 
+* **pre-outdated** - No Description. 
+* **pre-verify-project** - No Description. 
+* **pre-workspace-ci-flow** - No Description. 
+* **verify-project** - Runs verify-project cargo plugin. 
+* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports 
+* **workspace-members-ci** - Runs the ci-flow for every workspace member. 
+* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up 
 
 ##### Cleanup
 
-* **clean** - Runs the cargo clean command.
-* **delete-lock** - Deletes the Cargo.lock file.
-* **post-clean** - No Description.
-* **pre-clean** - No Description.
+* **clean** - Runs the cargo clean command. 
+* **delete-lock** - Deletes the Cargo.lock file. 
+* **post-clean** - No Description. 
+* **pre-clean** - No Description. 
 
 ##### Development
 
-* **default** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **format** - Runs the cargo rustfmt plugin.
-* **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **post-format** - No Description.
-* **pre-format** - No Description.
-* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
-* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow.
+* **default** - Development testing flow will first format the code, and than run cargo build and test 
+* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test 
+* **format** - Runs the cargo rustfmt plugin. 
+* **format-flow** - Runs the cargo rustfmt plugin as part of a flow. 
+* **post-format** - No Description. 
+* **pre-format** - No Description. 
+* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies. 
+* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow. 
 
 ##### Documentation
 
-* **clean-apidocs** - Delete API docs.
-* **copy-apidocs** - Copies the generated documentation to the docs/api directory.
-* **docs** - Generate rust documentation.
-* **pre-docs** - No Description.
+* **clean-apidocs** - Delete API docs. 
+* **copy-apidocs** - Copies the generated documentation to the docs/api directory. 
+* **docs** - Generate rust documentation. 
+* **pre-docs** - No Description. 
 
 ##### Git
 
-* **git-add** - Runs the cargo add command.
-* **git-commit** - Runs git commit command.
-* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
-* **git-delete-merged-branches** - Deletes any merged git branches
-* **git-pull** - Runs git pull command.
-* **git-push** - Runs git push command.
-* **git-status** - Runs git status command.
-* **post-git-add** - No Description.
-* **post-git-commit** - No Description.
-* **post-git-push** - No Description.
-* **post-git-status** - No Description.
-* **pre-git-add** - No Description.
-* **pre-git-commit** - No Description.
-* **pre-git-push** - No Description.
-* **pre-git-status** - No Description.
+* **git-add** - Runs the cargo add command. 
+* **git-commit** - Runs git commit command. 
+* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable. 
+* **git-delete-merged-branches** - Deletes any merged git branches 
+* **git-pull** - Runs git pull command. 
+* **git-push** - Runs git push command. 
+* **git-status** - Runs git status command. 
+* **post-git-add** - No Description. 
+* **post-git-commit** - No Description. 
+* **post-git-push** - No Description. 
+* **post-git-status** - No Description. 
+* **pre-git-add** - No Description. 
+* **pre-git-commit** - No Description. 
+* **pre-git-push** - No Description. 
+* **pre-git-status** - No Description. 
 
 ##### Hooks
 
-* **end** - By default this task is invoked at the end of every cargo-make run.
-* **init** - By default this task is invoked at the start of every cargo-make run.
+* **end** - By default this task is invoked at the end of every cargo-make run. 
+* **init** - By default this task is invoked at the start of every cargo-make run. 
 
 ##### No Category
 
-* **build-release-for-target** - Makes a release build for a given target
-* **generate-readme** - No Description.
-* **install-rls** - No Description.
-* **install-rust-src** - No Description.
-* **post-docs** - No Description.
-* **setup-build-env** - Sets up a musl build environment
-* **setup-musl** - Sets up a musl build environment
+* **build-release-for-target** - Makes a release build for a given target 
+* **generate-readme** - No Description. 
+* **install-rls** - No Description. 
+* **install-rust-src** - No Description. 
+* **post-docs** - No Description. 
+* **pre-publish-delete-lock** - No Description. 
+* **setup-build-env** - Sets up a musl build environment 
+* **setup-musl** - Sets up a musl build environment 
 
 ##### Publish
 
-* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
-* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
-* **github-publish** - Creates a new github release.
-* **github-publish-custom-name** - Creates a new github release.
-* **package** - Runs the cargo package command.
-* **post-package** - No Description.
-* **post-publish** - No Description.
-* **pre-package** - No Description.
-* **pre-publish** - No Description.
-* **pre-publish-clean-flow** - Clears old artifactes before publishing
-* **pre-publish-conditioned-clean-flow** - Clears old artifactes before publishing
-* **publish** - Runs the cargo publish command.
-* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
-* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray.
-* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
+* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray. 
+* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate. 
+* **github-publish** - Creates a new github release. 
+* **github-publish-custom-name** - Creates a new github release. 
+* **package** - Runs the cargo package command. 
+* **post-package** - No Description. 
+* **post-publish** - No Description. 
+* **pre-package** - No Description. 
+* **pre-publish** - No Description. 
+* **pre-publish-clean-flow** - Clears old artifactes before publishing 
+* **pre-publish-conditioned-clean-flow** - Clears old artifactes before publishing 
+* **publish** - Runs the cargo publish command. 
+* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish 
+* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray. 
+* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s) 
 
 ##### Test
 
-* **bench** - Runs all available bench files.
-* **bench-compile** - Compiles all available bench files.
-* **bench-conditioned-compile** - Compiles all available bench files if conditions are met.
-* **bench-conditioned-flow** - Runs the bench flow if conditions are met.
-* **bench-flow** - Runs a bench flow.
-* **check** - Runs cargo check.
-* **check-examples** - Runs cargo check for project examples.
-* **check-flow** - Runs cargo check flow.
-* **check-format** - Runs cargo fmt to check appropriate code format.
-* **check-tests** - Runs cargo check for project tests.
-* **clippy** - Runs clippy code linter.
-* **codecov** - Runs codecov script to upload coverage results to codecov.
-* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
-* **conditioned-check-format** - Runs cargo fmt --check if conditions are met.
-* **conditioned-clippy** - Runs clippy code linter if conditions are met.
-* **coverage** - Runs coverage (by default using kcov).
-* **coverage-flow** - Runs the full coverage flow.
-* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
-* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **dev-watch-flow** - Runs pre/post hooks and cargo test.
-* **examples-compile** - Runs cargo build for project examples.
-* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met.
-* **install-clippy** - Installs the clippy code linter.
-* **install-clippy-github** - Installs the latest clippy code linter via cargo install directly from github.
-* **install-clippy-rustup** - Installs the clippy code linter via rustup.
-* **post-bench** - No Description.
-* **post-check** - No Description.
-* **post-coverage** - No Description.
-* **post-test** - No Description.
-* **pre-bench** - No Description.
-* **pre-check** - No Description.
-* **pre-coverage** - No Description.
-* **pre-test** - No Description.
-* **test** - Runs all available tests.
-* **test-flow** - Runs pre/post hooks and cargo test.
-* **test-verbose** - Runs all available tests with verbose output.
-* **test-with-args** - Runs cargo test with command line arguments.
-* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
-* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.
-* **workspace-members-coverage** - Runs the ci-flow for every workspace member.
+* **bench** - Runs all available bench files. 
+* **bench-compile** - Compiles all available bench files. 
+* **bench-conditioned-compile** - Compiles all available bench files if conditions are met. 
+* **bench-conditioned-flow** - Runs the bench flow if conditions are met. 
+* **bench-flow** - Runs a bench flow. 
+* **check** - Runs cargo check. 
+* **check-examples** - Runs cargo check for project examples. 
+* **check-flow** - Runs cargo check flow. 
+* **check-format** - Runs cargo fmt to check appropriate code format. 
+* **check-tests** - Runs cargo check for project tests. 
+* **clippy** - Runs clippy code linter. 
+* **codecov** - Runs codecov script to upload coverage results to codecov. 
+* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov. 
+* **conditioned-check-format** - Runs cargo fmt --check if conditions are met. 
+* **conditioned-clippy** - Runs clippy code linter if conditions are met. 
+* **coverage** - Runs coverage (by default using kcov). 
+* **coverage-flow** - Runs the full coverage flow. 
+* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows) 
+* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only) 
+* **dev-watch-flow** - Runs pre/post hooks and cargo test. 
+* **examples-compile** - Runs cargo build for project examples. 
+* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met. 
+* **install-clippy** - Installs the clippy code linter. 
+* **install-clippy-any** - Installs the latest clippy code linter via cargo install via rustup or directly from github. 
+* **install-clippy-rustup** - Installs the clippy code linter via rustup. 
+* **post-bench** - No Description. 
+* **post-check** - No Description. 
+* **post-coverage** - No Description. 
+* **post-test** - No Description. 
+* **pre-bench** - No Description. 
+* **pre-check** - No Description. 
+* **pre-coverage** - No Description. 
+* **pre-test** - No Description. 
+* **test** - Runs all available tests. 
+* **test-flow** - Runs pre/post hooks and cargo test. 
+* **test-verbose** - Runs all available tests with verbose output. 
+* **test-with-args** - Runs cargo test with command line arguments. 
+* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow). 
+* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov. 
+* **workspace-members-coverage** - Runs the ci-flow for every workspace member. 
 
 ##### Tools
 
-* **diff-files** - Run diff on two provided files.
-* **do-on-members** - Runs the requested task for every workspace member.
-* **empty** - Empty Task
-* **git-diff-files** - Run diff on two provided files.
+* **diff-files** - Run diff on two provided files. 
+* **do-on-members** - Runs the requested task for every workspace member. 
+* **empty** - Empty Task 
+* **git-diff-files** - Run diff on two provided files. 
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
@@ -2783,6 +2826,7 @@ The articles are missing some of the new features which have been added after th
 * [Profiles](#usage-profiles)
 * [Functions](#usage-functions)
 * [Minimal Version](#usage-min-version)
+* [Deprecated Tasks](#usage-deprecated-tasks)
 
 And more...
 

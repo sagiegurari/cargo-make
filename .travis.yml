@@ -25,15 +25,15 @@ matrix:
   - rust: nightly
     os: windows
   # Minimum version
-  - rust: 1.31.0
+  - rust: 1.36.0
     os: linux
     script:
       - cargo make ci-flow
-  - rust: 1.31.0
+  - rust: 1.36.0
     os: osx
     script:
       - cargo make ci-flow
-  - rust: 1.31.0
+  - rust: 1.36.0
     os: windows
     script:
       - cargo make ci-flow

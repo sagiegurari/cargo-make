@@ -572,7 +572,8 @@ fn load_external_descriptor_extending_file() {
 
 #[test]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let config = load_external_descriptor(".", "examples/files/extending.toml", true, false).unwrap();
+    let config =
+        load_external_descriptor(".", "examples/files/extending.toml", true, false).unwrap();
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -614,8 +615,15 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
     // Ensure that we can properly get the min_version of a descriptor that
     // doesn't match our internal data-structures.
     assert_eq!(
-        load_external_descriptor(".", "src/lib/test/makefiles/broken_makefile_minversion.toml", false, false).err(),
-        Some("999.999.999".into()));
+        load_external_descriptor(
+            ".",
+            "src/lib/test/makefiles/broken_makefile_minversion.toml",
+            false,
+            false
+        )
+        .err(),
+        Some("999.999.999".into())
+    );
 }
 
 #[test]
@@ -624,7 +632,13 @@ fn load_external_descriptor_broken_makefile_panic() {
     // Ensure the descriptor we used in the test above is properly broken when
     // it doesn't have a min_version. This is to ensure that the previous test
     // is working properly - min_version is optional.
-    load_external_descriptor(".", "src/lib/test/makefiles/broken_makefile.toml", false, false).unwrap();
+    load_external_descriptor(
+        ".",
+        "src/lib/test/makefiles/broken_makefile.toml",
+        false,
+        false,
+    )
+    .unwrap();
 }
 
 #[test]
@@ -674,7 +688,8 @@ fn load_descriptor_extended_makefiles_path_exists() {
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/test1.toml".to_string()),
-    ).unwrap();
+    )
+    .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -687,7 +702,8 @@ fn load_descriptor_extended_makefiles_path_not_exists() {
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/bad.toml".to_string()),
-    ).unwrap();
+    )
+    .unwrap();
 }
 
 #[test]
@@ -699,7 +715,8 @@ fn load_descriptor_extended_makefiles_options_exists() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: None,
         }),
-    ).unwrap();
+    )
+    .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -715,7 +732,8 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: None,
         }),
-    ).unwrap();
+    )
+    .unwrap();
 }
 
 #[test]
@@ -727,7 +745,8 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(true),
         }),
-    ).unwrap();
+    )
+    .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -742,7 +761,8 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
         }),
-    ).unwrap();
+    )
+    .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -758,7 +778,8 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(true),
         }),
-    ).unwrap();
+    )
+    .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(!tasks.contains_key("test1"));
@@ -774,7 +795,8 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(false),
         }),
-    ).unwrap();
+    )
+    .unwrap();
 }
 
 #[test]
@@ -832,4 +854,76 @@ fn load_descriptor_extended_makefiles_list_exists_optional() {
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
     assert!(!tasks.contains_key("test2"));
+}
+
+#[test]
+fn check_makefile_min_version_empty() {
+    let toml_string = "";
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn check_makefile_min_version_invalid_format() {
+    let toml_string = "123";
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn check_makefile_min_version_no_config() {
+    let toml_string = "test = true";
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn check_makefile_min_version_no_min_version() {
+    let toml_string = r#"
+    [config]
+    test = true
+    "#;
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn check_makefile_min_version_smaller_min_version() {
+    let toml_string = r#"
+    [config]
+    min_version = "0.0.1"
+    "#;
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn check_makefile_min_version_bigger_min_version() {
+    let toml_string = r#"
+    [config]
+    min_version = "999.999.999"
+    "#;
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_err());
+    assert_eq!(result.err().unwrap(), "999.999.999");
+}
+
+#[test]
+fn check_makefile_min_version_same_min_version() {
+    let mut toml_string = r#"
+    [config]
+    min_version = ""#;
+    let mut buffer = toml_string.to_string();
+    buffer.push_str(env!("CARGO_PKG_VERSION"));
+    buffer.push_str("\"");
+    toml_string = buffer.as_str();
+    let result = check_makefile_min_version(toml_string);
+
+    assert!(result.is_ok());
 }

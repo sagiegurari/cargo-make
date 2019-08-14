@@ -8,7 +8,7 @@
 mod list_steps_test;
 
 use crate::execution_plan;
-use crate::types::Config;
+use crate::types::{Config, DeprecationInfo};
 use std::collections::BTreeMap;
 
 pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
@@ -39,13 +39,36 @@ pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
                 None => "No Description.".to_string(),
             };
 
+            let deprecated_message = match task.deprecated {
+                Some(deprecated) => match deprecated {
+                    DeprecationInfo::Boolean(value) => {
+                        if value {
+                            " (deprecated)".to_string()
+                        } else {
+                            "".to_string()
+                        }
+                    }
+                    DeprecationInfo::Message(ref message) => {
+                        let mut buffer = " (deprecated - ".to_string();
+                        buffer.push_str(message);
+                        buffer.push_str(")");
+
+                        buffer
+                    }
+                },
+                None => "".to_string(),
+            };
+
+            let mut text = String::from(description);
+            text.push_str(&deprecated_message);
+
             let mut tasks_map = BTreeMap::new();
             match categories.get_mut(&category) {
                 Some(value) => tasks_map.append(value),
                 _ => (),
             };
 
-            tasks_map.insert(key.clone(), description.clone());
+            tasks_map.insert(key.clone(), text.clone());
             categories.insert(category, tasks_map);
         }
     }

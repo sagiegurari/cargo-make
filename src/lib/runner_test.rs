@@ -1,7 +1,7 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, EnvInfo, EnvValue, FlowInfo, GitInfo, RunTaskDetails, RunTaskInfo,
-    Step, Task, TaskCondition,
+    ConfigSection, CrateInfo, DeprecationInfo, EnvInfo, EnvValue, FlowInfo, GitInfo,
+    RunTaskDetails, RunTaskInfo, Step, Task, TaskCondition,
 };
 use ci_info;
 use indexmap::IndexMap;
@@ -24,9 +24,8 @@ fn create_proxy_task_no_makefile() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
-    profile_arg.push_str("\"");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 6);
@@ -51,9 +50,8 @@ fn create_proxy_task_with_makefile() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
-    profile_arg.push_str("\"");
 
     let mut makefile_arg = "--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
@@ -83,9 +81,8 @@ fn create_proxy_task_allow_private() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
-    profile_arg.push_str("\"");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 7);
@@ -631,6 +628,76 @@ fn run_task_cwd_dir_exists() {
 }
 
 #[test]
+fn run_task_deprecated_message() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    task.deprecated = Some(DeprecationInfo::Message("test message".to_string()));
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
+fn run_task_deprecated_flag() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let mut task = Task::new();
+    task.command = Some("echo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+    task.deprecated = Some(DeprecationInfo::Boolean(true));
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
 fn should_watch_none_and_env_not_set() {
     envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let task = Task::new();
@@ -742,9 +809,9 @@ fn create_watch_task_with_makefile() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -774,9 +841,9 @@ fn create_watch_task_with_makefile_and_bool_options() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -817,9 +884,9 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -862,9 +929,9 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -909,9 +976,9 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     let mut make_command_line =
         "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
     make_command_line.push_str(&log_level);
-    make_command_line.push_str(" --profile=\"");
+    make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str("\" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -1726,9 +1793,8 @@ fn create_fork_step_valid() {
     let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
-    profile_arg.push_str("\"");
 
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     let mut makefile_arg = "--makefile=".to_string();

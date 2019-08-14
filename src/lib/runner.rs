@@ -22,15 +22,51 @@ use crate::logger;
 use crate::profile;
 use crate::scriptengine;
 use crate::types::{
-    CliArgs, Config, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo, RunTaskRoutingInfo,
-    Step, Task, TaskWatchOptions,
+    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo,
+    RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
 use std::time::SystemTime;
 
+fn do_in_task_working_directory<F>(step: &Step, mut action: F)
+where
+    F: FnMut(),
+{
+    let revert_directory = match step.config.cwd {
+        Some(ref cwd) => {
+            if cwd.len() > 0 {
+                let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
+
+                environment::setup_cwd(Some(cwd));
+
+                directory
+            } else {
+                "".to_string()
+            }
+        }
+        None => "".to_string(),
+    };
+
+    action();
+
+    // revert to original cwd
+    match step.config.cwd {
+        Some(_) => environment::setup_cwd(Some(&revert_directory)),
+        _ => (),
+    };
+}
+
 fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
-    condition::validate_condition_for_step(&flow_info, &step)
+    let mut valid = true;
+
+    let do_validate = || {
+        valid = condition::validate_condition_for_step(&flow_info, &step);
+    };
+
+    do_in_task_working_directory(&step, do_validate);
+
+    valid
 }
 
 pub(crate) fn get_sub_task_info_for_routing_info(
@@ -161,6 +197,25 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             );
         }
 
+        let deprecated_info = step.config.deprecated.clone();
+        match deprecated_info {
+            Some(deprecated) => match deprecated {
+                DeprecationInfo::Boolean(value) => {
+                    if value {
+                        warn!("Task: {} is deprecated.", &step.name);
+                    }
+
+                    ()
+                }
+                DeprecationInfo::Message(ref message) => {
+                    warn!("Task: {} is deprecated - {}", &step.name, message);
+
+                    ()
+                }
+            },
+            None => (),
+        };
+
         //get profile
         let profile_name = profile::get();
 
@@ -182,46 +237,29 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         if watch {
             watch_task(&flow_info, &step.name, step.config.watch.clone());
         } else {
-            installer::install(&updated_step.config);
+            do_in_task_working_directory(&step, || {
+                installer::install(&updated_step.config);
+            });
 
             match step.config.run_task {
                 Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
                 None => {
-                    let revert_directory = match step.config.cwd {
-                        Some(ref cwd) => {
-                            if cwd.len() > 0 {
-                                let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
+                    do_in_task_working_directory(&step, || {
+                        // get cli arguments
+                        let cli_arguments = match flow_info.cli_arguments {
+                            Some(ref args) => args.clone(),
+                            None => vec![],
+                        };
 
-                                environment::setup_cwd(Some(cwd));
+                        // run script
+                        let script_runner_done =
+                            scriptengine::invoke(&updated_step.config, &cli_arguments);
 
-                                directory
-                            } else {
-                                "".to_string()
-                            }
-                        }
-                        None => "".to_string(),
-                    };
-
-                    // get cli arguments
-                    let cli_arguments = match flow_info.cli_arguments {
-                        Some(ref args) => args.clone(),
-                        None => vec![],
-                    };
-
-                    // run script
-                    let script_runner_done =
-                        scriptengine::invoke(&updated_step.config, &cli_arguments);
-
-                    // run command
-                    if !script_runner_done {
-                        command::run(&updated_step);
-                    };
-
-                    // revert to original cwd
-                    match step.config.cwd {
-                        Some(_) => environment::setup_cwd(Some(&revert_directory)),
-                        _ => (),
-                    };
+                        // run command
+                        if !script_runner_done {
+                            command::run(&updated_step);
+                        };
+                    });
                 }
             };
         }
@@ -305,9 +343,8 @@ fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool)
     //get profile
     let profile_name = profile::get();
 
-    let mut profile_arg = "--profile=\"".to_string();
+    let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile_name);
-    profile_arg.push_str("\"");
 
     //setup common args
     let mut args = vec![
@@ -415,7 +452,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {
-            let mut string = " in ".to_string();
+            let mut string = "in ".to_string();
             string.push_str(&elapsed.as_secs().to_string());
             string.push_str(" seconds");
 

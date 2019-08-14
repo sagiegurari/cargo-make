@@ -1,0 +1,13 @@
+
+[config]
+skip_core_tasks = true
+
+[tasks.simple-example]
+install_crate = { min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
