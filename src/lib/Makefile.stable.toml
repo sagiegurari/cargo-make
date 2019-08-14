@@ -19,6 +19,7 @@ CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
 CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
 CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
 CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_NO_ARGS}"
+CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = false
 CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "${CARGO_MAKE_CARGO_ALL_FEATURES} -- -D warnings"
 CARGO_MAKE_CLIPPY_NO_ARGS = ""
 CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
@@ -29,6 +30,9 @@ RUST_TEST_THREADS = "1"
 
 [env.publish-allow-dirty]
 CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
+
+[env.publish-pre-cleanup]
+CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = true
 
 [env.ci-coverage-tasks]
 RUSTFLAGS = "-C link-dead-code"
@@ -102,6 +106,10 @@ description = "Watches for any file change and if any change is detected, it wil
 category = "Development"
 watch = true
 
+[tasks.pre-publish-delete-lock]
+condition = { env_true = [ "CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE" ] }
+run_task = "delete-lock"
+
 [tasks.pre-publish-clean-flow]
 description = "Clears old artifactes before publishing"
 category = "Publish"
@@ -122,6 +130,7 @@ description = "Publish flow - First clean the target directory of any old leftov
 category = "Publish"
 dependencies = [
     "pre-publish-conditioned-clean-flow",
+    "pre-publish-delete-lock",
     "pre-publish",
     "publish",
     "post-publish"

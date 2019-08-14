@@ -70,9 +70,6 @@
         * [Azure Pipelines](#usage-ci-azure-pipelines)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
-        * [Cargo Commands and Plugins](#usage-predefined-flows-cargo)
-        * [Git Commands](#usage-predefined-flows-git)
-        * [Flows/Other](#usage-predefined-flows-flows)
         * [Full List](#usage-predefined-flows-full)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
@@ -2418,240 +2415,171 @@ By default, the binaries executed to collect coverage are filtered by a regular 
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
 ```
 
-<a name="usage-predefined-flows-cargo"></a>
-#### Cargo Commands and Plugins
-
-* **clean** - Runs the cargo clean command.
-* **build** - Runs the rust compiler.
-* **build-verbose** - Runs the rust compiler with verbose output.
-* **build-release** - Runs release build.
-* **test** - Runs all available tests.
-* **test-verbose** - Runs all available tests with verbose output.
-* **bench** - Runs all available bench files.
-* **check** - Runs cargo check.
-* **check-tests** - Runs cargo check for project tests.
-* **check-examples** - Runs cargo check for project examples.
-* **docs** - Generate rust documentation.
-* **package** - Runs the cargo package command.
-* **publish** - Runs the cargo publish command.
-* **format** - Runs the cargo rustfmt plugin.
-* **outdated** - Runs verify-outdated cargo plugin.
-* **verify-project** - Runs verify-project cargo plugin.
-* **audit** - Runs verify-audit cargo plugin.
-* **clippy** - Runs clippy code linter.
-
-<a name="usage-predefined-flows-git"></a>
-#### Git Commands
-
-* **git-status** - Runs git status command.
-* **git-add** - Runs the cargo add command.
-* **git-commit** - Runs git commit command.
-* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
-* **git-push** - Runs git push command.
-* **git-pull** - Runs git pull command.
-* **github-publish** - Creates a new github release.
-* **github-publish-custom-name** - Creates a new github release.
-
-<a name="usage-predefined-flows-flows"></a>
-#### Flows/Other
-
-* **empty** - Empty Task
-* **init** - By default this task is invoked at the start of every cargo-make run.
-* **end** - By default this task is invoked at the end of every cargo-make run.
-* **default** - Default task points to the development testing flow
-* **ci-flow** - CI task will run cargo build and cargo test with verbose output
-* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
-* **build-flow** - Full sanity testing flow.
-* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-watch-flow** - Alias for default flow
-* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
-* **copy-apidocs** - Copies the generated documentation to the docs/api directory.
-* **clean-apidocs** - Delete API docs.
-* **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
-* **bench-flow** - Runs a bench flow.
-* **check-flow** - Runs cargo check flow.
-* **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
-* **examples-ci-flow** - Compiles the examples if conditions are met.
-* **delete-lock** - Deletes the Cargo.lock file.
-* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
-* **codecov** - Runs codecov script to upload coverage results to codecov.
-* **coverage** - Runs coverage (by default using kcov).
-* **coverage-flow** - Runs the full coverage flow.
-* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
-* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
-* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
-* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
-* **workspace-members-ci** - Runs the ci-flow for every workspace member.
-* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
-* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output.
-* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
-
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 
-Full list of all predefined tasks (can be generated via ```cargo make --list-all-steps```)
+Full list of all predefined tasks (generated via ```cargo make --list-all-steps```)
 
 ##### Build
 
-* **build** - Runs the rust compiler.
-* **build-flow** - Full sanity testing flow.
-* **build-release** - Runs release build.
-* **build-verbose** - Runs the rust compiler with verbose output.
-* **end-build-flow** - No Description.
-* **init-build-flow** - No Description.
-* **post-build** - No Description.
-* **pre-build** - No Description.
+* **build** - Runs the rust compiler. 
+* **build-flow** - Full sanity testing flow. 
+* **build-release** - Runs release build. 
+* **build-verbose** - Runs the rust compiler with verbose output. 
+* **end-build-flow** - No Description. 
+* **init-build-flow** - No Description. 
+* **post-build** - No Description. 
+* **pre-build** - No Description. 
 
 ##### CI
 
-* **audit** - Runs verify-audit cargo plugin.
-* **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
-* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
-* **ci-flow** - CI task will run cargo build and cargo test with verbose output
-* **examples-ci-flow** - Compiles the examples if conditions are met.
-* **outdated** - Runs verify-outdated cargo plugin.
-* **post-audit** - No Description.
-* **post-ci-flow** - No Description.
-* **post-outdated** - No Description.
-* **post-verify-project** - No Description.
-* **post-workspace-ci-flow** - No Description.
-* **pre-audit** - No Description.
-* **pre-ci-flow** - No Description.
-* **pre-outdated** - No Description.
-* **pre-verify-project** - No Description.
-* **pre-workspace-ci-flow** - No Description.
-* **verify-project** - Runs verify-project cargo plugin.
-* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
-* **workspace-members-ci** - Runs the ci-flow for every workspace member.
-* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up
+* **audit** - Runs verify-audit cargo plugin. 
+* **bench-ci-flow** - Runs/Compiles the benches if conditions are met. 
+* **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov. 
+* **ci-flow** - CI task will run cargo build and cargo test with verbose output 
+* **examples-ci-flow** - Compiles the examples if conditions are met. 
+* **outdated** - Runs verify-outdated cargo plugin. 
+* **post-audit** - No Description. 
+* **post-ci-flow** - No Description. 
+* **post-outdated** - No Description. 
+* **post-verify-project** - No Description. 
+* **post-workspace-ci-flow** - No Description. 
+* **pre-audit** - No Description. 
+* **pre-ci-flow** - No Description. 
+* **pre-outdated** - No Description. 
+* **pre-verify-project** - No Description. 
+* **pre-workspace-ci-flow** - No Description. 
+* **verify-project** - Runs verify-project cargo plugin. 
+* **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports 
+* **workspace-members-ci** - Runs the ci-flow for every workspace member. 
+* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up 
 
 ##### Cleanup
 
-* **clean** - Runs the cargo clean command.
-* **delete-lock** - Deletes the Cargo.lock file.
-* **post-clean** - No Description.
-* **pre-clean** - No Description.
+* **clean** - Runs the cargo clean command. 
+* **delete-lock** - Deletes the Cargo.lock file. 
+* **post-clean** - No Description. 
+* **pre-clean** - No Description. 
 
 ##### Development
 
-* **default** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
-* **format** - Runs the cargo rustfmt plugin.
-* **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
-* **post-format** - No Description.
-* **pre-format** - No Description.
-* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
-* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow.
+* **default** - Development testing flow will first format the code, and than run cargo build and test 
+* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test 
+* **format** - Runs the cargo rustfmt plugin. 
+* **format-flow** - Runs the cargo rustfmt plugin as part of a flow. 
+* **post-format** - No Description. 
+* **pre-format** - No Description. 
+* **upgrade-dependencies** - Rebuilds the crate with most updated dependencies. 
+* **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow. 
 
 ##### Documentation
 
-* **clean-apidocs** - Delete API docs.
-* **copy-apidocs** - Copies the generated documentation to the docs/api directory.
-* **docs** - Generate rust documentation.
-* **pre-docs** - No Description.
+* **clean-apidocs** - Delete API docs. 
+* **copy-apidocs** - Copies the generated documentation to the docs/api directory. 
+* **docs** - Generate rust documentation. 
+* **pre-docs** - No Description. 
 
 ##### Git
 
-* **git-add** - Runs the cargo add command.
-* **git-commit** - Runs git commit command.
-* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
-* **git-delete-merged-branches** - Deletes any merged git branches
-* **git-pull** - Runs git pull command.
-* **git-push** - Runs git push command.
-* **git-status** - Runs git status command.
-* **post-git-add** - No Description.
-* **post-git-commit** - No Description.
-* **post-git-push** - No Description.
-* **post-git-status** - No Description.
-* **pre-git-add** - No Description.
-* **pre-git-commit** - No Description.
-* **pre-git-push** - No Description.
-* **pre-git-status** - No Description.
+* **git-add** - Runs the cargo add command. 
+* **git-commit** - Runs git commit command. 
+* **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable. 
+* **git-delete-merged-branches** - Deletes any merged git branches 
+* **git-pull** - Runs git pull command. 
+* **git-push** - Runs git push command. 
+* **git-status** - Runs git status command. 
+* **post-git-add** - No Description. 
+* **post-git-commit** - No Description. 
+* **post-git-push** - No Description. 
+* **post-git-status** - No Description. 
+* **pre-git-add** - No Description. 
+* **pre-git-commit** - No Description. 
+* **pre-git-push** - No Description. 
+* **pre-git-status** - No Description. 
 
 ##### Hooks
 
-* **end** - By default this task is invoked at the end of every cargo-make run.
-* **init** - By default this task is invoked at the start of every cargo-make run.
+* **end** - By default this task is invoked at the end of every cargo-make run. 
+* **init** - By default this task is invoked at the start of every cargo-make run. 
 
 ##### No Category
 
-* **build-release-for-target** - Makes a release build for a given target
-* **generate-readme** - No Description.
-* **install-rls** - No Description.
-* **install-rust-src** - No Description.
-* **post-docs** - No Description.
-* **setup-build-env** - Sets up a musl build environment
-* **setup-musl** - Sets up a musl build environment
+* **build-release-for-target** - Makes a release build for a given target 
+* **generate-readme** - No Description. 
+* **install-rls** - No Description. 
+* **install-rust-src** - No Description. 
+* **post-docs** - No Description. 
+* **pre-publish-delete-lock** - No Description. 
+* **setup-build-env** - Sets up a musl build environment 
+* **setup-musl** - Sets up a musl build environment 
 
 ##### Publish
 
-* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
-* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
-* **github-publish** - Creates a new github release.
-* **github-publish-custom-name** - Creates a new github release.
-* **package** - Runs the cargo package command.
-* **post-package** - No Description.
-* **post-publish** - No Description.
-* **pre-package** - No Description.
-* **pre-publish** - No Description.
-* **pre-publish-clean-flow** - Clears old artifactes before publishing
-* **pre-publish-conditioned-clean-flow** - Clears old artifactes before publishing
-* **publish** - Runs the cargo publish command.
-* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
-* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray.
-* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
+* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray. 
+* **build-publish-flow** - Runs full sanity, generates github release and publishes the crate. 
+* **github-publish** - Creates a new github release. 
+* **github-publish-custom-name** - Creates a new github release. 
+* **package** - Runs the cargo package command. 
+* **post-package** - No Description. 
+* **post-publish** - No Description. 
+* **pre-package** - No Description. 
+* **pre-publish** - No Description. 
+* **pre-publish-clean-flow** - Clears old artifactes before publishing 
+* **pre-publish-conditioned-clean-flow** - Clears old artifactes before publishing 
+* **publish** - Runs the cargo publish command. 
+* **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish 
+* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray. 
+* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s) 
 
 ##### Test
 
-* **bench** - Runs all available bench files.
-* **bench-compile** - Compiles all available bench files.
-* **bench-conditioned-compile** - Compiles all available bench files if conditions are met.
-* **bench-conditioned-flow** - Runs the bench flow if conditions are met.
-* **bench-flow** - Runs a bench flow.
-* **check** - Runs cargo check.
-* **check-examples** - Runs cargo check for project examples.
-* **check-flow** - Runs cargo check flow.
-* **check-format** - Runs cargo fmt to check appropriate code format.
-* **check-tests** - Runs cargo check for project tests.
-* **clippy** - Runs clippy code linter.
-* **codecov** - Runs codecov script to upload coverage results to codecov.
-* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
-* **conditioned-check-format** - Runs cargo fmt --check if conditions are met.
-* **conditioned-clippy** - Runs clippy code linter if conditions are met.
-* **coverage** - Runs coverage (by default using kcov).
-* **coverage-flow** - Runs the full coverage flow.
-* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
-* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **dev-watch-flow** - Runs pre/post hooks and cargo test.
-* **examples-compile** - Runs cargo build for project examples.
-* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met.
-* **install-clippy** - Installs the clippy code linter.
-* **install-clippy-github** - Installs the latest clippy code linter via cargo install directly from github.
-* **install-clippy-rustup** - Installs the clippy code linter via rustup.
-* **post-bench** - No Description.
-* **post-check** - No Description.
-* **post-coverage** - No Description.
-* **post-test** - No Description.
-* **pre-bench** - No Description.
-* **pre-check** - No Description.
-* **pre-coverage** - No Description.
-* **pre-test** - No Description.
-* **test** - Runs all available tests.
-* **test-flow** - Runs pre/post hooks and cargo test.
-* **test-verbose** - Runs all available tests with verbose output.
-* **test-with-args** - Runs cargo test with command line arguments.
-* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
-* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.
-* **workspace-members-coverage** - Runs the ci-flow for every workspace member.
+* **bench** - Runs all available bench files. 
+* **bench-compile** - Compiles all available bench files. 
+* **bench-conditioned-compile** - Compiles all available bench files if conditions are met. 
+* **bench-conditioned-flow** - Runs the bench flow if conditions are met. 
+* **bench-flow** - Runs a bench flow. 
+* **check** - Runs cargo check. 
+* **check-examples** - Runs cargo check for project examples. 
+* **check-flow** - Runs cargo check flow. 
+* **check-format** - Runs cargo fmt to check appropriate code format. 
+* **check-tests** - Runs cargo check for project tests. 
+* **clippy** - Runs clippy code linter. 
+* **codecov** - Runs codecov script to upload coverage results to codecov. 
+* **codecov-flow** - Runs the full coverage flow and uploads the results to codecov. 
+* **conditioned-check-format** - Runs cargo fmt --check if conditions are met. 
+* **conditioned-clippy** - Runs clippy code linter if conditions are met. 
+* **coverage** - Runs coverage (by default using kcov). 
+* **coverage-flow** - Runs the full coverage flow. 
+* **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows) 
+* **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only) 
+* **dev-watch-flow** - Runs pre/post hooks and cargo test. 
+* **examples-compile** - Runs cargo build for project examples. 
+* **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met. 
+* **install-clippy** - Installs the clippy code linter. 
+* **install-clippy-any** - Installs the latest clippy code linter via cargo install via rustup or directly from github. 
+* **install-clippy-rustup** - Installs the clippy code linter via rustup. 
+* **post-bench** - No Description. 
+* **post-check** - No Description. 
+* **post-coverage** - No Description. 
+* **post-test** - No Description. 
+* **pre-bench** - No Description. 
+* **pre-check** - No Description. 
+* **pre-coverage** - No Description. 
+* **pre-test** - No Description. 
+* **test** - Runs all available tests. 
+* **test-flow** - Runs pre/post hooks and cargo test. 
+* **test-verbose** - Runs all available tests with verbose output. 
+* **test-with-args** - Runs cargo test with command line arguments. 
+* **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow). 
+* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov. 
+* **workspace-members-coverage** - Runs the ci-flow for every workspace member. 
 
 ##### Tools
 
-* **diff-files** - Run diff on two provided files.
-* **do-on-members** - Runs the requested task for every workspace member.
-* **empty** - Empty Task
-* **git-diff-files** - Run diff on two provided files.
+* **diff-files** - Run diff on two provided files. 
+* **do-on-members** - Runs the requested task for every workspace member. 
+* **empty** - Empty Task 
+* **git-diff-files** - Run diff on two provided files. 
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows

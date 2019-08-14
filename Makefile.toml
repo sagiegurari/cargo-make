@@ -3,7 +3,7 @@
 additional_profiles = [
     "none-thread-safe-tests",
     "ci-coverage-tasks",
-    "publish-allow-dirty"
+    "publish-pre-cleanup"
 ]
 
 [env]
