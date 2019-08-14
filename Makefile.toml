@@ -9,6 +9,9 @@ additional_profiles = [
 [env]
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 
+[tasks.audit]
+ignore_errors = true
+
 [tasks.generate-readme]
 script = [
 '''

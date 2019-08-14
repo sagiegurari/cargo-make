@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.22.0
+### v0.22.0 (2019-08-14)
 
 * Specify minimum version for tools/dependencies #265
 * Globally disable workspace support via makefile config #264
