@@ -798,7 +798,7 @@ category = "Test"
 [tasks.coverage-tarpaulin.linux]
 category = "Test"
 command = "cargo"
-args = ["tarpaulin"]
+args = ["tarpaulin", "--out", "Xml"]
 
 [tasks.post-coverage]
 category = "Test"
