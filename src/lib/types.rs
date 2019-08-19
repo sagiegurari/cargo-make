@@ -11,6 +11,7 @@ use crate::legacy;
 use ci_info::types::CiInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
+use std::collections::HashMap;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {
@@ -349,6 +350,17 @@ pub struct EnvValueScript {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env value provided by decoding other values
+pub struct EnvValueDecode {
+    /// The source value (can be an env expression)
+    pub source: String,
+    /// The default value in case no decode mapping was found, if not provided it will considered as empty string
+    pub default_value: Option<String>,
+    /// The decoding mapping
+    pub mapping: HashMap<String, String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
 pub enum EnvValue {
@@ -358,6 +370,8 @@ pub enum EnvValue {
     Boolean(bool),
     /// Script which will return the value
     Script(EnvValueScript),
+    /// Env decoding info
+    Decode(EnvValueDecode),
     /// Profile env
     Profile(IndexMap<String, EnvValue>),
 }

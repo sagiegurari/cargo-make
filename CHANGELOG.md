@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.22.1
+
+* Support decoding ability for environment variables initialization #275 #277
+* Codecov and tarpaulin integration fix for CI flow #274 #275 (thanks @vtavernier)
+
 ### v0.22.0 (2019-08-14)
 
 * Specify minimum version for tools/dependencies #265
