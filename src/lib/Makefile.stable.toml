@@ -796,7 +796,6 @@ description = "Runs coverage using tarpaulin rust crate (linux only)"
 category = "Test"
 
 [tasks.coverage-tarpaulin.linux]
-category = "Test"
 command = "cargo"
 args = ["tarpaulin", "--out", "Xml"]
 
