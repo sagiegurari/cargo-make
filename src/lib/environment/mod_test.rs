@@ -2,6 +2,7 @@ use super::*;
 
 use crate::types::{ConfigSection, Task};
 use indexmap::IndexMap;
+use std::collections::HashMap;
 use std::env;
 use std::{thread, time};
 
@@ -107,6 +108,27 @@ fn set_env_multi_types() {
         EnvValue::Value("profile value".to_string()),
     );
 
+    envmnt::remove("ENV_DECODE_EXPRESSIONS_MULTI_TYPE");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR1", "ENV1");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR2", "ENV2");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR3", "ENV3");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+    mapping.insert(
+        "ENV1".to_string(),
+        "${ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR2}-${ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR3}"
+            .to_string(),
+    );
+
+    let decode_info = EnvValueDecode {
+        source: "${ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR1}".to_string(),
+        default_value: None,
+        mapping,
+    };
+
     let mut env = IndexMap::new();
     env.insert("value".to_string(), EnvValue::Value("test val".to_string()));
     env.insert("bool".to_string(), EnvValue::Boolean(false));
@@ -117,6 +139,10 @@ fn set_env_multi_types() {
             multi_line: None,
         }),
     );
+    env.insert(
+        "ENV_DECODE_EXPRESSIONS_MULTI_TYPE".to_string(),
+        EnvValue::Decode(decode_info),
+    );
     env.insert(current_profile_name, EnvValue::Profile(profile_env));
 
     set_env(env);
@@ -124,7 +150,101 @@ fn set_env_multi_types() {
     assert!(envmnt::is_equal("value", "test val"));
     assert!(!envmnt::is_or("bool", true));
     assert!(envmnt::is_equal("script", "script1"));
+    assert!(envmnt::is_equal(
+        "ENV_DECODE_EXPRESSIONS_MULTI_TYPE",
+        "ENV2-ENV3"
+    ));
     assert!(envmnt::is_equal("profile_env", "profile value"));
+}
+
+#[test]
+fn set_env_for_decode_info_strings_found() {
+    envmnt::remove("ENV_DECODE_STRING_FOUND");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+
+    let decode_info = EnvValueDecode {
+        source: "key2".to_string(),
+        default_value: None,
+        mapping,
+    };
+
+    set_env_for_decode_info("ENV_DECODE_STRING_FOUND", &decode_info);
+
+    assert!(envmnt::is_equal("ENV_DECODE_STRING_FOUND", "value2"));
+}
+
+#[test]
+fn set_env_for_decode_info_strings_default() {
+    envmnt::remove("ENV_DECODE_STRING_DEFAULT");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+
+    let decode_info = EnvValueDecode {
+        source: "key0".to_string(),
+        default_value: Some("default value".to_string()),
+        mapping,
+    };
+
+    set_env_for_decode_info("ENV_DECODE_STRING_DEFAULT", &decode_info);
+
+    assert!(envmnt::is_equal(
+        "ENV_DECODE_STRING_DEFAULT",
+        "default value"
+    ));
+}
+
+#[test]
+fn set_env_for_decode_info_strings_default_none() {
+    envmnt::remove("ENV_DECODE_STRING_DEFAULT_NONE");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+
+    let decode_info = EnvValueDecode {
+        source: "key0".to_string(),
+        default_value: None,
+        mapping,
+    };
+
+    set_env_for_decode_info("ENV_DECODE_STRING_DEFAULT_NONE", &decode_info);
+
+    assert!(envmnt::is_equal("ENV_DECODE_STRING_DEFAULT_NONE", ""));
+}
+
+#[test]
+fn set_env_for_decode_info_expressions() {
+    envmnt::remove("ENV_DECODE_EXPRESSIONS");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_VAR1", "ENV1");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_VAR2", "ENV2");
+    envmnt::set("ENV_DECODE_EXPRESSIONS_VAR3", "ENV3");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+    mapping.insert(
+        "ENV1".to_string(),
+        "${ENV_DECODE_EXPRESSIONS_VAR2}-${ENV_DECODE_EXPRESSIONS_VAR3}".to_string(),
+    );
+
+    let decode_info = EnvValueDecode {
+        source: "${ENV_DECODE_EXPRESSIONS_VAR1}".to_string(),
+        default_value: None,
+        mapping,
+    };
+
+    set_env_for_decode_info("ENV_DECODE_EXPRESSIONS", &decode_info);
+
+    assert!(envmnt::is_equal("ENV_DECODE_EXPRESSIONS", "ENV2-ENV3"));
 }
 
 #[test]
