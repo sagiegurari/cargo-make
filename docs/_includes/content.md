@@ -1022,16 +1022,19 @@ RUST_BACKTRACE = "1"
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 TEST1 = "value1"
 TEST2 = "value2"
+BOOL_VALUE = true
+DEV = false
+PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
 
 # profile based environment override
 [env.development]
-DEV = "TRUE"
+DEV = true
 
 [env.production]
-PROD = "TRUE"
+PROD = true
 ```
 
 Environment variables can be defined as:
