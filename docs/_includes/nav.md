@@ -56,6 +56,7 @@
         * [Split](#usage-functions-split)
         * [Remove Empty](#usage-functions-remove-empty)
         * [Trim](#usage-functions-trim)
+        * [Decode](#usage-functions-decode)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)

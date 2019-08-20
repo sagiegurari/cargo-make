@@ -705,6 +705,131 @@ fn install_rustup_component_info_deserialize_missing_test_arg() {
 }
 
 #[test]
+fn env_value_deserialize_string() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = "value"
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Value(value) => assert_eq!(value, "value"),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_bool_true() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = true
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Boolean(value) => assert!(value),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_bool_false() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = false
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Boolean(value) => assert!(!value),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_script() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { script = ["echo test"] }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Script(value) => assert_eq!(value.script[0], "echo test"),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_decode() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { source = "source value", default_value = "default value", mapping = { "key1" = "value1", "key2" = "value2" } }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Decode(value) => {
+                assert_eq!(value.source, "source value");
+                assert_eq!(value.default_value, Some("default value".to_string()));
+                assert_eq!(value.mapping.len(), 2);
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_profile() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env.my-profile]
+        bool_key = true
+        string_key = "value"
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Profile(value) => {
+                assert_eq!(value.len(), 2);
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 

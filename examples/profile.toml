@@ -2,6 +2,7 @@
 [env]
 COMMON = "COMMON"
 PROFILE_NAME = "${CARGO_MAKE_PROFILE}"
+CARGO_PROFILE_NAME = "${CARGO_MAKE_CARGO_PROFILE}"
 IS_CI = false
 
 [config]
@@ -23,6 +24,7 @@ script = [
 '''
 echo COMMON: ${COMMON}
 echo PROFILE_NAME: ${PROFILE_NAME}
+echo CARGO_PROFILE_NAME: ${CARGO_PROFILE_NAME}
 echo IS_DEV: ${IS_DEV}
 echo IS_PROD: ${IS_PROD}
 echo IS_CI: ${IS_CI}

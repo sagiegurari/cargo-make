@@ -15,6 +15,7 @@ CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
+CARGO_MAKE_CARGO_PROFILE = { source = "${CARGO_MAKE_PROFILE}", mapping = {"development" = "dev", "ci" = "test" } }
 CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
 CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
 CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
@@ -35,7 +36,6 @@ CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
 CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = true
 
 [env.ci-coverage-tasks]
-RUSTFLAGS = "-C link-dead-code"
 CARGO_MAKE_RUN_CODECOV = true
 
 [env.ci-static-code-analysis-tasks]
@@ -677,6 +677,7 @@ category = "Test"
 [tasks.coverage]
 description = "Runs coverage (by default using kcov)."
 category = "Test"
+env = { "RUSTFLAGS" = "-C link-dead-code" }
 run_task = [
     { name = "coverage-tarpaulin", condition = { platforms = ["linux"], env = { "CARGO_MAKE_COVERAGE_PROVIDER" = "tarpaulin" } } },
     { name = "coverage-kcov", condition = { platforms = ["linux"] } },
@@ -796,9 +797,8 @@ description = "Runs coverage using tarpaulin rust crate (linux only)"
 category = "Test"
 
 [tasks.coverage-tarpaulin.linux]
-category = "Test"
 command = "cargo"
-args = ["tarpaulin"]
+args = ["tarpaulin", "--out", "Xml"]
 
 [tasks.post-coverage]
 category = "Test"

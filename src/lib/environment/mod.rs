@@ -12,8 +12,8 @@ mod mod_test;
 
 use crate::command;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueScript, GitInfo, PackageInfo, Step,
-    Task, Workspace,
+    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript, GitInfo,
+    PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -63,7 +63,7 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
     }
 }
 
-fn expand_value(value: &str) -> String {
+pub(crate) fn expand_value(value: &str) -> String {
     let mut value_string = value.to_string();
 
     match value_string.find("${") {
@@ -98,6 +98,20 @@ fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     let value = evaluate_env_value(&env_value);
 
     evaluate_and_set_env(&key, &value);
+}
+
+fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
+    let source_value = expand_value(&decode_info.source);
+
+    let mapped_value = match decode_info.mapping.get(&source_value) {
+        Some(value) => value.to_string(),
+        None => match decode_info.default_value {
+            Some(ref value) => value.clone().to_string(),
+            None => source_value.clone(),
+        },
+    };
+
+    evaluate_and_set_env(&key, &mapped_value);
 }
 
 fn set_env_for_profile(
@@ -136,6 +150,7 @@ fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Opti
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
+            EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
             EnvValue::Profile(ref sub_env) => {
                 set_env_for_profile(&key, sub_env, additional_profiles)
             }
