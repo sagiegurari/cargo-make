@@ -354,7 +354,7 @@ pub struct EnvValueScript {
 pub struct EnvValueDecode {
     /// The source value (can be an env expression)
     pub source: String,
-    /// The default value in case no decode mapping was found, if not provided it will considered as empty string
+    /// The default value in case no decode mapping was found, if not provided it will default to the source value
     pub default_value: Option<String>,
     /// The decoding mapping
     pub mapping: HashMap<String, String>,

@@ -107,7 +107,7 @@ fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
         Some(value) => value.to_string(),
         None => match decode_info.default_value {
             Some(ref value) => value.clone().to_string(),
-            None => "".to_string(),
+            None => source_value.clone(),
         },
     };
 

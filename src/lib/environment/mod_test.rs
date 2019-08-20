@@ -217,7 +217,7 @@ fn set_env_for_decode_info_strings_default_none() {
 
     set_env_for_decode_info("ENV_DECODE_STRING_DEFAULT_NONE", &decode_info);
 
-    assert!(envmnt::is_equal("ENV_DECODE_STRING_DEFAULT_NONE", ""));
+    assert!(envmnt::is_equal("ENV_DECODE_STRING_DEFAULT_NONE", "key0"));
 }
 
 #[test]
