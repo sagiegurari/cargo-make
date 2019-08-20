@@ -35,7 +35,6 @@ CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
 CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = true
 
 [env.ci-coverage-tasks]
-RUSTFLAGS = "-C link-dead-code"
 CARGO_MAKE_RUN_CODECOV = true
 
 [env.ci-static-code-analysis-tasks]
@@ -677,6 +676,7 @@ category = "Test"
 [tasks.coverage]
 description = "Runs coverage (by default using kcov)."
 category = "Test"
+env = { "RUSTFLAGS" = "-C link-dead-code" }
 run_task = [
     { name = "coverage-tarpaulin", condition = { platforms = ["linux"], env = { "CARGO_MAKE_COVERAGE_PROVIDER" = "tarpaulin" } } },
     { name = "coverage-kcov", condition = { platforms = ["linux"] } },

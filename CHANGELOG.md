@@ -4,6 +4,7 @@
 
 * Support decoding ability for environment variables initialization #275 #277
 * Codecov and tarpaulin integration fix for CI flow #274 #275 (thanks @vtavernier)
+* Move link-dead-code definition to coverage task #279
 
 ### v0.22.0 (2019-08-14)
 
