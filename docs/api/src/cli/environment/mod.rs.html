@@ -470,6 +470,21 @@
 <span id="470">470</span>
 <span id="471">471</span>
 <span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -485,8 +500,8 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{
-    <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">EnvValueScript</span>, <span class="ident">GitInfo</span>, <span class="ident">PackageInfo</span>, <span class="ident">Step</span>,
-    <span class="ident">Task</span>, <span class="ident">Workspace</span>,
+    <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">EnvValueDecode</span>, <span class="ident">EnvValueScript</span>, <span class="ident">GitInfo</span>,
+    <span class="ident">PackageInfo</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">Workspace</span>,
 };
 <span class="kw">use</span> <span class="ident">ci_info</span>::<span class="ident">types</span>::<span class="ident">CiInfo</span>;
 <span class="kw">use</span> <span class="ident">envmnt</span>;
@@ -536,7 +551,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">expand_value</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">expand_value</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">value_string</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
 
     <span class="kw">match</span> <span class="ident">value_string</span>.<span class="ident">find</span>(<span class="string">&quot;${&quot;</span>) {
@@ -571,6 +586,20 @@
     <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">evaluate_env_value</span>(<span class="kw-2">&amp;</span><span class="ident">env_value</span>);
 
     <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>);
+}
+
+<span class="kw">fn</span> <span class="ident">set_env_for_decode_info</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">decode_info</span>: <span class="kw-2">&amp;</span><span class="ident">EnvValueDecode</span>) {
+    <span class="kw">let</span> <span class="ident">source_value</span> <span class="op">=</span> <span class="ident">expand_value</span>(<span class="kw-2">&amp;</span><span class="ident">decode_info</span>.<span class="ident">source</span>);
+
+    <span class="kw">let</span> <span class="ident">mapped_value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">decode_info</span>.<span class="ident">mapping</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">source_value</span>) {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">decode_info</span>.<span class="ident">default_value</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">clone</span>().<span class="ident">to_string</span>(),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">source_value</span>.<span class="ident">clone</span>(),
+        },
+    };
+
+    <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">mapped_value</span>);
 }
 
 <span class="kw">fn</span> <span class="ident">set_env_for_profile</span>(
@@ -609,6 +638,7 @@
             <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
             <span class="ident">EnvValue</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">set_env_for_bool</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
             <span class="ident">EnvValue</span>::<span class="ident">Script</span>(<span class="kw-2">ref</span> <span class="ident">script_info</span>) <span class="op">=&gt;</span> <span class="ident">set_env_for_script</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">script_info</span>),
+            <span class="ident">EnvValue</span>::<span class="ident">Decode</span>(<span class="kw-2">ref</span> <span class="ident">decode_info</span>) <span class="op">=&gt;</span> <span class="ident">set_env_for_decode_info</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">decode_info</span>),
             <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) <span class="op">=&gt;</span> {
                 <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">sub_env</span>, <span class="ident">additional_profiles</span>)
             }

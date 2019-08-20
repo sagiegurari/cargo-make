@@ -1726,6 +1726,20 @@
 <span id="1726">1726</span>
 <span id="1727">1727</span>
 <span id="1728">1728</span>
+<span id="1729">1729</span>
+<span id="1730">1730</span>
+<span id="1731">1731</span>
+<span id="1732">1732</span>
+<span id="1733">1733</span>
+<span id="1734">1734</span>
+<span id="1735">1735</span>
+<span id="1736">1736</span>
+<span id="1737">1737</span>
+<span id="1738">1738</span>
+<span id="1739">1739</span>
+<span id="1740">1740</span>
+<span id="1741">1741</span>
+<span id="1742">1742</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1740,6 +1754,7 @@
 <span class="kw">use</span> <span class="ident">ci_info</span>::<span class="ident">types</span>::<span class="ident">CiInfo</span>;
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="doccomment">/// Returns the platform name</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_platform_name</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
@@ -2078,6 +2093,17 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Env value provided by decoding other values</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueDecode</span> {
+    <span class="doccomment">/// The source value (can be an env expression)</span>
+    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The default value in case no decode mapping was found, if not provided it will default to the source value</span>
+    <span class="kw">pub</span> <span class="ident">default_value</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The decoding mapping</span>
+    <span class="kw">pub</span> <span class="ident">mapping</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds the env value or script</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EnvValue</span> {
@@ -2087,6 +2113,8 @@
     <span class="ident">Boolean</span>(<span class="ident">bool</span>),
     <span class="doccomment">/// Script which will return the value</span>
     <span class="ident">Script</span>(<span class="ident">EnvValueScript</span>),
+    <span class="doccomment">/// Env decoding info</span>
+    <span class="ident">Decode</span>(<span class="ident">EnvValueDecode</span>),
     <span class="doccomment">/// Profile env</span>
     <span class="ident">Profile</span>(<span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>),
 }

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.22.1
+### v0.22.1 (2019-08-20)
 
 * Support decoding ability for environment variables initialization #275 #277
 * Codecov and tarpaulin integration fix for CI flow #274 #275 (thanks @vtavernier)
