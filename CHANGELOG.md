@@ -6,6 +6,7 @@
 * Codecov and tarpaulin integration fix for CI flow #274 #275 (thanks @vtavernier)
 * Move link-dead-code definition to coverage task #279
 * Enable decode to mirror source value as default value #280
+* Add env mapping between cargo make profile and cargo.toml profile #281
 
 ### v0.22.0 (2019-08-14)
 
