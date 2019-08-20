@@ -37,3 +37,15 @@ args = ["@@trim(TRIM_VALUE,end)"]
 [tasks.clippy]
 command = "echo"
 args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
+
+[tasks.decode]
+command = "echo"
+args = ["Env:", "${DECODE_ENV_VAR}", "Decoded:", "@@decode(DECODE_ENV_VAR,development,dev,ci,test)"]
+
+[tasks.decode-with-default]
+command = "echo"
+args = ["Env:", "${DECODE_ENV_VAR}", "Decoded:", "@@decode(DECODE_ENV_VAR,development,dev,ci,test,unknown)"]
+
+[tasks.decode-with-eval]
+command = "echo"
+args = ["Env:", "${DECODE_ENV_VAR}", "Decoded:", "@@decode(DECODE_ENV_VAR,test,The current profile is: ${CARGO_MAKE_PROFILE})"]

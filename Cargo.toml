@@ -22,7 +22,6 @@ include = [
     "/CHANGELOG.md",
     "/Makefile.toml"
 ]
-default-run = "cargo-make"
 
 [lib]
 name = "cli"

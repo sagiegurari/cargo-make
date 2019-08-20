@@ -62,6 +62,7 @@
         * [Split](#usage-functions-split)
         * [Remove Empty](#usage-functions-remove-empty)
         * [Trim](#usage-functions-trim)
+        * [Decode](#usage-functions-decode)
     * [Continuous Integration](#usage-ci)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
@@ -2019,6 +2020,7 @@ Currently Supported Functions:
 * [Split](#usage-functions-split)
 * [Remove Empty](#usage-functions-remove-empty)
 * [Trim](#usage-functions-trim)
+* [Decode](#usage-functions-decode)
 
 <a name="usage-functions-split"></a>
 #### Split
@@ -2171,6 +2173,109 @@ args = ["@@trim(TRIM_VALUE,end)"]
    123
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-functions-decode"></a>
+#### Decode
+
+The decode function accepts the following arguments:
+
+* environment variable name
+* optional a list of mapping values (source/target)
+* optional default value
+
+It will completely remove that command line argument in case the output it is empty.
+
+For example:
+
+```toml
+[tasks.decode]
+command = "echo"
+args = ["Env:", "${CARGO_MAKE_PROFILE}", "Decoded:", "@@decode(CARGO_MAKE_PROFILE,development,dev,ci,test)"]
+```
+
+We check the CARGO_MAKE_PROFILE environment variable value and look for it in the mappings.<br>
+If the value is **development** it will be mapped to **dev** while **ci** is mapped to **test**.<br>
+In case no mapping is found, the original value is returned.<br>
+Sample run for a mapping that was found:
+
+```console
+cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=development decode
+[cargo-make] INFO - cargo make 0.22.0
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: decode
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: decode
+[cargo-make] INFO - Execute Command: "echo" "Env:" "development" "Decoded:" "dev"
+Env: development Decoded: dev
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
+```
+
+Another sample run for a mapping that was not found:
+
+```console
+cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode
+[cargo-make] INFO - cargo make 0.22.0
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: decode
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: decode
+[cargo-make] INFO - Execute Command: "echo" "Env:" "unmapped" "Decoded:" "unmapped"
+Env: unmapped Decoded: unmapped
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
+```
+
+Another example:
+
+```toml
+[tasks.decode-with-default]
+command = "echo"
+args = ["Env:", "${DECODE_ENV_VAR}", "Decoded:", "@@decode(DECODE_ENV_VAR,development,dev,ci,test,unknown)"]
+```
+
+Same as previous example, but the difference here is that if not mapping is found, the default value (last argument) is returned.<br>
+Sample run:
+
+```console
+cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode-with-default
+[cargo-make] INFO - cargo make 0.22.0
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: decode-with-default
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: decode-with-default
+[cargo-make] INFO - Execute Command: "echo" "Env:" "unmapped" "Decoded:" "unknown"
+Env: unmapped Decoded: unknown
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
+```
+
+Mapped values can hold environment expressions, for example:
+
+```toml
+[tasks.decode-with-eval]
+command = "echo"
+args = ["Env:", "${DECODE_ENV_VAR}", "Decoded:", "@@decode(DECODE_ENV_VAR,test,The current profile is: ${CARGO_MAKE_PROFILE})"]
+```
+
+Sample run:
+
+```console
+cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=test decode-with-eval
+[cargo-make] INFO - cargo make 0.22.0
+[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Task: decode-with-eval
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Running Task: decode-with-eval
+[cargo-make] INFO - Execute Command: "echo" "Env:" "test" "Decoded:" "The current profile is: development"
+Env: test Decoded: The current profile is: development
+[cargo-make] INFO - Running Task: empty
+[cargo-make] INFO - Build Done in 0 seconds.
 ```
 
 <a name="usage-ci"></a>

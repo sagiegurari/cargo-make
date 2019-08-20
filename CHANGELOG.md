@@ -4,6 +4,7 @@
 
 * Support decoding ability for environment variables initialization #275 #277
 * Codecov and tarpaulin integration fix for CI flow #274 #275 (thanks @vtavernier)
+* New @@decode function for command arguments #278
 * Move link-dead-code definition to coverage task #279
 * Enable decode to mirror source value as default value #280
 * Add env mapping between cargo make profile and cargo.toml profile #281

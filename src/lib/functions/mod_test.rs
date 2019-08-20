@@ -48,6 +48,24 @@ fn run_function_trim() {
 }
 
 #[test]
+fn run_function_decode() {
+    envmnt::set("TEST_DECODE_FUNC_MOD", "ci");
+
+    let output = run_function(
+        "decode",
+        &vec![
+            "TEST_DECODE_FUNC_MOD".to_string(),
+            "development".to_string(),
+            "dev".to_string(),
+            "ci".to_string(),
+            "test".to_string(),
+        ],
+    );
+
+    assert_eq!(output, vec!["test"]);
+}
+
+#[test]
 fn get_function_name_valid() {
     let output = get_function_name("test(123)");
 

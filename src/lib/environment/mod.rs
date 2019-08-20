@@ -63,7 +63,7 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
     }
 }
 
-fn expand_value(value: &str) -> String {
+pub(crate) fn expand_value(value: &str) -> String {
     let mut value_string = value.to_string();
 
     match value_string.find("${") {
