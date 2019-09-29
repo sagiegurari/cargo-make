@@ -1028,6 +1028,7 @@ PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+TO_UNSET = { unset = true }
 
 # profile based environment override
 [env.development]
@@ -1046,8 +1047,8 @@ Environment variables can be defined as:
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
 
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.
-
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
+To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>

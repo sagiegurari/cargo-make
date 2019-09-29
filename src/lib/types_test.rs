@@ -830,6 +830,29 @@ fn env_value_deserialize_profile() {
 }
 
 #[test]
+fn env_value_deserialize_unset() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { unset = true }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Unset(value) => {
+                assert!(value.unset);
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 

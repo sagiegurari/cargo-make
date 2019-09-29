@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::{ConfigSection, Task};
+use crate::types::{ConfigSection, EnvValueUnset, Task};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
@@ -290,6 +290,24 @@ fn set_env_for_profile_some_found() {
 
     assert!(envmnt::exists("TEST_PROFILE_FOUND"));
     assert!(envmnt::is("TEST_PROFILE_FOUND"));
+}
+
+#[test]
+fn set_env_for_config_unset() {
+    envmnt::set("set_env_for_config_unset", "true");
+    assert!(envmnt::exists("set_env_for_config_unset"));
+
+    let unset = EnvValueUnset { unset: true };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "set_env_for_config_unset".to_string(),
+        EnvValue::Unset(unset),
+    );
+
+    set_env_for_config(env, None);
+
+    assert!(!envmnt::exists("set_env_for_config_unset"));
 }
 
 #[test]

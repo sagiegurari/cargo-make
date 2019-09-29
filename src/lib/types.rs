@@ -360,6 +360,13 @@ pub struct EnvValueDecode {
     pub mapping: HashMap<String, String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+/// Enables to unset env variables
+pub struct EnvValueUnset {
+    /// If true, the env variable will be unset, else ignored
+    pub unset: bool,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
@@ -368,6 +375,8 @@ pub enum EnvValue {
     Value(String),
     /// The value as boolean
     Boolean(bool),
+    /// Unset env
+    Unset(EnvValueUnset),
     /// Script which will return the value
     Script(EnvValueScript),
     /// Env decoding info

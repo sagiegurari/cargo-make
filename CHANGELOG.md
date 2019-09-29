@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.22.2
+
+* Ability to unset environment variables #294
+
 ### v0.22.1 (2019-08-20)
 
 * Support decoding ability for environment variables initialization #275 #277
