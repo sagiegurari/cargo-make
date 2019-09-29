@@ -114,7 +114,7 @@ pub(crate) fn install(task_config: &Task) {
         },
         None => match task_config.install_script {
             Some(ref script) => {
-                command::run_script(
+                command::run_script_get_exit_code(
                     &script,
                     task_config.script_runner.clone(),
                     &vec![],

@@ -108,7 +108,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    command::run_script(script, None, &vec![], true);
+                    command::run_script_get_exit_code(script, None, &vec![], true);
 
                     true
                 }
@@ -150,10 +150,14 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
 
     let mut config_section = ConfigSection::new();
     if parent_config.config.is_some() {
-        config_section.extend(&mut parent_config.config.unwrap());
+        let mut config_section_data = parent_config.config.unwrap();
+        debug!("Adding parent config section: {:#?}", &config_section_data);
+        config_section.extend(&mut config_section_data);
     }
     if config.config.is_some() {
-        config_section.extend(&mut config.config.unwrap());
+        let mut config_section_data = config.config.unwrap();
+        debug!("Adding config section: {:#?}", &config_section_data);
+        config_section.extend(&mut config_section_data);
     }
 
     ExternalConfig {

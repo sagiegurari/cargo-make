@@ -128,7 +128,7 @@ pub(crate) fn run_script_get_output(
 }
 
 /// Runs the requested script text and panics in case of any script error.
-pub(crate) fn run_script(
+pub(crate) fn run_script_get_exit_code(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
     cli_arguments: &Vec<String>,

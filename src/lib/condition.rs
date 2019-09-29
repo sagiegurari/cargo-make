@@ -252,7 +252,8 @@ fn validate_script(condition_script: &Option<Vec<String>>, script_runner: Option
         Some(ref script) => {
             debug!("Checking task condition script.");
 
-            let exit_code = command::run_script(&script, script_runner, &vec![], false);
+            let exit_code =
+                command::run_script_get_exit_code(&script, script_runner, &vec![], false);
 
             if exit_code == 0 {
                 true

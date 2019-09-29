@@ -22,7 +22,6 @@
     legacy_constructor_visibility,
     legacy_directory_ownership,
     macro_expanded_macro_exports_accessed_by_absolute_paths,
-    meta_variable_misuse,
     missing_copy_implementations,
     missing_docs,
     missing_fragment_specifier,
@@ -128,24 +127,10 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
-extern crate ci_info;
-extern crate clap;
-extern crate colored;
-extern crate dirs;
-extern crate envmnt;
-extern crate fern;
-extern crate glob;
-extern crate indexmap;
 #[macro_use]
 extern crate log;
-extern crate rand;
-extern crate run_script;
-extern crate rust_info;
-extern crate semver;
 #[macro_use]
 extern crate serde_derive;
-extern crate shell2batch;
-extern crate toml;
 
 #[cfg(test)]
 mod test;

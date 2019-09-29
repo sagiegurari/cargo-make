@@ -15,5 +15,5 @@ pub(crate) fn execute(
     cli_arguments: &Vec<String>,
     validate: bool,
 ) {
-    command::run_script(&script_text, runner, &cli_arguments, validate);
+    command::run_script_get_exit_code(&script_text, runner, &cli_arguments, validate);
 }
