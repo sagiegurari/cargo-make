@@ -3,6 +3,7 @@
 ### v0.22.2
 
 * Ability to unset environment variables #294
+* New environment variable to hold current workspace member name #285
 
 ### v0.22.1 (2019-08-20)
 

@@ -16,6 +16,7 @@ use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::env;
 use std::path;
+use std::path::Path;
 
 /// Returns the actual task name to invoke as tasks may have aliases
 fn get_task_name(config: &Config, name: &str) -> String {
@@ -127,8 +128,6 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let mut script_lines = vec![];
     for member in &members {
         if !should_skip_workspace_member(&member, &skip_members) {
-            debug!("Adding Member: {}.", &member);
-
             //convert to OS path separators
             let member_path = update_member_path(&member);
 
@@ -140,10 +139,20 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             cd_line.push_str(&member_path);
             script_lines.push(cd_line);
 
+            //get member name
+            let member_name = match Path::new(&member_path).file_name() {
+                Some(name) => String::from(name.to_string_lossy()),
+                None => member_path.clone(),
+            };
+
+            debug!("Adding Member: {} Path: {}", &member_name, &member_path);
+
             let mut make_line = cargo_make_command.to_string();
             make_line
                 .push_str(" --disable-check-for-updates --allow-private --no-on-error --loglevel=");
             make_line.push_str(&log_level);
+            make_line.push_str(" --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=");
+            make_line.push_str(&member_name);
             make_line.push_str(" ");
             make_line.push_str(&task);
             script_lines.push(make_line);

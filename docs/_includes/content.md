@@ -1120,6 +1120,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 
