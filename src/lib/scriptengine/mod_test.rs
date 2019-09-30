@@ -17,6 +17,29 @@ fn get_script_text_vector() {
 fn get_script_text_file() {
     let file_info = FileScriptValue {
         file: "src/lib/test/test_files/text_file.txt".to_string(),
+        absolute_path: None,
+    };
+    let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
+
+    assert_eq!(output, "text 1\ntext 2");
+}
+
+#[test]
+fn get_script_text_file_relative() {
+    let file_info = FileScriptValue {
+        file: "src/lib/test/test_files/text_file.txt".to_string(),
+        absolute_path: Some(false),
+    };
+    let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
+
+    assert_eq!(output, "text 1\ntext 2");
+}
+
+#[test]
+fn get_script_text_file_absolute() {
+    let file_info = FileScriptValue {
+        file: "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/test_files/text_file.txt".to_string(),
+        absolute_path: Some(true),
     };
     let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
 

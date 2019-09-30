@@ -550,8 +550,14 @@ It is also possible to point to an existing script instead of holding the script
 script = { file = "script.sh" }
 ```
 
-Script file paths is always relative to the current working directory.
+Script file paths are always relative to the current working directory unless specified by the **absolute_path** attribute, for example:
 
+```toml
+[tasks.hello-world-from-script-file-absolute-path]
+script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = true }
+```
+
+File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-examplerust"></a>

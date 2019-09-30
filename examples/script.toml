@@ -12,5 +12,8 @@ script = [
 [tasks.hello-world-from-script-file]
 script = { file = "script.sh" }
 
+[tasks.hello-world-from-script-file-absolute-path]
+script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = true }
+
 [tasks.default]
 dependencies = ["hello-world"]

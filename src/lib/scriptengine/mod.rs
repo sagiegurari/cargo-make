@@ -14,9 +14,9 @@ mod shell_to_batch;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
+use crate::environment;
 use crate::io;
 use crate::types::{ScriptValue, Task};
-use envmnt;
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -40,10 +40,18 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
     match script {
         ScriptValue::Text(text) => text.clone(),
         ScriptValue::File(info) => {
-            let cwd = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", ".");
+            let mut file_path_string = String::new();
+            if !info.absolute_path.unwrap_or(false) {
+                file_path_string.push_str("${CARGO_MAKE_WORKING_DIRECTORY}/");
+            }
+            file_path_string.push_str(&info.file);
+
+            // expand env
+            let expanded_value = environment::expand_value(&file_path_string);
+
             let mut file_path = PathBuf::new();
-            file_path.push(&cwd);
-            file_path.push(&info.file);
+            file_path.push(expanded_value);
+
             let script_text = io::read_text_file(&file_path);
             let lines: Vec<&str> = script_text.split('\n').collect();
 

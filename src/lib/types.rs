@@ -766,6 +766,8 @@ impl PartialEq for DeprecationInfo {
 pub struct FileScriptValue {
     /// Script file name
     pub file: String,
+    /// True for absolute path (default false)
+    pub absolute_path: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
