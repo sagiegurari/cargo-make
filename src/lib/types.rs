@@ -758,6 +758,23 @@ impl PartialEq for DeprecationInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Script file name
+pub struct FileScriptValue {
+    /// Script file name
+    pub file: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Script value (text, file name, ...)
+pub enum ScriptValue {
+    /// The script text lines
+    Text(Vec<String>),
+    /// Script file name
+    File(FileScriptValue),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -809,7 +826,7 @@ pub struct Task {
     /// The command args
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
+    pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
     /// The script file extension
@@ -1337,7 +1354,7 @@ pub struct PlatformOverrideTask {
     /// The command args
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
+    pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
     /// The script file extension

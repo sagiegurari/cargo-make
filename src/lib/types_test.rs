@@ -1,5 +1,12 @@
 use super::*;
 
+fn get_script_vec(task: &Task) -> Vec<String> {
+    match task.script.as_ref().unwrap() {
+        ScriptValue::Text(value) => value.clone(),
+        _ => panic!("Invalid script value type."),
+    }
+}
+
 #[test]
 fn cli_args_new() {
     let cli_args = CliArgs::new();
@@ -952,7 +959,7 @@ fn task_extend_both_have_misc_data() {
     base.private = Some(false);
     base.deprecated = Some(DeprecationInfo::Message("base".to_string()));
     base.watch = Some(TaskWatchOptions::Boolean(false));
-    base.script = Some(vec!["1".to_string(), "2".to_string()]);
+    base.script = Some(ScriptValue::Text(vec!["1".to_string(), "2".to_string()]));
 
     let extended = Task {
         clear: Some(false),
@@ -1026,6 +1033,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.windows.is_none());
     assert!(base.mac.is_none());
 
+    assert_eq!(get_script_vec(&base).len(), 2);
     assert_eq!(
         base.install_crate.unwrap(),
         InstallCrate::Value("my crate2".to_string())
@@ -1042,7 +1050,6 @@ fn task_extend_both_have_misc_data() {
     assert!(base.force.unwrap());
     assert_eq!(base.env.unwrap().len(), 0);
     assert_eq!(base.alias.unwrap(), "alias2");
-    assert_eq!(base.script.unwrap().len(), 2);
 }
 
 #[test]
@@ -1072,7 +1079,7 @@ fn task_extend_extended_have_all_fields() {
         install_crate_args: None,
         install_script: None,
         args: None,
-        script: Some(vec!["1".to_string(), "2".to_string()]),
+        script: Some(ScriptValue::Text(vec!["1".to_string(), "2".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -1120,7 +1127,11 @@ fn task_extend_extended_have_all_fields() {
         mac_alias: Some("mac".to_string()),
         install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
-        script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script: Some(ScriptValue::Text(vec![
+            "1".to_string(),
+            "2".to_string(),
+            "3".to_string(),
+        ])),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
@@ -1154,7 +1165,11 @@ fn task_extend_extended_have_all_fields() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1189,7 +1204,11 @@ fn task_extend_extended_have_all_fields() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1224,7 +1243,11 @@ fn task_extend_extended_have_all_fields() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1269,6 +1292,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.windows.is_some());
     assert!(base.mac.is_some());
 
+    assert_eq!(get_script_vec(&base).len(), 3);
     assert_eq!(
         base.install_crate.unwrap(),
         InstallCrate::Value("my crate2".to_string())
@@ -1294,7 +1318,6 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.mac_alias.unwrap(), "mac");
     assert_eq!(base.install_script.unwrap().len(), 2);
     assert_eq!(base.args.unwrap().len(), 2);
-    assert_eq!(base.script.unwrap().len(), 3);
     assert_eq!(base.script_runner.unwrap(), "sh2");
     assert_eq!(base.script_extension.unwrap(), "ext2");
     let run_task_name = match base.run_task.unwrap() {
@@ -1351,7 +1374,11 @@ fn task_extend_clear_with_no_data() {
         mac_alias: Some("mac".to_string()),
         install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
-        script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script: Some(ScriptValue::Text(vec![
+            "1".to_string(),
+            "2".to_string(),
+            "3".to_string(),
+        ])),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
@@ -1385,7 +1412,11 @@ fn task_extend_clear_with_no_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1420,7 +1451,11 @@ fn task_extend_clear_with_no_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1455,7 +1490,11 @@ fn task_extend_clear_with_no_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1544,7 +1583,11 @@ fn task_extend_clear_with_all_data() {
         mac_alias: Some("mac".to_string()),
         install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
-        script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+        script: Some(ScriptValue::Text(vec![
+            "1".to_string(),
+            "2".to_string(),
+            "3".to_string(),
+        ])),
         script_runner: Some("sh2".to_string()),
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
@@ -1578,7 +1621,11 @@ fn task_extend_clear_with_all_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1613,7 +1660,11 @@ fn task_extend_clear_with_all_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1648,7 +1699,11 @@ fn task_extend_clear_with_all_data() {
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
             args: Some(vec!["a1".to_string(), "a2".to_string()]),
-            script: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
             script_runner: Some("sh3".to_string()),
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
@@ -1753,7 +1808,7 @@ fn task_get_normalized_task_undefined() {
         cwd: None,
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
-        script: Some(vec!["a".to_string(), "b".to_string()]),
+        script: Some(ScriptValue::Text(vec!["a".to_string(), "b".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -1803,6 +1858,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
+    assert_eq!(get_script_vec(&normalized_task).len(), 2);
     assert_eq!(
         normalized_task.install_crate.unwrap(),
         InstallCrate::Value("install_crate".to_string())
@@ -1826,7 +1882,6 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.mac_alias.unwrap(), "mac");
     assert_eq!(normalized_task.install_script.unwrap().len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
-    assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext1");
     let run_task_name = match normalized_task.run_task.unwrap() {
@@ -1879,7 +1934,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
-        script: Some(vec!["a".to_string(), "b".to_string()]),
+        script: Some(ScriptValue::Text(vec!["a".to_string(), "b".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -1918,7 +1973,11 @@ fn task_get_normalized_task_with_override_no_clear() {
                 "D".to_string(),
             ]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
-            script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "a".to_string(),
+                "b".to_string(),
+                "c".to_string(),
+            ])),
             script_runner: Some("sh2".to_string()),
             script_extension: Some("ext2".to_string()),
             run_task: Some(RunTaskInfo::Name("task2".to_string())),
@@ -1965,6 +2024,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
+    assert_eq!(get_script_vec(&normalized_task).len(), 3);
     assert_eq!(
         normalized_task.install_crate.unwrap(),
         InstallCrate::Value("linux_crate".to_string())
@@ -1992,7 +2052,6 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.cwd.unwrap(), "cwd2".to_string());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
-    assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext2");
     let run_task_name = match normalized_task.run_task.unwrap() {
@@ -2049,7 +2108,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
-        script: Some(vec!["a".to_string(), "b".to_string()]),
+        script: Some(ScriptValue::Text(vec!["a".to_string(), "b".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -2092,7 +2151,11 @@ fn task_get_normalized_task_with_override_clear_false() {
                 "D".to_string(),
             ]),
             args: Some(vec!["1".to_string(), "2".to_string(), "3".to_string()]),
-            script: Some(vec!["a".to_string(), "b".to_string(), "c".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "a".to_string(),
+                "b".to_string(),
+                "c".to_string(),
+            ])),
             script_runner: Some("sh2".to_string()),
             script_extension: Some("ext2".to_string()),
             run_task: Some(RunTaskInfo::Name("task2".to_string())),
@@ -2139,6 +2202,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
+    assert_eq!(get_script_vec(&normalized_task).len(), 3);
     assert_eq!(
         normalized_task.install_crate.unwrap(),
         InstallCrate::Value("linux_crate".to_string())
@@ -2166,7 +2230,6 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.install_crate_args.unwrap().len(), 3);
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
     assert_eq!(normalized_task.args.unwrap().len(), 3);
-    assert_eq!(normalized_task.script.unwrap().len(), 3);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh2");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext2");
     let run_task_name = match normalized_task.run_task.unwrap() {
@@ -2217,7 +2280,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
-        script: Some(vec!["a".to_string(), "b".to_string()]),
+        script: Some(ScriptValue::Text(vec!["a".to_string(), "b".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -2291,6 +2354,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
 
+    assert_eq!(get_script_vec(&normalized_task).len(), 2);
     assert_eq!(
         normalized_task.install_crate.unwrap(),
         InstallCrate::Value("install_crate".to_string())
@@ -2314,7 +2378,6 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert_eq!(normalized_task.install_crate_args.unwrap().len(), 2);
     assert_eq!(normalized_task.install_script.unwrap().len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
-    assert_eq!(normalized_task.script.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
     assert_eq!(normalized_task.script_extension.unwrap(), "ext1");
     let run_task_name = match normalized_task.run_task.unwrap() {
@@ -2361,7 +2424,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
         args: Some(vec!["1".to_string(), "2".to_string()]),
-        script: Some(vec!["a".to_string(), "b".to_string()]),
+        script: Some(ScriptValue::Text(vec!["a".to_string(), "b".to_string()])),
         script_runner: Some("sh1".to_string()),
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
@@ -2469,7 +2532,7 @@ fn task_is_valid_only_command() {
 #[test]
 fn task_is_valid_only_script() {
     let mut task = Task::new();
-    task.script = Some(vec!["test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
 
     assert!(task.is_valid());
 }
@@ -2487,7 +2550,7 @@ fn task_is_valid_both_run_task_and_command() {
 fn task_is_valid_both_run_task_and_script() {
     let mut task = Task::new();
     task.run_task = Some(RunTaskInfo::Name("test".to_string()));
-    task.script = Some(vec!["test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
 
     assert!(!task.is_valid());
 }
@@ -2496,7 +2559,7 @@ fn task_is_valid_both_run_task_and_script() {
 fn task_is_valid_both_command_and_script() {
     let mut task = Task::new();
     task.command = Some("test".to_string());
-    task.script = Some(vec!["test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
 
     assert!(!task.is_valid());
 }

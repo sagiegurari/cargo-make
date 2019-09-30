@@ -9,5 +9,8 @@ script = [
     "echo end..."
 ]
 
+[tasks.hello-world-from-script-file]
+script = { file = "script.sh" }
+
 [tasks.default]
 dependencies = ["hello-world"]

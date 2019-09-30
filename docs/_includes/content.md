@@ -543,6 +543,15 @@ args are:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+It is also possible to point to an existing script instead of holding the script text inside the makefile by using the **file** property as follows:
+
+```toml
+[tasks.hello-world-from-script-file]
+script = { file = "script.sh" }
+```
+
+Script file paths is always relative to the current working directory.
+
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-examplerust"></a>

@@ -11,6 +11,7 @@ use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
+use std::path::PathBuf;
 use std::{env, iter};
 
 pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
@@ -77,4 +78,17 @@ pub(crate) fn delete_file(file: &str) {
         Ok(_) => debug!("Temporary file deleted: {}", &file),
         Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file, error),
     };
+}
+
+pub(crate) fn read_text_file(file_path: &PathBuf) -> String {
+    debug!("Opening file: {:#?}", &file_path);
+    let mut file = match File::open(&file_path) {
+        Ok(value) => value,
+        Err(error) => panic!("Unable to open file: {:#?} error: {}", file_path, error),
+    };
+
+    let mut content = String::new();
+    file.read_to_string(&mut content).unwrap();
+
+    content
 }

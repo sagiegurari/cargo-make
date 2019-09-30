@@ -134,8 +134,11 @@ fn create_workspace_task_no_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), "".to_string());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, "".to_string());
     assert!(task.env.is_none());
 }
 
@@ -170,8 +173,11 @@ cd -"#
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), expected_script);
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
     assert!(task.env.is_none());
 }
 
@@ -189,8 +195,11 @@ fn create_workspace_task_extend_workspace_makefile() {
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), "".to_string());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, "".to_string());
     assert!(task.env.is_some());
     assert!(task
         .env

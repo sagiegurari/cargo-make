@@ -636,6 +636,15 @@ args are:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+It is also possible to point to an existing script instead of holding the script text inside the makefile by using the **file** property as follows:
+
+```toml
+[tasks.hello-world-from-script-file]
+script = { file = "script.sh" }
+```
+
+Script file paths is always relative to the current working directory.
+
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-examplerust"></a>
@@ -1121,6 +1130,7 @@ PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+TO_UNSET = { unset = true }
 
 # profile based environment override
 [env.development]
@@ -1139,8 +1149,8 @@ Environment variables can be defined as:
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
 
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.
-
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
+To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>
@@ -1212,6 +1222,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 

@@ -9,7 +9,7 @@ mod execution_plan_test;
 
 use crate::environment;
 use crate::logger;
-use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, Step, Task};
+use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task};
 use envmnt;
 use glob::Pattern;
 use indexmap::IndexMap;
@@ -187,7 +187,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     };
 
     let mut workspace_task = Task::new();
-    workspace_task.script = Some(script_lines);
+    workspace_task.script = Some(ScriptValue::Text(script_lines));
     workspace_task.env = task_env;
 
     workspace_task

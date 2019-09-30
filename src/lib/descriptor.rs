@@ -11,13 +11,13 @@
 mod descriptor_test;
 
 use crate::command;
+use crate::io;
 use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
 use crate::version;
 use envmnt;
 use indexmap::IndexMap;
 use std::env;
-use std::fs::{canonicalize, File};
-use std::io::Read;
+use std::fs::canonicalize;
 use std::path::{Path, PathBuf};
 use toml;
 
@@ -244,16 +244,7 @@ fn load_external_descriptor(
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
-        debug!("Opening file: {:#?}", &file_path);
-        let mut file = match File::open(&file_path) {
-            Ok(value) => value,
-            Err(error) => panic!(
-                "Unable to open file, base path: {} file name: {} error: {}",
-                base_path, file_name, error
-            ),
-        };
-        let mut external_descriptor = String::new();
-        file.read_to_string(&mut external_descriptor).unwrap();
+        let external_descriptor = io::read_text_file(&file_path);
 
         check_makefile_min_version(&external_descriptor)?;
 

@@ -1,7 +1,7 @@
 use super::*;
 use crate::types::{
     ConfigSection, CrateInfo, DeprecationInfo, EnvInfo, EnvValue, FlowInfo, GitInfo,
-    RunTaskDetails, RunTaskInfo, Step, Task, TaskCondition,
+    RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
 };
 use ci_info;
 use indexmap::IndexMap;
@@ -105,7 +105,7 @@ fn run_flow_private() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.private = Some(true);
     config.tasks.insert("test".to_string(), task);
 
@@ -137,7 +137,7 @@ fn run_flow_private_sub_task() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.private = Some(true);
     config.tasks.insert("test".to_string(), task);
 
@@ -169,7 +169,7 @@ fn run_flow_allow_private() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.private = Some(true);
     config.tasks.insert("test".to_string(), task);
 
@@ -217,7 +217,7 @@ fn run_task_bad_script() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 1".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 1".to_string()]));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -252,7 +252,7 @@ fn run_task_script_with_args_error() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit $1".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit $1".to_string()]));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -286,7 +286,7 @@ fn run_task_script_with_args_valid() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit $1".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit $1".to_string()]));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -355,7 +355,7 @@ fn run_task_bad_command_valid_script() {
 
     let mut task = Task::new();
     task.command = Some("bad12345".to_string());
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -388,7 +388,7 @@ fn run_task_no_command_valid_script() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -401,7 +401,7 @@ fn run_task_no_command_valid_script() {
 #[should_panic]
 fn run_task_bad_run_task_valid_command() {
     let mut sub_task = Task::new();
-    sub_task.script = Some(vec!["exit 1".to_string()]);
+    sub_task.script = Some(ScriptValue::Text(vec!["exit 1".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("sub".to_string(), sub_task);
@@ -442,7 +442,7 @@ fn run_task_bad_run_task_valid_command() {
 #[test]
 fn run_task_valid_run_task() {
     let mut sub_task = Task::new();
-    sub_task.script = Some(vec!["exit 0".to_string()]);
+    sub_task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("sub".to_string(), sub_task);
@@ -503,7 +503,7 @@ fn run_task_invalid_task() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.command = Some("echo".to_string());
     let step = Step {
         name: "test".to_string(),
@@ -543,7 +543,7 @@ fn run_task_set_env() {
     );
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.env = Some(env);
 
     let step = Step {
@@ -583,7 +583,7 @@ fn run_task_cwd_no_such_dir() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.cwd = Some("./bad/badagain".to_string());
     let step = Step {
         name: "test".to_string(),
@@ -617,7 +617,7 @@ fn run_task_cwd_dir_exists() {
     };
 
     let mut task = Task::new();
-    task.script = Some(vec!["exit 0".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     task.cwd = Some("./src".to_string());
     let step = Step {
         name: "test".to_string(),
@@ -1011,7 +1011,7 @@ fn create_watch_step_valid() {
 #[test]
 fn run_sub_task_and_report_for_name() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1048,7 +1048,7 @@ fn run_sub_task_and_report_for_name() {
 #[should_panic]
 fn run_sub_task_and_report_for_name_not_found() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1082,7 +1082,7 @@ fn run_sub_task_and_report_for_name_not_found() {
 #[test]
 fn run_sub_task_and_report_for_details() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1121,7 +1121,7 @@ fn run_sub_task_and_report_for_details() {
 #[test]
 fn run_sub_task_and_report_routing_empty() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1157,7 +1157,7 @@ fn run_sub_task_and_report_routing_empty() {
 #[test]
 fn run_sub_task_and_report_routing_no_condition() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1198,7 +1198,7 @@ fn run_sub_task_and_report_routing_no_condition() {
 #[test]
 fn run_sub_task_and_report_routing_condition_not_met() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
@@ -1250,7 +1250,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
 #[should_panic]
 fn run_sub_task_and_report_routing_not_found() {
     let mut task = Task::new();
-    task.script = Some(vec!["echo test".to_string()]);
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
     let mut tasks = IndexMap::new();
     tasks.insert("test".to_string(), task);
