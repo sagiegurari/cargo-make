@@ -1292,12 +1292,14 @@ The following condition types are available:
 * **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **rust_version** - Optional definition of min, max and/or specific rust version
+* **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
+* **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
 
 Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
+condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
 ```
 
 <a name="usage-conditions-script"></a>
@@ -2569,13 +2571,17 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **post-audit** - No Description.
 * **post-ci-flow** - No Description.
 * **post-outdated** - No Description.
+* **post-unused-dependencies** - No Description.
 * **post-verify-project** - No Description.
 * **post-workspace-ci-flow** - No Description.
 * **pre-audit** - No Description.
 * **pre-ci-flow** - No Description.
 * **pre-outdated** - No Description.
+* **pre-unused-dependencies** - No Description.
 * **pre-verify-project** - No Description.
 * **pre-workspace-ci-flow** - No Description.
+* **unused-dependencies** - Checks for unused dependencies.
+* **unused-dependencies-flow** - Checks for unused dependencies.
 * **verify-project** - Runs verify-project cargo plugin.
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
@@ -2645,7 +2651,9 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
 * **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
 * **github-publish** - Creates a new github release.
+* **github-publish-curl** - Creates a new github release using curl.
 * **github-publish-custom-name** - Creates a new github release.
+* **github-publish-hublish** - Creates a new github release using cargo-hublish.
 * **package** - Runs the cargo package command.
 * **post-package** - No Description.
 * **post-publish** - No Description.

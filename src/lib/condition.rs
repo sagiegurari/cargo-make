@@ -8,6 +8,7 @@
 mod condition_test;
 
 use crate::command;
+use crate::environment;
 use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
@@ -15,6 +16,7 @@ use crate::version::is_newer;
 use envmnt;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
+use std::path::Path;
 
 fn validate_env(condition: &TaskCondition) -> bool {
     let env = condition.env.clone();
@@ -228,6 +230,35 @@ fn validate_rust_version(condition: &TaskCondition) -> bool {
     }
 }
 
+fn validate_files(file_paths: &Vec<String>, exist: bool) -> bool {
+    for file_path in file_paths.iter() {
+        let expanded_file_path = environment::expand_value(file_path);
+        let path = Path::new(&expanded_file_path);
+
+        if path.exists() != exist {
+            return false;
+        }
+    }
+
+    true
+}
+
+fn validate_files_exist(condition: &TaskCondition) -> bool {
+    let files = condition.files_exist.clone();
+    match files {
+        Some(ref file_paths) => validate_files(file_paths, true),
+        None => true,
+    }
+}
+
+fn validate_files_not_exist(condition: &TaskCondition) -> bool {
+    let files = condition.files_not_exist.clone();
+    match files {
+        Some(ref file_paths) => validate_files(file_paths, false),
+        None => true,
+    }
+}
+
 fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) -> bool {
     match condition {
         Some(ref condition_struct) => {
@@ -242,6 +273,8 @@ fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) ->
                 && validate_env_bool(&condition_struct, true)
                 && validate_env_bool(&condition_struct, false)
                 && validate_rust_version(&condition_struct)
+                && validate_files_exist(&condition_struct)
+                && validate_files_not_exist(&condition_struct)
         }
         None => true,
     }

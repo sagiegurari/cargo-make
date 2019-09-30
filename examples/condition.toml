@@ -50,3 +50,15 @@ condition = { env_false = ["FALSE_ENV"] }
 script = [
     "echo \"condition was met\""
 ]
+
+[tasks.test-file-exists-condition]
+condition = { files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] }
+script = [
+    "echo \"condition was met\""
+]
+
+[tasks.test-file-not-exists-condition]
+condition = { files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml2"] }
+script = [
+    "echo \"condition was met\""
+]

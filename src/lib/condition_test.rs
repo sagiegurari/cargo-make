@@ -19,6 +19,8 @@ fn validate_env_set_empty() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -41,6 +43,8 @@ fn validate_env_set_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -60,6 +64,8 @@ fn validate_env_set_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -86,6 +92,8 @@ fn validate_env_set_invalid_partial_found() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_set(&condition);
@@ -105,6 +113,8 @@ fn validate_env_not_set_empty() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -124,6 +134,8 @@ fn validate_env_not_set_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -146,6 +158,8 @@ fn validate_env_not_set_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -172,6 +186,8 @@ fn validate_env_not_set_invalid_partial_found() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_not_set(&condition);
@@ -191,6 +207,8 @@ fn validate_env_bool_true_empty() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, true);
@@ -213,6 +231,8 @@ fn validate_env_bool_true_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, true);
@@ -235,6 +255,8 @@ fn validate_env_bool_true_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, true);
@@ -257,6 +279,8 @@ fn validate_env_bool_true_invalid_partial_found() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, true);
@@ -279,6 +303,8 @@ fn validate_env_bool_true_invalid_partial_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, true);
@@ -298,6 +324,8 @@ fn validate_env_bool_false_empty() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, false);
@@ -320,6 +348,8 @@ fn validate_env_bool_false_valid() {
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, false);
@@ -342,6 +372,8 @@ fn validate_env_bool_false_invalid() {
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, false);
@@ -364,6 +396,8 @@ fn validate_env_bool_false_invalid_partial_found() {
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, false);
@@ -386,6 +420,8 @@ fn validate_env_bool_false_invalid_partial_valid() {
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env_bool(&condition, false);
@@ -405,6 +441,8 @@ fn validate_env_empty() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env(&condition);
@@ -431,6 +469,8 @@ fn validate_env_valid() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env(&condition);
@@ -454,6 +494,8 @@ fn validate_env_invalid_not_found() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env(&condition);
@@ -478,6 +520,8 @@ fn validate_env_invalid_not_equal() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env(&condition);
@@ -504,6 +548,8 @@ fn validate_env_invalid_partial_found() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_env(&condition);
@@ -550,6 +596,8 @@ fn validate_profile_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_profile(&condition);
@@ -571,6 +619,8 @@ fn validate_profile_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_profile(&condition);
@@ -594,6 +644,8 @@ fn validate_platform_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_platform(&condition);
@@ -613,6 +665,8 @@ fn validate_platform_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_platform(&condition);
@@ -658,6 +712,8 @@ fn validate_channel_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
     let mut enabled = validate_channel(&condition, &flow_info);
     assert!(enabled);
@@ -677,6 +733,8 @@ fn validate_channel_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
     enabled = validate_channel(&condition, &flow_info);
 
@@ -697,6 +755,8 @@ fn validate_channel_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
     enabled = validate_channel(&condition, &flow_info);
 
@@ -737,8 +797,150 @@ fn validate_channel_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
     let enabled = validate_channel(&condition, &flow_info);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_exists_valid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+        ]),
+        files_not_exist: None,
+    };
+
+    let enabled = validate_files_exist(&condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_file_exists_partial_invalid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string(),
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string(),
+        ]),
+        files_not_exist: None,
+    };
+
+    let enabled = validate_files_exist(&condition);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_exists_invalid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+        ]),
+        files_not_exist: None,
+    };
+
+    let enabled = validate_files_exist(&condition);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_not_exists_valid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+        ]),
+    };
+
+    let enabled = validate_files_not_exist(&condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_file_not_exists_partial_invalid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string(),
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string(),
+        ]),
+    };
+
+    let enabled = validate_files_not_exist(&condition);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_not_exists_invalid() {
+    let condition = TaskCondition {
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+        ]),
+    };
+
+    let enabled = validate_files_not_exist(&condition);
 
     assert!(!enabled);
 }
@@ -778,6 +980,8 @@ fn validate_criteria_empty() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -823,6 +1027,8 @@ fn validate_criteria_valid_platform() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -864,6 +1070,8 @@ fn validate_criteria_invalid_platform() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -905,6 +1113,8 @@ fn validate_criteria_valid_profile() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -946,6 +1156,8 @@ fn validate_criteria_invalid_profile() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -992,6 +1204,8 @@ fn validate_criteria_valid_channel() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -1014,6 +1228,8 @@ fn validate_criteria_valid_channel() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -1036,6 +1252,8 @@ fn validate_criteria_valid_channel() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
         }),
     );
 
@@ -1078,6 +1296,188 @@ fn validate_criteria_invalid_channel() {
             env_false: None,
             env: None,
             rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+        }),
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_criteria_valid_file_exists() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        &flow_info,
+        &Some(TaskCondition {
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            rust_version: None,
+            files_exist: Some(vec![
+                "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+            ]),
+            files_not_exist: None,
+        }),
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_criteria_invalid_file_exists() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        &flow_info,
+        &Some(TaskCondition {
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            rust_version: None,
+            files_exist: Some(vec![
+                "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+            ]),
+            files_not_exist: None,
+        }),
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_criteria_valid_file_not_exists() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        &flow_info,
+        &Some(TaskCondition {
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: Some(vec![
+                "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+            ]),
+        }),
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_criteria_invalid_file_not_exists() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        &flow_info,
+        &Some(TaskCondition {
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: Some(vec![
+                "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+            ]),
         }),
     );
 
@@ -1126,6 +1526,8 @@ fn validate_condition_for_step_both_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1176,6 +1578,8 @@ fn validate_condition_for_step_valid_script_invalid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 1".to_string()]);
 
@@ -1222,6 +1626,8 @@ fn validate_condition_for_step_invalid_script_valid() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1268,6 +1674,8 @@ fn validate_condition_for_step_invalid_env_set() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1316,6 +1724,8 @@ fn validate_condition_for_step_invalid_env_not_set() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1369,6 +1779,8 @@ fn validate_condition_for_step_valid_env() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1419,6 +1831,8 @@ fn validate_condition_for_step_invalid_env_not_found() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1472,6 +1886,8 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         env_false: None,
         env: Some(env_values),
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     });
     step.config.condition_script = Some(vec!["exit 0".to_string()]);
 
@@ -1525,6 +1941,8 @@ fn validate_condition_for_step_valid_rust_version() {
             max: None,
             equal: Some(version),
         }),
+        files_exist: None,
+        files_not_exist: None,
     });
 
     let enabled = validate_condition_for_step(&flow_info, &step);
@@ -1578,6 +1996,8 @@ fn validate_condition_for_step_invalid_rust_version() {
             max: None,
             equal: Some(version),
         }),
+        files_exist: None,
+        files_not_exist: None,
     });
 
     let enabled = validate_condition_for_step(&flow_info, &step);
@@ -1851,6 +2271,8 @@ fn validate_rust_version_no_condition() {
         env_false: None,
         env: None,
         rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_rust_version(&condition);
@@ -1877,6 +2299,8 @@ fn validate_rust_version_with_valid_condition() {
             max: Some(version.clone()),
             equal: Some(version.clone()),
         }),
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_rust_version(&condition);
@@ -1904,6 +2328,8 @@ fn validate_rust_version_with_invalid_condition() {
             max: None,
             equal: Some(version),
         }),
+        files_exist: None,
+        files_not_exist: None,
     };
 
     let enabled = validate_rust_version(&condition);

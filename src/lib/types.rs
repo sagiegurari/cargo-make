@@ -338,6 +338,10 @@ pub struct TaskCondition {
     pub env_false: Option<Vec<String>>,
     /// Rust version condition
     pub rust_version: Option<RustVersionCondition>,
+    /// Files exist
+    pub files_exist: Option<Vec<String>>,
+    /// Files which do not exist
+    pub files_not_exist: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
