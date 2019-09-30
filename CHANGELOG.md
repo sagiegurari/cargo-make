@@ -5,6 +5,7 @@
 * Ability to unset environment variables #294
 * New environment variable to hold current workspace member name #285
 * Support script file path for task script attribute #286
+* Added new curl based github release task #293
 
 ### v0.22.1 (2019-08-20)
 

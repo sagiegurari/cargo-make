@@ -864,14 +864,36 @@ args = ["hublish"]
 
 [tasks.github-publish-custom-name]
 # Creates a new github release.
-# Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release."
 category = "Publish"
+run_task = [
+    { name = "github-publish-curl", condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] } },
+    { name = "github-publish-hublish", condition = { env_set = [ "GITHUB_REPO_NAME" ] } },
+]
+
+[tasks.github-publish-hublish]
+# Creates a new github release.
+# Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
+description = "Creates a new github release using cargo-hublish."
+category = "Publish"
+condition = { env_set = [ "GITHUB_REPO_NAME" ] }
 install_crate = "cargo-hublish"
 args = ["hublish"]
 script_runner = "@shell"
 script = [
     "cargo hublish --url \"https://api.github.com/repos/${GITHUB_REPO_NAME}/releases\""
+]
+
+[tasks.github-publish-curl]
+# Creates a new github release.
+description = "Creates a new github release using curl."
+category = "Publish"
+condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
+script = [
+'''
+    API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_CRATE_VERSION} ${CARGO_MAKE_CRATE_NAME} ${CARGO_MAKE_CRATE_VERSION})
+    curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}
+'''
 ]
 
 [tasks.build-publish-flow]
