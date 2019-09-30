@@ -2476,13 +2476,17 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **post-audit** - No Description. 
 * **post-ci-flow** - No Description. 
 * **post-outdated** - No Description. 
+* **post-unused-dependencies** - No Description. 
 * **post-verify-project** - No Description. 
 * **post-workspace-ci-flow** - No Description. 
 * **pre-audit** - No Description. 
 * **pre-ci-flow** - No Description. 
 * **pre-outdated** - No Description. 
+* **pre-unused-dependencies** - No Description. 
 * **pre-verify-project** - No Description. 
 * **pre-workspace-ci-flow** - No Description. 
+* **unused-dependencies** - Checks for unused dependencies. 
+* **unused-dependencies-flow** - Checks for unused dependencies. 
 * **verify-project** - Runs verify-project cargo plugin. 
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports 
 * **workspace-members-ci** - Runs the ci-flow for every workspace member. 
@@ -2615,7 +2619,7 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **diff-files** - Run diff on two provided files. 
 * **do-on-members** - Runs the requested task for every workspace member. 
 * **empty** - Empty Task 
-* **git-diff-files** - Run diff on two provided files.
+* **git-diff-files** - Run diff on two provided files. 
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows

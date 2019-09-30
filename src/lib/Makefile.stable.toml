@@ -459,6 +459,29 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 [tasks.post-outdated]
 category = "CI"
 
+[tasks.unused-dependencies-flow]
+description = "Checks for unused dependencies."
+category = "CI"
+condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
+dependencies = [
+    "pre-unused-dependencies",
+    "unused-dependencies",
+    "post-unused-dependencies"
+]
+
+[tasks.pre-unused-dependencies]
+category = "CI"
+
+[tasks.unused-dependencies]
+description = "Checks for unused dependencies."
+category = "CI"
+condition = { channels = ["nightly"], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
+command = "cargo"
+args = ["udeps"]
+
+[tasks.post-unused-dependencies]
+category = "CI"
+
 [tasks.install-clippy-any]
 description = "Installs the latest clippy code linter via cargo install via rustup or directly from github."
 category = "Test"
