@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.22.2
+### v0.22.2 (2019-10-01)
 
 * Ability to unset environment variables #294
 * New environment variable to hold current workspace member name #285

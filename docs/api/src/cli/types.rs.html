@@ -1740,6 +1740,38 @@
 <span id="1740">1740</span>
 <span id="1741">1741</span>
 <span id="1742">1742</span>
+<span id="1743">1743</span>
+<span id="1744">1744</span>
+<span id="1745">1745</span>
+<span id="1746">1746</span>
+<span id="1747">1747</span>
+<span id="1748">1748</span>
+<span id="1749">1749</span>
+<span id="1750">1750</span>
+<span id="1751">1751</span>
+<span id="1752">1752</span>
+<span id="1753">1753</span>
+<span id="1754">1754</span>
+<span id="1755">1755</span>
+<span id="1756">1756</span>
+<span id="1757">1757</span>
+<span id="1758">1758</span>
+<span id="1759">1759</span>
+<span id="1760">1760</span>
+<span id="1761">1761</span>
+<span id="1762">1762</span>
+<span id="1763">1763</span>
+<span id="1764">1764</span>
+<span id="1765">1765</span>
+<span id="1766">1766</span>
+<span id="1767">1767</span>
+<span id="1768">1768</span>
+<span id="1769">1769</span>
+<span id="1770">1770</span>
+<span id="1771">1771</span>
+<span id="1772">1772</span>
+<span id="1773">1773</span>
+<span id="1774">1774</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2081,6 +2113,10 @@
     <span class="kw">pub</span> <span class="ident">env_false</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Rust version condition</span>
     <span class="kw">pub</span> <span class="ident">rust_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustVersionCondition</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Files exist</span>
+    <span class="kw">pub</span> <span class="ident">files_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Files which do not exist</span>
+    <span class="kw">pub</span> <span class="ident">files_not_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2103,6 +2139,13 @@
     <span class="kw">pub</span> <span class="ident">mapping</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
+<span class="doccomment">/// Enables to unset env variables</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueUnset</span> {
+    <span class="doccomment">/// If true, the env variable will be unset, else ignored</span>
+    <span class="kw">pub</span> <span class="ident">unset</span>: <span class="ident">bool</span>,
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds the env value or script</span>
@@ -2111,6 +2154,8 @@
     <span class="ident">Value</span>(<span class="ident">String</span>),
     <span class="doccomment">/// The value as boolean</span>
     <span class="ident">Boolean</span>(<span class="ident">bool</span>),
+    <span class="doccomment">/// Unset env</span>
+    <span class="ident">Unset</span>(<span class="ident">EnvValueUnset</span>),
     <span class="doccomment">/// Script which will return the value</span>
     <span class="ident">Script</span>(<span class="ident">EnvValueScript</span>),
     <span class="doccomment">/// Env decoding info</span>
@@ -2492,6 +2537,25 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Script file name</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FileScriptValue</span> {
+    <span class="doccomment">/// Script file name</span>
+    <span class="kw">pub</span> <span class="ident">file</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// True for absolute path (default false)</span>
+    <span class="kw">pub</span> <span class="ident">absolute_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Script value (text, file name, ...)</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ScriptValue</span> {
+    <span class="doccomment">/// The script text lines</span>
+    <span class="ident">Text</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// Script file name</span>
+    <span class="ident">File</span>(<span class="ident">FileScriptValue</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
     <span class="doccomment">/// if true, it should ignore all data in base task</span>
@@ -2543,7 +2607,7 @@
     <span class="doccomment">/// The command args</span>
     <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// If command is not defined, and script is defined, the provided script will be executed</span>
-    <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ScriptValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script runner (defaults to cmd in windows and sh for other platforms)</span>
     <span class="kw">pub</span> <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script file extension</span>
@@ -3071,7 +3135,7 @@
     <span class="doccomment">/// The command args</span>
     <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// If command is not defined, and script is defined, the provided script will be executed</span>
-    <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ScriptValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script runner (defaults to cmd in windows and sh for other platforms)</span>
     <span class="kw">pub</span> <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script file extension</span>
