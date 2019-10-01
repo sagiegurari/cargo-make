@@ -471,7 +471,7 @@ dependencies = [
 [tasks.outdated-ci-flow]
 description = "Runs outdated cargo conditioned CI flow."
 category = "CI"
-condition = { env_set = [ "CARGO_MAKE_CHECK_OUTDATED" ], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+condition = { env_set = [ "CARGO_MAKE_CHECK_OUTDATED" ], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ], env_false = [ "CARGO_MAKE_PR" ], channels = [ "nightly" ], platforms = [ "linux" ] }
 run_task = "outdated-flow"
 
 [tasks.install-clippy-any]

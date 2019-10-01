@@ -8,6 +8,7 @@
 * New files_exist and files_not_exist conditions #287
 * Added new curl based github release task #293
 * Add cargo-udeps task #284
+* New CARGO_MAKE_PR environment variable #297
 * Add outdated check as part of CI flow
 
 ### v0.22.1 (2019-08-20)

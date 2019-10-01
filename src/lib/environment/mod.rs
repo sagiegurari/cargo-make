@@ -285,9 +285,9 @@ fn setup_env_for_rust() -> RustInfo {
 fn setup_env_for_ci() -> CiInfo {
     let ci_info_struct = ci_info::get();
 
-    let ci_var_value = if ci_info_struct.ci { "true" } else { "false" };
-
-    envmnt::set("CARGO_MAKE_CI", ci_var_value);
+    envmnt::set_bool("CARGO_MAKE_CI", ci_info_struct.ci);
+    envmnt::set_bool("CARGO_MAKE_PR", ci_info_struct.pr.unwrap_or(false));   
+    }
 
     ci_info_struct
 }
