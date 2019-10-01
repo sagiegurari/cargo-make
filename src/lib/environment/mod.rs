@@ -286,8 +286,7 @@ fn setup_env_for_ci() -> CiInfo {
     let ci_info_struct = ci_info::get();
 
     envmnt::set_bool("CARGO_MAKE_CI", ci_info_struct.ci);
-    envmnt::set_bool("CARGO_MAKE_PR", ci_info_struct.pr.unwrap_or(false));   
-    }
+    envmnt::set_bool("CARGO_MAKE_PR", ci_info_struct.pr.unwrap_or(false));
 
     ci_info_struct
 }
