@@ -109,6 +109,8 @@ category = "Development"
 watch = true
 
 [tasks.pre-publish-delete-lock]
+description = "Deletes lock file before publishing"
+category = "Publish"
 condition = { env_true = [ "CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE" ] }
 run_task = "delete-lock"
 
@@ -977,7 +979,9 @@ args = [
 ]
 
 [tasks.install-rust-src]
+category = "Tools"
 install_crate = { rustup_component_name = "rust-src" }
 
 [tasks.install-rls]
+category = "Tools"
 install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }

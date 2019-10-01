@@ -2501,7 +2501,6 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **verify-project** - Runs verify-project cargo plugin. 
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports 
 * **workspace-members-ci** - Runs the ci-flow for every workspace member. 
-* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up 
 
 ##### Cleanup
 
@@ -2526,6 +2525,7 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **clean-apidocs** - Delete API docs. 
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory. 
 * **docs** - Generate rust documentation. 
+* **post-docs** - No Description. 
 * **pre-docs** - No Description. 
 
 ##### Git
@@ -2551,17 +2551,6 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **end** - By default this task is invoked at the end of every cargo-make run. 
 * **init** - By default this task is invoked at the start of every cargo-make run. 
 
-##### No Category
-
-* **build-release-for-target** - Makes a release build for a given target 
-* **generate-readme** - No Description. 
-* **install-rls** - No Description. 
-* **install-rust-src** - No Description. 
-* **post-docs** - No Description. 
-* **pre-publish-delete-lock** - No Description. 
-* **setup-build-env** - Sets up a musl build environment 
-* **setup-musl** - Sets up a musl build environment 
-
 ##### Publish
 
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray. 
@@ -2577,10 +2566,10 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **pre-publish** - No Description. 
 * **pre-publish-clean-flow** - Clears old artifactes before publishing 
 * **pre-publish-conditioned-clean-flow** - Clears old artifactes before publishing 
+* **pre-publish-delete-lock** - Deletes lock file before publishing 
 * **publish** - Runs the cargo publish command. 
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish 
 * **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray. 
-* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s) 
 
 ##### Test
 
@@ -2631,6 +2620,8 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 * **do-on-members** - Runs the requested task for every workspace member. 
 * **empty** - Empty Task 
 * **git-diff-files** - Run diff on two provided files. 
+* **install-rls** - No Description. 
+* **install-rust-src** - No Description. 
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
