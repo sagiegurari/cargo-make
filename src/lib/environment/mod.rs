@@ -139,6 +139,10 @@ pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
     set_env_for_config(env, None)
 }
 
+fn unset_env(key: &str) {
+    envmnt::remove(key);
+}
+
 /// Updates the env based on the provided data
 fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Option<&Vec<String>>) {
     debug!("Setting Up Env.");
@@ -153,6 +157,11 @@ fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Opti
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
             EnvValue::Profile(ref sub_env) => {
                 set_env_for_profile(&key, sub_env, additional_profiles)
+            }
+            EnvValue::Unset(ref value) => {
+                if value.unset {
+                    unset_env(&key);
+                }
             }
         };
     }
@@ -276,9 +285,8 @@ fn setup_env_for_rust() -> RustInfo {
 fn setup_env_for_ci() -> CiInfo {
     let ci_info_struct = ci_info::get();
 
-    let ci_var_value = if ci_info_struct.ci { "true" } else { "false" };
-
-    envmnt::set("CARGO_MAKE_CI", ci_var_value);
+    envmnt::set_bool("CARGO_MAKE_CI", ci_info_struct.ci);
+    envmnt::set_bool("CARGO_MAKE_PR", ci_info_struct.pr.unwrap_or(false));
 
     ci_info_struct
 }

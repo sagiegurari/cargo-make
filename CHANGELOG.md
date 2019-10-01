@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### v0.22.2
+
+* Ability to unset environment variables #294
+* New environment variable to hold current workspace member name #285
+* Support script file path for task script attribute #286
+* New files_exist and files_not_exist conditions #287
+* Added new curl based github release task #293
+* Add cargo-udeps task #284
+* New CARGO_MAKE_PR environment variable #297
+* Add outdated check as part of CI flow
+
 ### v0.22.1 (2019-08-20)
 
 * Support decoding ability for environment variables initialization #275 #277

@@ -543,6 +543,21 @@ args are:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+It is also possible to point to an existing script instead of holding the script text inside the makefile by using the **file** property as follows:
+
+```toml
+[tasks.hello-world-from-script-file]
+script = { file = "script.sh" }
+```
+
+Script file paths are always relative to the current working directory unless specified by the **absolute_path** attribute, for example:
+
+```toml
+[tasks.hello-world-from-script-file-absolute-path]
+script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = true }
+```
+
+File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-examplerust"></a>
@@ -1028,6 +1043,7 @@ PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+TO_UNSET = { unset = true }
 
 # profile based environment override
 [env.development]
@@ -1046,8 +1062,8 @@ Environment variables can be defined as:
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
 
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.
-
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
+To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>
@@ -1119,8 +1135,10 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
+* **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1188,12 +1206,14 @@ The following condition types are available:
 * **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **rust_version** - Optional definition of min, max and/or specific rust version
+* **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
+* **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
 
 Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } }
+condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
 ```
 
 <a name="usage-conditions-script"></a>
@@ -2456,12 +2476,14 @@ Full list of all predefined tasks (generated via ```cargo make --list-all-steps`
 
 ##### CI
 
-* **audit** - Runs verify-audit cargo plugin.
+* **audit** - Runs audit cargo plugin.
 * **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **ci-flow** - CI task will run cargo build and cargo test with verbose output
 * **examples-ci-flow** - Compiles the examples if conditions are met.
-* **outdated** - Runs verify-outdated cargo plugin.
+* **outdated** - Runs cargo-outdated cargo plugin.
+* **outdated-ci-flow** - Runs outdated cargo conditioned CI flow.
+* **outdated-flow** - Runs outdated cargo flow.
 * **post-audit** - No Description.
 * **post-ci-flow** - No Description.
 * **post-outdated** - No Description.

@@ -14,7 +14,10 @@ mod shell_to_batch;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use crate::types::Task;
+use crate::environment;
+use crate::io;
+use crate::types::{ScriptValue, Task};
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types
@@ -31,6 +34,36 @@ pub(crate) enum EngineType {
     Shebang,
     /// Unsupported type
     Unsupported,
+}
+
+pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
+    match script {
+        ScriptValue::Text(text) => text.clone(),
+        ScriptValue::File(info) => {
+            let mut file_path_string = String::new();
+            if !info.absolute_path.unwrap_or(false) {
+                file_path_string.push_str("${CARGO_MAKE_WORKING_DIRECTORY}/");
+            }
+            file_path_string.push_str(&info.file);
+
+            // expand env
+            let expanded_value = environment::expand_value(&file_path_string);
+
+            let mut file_path = PathBuf::new();
+            file_path.push(expanded_value);
+
+            let script_text = io::read_text_file(&file_path);
+            let lines: Vec<&str> = script_text.split('\n').collect();
+
+            let mut script_lines: Vec<String> = vec![];
+
+            for line in lines.iter() {
+                script_lines.push(line.to_string());
+            }
+
+            script_lines
+        }
+    }
 }
 
 pub(crate) fn get_engine_type(task: &Task) -> EngineType {
@@ -59,7 +92,8 @@ pub(crate) fn get_engine_type(task: &Task) -> EngineType {
                 }
                 None => {
                     // if no runner specified, try to extract it from script content
-                    if shebang_script::is_shebang_exists(script) {
+                    let script_text = get_script_text(&script);
+                    if shebang_script::is_shebang_exists(&script_text) {
                         EngineType::Shebang
                     } else {
                         EngineType::OS
@@ -77,35 +111,47 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
     match engine_type {
         EngineType::OS => {
             let script = task.script.as_ref().unwrap();
+            let script_text = get_script_text(&script);
             let runner = task.script_runner.clone();
-            os_script::execute(script, runner, cli_arguments, validate);
+            os_script::execute(&script_text, runner, cli_arguments, validate);
 
             true
         }
         EngineType::Rust => {
             let script = task.script.as_ref().unwrap();
-            rsscript::execute(script, cli_arguments, validate);
+            let script_text = get_script_text(&script);
+            rsscript::execute(&script_text, cli_arguments, validate);
 
             true
         }
         EngineType::Shell2Batch => {
             let script = task.script.as_ref().unwrap();
-            shell_to_batch::execute(script, cli_arguments, validate);
+            let script_text = get_script_text(&script);
+            shell_to_batch::execute(&script_text, cli_arguments, validate);
 
             true
         }
         EngineType::Generic => {
             let script = task.script.as_ref().unwrap();
+            let script_text = get_script_text(&script);
             let runner = task.script_runner.clone().unwrap();
             let extension = task.script_extension.clone().unwrap();
-            generic_script::execute(script, runner, extension, None, cli_arguments, validate);
+            generic_script::execute(
+                &script_text,
+                runner,
+                extension,
+                None,
+                cli_arguments,
+                validate,
+            );
 
             true
         }
         EngineType::Shebang => {
             let script = task.script.as_ref().unwrap();
+            let script_text = get_script_text(&script);
             let extension = task.script_extension.clone();
-            shebang_script::execute(script, &extension, cli_arguments, validate);
+            shebang_script::execute(&script_text, &extension, cli_arguments, validate);
 
             true
         }

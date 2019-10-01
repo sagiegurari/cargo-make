@@ -11,13 +11,13 @@
 mod descriptor_test;
 
 use crate::command;
+use crate::io;
 use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
 use crate::version;
 use envmnt;
 use indexmap::IndexMap;
 use std::env;
-use std::fs::{canonicalize, File};
-use std::io::Read;
+use std::fs::canonicalize;
 use std::path::{Path, PathBuf};
 use toml;
 
@@ -38,7 +38,7 @@ fn merge_env(
         let value_clone = value.clone();
 
         if merged.contains_key(&key_str) {
-            let base_value = merged.remove(&key_str).unwrap();
+            let base_value = merged.swap_remove(&key_str).unwrap();
 
             match (base_value, value_clone.clone()) {
                 (
@@ -108,7 +108,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    command::run_script(script, None, &vec![], true);
+                    command::run_script_get_exit_code(script, None, &vec![], true);
 
                     true
                 }
@@ -150,10 +150,14 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
 
     let mut config_section = ConfigSection::new();
     if parent_config.config.is_some() {
-        config_section.extend(&mut parent_config.config.unwrap());
+        let mut config_section_data = parent_config.config.unwrap();
+        debug!("Adding parent config section: {:#?}", &config_section_data);
+        config_section.extend(&mut config_section_data);
     }
     if config.config.is_some() {
-        config_section.extend(&mut config.config.unwrap());
+        let mut config_section_data = config.config.unwrap();
+        debug!("Adding config section: {:#?}", &config_section_data);
+        config_section.extend(&mut config_section_data);
     }
 
     ExternalConfig {
@@ -240,16 +244,7 @@ fn load_external_descriptor(
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
-        debug!("Opening file: {:#?}", &file_path);
-        let mut file = match File::open(&file_path) {
-            Ok(value) => value,
-            Err(error) => panic!(
-                "Unable to open file, base path: {} file name: {} error: {}",
-                base_path, file_name, error
-            ),
-        };
-        let mut external_descriptor = String::new();
-        file.read_to_string(&mut external_descriptor).unwrap();
+        let external_descriptor = io::read_text_file(&file_path);
 
         check_makefile_min_version(&external_descriptor)?;
 

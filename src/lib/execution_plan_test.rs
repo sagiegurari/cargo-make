@@ -134,8 +134,11 @@ fn create_workspace_task_no_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), "".to_string());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, "".to_string());
     assert!(task.env.is_none());
 }
 
@@ -156,13 +159,13 @@ fn create_workspace_task_with_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 some_task
 cd -
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 some_task
 cd -
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 some_task
 cd -"#
         .to_string();
 
@@ -170,8 +173,11 @@ cd -"#
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), expected_script);
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
     assert!(task.env.is_none());
 }
 
@@ -189,8 +195,11 @@ fn create_workspace_task_extend_workspace_makefile() {
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
 
     assert!(task.script.is_some());
-    let script = task.script.unwrap();
-    assert_eq!(script.join("\n"), "".to_string());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, "".to_string());
     assert!(task.env.is_some());
     assert!(task
         .env

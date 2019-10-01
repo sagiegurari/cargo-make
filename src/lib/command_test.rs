@@ -148,25 +148,25 @@ fn run_command_error_ignore_errors() {
 }
 
 #[test]
-fn run_script_valid() {
-    run_script(&vec!["echo 1".to_string()], None, &vec![], true);
+fn run_script_get_exit_code_valid() {
+    run_script_get_exit_code(&vec!["echo 1".to_string()], None, &vec![], true);
 }
 
 #[test]
 #[should_panic]
-fn run_script_error() {
-    run_script(&vec!["exit 1".to_string()], None, &vec![], true);
+fn run_script_get_exit_code_error() {
+    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], true);
 }
 
 #[test]
-fn run_script_error_force() {
-    run_script(&vec!["exit 1".to_string()], None, &vec![], false);
+fn run_script_get_exit_code_error_force() {
+    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], false);
 }
 
 #[test]
 #[cfg(target_os = "linux")]
-fn run_script_custom_runner() {
-    run_script(
+fn run_script_get_exit_code_custom_runner() {
+    run_script_get_exit_code(
         &vec!["echo test".to_string()],
         Some("bash".to_string()),
         &vec![],
@@ -176,8 +176,8 @@ fn run_script_custom_runner() {
 
 #[test]
 #[cfg(target_os = "linux")]
-fn run_script_cli_args_valid() {
-    run_script(
+fn run_script_get_exit_code_cli_args_valid() {
+    run_script_get_exit_code(
         &vec!["exit $1".to_string()],
         None,
         &vec!["0".to_string()],
@@ -188,8 +188,8 @@ fn run_script_cli_args_valid() {
 #[test]
 #[should_panic]
 #[cfg(target_os = "linux")]
-fn run_script_cli_args_error() {
-    run_script(
+fn run_script_get_exit_code_cli_args_error() {
+    run_script_get_exit_code(
         &vec!["exit $1".to_string()],
         None,
         &vec!["1".to_string()],

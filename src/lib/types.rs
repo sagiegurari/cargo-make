@@ -338,6 +338,10 @@ pub struct TaskCondition {
     pub env_false: Option<Vec<String>>,
     /// Rust version condition
     pub rust_version: Option<RustVersionCondition>,
+    /// Files exist
+    pub files_exist: Option<Vec<String>>,
+    /// Files which do not exist
+    pub files_not_exist: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -360,6 +364,13 @@ pub struct EnvValueDecode {
     pub mapping: HashMap<String, String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+/// Enables to unset env variables
+pub struct EnvValueUnset {
+    /// If true, the env variable will be unset, else ignored
+    pub unset: bool,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
@@ -368,6 +379,8 @@ pub enum EnvValue {
     Value(String),
     /// The value as boolean
     Boolean(bool),
+    /// Unset env
+    Unset(EnvValueUnset),
     /// Script which will return the value
     Script(EnvValueScript),
     /// Env decoding info
@@ -749,6 +762,25 @@ impl PartialEq for DeprecationInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Script file name
+pub struct FileScriptValue {
+    /// Script file name
+    pub file: String,
+    /// True for absolute path (default false)
+    pub absolute_path: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Script value (text, file name, ...)
+pub enum ScriptValue {
+    /// The script text lines
+    Text(Vec<String>),
+    /// Script file name
+    File(FileScriptValue),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -800,7 +832,7 @@ pub struct Task {
     /// The command args
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
+    pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
     /// The script file extension
@@ -1328,7 +1360,7 @@ pub struct PlatformOverrideTask {
     /// The command args
     pub args: Option<Vec<String>>,
     /// If command is not defined, and script is defined, the provided script will be executed
-    pub script: Option<Vec<String>>,
+    pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
     /// The script file extension
