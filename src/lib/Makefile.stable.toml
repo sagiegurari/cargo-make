@@ -45,6 +45,7 @@ CARGO_MAKE_RUN_CLIPPY = true
 [env.ci-all-build-tasks]
 CARGO_MAKE_BUILD_BENCH = true
 CARGO_MAKE_BUILD_EXAMPLES = true
+CARGO_MAKE_CHECK_OUTDATED = true
 
 [tasks.empty]
 description = "Empty Task"
@@ -70,6 +71,7 @@ dependencies = [
     "post-test",
     "examples-ci-flow",
     "bench-ci-flow",
+    "outdated-ci-flow",
     "ci-coverage-flow",
     "post-ci-flow"
 ]
@@ -163,9 +165,7 @@ dependencies = [
     "pre-audit",
     "audit",
     "post-audit",
-    "pre-outdated",
-    "outdated",
-    "post-outdated",
+    "outdated-flow",
     "pre-docs",
     "docs",
     "post-docs",
@@ -437,7 +437,7 @@ category = "CI"
 category = "CI"
 
 [tasks.audit]
-description = "Runs verify-audit cargo plugin."
+description = "Runs audit cargo plugin."
 category = "CI"
 condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" ] }
 command = "cargo"
@@ -450,7 +450,7 @@ category = "CI"
 category = "CI"
 
 [tasks.outdated]
-description = "Runs verify-outdated cargo plugin."
+description = "Runs cargo-outdated cargo plugin."
 category = "CI"
 condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
 command = "cargo"
@@ -458,6 +458,21 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
 [tasks.post-outdated]
 category = "CI"
+
+[tasks.outdated-flow]
+description = "Runs outdated cargo flow."
+category = "CI"
+dependencies = [
+    "pre-outdated",
+    "outdated",
+    "post-outdated"
+]
+
+[tasks.outdated-ci-flow]
+description = "Runs outdated cargo conditioned CI flow."
+category = "CI"
+condition = { env_set = [ "CARGO_MAKE_CHECK_OUTDATED" ], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+run_task = "outdated-flow"
 
 [tasks.install-clippy-any]
 description = "Installs the latest clippy code linter via cargo install via rustup or directly from github."
