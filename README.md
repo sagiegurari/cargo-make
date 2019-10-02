@@ -2471,6 +2471,19 @@ When working with workspaces, in order to run the ci-flow for each member and pa
   displayName: ci flow
 ```
 
+<a name="usage-ci-drone-io"></a>
+#### drone.io
+This is a minimal `.drone.yml` example for running the ci-flow task with the docker runner:
+
+```yaml
+pipeline:
+  ci-flow:
+    image: rust:1.38-slim
+    commands:
+    - cargo install --debug cargo-make
+    - cargo make ci-flow
+```
+
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
