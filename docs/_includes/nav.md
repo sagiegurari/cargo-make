@@ -63,6 +63,7 @@
         * [GitLab](#usage-ci-gitlab)
         * [CircleCI](#usage-ci-circleci)
         * [Azure Pipelines](#usage-ci-azure-pipelines)
+        * [drone.io](#usage-ci-drone-io)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Full List](#usage-predefined-flows-full)
