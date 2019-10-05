@@ -189,7 +189,13 @@ fn run_for_args(
             .to_string()
     };
 
-    cli_args.disable_color = cmd_matches.is_present("no-color");
+    let default_disable_color = match global_config.disable_color {
+        Some(value) => value,
+        None => false,
+    };
+    cli_args.disable_color = cmd_matches.is_present("no-color")
+        || envmnt::is("CARGO_MAKE_DISABLE_COLOR")
+        || default_disable_color;
 
     cli_args.env_file = match cmd_matches.value_of("envfile") {
         Some(value) => Some(value.to_string()),

@@ -370,6 +370,7 @@ fn run_for_args_with_global_config() {
     let mut global_config = GlobalConfig::new();
     global_config.log_level = Some("info".to_string());
     global_config.default_task_name = Some("empty".to_string());
+    global_config.disable_color = Some(true);
     let app = create_cli(&global_config, &"make".to_string(), true);
 
     let matches = app.get_matches_from(vec!["cargo", "make"]);

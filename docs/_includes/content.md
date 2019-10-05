@@ -2768,6 +2768,9 @@ The following example config.toml shows all possible options with their default 
 # The default log level if not defined by the --loglevel cli argument
 log_level = "info"
 
+# The default configuration whether output coloring is disabled
+disable_color = false
+
 # The default task name if no task was provided as part of the cargo-make invocation
 default_task_name = "default"
 
