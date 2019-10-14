@@ -81,10 +81,6 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         .unwrap_or(profile::DEFAULT_PROFILE.to_string());
     let normalized_profile_name = profile::set(&profile_name);
 
-    info!("Using Build File: {}", &build_file);
-    info!("Task: {}", &task);
-    info!("Profile: {}", &normalized_profile_name);
-
     environment::load_env_file(cli_args.env_file.clone());
 
     let env = cli_args.env.clone();
@@ -112,6 +108,16 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     };
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
+
+    if envmnt::exists("CARGO_MAKE_CRATE_NAME") {
+        let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
+        if crate_name.len() > 0 {
+            info!("Project: {}", &crate_name);
+        }
+    }
+    info!("Using Build File: {}", &build_file);
+    info!("Task: {}", &task);
+    info!("Profile: {}", &normalized_profile_name);
 
     // ensure profile env was not overridden
     profile::set(&normalized_profile_name);
