@@ -3,6 +3,7 @@
 ### v0.22.3
 
 * Enable/Disable color output child process support #299 (thanks @emakryo)
+* Main profile should override additional profiles env blocks #300
 * Print project name being built #301
 
 ### v0.22.2 (2019-10-01)
