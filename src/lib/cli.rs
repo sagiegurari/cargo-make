@@ -109,13 +109,11 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
 
-    if envmnt::exists("CARGO_MAKE_CRATE_NAME") {
-        let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
-        if crate_name.len() > 0 {
-            info!("Project: {}", &crate_name);
-        }
+    let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
+    if crate_name.len() > 0 {
+        info!("Project: {}", &crate_name);
     }
-    info!("Using Build File: {}", &build_file);
+    info!("Build File: {}", &build_file);
     info!("Task: {}", &task);
     info!("Profile: {}", &normalized_profile_name);
 
