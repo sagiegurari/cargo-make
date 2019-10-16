@@ -17,15 +17,23 @@ use std::collections::HashSet;
 use std::env;
 use std::path;
 use std::path::Path;
+use std::vec::Vec;
 
-/// Returns the actual task name to invoke as tasks may have aliases
-fn get_task_name(config: &Config, name: &str) -> String {
+/// Resolve aliases to different tasks, checking for cycles
+fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> String {
+    seen.push(name.to_string());
+
     match config.tasks.get(name) {
         Some(task_config) => {
             let alias = task_config.get_alias();
 
             match alias {
-                Some(ref alias) => get_task_name(config, alias),
+                Some(ref alias) if seen.contains(alias) => {
+                    let chain = seen.join(" -> ");
+                    error!("Detected cycle while resolving alias {}: {}", &name, chain);
+                    panic!("Detected cycle while resolving alias {}: {}", &name, chain);
+                },
+                Some(ref alias) => get_task_name_recursive(config, alias, seen),
                 _ => name.to_string(),
             }
         }
@@ -34,6 +42,13 @@ fn get_task_name(config: &Config, name: &str) -> String {
             panic!("Task not found: {}", &name);
         }
     }
+}
+
+/// Returns the actual task name to invoke as tasks may have aliases
+fn get_task_name(config: &Config, name: &str) -> String {
+    let mut seen = Vec::new();
+
+    get_task_name_recursive(config, name, &mut seen)
 }
 
 pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
