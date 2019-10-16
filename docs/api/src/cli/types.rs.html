@@ -1772,6 +1772,9 @@
 <span id="1772">1772</span>
 <span id="1773">1773</span>
 <span id="1774">1774</span>
+<span id="1775">1775</span>
+<span id="1776">1776</span>
+<span id="1777">1777</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1912,6 +1915,8 @@
     <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Default log level</span>
     <span class="kw">pub</span> <span class="ident">log_level</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Default output coloring</span>
+    <span class="kw">pub</span> <span class="ident">disable_color</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Default task name</span>
     <span class="kw">pub</span> <span class="ident">default_task_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Update check minimum time from the previous check (always, daily, weekly, monthly)</span>
@@ -1926,6 +1931,7 @@
         <span class="ident">GlobalConfig</span> {
             <span class="ident">file_name</span>: <span class="prelude-val">None</span>,
             <span class="ident">log_level</span>: <span class="prelude-val">None</span>,
+            <span class="ident">disable_color</span>: <span class="prelude-val">None</span>,
             <span class="ident">default_task_name</span>: <span class="prelude-val">None</span>,
             <span class="ident">update_check_minimum_interval</span>: <span class="prelude-val">None</span>,
             <span class="ident">search_project_root</span>: <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),

@@ -493,6 +493,31 @@
 <span id="493">493</span>
 <span id="494">494</span>
 <span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -507,6 +532,7 @@
 <span class="kw">mod</span> <span class="ident">mod_test</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">profile</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{
     <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">EnvValueDecode</span>, <span class="ident">EnvValueScript</span>, <span class="ident">GitInfo</span>,
     <span class="ident">PackageInfo</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">Workspace</span>,
@@ -615,7 +641,7 @@
     <span class="ident">sub_env</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
     <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 ) {
-    <span class="kw">let</span> <span class="ident">current_profile_name</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_PROFILE&quot;</span>, <span class="string">&quot;development&quot;</span>);
+    <span class="kw">let</span> <span class="ident">current_profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">get</span>();
     <span class="kw">let</span> <span class="ident">profile_name_string</span> <span class="op">=</span> <span class="ident">profile_name</span>.<span class="ident">to_string</span>();
 
     <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">additional_profiles</span> {
@@ -626,13 +652,13 @@
     <span class="kw">if</span> <span class="ident">current_profile_name</span> <span class="op">==</span> <span class="ident">profile_name_string</span> <span class="op">||</span> <span class="ident">found</span> {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Setting Up Profile: {} Env.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
 
-        <span class="ident">set_env</span>(<span class="ident">sub_env</span>.<span class="ident">clone</span>());
+        <span class="ident">set_env_for_config</span>(<span class="ident">sub_env</span>.<span class="ident">clone</span>(), <span class="prelude-val">None</span>, <span class="bool-val">false</span>);
     }
 }
 
 <span class="doccomment">/// Updates the env based on the provided data</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">set_env</span>(<span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>) {
-    <span class="ident">set_env_for_config</span>(<span class="ident">env</span>, <span class="prelude-val">None</span>)
+    <span class="ident">set_env_for_config</span>(<span class="ident">env</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">unset_env</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
@@ -640,7 +666,11 @@
 }
 
 <span class="doccomment">/// Updates the env based on the provided data</span>
-<span class="kw">fn</span> <span class="ident">set_env_for_config</span>(<span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>, <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">set_env_for_config</span>(
+    <span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
+    <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">allow_sub_env</span>: <span class="ident">bool</span>,
+) {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Setting Up Env.&quot;</span>);
 
     <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">env_value</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">env</span> {
@@ -652,7 +682,9 @@
             <span class="ident">EnvValue</span>::<span class="ident">Script</span>(<span class="kw-2">ref</span> <span class="ident">script_info</span>) <span class="op">=&gt;</span> <span class="ident">set_env_for_script</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">script_info</span>),
             <span class="ident">EnvValue</span>::<span class="ident">Decode</span>(<span class="kw-2">ref</span> <span class="ident">decode_info</span>) <span class="op">=&gt;</span> <span class="ident">set_env_for_decode_info</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">decode_info</span>),
             <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) <span class="op">=&gt;</span> {
-                <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">sub_env</span>, <span class="ident">additional_profiles</span>)
+                <span class="kw">if</span> <span class="ident">allow_sub_env</span> {
+                    <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">sub_env</span>, <span class="ident">additional_profiles</span>)
+                }
             }
             <span class="ident">EnvValue</span>::<span class="ident">Unset</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">unset</span> {
@@ -660,6 +692,24 @@
                 }
             }
         };
+    }
+
+    <span class="kw">if</span> <span class="ident">allow_sub_env</span> {
+        <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">get</span>();
+
+        <span class="kw">if</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>) {
+            <span class="kw">match</span> <span class="ident">env</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>) {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env_value</span>) <span class="op">=&gt;</span> {
+                    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">env_value</span> {
+                        <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) <span class="op">=&gt;</span> {
+                            <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>, <span class="ident">sub_env</span>, <span class="prelude-val">None</span>)
+                        }
+                        <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                    };
+                }
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
+            };
+        }
     }
 }
 
@@ -672,7 +722,7 @@
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 
-    <span class="ident">set_env_for_config</span>(<span class="ident">config</span>.<span class="ident">env</span>.<span class="ident">clone</span>(), <span class="ident">additional_profiles</span>);
+    <span class="ident">set_env_for_config</span>(<span class="ident">config</span>.<span class="ident">env</span>.<span class="ident">clone</span>(), <span class="ident">additional_profiles</span>, <span class="bool-val">true</span>);
 }
 
 <span class="kw">fn</span> <span class="ident">setup_env_for_crate</span>() <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {

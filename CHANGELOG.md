@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.22.3
+### v0.22.3 (2019-10-16)
 
 * Enable/Disable color output child process support #299 (thanks @emakryo)
 * Main profile should override additional profiles env blocks #300
