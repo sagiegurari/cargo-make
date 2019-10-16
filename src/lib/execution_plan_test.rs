@@ -52,6 +52,43 @@ fn get_task_name_alias() {
 }
 
 #[test]
+#[should_panic]
+fn get_task_name_alias_self_referential() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.alias = Some("rec".to_string());
+    config.tasks.insert("rec".to_string(), task);
+
+    let _ = get_task_name(&config, "rec");
+}
+
+#[test]
+#[should_panic]
+fn get_task_name_alias_circular() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let mut task_a = Task::new();
+    let mut task_b = Task::new();
+
+    task_a.alias = Some("rec-mut-b".to_string());
+    task_b.alias = Some("rec-mut-a".to_string());
+
+    config.tasks.insert("rec-mut-a".to_string(), task_a);
+    config.tasks.insert("rec-mut-b".to_string(), task_b);
+
+    let _ = get_task_name(&config, "rec-mut-a");
+}
+
+#[test]
 fn get_task_name_platform_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
