@@ -11,6 +11,7 @@ mod gitinfo;
 mod mod_test;
 
 use crate::command;
+use crate::profile;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript, GitInfo,
     PackageInfo, Step, Task, Workspace,
@@ -119,7 +120,7 @@ fn set_env_for_profile(
     sub_env: &IndexMap<String, EnvValue>,
     additional_profiles: Option<&Vec<String>>,
 ) {
-    let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
+    let current_profile_name = profile::get();
     let profile_name_string = profile_name.to_string();
 
     let found = match additional_profiles {
@@ -130,13 +131,13 @@ fn set_env_for_profile(
     if current_profile_name == profile_name_string || found {
         debug!("Setting Up Profile: {} Env.", &profile_name);
 
-        set_env(sub_env.clone());
+        set_env_for_config(sub_env.clone(), None, false);
     }
 }
 
 /// Updates the env based on the provided data
 pub(crate) fn set_env(env: IndexMap<String, EnvValue>) {
-    set_env_for_config(env, None)
+    set_env_for_config(env, None, true)
 }
 
 fn unset_env(key: &str) {
@@ -144,7 +145,11 @@ fn unset_env(key: &str) {
 }
 
 /// Updates the env based on the provided data
-fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Option<&Vec<String>>) {
+fn set_env_for_config(
+    env: IndexMap<String, EnvValue>,
+    additional_profiles: Option<&Vec<String>>,
+    allow_sub_env: bool,
+) {
     debug!("Setting Up Env.");
 
     for (key, env_value) in &env {
@@ -156,7 +161,9 @@ fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Opti
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
             EnvValue::Profile(ref sub_env) => {
-                set_env_for_profile(&key, sub_env, additional_profiles)
+                if allow_sub_env {
+                    set_env_for_profile(&key, sub_env, additional_profiles)
+                }
             }
             EnvValue::Unset(ref value) => {
                 if value.unset {
@@ -164,6 +171,24 @@ fn set_env_for_config(env: IndexMap<String, EnvValue>, additional_profiles: Opti
                 }
             }
         };
+    }
+
+    if allow_sub_env {
+        let profile_name = profile::get();
+
+        if env.contains_key(&profile_name) {
+            match env.get(&profile_name) {
+                Some(ref env_value) => {
+                    match *env_value {
+                        EnvValue::Profile(ref sub_env) => {
+                            set_env_for_profile(&profile_name, sub_env, None)
+                        }
+                        _ => (),
+                    };
+                }
+                None => (),
+            };
+        }
     }
 }
 
@@ -176,7 +201,7 @@ fn initialize_env(config: &Config) {
         None => None,
     };
 
-    set_env_for_config(config.env.clone(), additional_profiles);
+    set_env_for_config(config.env.clone(), additional_profiles, true);
 }
 
 fn setup_env_for_crate() -> CrateInfo {

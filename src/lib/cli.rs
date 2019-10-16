@@ -81,10 +81,6 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         .unwrap_or(profile::DEFAULT_PROFILE.to_string());
     let normalized_profile_name = profile::set(&profile_name);
 
-    info!("Using Build File: {}", &build_file);
-    info!("Task: {}", &task);
-    info!("Profile: {}", &normalized_profile_name);
-
     environment::load_env_file(cli_args.env_file.clone());
 
     let env = cli_args.env.clone();
@@ -112,6 +108,14 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     };
 
     let env_info = environment::setup_env(&cli_args, &config, &task);
+
+    let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
+    if crate_name.len() > 0 {
+        info!("Project: {}", &crate_name);
+    }
+    info!("Build File: {}", &build_file);
+    info!("Task: {}", &task);
+    info!("Profile: {}", &normalized_profile_name);
 
     // ensure profile env was not overridden
     profile::set(&normalized_profile_name);
@@ -189,7 +193,13 @@ fn run_for_args(
             .to_string()
     };
 
-    cli_args.disable_color = cmd_matches.is_present("no-color");
+    let default_disable_color = match global_config.disable_color {
+        Some(value) => value,
+        None => false,
+    };
+    cli_args.disable_color = cmd_matches.is_present("no-color")
+        || envmnt::is("CARGO_MAKE_DISABLE_COLOR")
+        || default_disable_color;
 
     cli_args.env_file = match cmd_matches.value_of("envfile") {
         Some(value) => Some(value.to_string()),

@@ -305,9 +305,37 @@ fn set_env_for_config_unset() {
         EnvValue::Unset(unset),
     );
 
-    set_env_for_config(env, None);
+    set_env_for_config(env, None, true);
 
     assert!(!envmnt::exists("set_env_for_config_unset"));
+}
+
+#[test]
+fn set_env_for_config_profile_override() {
+    let profile_name = profile::get();
+
+    let mut additional_env = IndexMap::new();
+    additional_env.insert(
+        "set_env_for_config_profile_override".to_string(),
+        EnvValue::Value("ADDITIONAL".to_string()),
+    );
+
+    let mut profile_env = IndexMap::new();
+    profile_env.insert(
+        "set_env_for_config_profile_override".to_string(),
+        EnvValue::Value("PROFILE".to_string()),
+    );
+
+    let mut env = IndexMap::new();
+    env.insert(profile_name.clone(), EnvValue::Profile(profile_env));
+    env.insert("additional".to_string(), EnvValue::Profile(additional_env));
+
+    set_env_for_config(env, Some(&vec!["additional".to_string()]), true);
+
+    assert!(envmnt::is_equal(
+        "set_env_for_config_profile_override",
+        "PROFILE"
+    ));
 }
 
 #[test]

@@ -1,4 +1,5 @@
 log_level = "error"
+disable_color = true
 default_task_name = "build"
 update_check_minimum_interval = "daily"
 search_project_root = true

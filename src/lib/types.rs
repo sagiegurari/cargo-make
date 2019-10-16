@@ -137,6 +137,8 @@ pub struct GlobalConfig {
     pub file_name: Option<String>,
     /// Default log level
     pub log_level: Option<String>,
+    /// Default output coloring
+    pub disable_color: Option<bool>,
     /// Default task name
     pub default_task_name: Option<String>,
     /// Update check minimum time from the previous check (always, daily, weekly, monthly)
@@ -151,6 +153,7 @@ impl GlobalConfig {
         GlobalConfig {
             file_name: None,
             log_level: None,
+            disable_color: None,
             default_task_name: None,
             update_check_minimum_interval: None,
             search_project_root: Some(false),

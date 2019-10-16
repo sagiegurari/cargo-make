@@ -170,3 +170,15 @@ fn create_error() {
 
     error!("test");
 }
+
+#[test]
+fn update_disable_color_env_var() {
+    envmnt::remove("CARGO_MAKE_DISABLE_COLOR");
+
+    init(&LoggerOptions {
+        level: "info".to_string(),
+        color: false,
+    });
+
+    assert!(envmnt::is("CARGO_MAKE_DISABLE_COLOR"));
+}

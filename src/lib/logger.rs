@@ -128,6 +128,7 @@ pub(crate) fn init(options: &LoggerOptions) {
     let level_name_value = get_name_for_filter(&log_level);
 
     envmnt::set("CARGO_MAKE_LOG_LEVEL", &level_name_value);
+    envmnt::set_bool("CARGO_MAKE_DISABLE_COLOR", !color);
 
     let result = fern::Dispatch::new()
         .format(move |out, message, record| {

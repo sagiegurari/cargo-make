@@ -88,7 +88,7 @@ The output would look something like this:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: simple-example.toml
+[cargo-make] INFO - Build File: simple-example.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: format
@@ -415,7 +415,7 @@ Invoking cargo-make with additional arguments would result in the following:
 > cargo make varargs arg1 arg2 arg3
 
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -432,7 +432,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 > cargo make varargs
 
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -459,7 +459,7 @@ Would output:
 > cargo make varargs arg1 arg2 arg3
 
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -514,7 +514,7 @@ Invoking cargo-make with additional arguments would result in the following:
 > cargo make cli-args arg1 arg2 arg3
 
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -531,7 +531,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 > cargo make cli-args
 
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: Makefile.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -705,7 +705,7 @@ Output:
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: ./shebang.toml
+[cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Setting Up Env.
@@ -734,7 +734,7 @@ Output:
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: ./shebang.toml
+[cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Setting Up Env.
@@ -1005,7 +1005,7 @@ We run task **3** the output would be:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: task_extend.toml
+[cargo-make] INFO - Build File: task_extend.toml
 [cargo-make] INFO - Task: 3
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -1754,7 +1754,7 @@ Output:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: profile.toml
+[cargo-make] INFO - Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
 [cargo-make] INFO - Setting Up Env.
@@ -1858,7 +1858,7 @@ When invoking **legacy** task for example, the output is:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: deprecated.toml
+[cargo-make] INFO - Build File: deprecated.toml
 [cargo-make] INFO - Task: legacy
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: empty
@@ -1899,7 +1899,7 @@ Below is a sample output of invoking the task:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: ./examples/watch.toml
+[cargo-make] INFO - Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -1907,7 +1907,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: /projects/rust/cargo-make/examples/watch.toml
+[cargo-make] INFO - Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: init
@@ -1976,7 +1976,7 @@ args = ["${MULTIPLE_VALUES}"]
 ```console
 > cargo make --cwd ./examples --makefile functions.toml split
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: split
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -1988,7 +1988,7 @@ args = ["${MULTIPLE_VALUES}"]
 
 > cargo make --cwd ./examples --makefile functions.toml no-split
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: no-split
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -2017,7 +2017,7 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: remove-empty
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -2050,7 +2050,7 @@ args = ["@@trim(TRIM_VALUE)"]
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -2079,7 +2079,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 ```console
 > cargo make --cwd ./examples --makefile functions.toml trim-start
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-start
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -2091,7 +2091,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 
 > cargo make --cwd ./examples --makefile functions.toml trim-end
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-end
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: init
@@ -2129,7 +2129,7 @@ Sample run for a mapping that was found:
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=development decode
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: empty
@@ -2145,7 +2145,7 @@ Another sample run for a mapping that was not found:
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: empty
@@ -2170,7 +2170,7 @@ Sample run:
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode-with-default
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-default
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: empty
@@ -2194,7 +2194,7 @@ Sample run:
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=test decode-with-eval
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: functions.toml
+[cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-eval
 [cargo-make] INFO - Profile: development
 [cargo-make] INFO - Running Task: empty
@@ -2680,7 +2680,7 @@ Example Usage:
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Using Build File: ./examples/override_core.toml
+[cargo-make] INFO - Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Printing diff...
@@ -2767,6 +2767,9 @@ The following example config.toml shows all possible options with their default 
 ```toml
 # The default log level if not defined by the --loglevel cli argument
 log_level = "info"
+
+# The default configuration whether output coloring is disabled
+disable_color = false
 
 # The default task name if no task was provided as part of the cargo-make invocation
 default_task_name = "default"
