@@ -1,6 +1,10 @@
 ## CHANGELOG
 
-### v0.22.3 (2019-10-16)
+### v0.23.1 (unpublished)
+
+* Guard against self-referential aliases #305 (thanks @phi-gamma)
+
+### v0.23.0 (2019-10-16)
 
 * Enable/Disable color output child process support #299 (thanks @emakryo)
 * Main profile should override additional profiles env blocks #300
