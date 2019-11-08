@@ -3,6 +3,7 @@
 ### v0.23.1 (unpublished)
 
 * Guard against self-referential aliases #305 (thanks @phi-gamma)
+* Migrate to envmnt::expand #308
 
 ### v0.23.0 (2019-10-16)
 

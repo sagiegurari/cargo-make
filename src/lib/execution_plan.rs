@@ -32,7 +32,7 @@ fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) 
                     let chain = seen.join(" -> ");
                     error!("Detected cycle while resolving alias {}: {}", &name, chain);
                     panic!("Detected cycle while resolving alias {}: {}", &name, chain);
-                },
+                }
                 Some(ref alias) => get_task_name_recursive(config, alias, seen),
                 _ => name.to_string(),
             }
