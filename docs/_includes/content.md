@@ -1125,7 +1125,6 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_CARGO_PROFILE** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **CARGO_MAKE_PROFILE** (unmapped value will default to CARGO_MAKE_PROFILE value)
-* **CARGO_MAKE_PASS_PROFILE** - Pass profile down to workspace member's spawned tasks.
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
 * **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
@@ -1542,6 +1541,15 @@ default_to_workspace = false
 ```
 
 In which case, workspace level support is **always** disabled unless a task defines **workspace=true**.
+
+You can set that profiles are passed down to workspace members by setting `CARGO_MAKE_USE_WORKSPACE_PROFILE` to true:
+
+```toml
+[env]
+CARGO_MAKE_USE_WORKSPACE_PROFILE = true
+```
+
+See more on profiles in the [profile section](#profiles).
 
 <a name="usage-workspace-support-skip-members"></a>
 #### Skipping Specific Members
