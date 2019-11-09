@@ -196,20 +196,18 @@ fn create_workspace_task_with_members() {
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --env CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=CWD_PATH some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 some_task
 cd -
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --env CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=CWD_PATH some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 some_task
 cd -
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --env CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=CWD_PATH some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 some_task
 cd -"#
         .to_string();
 
     let log_level = logger::get_log_level();
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
-
-    expected_script = str::replace(&expected_script, "CWD_PATH", &task.cwd.unwrap());
 
     assert!(task.script.is_some());
     let script = match task.script.unwrap() {
