@@ -389,6 +389,13 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
         _ => {
             envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
 
+            envmnt::set("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
+                envmnt::get_or(
+                    "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
+                    &envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY")
+                )
+            );
+
             debug!("Working directory changed to: {}", &directory);
         }
     }

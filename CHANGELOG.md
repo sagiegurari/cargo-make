@@ -3,6 +3,7 @@
 ### v0.23.1 (unpublished)
 
 * Guard against self-referential aliases #305 (thanks @phi-gamma)
+* New CARGO_MAKE_WORKING_DIRECTORY environment variable #311
 
 ### v0.23.0 (2019-10-16)
 
