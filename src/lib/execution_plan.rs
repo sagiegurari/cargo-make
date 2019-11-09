@@ -168,6 +168,12 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             make_line.push_str(&log_level);
             make_line.push_str(" --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=");
             make_line.push_str(&member_name);
+
+            if envmnt::is_or("CARGO_MAKE_PASS_PROFILE", false) {
+                make_line.push_str(" --profile ");
+                make_line.push_str(&super::profile::get());
+            }
+
             make_line.push_str(" ");
             make_line.push_str(&task);
             script_lines.push(make_line);
