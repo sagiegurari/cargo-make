@@ -18,6 +18,7 @@ use crate::types::{
 };
 use ci_info::types::CiInfo;
 use envmnt;
+use envmnt::{ExpandOptions, ExpansionType};
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -65,22 +66,11 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
 }
 
 pub(crate) fn expand_value(value: &str) -> String {
-    let mut value_string = value.to_string();
+    let mut options = ExpandOptions::new();
+    options.expansion_type = Some(ExpansionType::UnixBrackets);
+    options.default_to_empty = false;
 
-    match value_string.find("${") {
-        Some(_) => {
-            for (existing_key, existing_value) in env::vars() {
-                let mut key_pattern = "${".to_string();
-                key_pattern.push_str(&existing_key);
-                key_pattern.push_str("}");
-
-                value_string = str::replace(&value_string, &key_pattern, &existing_value);
-            }
-
-            value_string
-        }
-        None => value_string,
-    }
+    envmnt::expand(&value, Some(options))
 }
 
 fn evaluate_and_set_env(key: &str, value: &str) {
