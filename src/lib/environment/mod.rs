@@ -316,11 +316,13 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
 
     envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
 
-    let task_arguments = match cli_args.arguments.clone() {
-        Some(args) => args,
-        None => vec![],
-    };
-    envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
+    if !envmnt::exists("CARGO_MAKE_TASK_ARGS") {
+        let task_arguments = match cli_args.arguments.clone() {
+            Some(args) => args,
+            None => vec![],
+        };
+        envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
+    }
 
     // load crate info
     let crate_info = setup_env_for_crate();
