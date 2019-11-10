@@ -1637,6 +1637,15 @@ default_to_workspace = false
 
 In which case, workspace level support is **always** disabled unless a task defines **workspace=true**.
 
+You can set that profiles are passed down to workspace members by setting **CARGO_MAKE_USE_WORKSPACE_PROFILE** to true:
+
+```toml
+[env]
+CARGO_MAKE_USE_WORKSPACE_PROFILE = true
+```
+
+See more on profiles in the [profile section](#profiles).
+
 <a name="usage-workspace-support-skip-members"></a>
 #### Skipping Specific Members
 

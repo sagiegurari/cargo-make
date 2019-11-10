@@ -319,6 +319,8 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     };
     envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
+    envmnt::set("CARGO_MAKE_USE_WORKSPACE_PROFILE", "false");
+
     // load crate info
     let crate_info = setup_env_for_crate();
 
