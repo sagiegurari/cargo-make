@@ -1,8 +1,9 @@
 ## CHANGELOG
 
-### v0.23.1 (unpublished)
+### v0.24.0 (unpublished)
 
 * Guard against self-referential aliases #305 (thanks @phi-gamma)
+* Migrate to envmnt::expand #308
 * New CARGO_MAKE_USE_WORKSPACE_PROFILE environment variable #309
 
 ### v0.23.0 (2019-10-16)
