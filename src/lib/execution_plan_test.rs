@@ -193,6 +193,52 @@ fn create_workspace_task_with_members() {
         exclude: None,
     });
 
+    envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME some_task
+cd -
+cd ./member2
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME some_task
+cd -
+cd ./dir1/member3
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME some_task
+cd -"#
+        .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
+
+    let profile_name = profile::get();
+    expected_script = str::replace(&expected_script, "PROFILE_NAME", &profile_name);
+
+    assert!(task.script.is_some());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_members_no_workspace_profile() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", false);
+
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1

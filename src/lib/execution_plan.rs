@@ -9,6 +9,7 @@ mod execution_plan_test;
 
 use crate::environment;
 use crate::logger;
+use crate::profile;
 use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task};
 use envmnt;
 use glob::Pattern;
@@ -135,6 +136,12 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
     let log_level = logger::get_log_level();
 
+    let profile_name = if envmnt::is_or("CARGO_MAKE_USE_WORKSPACE_PROFILE", true) {
+        profile::get()
+    } else {
+        profile::DEFAULT_PROFILE.to_string()
+    };
+
     let skip_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
     let skip_members = get_skipped_workspace_members(skip_members_config);
 
@@ -169,14 +176,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             make_line.push_str(" --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=");
             make_line.push_str(&member_name);
             make_line.push_str(" --profile ");
-
-            if envmnt::is_or("CARGO_MAKE_USE_WORKSPACE_PROFILE", false) {
-                make_line.push_str(&super::profile::get());
-            }
-            else {
-                make_line.push_str(super::profile::DEFAULT_PROFILE);
-            }
-
+            make_line.push_str(&profile_name);
             make_line.push_str(" ");
             make_line.push_str(&task);
             script_lines.push(make_line);

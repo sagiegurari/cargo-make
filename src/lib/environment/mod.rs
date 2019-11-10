@@ -225,8 +225,11 @@ fn setup_env_for_crate() -> CrateInfo {
 
     envmnt::set_bool("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies);
 
-    let is_workspace_var_value = !crate_info.workspace.is_none();
-    envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
+    let is_workspace = !crate_info.workspace.is_none();
+    envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace);
+    if is_workspace {
+        envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", true);
+    }
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
     let members = workspace.members.unwrap_or(vec![]);
@@ -308,7 +311,7 @@ fn setup_env_for_ci() -> CiInfo {
 
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
-    envmnt::set("CARGO_MAKE", "true");
+    envmnt::set_bool("CARGO_MAKE", true);
     envmnt::set("CARGO_MAKE_TASK", &task);
 
     envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
@@ -318,8 +321,6 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
         None => vec![],
     };
     envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
-
-    envmnt::set("CARGO_MAKE_USE_WORKSPACE_PROFILE", "false");
 
     // load crate info
     let crate_info = setup_env_for_crate();
@@ -379,14 +380,14 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             &directory, error
         ),
         _ => {
-            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
+            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
 
-            envmnt::set("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
-                envmnt::get_or(
+            if !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
+                envmnt::set(
                     "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
-                    &envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY")
-                )
-            );
+                    directory_path.to_string_lossy().into_owned(),
+                );
+            }
 
             debug!("Working directory changed to: {}", &directory);
         }
