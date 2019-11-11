@@ -1686,6 +1686,29 @@ You will have to invoke this as a composite flow:
 cargo make workspace-task --no-workspace
 ```
 
+<a name="usage-workspace-support-include-members"></a>
+#### Include Specific Members
+
+It's also possible to include specific members, which excludes all others.
+
+By setting the **CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS** environment variable to hold the member names to include (seperated by a ';' character), you can define which members you want to participate in the flow.
+
+In the below example we will include member3 and member4 (should be defined in the workspace level Makefile.toml):
+
+```toml
+[env]
+CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS = "member3;member4"
+```
+
+You can also define glob paths, for example:
+
+```toml
+[env]
+CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS = "tools/*"
+```
+
+This works together with **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS**, members who are skipped will not be included.
+
 <a name="usage-toochain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting

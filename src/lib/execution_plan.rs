@@ -120,6 +120,26 @@ fn should_skip_workspace_member(member: &str, skipped_members: &HashSet<String>)
     }
 }
 
+fn get_included_workspace_members(include_members_config: String) -> Option<HashSet<String>> {
+    let list = get_skipped_workspace_members(include_members_config);
+
+    if list.is_empty() {
+        return None
+    }
+    else {
+        return Some(list)
+    }
+}
+
+fn should_include_workspace_member(member: &str, include_members: &Option<HashSet<String>>) -> bool {
+    if let Some(include_members) = include_members {
+        return should_skip_workspace_member(member, include_members);
+    }
+    else {
+        return true
+    }
+}
+
 fn update_member_path(member: &str) -> String {
     let os_separator = path::MAIN_SEPARATOR.to_string();
 
@@ -145,11 +165,16 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let skip_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
     let skip_members = get_skipped_workspace_members(skip_members_config);
 
+    let include_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS", "");
+    let include_members = get_included_workspace_members(include_members_config);
+
     let cargo_make_command = "cargo make";
 
     let mut script_lines = vec![];
     for member in &members {
-        if !should_skip_workspace_member(&member, &skip_members) {
+        if !should_skip_workspace_member(&member, &skip_members)
+            && should_include_workspace_member(&member, &include_members)
+        {
             //convert to OS path separators
             let member_path = update_member_path(&member);
 
