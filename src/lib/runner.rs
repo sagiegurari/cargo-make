@@ -38,7 +38,7 @@ where
             if cwd.len() > 0 {
                 let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-                environment::setup_cwd(Some(cwd));
+                environment::setup_cwd(Some(&super::environment::expand_value(cwd)));
 
                 directory
             } else {

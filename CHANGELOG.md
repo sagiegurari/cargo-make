@@ -7,6 +7,7 @@
 * \[**backward compatability break**\] Workspace profile now passed on to members #309 (thanks @daxpedda)
 * New CARGO_MAKE_WORKING_DIRECTORY environment variable #311 (thanks @daxpedda)
 * Fix CARGO_MAKE_TASK_ARGS not being passed down to workspace members #314
+* \[**backward compatability break**\] cwd key in task now expands environment variables #318
 
 ### v0.23.0 (2019-10-16)
 
