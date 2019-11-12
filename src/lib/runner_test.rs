@@ -694,6 +694,41 @@ fn run_task_cwd_dir_exists() {
 }
 
 #[test]
+fn run_task_cwd_env_expansion() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    task.cwd = Some("${CARGO_MAKE_WORKING_DIRECTORY}/src".to_string());
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+}
+
+#[test]
 fn run_task_deprecated_message() {
     let config = Config {
         config: ConfigSection::new(),

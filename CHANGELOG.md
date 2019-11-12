@@ -2,13 +2,13 @@
 
 ### v0.24.0 (unpublished)
 
-* Guard against self-referential aliases #305 (thanks @phi-gamma)
-* \[**backward compatability break**\] Workspace profile now passed on to members #309 (thanks @daxpedda)
-* New CARGO_MAKE_WORKING_DIRECTORY environment variable #311 (thanks @daxpedda)
-* Fix CARGO_MAKE_TASK_ARGS not being passed down to workspace members #314 (thanks @daxpedda)
 * Support defining and loading env files in makefile via new env_files attribute #306
+* \[**backward compatability break**\] Workspace profile now passed on to members #309 (thanks @daxpedda)
+* New CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY environment variable #311 (thanks @daxpedda)
+* Fix CARGO_MAKE_TASK_ARGS not being passed down to workspace members #314 (thanks @daxpedda)
+* \[**backward compatability break**\] Task cwd attribute supports environment variables expansion #318
+* Guard against self-referential aliases #305 (thanks @phi-gamma)
 * Migrate to envmnt::expand #308
-* \[**backward compatability break**\] cwd key in task now expands environment variables #318
 
 ### v0.23.0 (2019-10-16)
 
