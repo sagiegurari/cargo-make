@@ -94,7 +94,7 @@ fn get_workspace_members_config(members_config: String) -> HashSet<String> {
         }
     }
 
-    return members;
+    members
 }
 
 fn is_workspace_member_found(member: &str, members_map: &HashSet<String>) -> bool {
@@ -122,14 +122,14 @@ fn is_workspace_member_found(member: &str, members_map: &HashSet<String>) -> boo
 }
 
 fn should_skip_workspace_member(member: &str, skipped_members: &HashSet<String>) -> bool {
-    return is_workspace_member_found(member, skipped_members);
+    is_workspace_member_found(member, skipped_members)
 }
 
 fn should_include_workspace_member(member: &str, include_members: &HashSet<String>) -> bool {
     if include_members.is_empty() {
-        return true;
+        true
     } else {
-        return is_workspace_member_found(member, include_members);
+        is_workspace_member_found(member, include_members)
     }
 }
 

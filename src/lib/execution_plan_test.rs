@@ -121,23 +121,23 @@ fn get_task_name_platform_alias() {
 }
 
 #[test]
-fn get_skipped_workspace_members_not_defined_or_empty() {
-    let members = get_skipped_workspace_members("".to_string());
+fn get_workspace_members_config_not_defined_or_empty() {
+    let members = get_workspace_members_config("".to_string());
 
     assert_eq!(members.len(), 0);
 }
 
 #[test]
-fn get_skipped_workspace_members_single() {
-    let members = get_skipped_workspace_members("test".to_string());
+fn get_workspace_members_config_single() {
+    let members = get_workspace_members_config("test".to_string());
 
     assert_eq!(members.len(), 1);
     assert!(members.contains(&"test".to_string()));
 }
 
 #[test]
-fn get_skipped_workspace_members_multiple() {
-    let members = get_skipped_workspace_members("test1;test2;test3".to_string());
+fn get_workspace_members_config_multiple() {
+    let members = get_workspace_members_config("test1;test2;test3".to_string());
 
     assert_eq!(members.len(), 3);
     assert!(members.contains(&"test1".to_string()));
@@ -340,6 +340,8 @@ fn create_workspace_task_with_included_members() {
         &vec!["member1".to_string(), "member2".to_string()],
     );
 
+    profile::set(profile::DEFAULT_PROFILE);
+
     let task = create_workspace_task(crate_info, "some_task");
 
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
@@ -387,6 +389,8 @@ fn create_workspace_task_with_included_and_skipped_members() {
         "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS",
         &vec!["member2".to_string(), "dir1/member3".to_string()],
     );
+
+    profile::set(profile::DEFAULT_PROFILE);
 
     let task = create_workspace_task(crate_info, "some_task");
 
