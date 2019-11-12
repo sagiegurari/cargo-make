@@ -348,6 +348,38 @@ pub struct TaskCondition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env file path and attributes
+pub struct EnvFileInfo {
+    /// The file path as string
+    pub path: String,
+    /// The path base directory (relative paths are from this base path)
+    pub base_path: Option<String>,
+    /// The profile name this file is relevant to
+    pub profile: Option<String>,
+}
+
+impl EnvFileInfo {
+    /// Creates and returns a new instance.
+    pub fn new(path: String) -> EnvFileInfo {
+        EnvFileInfo {
+            path,
+            base_path: None,
+            profile: None,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Holds the env file path and attributes
+pub enum EnvFile {
+    /// The file path as string
+    Path(String),
+    /// Extended info object for env file
+    Info(EnvFileInfo),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Env value provided by a script
 pub struct EnvValueScript {
     /// The script to execute to get the env value
@@ -812,6 +844,8 @@ pub struct Task {
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors
     pub force: Option<bool>,
+    /// The env files to setup before running the task commands
+    pub env_files: Option<Vec<EnvFile>>,
     /// The env vars to setup before running the task commands
     pub env: Option<IndexMap<String, EnvValue>>,
     /// The working directory for the task to execute its command/script
@@ -871,6 +905,7 @@ impl Task {
             condition_script: None,
             ignore_errors: None,
             force: None,
+            env_files: None,
             env: None,
             cwd: None,
             alias: None,
@@ -1072,6 +1107,12 @@ impl Task {
             self.force = None;
         }
 
+        if task.env_files.is_some() {
+            self.env_files = task.env_files.clone();
+        } else if override_values {
+            self.env_files = None;
+        }
+
         if task.env.is_some() {
             self.env = task.env.clone();
         } else if override_values {
@@ -1249,6 +1290,7 @@ impl Task {
                     condition_script: override_task.condition_script.clone(),
                     ignore_errors: override_task.ignore_errors.clone(),
                     force: override_task.force.clone(),
+                    env_files: override_task.env_files.clone(),
                     env: override_task.env.clone(),
                     cwd: override_task.cwd.clone(),
                     alias: None,
@@ -1348,6 +1390,8 @@ pub struct PlatformOverrideTask {
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors
     pub force: Option<bool>,
+    /// The env files to setup before running the task commands
+    pub env_files: Option<Vec<EnvFile>>,
     /// The env vars to setup before running the task commands
     pub env: Option<IndexMap<String, EnvValue>>,
     /// The working directory for the task to execute its command/script
@@ -1423,6 +1467,10 @@ impl PlatformOverrideTask {
 
             if self.force.is_none() && task.force.is_some() {
                 self.force = task.force.clone();
+            }
+
+            if self.env_files.is_none() && task.env_files.is_some() {
+                self.env_files = task.env_files.clone();
             }
 
             if self.env.is_none() && task.env.is_some() {
@@ -1695,6 +1743,8 @@ impl ConfigSection {
 pub struct Config {
     /// Runtime config
     pub config: ConfigSection,
+    /// The env files to setup before running the task commands
+    pub env_files: Vec<EnvFile>,
     /// The env vars to setup before running the tasks
     pub env: IndexMap<String, EnvValue>,
     /// All task definitions
@@ -1733,6 +1783,8 @@ pub struct ExternalConfig {
     pub extend: Option<Extend>,
     /// Runtime config
     pub config: Option<ConfigSection>,
+    /// The env files to setup before running the task commands
+    pub env_files: Option<Vec<EnvFile>>,
     /// The env vars to setup before running the tasks
     pub env: Option<IndexMap<String, EnvValue>>,
     /// All task definitions
@@ -1745,6 +1797,7 @@ impl ExternalConfig {
         ExternalConfig {
             extend: None,
             config: None,
+            env_files: None,
             env: None,
             tasks: None,
         }

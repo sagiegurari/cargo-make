@@ -1,6 +1,6 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, DeprecationInfo, EnvInfo, EnvValue, FlowInfo, GitInfo,
+    ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue, FlowInfo, GitInfo,
     RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
 };
 use ci_info;
@@ -100,6 +100,7 @@ fn create_proxy_task_allow_private() {
 fn run_flow_private() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -132,6 +133,7 @@ fn run_flow_private() {
 fn run_flow_private_sub_task() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -164,6 +166,7 @@ fn run_flow_private_sub_task() {
 fn run_flow_allow_private() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -197,6 +200,7 @@ fn run_flow_allow_private() {
 fn run_task_bad_script() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -232,6 +236,7 @@ fn run_task_bad_script() {
 fn run_task_script_with_args_error() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -266,6 +271,7 @@ fn run_task_script_with_args_error() {
 fn run_task_script_with_args_valid() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -299,6 +305,7 @@ fn run_task_script_with_args_valid() {
 fn run_task_command() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -334,6 +341,7 @@ fn run_task_command() {
 fn run_task_bad_command_valid_script() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -368,6 +376,7 @@ fn run_task_bad_command_valid_script() {
 fn run_task_no_command_valid_script() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -408,6 +417,7 @@ fn run_task_bad_run_task_valid_command() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -449,6 +459,7 @@ fn run_task_valid_run_task() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -483,6 +494,7 @@ fn run_task_valid_run_task() {
 fn run_task_invalid_task() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -514,9 +526,61 @@ fn run_task_invalid_task() {
 }
 
 #[test]
+fn run_task_set_env_file() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let env_data = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    for (key, _) in env_data.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    task.env_files = Some(vec![EnvFile::Path(
+        "./src/lib/test/test_files/env.env".to_string(),
+    )]);
+
+    let step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+
+    run_task(&flow_info, &step);
+
+    assert_eq!(envmnt::get_or_panic("CARGO_MAKE_ENV_FILE_TEST1"), "1");
+
+    for (key, _) in env_data.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
 fn run_task_set_env() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -563,6 +627,7 @@ fn run_task_set_env() {
 fn run_task_cwd_no_such_dir() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -597,6 +662,7 @@ fn run_task_cwd_no_such_dir() {
 fn run_task_cwd_dir_exists() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -631,6 +697,7 @@ fn run_task_cwd_dir_exists() {
 fn run_task_deprecated_message() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -666,6 +733,7 @@ fn run_task_deprecated_message() {
 fn run_task_deprecated_flag() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1018,6 +1086,7 @@ fn run_sub_task_and_report_for_name() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1055,6 +1124,7 @@ fn run_sub_task_and_report_for_name_not_found() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1089,6 +1159,7 @@ fn run_sub_task_and_report_for_details() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1128,6 +1199,7 @@ fn run_sub_task_and_report_routing_empty() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1164,6 +1236,7 @@ fn run_sub_task_and_report_routing_no_condition() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1205,6 +1278,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1259,6 +1333,7 @@ fn run_sub_task_and_report_routing_not_found() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -1292,6 +1367,7 @@ fn run_sub_task_and_report_routing_not_found() {
 fn get_sub_task_info_for_routing_info_empty() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1321,6 +1397,7 @@ fn get_sub_task_info_for_routing_info_empty() {
 fn get_sub_task_info_for_routing_info_condition_not_met() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1370,6 +1447,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
 fn get_sub_task_info_for_routing_info_condition_found() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1419,6 +1497,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
 fn get_sub_task_info_for_routing_info_script_not_met() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1456,6 +1535,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
 fn get_sub_task_info_for_routing_info_script_found() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1493,6 +1573,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
 fn get_sub_task_info_for_routing_info_multiple_found() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1550,6 +1631,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
 fn get_sub_task_info_for_routing_info_default() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1613,6 +1695,7 @@ fn get_sub_task_info_for_routing_info_default() {
 fn get_sub_task_info_for_routing_info_multiple() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1682,6 +1765,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
 fn get_sub_task_info_for_routing_info_fork_false() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1731,6 +1815,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
 fn get_sub_task_info_for_routing_info_fork_true() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1780,6 +1865,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
 fn create_fork_step_valid() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

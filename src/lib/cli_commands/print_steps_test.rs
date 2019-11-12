@@ -24,6 +24,7 @@ fn get_format_type_short_description() {
 fn print_default_format() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -40,6 +41,7 @@ fn print_default_format() {
 fn print_task_not_found() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

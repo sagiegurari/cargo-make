@@ -1,4 +1,6 @@
 
+env_files = []
+
 [config]
 init_task = "empty"
 end_task = "empty"
