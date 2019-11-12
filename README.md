@@ -48,6 +48,7 @@
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)
         * [Skipping Specific Members](#usage-workspace-support-skip-members)
+        * [Including Specific Members](#usage-workspace-support-include-members)
     * [Toolchain](#usage-toochain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
@@ -1687,7 +1688,7 @@ cargo make workspace-task --no-workspace
 ```
 
 <a name="usage-workspace-support-include-members"></a>
-#### Include Specific Members
+#### Including Specific Members
 
 It's also possible to include specific members, which excludes all others.
 
@@ -1707,7 +1708,8 @@ You can also define glob paths, for example:
 CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS = "tools/*"
 ```
 
-This works together with **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS**, members who are skipped will not be included.
+This works together with **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS**, which will still exclude members and not be overwritten
+by **CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS**.
 
 <a name="usage-toochain"></a>
 ### Toolchain

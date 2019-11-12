@@ -83,10 +83,10 @@ pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bo
     }
 }
 
-fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String> {
+fn get_workspace_members_config(members_config: String) -> HashSet<String> {
     let mut members = HashSet::new();
 
-    let members_list: Vec<&str> = skip_members_config.split(';').collect();
+    let members_list: Vec<&str> = members_config.split(';').collect();
 
     for member in members_list.iter() {
         if member.len() > 0 {
@@ -97,46 +97,39 @@ fn get_skipped_workspace_members(skip_members_config: String) -> HashSet<String>
     return members;
 }
 
-fn should_skip_workspace_member(member: &str, skipped_members: &HashSet<String>) -> bool {
-    if skipped_members.contains(member) {
+fn is_workspace_member_found(member: &str, members_map: &HashSet<String>) -> bool {
+    if members_map.contains(member) {
         true
     } else {
         // search for globs
-        let mut skip = false;
-        for skipped_member in skipped_members {
-            if skipped_member.contains("*") {
-                skip = match Pattern::new(skipped_member) {
+        let mut found = false;
+
+        for member_iter in members_map {
+            if member_iter.contains("*") {
+                found = match Pattern::new(member_iter) {
                     Ok(pattern) => pattern.matches(&member),
                     _ => false,
                 };
 
-                if skip {
+                if found {
                     break;
                 }
             }
         }
 
-        skip
+        found
     }
 }
 
-fn get_included_workspace_members(include_members_config: String) -> Option<HashSet<String>> {
-    let list = get_skipped_workspace_members(include_members_config);
-
-    if list.is_empty() {
-        return None
-    }
-    else {
-        return Some(list)
-    }
+fn should_skip_workspace_member(member: &str, skipped_members: &HashSet<String>) -> bool {
+    return is_workspace_member_found(member, skipped_members);
 }
 
-fn should_include_workspace_member(member: &str, include_members: &Option<HashSet<String>>) -> bool {
-    if let Some(include_members) = include_members {
-        return should_skip_workspace_member(member, include_members);
-    }
-    else {
-        return true
+fn should_include_workspace_member(member: &str, include_members: &HashSet<String>) -> bool {
+    if include_members.is_empty() {
+        return true;
+    } else {
+        return is_workspace_member_found(member, include_members);
     }
 }
 
@@ -163,10 +156,10 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     };
 
     let skip_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
-    let skip_members = get_skipped_workspace_members(skip_members_config);
+    let skip_members = get_workspace_members_config(skip_members_config);
 
     let include_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS", "");
-    let include_members = get_included_workspace_members(include_members_config);
+    let include_members = get_workspace_members_config(include_members_config);
 
     let cargo_make_command = "cargo make";
 
