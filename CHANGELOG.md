@@ -9,6 +9,7 @@
 * \[**backward compatability break**\] Task cwd attribute supports environment variables expansion #318
 * Guard against self-referential aliases #305 (thanks @phi-gamma)
 * Migrate to envmnt::expand #308
+* New CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS environment variable #316
 
 ### v0.23.0 (2019-10-16)
 
