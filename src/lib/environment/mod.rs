@@ -13,8 +13,8 @@ mod mod_test;
 use crate::command;
 use crate::profile;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript, GitInfo,
-    PackageInfo, Step, Task, Workspace,
+    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript,
+    GitInfo, PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -182,6 +182,46 @@ fn set_env_for_config(
     }
 }
 
+pub(crate) fn set_env_files(env_files: Vec<EnvFile>) {
+    set_env_files_for_config(env_files, None);
+}
+
+fn set_env_files_for_config(
+    env_files: Vec<EnvFile>,
+    additional_profiles: Option<&Vec<String>>,
+) -> bool {
+    let mut all_loaded = true;
+    for env_file in env_files {
+        all_loaded = all_loaded
+            && match env_file {
+                EnvFile::Path(file) => load_env_file(Some(file)),
+                EnvFile::Info(info) => {
+                    let is_valid_profile = match info.profile {
+                        Some(profile_name) => {
+                            let current_profile_name = profile::get();
+
+                            let found = match additional_profiles {
+                                Some(profiles) => profiles.contains(&profile_name),
+                                None => false,
+                            };
+
+                            current_profile_name == profile_name || found
+                        }
+                        None => true,
+                    };
+
+                    if is_valid_profile {
+                        load_env_file_with_base_directory(Some(info.path), info.base_path)
+                    } else {
+                        false
+                    }
+                }
+            }
+    }
+
+    all_loaded
+}
+
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
     debug!("Initializing Env.");
@@ -190,6 +230,8 @@ fn initialize_env(config: &Config) {
         Some(ref profiles) => Some(profiles),
         None => None,
     };
+
+    set_env_files_for_config(config.env_files.clone(), additional_profiles);
 
     set_env_for_config(config.env.clone(), additional_profiles, true);
 }
@@ -395,11 +437,28 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
 }
 
 pub(crate) fn load_env_file(env_file: Option<String>) -> bool {
+    load_env_file_with_base_directory(env_file, None)
+}
+
+pub(crate) fn load_env_file_with_base_directory(
+    env_file: Option<String>,
+    base_directory: Option<String>,
+) -> bool {
     match env_file {
         Some(file_name) => {
             let file_path = if file_name.starts_with(".") {
-                let base_path = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", ".");
-                Path::new(&base_path).join(file_name)
+                let (base_path, check_relative_path) = match base_directory {
+                    Some(file) => (file, true),
+                    None => (envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."), false),
+                };
+
+                if check_relative_path && base_path.starts_with(".") {
+                    Path::new(&envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."))
+                        .join(&base_path)
+                        .join(file_name)
+                } else {
+                    Path::new(&base_path).join(file_name)
+                }
             } else {
                 Path::new(&file_name).to_path_buf()
             };

@@ -6,6 +6,7 @@ use indexmap::IndexMap;
 fn run_same() {
     let mut config1 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -23,6 +24,7 @@ fn run_same() {
 fn run_different() {
     let mut config1 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -36,6 +38,7 @@ fn run_different() {
 
     let mut config2 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -52,6 +55,7 @@ fn run_different() {
 fn run_missing_task_in_first_config() {
     let mut config1 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -61,6 +65,7 @@ fn run_missing_task_in_first_config() {
 
     let mut config2 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -77,6 +82,7 @@ fn run_missing_task_in_first_config() {
 fn run_missing_task_in_second_config() {
     let mut config1 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -87,6 +93,7 @@ fn run_missing_task_in_second_config() {
 
     let mut config2 = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

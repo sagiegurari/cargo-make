@@ -880,6 +880,7 @@ fn task_new() {
     assert!(task.workspace.is_none());
     assert!(task.ignore_errors.is_none());
     assert!(task.force.is_none());
+    assert!(task.env_files.is_none());
     assert!(task.env.is_none());
     assert!(task.cwd.is_none());
     assert!(task.alias.is_none());
@@ -905,6 +906,7 @@ fn external_config_new() {
 
     assert!(config.extend.is_none());
     assert!(config.config.is_none());
+    assert!(config.env_files.is_none());
     assert!(config.env.is_none());
     assert!(config.tasks.is_none());
 }
@@ -978,6 +980,7 @@ fn task_extend_both_have_misc_data() {
         condition_script: None,
         ignore_errors: Some(true),
         force: Some(true),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: None,
         alias: Some("alias2".to_string()),
@@ -1015,6 +1018,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.condition_script.is_none());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
+    assert!(base.env_files.is_some());
     assert!(base.env.is_some());
     assert!(base.cwd.is_none());
     assert!(base.alias.is_some());
@@ -1049,6 +1053,7 @@ fn task_extend_both_have_misc_data() {
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(true));
     assert!(base.ignore_errors.unwrap());
     assert!(base.force.unwrap());
+    assert_eq!(base.env_files.unwrap().len(), 0);
     assert_eq!(base.env.unwrap().len(), 0);
     assert_eq!(base.alias.unwrap(), "alias2");
 }
@@ -1071,6 +1076,7 @@ fn task_extend_extended_have_all_fields() {
         condition_script: None,
         ignore_errors: Some(true),
         force: Some(true),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: None,
         alias: None,
@@ -1122,6 +1128,7 @@ fn task_extend_extended_have_all_fields() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![EnvFile::Path("extended".to_string())]),
         env: Some(env.clone()),
         cwd: Some("cwd".to_string()),
         alias: Some("alias2".to_string()),
@@ -1166,6 +1173,7 @@ fn task_extend_extended_have_all_fields() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1207,6 +1215,7 @@ fn task_extend_extended_have_all_fields() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1248,6 +1257,7 @@ fn task_extend_extended_have_all_fields() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1283,6 +1293,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.condition_script.is_some());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
+    assert!(base.env_files.is_some());
     assert!(base.env.is_some());
     assert!(base.cwd.is_some());
     assert!(base.alias.is_some());
@@ -1319,6 +1330,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.condition_script.unwrap().len(), 1);
     assert!(!base.ignore_errors.unwrap());
     assert!(!base.force.unwrap());
+    assert_eq!(base.env_files.unwrap().len(), 1);
     assert_eq!(base.env.unwrap().len(), 1);
     assert_eq!(base.cwd.unwrap(), "cwd".to_string());
     assert_eq!(base.alias.unwrap(), "alias2");
@@ -1377,6 +1389,7 @@ fn task_extend_clear_with_no_data() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(env.clone()),
         cwd: Some("cwd".to_string()),
         alias: Some("alias2".to_string()),
@@ -1421,6 +1434,7 @@ fn task_extend_clear_with_no_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1462,6 +1476,7 @@ fn task_extend_clear_with_no_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1503,6 +1518,7 @@ fn task_extend_clear_with_no_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1540,6 +1556,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.condition_script.is_none());
     assert!(base.ignore_errors.is_none());
     assert!(base.force.is_none());
+    assert!(base.env_files.is_none());
     assert!(base.env.is_none());
     assert!(base.cwd.is_none());
     assert!(base.alias.is_none());
@@ -1594,6 +1611,7 @@ fn task_extend_clear_with_all_data() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(env.clone()),
         cwd: Some("cwd".to_string()),
         alias: Some("alias2".to_string()),
@@ -1638,6 +1656,7 @@ fn task_extend_clear_with_all_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1679,6 +1698,7 @@ fn task_extend_clear_with_all_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1720,6 +1740,7 @@ fn task_extend_clear_with_all_data() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![]),
             env: Some(env.clone()),
             cwd: Some("cwd".to_string()),
             install_script: Some(vec!["i1".to_string(), "i2".to_string()]),
@@ -1754,6 +1775,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.condition_script.is_some());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
+    assert!(base.env_files.is_some());
     assert!(base.env.is_some());
     assert!(base.cwd.is_some());
     assert!(base.alias.is_some());
@@ -1829,6 +1851,7 @@ fn task_get_normalized_task_undefined() {
         condition_script: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -1862,6 +1885,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.ignore_errors.is_none());
     assert!(normalized_task.force.is_none());
+    assert!(normalized_task.env_files.is_none());
     assert!(normalized_task.env.is_none());
     assert!(normalized_task.cwd.is_none());
     assert!(normalized_task.alias.is_some());
@@ -1957,6 +1981,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -1993,6 +2018,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             condition_script: Some(vec!["exit 0".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
             env: Some(env),
             cwd: Some("cwd2".to_string()),
             install_script: Some(vec![
@@ -2035,6 +2061,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env_files.is_some());
     assert!(normalized_task.env.is_some());
     assert!(normalized_task.cwd.is_some());
     assert!(normalized_task.alias.is_none());
@@ -2077,6 +2104,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.condition_script.unwrap().len(), 1);
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env_files.unwrap().len(), 1);
     assert_eq!(normalized_task.env.unwrap().len(), 1);
     assert_eq!(normalized_task.cwd.unwrap(), "cwd2".to_string());
     assert_eq!(normalized_task.install_script.unwrap().len(), 4);
@@ -2135,6 +2163,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -2174,6 +2203,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
             env: Some(env),
             cwd: Some("cwd2".to_string()),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string(), "c3".to_string()]),
@@ -2216,6 +2246,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env_files.is_some());
     assert!(normalized_task.env.is_some());
     assert!(normalized_task.cwd.is_some());
     assert!(normalized_task.alias.is_none());
@@ -2258,6 +2289,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.condition_script.unwrap().len(), 2);
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env_files.unwrap().len(), 1);
     assert_eq!(normalized_task.env.unwrap().len(), 1);
     assert_eq!(normalized_task.cwd.unwrap(), "cwd2".to_string());
     assert_eq!(normalized_task.install_crate_args.unwrap().len(), 3);
@@ -2311,6 +2343,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -2338,6 +2371,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             condition_script: None,
             ignore_errors: None,
             force: None,
+            env_files: None,
             env: None,
             cwd: None,
             install_script: None,
@@ -2368,6 +2402,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.condition_script.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
+    assert!(normalized_task.env_files.is_some());
     assert!(normalized_task.env.is_some());
     assert!(normalized_task.cwd.is_some());
     assert!(normalized_task.alias.is_none());
@@ -2408,6 +2443,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     );
     assert!(!normalized_task.ignore_errors.unwrap());
     assert!(!normalized_task.force.unwrap());
+    assert_eq!(normalized_task.env_files.unwrap().len(), 0);
     assert_eq!(normalized_task.env.unwrap().len(), 0);
     assert_eq!(normalized_task.cwd.unwrap(), "cwd".to_string());
     assert_eq!(normalized_task.install_crate_args.unwrap().len(), 2);
@@ -2457,6 +2493,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
+        env_files: Some(vec![]),
         env: Some(IndexMap::new()),
         cwd: Some("cwd".to_string()),
         install_script: Some(vec!["A".to_string(), "B".to_string(), "C".to_string()]),
@@ -2484,6 +2521,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             condition_script: None,
             ignore_errors: None,
             force: None,
+            env_files: None,
             env: None,
             cwd: None,
             install_script: None,
@@ -2514,6 +2552,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.condition_script.is_none());
     assert!(normalized_task.ignore_errors.is_none());
     assert!(normalized_task.force.is_none());
+    assert!(normalized_task.env_files.is_none());
     assert!(normalized_task.env.is_none());
     assert!(normalized_task.cwd.is_none());
     assert!(normalized_task.alias.is_none());
@@ -3154,6 +3193,7 @@ fn config_apply_modify_empty() {
     tasks.insert("test".to_string(), task);
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };
@@ -3179,6 +3219,7 @@ fn config_apply_modify_all() {
     tasks.insert("test".to_string(), task);
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks,
     };

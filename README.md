@@ -32,6 +32,7 @@
         * [Task](#usage-env-task)
         * [Command Line](#usage-env-cli)
         * [Env File](#usage-env-file)
+        * [Loading Order](#usage-env-vars-loading-order)
         * [Global](#usage-env-global)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Conditions](#usage-conditions)
@@ -1197,6 +1198,7 @@ cargo make --env-file=./env/production.env
 This allows to use the same Makefile.toml but with different environment variables loaded from different env files.
 
 The env file, is a simple key=value file.<br>
+<br>
 In addition, you can define environment variables values based on other environment variables using the ${} syntax.<br>
 For example:
 
@@ -1206,6 +1208,48 @@ ENV1_TEST=TEST1
 ENV2_TEST=TEST2
 ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 ```
+
+Env files can also be defined globally in the Makefile.toml via **env_files** attribute as follows:
+
+```toml
+env_files = [
+    "./env1.env",
+    "./env2.env"
+]
+```
+
+In this example, the env files will be loaded in the order in which they were defined.<br>
+To enable profile based flitering, you can use the object form as follows:
+
+```toml
+env_files = [
+    { path = "./profile.env", profile = "development" },
+    { path = "./env.env" }
+]
+```
+
+In this example, **profile.env** is only loaded in case the runtime profile is **development**.<br>
+*More on profiles in the [profiles](#usage-profiles) section.*<br>
+<br>
+Relative paths are relative compared to the toml file that declared them and not to the current working directory.<br>
+<br>
+The same **env_files** attribute can be defined on the task level, however relative paths on the task level are relative to the current working directory.<br>
+**If the task defines a different working directory, it will change after the env files are loaded.**
+
+<a name="usage-env-vars-loading-order"></a>
+#### Environment Variables Loading Order
+
+cargo-make will load the environment variables in the following order
+
+* Load environment file provided on the command line
+* Setup internal environment variables (see [Global](#usage-env-global) section)
+* Load global environment files defined in the **env_files** attribute.
+* Load global environment variables provided on the command line.
+* Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
+* Load global environment variables defined in the **env.\[current profile\]** block.
+* Per Task
+  *  Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
+  *  Load environment variables defined in the **env** block (same behaviour as global env block).
 
 <a name="usage-env-global"></a>
 #### Global
