@@ -8,6 +8,7 @@
 * Fix CARGO_MAKE_TASK_ARGS not being passed down to workspace members #314 (thanks @daxpedda)
 * Support defining and loading env files in makefile via new env_files attribute #306
 * Migrate to envmnt::expand #308
+* \[**backward compatability break**\] cwd key in task now expands environment variables #318
 
 ### v0.23.0 (2019-10-16)
 

@@ -35,10 +35,12 @@ where
 {
     let revert_directory = match step.config.cwd {
         Some(ref cwd) => {
+            let cwd = environment::expand_value(cwd);
+
             if cwd.len() > 0 {
                 let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-                environment::setup_cwd(Some(cwd));
+                environment::setup_cwd(Some(&cwd));
 
                 directory
             } else {
