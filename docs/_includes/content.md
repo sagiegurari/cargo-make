@@ -1826,9 +1826,24 @@ IS_PROD: TRUE
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Additional profiles defined in the config section will also result in additional env blocks to be loaded, for example:
+Env files also can be filtered based on profile, using the **profile** attribute as follows:
 
 ```toml
+env_files = [
+    { path = "./development.env", profile = "development" },
+    { path = "./production.env", profile = "production" },
+    { path = "./env.env" }
+]
+```
+
+Additional profiles defined in the config section will also result in additional env blocks/files to be loaded, for example:
+
+```toml
+env_files = [
+    { path = "./second.env", profile = "second_profile" },
+    { path = "./another.env", profile = "another_profile" }
+]
+
 [config]
 additional_profiles = ["second_profile", "another_profile"]
 
@@ -1837,7 +1852,6 @@ IS_SECOND_AVAILABLE = true
 
 [env.another_profile]
 IS_OTHER_AVAILABLE = true
-
 ```
 
 This could be quite handy in having environment variable blocks which will enable/disable specific tasks.
