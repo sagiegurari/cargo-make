@@ -10,6 +10,7 @@ use std::env;
 fn get_task_name_not_found() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -21,6 +22,7 @@ fn get_task_name_not_found() {
 fn get_task_name_no_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -36,6 +38,7 @@ fn get_task_name_no_alias() {
 fn get_task_name_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -56,6 +59,7 @@ fn get_task_name_alias() {
 fn get_task_name_alias_self_referential() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -72,6 +76,7 @@ fn get_task_name_alias_self_referential() {
 fn get_task_name_alias_circular() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -92,6 +97,7 @@ fn get_task_name_alias_circular() {
 fn get_task_name_platform_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -444,6 +450,7 @@ fn is_workspace_flow_true_default() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -470,6 +477,7 @@ fn is_workspace_flow_false_in_config() {
 
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -496,6 +504,7 @@ fn is_workspace_flow_true_in_config() {
 
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -520,6 +529,7 @@ fn is_workspace_flow_true_in_task() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -539,6 +549,7 @@ fn is_workspace_flow_no_workspace() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -563,6 +574,7 @@ fn is_workspace_flow_disabled_via_cli() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -587,6 +599,7 @@ fn is_workspace_flow_disabled_via_task() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -604,6 +617,7 @@ fn create_single() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -629,6 +643,7 @@ fn create_single_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -655,6 +670,7 @@ fn create_single_private() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -677,6 +693,7 @@ fn create_single_allow_private() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -703,6 +720,7 @@ fn create_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -735,6 +753,7 @@ fn create_with_dependencies_sub_flow() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -765,6 +784,7 @@ fn create_disabled_task_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -796,6 +816,7 @@ fn create_with_dependencies_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -825,6 +846,7 @@ fn create_with_dependencies_disabled() {
 fn create_platform_disabled() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -844,6 +866,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -869,6 +892,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -894,6 +918,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -916,6 +941,7 @@ fn create_platform_disabled() {
 fn create_workspace() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -935,6 +961,7 @@ fn create_workspace() {
 fn create_noworkspace() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1032,6 +1059,7 @@ fn get_normalized_task_multi_extend() {
         command: None,
         ignore_errors: None,
         force: Some(true),
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -1058,6 +1086,7 @@ fn get_normalized_task_multi_extend() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1085,6 +1114,7 @@ fn get_normalized_task_simple() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

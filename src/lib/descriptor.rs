@@ -12,7 +12,10 @@ mod descriptor_test;
 
 use crate::command;
 use crate::io;
-use crate::types::{Config, ConfigSection, EnvValue, Extend, ExternalConfig, ModifyConfig, Task};
+use crate::types::{
+    Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
+    Task,
+};
 use crate::version;
 use envmnt;
 use indexmap::IndexMap;
@@ -66,6 +69,19 @@ fn merge_env(
     merged
 }
 
+fn merge_env_files(base: &mut Vec<EnvFile>, extended: &mut Vec<EnvFile>) -> Vec<EnvFile> {
+    let mut merged: Vec<EnvFile> = vec![];
+
+    for value in extended.iter() {
+        merged.push(value.clone());
+    }
+    for value in base.iter() {
+        merged.push(value.clone());
+    }
+
+    merged
+}
+
 fn merge_tasks(
     base: &mut IndexMap<String, Task>,
     extended: &mut IndexMap<String, Task>,
@@ -99,6 +115,45 @@ fn merge_tasks(
     merged
 }
 
+fn add_file_location_info(
+    mut external_config: ExternalConfig,
+    file_path: &PathBuf,
+) -> ExternalConfig {
+    let base_directory = match file_path.parent() {
+        Some(directory) => directory.to_string_lossy().into_owned(),
+        None => "".to_string(),
+    };
+
+    match external_config.env_files {
+        Some(env_files) => {
+            let mut modified_env_files = vec![];
+
+            for env_file in env_files {
+                match env_file {
+                    EnvFile::Path(path) => {
+                        let mut info = EnvFileInfo::new(path);
+                        info.base_path = Some(base_directory.clone());
+
+                        modified_env_files.push(EnvFile::Info(info));
+                    }
+                    EnvFile::Info(mut info) => {
+                        if info.base_path.is_none() {
+                            info.base_path = Some(base_directory.clone());
+                        }
+
+                        modified_env_files.push(EnvFile::Info(info));
+                    }
+                }
+            }
+
+            external_config.env_files = Some(modified_env_files);
+        }
+        None => (),
+    };
+
+    external_config
+}
+
 fn run_load_script(external_config: &ExternalConfig) -> bool {
     match external_config.config {
         Some(ref config) => {
@@ -126,6 +181,17 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
 }
 
 fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig) -> ExternalConfig {
+    // merge env files
+    let mut parent_env_files = match parent_config.env_files {
+        Some(env_files) => env_files,
+        None => vec![],
+    };
+    let mut extended_env_files = match config.env_files {
+        Some(env_files) => env_files,
+        None => vec![],
+    };
+    let all_env_files = merge_env_files(&mut parent_env_files, &mut extended_env_files);
+
     // merge env
     let mut parent_env = match parent_config.env {
         Some(env) => env,
@@ -163,6 +229,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
     ExternalConfig {
         extend: None,
         config: Some(config_section),
+        env_files: Some(all_env_files),
         env: Some(all_env),
         tasks: Some(all_tasks),
     }
@@ -248,11 +315,13 @@ fn load_external_descriptor(
 
         check_makefile_min_version(&external_descriptor)?;
 
-        let file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
+        let mut file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
             Err(error) => panic!("Unable to parse external descriptor, {}", error),
         };
         debug!("Loaded external config: {:#?}", &file_config);
+
+        file_config = add_file_location_info(file_config, &file_path);
 
         run_load_script(&file_config);
 
@@ -400,13 +469,18 @@ fn load_descriptors(
     };
     let mut default_tasks = default_config.tasks;
 
+    let env_files = match external_config.env_files {
+        Some(env_files) => env_files,
+        None => vec![],
+    };
+
     let mut external_env = match external_config.env {
         Some(env) => env,
         None => IndexMap::new(),
     };
     let mut default_env = default_config.env;
 
-    // merge configs
+    // merge env
     let mut all_env = merge_env(&mut default_env, &mut external_env);
     all_env = match env_map {
         Some(values) => {
@@ -436,6 +510,7 @@ fn load_descriptors(
 
     let config = Config {
         config: config_section,
+        env_files,
         env: all_env,
         tasks: all_tasks,
     };

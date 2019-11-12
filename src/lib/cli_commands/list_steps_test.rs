@@ -10,6 +10,7 @@ fn run_empty() {
     let tasks = IndexMap::<String, Task>::new();
     let config = Config {
         config: config_section,
+        env_files: vec![],
         env,
         tasks,
     };
@@ -34,6 +35,7 @@ fn run_all_public() {
 
     let config = Config {
         config: config_section,
+        env_files: vec![],
         env,
         tasks,
     };
@@ -58,6 +60,7 @@ fn run_all_public_markdown() {
 
     let config = Config {
         config: config_section,
+        env_files: vec![],
         env,
         tasks,
     };
@@ -84,6 +87,7 @@ fn run_all_private() {
 
     let config = Config {
         config: config_section,
+        env_files: vec![],
         env,
         tasks,
     };
@@ -117,6 +121,7 @@ fn run_mixed() {
 
     let config = Config {
         config: config_section,
+        env_files: vec![],
         env,
         tasks,
     };

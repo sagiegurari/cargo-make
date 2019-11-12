@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::{ConfigSection, EnvValueUnset, Task};
+use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
@@ -339,6 +339,195 @@ fn set_env_for_config_profile_override() {
 }
 
 #[test]
+fn set_env_files_for_config_files() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Path("./src/lib/test/test_files/env.env".to_string()),
+            EnvFile::Path("./src/lib/test/test_files/profile.env".to_string()),
+        ],
+        None,
+    );
+
+    assert!(loaded);
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+fn set_env_files_for_config_base_directory() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: None,
+            }),
+            EnvFile::Path("./src/lib/test/test_files/profile.env".to_string()),
+        ],
+        None,
+    );
+
+    assert!(loaded);
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+fn set_env_files_for_config_profile() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    profile::set("env_test1");
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/profile.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test1".to_string()),
+            }),
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test2".to_string()),
+            }),
+        ],
+        None,
+    );
+
+    assert!(!loaded);
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+fn set_env_files_for_config_additional_profiles() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    profile::set("env_test1");
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/profile.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test1".to_string()),
+            }),
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test2".to_string()),
+            }),
+        ],
+        Some(&vec!["env_test2".to_string()]),
+    );
+
+    assert!(loaded);
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+fn initialize_env_all() {
+    let mut env_data = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env_data.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env_data.clone().iter() {
+        envmnt::remove(&key);
+    }
+    envmnt::remove("initialize_env_all_test");
+
+    assert!(!envmnt::exists("initialize_env_all_test"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    profile::set("env_test1");
+
+    let mut config_section = ConfigSection::new();
+    config_section.additional_profiles = Some(vec!["env_test2".to_string()]);
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "initialize_env_all_test".to_string(),
+        EnvValue::Value("test".to_string()),
+    );
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/profile.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test1".to_string()),
+            }),
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test2".to_string()),
+            }),
+        ],
+        env,
+        tasks: IndexMap::new(),
+    };
+
+    initialize_env(&config);
+
+    assert!(envmnt::exists("initialize_env_all_test"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env_data.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
 fn setup_cwd_empty() {
     envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
@@ -353,6 +542,7 @@ fn setup_env_empty() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -378,6 +568,7 @@ fn setup_env_cli_arguments() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -396,6 +587,7 @@ fn setup_env_values() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -423,6 +615,7 @@ fn setup_env_script() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

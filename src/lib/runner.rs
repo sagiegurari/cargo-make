@@ -35,10 +35,12 @@ where
 {
     let revert_directory = match step.config.cwd {
         Some(ref cwd) => {
-            if cwd.len() > 0 {
+            let expanded_cwd = environment::expand_value(cwd);
+
+            if expanded_cwd.len() > 0 {
                 let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-                environment::setup_cwd(Some(cwd));
+                environment::setup_cwd(Some(&expanded_cwd));
 
                 directory
             } else {
@@ -219,11 +221,14 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
         //get profile
         let profile_name = profile::get();
 
-        let env = match step.config.env {
-            Some(ref env) => env.clone(),
-            None => IndexMap::new(),
+        match step.config.env_files {
+            Some(ref env_files) => environment::set_env_files(env_files.clone()),
+            None => (),
         };
-        environment::set_env(env);
+        match step.config.env {
+            Some(ref env) => environment::set_env(env.clone()),
+            None => (),
+        };
 
         //make sure profile env is not overwritten
         profile::set(&profile_name);
