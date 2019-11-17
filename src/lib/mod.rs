@@ -98,7 +98,6 @@
     warnings,
     renamed_and_removed_lints
 )]
-#![cfg_attr(feature = "clippy", feature(plugin))]
 
 //! # cargo-make
 //!
