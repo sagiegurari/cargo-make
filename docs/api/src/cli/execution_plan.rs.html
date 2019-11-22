@@ -331,6 +331,56 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # execution_plan</span>
 <span class="doccomment">//!</span>
@@ -343,6 +393,7 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">environment</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logger</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">profile</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">ScriptValue</span>, <span class="ident">Step</span>, <span class="ident">Task</span>};
 <span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">glob</span>::<span class="ident">Pattern</span>;
@@ -351,15 +402,23 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">vec</span>::<span class="ident">Vec</span>;
 
-<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases</span>
-<span class="kw">fn</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="doccomment">/// Resolve aliases to different tasks, checking for cycles</span>
+<span class="kw">fn</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">seen</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="ident">seen</span>.<span class="ident">push</span>(<span class="ident">name</span>.<span class="ident">to_string</span>());
+
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">name</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">alias</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">get_alias</span>();
 
             <span class="kw">match</span> <span class="ident">alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="op">=&gt;</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>, <span class="ident">alias</span>),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">contains</span>(<span class="ident">alias</span>) <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">chain</span> <span class="op">=</span> <span class="ident">seen</span>.<span class="ident">join</span>(<span class="string">&quot; -&gt; &quot;</span>);
+                    <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
+                    <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
+                }
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="op">=&gt;</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">alias</span>, <span class="ident">seen</span>),
                 <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">name</span>.<span class="ident">to_string</span>(),
             }
         }
@@ -368,6 +427,13 @@
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Task not found: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
         }
     }
+}
+
+<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases</span>
+<span class="kw">fn</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+
+    <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">seen</span>)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">Task</span> {
@@ -401,10 +467,10 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_skipped_workspace_members</span>(<span class="ident">skip_members_config</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">members_config</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">members</span> <span class="op">=</span> <span class="ident">HashSet</span>::<span class="ident">new</span>();
 
-    <span class="kw">let</span> <span class="ident">members_list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">skip_members_config</span>.<span class="ident">split</span>(<span class="string">&#39;;&#39;</span>).<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">members_list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">members_config</span>.<span class="ident">split</span>(<span class="string">&#39;;&#39;</span>).<span class="ident">collect</span>();
 
     <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="ident">members_list</span>.<span class="ident">iter</span>() {
         <span class="kw">if</span> <span class="ident">member</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
@@ -412,29 +478,42 @@
         }
     }
 
-    <span class="kw">return</span> <span class="ident">members</span>;
+    <span class="ident">members</span>
 }
 
-<span class="kw">fn</span> <span class="ident">should_skip_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">skipped_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="ident">skipped_members</span>.<span class="ident">contains</span>(<span class="ident">member</span>) {
+<span class="kw">fn</span> <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">members_map</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">if</span> <span class="ident">members_map</span>.<span class="ident">contains</span>(<span class="ident">member</span>) {
         <span class="bool-val">true</span>
     } <span class="kw">else</span> {
         <span class="comment">// search for globs</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">skip</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="kw">for</span> <span class="ident">skipped_member</span> <span class="kw">in</span> <span class="ident">skipped_members</span> {
-            <span class="kw">if</span> <span class="ident">skipped_member</span>.<span class="ident">contains</span>(<span class="string">&quot;*&quot;</span>) {
-                <span class="ident">skip</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Pattern</span>::<span class="ident">new</span>(<span class="ident">skipped_member</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">found</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
+        <span class="kw">for</span> <span class="ident">member_iter</span> <span class="kw">in</span> <span class="ident">members_map</span> {
+            <span class="kw">if</span> <span class="ident">member_iter</span>.<span class="ident">contains</span>(<span class="string">&quot;*&quot;</span>) {
+                <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Pattern</span>::<span class="ident">new</span>(<span class="ident">member_iter</span>) {
                     <span class="prelude-val">Ok</span>(<span class="ident">pattern</span>) <span class="op">=&gt;</span> <span class="ident">pattern</span>.<span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>),
                     <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 };
 
-                <span class="kw">if</span> <span class="ident">skip</span> {
+                <span class="kw">if</span> <span class="ident">found</span> {
                     <span class="kw">break</span>;
                 }
             }
         }
 
-        <span class="ident">skip</span>
+        <span class="ident">found</span>
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">should_skip_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">skipped_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>, <span class="ident">skipped_members</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">should_include_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">include_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">if</span> <span class="ident">include_members</span>.<span class="ident">is_empty</span>() {
+        <span class="bool-val">true</span>
+    } <span class="kw">else</span> {
+        <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>, <span class="ident">include_members</span>)
     }
 }
 
@@ -454,14 +533,25 @@
 
     <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_log_level</span>();
 
+    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="string">&quot;CARGO_MAKE_USE_WORKSPACE_PROFILE&quot;</span>, <span class="bool-val">true</span>) {
+        <span class="ident">profile</span>::<span class="ident">get</span>()
+    } <span class="kw">else</span> {
+        <span class="ident">profile</span>::<span class="ident">DEFAULT_PROFILE</span>.<span class="ident">to_string</span>()
+    };
+
     <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_skipped_workspace_members</span>(<span class="ident">skip_members_config</span>);
+    <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">skip_members_config</span>);
+
+    <span class="kw">let</span> <span class="ident">include_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let</span> <span class="ident">include_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">include_members_config</span>);
 
     <span class="kw">let</span> <span class="ident">cargo_make_command</span> <span class="op">=</span> <span class="string">&quot;cargo make&quot;</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
     <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">members</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">should_skip_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">skip_members</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">should_skip_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">skip_members</span>)
+            <span class="op">&amp;&amp;</span> <span class="ident">should_include_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">include_members</span>)
+        {
             <span class="comment">//convert to OS path separators</span>
             <span class="kw">let</span> <span class="ident">member_path</span> <span class="op">=</span> <span class="ident">update_member_path</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>);
 
@@ -487,8 +577,18 @@
             <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
             <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=&quot;</span>);
             <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_name</span>);
+            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --profile &quot;</span>);
+            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
             <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
             <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
+                <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args</span> {
+                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
+                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>);
+                }
+            }
+
             <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
 
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {

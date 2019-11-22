@@ -1775,6 +1775,59 @@
 <span id="1775">1775</span>
 <span id="1776">1776</span>
 <span id="1777">1777</span>
+<span id="1778">1778</span>
+<span id="1779">1779</span>
+<span id="1780">1780</span>
+<span id="1781">1781</span>
+<span id="1782">1782</span>
+<span id="1783">1783</span>
+<span id="1784">1784</span>
+<span id="1785">1785</span>
+<span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
+<span id="1795">1795</span>
+<span id="1796">1796</span>
+<span id="1797">1797</span>
+<span id="1798">1798</span>
+<span id="1799">1799</span>
+<span id="1800">1800</span>
+<span id="1801">1801</span>
+<span id="1802">1802</span>
+<span id="1803">1803</span>
+<span id="1804">1804</span>
+<span id="1805">1805</span>
+<span id="1806">1806</span>
+<span id="1807">1807</span>
+<span id="1808">1808</span>
+<span id="1809">1809</span>
+<span id="1810">1810</span>
+<span id="1811">1811</span>
+<span id="1812">1812</span>
+<span id="1813">1813</span>
+<span id="1814">1814</span>
+<span id="1815">1815</span>
+<span id="1816">1816</span>
+<span id="1817">1817</span>
+<span id="1818">1818</span>
+<span id="1819">1819</span>
+<span id="1820">1820</span>
+<span id="1821">1821</span>
+<span id="1822">1822</span>
+<span id="1823">1823</span>
+<span id="1824">1824</span>
+<span id="1825">1825</span>
+<span id="1826">1826</span>
+<span id="1827">1827</span>
+<span id="1828">1828</span>
+<span id="1829">1829</span>
+<span id="1830">1830</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2123,6 +2176,38 @@
     <span class="kw">pub</span> <span class="ident">files_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Files which do not exist</span>
     <span class="kw">pub</span> <span class="ident">files_not_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Env file path and attributes</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvFileInfo</span> {
+    <span class="doccomment">/// The file path as string</span>
+    <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The path base directory (relative paths are from this base path)</span>
+    <span class="kw">pub</span> <span class="ident">base_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The profile name this file is relevant to</span>
+    <span class="kw">pub</span> <span class="ident">profile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">EnvFileInfo</span> {
+    <span class="doccomment">/// Creates and returns a new instance.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">EnvFileInfo</span> {
+        <span class="ident">EnvFileInfo</span> {
+            <span class="ident">path</span>,
+            <span class="ident">base_path</span>: <span class="prelude-val">None</span>,
+            <span class="ident">profile</span>: <span class="prelude-val">None</span>,
+        }
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Holds the env file path and attributes</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EnvFile</span> {
+    <span class="doccomment">/// The file path as string</span>
+    <span class="ident">Path</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Extended info object for env file</span>
+    <span class="ident">Info</span>(<span class="ident">EnvFileInfo</span>),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2590,6 +2675,8 @@
     <span class="kw">pub</span> <span class="ident">ignore_errors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
@@ -2649,6 +2736,7 @@
             <span class="ident">condition_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">ignore_errors</span>: <span class="prelude-val">None</span>,
             <span class="ident">force</span>: <span class="prelude-val">None</span>,
+            <span class="ident">env_files</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
             <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
             <span class="ident">alias</span>: <span class="prelude-val">None</span>,
@@ -2850,6 +2938,12 @@
             <span class="self">self</span>.<span class="ident">force</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         }
 
+        <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">env_files</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">clone</span>();
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">override_values</span> {
+            <span class="self">self</span>.<span class="ident">env_files</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+        }
+
         <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">override_values</span> {
@@ -3027,6 +3121,7 @@
                     <span class="ident">condition_script</span>: <span class="ident">override_task</span>.<span class="ident">condition_script</span>.<span class="ident">clone</span>(),
                     <span class="ident">ignore_errors</span>: <span class="ident">override_task</span>.<span class="ident">ignore_errors</span>.<span class="ident">clone</span>(),
                     <span class="ident">force</span>: <span class="ident">override_task</span>.<span class="ident">force</span>.<span class="ident">clone</span>(),
+                    <span class="ident">env_files</span>: <span class="ident">override_task</span>.<span class="ident">env_files</span>.<span class="ident">clone</span>(),
                     <span class="ident">env</span>: <span class="ident">override_task</span>.<span class="ident">env</span>.<span class="ident">clone</span>(),
                     <span class="ident">cwd</span>: <span class="ident">override_task</span>.<span class="ident">cwd</span>.<span class="ident">clone</span>(),
                     <span class="ident">alias</span>: <span class="prelude-val">None</span>,
@@ -3126,6 +3221,8 @@
     <span class="kw">pub</span> <span class="ident">ignore_errors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
@@ -3201,6 +3298,10 @@
 
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">force</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">force</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">force</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">force</span>.<span class="ident">clone</span>();
+            }
+
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env_files</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">is_some</span>() {
+                <span class="self">self</span>.<span class="ident">env_files</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">clone</span>();
             }
 
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
@@ -3473,6 +3574,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Config</span> {
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="ident">ConfigSection</span>,
+    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
@@ -3511,6 +3614,8 @@
     <span class="kw">pub</span> <span class="ident">extend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Extend</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ConfigSection</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the tasks</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
@@ -3523,6 +3628,7 @@
         <span class="ident">ExternalConfig</span> {
             <span class="ident">extend</span>: <span class="prelude-val">None</span>,
             <span class="ident">config</span>: <span class="prelude-val">None</span>,
+            <span class="ident">env_files</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
             <span class="ident">tasks</span>: <span class="prelude-val">None</span>,
         }

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.24.0 (unpublished)
+### v0.24.0 (2019-11-22)
 
 * Support defining and loading env files in makefile via new env_files attribute #306
 * \[**backward compatability break**\] Workspace profile now passed on to members #309 (thanks @daxpedda)
