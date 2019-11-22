@@ -78,10 +78,11 @@ pub(crate) fn migrate(target_directory: PathBuf, file: &str) -> bool {
         "Legacy cargo-make target_directory: {:#?} file: {:#?} ",
         &target_directory, &file
     );
-    return match get_legacy_cargo_make_home() {
+
+    match get_legacy_cargo_make_home() {
         Some(directory) => migrate_from_directory(target_directory, &file, &directory),
         None => true,
-    };
+    }
 }
 
 pub(crate) fn show_deprecated_attriute_warning(old_attribute: &str, new_attribute: &str) {

@@ -678,6 +678,7 @@ fn validate_platform_invalid() {
 fn validate_channel_valid() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -767,6 +768,7 @@ fn validate_channel_valid() {
 fn validate_channel_invalid() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -949,6 +951,7 @@ fn validate_file_not_exists_invalid() {
 fn validate_criteria_empty() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -992,6 +995,7 @@ fn validate_criteria_empty() {
 fn validate_criteria_valid_platform() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1039,6 +1043,7 @@ fn validate_criteria_valid_platform() {
 fn validate_criteria_invalid_platform() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1082,6 +1087,7 @@ fn validate_criteria_invalid_platform() {
 fn validate_criteria_valid_profile() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1125,6 +1131,7 @@ fn validate_criteria_valid_profile() {
 fn validate_criteria_invalid_profile() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1168,6 +1175,7 @@ fn validate_criteria_invalid_profile() {
 fn validate_criteria_valid_channel() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1264,6 +1272,7 @@ fn validate_criteria_valid_channel() {
 fn validate_criteria_invalid_channel() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1308,6 +1317,7 @@ fn validate_criteria_invalid_channel() {
 fn validate_criteria_valid_file_exists() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1353,6 +1363,7 @@ fn validate_criteria_valid_file_exists() {
 fn validate_criteria_invalid_file_exists() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1398,6 +1409,7 @@ fn validate_criteria_invalid_file_exists() {
 fn validate_criteria_valid_file_not_exists() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1443,6 +1455,7 @@ fn validate_criteria_valid_file_not_exists() {
 fn validate_criteria_invalid_file_not_exists() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1493,6 +1506,7 @@ fn validate_condition_for_step_both_valid() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1545,6 +1559,7 @@ fn validate_condition_for_step_valid_script_invalid() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1597,6 +1612,7 @@ fn validate_condition_for_step_invalid_script_valid() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1645,6 +1661,7 @@ fn validate_condition_for_step_invalid_env_set() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1693,6 +1710,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1743,6 +1761,7 @@ fn validate_condition_for_step_valid_env() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1798,6 +1817,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1850,6 +1870,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1905,6 +1926,7 @@ fn validate_condition_for_step_valid_rust_version() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -1959,6 +1981,7 @@ fn validate_condition_for_step_invalid_rust_version() {
 
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };

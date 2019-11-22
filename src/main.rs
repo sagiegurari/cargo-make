@@ -32,7 +32,7 @@ extern crate cli;
 mod main_test;
 
 fn get_name() -> String {
-    return "make".to_string();
+    "make".to_string()
 }
 
 fn main() {

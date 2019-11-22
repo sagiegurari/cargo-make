@@ -26,6 +26,7 @@
         * [Task](#usage-env-task)
         * [Command Line](#usage-env-cli)
         * [Env File](#usage-env-file)
+        * [Loading Order](#usage-env-vars-loading-order)
         * [Global](#usage-env-global)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Conditions](#usage-conditions)

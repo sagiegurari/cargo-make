@@ -19,7 +19,7 @@ extern crate cli;
 mod makers_test;
 
 fn get_name() -> String {
-    return "makers".to_string();
+    "makers".to_string()
 }
 
 fn main() {

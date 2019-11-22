@@ -1,8 +1,15 @@
 ## CHANGELOG
 
-### v0.23.1 (unpublished)
+### v0.24.0 (unpublished)
 
+* Support defining and loading env files in makefile via new env_files attribute #306
+* \[**backward compatability break**\] Workspace profile now passed on to members #309 (thanks @daxpedda)
+* New CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY environment variable #311 (thanks @daxpedda)
+* Fix CARGO_MAKE_TASK_ARGS not being passed down to workspace members #314 (thanks @daxpedda)
+* \[**backward compatability break**\] Task cwd attribute supports environment variables expansion #318
 * Guard against self-referential aliases #305 (thanks @phi-gamma)
+* Migrate to envmnt::expand #308
+* New CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS environment variable #316
 
 ### v0.23.0 (2019-10-16)
 
@@ -36,7 +43,7 @@
 * Globally disable workspace support via makefile config #264
 * Support additional rust script runners #216
 * Ability to mark a task deprecated #270
-* Use task cwd in condition and installation scripts #259 (**backward compatability break**)
+* \[**backward compatability break**\] Use task cwd in condition and installation scripts #259
 * Check descriptor min_version before deserializing #268 (thanks @roblabla)
 * Profile name passed incorrectly via forked sub tasks #263
 * Add support for deleting lock file before publishing
@@ -45,14 +52,14 @@
 ### v0.21.0 (2019-06-26)
 
 * Add support for multiple test_args when checking for installed crate #252 (thanks @roblabla)
-* Upgrade shell2batch for improved windows integration (**backward compatability break**)
+* \[**backward compatability break**\] Upgrade shell2batch for improved windows integration
 
 ### v0.20.0 (2019-06-16)
 
 * Control kcov installation directory #98
 * Caching kcov documentation #238
 * Upgrade default kcov version to 36
-* Rename KCOV_VERSION to CARGO_MAKE_KCOV_VERSION (**backward compatability break**)
+* \[**backward compatability break**\] Rename KCOV_VERSION to CARGO_MAKE_KCOV_VERSION
 
 ### v0.19.5 (2019-06-09)
 
@@ -82,12 +89,12 @@
 
 * Support setting boolean environment variables #223
 * Added new env_true/env_false conditions #221
-* Normalize boolean env vars #220 (**backward compatability break**)
+* \[**backward compatability break**\] Normalize boolean env vars #220
 
 ### v0.18.0 (2019-04-30)
 
 * Allow run_task to invoke the task as a sub process #214
-* Upgrade shell2batch to fix path separator issue (**backward compatability break**)
+* \[**backward compatability break**\] Upgrade shell2batch to fix path separator issue
 
 ### v0.17.1 (2019-04-04)
 
@@ -158,11 +165,11 @@
 
 ### v0.16.0 (2019-01-04)
 
-* Should abort on non existent makefile if provided on cli or on extends property #143 (**backward compatability break**)
-* Update format task for stable rust #160 (**backward compatability break**)
+* \[**backward compatability break**\] Should abort on non existent makefile if provided on cli or on extends property #143
+* \[**backward compatability break**\] Update format task for stable rust #160
 * Add format check and clippy to ci-flow #161 (thanks @D4nte)
 * Add new print steps output format 'short-description' #121
-* Remove preview from clippy and rustfmt components #162 (**backward compatability break**)
+* \[**backward compatability break**\] Remove preview from clippy and rustfmt components #162
 * Add new CARGO_MAKE_CI environment variable
 
 ### v0.15.3 (2018-12-07)

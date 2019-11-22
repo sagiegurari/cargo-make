@@ -1,4 +1,6 @@
 
+env_files = []
+
 [config]
 init_task = "init"
 end_task = "end"
@@ -25,6 +27,7 @@ CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "${CARGO_MAKE_CARGO_ALL_FEATURES} -- -D wa
 CARGO_MAKE_CLIPPY_NO_ARGS = ""
 CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
 CARGO_MAKE_RUST_SCRIPT_PROVIDER = "cargo-script"
+CARGO_MAKE_USE_WORKSPACE_PROFILE = true
 
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"

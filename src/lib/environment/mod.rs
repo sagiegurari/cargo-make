@@ -13,11 +13,12 @@ mod mod_test;
 use crate::command;
 use crate::profile;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript, GitInfo,
-    PackageInfo, Step, Task, Workspace,
+    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript,
+    GitInfo, PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
+use envmnt::{ExpandOptions, ExpansionType};
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -65,22 +66,11 @@ fn evaluate_env_value(env_value: &EnvValueScript) -> String {
 }
 
 pub(crate) fn expand_value(value: &str) -> String {
-    let mut value_string = value.to_string();
+    let mut options = ExpandOptions::new();
+    options.expansion_type = Some(ExpansionType::UnixBrackets);
+    options.default_to_empty = false;
 
-    match value_string.find("${") {
-        Some(_) => {
-            for (existing_key, existing_value) in env::vars() {
-                let mut key_pattern = "${".to_string();
-                key_pattern.push_str(&existing_key);
-                key_pattern.push_str("}");
-
-                value_string = str::replace(&value_string, &key_pattern, &existing_value);
-            }
-
-            value_string
-        }
-        None => value_string,
-    }
+    envmnt::expand(&value, Some(options))
 }
 
 fn evaluate_and_set_env(key: &str, value: &str) {
@@ -192,6 +182,46 @@ fn set_env_for_config(
     }
 }
 
+pub(crate) fn set_env_files(env_files: Vec<EnvFile>) {
+    set_env_files_for_config(env_files, None);
+}
+
+fn set_env_files_for_config(
+    env_files: Vec<EnvFile>,
+    additional_profiles: Option<&Vec<String>>,
+) -> bool {
+    let mut all_loaded = true;
+    for env_file in env_files {
+        all_loaded = all_loaded
+            && match env_file {
+                EnvFile::Path(file) => load_env_file(Some(file)),
+                EnvFile::Info(info) => {
+                    let is_valid_profile = match info.profile {
+                        Some(profile_name) => {
+                            let current_profile_name = profile::get();
+
+                            let found = match additional_profiles {
+                                Some(profiles) => profiles.contains(&profile_name),
+                                None => false,
+                            };
+
+                            current_profile_name == profile_name || found
+                        }
+                        None => true,
+                    };
+
+                    if is_valid_profile {
+                        load_env_file_with_base_directory(Some(info.path), info.base_path)
+                    } else {
+                        false
+                    }
+                }
+            }
+    }
+
+    all_loaded
+}
+
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
     debug!("Initializing Env.");
@@ -200,6 +230,8 @@ fn initialize_env(config: &Config) {
         Some(ref profiles) => Some(profiles),
         None => None,
     };
+
+    set_env_files_for_config(config.env_files.clone(), additional_profiles);
 
     set_env_for_config(config.env.clone(), additional_profiles, true);
 }
@@ -235,8 +267,11 @@ fn setup_env_for_crate() -> CrateInfo {
 
     envmnt::set_bool("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies);
 
-    let is_workspace_var_value = !crate_info.workspace.is_none();
-    envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace_var_value);
+    let is_workspace = !crate_info.workspace.is_none();
+    envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace);
+    if is_workspace {
+        envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", true);
+    }
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
     let members = workspace.members.unwrap_or(vec![]);
@@ -318,7 +353,7 @@ fn setup_env_for_ci() -> CiInfo {
 
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
-    envmnt::set("CARGO_MAKE", "true");
+    envmnt::set_bool("CARGO_MAKE", true);
     envmnt::set("CARGO_MAKE_TASK", &task);
 
     envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
@@ -387,7 +422,14 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             &directory, error
         ),
         _ => {
-            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
+            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
+
+            if !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
+                envmnt::set(
+                    "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
+                    directory_path.to_string_lossy().into_owned(),
+                );
+            }
 
             debug!("Working directory changed to: {}", &directory);
         }
@@ -395,11 +437,28 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
 }
 
 pub(crate) fn load_env_file(env_file: Option<String>) -> bool {
+    load_env_file_with_base_directory(env_file, None)
+}
+
+pub(crate) fn load_env_file_with_base_directory(
+    env_file: Option<String>,
+    base_directory: Option<String>,
+) -> bool {
     match env_file {
         Some(file_name) => {
             let file_path = if file_name.starts_with(".") {
-                let base_path = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", ".");
-                Path::new(&base_path).join(file_name)
+                let (base_path, check_relative_path) = match base_directory {
+                    Some(file) => (file, true),
+                    None => (envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."), false),
+                };
+
+                if check_relative_path && base_path.starts_with(".") {
+                    Path::new(&envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."))
+                        .join(&base_path)
+                        .join(file_name)
+                } else {
+                    Path::new(&base_path).join(file_name)
+                }
             } else {
                 Path::new(&file_name).to_path_buf()
             };

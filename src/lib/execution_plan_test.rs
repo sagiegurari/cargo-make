@@ -10,6 +10,7 @@ use std::env;
 fn get_task_name_not_found() {
     let config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -21,6 +22,7 @@ fn get_task_name_not_found() {
 fn get_task_name_no_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -36,6 +38,7 @@ fn get_task_name_no_alias() {
 fn get_task_name_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -56,6 +59,7 @@ fn get_task_name_alias() {
 fn get_task_name_alias_self_referential() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -72,6 +76,7 @@ fn get_task_name_alias_self_referential() {
 fn get_task_name_alias_circular() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -92,6 +97,7 @@ fn get_task_name_alias_circular() {
 fn get_task_name_platform_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -115,23 +121,23 @@ fn get_task_name_platform_alias() {
 }
 
 #[test]
-fn get_skipped_workspace_members_not_defined_or_empty() {
-    let members = get_skipped_workspace_members("".to_string());
+fn get_workspace_members_config_not_defined_or_empty() {
+    let members = get_workspace_members_config("".to_string());
 
     assert_eq!(members.len(), 0);
 }
 
 #[test]
-fn get_skipped_workspace_members_single() {
-    let members = get_skipped_workspace_members("test".to_string());
+fn get_workspace_members_config_single() {
+    let members = get_workspace_members_config("test".to_string());
 
     assert_eq!(members.len(), 1);
     assert!(members.contains(&"test".to_string()));
 }
 
 #[test]
-fn get_skipped_workspace_members_multiple() {
-    let members = get_skipped_workspace_members("test1;test2;test3".to_string());
+fn get_workspace_members_config_multiple() {
+    let members = get_workspace_members_config("test1;test2;test3".to_string());
 
     assert_eq!(members.len(), 3);
     assert!(members.contains(&"test1".to_string()));
@@ -193,16 +199,206 @@ fn create_workspace_task_with_members() {
         exclude: None,
     });
 
+    envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
+
     let task = create_workspace_task(crate_info, "some_task");
 
     let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME some_task
 cd -
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME some_task
 cd -
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 some_task
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME some_task
+cd -"#
+        .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
+
+    let profile_name = profile::get();
+    expected_script = str::replace(&expected_script, "PROFILE_NAME", &profile_name);
+
+    assert!(task.script.is_some());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_members_no_workspace_profile() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", false);
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
+cd -
+cd ./member2
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
+cd -
+cd ./dir1/member3
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development some_task
+cd -"#
+        .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
+
+    assert!(task.script.is_some());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_members_and_arguments() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
+
+    envmnt::set_list(
+        "CARGO_MAKE_TASK_ARGS",
+        &vec!["arg1".to_string(), "arg2".to_string()],
+    );
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    envmnt::remove("CARGO_MAKE_TASK_ARGS");
+
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME some_task arg1 arg2
+cd -
+cd ./member2
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME some_task arg1 arg2
+cd -
+cd ./dir1/member3
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME some_task arg1 arg2
+cd -"#
+        .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
+
+    let profile_name = profile::get();
+    expected_script = str::replace(&expected_script, "PROFILE_NAME", &profile_name);
+
+    assert!(task.script.is_some());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_included_members() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    envmnt::set_list(
+        "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS",
+        &vec!["member1".to_string(), "member2".to_string()],
+    );
+
+    profile::set(profile::DEFAULT_PROFILE);
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
+
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
+cd -
+cd ./member2
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
+cd -"#
+        .to_string();
+
+    let log_level = logger::get_log_level();
+    expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
+
+    assert!(task.script.is_some());
+    let script = match task.script.unwrap() {
+        ScriptValue::Text(value) => value.join("\n"),
+        _ => panic!("Invalid script value type."),
+    };
+    assert_eq!(script, expected_script);
+    assert!(task.env.is_none());
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn create_workspace_task_with_included_and_skipped_members() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![
+        "member1".to_string(),
+        "member2".to_string(),
+        "dir1/member3".to_string(),
+    ];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    envmnt::set_list(
+        "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS",
+        &vec!["member1".to_string(), "member2".to_string()],
+    );
+
+    envmnt::set_list(
+        "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS",
+        &vec!["member2".to_string(), "dir1/member3".to_string()],
+    );
+
+    profile::set(profile::DEFAULT_PROFILE);
+
+    let task = create_workspace_task(crate_info, "some_task");
+
+    envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
+    envmnt::remove("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS");
+
+    let mut expected_script = r#"cd ./member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
 cd -"#
         .to_string();
 
@@ -258,6 +454,7 @@ fn is_workspace_flow_true_default() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -284,6 +481,7 @@ fn is_workspace_flow_false_in_config() {
 
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -310,6 +508,7 @@ fn is_workspace_flow_true_in_config() {
 
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -334,6 +533,7 @@ fn is_workspace_flow_true_in_task() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -353,6 +553,7 @@ fn is_workspace_flow_no_workspace() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -377,6 +578,7 @@ fn is_workspace_flow_disabled_via_cli() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -401,6 +603,7 @@ fn is_workspace_flow_disabled_via_task() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -418,6 +621,7 @@ fn create_single() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -443,6 +647,7 @@ fn create_single_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -469,6 +674,7 @@ fn create_single_private() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -491,6 +697,7 @@ fn create_single_allow_private() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -517,6 +724,7 @@ fn create_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -549,6 +757,7 @@ fn create_with_dependencies_sub_flow() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -579,6 +788,7 @@ fn create_disabled_task_with_dependencies() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -610,6 +820,7 @@ fn create_with_dependencies_disabled() {
     config_section.end_task = Some("end".to_string());
     let mut config = Config {
         config: config_section,
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -639,6 +850,7 @@ fn create_with_dependencies_disabled() {
 fn create_platform_disabled() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -658,6 +870,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -683,6 +896,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -708,6 +922,7 @@ fn create_platform_disabled() {
         command: None,
         ignore_errors: None,
         force: None,
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -730,6 +945,7 @@ fn create_platform_disabled() {
 fn create_workspace() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -749,6 +965,7 @@ fn create_workspace() {
 fn create_noworkspace() {
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -846,6 +1063,7 @@ fn get_normalized_task_multi_extend() {
         command: None,
         ignore_errors: None,
         force: Some(true),
+        env_files: None,
         env: None,
         cwd: None,
         install_script: None,
@@ -872,6 +1090,7 @@ fn get_normalized_task_multi_extend() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
@@ -899,6 +1118,7 @@ fn get_normalized_task_simple() {
 
     let mut config = Config {
         config: ConfigSection::new(),
+        env_files: vec![],
         env: IndexMap::new(),
         tasks: IndexMap::new(),
     };
