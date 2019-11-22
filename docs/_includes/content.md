@@ -1142,7 +1142,7 @@ The same **env_files** attribute can be defined on the task level, however relat
 **If the task defines a different working directory, it will change after the env files are loaded.**
 
 <a name="usage-env-vars-loading-order"></a>
-#### Environment Variables Loading Order
+#### Loading Order
 
 cargo-make will load the environment variables in the following order
 
