@@ -4,7 +4,6 @@
 //!
 
 pub(crate) mod crateinfo;
-mod gitinfo;
 
 #[cfg(test)]
 #[path = "./mod_test.rs"]
@@ -14,11 +13,13 @@ use crate::command;
 use crate::profile;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript,
-    GitInfo, PackageInfo, Step, Task, Workspace,
+    PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
 use envmnt::{ExpandOptions, ExpansionType};
+use git_info;
+use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -288,12 +289,12 @@ fn setup_env_for_crate() -> CrateInfo {
 }
 
 fn setup_env_for_git_repo() -> GitInfo {
-    let git_info = gitinfo::load();
-    let git_info_clone = git_info.clone();
+    let info = git_info::get();
+    let git_info_clone = info.clone();
 
-    envmnt::set_optional("CARGO_MAKE_GIT_BRANCH", &git_info.branch);
-    envmnt::set_optional("CARGO_MAKE_GIT_USER_NAME", &git_info.user_name);
-    envmnt::set_optional("CARGO_MAKE_GIT_USER_EMAIL", &git_info.user_email);
+    envmnt::set_optional("CARGO_MAKE_GIT_BRANCH", &info.current_branch);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_NAME", &info.user_name);
+    envmnt::set_optional("CARGO_MAKE_GIT_USER_EMAIL", &info.user_email);
 
     git_info_clone
 }
@@ -368,10 +369,10 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     let crate_info = setup_env_for_crate();
 
     // load git info
-    let git_info = setup_env_for_git_repo();
+    let gitinfo = setup_env_for_git_repo();
 
     // load rust info
-    let rust_info = setup_env_for_rust();
+    let rustinfo = setup_env_for_rust();
 
     // load CI info
     let ci_info_struct = setup_env_for_ci();
@@ -380,9 +381,9 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     initialize_env(config);
 
     EnvInfo {
-        rust_info,
+        rust_info: rustinfo,
         crate_info,
-        git_info,
+        git_info: gitinfo,
         ci_info: ci_info_struct,
     }
 }

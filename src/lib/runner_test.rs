@@ -1,9 +1,10 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue, FlowInfo, GitInfo,
+    ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue, FlowInfo,
     RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
 };
 use ci_info;
+use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 

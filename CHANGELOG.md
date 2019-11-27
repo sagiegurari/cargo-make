@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.24.1
+
+* Use new git_info crate to fetch git info and setup environment #320
+
 ### v0.24.0 (2019-11-22)
 
 * Support defining and loading env files in makefile via new env_files attribute #306

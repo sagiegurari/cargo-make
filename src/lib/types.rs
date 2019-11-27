@@ -9,6 +9,7 @@ mod types_test;
 
 use crate::legacy;
 use ci_info::types::CiInfo;
+use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
@@ -157,28 +158,6 @@ impl GlobalConfig {
             default_task_name: None,
             update_check_minimum_interval: None,
             search_project_root: Some(false),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-/// Holds git info for the given repo directory
-pub struct GitInfo {
-    /// branch name
-    pub branch: Option<String>,
-    /// user.name
-    pub user_name: Option<String>,
-    /// user.email
-    pub user_email: Option<String>,
-}
-
-impl GitInfo {
-    /// Returns new instance
-    pub fn new() -> GitInfo {
-        GitInfo {
-            branch: None,
-            user_name: None,
-            user_email: None,
         }
     }
 }

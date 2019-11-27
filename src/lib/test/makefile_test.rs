@@ -4,8 +4,9 @@ use crate::descriptor;
 use crate::runner;
 use crate::scriptengine;
 use crate::scriptengine::EngineType;
-use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, GitInfo, RunTaskInfo, Step, Task};
+use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, RunTaskInfo, Step, Task};
 use ci_info;
+use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
 
 fn load_descriptor() -> Config {

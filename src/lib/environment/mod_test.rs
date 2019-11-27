@@ -905,10 +905,10 @@ fn setup_env_for_git_repo_with_values() {
 
     let git_info = setup_env_for_git_repo();
 
-    if git_info.branch.is_some() {
+    if git_info.current_branch.is_some() {
         assert_eq!(
             envmnt::get_or_panic("CARGO_MAKE_GIT_BRANCH"),
-            git_info.branch.unwrap()
+            git_info.current_branch.unwrap()
         );
     }
     if git_info.user_name.is_some() {

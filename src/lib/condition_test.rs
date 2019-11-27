@@ -1,9 +1,10 @@
 use super::*;
 use crate::types::{
-    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, GitInfo, RustVersionCondition, Step, Task,
+    Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, RustVersionCondition, Step, Task,
     TaskCondition,
 };
 use ci_info;
+use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
 
