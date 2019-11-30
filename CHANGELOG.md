@@ -3,6 +3,7 @@
 ### v0.24.1
 
 * Use new git_info crate to fetch git info and setup environment #320
+* Outdated dependencies validation as part of CI flow to be limited to master branch only #323
 
 ### v0.24.0 (2019-11-22)
 
