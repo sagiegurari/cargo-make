@@ -1218,6 +1218,7 @@ fn run_sub_task_and_report_for_details_single() {
     let sub_task = RunTaskInfo::Details(RunTaskDetails {
         name: RunTaskName::Single("test".to_string()),
         fork: Some(false),
+        parallel: None,
     });
 
     let output = run_sub_task_and_report(&flow_info, &sub_task);
@@ -1259,6 +1260,7 @@ fn run_sub_task_and_report_for_details_multiple() {
     let sub_task = RunTaskInfo::Details(RunTaskDetails {
         name: RunTaskName::Multiple(vec!["test1".to_string(), "test2".to_string()]),
         fork: Some(false),
+        parallel: None,
     });
 
     let output = run_sub_task_and_report(&flow_info, &sub_task);
@@ -1336,6 +1338,7 @@ fn run_sub_task_and_report_routing_no_condition() {
     let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: RunTaskName::Single("test".to_string()),
         fork: None,
+        parallel: None,
         condition: None,
         condition_script: None,
     }]);
@@ -1378,6 +1381,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
     let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: RunTaskName::Single("test".to_string()),
         fork: None,
+        parallel: None,
         condition: Some(TaskCondition {
             profiles: None,
             platforms: None,
@@ -1433,6 +1437,7 @@ fn run_sub_task_and_report_routing_not_found() {
     let sub_task = RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: RunTaskName::Single("test2".to_string()),
         fork: None,
+        parallel: None,
         condition: None,
         condition_script: None,
     }]);
@@ -1464,10 +1469,11 @@ fn get_sub_task_info_for_routing_info_empty() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(&flow_info, &vec![]);
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(&flow_info, &vec![]);
 
     assert!(task_name.is_none());
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1494,11 +1500,12 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: None,
+            parallel: None,
             condition: Some(TaskCondition {
                 profiles: None,
                 platforms: None,
@@ -1518,6 +1525,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
 
     assert!(task_name.is_none());
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1544,11 +1552,12 @@ fn get_sub_task_info_for_routing_info_condition_found() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: None,
+            parallel: None,
             condition: Some(TaskCondition {
                 profiles: None,
                 platforms: None,
@@ -1568,6 +1577,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1594,11 +1604,12 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Multiple(vec!["test1".to_string(), "test2".to_string()]),
             fork: None,
+            parallel: None,
             condition: Some(TaskCondition {
                 profiles: None,
                 platforms: None,
@@ -1618,6 +1629,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
 
     assert_eq!(task_name.unwrap(), vec!["test1", "test2"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1644,11 +1656,12 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: None,
+            parallel: None,
             condition: None,
             condition_script: Some(vec!["exit 1".to_string()]),
         }],
@@ -1656,6 +1669,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
 
     assert!(task_name.is_none());
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1682,11 +1696,12 @@ fn get_sub_task_info_for_routing_info_script_found() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: None,
+            parallel: None,
             condition: None,
             condition_script: Some(vec!["exit 0".to_string()]),
         }],
@@ -1694,6 +1709,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1720,12 +1736,13 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test1".to_string()),
                 fork: None,
+                parallel: None,
                 condition: Some(TaskCondition {
                     profiles: None,
                     platforms: None,
@@ -1744,6 +1761,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: Some(vec!["exit 0".to_string()]),
             },
@@ -1752,6 +1770,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
 
     assert_eq!(task_name.unwrap(), vec!["test1"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1778,12 +1797,13 @@ fn get_sub_task_info_for_routing_info_default() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test1".to_string()),
                 fork: None,
+                parallel: None,
                 condition: Some(TaskCondition {
                     profiles: None,
                     platforms: None,
@@ -1802,12 +1822,14 @@ fn get_sub_task_info_for_routing_info_default() {
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: Some(vec!["exit 1".to_string()]),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: None,
             },
@@ -1816,6 +1838,7 @@ fn get_sub_task_info_for_routing_info_default() {
 
     assert_eq!(task_name.unwrap(), vec!["default"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1842,12 +1865,13 @@ fn get_sub_task_info_for_routing_info_multiple() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test1".to_string()),
                 fork: None,
+                parallel: None,
                 condition: Some(TaskCondition {
                     profiles: None,
                     platforms: None,
@@ -1866,18 +1890,21 @@ fn get_sub_task_info_for_routing_info_multiple() {
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: Some(vec!["exit 1".to_string()]),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test3".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: Some(vec!["exit 0".to_string()]),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),
                 fork: None,
+                parallel: None,
                 condition: None,
                 condition_script: None,
             },
@@ -1886,6 +1913,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
 
     assert_eq!(task_name.unwrap(), vec!["test3"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1912,11 +1940,12 @@ fn get_sub_task_info_for_routing_info_fork_false() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: Some(false),
+            parallel: None,
             condition: Some(TaskCondition {
                 profiles: None,
                 platforms: None,
@@ -1936,6 +1965,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
+    assert!(!parallel);
 }
 
 #[test]
@@ -1962,11 +1992,12 @@ fn get_sub_task_info_for_routing_info_fork_true() {
         cli_arguments: None,
     };
 
-    let (task_name, fork) = get_sub_task_info_for_routing_info(
+    let (task_name, fork, parallel) = get_sub_task_info_for_routing_info(
         &flow_info,
         &vec![RunTaskRoutingInfo {
             name: RunTaskName::Single("test".to_string()),
             fork: Some(true),
+            parallel: None,
             condition: Some(TaskCondition {
                 profiles: None,
                 platforms: None,
@@ -1986,6 +2017,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(fork);
+    assert!(!parallel);
 }
 
 #[test]

@@ -25,3 +25,6 @@ run_task = { name = ["echo1", "echo2"] }
 run_task = [
     { name = ["echo1", "echo2"] },
 ]
+
+[tasks.parallel-multi]
+run_task = { name = ["echo1", "echo2"], parallel = true }

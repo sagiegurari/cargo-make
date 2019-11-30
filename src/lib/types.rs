@@ -638,6 +638,8 @@ pub struct RunTaskDetails {
     pub name: RunTaskName,
     /// True to fork the task to a new sub process
     pub fork: Option<bool>,
+    /// True to run all tasks in parallel (default false)
+    pub parallel: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -647,6 +649,8 @@ pub struct RunTaskRoutingInfo {
     pub name: RunTaskName,
     /// True to fork the task to a new sub process
     pub fork: Option<bool>,
+    /// True to run all tasks in parallel (default false)
+    pub parallel: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the task will not be invoked

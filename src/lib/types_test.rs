@@ -3062,6 +3062,7 @@ fn task_apply_run_task_details_single_modify_namespace() {
     task.run_task = Some(RunTaskInfo::Details(RunTaskDetails {
         name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
+        parallel: None,
     }));
 
     task.apply(&modify_config);
@@ -3093,6 +3094,7 @@ fn task_apply_run_task_details_multiple_modify_namespace() {
     task.run_task = Some(RunTaskInfo::Details(RunTaskDetails {
         name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
         fork: None,
+        parallel: None,
     }));
 
     task.apply(&modify_config);
@@ -3127,6 +3129,7 @@ fn task_apply_run_task_routing_info_single_modify_namespace() {
     task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
+        parallel: None,
         condition: None,
         condition_script: None,
     }]));
@@ -3160,6 +3163,7 @@ fn task_apply_run_task_routing_info_multiple_modify_namespace() {
     task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
         name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
         fork: None,
+        parallel: None,
         condition: None,
         condition_script: None,
     }]));

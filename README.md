@@ -491,6 +491,24 @@ run_task = [
 ]
 ```
 
+In order to run multiple tasks in parallel, add ```parallel = true``` to the run_task object.<br>
+For example:
+
+```toml
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]
+
+[tasks.parallel-multi]
+run_task = { name = ["echo1", "echo2"], parallel = true }
+```
+
+This allows to run independend tasks in parallel and speed the overall performance of the flow.
+
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
 For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
