@@ -38,7 +38,6 @@
 * **verify-project** - Runs verify-project cargo plugin.
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
-* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up
 
 ## Cleanup
 
@@ -63,6 +62,7 @@
 * **clean-apidocs** - Delete API docs.
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **docs** - Generate rust documentation.
+* **post-docs** - No Description.
 * **pre-docs** - No Description.
 
 ## Git
@@ -88,16 +88,6 @@
 * **end** - By default this task is invoked at the end of every cargo-make run.
 * **init** - By default this task is invoked at the start of every cargo-make run.
 
-## No Category
-
-* **build-release-for-target** - Makes a release build for a given target
-* **generate-docs** - No Description.
-* **generate-readme** - No Description.
-* **generate-task-list** - No Description.
-* **post-docs** - No Description.
-* **setup-build-env** - Sets up a musl build environment
-* **setup-musl** - Sets up a musl build environment
-
 ## Publish
 
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
@@ -117,7 +107,6 @@
 * **publish** - Runs the cargo publish command.
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray.
-* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
 
 ## Test
 

@@ -36,7 +36,9 @@ args = [
   "--output-format",
   "markdown-single-page",
   "--output-file",
-  "${CARGO_MAKE_WORKING_DIRECTORY}/docs/cargo_make_task_list.md"
+  "${CARGO_MAKE_WORKING_DIRECTORY}/docs/cargo_make_task_list.md",
+  "--makefile",
+  "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/makefiles/empty.toml"
 ]
 
 [tasks.generate-docs]
