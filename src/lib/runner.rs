@@ -23,7 +23,7 @@ use crate::profile;
 use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo,
-    RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
+    RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
@@ -74,7 +74,7 @@ fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
 pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
-) -> (Option<String>, bool) {
+) -> (Option<Vec<String>>, bool) {
     let mut task_name = None;
 
     let mut fork = false;
@@ -87,7 +87,11 @@ pub(crate) fn get_sub_task_info_for_routing_info(
         );
 
         if invoke {
-            task_name = Some(routing_step.name.clone());
+            let task_name_values = match routing_step.name.clone() {
+                RunTaskName::Single(name) => vec![name],
+                RunTaskName::Multiple(names) => names,
+            };
+            task_name = Some(task_name_values);
             fork = routing_step.fork.unwrap_or(false);
             break;
         }
@@ -113,24 +117,32 @@ fn run_forked_task(flow_info: &FlowInfo) {
 
 /// runs a sub task and returns true/false based if a sub task was actually invoked
 fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
-    let (task_name, fork) = match sub_task {
-        RunTaskInfo::Name(ref name) => (Some(name.to_string()), false),
+    let (task_names, fork) = match sub_task {
+        RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false),
         RunTaskInfo::Details(ref details) => {
-            (Some(details.name.clone()), details.fork.unwrap_or(false))
+            let task_name_values = match details.name.clone() {
+                RunTaskName::Single(name) => vec![name],
+                RunTaskName::Multiple(names) => names,
+            };
+            (Some(task_name_values), details.fork.unwrap_or(false))
         }
         RunTaskInfo::Routing(ref routing_info) => {
             get_sub_task_info_for_routing_info(&flow_info, routing_info)
         }
     };
 
-    if task_name.is_some() {
-        let mut sub_flow_info = flow_info.clone();
-        sub_flow_info.task = task_name.unwrap();
+    if task_names.is_some() {
+        let names = task_names.unwrap();
 
-        if fork {
-            run_forked_task(&sub_flow_info);
-        } else {
-            run_flow(&sub_flow_info, true);
+        for name in names {
+            let mut sub_flow_info = flow_info.clone();
+            sub_flow_info.task = name;
+
+            if fork {
+                run_forked_task(&sub_flow_info);
+            } else {
+                run_flow(&sub_flow_info, true);
+            }
         }
 
         true

@@ -9,3 +9,19 @@ run_task = "echo"
 condition_script = [
     "exit 0"
 ]
+
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]
+
+[tasks.simple-multi]
+run_task = { name = ["echo1", "echo2"] }
+
+[tasks.routing-multi]
+run_task = [
+    { name = ["echo1", "echo2"] },
+]

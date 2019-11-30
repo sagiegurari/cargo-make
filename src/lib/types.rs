@@ -621,11 +621,21 @@ impl PartialEq for InstallCrate {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(untagged)]
+/// Holds the run task name/s
+pub enum RunTaskName {
+    /// Single task name
+    Single(String),
+    /// Multiple task names
+    Multiple(Vec<String>),
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds the run task information
 pub struct RunTaskDetails {
     /// The task name
-    pub name: String,
+    pub name: RunTaskName,
     /// True to fork the task to a new sub process
     pub fork: Option<bool>,
 }
@@ -634,7 +644,7 @@ pub struct RunTaskDetails {
 /// Holds the run task routing information
 pub struct RunTaskRoutingInfo {
     /// The task name
-    pub name: String,
+    pub name: RunTaskName,
     /// True to fork the task to a new sub process
     pub fork: Option<bool>,
     /// if provided all condition values must be met in order for the task to be invoked
@@ -968,15 +978,46 @@ impl Task {
                                 RunTaskInfo::Name(get_namespaced_task_name(namespace, &value))
                             }
                             RunTaskInfo::Details(mut run_task_details) => {
-                                run_task_details.name =
-                                    get_namespaced_task_name(namespace, &run_task_details.name);
+                                match run_task_details.name {
+                                    RunTaskName::Single(ref name) => {
+                                        run_task_details.name = RunTaskName::Single(
+                                            get_namespaced_task_name(namespace, name),
+                                        )
+                                    }
+                                    RunTaskName::Multiple(ref names) => {
+                                        let mut updated_names = vec![];
+                                        for name in names {
+                                            updated_names
+                                                .push(get_namespaced_task_name(namespace, name));
+                                        }
+
+                                        run_task_details.name =
+                                            RunTaskName::Multiple(updated_names);
+                                    }
+                                };
 
                                 RunTaskInfo::Details(run_task_details)
                             }
                             RunTaskInfo::Routing(mut routing_info_vector) => {
                                 for mut routing_info in &mut routing_info_vector {
-                                    routing_info.name =
-                                        get_namespaced_task_name(namespace, &routing_info.name);
+                                    match routing_info.name {
+                                        RunTaskName::Single(ref name) => {
+                                            routing_info.name = RunTaskName::Single(
+                                                get_namespaced_task_name(namespace, name),
+                                            )
+                                        }
+                                        RunTaskName::Multiple(ref names) => {
+                                            let mut updated_names = vec![];
+                                            for name in names {
+                                                updated_names.push(get_namespaced_task_name(
+                                                    namespace, name,
+                                                ));
+                                            }
+
+                                            routing_info.name =
+                                                RunTaskName::Multiple(updated_names);
+                                        }
+                                    };
                                 }
 
                                 RunTaskInfo::Routing(routing_info_vector)

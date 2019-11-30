@@ -469,6 +469,28 @@ args = ["hello world"]
 run_task = { name = "echo", fork = true }
 ```
 
+The **name** attribute can hold either a single task name or a list of tasks.<br>
+In case of a list, the tasks would be invoked one after the other in sequence.<br>
+For exmaple, below **simple-multi** and **routing-multi** both demonstrate different ways to define multi task invocations via **run_task**:
+
+```toml
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]
+
+[tasks.simple-multi]
+run_task = { name = ["echo1", "echo2"] }
+
+[tasks.routing-multi]
+run_task = [
+    { name = ["echo1", "echo2"] },
+]
+```
+
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
 For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
