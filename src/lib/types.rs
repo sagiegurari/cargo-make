@@ -80,6 +80,8 @@ pub struct CliArgs {
     pub arguments: Option<Vec<String>>,
     /// Output format
     pub output_format: String,
+    /// Output file name
+    pub output_file: Option<String>,
 }
 
 impl CliArgs {
@@ -106,6 +108,7 @@ impl CliArgs {
             experimental: false,
             arguments: None,
             output_format: "default".to_string(),
+            output_file: None,
         }
     }
 }

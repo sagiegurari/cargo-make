@@ -31,6 +31,7 @@ fn cli_args_new() {
     assert!(!cli_args.experimental);
     assert!(cli_args.arguments.is_none());
     assert_eq!(cli_args.output_format, "default");
+    assert!(cli_args.output_file.is_none());
 }
 
 #[test]

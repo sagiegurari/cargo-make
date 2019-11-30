@@ -67,7 +67,7 @@
         * [drone.io](#usage-ci-drone-io)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
-        * [Full List](#usage-predefined-flows-full)
+        * [Full List](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)

@@ -121,7 +121,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     profile::set(&normalized_profile_name);
 
     if cli_args.list_all_steps {
-        cli_commands::list_steps::run(&config, &cli_args.output_format);
+        cli_commands::list_steps::run(&config, &cli_args.output_format, &cli_args.output_file);
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental, None);
         cli_commands::diff_steps::run(&default_config, &config, &task, &cli_args);
@@ -210,6 +210,11 @@ fn run_for_args(
         .value_of("output-format")
         .unwrap_or(DEFAULT_OUTPUT_FORMAT)
         .to_string();
+
+    cli_args.output_file = match cmd_matches.value_of("output_file") {
+        Some(value) => Some(value.to_string()),
+        None => None,
+    };
 
     let profile_name = cmd_matches
         .value_of("profile".to_string())
@@ -369,8 +374,14 @@ fn create_cli<'a, 'b>(
         )
         .arg(
             Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print/list steps format (some operations do not support all formats)'")
-                .possible_values(&["default", "short-description", "markdown"])
+                .possible_values(&["default", "short-description", "markdown", "markdown-single-page", "markdown-sub-section"])
                 .default_value(DEFAULT_OUTPUT_FORMAT),
+        )
+        .arg(
+            Arg::with_name("output_file")
+                .long("--output-file")
+                .value_name("OUTPUT_FILE")
+                .help("The list steps output file name"),
         )
         .arg(Arg::with_name("print-steps").long("--print-steps").help(
             "Only prints the steps of the build in the order they will \

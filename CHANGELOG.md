@@ -4,6 +4,7 @@
 
 * Use new git_info crate to fetch git info and setup environment #320
 * Outdated dependencies validation as part of CI flow to be limited to master branch only #323
+* Generate task list documentation file via new cli argument (output-file) #325
 
 ### v0.24.0 (2019-11-22)
 
