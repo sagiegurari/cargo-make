@@ -88,17 +88,28 @@ pub(crate) fn write_text_file(file_path: &str, text: &str) -> bool {
     delete_file(&file_path);
 
     let path = Path::new(file_path);
-    match File::create(&path) {
-        Ok(mut file) => match file.write_all(text.as_bytes()) {
-            Ok(_) => {
-                match file.sync_all() {
-                    Ok(_) => true,
-                    Err(_) => false,
-                }
-            }
-            Err(_) => false,
+
+    let directory_exists = match path.parent() {
+        Some(directory) => match create_dir_all(&directory) {
+            Ok(_) => true,
+            _ => false,
         },
-        Err(_) => false,
+        None => true,
+    };
+
+    if directory_exists {
+        match File::create(&path) {
+            Ok(mut file) => match file.write_all(text.as_bytes()) {
+                Ok(_) => match file.sync_all() {
+                    Ok(_) => true,
+                    _ => false,
+                },
+                _ => false,
+            },
+            _ => false,
+        }
+    } else {
+        false
     }
 }
 

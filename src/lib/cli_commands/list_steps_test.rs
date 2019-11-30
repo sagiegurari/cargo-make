@@ -1,7 +1,9 @@
 use super::*;
 
+use crate::io;
 use crate::types::{ConfigSection, EnvValue, Task};
 use indexmap::IndexMap;
+use std::path::PathBuf;
 
 #[test]
 fn run_empty() {
@@ -15,7 +17,7 @@ fn run_empty() {
         tasks,
     };
 
-    let count = run(&config, "default");
+    let count = run(&config, "default", &None);
 
     assert_eq!(count, 0);
 }
@@ -40,7 +42,7 @@ fn run_all_public() {
         tasks,
     };
 
-    let count = run(&config, "default");
+    let count = run(&config, "default", &None);
 
     assert_eq!(count, 2);
 }
@@ -65,7 +67,7 @@ fn run_all_public_markdown() {
         tasks,
     };
 
-    let count = run(&config, "markdown");
+    let count = run(&config, "markdown", &None);
 
     assert_eq!(count, 2);
 }
@@ -90,7 +92,32 @@ fn run_all_public_markdown_sub_section() {
         tasks,
     };
 
-    let count = run(&config, "markdown-sub-section");
+    let count = run(&config, "markdown-sub-section", &None);
+
+    assert_eq!(count, 2);
+}
+
+#[test]
+fn run_all_public_markdown_single_page() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    tasks.insert("1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    tasks.insert("2".to_string(), task2);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env,
+        tasks,
+    };
+
+    let count = run(&config, "markdown-single-page", &None);
 
     assert_eq!(count, 2);
 }
@@ -117,7 +144,7 @@ fn run_all_private() {
         tasks,
     };
 
-    let count = run(&config, "default");
+    let count = run(&config, "default", &None);
 
     assert_eq!(count, 0);
 }
@@ -151,7 +178,41 @@ fn run_mixed() {
         tasks,
     };
 
-    let count = run(&config, "default");
+    let count = run(&config, "default", &None);
 
     assert_eq!(count, 3);
+}
+
+#[test]
+fn run_write_to_file() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    tasks.insert("1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    tasks.insert("2".to_string(), task2);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env,
+        tasks,
+    };
+
+    let file = "./target/_temp/tasklist.md";
+    let count = run(&config, "markdown-single-page", &Some(file.to_string()));
+
+    assert_eq!(count, 2);
+
+    let mut path = PathBuf::new();
+    path.push(&file);
+
+    let text = io::read_text_file(&path);
+    io::delete_file(&file);
+
+    assert!(text.contains("# Task List"));
 }
