@@ -2714,6 +2714,8 @@ These are the following options available while running cargo-make:
 ```console
 USAGE:
     cargo make [FLAGS] [OPTIONS] [--] [ARGS]
+    OR
+    makers [FLAGS] [OPTIONS] [--] [ARGS]
 
 FLAGS:
         --allow-private                Allow invocation of private tasks
