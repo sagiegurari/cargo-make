@@ -226,9 +226,9 @@ fn should_watch(task: &Task) -> bool {
 }
 
 fn run_task(flow_info: &FlowInfo, step: &Step) {
-    info!("Running Task: {}", &step.name);
-
     if validate_condition(&flow_info, &step) {
+        info!("Running Task: {}", &step.name);
+
         if !step.config.is_valid() {
             error!(
                 "Invalid task, contains multiple actions.\n{:#?}",
@@ -306,7 +306,7 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             };
         }
     } else {
-        debug!("Task: {} disabled", &step.name);
+        info!("Skipping Task: {}", &step.name);
     }
 }
 

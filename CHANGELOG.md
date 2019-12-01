@@ -4,6 +4,7 @@
 
 * Support invocation of multiple tasks via run_task #324
 * Support invocation of multiple tasks in parallel via run_task #321
+* Info printout to state if task is running or skipped #326
 * Generate task list documentation file via new cli argument (output-file) #325
 * Outdated dependencies validation as part of CI flow to be limited to master branch only #323
 * Use new git_info crate to fetch git info and setup environment #320
