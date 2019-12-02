@@ -585,6 +585,8 @@ fn setup_cargo_home_overwrite() {
         Path::new(&envmnt::get_or_panic("CARGO_MAKE_CARGO_HOME")),
         cargo_home
     );
+
+    envmnt::remove("CARGO_HOME");
 }
 
 #[test]
