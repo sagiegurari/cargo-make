@@ -433,6 +433,11 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             }
 
             debug!("Working directory changed to: {}", &directory);
+
+            envmnt::set_optional(
+                "CARGO_MAKE_CARGO_HOME",
+                &home::cargo_home_with_cwd(directory_path).ok(),
+            );
         }
     }
 }

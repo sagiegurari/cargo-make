@@ -4,6 +4,7 @@ use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
+use std::path::Path;
 use std::{thread, time};
 
 #[test]
@@ -559,6 +560,31 @@ fn setup_env_empty() {
 
     value = envmnt::get_or_panic("CARGO_MAKE_TASK");
     assert_eq!(value, "setup_env_empty2");
+}
+
+#[test]
+fn setup_cargo_home() {
+    setup_cwd(None);
+
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CARGO_HOME"),
+        home::cargo_home().unwrap().to_str().unwrap()
+    );
+}
+
+#[test]
+fn setup_cargo_home_overwrite() {
+    let path = Path::new("path");
+    envmnt::set("CARGO_HOME", path);
+
+    setup_cwd(None);
+
+    let mut cargo_home = env::current_dir().unwrap();
+    cargo_home.push(path);
+    assert_eq!(
+        Path::new(&envmnt::get_or_panic("CARGO_MAKE_CARGO_HOME")),
+        cargo_home
+    );
 }
 
 #[test]

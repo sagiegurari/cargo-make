@@ -1303,6 +1303,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
+* **CARGO_MAKE_CARGO_HOME** - The path to CARGO_HOME as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
 * **CARGO_MAKE_CARGO_PROFILE** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **CARGO_MAKE_PROFILE** (unmapped value will default to CARGO_MAKE_PROFILE value)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
 * **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
