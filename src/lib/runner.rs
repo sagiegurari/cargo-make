@@ -226,6 +226,11 @@ fn should_watch(task: &Task) -> bool {
 }
 
 fn run_task(flow_info: &FlowInfo, step: &Step) {
+    match step.config.env {
+        Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),
+        None => (),
+    };
+
     if validate_condition(&flow_info, &step) {
         info!("Running Task: {}", &step.name);
 
@@ -266,6 +271,8 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             Some(ref env) => environment::set_env(env.clone()),
             None => (),
         };
+
+        envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
         //make sure profile env is not overwritten
         profile::set(&profile_name);

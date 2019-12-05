@@ -223,6 +223,21 @@ fn set_env_files_for_config(
     all_loaded
 }
 
+pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
+    debug!("Setting Up Env.");
+
+    for (key, env_value) in &env {
+        if key.starts_with("CARGO_MAKE_CURRENT_TASK_") {
+            debug!("Setting env: {} = {:#?}", &key, &env_value);
+
+            match *env_value {
+                EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
+                _ => (),
+            };
+        }
+    }
+}
+
 /// Updates the env for the current execution based on the descriptor.
 fn initialize_env(config: &Config) {
     debug!("Initializing Env.");
@@ -401,7 +416,8 @@ fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
 }
 
 pub(crate) fn setup_cwd(cwd: Option<&str>) {
-    let directory = cwd.unwrap_or(".");
+    let cwd_str = cwd.unwrap_or(".");
+    let directory = expand_value(cwd_str);
 
     debug!("Changing working directory to: {}", &directory);
 

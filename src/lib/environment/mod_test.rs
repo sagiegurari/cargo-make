@@ -1186,3 +1186,37 @@ fn remove_unc_prefix_not_found() {
 
     assert_eq!(output, PathBuf::from(r"C:\test"));
 }
+
+#[test]
+fn set_current_task_meta_info_env_mixed() {
+    let mut env = IndexMap::<String, EnvValue>::new();
+
+    envmnt::remove("CARGO_MAKE_CURRENT_TASKBAD_TEST1");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASKBAD_TEST2");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASK_TEST1");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASK_TEST2");
+
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASKBAD_TEST1".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST1".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST2".to_string(),
+        EnvValue::Value("2".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASKBAD_TEST2".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+
+    set_current_task_meta_info_env(env);
+
+    assert!(envmnt::is_equal("CARGO_MAKE_CURRENT_TASK_TEST1", "1"));
+    assert!(envmnt::is_equal("CARGO_MAKE_CURRENT_TASK_TEST2", "2"));
+    assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST2"));
+}

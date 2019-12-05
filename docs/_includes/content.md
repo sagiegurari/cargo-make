@@ -412,7 +412,11 @@ args = ["2"]
 run_task = { name = ["echo1", "echo2"], parallel = true }
 ```
 
-This allows to run independend tasks in parallel and speed the overall performance of the flow.
+This allows to run independend tasks in parallel and speed the overall performance of the flow.<br>
+Be aware that parallel invocation of tasks will cause issues if the following feature are used:
+
+* Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
+* Avoid using **CARGO_MAKE_CURRENT_TASK_** type environment variables as those may hold incorrect values.
 
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
@@ -1203,6 +1207,9 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
+* **CARGO_MAKE_CURRENT_TASK_NAME** - Holds the currently executed task name.
+* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE** - Holds the full path to the makefile which **initially** defined the currently executed task (not available for internal core tasks).
+* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY** - Holds the full path to the directory containing the makefile which **initially** defined the currently executed task (not available for internal core tasks).
 * **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.

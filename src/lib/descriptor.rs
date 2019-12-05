@@ -38,31 +38,34 @@ fn merge_env(
 
     for (key, value) in extended.iter() {
         let key_str = key.to_string();
-        let value_clone = value.clone();
 
-        if merged.contains_key(&key_str) {
-            let base_value = merged.swap_remove(&key_str).unwrap();
+        if !key_str.starts_with("CARGO_MAKE_CURRENT_TASK_") {
+            let value_clone = value.clone();
 
-            match (base_value, value_clone.clone()) {
-                (
-                    EnvValue::Profile(ref base_profile_env),
-                    EnvValue::Profile(ref extended_profile_env),
-                ) => {
-                    let mut base_profile_env_mut = base_profile_env.clone();
-                    let mut extended_profile_env_mut = extended_profile_env.clone();
+            if merged.contains_key(&key_str) {
+                let base_value = merged.swap_remove(&key_str).unwrap();
 
-                    let merged_sub_env =
-                        merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
+                match (base_value, value_clone.clone()) {
+                    (
+                        EnvValue::Profile(ref base_profile_env),
+                        EnvValue::Profile(ref extended_profile_env),
+                    ) => {
+                        let mut base_profile_env_mut = base_profile_env.clone();
+                        let mut extended_profile_env_mut = extended_profile_env.clone();
 
-                    merged.insert(key_str, EnvValue::Profile(merged_sub_env));
-                }
-                _ => {
-                    merged.insert(key_str, value_clone);
-                    ()
-                }
-            };
-        } else {
-            merged.insert(key_str, value_clone);
+                        let merged_sub_env =
+                            merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
+
+                        merged.insert(key_str, EnvValue::Profile(merged_sub_env));
+                    }
+                    _ => {
+                        merged.insert(key_str, value_clone);
+                        ()
+                    }
+                };
+            } else {
+                merged.insert(key_str, value_clone);
+            }
         }
     }
 
@@ -119,6 +122,7 @@ fn add_file_location_info(
     mut external_config: ExternalConfig,
     file_path: &PathBuf,
 ) -> ExternalConfig {
+    let file_path_string = file_path.to_string_lossy().into_owned();
     let base_directory = match file_path.parent() {
         Some(directory) => directory.to_string_lossy().into_owned(),
         None => "".to_string(),
@@ -149,6 +153,31 @@ fn add_file_location_info(
             external_config.env_files = Some(modified_env_files);
         }
         None => (),
+    };
+
+    let mut tasks_map = IndexMap::new();
+    if let Some(tasks) = external_config.tasks.clone() {
+        for (task_name, task) in tasks {
+            let mut env = match task.env.clone() {
+                Some(env) => env,
+                None => IndexMap::new(),
+            };
+
+            env.insert(
+                "CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE".to_string(),
+                EnvValue::Value(file_path_string.to_string()),
+            );
+            env.insert(
+                "CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY".to_string(),
+                EnvValue::Value(base_directory.to_string()),
+            );
+
+            let mut updated_task = task.clone();
+            updated_task.env = Some(env);
+            tasks_map.insert(task_name, updated_task);
+        }
+
+        external_config.tasks = Some(tasks_map);
     };
 
     external_config
@@ -302,12 +331,12 @@ fn load_external_descriptor(
     let file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() && file_path.is_file() {
-        if set_env {
-            let absolute_file_path = match canonicalize(&file_path) {
-                Ok(result_path) => result_path,
-                _ => file_path.clone(),
-            };
+        let absolute_file_path = match canonicalize(&file_path) {
+            Ok(result_path) => result_path,
+            _ => file_path.clone(),
+        };
 
+        if set_env {
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
@@ -321,7 +350,7 @@ fn load_external_descriptor(
         };
         debug!("Loaded external config: {:#?}", &file_config);
 
-        file_config = add_file_location_info(file_config, &file_path);
+        file_config = add_file_location_info(file_config, &absolute_file_path);
 
         run_load_script(&file_config);
 
