@@ -43,10 +43,7 @@ args = [
 
 [tasks.generate-docs]
 condition = { env_false = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
-dependencies = [
-  "generate-readme",
-  "generate-task-list"
-]
+run_task = { name = ["generate-readme", "generate-task-list"] }
 
 [tasks.post-docs]
 linux_alias = "generate-docs"

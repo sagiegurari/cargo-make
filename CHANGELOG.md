@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.24.2
+
+* New print-env-flow task which prints out entire env info (rust, git, cargo, crate, ci, ...) #333
+
 ### v0.24.1 (2019-12-06)
 
 * Support invocation of multiple tasks via run_task #324

@@ -63,6 +63,7 @@ alias = "dev-test-flow"
 description = "CI task will run cargo build and cargo test with verbose output"
 category = "CI"
 dependencies = [
+    "print-env-flow",
     "pre-ci-flow",
     "pre-build",
     "conditioned-check-format",
@@ -643,6 +644,117 @@ script = [
 '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 '''
+]
+
+[tasks.print-cargo-make-env]
+category = "Tools"
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "Cargo Make:"
+echo "    Task: ${CARGO_MAKE_TASK}"
+echo "    Task Arguments: ${CARGO_MAKE_TASK_ARGS}"
+echo "    Command: ${CARGO_MAKE_COMMAND}"
+echo "    Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
+echo "    Profile: ${CARGO_MAKE_PROFILE}"
+echo "    Additional Profiles: ${CARGO_MAKE_ADDITIONAL_PROFILES}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-ci-env]
+category = "Tools"
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "CI:"
+echo "    CI: ${CARGO_MAKE_CI}"
+echo "    PR: ${CARGO_MAKE_PR}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-git-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "Git:"
+echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
+echo "    User: ${CARGO_MAKE_GIT_USER_NAME}"
+echo "    Email: ${CARGO_MAKE_GIT_USER_EMAIL}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-rust-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "Rust:"
+echo "    Version: ${CARGO_MAKE_RUST_VERSION}"
+echo "    Channel: ${CARGO_MAKE_RUST_CHANNEL}"
+echo "    Target Arch: ${CARGO_MAKE_RUST_TARGET_ARCH}"
+echo "    Target Env: ${CARGO_MAKE_RUST_TARGET_ENV}"
+echo "    Target OS: ${CARGO_MAKE_RUST_TARGET_OS}"
+echo "    Pointer Width: ${CARGO_MAKE_RUST_TARGET_POINTER_WIDTH}"
+echo "    Target Vendor: ${CARGO_MAKE_RUST_TARGET_VENDOR}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-cargo-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "Cargo:"
+echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
+echo "    Profile: ${CARGO_MAKE_CARGO_PROFILE}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-crate-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
+script_runner = "@shell"
+script = [
+'''
+echo "*************************************"
+echo "Crate:"
+echo "    Name: ${CARGO_MAKE_CRATE_NAME}"
+echo "    Version: ${CARGO_MAKE_CRATE_VERSION}"
+echo "    Description: ${CARGO_MAKE_CRATE_DESCRIPTION}"
+echo "    License: ${CARGO_MAKE_CRATE_LICENSE}"
+echo "    Documentation: ${CARGO_MAKE_CRATE_DOCUMENTATION}"
+echo "    Homepage: ${CARGO_MAKE_CRATE_HOMEPAGE}"
+echo "    Repository: ${CARGO_MAKE_CRATE_REPOSITORY}"
+echo "    Workspace: ${CARGO_MAKE_CRATE_IS_WORKSPACE}"
+echo "    Workspace Members: ${CARGO_MAKE_CRATE_WORKSPACE_MEMBERS}"
+echo "    Has Dependencies: ${CARGO_MAKE_CRATE_HAS_DEPENDENCIES}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-env-flow]
+category = "Tools"
+dependencies = [
+    "print-cargo-make-env",
+    "print-ci-env",
+    "print-git-env",
+    "print-rust-env",
+    "print-cargo-env",
+    "print-crate-env"
 ]
 
 [tasks.pre-ci-flow]

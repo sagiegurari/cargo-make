@@ -159,4 +159,11 @@
 * **git-diff-files** - Run diff on two provided files.
 * **install-rls** - No Description.
 * **install-rust-src** - No Description.
+* **print-cargo-env** - No Description.
+* **print-cargo-make-env** - No Description.
+* **print-ci-env** - No Description.
+* **print-crate-env** - No Description.
+* **print-env-flow** - No Description.
+* **print-git-env** - No Description.
+* **print-rust-env** - No Description.
 
