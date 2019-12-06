@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.24.1
+### v0.24.1 (2019-12-06)
 
 * Support invocation of multiple tasks via run_task #324
 * Support invocation of multiple tasks in parallel via run_task #321

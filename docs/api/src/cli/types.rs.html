@@ -1828,6 +1828,33 @@
 <span id="1828">1828</span>
 <span id="1829">1829</span>
 <span id="1830">1830</span>
+<span id="1831">1831</span>
+<span id="1832">1832</span>
+<span id="1833">1833</span>
+<span id="1834">1834</span>
+<span id="1835">1835</span>
+<span id="1836">1836</span>
+<span id="1837">1837</span>
+<span id="1838">1838</span>
+<span id="1839">1839</span>
+<span id="1840">1840</span>
+<span id="1841">1841</span>
+<span id="1842">1842</span>
+<span id="1843">1843</span>
+<span id="1844">1844</span>
+<span id="1845">1845</span>
+<span id="1846">1846</span>
+<span id="1847">1847</span>
+<span id="1848">1848</span>
+<span id="1849">1849</span>
+<span id="1850">1850</span>
+<span id="1851">1851</span>
+<span id="1852">1852</span>
+<span id="1853">1853</span>
+<span id="1854">1854</span>
+<span id="1855">1855</span>
+<span id="1856">1856</span>
+<span id="1857">1857</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1840,6 +1867,7 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">legacy</span>;
 <span class="kw">use</span> <span class="ident">ci_info</span>::<span class="ident">types</span>::<span class="ident">CiInfo</span>;
+<span class="kw">use</span> <span class="ident">git_info</span>::<span class="ident">types</span>::<span class="ident">GitInfo</span>;
 <span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
 <span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::<span class="ident">RustInfo</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
@@ -1910,6 +1938,8 @@
     <span class="kw">pub</span> <span class="ident">arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Output format</span>
     <span class="kw">pub</span> <span class="ident">output_format</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Output file name</span>
+    <span class="kw">pub</span> <span class="ident">output_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CliArgs</span> {
@@ -1936,6 +1966,7 @@
             <span class="ident">experimental</span>: <span class="bool-val">false</span>,
             <span class="ident">arguments</span>: <span class="prelude-val">None</span>,
             <span class="ident">output_format</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">output_file</span>: <span class="prelude-val">None</span>,
         }
     }
 }
@@ -1988,28 +2019,6 @@
             <span class="ident">default_task_name</span>: <span class="prelude-val">None</span>,
             <span class="ident">update_check_minimum_interval</span>: <span class="prelude-val">None</span>,
             <span class="ident">search_project_root</span>: <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
-        }
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="doccomment">/// Holds git info for the given repo directory</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GitInfo</span> {
-    <span class="doccomment">/// branch name</span>
-    <span class="kw">pub</span> <span class="ident">branch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// user.name</span>
-    <span class="kw">pub</span> <span class="ident">user_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// user.email</span>
-    <span class="kw">pub</span> <span class="ident">user_email</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">GitInfo</span> {
-    <span class="doccomment">/// Returns new instance</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">GitInfo</span> {
-        <span class="ident">GitInfo</span> {
-            <span class="ident">branch</span>: <span class="prelude-val">None</span>,
-            <span class="ident">user_name</span>: <span class="prelude-val">None</span>,
-            <span class="ident">user_email</span>: <span class="prelude-val">None</span>,
         }
     }
 }
@@ -2470,22 +2479,36 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="doccomment">/// Holds the run task name/s</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RunTaskName</span> {
+    <span class="doccomment">/// Single task name</span>
+    <span class="ident">Single</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Multiple task names</span>
+    <span class="ident">Multiple</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>),
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the run task information</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RunTaskDetails</span> {
     <span class="doccomment">/// The task name</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">RunTaskName</span>,
     <span class="doccomment">/// True to fork the task to a new sub process</span>
     <span class="kw">pub</span> <span class="ident">fork</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to run all tasks in parallel (default false)</span>
+    <span class="kw">pub</span> <span class="ident">parallel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds the run task routing information</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RunTaskRoutingInfo</span> {
     <span class="doccomment">/// The task name</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">RunTaskName</span>,
     <span class="doccomment">/// True to fork the task to a new sub process</span>
     <span class="kw">pub</span> <span class="ident">fork</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to run all tasks in parallel (default false)</span>
+    <span class="kw">pub</span> <span class="ident">parallel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if script exit code is not 0, the task will not be invoked</span>
@@ -2817,15 +2840,46 @@
                                 <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>))
                             }
                             <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">mut</span> <span class="ident">run_task_details</span>) <span class="op">=&gt;</span> {
-                                <span class="ident">run_task_details</span>.<span class="ident">name</span> <span class="op">=</span>
-                                    <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="kw-2">&amp;</span><span class="ident">run_task_details</span>.<span class="ident">name</span>);
+                                <span class="kw">match</span> <span class="ident">run_task_details</span>.<span class="ident">name</span> {
+                                    <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> {
+                                        <span class="ident">run_task_details</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(
+                                            <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="ident">name</span>),
+                                        )
+                                    }
+                                    <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=&gt;</span> {
+                                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+                                        <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
+                                            <span class="ident">updated_names</span>
+                                                .<span class="ident">push</span>(<span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="ident">name</span>));
+                                        }
+
+                                        <span class="ident">run_task_details</span>.<span class="ident">name</span> <span class="op">=</span>
+                                            <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="ident">updated_names</span>);
+                                    }
+                                };
 
                                 <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="ident">run_task_details</span>)
                             }
                             <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">mut</span> <span class="ident">routing_info_vector</span>) <span class="op">=&gt;</span> {
                                 <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">routing_info</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">routing_info_vector</span> {
-                                    <span class="ident">routing_info</span>.<span class="ident">name</span> <span class="op">=</span>
-                                        <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="kw-2">&amp;</span><span class="ident">routing_info</span>.<span class="ident">name</span>);
+                                    <span class="kw">match</span> <span class="ident">routing_info</span>.<span class="ident">name</span> {
+                                        <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> {
+                                            <span class="ident">routing_info</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(
+                                                <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="ident">name</span>),
+                                            )
+                                        }
+                                        <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=&gt;</span> {
+                                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+                                            <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
+                                                <span class="ident">updated_names</span>.<span class="ident">push</span>(<span class="ident">get_namespaced_task_name</span>(
+                                                    <span class="ident">namespace</span>, <span class="ident">name</span>,
+                                                ));
+                                            }
+
+                                            <span class="ident">routing_info</span>.<span class="ident">name</span> <span class="op">=</span>
+                                                <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="ident">updated_names</span>);
+                                        }
+                                    };
                                 }
 
                                 <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="ident">routing_info_vector</span>)
