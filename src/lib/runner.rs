@@ -23,10 +23,11 @@ use crate::profile;
 use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo,
-    RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
+    RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
+use std::thread;
 use std::time::SystemTime;
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F)
@@ -74,10 +75,11 @@ fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
 pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
-) -> (Option<String>, bool) {
+) -> (Option<Vec<String>>, bool, bool) {
     let mut task_name = None;
 
     let mut fork = false;
+    let mut parallel = false;
     for routing_step in routing_info {
         let invoke = condition::validate_conditions(
             &flow_info,
@@ -87,13 +89,18 @@ pub(crate) fn get_sub_task_info_for_routing_info(
         );
 
         if invoke {
-            task_name = Some(routing_step.name.clone());
+            let task_name_values = match routing_step.name.clone() {
+                RunTaskName::Single(name) => vec![name],
+                RunTaskName::Multiple(names) => names,
+            };
+            task_name = Some(task_name_values);
             fork = routing_step.fork.unwrap_or(false);
+            parallel = routing_step.parallel.unwrap_or(false);
             break;
         }
     }
 
-    (task_name, fork)
+    (task_name, fork, parallel)
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
@@ -113,24 +120,54 @@ fn run_forked_task(flow_info: &FlowInfo) {
 
 /// runs a sub task and returns true/false based if a sub task was actually invoked
 fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
-    let (task_name, fork) = match sub_task {
-        RunTaskInfo::Name(ref name) => (Some(name.to_string()), false),
+    let (task_names, fork, parallel) = match sub_task {
+        RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false, false),
         RunTaskInfo::Details(ref details) => {
-            (Some(details.name.clone()), details.fork.unwrap_or(false))
+            let task_name_values = match details.name.clone() {
+                RunTaskName::Single(name) => vec![name],
+                RunTaskName::Multiple(names) => names,
+            };
+            (
+                Some(task_name_values),
+                details.fork.unwrap_or(false),
+                details.parallel.unwrap_or(false),
+            )
         }
         RunTaskInfo::Routing(ref routing_info) => {
             get_sub_task_info_for_routing_info(&flow_info, routing_info)
         }
     };
 
-    if task_name.is_some() {
-        let mut sub_flow_info = flow_info.clone();
-        sub_flow_info.task = task_name.unwrap();
+    if task_names.is_some() {
+        let names = task_names.unwrap();
+        let mut threads = vec![];
 
-        if fork {
-            run_forked_task(&sub_flow_info);
-        } else {
-            run_flow(&sub_flow_info, true);
+        for name in names {
+            let task_run_fn = |flow_info: &FlowInfo, fork: bool| {
+                let mut sub_flow_info = flow_info.clone();
+                sub_flow_info.task = name;
+
+                if fork {
+                    run_forked_task(&sub_flow_info);
+                } else {
+                    run_flow(&sub_flow_info, true);
+                }
+            };
+
+            if parallel {
+                let run_flow_info = flow_info.clone();
+                threads.push(thread::spawn(move || {
+                    task_run_fn(&run_flow_info, fork);
+                }));
+            } else {
+                task_run_fn(&flow_info, fork);
+            }
+        }
+
+        if threads.len() > 0 {
+            for task_thread in threads {
+                task_thread.join().unwrap();
+            }
         }
 
         true
@@ -189,9 +226,14 @@ fn should_watch(task: &Task) -> bool {
 }
 
 fn run_task(flow_info: &FlowInfo, step: &Step) {
-    info!("Running Task: {}", &step.name);
+    match step.config.env {
+        Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),
+        None => (),
+    };
 
     if validate_condition(&flow_info, &step) {
+        info!("Running Task: {}", &step.name);
+
         if !step.config.is_valid() {
             error!(
                 "Invalid task, contains multiple actions.\n{:#?}",
@@ -229,6 +271,8 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             Some(ref env) => environment::set_env(env.clone()),
             None => (),
         };
+
+        envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
         //make sure profile env is not overwritten
         profile::set(&profile_name);
@@ -269,7 +313,7 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             };
         }
     } else {
-        debug!("Task: {} disabled", &step.name);
+        info!("Skipping Task: {}", &step.name);
     }
 }
 

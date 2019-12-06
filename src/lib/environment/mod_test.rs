@@ -4,6 +4,7 @@ use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
+use std::path::Path;
 use std::{thread, time};
 
 #[test]
@@ -559,6 +560,33 @@ fn setup_env_empty() {
 
     value = envmnt::get_or_panic("CARGO_MAKE_TASK");
     assert_eq!(value, "setup_env_empty2");
+}
+
+#[test]
+fn setup_cargo_home() {
+    setup_cwd(None);
+
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_CARGO_HOME"),
+        home::cargo_home().unwrap().to_str().unwrap()
+    );
+}
+
+#[test]
+fn setup_cargo_home_overwrite() {
+    let path = Path::new("path");
+    envmnt::set("CARGO_HOME", path);
+
+    setup_cwd(None);
+
+    let mut cargo_home = env::current_dir().unwrap();
+    cargo_home.push(path);
+    assert_eq!(
+        Path::new(&envmnt::get_or_panic("CARGO_MAKE_CARGO_HOME")),
+        cargo_home
+    );
+
+    envmnt::remove("CARGO_HOME");
 }
 
 #[test]
@@ -1157,4 +1185,38 @@ fn remove_unc_prefix_not_found() {
     let output = remove_unc_prefix(&PathBuf::from(r"C:\test"));
 
     assert_eq!(output, PathBuf::from(r"C:\test"));
+}
+
+#[test]
+fn set_current_task_meta_info_env_mixed() {
+    let mut env = IndexMap::<String, EnvValue>::new();
+
+    envmnt::remove("CARGO_MAKE_CURRENT_TASKBAD_TEST1");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASKBAD_TEST2");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASK_TEST1");
+    envmnt::remove("CARGO_MAKE_CURRENT_TASK_TEST2");
+
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASKBAD_TEST1".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST1".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST2".to_string(),
+        EnvValue::Value("2".to_string()),
+    );
+    env.insert(
+        "CARGO_MAKE_CURRENT_TASKBAD_TEST2".to_string(),
+        EnvValue::Value("1".to_string()),
+    );
+
+    set_current_task_meta_info_env(env);
+
+    assert!(envmnt::is_equal("CARGO_MAKE_CURRENT_TASK_TEST1", "1"));
+    assert!(envmnt::is_equal("CARGO_MAKE_CURRENT_TASK_TEST2", "2"));
+    assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST2"));
 }

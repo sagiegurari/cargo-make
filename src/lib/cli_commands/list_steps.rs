@@ -8,15 +8,38 @@
 mod list_steps_test;
 
 use crate::execution_plan;
+use crate::io;
 use crate::types::{Config, DeprecationInfo};
 use std::collections::BTreeMap;
 
-pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
-    let mut count = 0;
+pub(crate) fn run(config: &Config, output_format: &str, output_file: &Option<String>) -> u32 {
+    let (output, count) = create_list(&config, output_format);
 
-    let markdown = output_format == "markdown";
+    match output_file {
+        Some(file) => {
+            io::write_text_file(&file, &output);
+            ()
+        }
+        None => print!("{}", output),
+    }
+
+    count
+}
+
+pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32) {
+    let mut count = 0;
+    let mut buffer = String::new();
+
+    let single_page_markdown = output_format == "markdown-single-page";
+    let markdown = single_page_markdown
+        || output_format == "markdown"
+        || output_format == "markdown-sub-section";
 
     let mut categories = BTreeMap::new();
+
+    if single_page_markdown {
+        buffer.push_str(&format!("# Task List\n\n"));
+    }
 
     for key in config.tasks.keys() {
         let task = execution_plan::get_normalized_task(&config, &key, true);
@@ -75,20 +98,22 @@ pub(crate) fn run(config: &Config, output_format: &str) -> u32 {
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
-        if markdown {
-            println!("##### {}\n", category);
+        if single_page_markdown {
+            buffer.push_str(&format!("## {}\n\n", category));
+        } else if markdown {
+            buffer.push_str(&format!("#### {}\n\n", category));
         } else {
-            println!("{}\n----------", category);
+            buffer.push_str(&format!("{}\n----------\n", category));
         }
 
         for (key, description) in tasks {
             if markdown {
-                print!("* **");
+                buffer.push_str(&format!("* **"));
             }
-            println!("{}{} - {} ", &key, &post_key, &description);
+            buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
         }
-        println!("");
+        buffer.push_str(&format!("\n"));
     }
 
-    count
+    (buffer, count)
 }

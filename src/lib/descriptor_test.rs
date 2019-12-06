@@ -168,6 +168,36 @@ fn merge_env_both_with_sub_envs() {
 }
 
 #[test]
+fn merge_env_both_skip_current_task_env() {
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
+
+    map1.insert("test1".to_string(), EnvValue::Value("value1".to_string()));
+    map1.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST".to_string(),
+        EnvValue::Value("test1".to_string()),
+    );
+    map2.insert("test1".to_string(), EnvValue::Value("value2".to_string()));
+    map2.insert(
+        "CARGO_MAKE_CURRENT_TASK_TEST".to_string(),
+        EnvValue::Value("test2".to_string()),
+    );
+
+    let output = merge_env(&mut map1, &mut map2);
+    assert_eq!(output.len(), 2);
+    let mut value = output.get("test1").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"value2".to_string()),
+        _ => panic!("wrong value type"),
+    };
+    value = output.get("CARGO_MAKE_CURRENT_TASK_TEST").unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"test1".to_string()),
+        _ => panic!("wrong value type"),
+    };
+}
+
+#[test]
 fn merge_tasks_both_empty() {
     let mut map1 = IndexMap::<String, Task>::new();
     let mut map2 = IndexMap::<String, Task>::new();

@@ -11,7 +11,7 @@ use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::{env, iter};
 
 pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
@@ -74,10 +74,43 @@ pub(crate) fn create_file(write_content: &Fn(&mut File, &str), extension: &str) 
 }
 
 pub(crate) fn delete_file(file: &str) {
-    match remove_file(&file) {
-        Ok(_) => debug!("Temporary file deleted: {}", &file),
-        Err(error) => debug!("Unable to delete temporary file: {} {:#?}", &file, error),
+    let file_path = Path::new(file);
+
+    if file_path.exists() && file_path.is_file() {
+        match remove_file(&file) {
+            Ok(_) => debug!("File deleted: {}", &file),
+            Err(error) => debug!("Unable to delete file: {} {:#?}", &file, error),
+        };
+    }
+}
+
+pub(crate) fn write_text_file(file_path: &str, text: &str) -> bool {
+    delete_file(&file_path);
+
+    let path = Path::new(file_path);
+
+    let directory_exists = match path.parent() {
+        Some(directory) => match create_dir_all(&directory) {
+            Ok(_) => true,
+            _ => false,
+        },
+        None => true,
     };
+
+    if directory_exists {
+        match File::create(&path) {
+            Ok(mut file) => match file.write_all(text.as_bytes()) {
+                Ok(_) => match file.sync_all() {
+                    Ok(_) => true,
+                    _ => false,
+                },
+                _ => false,
+            },
+            _ => false,
+        }
+    } else {
+        false
+    }
 }
 
 pub(crate) fn read_text_file(file_path: &PathBuf) -> String {

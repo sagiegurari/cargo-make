@@ -31,6 +31,7 @@ fn cli_args_new() {
     assert!(!cli_args.experimental);
     assert!(cli_args.arguments.is_none());
     assert_eq!(cli_args.output_format, "default");
+    assert!(cli_args.output_file.is_none());
 }
 
 #[test]
@@ -3051,7 +3052,7 @@ fn task_apply_run_task_name_modify_namespace() {
 }
 
 #[test]
-fn task_apply_run_task_details_modify_namespace() {
+fn task_apply_run_task_details_single_modify_namespace() {
     let modify_config = ModifyConfig {
         private: None,
         namespace: Some("default".to_string()),
@@ -3059,8 +3060,9 @@ fn task_apply_run_task_details_modify_namespace() {
 
     let mut task = Task::new();
     task.run_task = Some(RunTaskInfo::Details(RunTaskDetails {
-        name: "run_task1".to_string(),
+        name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
+        parallel: None,
     }));
 
     task.apply(&modify_config);
@@ -3074,12 +3076,50 @@ fn task_apply_run_task_details_modify_namespace() {
         RunTaskInfo::Details(ref mut details) => details.clone(),
         _ => panic!("Invalid run task value."),
     };
-    assert_eq!(details.name, "default::run_task1");
+    assert_eq!(
+        details.name,
+        RunTaskName::Single("default::run_task1".to_string())
+    );
     assert!(task.dependencies.is_none());
 }
 
 #[test]
-fn task_apply_run_task_routing_info_modify_namespace() {
+fn task_apply_run_task_details_multiple_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Details(RunTaskDetails {
+        name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
+        fork: None,
+        parallel: None,
+    }));
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    let details = match task.run_task.unwrap() {
+        RunTaskInfo::Details(ref mut details) => details.clone(),
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(
+        details.name,
+        RunTaskName::Multiple(vec![
+            "default::run_task1".to_string(),
+            "default::run_task2".to_string()
+        ])
+    );
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_run_task_routing_info_single_modify_namespace() {
     let modify_config = ModifyConfig {
         private: None,
         namespace: Some("default".to_string()),
@@ -3087,8 +3127,9 @@ fn task_apply_run_task_routing_info_modify_namespace() {
 
     let mut task = Task::new();
     task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
-        name: "run_task1".to_string(),
+        name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
+        parallel: None,
         condition: None,
         condition_script: None,
     }]));
@@ -3104,7 +3145,47 @@ fn task_apply_run_task_routing_info_modify_namespace() {
         RunTaskInfo::Routing(ref mut info) => info.pop(),
         _ => panic!("Invalid run task value."),
     };
-    assert_eq!(routing_info.unwrap().name, "default::run_task1");
+    assert_eq!(
+        routing_info.unwrap().name,
+        RunTaskName::Single("default::run_task1".to_string())
+    );
+    assert!(task.dependencies.is_none());
+}
+
+#[test]
+fn task_apply_run_task_routing_info_multiple_modify_namespace() {
+    let modify_config = ModifyConfig {
+        private: None,
+        namespace: Some("default".to_string()),
+    };
+
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Routing(vec![RunTaskRoutingInfo {
+        name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
+        fork: None,
+        parallel: None,
+        condition: None,
+        condition_script: None,
+    }]));
+
+    task.apply(&modify_config);
+
+    assert!(task.private.is_none());
+    assert!(task.alias.is_none());
+    assert!(task.linux_alias.is_none());
+    assert!(task.windows_alias.is_none());
+    assert!(task.mac_alias.is_none());
+    let routing_info = match task.run_task.unwrap() {
+        RunTaskInfo::Routing(ref mut info) => info.pop(),
+        _ => panic!("Invalid run task value."),
+    };
+    assert_eq!(
+        routing_info.unwrap().name,
+        RunTaskName::Multiple(vec![
+            "default::run_task1".to_string(),
+            "default::run_task2".to_string()
+        ])
+    );
     assert!(task.dependencies.is_none());
 }
 

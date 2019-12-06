@@ -24,8 +24,32 @@ sed -i "s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g" ./README.md
 '''
 ]
 
+[tasks.generate-task-list]
+command = "cargo"
+args = [
+  "run",
+  "--bin",
+  "cargo-make",
+  "--",
+  "make",
+  "--list-all-steps",
+  "--output-format",
+  "markdown-single-page",
+  "--output-file",
+  "${CARGO_MAKE_WORKING_DIRECTORY}/docs/cargo_make_task_list.md",
+  "--makefile",
+  "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/makefiles/empty.toml"
+]
+
+[tasks.generate-docs]
+condition = { env_false = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
+dependencies = [
+  "generate-readme",
+  "generate-task-list"
+]
+
 [tasks.post-docs]
-linux_alias = "generate-readme"
+linux_alias = "generate-docs"
 
 [tasks.zip-release-ci-flow]
 description = "Compiles the binary in release mode and zips it up"
