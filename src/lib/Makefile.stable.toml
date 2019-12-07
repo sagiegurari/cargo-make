@@ -651,6 +651,7 @@ category = "Tools"
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "Cargo Make:"
 echo "    Task: ${CARGO_MAKE_TASK}"
@@ -668,6 +669,7 @@ category = "Tools"
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "CI:"
 echo "    CI: ${CARGO_MAKE_CI}"
@@ -682,6 +684,7 @@ condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "Git:"
 echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
@@ -697,6 +700,7 @@ condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "Rust:"
 echo "    Version: ${CARGO_MAKE_RUST_VERSION}"
@@ -716,6 +720,7 @@ condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "Cargo:"
 echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
@@ -730,6 +735,7 @@ condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
 script_runner = "@shell"
 script = [
 '''
+set +x
 echo "*************************************"
 echo "Crate:"
 echo "    Name: ${CARGO_MAKE_CRATE_NAME}"
