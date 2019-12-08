@@ -4,6 +4,7 @@
 
 * New CARGO_MAKE_CI_BRANCH_NAME environment variable #334
 * New print-env-flow task which prints out entire env info (rust, git, cargo, crate, ci, ...) #333
+* Outdated dependencies validation as part of CI flow to be limited to CI master branch only #323
 
 ### v0.24.1 (2019-12-06)
 
