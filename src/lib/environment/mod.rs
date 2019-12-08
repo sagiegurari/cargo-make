@@ -363,6 +363,7 @@ fn setup_env_for_ci() -> CiInfo {
 
     envmnt::set_bool("CARGO_MAKE_CI", ci_info_struct.ci);
     envmnt::set_bool("CARGO_MAKE_PR", ci_info_struct.pr.unwrap_or(false));
+    envmnt::set_optional("CARGO_MAKE_CI_BRANCH_NAME", &ci_info_struct.branch_name);
 
     ci_info_struct
 }

@@ -2,6 +2,7 @@
 
 ### v0.24.2
 
+* New CARGO_MAKE_CI_BRANCH_NAME environment variable #334
 * New print-env-flow task which prints out entire env info (rust, git, cargo, crate, ci, ...) #333
 
 ### v0.24.1 (2019-12-06)

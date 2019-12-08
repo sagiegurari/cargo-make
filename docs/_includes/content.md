@@ -1231,6 +1231,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 * **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
+* **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name.
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
