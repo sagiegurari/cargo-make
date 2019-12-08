@@ -305,6 +305,8 @@ pub struct RustVersionCondition {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
+    /// Failure message
+    pub fail_message: Option<String>,
     /// Profile names (development, ...)
     pub profiles: Option<Vec<String>>,
     /// Platform names (linux, windows, mac)

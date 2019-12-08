@@ -1326,6 +1326,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 * **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
+* **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name.
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 
@@ -1403,6 +1404,15 @@ Few examples:
 condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
 ```
 
+To setup a custom failure message, use the **fail_message** inside the condition object, for example:
+
+```toml
+[tasks.test-condition-with-message]
+condition = { platforms = ["windows"], fail_message = "Condition Failed." }
+command = "echo"
+args = ["condition was met"]
+```
+
 <a name="usage-conditions-script"></a>
 #### Scripts
 These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.
@@ -1419,6 +1429,18 @@ args = ["build"]
 ```
 
 Condition scripts can be used to ensure that the task is only invoked if a specific condition is met, for example if a specific 3rd party is installed.
+
+To setup a custom failure message, use the **fail_message** inside the condition object, for example:
+
+```toml
+[tasks.test-condition-script-with-message]
+condition = { fail_message = "Condition Script Failed." }
+condition_script = [
+    "exit 1"
+]
+command = "echo"
+args = ["condition was met"]
+```
 
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks

@@ -1383,6 +1383,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         fork: None,
         parallel: None,
         condition: Some(TaskCondition {
+            fail_message: None,
             profiles: None,
             platforms: None,
             channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
@@ -1507,6 +1508,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
             fork: None,
             parallel: None,
             condition: Some(TaskCondition {
+                fail_message: None,
                 profiles: None,
                 platforms: None,
                 channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
@@ -1559,6 +1561,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
             fork: None,
             parallel: None,
             condition: Some(TaskCondition {
+                fail_message: None,
                 profiles: None,
                 platforms: None,
                 channels: None,
@@ -1611,6 +1614,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
             fork: None,
             parallel: None,
             condition: Some(TaskCondition {
+                fail_message: None,
                 profiles: None,
                 platforms: None,
                 channels: None,
@@ -1744,6 +1748,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 fork: None,
                 parallel: None,
                 condition: Some(TaskCondition {
+                    fail_message: None,
                     profiles: None,
                     platforms: None,
                     channels: None,
@@ -1805,6 +1810,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 fork: None,
                 parallel: None,
                 condition: Some(TaskCondition {
+                    fail_message: None,
                     profiles: None,
                     platforms: None,
                     channels: None,
@@ -1873,6 +1879,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 fork: None,
                 parallel: None,
                 condition: Some(TaskCondition {
+                    fail_message: None,
                     profiles: None,
                     platforms: None,
                     channels: None,
@@ -1947,6 +1954,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
             fork: Some(false),
             parallel: None,
             condition: Some(TaskCondition {
+                fail_message: None,
                 profiles: None,
                 platforms: None,
                 channels: None,
@@ -1999,6 +2007,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
             fork: Some(true),
             parallel: None,
             condition: Some(TaskCondition {
+                fail_message: None,
                 profiles: None,
                 platforms: None,
                 channels: None,

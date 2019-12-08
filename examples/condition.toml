@@ -62,3 +62,23 @@ condition = { files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml2"] 
 script = [
     "echo \"condition was met\""
 ]
+
+[tasks.test-condition-script]
+condition_script = [
+    "exit 1"
+]
+command = "echo"
+args = ["condition was met"]
+
+[tasks.test-condition-with-message]
+condition = { platforms = ["windows"], fail_message = "Condition Failed." }
+command = "echo"
+args = ["condition was met"]
+
+[tasks.test-condition-script-with-message]
+condition = { fail_message = "Condition Script Failed." }
+condition_script = [
+    "exit 1"
+]
+command = "echo"
+args = ["condition was met"]
