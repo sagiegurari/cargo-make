@@ -323,6 +323,8 @@ pub struct TaskCondition {
     pub env_true: Option<Vec<String>>,
     /// Environment variables which are defined as false
     pub env_false: Option<Vec<String>>,
+    /// Environment variables and the values which they are required to contain
+    pub env_contains: Option<IndexMap<String, String>>,
     /// Rust version condition
     pub rust_version: Option<RustVersionCondition>,
     /// Files exist
