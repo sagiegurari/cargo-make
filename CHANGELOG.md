@@ -2,10 +2,11 @@
 
 ### v0.24.2
 
-* New CARGO_MAKE_CI_BRANCH_NAME environment variable #334
-* New print-env-flow task which prints out entire env info (rust, git, cargo, crate, ci, ...) #333
-* New custom condition failure message attribute: **fail_message** #332
 * New env_contains condition #335
+* New custom condition failure message attribute: **fail_message** #332
+* New print-env-flow task which prints out entire env info (rust, git, cargo, crate, ci, ...) #333
+* New CARGO_MAKE_CI_BRANCH_NAME environment variable #334
+* New CARGO_MAKE_CI_VENDOR environment variable #337
 * Outdated dependencies validation as part of CI flow to be limited to CI master branch only #323
 
 ### v0.24.1 (2019-12-06)
