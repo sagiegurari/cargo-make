@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.24.2
+### v0.24.2 (2019-12-13)
 
 * New env_contains condition #335
 * New custom condition failure message attribute: **fail_message** #332

@@ -1855,6 +1855,10 @@
 <span id="1855">1855</span>
 <span id="1856">1856</span>
 <span id="1857">1857</span>
+<span id="1858">1858</span>
+<span id="1859">1859</span>
+<span id="1860">1860</span>
+<span id="1861">1861</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2163,6 +2167,8 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Holds condition attributes</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaskCondition</span> {
+    <span class="doccomment">/// Failure message</span>
+    <span class="kw">pub</span> <span class="ident">fail_message</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Profile names (development, ...)</span>
     <span class="kw">pub</span> <span class="ident">profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Platform names (linux, windows, mac)</span>
@@ -2179,6 +2185,8 @@
     <span class="kw">pub</span> <span class="ident">env_true</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables which are defined as false</span>
     <span class="kw">pub</span> <span class="ident">env_false</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Environment variables and the values which they are required to contain</span>
+    <span class="kw">pub</span> <span class="ident">env_contains</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Rust version condition</span>
     <span class="kw">pub</span> <span class="ident">rust_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustVersionCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Files exist</span>

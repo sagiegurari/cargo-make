@@ -225,7 +225,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logger</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">toolchain</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CommandSpec</span>, <span class="ident">Step</span>};
-<span class="kw">use</span> <span class="ident">ci_info</span>;
+<span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">run_script</span>;
 <span class="kw">use</span> <span class="ident">run_script</span>::{<span class="ident">ScriptError</span>, <span class="ident">ScriptOptions</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
@@ -304,7 +304,7 @@
         <span class="comment">// if log level defaults to not printing the script commands</span>
         <span class="comment">// we also check if we are running in a CI env.</span>
         <span class="comment">// Users will not see the commands while CI builds will have the commands printed out.</span>
-        <span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
+        <span class="ident">envmnt</span>::<span class="ident">is</span>(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>)
     }
 }
 
