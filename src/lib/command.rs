@@ -10,7 +10,7 @@ mod command_test;
 use crate::logger;
 use crate::toolchain;
 use crate::types::{CommandSpec, Step};
-use ci_info;
+use envmnt;
 use run_script;
 use run_script::{ScriptError, ScriptOptions};
 use std::io;
@@ -89,7 +89,7 @@ fn should_print_commands_by_default() -> bool {
         // if log level defaults to not printing the script commands
         // we also check if we are running in a CI env.
         // Users will not see the commands while CI builds will have the commands printed out.
-        ci_info::is_ci()
+        envmnt::is("CARGO_MAKE_CI")
     }
 }
 

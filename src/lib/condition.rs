@@ -14,19 +14,21 @@ use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::is_newer;
 use envmnt;
+use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::path::Path;
 
-fn validate_env(condition: &TaskCondition) -> bool {
-    let env = condition.env.clone();
-
+fn validate_env_map(env: Option<IndexMap<String, String>>, equal: bool) -> bool {
     match env {
         Some(env_vars) => {
             let mut all_valid = true;
 
             for (key, current_value) in env_vars.iter() {
-                if !envmnt::is_equal(key, current_value) {
+                if equal && !envmnt::is_equal(key, current_value) {
+                    all_valid = false;
+                    break;
+                } else if !equal && !envmnt::contains_ignore_case(key, current_value) {
                     all_valid = false;
                     break;
                 }
@@ -36,6 +38,14 @@ fn validate_env(condition: &TaskCondition) -> bool {
         }
         None => true,
     }
+}
+
+fn validate_env(condition: &TaskCondition) -> bool {
+    validate_env_map(condition.env.clone(), true)
+}
+
+fn validate_env_contains(condition: &TaskCondition) -> bool {
+    validate_env_map(condition.env_contains.clone(), false)
 }
 
 fn validate_env_set(condition: &TaskCondition) -> bool {
@@ -272,6 +282,7 @@ fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) ->
                 && validate_env_not_set(&condition_struct)
                 && validate_env_bool(&condition_struct, true)
                 && validate_env_bool(&condition_struct, false)
+                && validate_env_contains(&condition_struct)
                 && validate_rust_version(&condition_struct)
                 && validate_files_exist(&condition_struct)
                 && validate_files_not_exist(&condition_struct)

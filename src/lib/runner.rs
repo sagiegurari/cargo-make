@@ -313,7 +313,14 @@ fn run_task(flow_info: &FlowInfo, step: &Step) {
             };
         }
     } else {
-        info!("Skipping Task: {}", &step.name);
+        let fail_message = match step.config.condition {
+            Some(ref condition) => match condition.fail_message {
+                Some(ref value) => value.to_string(),
+                None => "".to_string(),
+            },
+            None => "".to_string(),
+        };
+        info!("Skipping Task: {} {}", &step.name, &fail_message);
     }
 }
 
