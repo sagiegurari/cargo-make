@@ -393,6 +393,15 @@ pub struct EnvValueUnset {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env value provided by decoding other values
+pub struct EnvValueConditioned {
+    /// The value to set (can be an env expression)
+    pub value: String,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
 pub enum EnvValue {
@@ -406,6 +415,8 @@ pub enum EnvValue {
     Script(EnvValueScript),
     /// Env decoding info
     Decode(EnvValueDecode),
+    /// Conditional env value
+    Conditional(EnvValueConditioned),
     /// Profile env
     Profile(IndexMap<String, EnvValue>),
 }

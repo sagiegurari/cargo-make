@@ -2,6 +2,7 @@
 
 ### v0.24.3
 
+* Add conditional validation support for environment variables #344
 * Upgrading run_script crate
 
 ### v0.24.2 (2019-12-13)

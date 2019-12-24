@@ -10,10 +10,11 @@ pub(crate) mod crateinfo;
 mod mod_test;
 
 use crate::command;
+use crate::condition;
 use crate::profile;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript,
-    PackageInfo, Step, Task, Workspace,
+    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
+    EnvValueScript, PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -106,6 +107,19 @@ fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
     evaluate_and_set_env(&key, &mapped_value);
 }
 
+fn set_env_for_conditional_value(key: &str, conditional_value: &EnvValueConditioned) {
+    let valid = match conditional_value.condition {
+        Some(ref condition) => condition::validate_conditions_without_context(condition.clone()),
+        None => true,
+    };
+
+    if valid {
+        let value = expand_value(&conditional_value.value);
+
+        evaluate_and_set_env(&key, &value);
+    }
+}
+
 fn set_env_for_profile(
     profile_name: &str,
     sub_env: &IndexMap<String, EnvValue>,
@@ -151,6 +165,9 @@ fn set_env_for_config(
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
+            EnvValue::Conditional(ref conditioned_value) => {
+                set_env_for_conditional_value(&key, conditioned_value)
+            }
             EnvValue::Profile(ref sub_env) => {
                 if allow_sub_env {
                     set_env_for_profile(&key, sub_env, additional_profiles)

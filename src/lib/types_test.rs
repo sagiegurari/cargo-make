@@ -815,6 +815,54 @@ fn env_value_deserialize_decode() {
 }
 
 #[test]
+fn env_value_deserialize_conditional_env_value_no_condition() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { value = "value" }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Conditional(value) => {
+                assert_eq!(value.value, "value");
+                assert!(value.condition.is_none());
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_conditional_env_value_with_condition() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { value = "value", condition = {} }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Conditional(value) => {
+                assert_eq!(value.value, "value");
+                assert!(value.condition.is_some());
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
 fn env_value_deserialize_profile() {
     let config: ExternalConfig = toml::from_str(
         r#"

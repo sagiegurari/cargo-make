@@ -1088,6 +1088,8 @@ COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
 TO_UNSET = { unset = true }
+PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
+OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
 
 # profile based environment override
 [env.development]
@@ -1105,6 +1107,7 @@ Environment variables can be defined as:
 * Key and output of a script - ```EVALUATED_VAR = { script = ["echo SOME VALUE"] }```
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
+* Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
 To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>

@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task};
+use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task, TaskCondition};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
@@ -249,6 +249,86 @@ fn set_env_for_decode_info_expressions() {
 }
 
 #[test]
+fn set_env_for_conditional_value_no_condition() {
+    envmnt::remove("ENV_CONDITIONAL_NO_CONDITION");
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: None,
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_NO_CONDITION", &info);
+
+    assert!(envmnt::is_equal(
+        "ENV_CONDITIONAL_NO_CONDITION",
+        "test value"
+    ));
+}
+
+#[test]
+fn set_env_for_conditional_value_condition_true() {
+    envmnt::remove("ENV_CONDITIONAL_CONDITION_TRUE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["ENV_CONDITIONAL_CONDITION_TRUE".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(condition),
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_CONDITION_TRUE", &info);
+
+    assert!(envmnt::is_equal(
+        "ENV_CONDITIONAL_CONDITION_TRUE",
+        "test value"
+    ));
+}
+
+#[test]
+fn set_env_for_conditional_value_condition_false() {
+    envmnt::remove("ENV_CONDITIONAL_CONDITION_FALSE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["ENV_CONDITIONAL_CONDITION_FALSE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(condition),
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_CONDITION_FALSE", &info);
+
+    assert!(!envmnt::exists("ENV_CONDITIONAL_CONDITION_FALSE"));
+}
+
+#[test]
 fn set_env_for_profile_none_not_found() {
     let mut env = IndexMap::new();
     env.insert(
@@ -309,6 +389,44 @@ fn set_env_for_config_unset() {
     set_env_for_config(env, None, true);
 
     assert!(!envmnt::exists("set_env_for_config_unset"));
+}
+
+#[test]
+fn set_env_for_config_conditional() {
+    envmnt::remove("set_env_for_config_conditional");
+    assert!(!envmnt::exists("set_env_for_config_conditional"));
+
+    let conditional = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: Some(vec!["set_env_for_config_conditional".to_string()]),
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+        }),
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "set_env_for_config_conditional".to_string(),
+        EnvValue::Conditional(conditional),
+    );
+
+    set_env_for_config(env, None, true);
+
+    assert!(envmnt::is_equal(
+        "set_env_for_config_conditional",
+        "test value"
+    ));
 }
 
 #[test]
