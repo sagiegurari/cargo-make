@@ -47,7 +47,8 @@ matrix:
     rust: stable
     os: windows
     script:
-      - cargo make zip-release-ci-flow --env TARGET=stable-x86_64-pc-windows-msvc
+      - rustc -Z unstable-options --print target-spec-json | grep llvm-target
+      - cargo make zip-release-ci-flow --env TARGET=x86_64-pc-windows-msvc
   - env: DEPLOY=1
     rust: stable
     os: linux
