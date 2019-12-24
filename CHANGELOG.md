@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.24.3
+
+* Upgrading run_script crate
+
 ### v0.24.2 (2019-12-13)
 
 * New env_contains condition #335
