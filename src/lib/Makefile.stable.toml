@@ -296,6 +296,26 @@ dependencies = [
     "copy-apidocs"
 ]
 
+[tasks.pre-workspace-docs]
+category = "Documentation"
+
+[tasks.workspace-docs]
+description = "Generate workspace level rust documentation."
+category = "Documentation"
+
+[tasks.post-workspace-docs]
+category = "Documentation"
+
+[tasks.workspace-docs-flow]
+description = "Generate workspace level rust documentation."
+category = "Documentation"
+workspace = false
+dependencies = [
+    "pre-workspace-docs",
+    "workspace-docs",
+    "post-workspace-docs"
+]
+
 [tasks.pre-build]
 category = "Build"
 
@@ -1161,6 +1181,14 @@ dependencies = [
 description = "Full sanity testing flow."
 category = "Build"
 workspace = false
+dependencies = [
+    "workspace-member-build-flow",
+    "workspace-docs-flow",
+]
+
+[tasks.workspace-member-build-flow]
+category = "Build"
+private = true
 env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}build-flow" }
 run_task = "do-on-members"
 
