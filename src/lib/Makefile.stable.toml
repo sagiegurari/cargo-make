@@ -193,8 +193,37 @@ category = "Cleanup"
 [tasks.clean-apidocs]
 description = "Delete API docs."
 category = "Documentation"
-command = "rm"
-args = ["-Rf", "./docs/api"]
+workspace = false
+run_task = [
+    { name = "workspace-clean-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-clean-apidocs" }
+]
+
+[tasks.crate-clean-apidocs]
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKING_DIRECTORY}" }
+run_task = "do-clean-apidocs"
+
+[tasks.workspace-clean-apidocs]
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}", CARGO_MAKE_DOCS_SUB_FOLDER = "${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}" }
+run_task = "do-clean-apidocs"
+
+[tasks.do-clean-apidocs]
+category = "Documentation"
+private = true
+script_runner = "@shell"
+script = [
+'''
+DOCS_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+
+echo Docs Directory: ${DOCS_DIRECTORY}
+
+rm -Rf ${DOCS_DIRECTORY}
+'''
+]
 
 [tasks.clean]
 description = "Runs the cargo clean command."
