@@ -3,6 +3,7 @@
 ### v0.24.3
 
 * Add conditional validation support for environment variables #344
+* New workspace publish flow #347
 * Upgrading run_script crate
 
 ### v0.24.2 (2019-12-13)

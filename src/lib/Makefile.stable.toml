@@ -172,10 +172,7 @@ dependencies = [
     "audit",
     "post-audit",
     "outdated-flow",
-    "pre-docs",
-    "docs",
-    "post-docs",
-    "copy-apidocs",
+    "docs-flow",
     "end-build-flow"
 ]
 
@@ -211,9 +208,27 @@ category = "Cleanup"
 [tasks.delete-lock]
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
+run_task = [
+    { name = "workspace-delete-lock", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-delete-lock" }
+]
+
+[tasks.crate-delete-lock]
+description = "Deletes the Cargo.lock file."
+category = "Cleanup"
+private = true
 script_runner = "@shell"
 script = [
     "rm -f ./Cargo.lock"
+]
+
+[tasks.workspace-delete-lock]
+description = "Deletes the Cargo.lock file."
+category = "Cleanup"
+private = true
+script_runner = "@shell"
+script = [
+    "rm -f ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock"
 ]
 
 [tasks.upgrade-dependencies]
@@ -270,6 +285,16 @@ args = ["doc", "--no-deps"]
 
 [tasks.post-docs]
 category = "Documentation"
+
+[tasks.docs-flow]
+description = "Generate rust documentation."
+category = "Documentation"
+dependencies = [
+    "pre-docs",
+    "docs",
+    "post-docs",
+    "copy-apidocs"
+]
 
 [tasks.pre-build]
 category = "Build"
@@ -541,10 +566,42 @@ run_task = "clippy"
 [tasks.copy-apidocs]
 description = "Copies the generated documentation to the docs/api directory."
 category = "Documentation"
+workspace = false
+run_task = [
+    { name = "workspace-copy-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-copy-apidocs" }
+]
+
+[tasks.crate-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKING_DIRECTORY}" }
+run_task = "do-copy-apidocs"
+
+[tasks.workspace-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}", CARGO_MAKE_DOCS_SUB_FOLDER = "${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}" }
+run_task = "do-copy-apidocs"
+
+[tasks.do-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
 script_runner = "@shell"
 script = [
-    "mkdir -p ./docs/api",
-    "mv ./target/doc/* ./docs/api"
+'''
+SOURCE_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/target/doc
+TARGET_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+
+echo Source Directory: ${SOURCE_DIRECTORY}
+echo Target Directory: ${TARGET_DIRECTORY}
+
+mkdir -p ${TARGET_DIRECTORY}
+mv ${SOURCE_DIRECTORY}/* ${TARGET_DIRECTORY}
+'''
 ]
 
 [tasks.end-build-flow]
@@ -1061,11 +1118,15 @@ script = [
 [tasks.build-publish-flow]
 description = "Runs full sanity, generates github release and publishes the crate."
 category = "Publish"
+workspace = false
 condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
 env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = true }
-run_task = "build-publish-flow-no-validation"
+run_task = [
+    { name = "workspace-build-publish-flow", condition = { env_true = ["CARGO_MAKE_CRATE_IS_WORKSPACE"] } },
+    { name = "crate-build-publish-flow" }
+]
 
-[tasks.build-publish-flow-no-validation]
+[tasks.crate-build-publish-flow]
 private = true
 dependencies = [
     "delete-lock",
@@ -1080,6 +1141,35 @@ dependencies = [
     "upload-artifacts",
     "git-pull"
 ]
+
+[tasks.workspace-build-publish-flow]
+private = true
+dependencies = [
+    "delete-lock",
+    "workspace-build-flow",
+    "git-add",
+    "git-status",
+    "git-commit-message",
+    "git-push",
+    "git-delete-merged-branches",
+    "github-publish-custom-name",
+    "workspace-publish-flow",
+    "git-pull"
+]
+
+[tasks.workspace-build-flow]
+description = "Full sanity testing flow."
+category = "Build"
+workspace = false
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}build-flow" }
+run_task = "do-on-members"
+
+[tasks.workspace-publish-flow]
+description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
+category = "Publish"
+workspace = false
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow" }
+run_task = "do-on-members"
 
 [tasks.diff-files]
 description = "Run diff on two provided files."
