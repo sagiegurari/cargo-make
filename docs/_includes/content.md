@@ -311,6 +311,7 @@ The script attribute may hold non OS scripts, for example rust code to be compil
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
 The following runners are currently supported:
 
+* **@duckscript** - Executes the defined duckscript code. See [example](#usage-task-command-script-task-exampleduckscript)
 * **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
 * **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
@@ -603,6 +604,29 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 
 File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
+
+<a name="usage-task-command-script-task-exampleduckscript"></a>
+#### Duckscript
+[Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
+[Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make
+environment variables and current working directory from inside the script.<br>
+This allows a really powerful integration with cargo-make.
+
+```toml
+[tasks.duckscript-example]
+script_runner = "@duckscript"
+script = [
+'''
+task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
+echo The currently running cargo make task is: ${task_name}
+cd .. # this changes cargo-make current working directory
+pwd
+set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
+'''
+]
+```
+
+Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
