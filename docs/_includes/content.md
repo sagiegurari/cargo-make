@@ -2396,7 +2396,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 <a name="usage-ci-appveyor"></a>
@@ -2420,7 +2420,7 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 <a name="usage-ci-gitlab"></a>
@@ -2442,7 +2442,7 @@ build: false
 test:cargo:
   script:
   - cargo install --debug cargo-make
-  - cargo make --no-workspace workspace-ci-flow
+  - cargo make workspace-ci-flow
 ```
 
 To upload your coverage information to codecov, you'll need to go to repo settings for your GitLab repo,
@@ -2501,7 +2501,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
     command: cargo install --debug cargo-make
 - run:
     name: ci flow
-    command: cargo make --no-workspace workspace-ci-flow
+    command: cargo make workspace-ci-flow
 ```
 
 <a name="usage-ci-azure-pipelines"></a>
@@ -2520,7 +2520,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 - script: cargo install --debug cargo-make
   displayName: install cargo-make
-- script: cargo make --no-workspace workspace-ci-flow
+- script: cargo make workspace-ci-flow
   displayName: ci flow
 ```
 
