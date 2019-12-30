@@ -41,8 +41,8 @@ ci_info = "^0.9"
 clap = "^2"
 colored = "^1"
 dirs = "^2"
-duckscript = { path = "../duckscript/duckscript" }
-duckscriptsdk = { path = "../duckscript/duckscript_sdk" }
+duckscript = "^0.1"
+duckscriptsdk = "^0.1"
 envmnt = "^0.7.4"
 fern = "^0.5"
 git_info = "^0.1.1"
