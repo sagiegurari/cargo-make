@@ -9,6 +9,7 @@
         * [Sub Task](#usage-task-command-script-task-examplesubtask)
         * [Command](#usage-task-command-script-task-examplecommand)
         * [Script](#usage-task-command-script-task-examplescript)
+        * [Duckscript](#usage-task-command-script-task-exampleduckscript)
         * [Rust Code](#usage-task-command-script-task-examplerust)
         * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
         * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
