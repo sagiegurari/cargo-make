@@ -1268,3 +1268,71 @@ install_crate = { rustup_component_name = "rust-src" }
 [tasks.install-rls]
 category = "Tools"
 install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
+
+[tasks.zip-release-ci-flow]
+description = "Compiles the binary in release mode and zips it up"
+category = "CI"
+condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = [ "CARGO_MAKE_CI" ] }
+dependencies = [
+  "clean",
+  "setup-release-build-env",
+  "build-release-for-target",
+  "zip-release-binary-for-target"
+]
+
+[tasks.setup-release-build-env]
+description = "Sets up any non-rust dependencies in the build environment"
+category = "CI"
+linux_alias = "setup-musl"
+
+[tasks.setup-musl]
+description = "Sets up a musl build environment"
+category = "CI"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
+env = { "OPENSSL_DIR" = "${HOME}/openssl-musl", "OPENSSL_VERSION" = "1.0.2l" }
+script = [
+'''
+rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
+curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz | tar xzf -
+cd openssl-$OPENSSL_VERSION
+CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
+make -j"$(nproc)"
+make install
+'''
+]
+
+[tasks.build-release-for-target]
+description = "Makes a release build for a given target"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ] }
+command = "cargo"
+args = [
+  "build",
+  "--release",
+  "--all-features",
+  "--target",
+  "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
+]
+
+[tasks.zip-release-binary-for-target]
+description = "Zips up the release binary, README, and license(s)"
+category = "Publish"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ], env_true = [ "CARGO_MAKE_CI" ] }
+env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
+script_runner = "@shell"
+script = [
+  "mkdir ${OUTPUT_NAME}",
+  "cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_PROJECT_NAME} ${OUTPUT_NAME}/",
+  "cp README.md LICENSE* ${OUTPUT_NAME}/",
+  "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
+]
+
+[tasks.zip-release-binary-for-target.windows]
+script = [
+  "mkdir ${OUTPUT_NAME}",
+  "dir target",
+  "powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_PROJECT_NAME}.exe -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path README.md -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}",
+  "dir ${OUTPUT_NAME}",
+  "powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip",
+]
