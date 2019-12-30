@@ -1710,6 +1710,10 @@ You will have to invoke this as a composite flow:
 cargo make workspace-task --no-workspace
 ```
 
+In addition you can also state the opposite, meaning which members to include via **CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS** environment variable.<br>
+It follows the same rules as the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable.<br>
+If you define both, the included members will be a subset of the non excluded members, meaning both filters will apply.
+
 <a name="usage-toochain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
