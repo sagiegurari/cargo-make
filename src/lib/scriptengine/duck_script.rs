@@ -19,9 +19,9 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
     for argument in cli_arguments {
         index = index + 1;
 
-        let mut key = String::from("$");
-        key.push_str(&index.to_string());
-        context.variables.insert(key, argument.to_string());
+        context
+            .variables
+            .insert(index.to_string(), argument.to_string());
     }
 
     match duckscriptsdk::load(&mut context.commands) {

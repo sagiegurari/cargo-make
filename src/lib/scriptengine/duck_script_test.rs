@@ -19,7 +19,7 @@ fn execute_duckscript_error_no_validate() {
 #[test]
 fn execute_duckscript_cli_arguments() {
     execute(
-        &vec!["get_env ${$1}".to_string()],
+        &vec!["get_env ${1}".to_string()],
         &vec!["CARGO_MAKE".to_string()],
         true,
     );
@@ -29,7 +29,7 @@ fn execute_duckscript_cli_arguments() {
 #[should_panic]
 fn execute_shell_cli_arguments_error() {
     execute(
-        &vec!["cd ${$1}".to_string()],
+        &vec!["cd ${1}".to_string()],
         &vec!["SOME_BAD_DIRECTORY_PATH".to_string()],
         true,
     );
