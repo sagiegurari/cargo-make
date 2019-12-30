@@ -2737,6 +2737,7 @@ fn config_section_new() {
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
     assert!(config.default_to_workspace.is_none());
+    assert!(config.main_project_member.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());

@@ -1338,3 +1338,78 @@ fn set_current_task_meta_info_env_mixed() {
     assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST1"));
     assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST2"));
 }
+
+#[test]
+fn get_base_directory_name_valid() {
+    let name = get_base_directory_name();
+
+    assert_eq!(name.unwrap(), "cargo-make");
+}
+
+#[test]
+fn setup_env_for_project_crate() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let crate_info = crateinfo::load();
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_env_for_project(&config, &crate_info);
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "cargo-make"));
+    assert!(envmnt::is_equal(
+        "CARGO_MAKE_PROJECT_VERSION",
+        env!("CARGO_PKG_VERSION")
+    ));
+}
+
+#[test]
+fn setup_env_for_project_workspace_with_main_crate() {
+    let mut config_section = ConfigSection::new();
+    config_section.main_project_member = Some("member2".to_string());
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_cwd(Some("src/lib/test/workspace1"));
+    let crate_info = crateinfo::load();
+    setup_env_for_project(&config, &crate_info);
+    setup_cwd(Some("../../../.."));
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_VERSION", "5.4.3"));
+}
+
+#[test]
+fn setup_env_for_project_workspace_no_main_crate() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_cwd(Some("src/lib/test/workspace1"));
+    let crate_info = crateinfo::load();
+    setup_env_for_project(&config, &crate_info);
+    setup_cwd(Some("../../../.."));
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));
+    assert!(!envmnt::exists("CARGO_MAKE_PROJECT_VERSION"));
+}

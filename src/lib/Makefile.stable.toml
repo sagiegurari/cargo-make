@@ -770,6 +770,20 @@ echo "*************************************"
 '''
 ]
 
+[tasks.print-project-env]
+category = "Tools"
+script_runner = "@shell"
+script = [
+'''
+set +x
+echo "*************************************"
+echo "Project:"
+echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
+echo "    Version: ${CARGO_MAKE_PROJECT_VERSION}"
+echo "*************************************"
+'''
+]
+
 [tasks.print-ci-env]
 category = "Tools"
 script_runner = "@shell"
@@ -862,6 +876,7 @@ echo "*************************************"
 category = "Tools"
 dependencies = [
     "print-cargo-make-env",
+    "print-project-env",
     "print-ci-env",
     "print-git-env",
     "print-rust-env",
@@ -1115,7 +1130,7 @@ description = "Uploads the binary artifact from the cargo package/publish output
 category = "Publish"
 
 [tasks.bintray-upload.linux]
-condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME" ] }
+condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME", "CARGO_MAKE_CRATE_NAME", "CARGO_MAKE_CRATE_VERSION" ] }
 script = [
     "curl -T \"./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}\" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H \"X-Bintray-Package:${BINTRAY_PACKAGE_NAME}\" -H \"X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}\" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1",
     "curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish"
@@ -1156,10 +1171,10 @@ script = [
 # Creates a new github release.
 description = "Creates a new github release using curl."
 category = "Publish"
-condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
+condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
 script = [
 '''
-    API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_CRATE_VERSION} ${CARGO_MAKE_CRATE_NAME} ${CARGO_MAKE_CRATE_VERSION})
+    API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_PROJECT_VERSION} ${CARGO_MAKE_PROJECT_NAME} ${CARGO_MAKE_PROJECT_VERSION})
     curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}
 '''
 ]

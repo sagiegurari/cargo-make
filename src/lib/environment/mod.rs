@@ -386,6 +386,69 @@ fn setup_env_for_ci() -> CiInfo {
     ci_info_struct
 }
 
+fn get_base_directory_name() -> Option<String> {
+    match env::current_dir() {
+        Ok(path) => match path.file_name() {
+            Some(name) => Some(name.to_string_lossy().into_owned()),
+            None => None,
+        },
+        _ => None,
+    }
+}
+
+fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
+    let project_name = match crate_info.package {
+        Some(ref package) => match package.name {
+            Some(ref name) => Some(name.to_string()),
+            None => get_base_directory_name(),
+        },
+        None => get_base_directory_name(),
+    };
+
+    if project_name.is_some() {
+        envmnt::set_optional("CARGO_MAKE_PROJECT_NAME", &project_name);
+    } else {
+        envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    }
+
+    let project_version = match crate_info.workspace {
+        Some(_) => {
+            let main_member = match config.config.main_project_member {
+                Some(ref name) => Some(name.to_string()),
+                None => match project_name {
+                    Some(name) => Some(name),
+                    None => None,
+                },
+            };
+
+            match main_member {
+                Some(member) => {
+                    let mut path = PathBuf::new();
+                    path.push(member);
+                    path.push("Cargo.toml");
+                    let member_crate_info = crateinfo::load_from(path);
+
+                    match member_crate_info.package {
+                        Some(package) => package.version,
+                        None => None,
+                    }
+                }
+                None => None,
+            }
+        }
+        None => match crate_info.package {
+            Some(ref package) => package.version.clone(),
+            None => None,
+        },
+    };
+
+    if project_version.is_some() {
+        envmnt::set_optional("CARGO_MAKE_PROJECT_VERSION", &project_version);
+    } else {
+        envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+    }
+}
+
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
     envmnt::set_bool("CARGO_MAKE", true);
@@ -410,6 +473,9 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
 
     // load CI info
     let ci_info_struct = setup_env_for_ci();
+
+    // setup project info
+    setup_env_for_project(config, &crate_info);
 
     // load env vars
     initialize_env(config);

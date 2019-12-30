@@ -1641,6 +1641,8 @@ pub struct ConfigSection {
     pub min_version: Option<String>,
     /// The task.workspace default value
     pub default_to_workspace: Option<bool>,
+    /// The project information member (used by workspaces)
+    pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -1663,6 +1665,7 @@ impl ConfigSection {
             additional_profiles: None,
             min_version: None,
             default_to_workspace: None,
+            main_project_member: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,

@@ -4,6 +4,7 @@
 
 * Add support for duckscript #348
 * Add conditional validation support for environment variables #344
+* New CARGO_MAKE_PROJECT_NAME and CARGO_MAKE_PROJECT_VERSION environment variables #349
 * New workspace publish flow #347
 * Upgrading run_script crate
 
