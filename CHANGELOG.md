@@ -2,7 +2,7 @@
 
 ### v0.24.3
 
-* Add support for duckscript
+* Add support for duckscript #348
 * Add conditional validation support for environment variables #344
 * New workspace publish flow #347
 * Upgrading run_script crate

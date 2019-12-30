@@ -15,6 +15,7 @@
         * [Sub Task](#usage-task-command-script-task-examplesubtask)
         * [Command](#usage-task-command-script-task-examplecommand)
         * [Script](#usage-task-command-script-task-examplescript)
+        * [Duckscript](#usage-task-command-script-task-exampleduckscript)
         * [Rust Code](#usage-task-command-script-task-examplerust)
         * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
         * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
@@ -406,6 +407,7 @@ The script attribute may hold non OS scripts, for example rust code to be compil
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
 The following runners are currently supported:
 
+* **@duckscript** - Executes the defined duckscript code. See [example](#usage-task-command-script-task-exampleduckscript)
 * **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
 * **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
@@ -698,6 +700,29 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 
 File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
+
+<a name="usage-task-command-script-task-exampleduckscript"></a>
+#### Duckscript
+[Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
+[Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make
+environment variables and current working directory from inside the script.<br>
+This allows a really powerful integration with cargo-make.
+
+```toml
+[tasks.duckscript-example]
+script_runner = "@duckscript"
+script = [
+'''
+task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
+echo The currently running cargo make task is: ${task_name}
+cd .. # this changes cargo-make current working directory
+pwd
+set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
+'''
+]
+```
+
+Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
@@ -2491,7 +2516,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-appveyor"></a>
@@ -2515,7 +2540,7 @@ build: false
 
 test_script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-gitlab"></a>
@@ -2537,7 +2562,7 @@ build: false
 test:cargo:
   script:
   - cargo install --debug cargo-make
-  - cargo make workspace-ci-flow
+  - cargo make --no-workspace workspace-ci-flow
 ```
 
 To upload your coverage information to codecov, you'll need to go to repo settings for your GitLab repo,
@@ -2596,7 +2621,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
     command: cargo install --debug cargo-make
 - run:
     name: ci flow
-    command: cargo make workspace-ci-flow
+    command: cargo make --no-workspace workspace-ci-flow
 ```
 
 <a name="usage-ci-azure-pipelines"></a>
@@ -2615,7 +2640,7 @@ When working with workspaces, in order to run the ci-flow for each member and pa
 ```yaml
 - script: cargo install --debug cargo-make
   displayName: install cargo-make
-- script: cargo make workspace-ci-flow
+- script: cargo make --no-workspace workspace-ci-flow
   displayName: ci flow
 ```
 
