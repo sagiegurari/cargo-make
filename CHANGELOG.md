@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.24.3
+### v0.24.3 (2019-12-31)
 
 * Add support for duckscript #348
 * Add conditional validation support for environment variables #344

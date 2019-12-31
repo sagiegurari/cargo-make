@@ -1859,6 +1859,22 @@
 <span id="1859">1859</span>
 <span id="1860">1860</span>
 <span id="1861">1861</span>
+<span id="1862">1862</span>
+<span id="1863">1863</span>
+<span id="1864">1864</span>
+<span id="1865">1865</span>
+<span id="1866">1866</span>
+<span id="1867">1867</span>
+<span id="1868">1868</span>
+<span id="1869">1869</span>
+<span id="1870">1870</span>
+<span id="1871">1871</span>
+<span id="1872">1872</span>
+<span id="1873">1873</span>
+<span id="1874">1874</span>
+<span id="1875">1875</span>
+<span id="1876">1876</span>
+<span id="1877">1877</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2255,6 +2271,15 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Env value provided by decoding other values</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueConditioned</span> {
+    <span class="doccomment">/// The value to set (can be an env expression)</span>
+    <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The condition to validate</span>
+    <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
 <span class="doccomment">/// Holds the env value or script</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">EnvValue</span> {
@@ -2268,6 +2293,8 @@
     <span class="ident">Script</span>(<span class="ident">EnvValueScript</span>),
     <span class="doccomment">/// Env decoding info</span>
     <span class="ident">Decode</span>(<span class="ident">EnvValueDecode</span>),
+    <span class="doccomment">/// Conditional env value</span>
+    <span class="ident">Conditional</span>(<span class="ident">EnvValueConditioned</span>),
     <span class="doccomment">/// Profile env</span>
     <span class="ident">Profile</span>(<span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>),
 }
@@ -2546,6 +2573,8 @@
     <span class="kw">pub</span> <span class="ident">ignore_pattern</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Do not use .gitignore files</span>
     <span class="kw">pub</span> <span class="ident">no_git_ignore</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Select which files/folders to watch</span>
+    <span class="kw">pub</span> <span class="ident">watch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">WatchOptions</span> {
@@ -3492,6 +3521,8 @@
     <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task.workspace default value</span>
     <span class="kw">pub</span> <span class="ident">default_to_workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The project information member (used by workspaces)</span>
+    <span class="kw">pub</span> <span class="ident">main_project_member</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
     <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Linux (takes precedence over load_script)</span>
@@ -3514,6 +3545,7 @@
             <span class="ident">additional_profiles</span>: <span class="prelude-val">None</span>,
             <span class="ident">min_version</span>: <span class="prelude-val">None</span>,
             <span class="ident">default_to_workspace</span>: <span class="prelude-val">None</span>,
+            <span class="ident">main_project_member</span>: <span class="prelude-val">None</span>,
             <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">linux_load_script</span>: <span class="prelude-val">None</span>,
             <span class="ident">windows_load_script</span>: <span class="prelude-val">None</span>,

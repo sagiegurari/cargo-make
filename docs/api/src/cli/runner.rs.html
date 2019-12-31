@@ -519,6 +519,11 @@
 <span id="519">519</span>
 <span id="520">520</span>
 <span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -872,7 +877,7 @@
             <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">watch_options</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">watch_version</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">version</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
-                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="string">&quot;7.2.1&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// current version</span>
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="string">&quot;7.3.0&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// current version</span>
                 };
                 <span class="ident">task_config</span>.<span class="ident">install_crate_args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;--version&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">watch_version</span>]);
 
@@ -896,6 +901,11 @@
                             <span class="ident">watch_args</span>.<span class="ident">push</span>(<span class="string">&quot;--no-gitignore&quot;</span>.<span class="ident">to_string</span>());
                         }
                     }
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (),
+                };
+
+                <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">watch</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">watch_args</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;-w&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">value</span>]),
                     <span class="kw">_</span> <span class="op">=&gt;</span> (),
                 };
             }
