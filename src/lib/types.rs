@@ -393,6 +393,15 @@ pub struct EnvValueUnset {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env value provided by decoding other values
+pub struct EnvValueConditioned {
+    /// The value to set (can be an env expression)
+    pub value: String,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Holds the env value or script
 pub enum EnvValue {
@@ -406,6 +415,8 @@ pub enum EnvValue {
     Script(EnvValueScript),
     /// Env decoding info
     Decode(EnvValueDecode),
+    /// Conditional env value
+    Conditional(EnvValueConditioned),
     /// Profile env
     Profile(IndexMap<String, EnvValue>),
 }
@@ -684,6 +695,8 @@ pub struct WatchOptions {
     pub ignore_pattern: Option<String>,
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
+    /// Select which files/folders to watch
+    pub watch: Option<String>,
 }
 
 impl PartialEq for WatchOptions {
@@ -1630,6 +1643,8 @@ pub struct ConfigSection {
     pub min_version: Option<String>,
     /// The task.workspace default value
     pub default_to_workspace: Option<bool>,
+    /// The project information member (used by workspaces)
+    pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
     pub load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
@@ -1652,6 +1667,7 @@ impl ConfigSection {
             additional_profiles: None,
             min_version: None,
             default_to_workspace: None,
+            main_project_member: None,
             load_script: None,
             linux_load_script: None,
             windows_load_script: None,

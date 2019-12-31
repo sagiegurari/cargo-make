@@ -11,7 +11,7 @@ use crate::types::{CrateDependency, CrateInfo};
 use glob::glob;
 use std::fs::File;
 use std::io::Read;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use toml;
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
@@ -158,9 +158,10 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
 
 /// Loads the crate info based on the Cargo.toml found in the current working directory.
 pub(crate) fn load() -> CrateInfo {
-    // load crate info
-    let file_path = Path::new("Cargo.toml");
+    load_from(Path::new("Cargo.toml").to_path_buf())
+}
 
+pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     if file_path.exists() {
         debug!("Opening file: {:#?}", &file_path);
         let mut file = match File::open(&file_path) {

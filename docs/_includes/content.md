@@ -311,6 +311,7 @@ The script attribute may hold non OS scripts, for example rust code to be compil
 In order to use non OS script runners, you must define the special script_runner with the **@** prefix.<br>
 The following runners are currently supported:
 
+* **@duckscript** - Executes the defined duckscript code. See [example](#usage-task-command-script-task-exampleduckscript)
 * **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
 * **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
@@ -603,6 +604,29 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 
 File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
+
+<a name="usage-task-command-script-task-exampleduckscript"></a>
+#### Duckscript
+[Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
+[Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make
+environment variables and current working directory from inside the script.<br>
+This allows a really powerful integration with cargo-make.
+
+```toml
+[tasks.duckscript-example]
+script_runner = "@duckscript"
+script = [
+'''
+task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
+echo The currently running cargo make task is: ${task_name}
+cd .. # this changes cargo-make current working directory
+pwd
+set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
+'''
+]
+```
+
+Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
@@ -1088,6 +1112,8 @@ COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
 TO_UNSET = { unset = true }
+PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
+OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
 
 # profile based environment override
 [env.development]
@@ -1105,6 +1131,7 @@ Environment variables can be defined as:
 * Key and output of a script - ```EVALUATED_VAR = { script = ["echo SOME VALUE"] }```
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
+* Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
 To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
@@ -1215,6 +1242,8 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
+* **CARGO_MAKE_PROJECT_NAME** - For standalone crates, this will be the same as CARGO_MAKE_CRATE_NAME and for workspace it will default to the working directory basename.
+* **CARGO_MAKE_PROJECT_VERSION** For standalone crates, this will be the same as CARGO_MAKE_CRATE_VERSION and for workspaces it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
 * **CARGO_MAKE_CARGO_HOME** - The path to CARGO_HOME as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
 * **CARGO_MAKE_CARGO_PROFILE** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **CARGO_MAKE_PROFILE** (unmapped value will default to CARGO_MAKE_PROFILE value)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
@@ -1707,6 +1736,10 @@ You will have to invoke this as a composite flow:
 cargo make workspace-task --no-workspace
 ```
 
+In addition you can also state the opposite, meaning which members to include via **CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS** environment variable.<br>
+It follows the same rules as the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable.<br>
+If you define both, the included members will be a subset of the non excluded members, meaning both filters will apply.
+
 <a name="usage-toochain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
@@ -2064,7 +2097,7 @@ You can also fine tune the watch setup (which is based on **cargo-watch**) by pr
 [tasks.watch-args-example]
 command = "echo"
 args = [ "Triggered by watch" ]
-watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*" }
+watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = "./docs/" }
 ```
 
 <a name="usage-functions"></a>

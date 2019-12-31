@@ -39,17 +39,23 @@ matrix:
       - cargo make ci-flow
   # Deploy jobs
   - env: DEPLOY=1
+    rust: stable
     os: osx
     script:
-      - cargo make zip-release-ci-flow --env TARGET=x86_64-apple-darwin
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-apple-darwin
   - env: DEPLOY=1
+    rust: stable
     os: windows
+    before_script:
+      - rustup target add x86_64-pc-windows-msvc
+      - cargo install --debug cargo-make
     script:
-      - cargo make zip-release-ci-flow --env TARGET=x86_64-pc-windows-msvc
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-pc-windows-msvc
   - env: DEPLOY=1
+    rust: stable
     os: linux
     script:
-      - cargo make zip-release-ci-flow --env TARGET=x86_64-unknown-linux-musl
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-unknown-linux-musl
     addons:
       apt:
         packages:

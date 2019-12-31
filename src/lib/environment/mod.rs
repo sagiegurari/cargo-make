@@ -10,10 +10,11 @@ pub(crate) mod crateinfo;
 mod mod_test;
 
 use crate::command;
+use crate::condition;
 use crate::profile;
 use crate::types::{
-    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueDecode, EnvValueScript,
-    PackageInfo, Step, Task, Workspace,
+    CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
+    EnvValueScript, PackageInfo, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -106,6 +107,19 @@ fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
     evaluate_and_set_env(&key, &mapped_value);
 }
 
+fn set_env_for_conditional_value(key: &str, conditional_value: &EnvValueConditioned) {
+    let valid = match conditional_value.condition {
+        Some(ref condition) => condition::validate_conditions_without_context(condition.clone()),
+        None => true,
+    };
+
+    if valid {
+        let value = expand_value(&conditional_value.value);
+
+        evaluate_and_set_env(&key, &value);
+    }
+}
+
 fn set_env_for_profile(
     profile_name: &str,
     sub_env: &IndexMap<String, EnvValue>,
@@ -151,6 +165,9 @@ fn set_env_for_config(
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
+            EnvValue::Conditional(ref conditioned_value) => {
+                set_env_for_conditional_value(&key, conditioned_value)
+            }
             EnvValue::Profile(ref sub_env) => {
                 if allow_sub_env {
                     set_env_for_profile(&key, sub_env, additional_profiles)
@@ -369,6 +386,69 @@ fn setup_env_for_ci() -> CiInfo {
     ci_info_struct
 }
 
+fn get_base_directory_name() -> Option<String> {
+    match env::current_dir() {
+        Ok(path) => match path.file_name() {
+            Some(name) => Some(name.to_string_lossy().into_owned()),
+            None => None,
+        },
+        _ => None,
+    }
+}
+
+fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
+    let project_name = match crate_info.package {
+        Some(ref package) => match package.name {
+            Some(ref name) => Some(name.to_string()),
+            None => get_base_directory_name(),
+        },
+        None => get_base_directory_name(),
+    };
+
+    if project_name.is_some() {
+        envmnt::set_optional("CARGO_MAKE_PROJECT_NAME", &project_name);
+    } else {
+        envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    }
+
+    let project_version = match crate_info.workspace {
+        Some(_) => {
+            let main_member = match config.config.main_project_member {
+                Some(ref name) => Some(name.to_string()),
+                None => match project_name {
+                    Some(name) => Some(name),
+                    None => None,
+                },
+            };
+
+            match main_member {
+                Some(member) => {
+                    let mut path = PathBuf::new();
+                    path.push(member);
+                    path.push("Cargo.toml");
+                    let member_crate_info = crateinfo::load_from(path);
+
+                    match member_crate_info.package {
+                        Some(package) => package.version,
+                        None => None,
+                    }
+                }
+                None => None,
+            }
+        }
+        None => match crate_info.package {
+            Some(ref package) => package.version.clone(),
+            None => None,
+        },
+    };
+
+    if project_version.is_some() {
+        envmnt::set_optional("CARGO_MAKE_PROJECT_VERSION", &project_version);
+    } else {
+        envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+    }
+}
+
 /// Sets up the env before the tasks execution.
 pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
     envmnt::set_bool("CARGO_MAKE", true);
@@ -393,6 +473,9 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
 
     // load CI info
     let ci_info_struct = setup_env_for_ci();
+
+    // setup project info
+    setup_env_for_project(config, &crate_info);
 
     // load env vars
     initialize_env(config);

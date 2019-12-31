@@ -815,6 +815,54 @@ fn env_value_deserialize_decode() {
 }
 
 #[test]
+fn env_value_deserialize_conditional_env_value_no_condition() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { value = "value" }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Conditional(value) => {
+                assert_eq!(value.value, "value");
+                assert!(value.condition.is_none());
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_conditional_env_value_with_condition() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = { value = "value", condition = {} }
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::Conditional(value) => {
+                assert_eq!(value.value, "value");
+                assert!(value.condition.is_some());
+
+                ()
+            }
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
 fn env_value_deserialize_profile() {
     let config: ExternalConfig = toml::from_str(
         r#"
@@ -2689,6 +2737,7 @@ fn config_section_new() {
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
     assert!(config.default_to_workspace.is_none());
+    assert!(config.main_project_member.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());

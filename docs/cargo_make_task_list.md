@@ -10,6 +10,7 @@
 * **init-build-flow** - No Description.
 * **post-build** - No Description.
 * **pre-build** - No Description.
+* **workspace-build-flow** - Full sanity testing flow.
 
 ## CI
 
@@ -33,11 +34,14 @@
 * **pre-unused-dependencies** - No Description.
 * **pre-verify-project** - No Description.
 * **pre-workspace-ci-flow** - No Description.
+* **setup-musl** - Sets up a musl build environment
+* **setup-release-build-env** - Sets up a musl build environment
 * **unused-dependencies** - Checks for unused dependencies.
 * **unused-dependencies-flow** - Checks for unused dependencies.
 * **verify-project** - Runs verify-project cargo plugin.
 * **workspace-ci-flow** - CI task will run CI flow for each member and merge coverage reports
 * **workspace-members-ci** - Runs the ci-flow for every workspace member.
+* **zip-release-ci-flow** - Compiles the binary in release mode and zips it up
 
 ## Cleanup
 
@@ -62,8 +66,13 @@
 * **clean-apidocs** - Delete API docs.
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **docs** - Generate rust documentation.
+* **docs-flow** - Generate rust documentation.
 * **post-docs** - No Description.
+* **post-workspace-docs** - No Description.
 * **pre-docs** - No Description.
+* **pre-workspace-docs** - No Description.
+* **workspace-docs** - Generate workspace level rust documentation.
+* **workspace-docs-flow** - Generate workspace level rust documentation.
 
 ## Git
 
@@ -88,6 +97,10 @@
 * **end** - By default this task is invoked at the end of every cargo-make run.
 * **init** - By default this task is invoked at the start of every cargo-make run.
 
+## No Category
+
+* **build-release-for-target** - Makes a release build for a given target
+
 ## Publish
 
 * **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
@@ -107,6 +120,8 @@
 * **publish** - Runs the cargo publish command.
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray.
+* **workspace-publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
+* **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
 
 ## Test
 
@@ -165,5 +180,6 @@
 * **print-crate-env** - No Description.
 * **print-env-flow** - No Description.
 * **print-git-env** - No Description.
+* **print-project-env** - No Description.
 * **print-rust-env** - No Description.
 

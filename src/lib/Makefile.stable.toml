@@ -10,7 +10,7 @@ additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
-CARGO_MAKE_KCOV_VERSION = "36"
+CARGO_MAKE_KCOV_VERSION = "37"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
@@ -172,10 +172,7 @@ dependencies = [
     "audit",
     "post-audit",
     "outdated-flow",
-    "pre-docs",
-    "docs",
-    "post-docs",
-    "copy-apidocs",
+    "docs-flow",
     "end-build-flow"
 ]
 
@@ -196,8 +193,37 @@ category = "Cleanup"
 [tasks.clean-apidocs]
 description = "Delete API docs."
 category = "Documentation"
-command = "rm"
-args = ["-Rf", "./docs/api"]
+workspace = false
+run_task = [
+    { name = "workspace-clean-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-clean-apidocs" }
+]
+
+[tasks.crate-clean-apidocs]
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKING_DIRECTORY}" }
+run_task = "do-clean-apidocs"
+
+[tasks.workspace-clean-apidocs]
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}", CARGO_MAKE_DOCS_SUB_FOLDER = "${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}" }
+run_task = "do-clean-apidocs"
+
+[tasks.do-clean-apidocs]
+category = "Documentation"
+private = true
+script_runner = "@shell"
+script = [
+'''
+DOCS_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+
+echo Docs Directory: ${DOCS_DIRECTORY}
+
+rm -Rf ${DOCS_DIRECTORY}
+'''
+]
 
 [tasks.clean]
 description = "Runs the cargo clean command."
@@ -211,9 +237,27 @@ category = "Cleanup"
 [tasks.delete-lock]
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
+run_task = [
+    { name = "workspace-delete-lock", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-delete-lock" }
+]
+
+[tasks.crate-delete-lock]
+description = "Deletes the Cargo.lock file."
+category = "Cleanup"
+private = true
 script_runner = "@shell"
 script = [
     "rm -f ./Cargo.lock"
+]
+
+[tasks.workspace-delete-lock]
+description = "Deletes the Cargo.lock file."
+category = "Cleanup"
+private = true
+script_runner = "@shell"
+script = [
+    "rm -f ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock"
 ]
 
 [tasks.upgrade-dependencies]
@@ -270,6 +314,36 @@ args = ["doc", "--no-deps"]
 
 [tasks.post-docs]
 category = "Documentation"
+
+[tasks.docs-flow]
+description = "Generate rust documentation."
+category = "Documentation"
+dependencies = [
+    "pre-docs",
+    "docs",
+    "post-docs",
+    "copy-apidocs"
+]
+
+[tasks.pre-workspace-docs]
+category = "Documentation"
+
+[tasks.workspace-docs]
+description = "Generate workspace level rust documentation."
+category = "Documentation"
+
+[tasks.post-workspace-docs]
+category = "Documentation"
+
+[tasks.workspace-docs-flow]
+description = "Generate workspace level rust documentation."
+category = "Documentation"
+workspace = false
+dependencies = [
+    "pre-workspace-docs",
+    "workspace-docs",
+    "post-workspace-docs"
+]
 
 [tasks.pre-build]
 category = "Build"
@@ -541,10 +615,42 @@ run_task = "clippy"
 [tasks.copy-apidocs]
 description = "Copies the generated documentation to the docs/api directory."
 category = "Documentation"
+workspace = false
+run_task = [
+    { name = "workspace-copy-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+    { name = "crate-copy-apidocs" }
+]
+
+[tasks.crate-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKING_DIRECTORY}" }
+run_task = "do-copy-apidocs"
+
+[tasks.workspace-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
+env = { CARGO_MAKE_DOCS_ROOT_FOLDER = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}", CARGO_MAKE_DOCS_SUB_FOLDER = "${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}" }
+run_task = "do-copy-apidocs"
+
+[tasks.do-copy-apidocs]
+description = "Copies the generated documentation to the docs/api directory."
+category = "Documentation"
+private = true
 script_runner = "@shell"
 script = [
-    "mkdir -p ./docs/api",
-    "mv ./target/doc/* ./docs/api"
+'''
+SOURCE_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/target/doc
+TARGET_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+
+echo Source Directory: ${SOURCE_DIRECTORY}
+echo Target Directory: ${TARGET_DIRECTORY}
+
+mkdir -p ${TARGET_DIRECTORY}
+mv ${SOURCE_DIRECTORY}/* ${TARGET_DIRECTORY}
+'''
 ]
 
 [tasks.end-build-flow]
@@ -664,6 +770,20 @@ echo "*************************************"
 '''
 ]
 
+[tasks.print-project-env]
+category = "Tools"
+script_runner = "@shell"
+script = [
+'''
+set +x
+echo "*************************************"
+echo "Project:"
+echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
+echo "    Version: ${CARGO_MAKE_PROJECT_VERSION}"
+echo "*************************************"
+'''
+]
+
 [tasks.print-ci-env]
 category = "Tools"
 script_runner = "@shell"
@@ -756,6 +876,7 @@ echo "*************************************"
 category = "Tools"
 dependencies = [
     "print-cargo-make-env",
+    "print-project-env",
     "print-ci-env",
     "print-git-env",
     "print-rust-env",
@@ -772,14 +893,13 @@ category = "CI"
 [tasks.do-on-members]
 description = "Runs the requested task for every workspace member."
 category = "Tools"
+env = { CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY = "${CARGO_MAKE_WORKING_DIRECTORY}/target" }
 condition = { env_set = [ "CARGO_MAKE_MEMBER_TASK" ] }
 script_runner = "@shell"
 script = [
 '''
 #prevent codecov publish in member builds
 export CARGO_MAKE_SKIP_CODECOV="true"
-
-export CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY="${CARGO_MAKE_WORKING_DIRECTORY}/target"
 
 #output coverage data goes into workspace level
 export CARGO_MAKE_COVERAGE_REPORT_DIRECTORY="${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/coverage"
@@ -816,6 +936,7 @@ run_task = "do-on-members"
 [tasks.workspace-members-coverage]
 description = "Runs the ci-flow for every workspace member."
 category = "Test"
+workspace = false
 env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}coverage" }
 run_task = "do-on-members"
 
@@ -1009,7 +1130,7 @@ description = "Uploads the binary artifact from the cargo package/publish output
 category = "Publish"
 
 [tasks.bintray-upload.linux]
-condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME" ] }
+condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME", "CARGO_MAKE_CRATE_NAME", "CARGO_MAKE_CRATE_VERSION" ] }
 script = [
     "curl -T \"./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}\" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H \"X-Bintray-Package:${BINTRAY_PACKAGE_NAME}\" -H \"X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}\" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1",
     "curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish"
@@ -1050,10 +1171,10 @@ script = [
 # Creates a new github release.
 description = "Creates a new github release using curl."
 category = "Publish"
-condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
+condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
 script = [
 '''
-    API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_CRATE_VERSION} ${CARGO_MAKE_CRATE_NAME} ${CARGO_MAKE_CRATE_VERSION})
+    API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_PROJECT_VERSION} ${CARGO_MAKE_PROJECT_NAME} ${CARGO_MAKE_PROJECT_VERSION})
     curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}
 '''
 ]
@@ -1061,11 +1182,15 @@ script = [
 [tasks.build-publish-flow]
 description = "Runs full sanity, generates github release and publishes the crate."
 category = "Publish"
+workspace = false
 condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
 env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = true }
-run_task = "build-publish-flow-no-validation"
+run_task = [
+    { name = "workspace-build-publish-flow", condition = { env_true = ["CARGO_MAKE_CRATE_IS_WORKSPACE"] } },
+    { name = "crate-build-publish-flow" }
+]
 
-[tasks.build-publish-flow-no-validation]
+[tasks.crate-build-publish-flow]
 private = true
 dependencies = [
     "delete-lock",
@@ -1080,6 +1205,43 @@ dependencies = [
     "upload-artifacts",
     "git-pull"
 ]
+
+[tasks.workspace-build-publish-flow]
+private = true
+dependencies = [
+    "delete-lock",
+    "workspace-build-flow",
+    "git-add",
+    "git-status",
+    "git-commit-message",
+    "git-push",
+    "git-delete-merged-branches",
+    "github-publish-custom-name",
+    "workspace-publish-flow",
+    "git-pull"
+]
+
+[tasks.workspace-build-flow]
+description = "Full sanity testing flow."
+category = "Build"
+workspace = false
+dependencies = [
+    "workspace-member-build-flow",
+    "workspace-docs-flow",
+]
+
+[tasks.workspace-member-build-flow]
+category = "Build"
+private = true
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}build-flow" }
+run_task = "do-on-members"
+
+[tasks.workspace-publish-flow]
+description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
+category = "Publish"
+workspace = false
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow" }
+run_task = "do-on-members"
 
 [tasks.diff-files]
 description = "Run diff on two provided files."
@@ -1106,3 +1268,71 @@ install_crate = { rustup_component_name = "rust-src" }
 [tasks.install-rls]
 category = "Tools"
 install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
+
+[tasks.zip-release-ci-flow]
+description = "Compiles the binary in release mode and zips it up"
+category = "CI"
+condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = [ "CARGO_MAKE_CI" ] }
+dependencies = [
+  "clean",
+  "setup-release-build-env",
+  "build-release-for-target",
+  "zip-release-binary-for-target"
+]
+
+[tasks.setup-release-build-env]
+description = "Sets up any non-rust dependencies in the build environment"
+category = "CI"
+linux_alias = "setup-musl"
+
+[tasks.setup-musl]
+description = "Sets up a musl build environment"
+category = "CI"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
+env = { "OPENSSL_DIR" = "${HOME}/openssl-musl", "OPENSSL_VERSION" = "1.0.2l" }
+script = [
+'''
+rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
+curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz | tar xzf -
+cd openssl-$OPENSSL_VERSION
+CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
+make -j"$(nproc)"
+make install
+'''
+]
+
+[tasks.build-release-for-target]
+description = "Makes a release build for a given target"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ] }
+command = "cargo"
+args = [
+  "build",
+  "--release",
+  "--all-features",
+  "--target",
+  "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
+]
+
+[tasks.zip-release-binary-for-target]
+description = "Zips up the release binary, README, and license(s)"
+category = "Publish"
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ], env_true = [ "CARGO_MAKE_CI" ] }
+env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
+script_runner = "@shell"
+script = [
+  "mkdir ${OUTPUT_NAME}",
+  "cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_PROJECT_NAME} ${OUTPUT_NAME}/",
+  "cp README.md LICENSE* ${OUTPUT_NAME}/",
+  "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
+]
+
+[tasks.zip-release-binary-for-target.windows]
+script = [
+  "mkdir ${OUTPUT_NAME}",
+  "dir target",
+  "powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_PROJECT_NAME}.exe -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path README.md -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}",
+  "dir ${OUTPUT_NAME}",
+  "powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip",
+]

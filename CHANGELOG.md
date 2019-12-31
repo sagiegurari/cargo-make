@@ -1,5 +1,15 @@
 ## CHANGELOG
 
+### v0.24.3
+
+* Add support for duckscript #348
+* Add conditional validation support for environment variables #344
+* New CARGO_MAKE_PROJECT_NAME and CARGO_MAKE_PROJECT_VERSION environment variables #349
+* Ability to set watch path in watch options #350
+* New zip-release-ci-flow task to enable zip creation for binary release publishing
+* New workspace publish flow #347
+* Upgrading run_script crate
+
 ### v0.24.2 (2019-12-13)
 
 * New env_contains condition #335

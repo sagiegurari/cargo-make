@@ -33,13 +33,15 @@ environment:
 matrix:
   allow_failures:
     - CHANNEL: nightly
+    - TARGET: i686-pc-windows-gnu
+    - TARGET: x86_64-pc-windows-gnu
 
 install:
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
   - rustup-init.exe -yv --default-toolchain %channel% --default-host %target%
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
-  - rustc -vV
-  - cargo -vV
+  - rustc -vV || true
+  - cargo -vV || true
 
 build: false
 

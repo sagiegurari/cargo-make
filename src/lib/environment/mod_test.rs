@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task};
+use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task, TaskCondition};
 use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
@@ -249,6 +249,86 @@ fn set_env_for_decode_info_expressions() {
 }
 
 #[test]
+fn set_env_for_conditional_value_no_condition() {
+    envmnt::remove("ENV_CONDITIONAL_NO_CONDITION");
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: None,
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_NO_CONDITION", &info);
+
+    assert!(envmnt::is_equal(
+        "ENV_CONDITIONAL_NO_CONDITION",
+        "test value"
+    ));
+}
+
+#[test]
+fn set_env_for_conditional_value_condition_true() {
+    envmnt::remove("ENV_CONDITIONAL_CONDITION_TRUE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["ENV_CONDITIONAL_CONDITION_TRUE".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(condition),
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_CONDITION_TRUE", &info);
+
+    assert!(envmnt::is_equal(
+        "ENV_CONDITIONAL_CONDITION_TRUE",
+        "test value"
+    ));
+}
+
+#[test]
+fn set_env_for_conditional_value_condition_false() {
+    envmnt::remove("ENV_CONDITIONAL_CONDITION_FALSE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["ENV_CONDITIONAL_CONDITION_FALSE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let info = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(condition),
+    };
+
+    set_env_for_conditional_value("ENV_CONDITIONAL_CONDITION_FALSE", &info);
+
+    assert!(!envmnt::exists("ENV_CONDITIONAL_CONDITION_FALSE"));
+}
+
+#[test]
 fn set_env_for_profile_none_not_found() {
     let mut env = IndexMap::new();
     env.insert(
@@ -309,6 +389,44 @@ fn set_env_for_config_unset() {
     set_env_for_config(env, None, true);
 
     assert!(!envmnt::exists("set_env_for_config_unset"));
+}
+
+#[test]
+fn set_env_for_config_conditional() {
+    envmnt::remove("set_env_for_config_conditional");
+    assert!(!envmnt::exists("set_env_for_config_conditional"));
+
+    let conditional = EnvValueConditioned {
+        value: "test value".to_string(),
+        condition: Some(TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: Some(vec!["set_env_for_config_conditional".to_string()]),
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+        }),
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "set_env_for_config_conditional".to_string(),
+        EnvValue::Conditional(conditional),
+    );
+
+    set_env_for_config(env, None, true);
+
+    assert!(envmnt::is_equal(
+        "set_env_for_config_conditional",
+        "test value"
+    ));
 }
 
 #[test]
@@ -1219,4 +1337,79 @@ fn set_current_task_meta_info_env_mixed() {
     assert!(envmnt::is_equal("CARGO_MAKE_CURRENT_TASK_TEST2", "2"));
     assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST1"));
     assert!(!envmnt::exists("CARGO_MAKE_CURRENT_TASKBAD_TEST2"));
+}
+
+#[test]
+fn get_base_directory_name_valid() {
+    let name = get_base_directory_name();
+
+    assert_eq!(name.unwrap(), "cargo-make");
+}
+
+#[test]
+fn setup_env_for_project_crate() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    let crate_info = crateinfo::load();
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_env_for_project(&config, &crate_info);
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "cargo-make"));
+    assert!(envmnt::is_equal(
+        "CARGO_MAKE_PROJECT_VERSION",
+        env!("CARGO_PKG_VERSION")
+    ));
+}
+
+#[test]
+fn setup_env_for_project_workspace_with_main_crate() {
+    let mut config_section = ConfigSection::new();
+    config_section.main_project_member = Some("member2".to_string());
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_cwd(Some("src/lib/test/workspace1"));
+    let crate_info = crateinfo::load();
+    setup_env_for_project(&config, &crate_info);
+    setup_cwd(Some("../../../.."));
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_VERSION", "5.4.3"));
+}
+
+#[test]
+fn setup_env_for_project_workspace_no_main_crate() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        tasks: IndexMap::new(),
+    };
+
+    envmnt::remove("CARGO_MAKE_PROJECT_NAME");
+    envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
+
+    setup_cwd(Some("src/lib/test/workspace1"));
+    let crate_info = crateinfo::load();
+    setup_env_for_project(&config, &crate_info);
+    setup_cwd(Some("../../../.."));
+
+    assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));
+    assert!(!envmnt::exists("CARGO_MAKE_PROJECT_VERSION"));
 }

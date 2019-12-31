@@ -3,6 +3,7 @@
 //! Facade for all different non OS scripts.
 //!
 
+mod duck_script;
 pub(crate) mod generic_script;
 mod os_script;
 mod rsscript;
@@ -24,6 +25,8 @@ use std::path::PathBuf;
 pub(crate) enum EngineType {
     /// OS native script
     OS,
+    /// Duckscript script runner
+    Duckscript,
     /// Rust language
     Rust,
     /// shell to windows batch conversion
@@ -74,7 +77,10 @@ pub(crate) fn get_engine_type(task: &Task) -> EngineType {
                 Some(ref script_runner) => {
                     debug!("Checking script runner: {}", script_runner);
 
-                    if script_runner == "@rust" {
+                    if script_runner == "@duckscript" {
+                        debug!("Duckscript detected.");
+                        EngineType::Duckscript
+                    } else if script_runner == "@rust" {
                         debug!("Rust script detected.");
                         EngineType::Rust
                     } else if script_runner == "@shell" {
@@ -114,6 +120,13 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
             let script_text = get_script_text(&script);
             let runner = task.script_runner.clone();
             os_script::execute(&script_text, runner, cli_arguments, validate);
+
+            true
+        }
+        EngineType::Duckscript => {
+            let script = task.script.as_ref().unwrap();
+            let script_text = get_script_text(&script);
+            duck_script::execute(&script_text, cli_arguments, validate);
 
             true
         }

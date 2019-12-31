@@ -164,33 +164,38 @@ fn validate_profile(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_channel(condition: &TaskCondition, flow_info: &FlowInfo) -> bool {
-    let channels = condition.channels.clone();
-    match channels {
-        Some(channel_names) => match flow_info.env_info.rust_info.channel {
-            Some(value) => {
-                let index = match value {
-                    RustChannel::Stable => channel_names
-                        .iter()
-                        .position(|value| *value == "stable".to_string()),
-                    RustChannel::Beta => channel_names
-                        .iter()
-                        .position(|value| *value == "beta".to_string()),
-                    RustChannel::Nightly => channel_names
-                        .iter()
-                        .position(|value| *value == "nightly".to_string()),
-                };
+fn validate_channel(condition: &TaskCondition, flow_info_option: Option<&FlowInfo>) -> bool {
+    match flow_info_option {
+        Some(flow_info) => {
+            let channels = condition.channels.clone();
+            match channels {
+                Some(channel_names) => match flow_info.env_info.rust_info.channel {
+                    Some(value) => {
+                        let index = match value {
+                            RustChannel::Stable => channel_names
+                                .iter()
+                                .position(|value| *value == "stable".to_string()),
+                            RustChannel::Beta => channel_names
+                                .iter()
+                                .position(|value| *value == "beta".to_string()),
+                            RustChannel::Nightly => channel_names
+                                .iter()
+                                .position(|value| *value == "nightly".to_string()),
+                        };
 
-                match index {
-                    None => {
-                        debug!("Failed channel condition");
-                        false
+                        match index {
+                            None => {
+                                debug!("Failed channel condition");
+                                false
+                            }
+                            _ => true,
+                        }
                     }
-                    _ => true,
-                }
+                    None => false,
+                },
+                None => true,
             }
-            None => false,
-        },
+        }
         None => true,
     }
 }
@@ -269,14 +274,14 @@ fn validate_files_not_exist(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_criteria(flow_info: &FlowInfo, condition: &Option<TaskCondition>) -> bool {
+fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondition>) -> bool {
     match condition {
         Some(ref condition_struct) => {
             debug!("Checking task condition structure.");
 
             validate_platform(&condition_struct)
                 && validate_profile(&condition_struct)
-                && validate_channel(&condition_struct, &flow_info)
+                && validate_channel(&condition_struct, flow_info)
                 && validate_env(&condition_struct)
                 && validate_env_set(&condition_struct)
                 && validate_env_not_set(&condition_struct)
@@ -309,13 +314,18 @@ fn validate_script(condition_script: &Option<Vec<String>>, script_runner: Option
     }
 }
 
+pub(crate) fn validate_conditions_without_context(condition: TaskCondition) -> bool {
+    validate_criteria(None, &Some(condition))
+}
+
 pub(crate) fn validate_conditions(
     flow_info: &FlowInfo,
     condition: &Option<TaskCondition>,
     condition_script: &Option<Vec<String>>,
     script_runner: Option<String>,
 ) -> bool {
-    validate_criteria(&flow_info, &condition) && validate_script(&condition_script, script_runner)
+    validate_criteria(Some(&flow_info), &condition)
+        && validate_script(&condition_script, script_runner)
 }
 
 pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> bool {

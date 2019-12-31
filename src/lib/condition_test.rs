@@ -918,7 +918,7 @@ fn validate_channel_valid() {
         files_exist: None,
         files_not_exist: None,
     };
-    let mut enabled = validate_channel(&condition, &flow_info);
+    let mut enabled = validate_channel(&condition, Some(&flow_info));
     assert!(enabled);
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
@@ -941,7 +941,7 @@ fn validate_channel_valid() {
         files_exist: None,
         files_not_exist: None,
     };
-    enabled = validate_channel(&condition, &flow_info);
+    enabled = validate_channel(&condition, Some(&flow_info));
 
     assert!(enabled);
 
@@ -965,7 +965,7 @@ fn validate_channel_valid() {
         files_exist: None,
         files_not_exist: None,
     };
-    enabled = validate_channel(&condition, &flow_info);
+    enabled = validate_channel(&condition, Some(&flow_info));
 
     assert!(enabled);
 }
@@ -1010,7 +1010,7 @@ fn validate_channel_invalid() {
         files_exist: None,
         files_not_exist: None,
     };
-    let enabled = validate_channel(&condition, &flow_info);
+    let enabled = validate_channel(&condition, Some(&flow_info));
 
     assert!(!enabled);
 }
@@ -1192,7 +1192,7 @@ fn validate_criteria_empty() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1238,7 +1238,7 @@ fn validate_criteria_valid_platform() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1288,7 +1288,7 @@ fn validate_criteria_invalid_platform() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1334,7 +1334,7 @@ fn validate_criteria_valid_profile() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), profile::get(), "bad2".to_string()]),
@@ -1380,7 +1380,7 @@ fn validate_criteria_invalid_profile() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), "bad2".to_string()]),
@@ -1427,7 +1427,7 @@ fn validate_criteria_valid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     let mut enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1453,7 +1453,7 @@ fn validate_criteria_valid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
     enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1479,7 +1479,7 @@ fn validate_criteria_valid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Nightly);
     enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1530,7 +1530,7 @@ fn validate_criteria_invalid_channel() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1576,7 +1576,7 @@ fn validate_criteria_valid_file_exists() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1624,7 +1624,7 @@ fn validate_criteria_invalid_file_exists() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1672,7 +1672,7 @@ fn validate_criteria_valid_file_not_exists() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
@@ -1720,7 +1720,7 @@ fn validate_criteria_invalid_file_not_exists() {
     };
 
     let enabled = validate_criteria(
-        &flow_info,
+        Some(&flow_info),
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
