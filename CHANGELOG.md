@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.25.0
+### v0.25.0 (2020-01-01)
 
 * \[**backward compatability break**\] Ability to set multiple watch paths in watch options #354
 

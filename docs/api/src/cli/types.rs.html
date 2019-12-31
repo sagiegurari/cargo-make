@@ -1875,6 +1875,21 @@
 <span id="1875">1875</span>
 <span id="1876">1876</span>
 <span id="1877">1877</span>
+<span id="1878">1878</span>
+<span id="1879">1879</span>
+<span id="1880">1880</span>
+<span id="1881">1881</span>
+<span id="1882">1882</span>
+<span id="1883">1883</span>
+<span id="1884">1884</span>
+<span id="1885">1885</span>
+<span id="1886">1886</span>
+<span id="1887">1887</span>
+<span id="1888">1888</span>
+<span id="1889">1889</span>
+<span id="1890">1890</span>
+<span id="1891">1891</span>
+<span id="1892">1892</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2574,7 +2589,7 @@
     <span class="doccomment">/// Do not use .gitignore files</span>
     <span class="kw">pub</span> <span class="ident">no_git_ignore</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Select which files/folders to watch</span>
-    <span class="kw">pub</span> <span class="ident">watch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">watch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">WatchOptions</span> {
@@ -2620,13 +2635,28 @@
             <span class="bool-val">false</span>
         };
 
-        <span class="kw">if</span> <span class="ident">same</span> {
+        <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">no_git_ignore</span> {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
                     <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+            }
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
+        };
+
+        <span class="kw">if</span> <span class="ident">same</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">watch</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                },
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
                     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
                     <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
