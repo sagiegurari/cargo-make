@@ -696,7 +696,7 @@ pub struct WatchOptions {
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
     /// Select which files/folders to watch
-    pub watch: Option<String>,
+    pub watch: Option<Vec<String>>,
 }
 
 impl PartialEq for WatchOptions {
@@ -742,13 +742,28 @@ impl PartialEq for WatchOptions {
             false
         };
 
-        if same {
+        same = if same {
             match self.no_git_ignore {
                 Some(ref value) => match other.no_git_ignore {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
                 None => match other.no_git_ignore {
+                    None => true,
+                    _ => false,
+                },
+            }
+        } else {
+            false
+        };
+
+        if same {
+            match self.watch {
+                Some(ref value) => match other.watch {
+                    Some(ref other_value) => value == other_value,
+                    None => false,
+                },
+                None => match other.watch {
                     None => true,
                     _ => false,
                 },

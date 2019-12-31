@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.25.0
+
+* \[**backward compatability break**\] Ability to set multiple watch paths in watch options #354
+
 ### v0.24.3 (2019-12-31)
 
 * Add support for duckscript #348

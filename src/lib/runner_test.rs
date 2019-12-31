@@ -1014,7 +1014,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
         postpone: Some(true),
         ignore_pattern: Some("tools/*".to_string()),
         no_git_ignore: Some(true),
-        watch: Some("dir/*".to_string()),
+        watch: Some(vec!["dir1".to_string(), "dir2".to_string()]),
     };
 
     let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
@@ -1042,7 +1042,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     make_command_line.push_str(" some_task");
 
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 10);
+    assert_eq!(args.len(), 12);
     assert_eq!(args[0], "watch".to_string());
     assert_eq!(args[1], "-q".to_string());
     assert_eq!(args[2], "--postpone".to_string());
@@ -1050,9 +1050,11 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     assert_eq!(args[4], "tools/*".to_string());
     assert_eq!(args[5], "--no-gitignore".to_string());
     assert_eq!(args[6], "-w".to_string());
-    assert_eq!(args[7], "dir/*".to_string());
-    assert_eq!(args[8], "-x".to_string());
-    assert_eq!(args[9], make_command_line.to_string());
+    assert_eq!(args[7], "dir1".to_string());
+    assert_eq!(args[8], "-w".to_string());
+    assert_eq!(args[9], "dir2".to_string());
+    assert_eq!(args[10], "-x".to_string());
+    assert_eq!(args[11], make_command_line.to_string());
 }
 
 #[test]
