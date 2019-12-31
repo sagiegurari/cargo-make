@@ -10,7 +10,7 @@ additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
-CARGO_MAKE_KCOV_VERSION = "36"
+CARGO_MAKE_KCOV_VERSION = "37"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
