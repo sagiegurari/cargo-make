@@ -695,6 +695,8 @@ pub struct WatchOptions {
     pub ignore_pattern: Option<String>,
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
+    /// Select which files/folders to watch
+    pub watch: Option<String>,
 }
 
 impl PartialEq for WatchOptions {

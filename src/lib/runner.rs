@@ -376,6 +376,11 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
                     }
                     _ => (),
                 };
+
+                match watch_options.watch {
+                    Some(value) => watch_args.extend_from_slice(&["-w".to_string(), value]),
+                    _ => (),
+                };
             }
             _ => (),
         },

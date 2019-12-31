@@ -2193,7 +2193,7 @@ You can also fine tune the watch setup (which is based on **cargo-watch**) by pr
 [tasks.watch-args-example]
 command = "echo"
 args = [ "Triggered by watch" ]
-watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*" }
+watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = "./docs/" }
 ```
 
 <a name="usage-functions"></a>
