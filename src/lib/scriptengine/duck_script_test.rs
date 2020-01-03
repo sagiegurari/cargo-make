@@ -27,10 +27,10 @@ fn execute_duckscript_cli_arguments() {
 
 #[test]
 #[should_panic]
-fn execute_shell_cli_arguments_error() {
+fn execute_duckscript_cli_arguments_error() {
     execute(
-        &vec!["cd ${1}".to_string()],
-        &vec!["SOME_BAD_DIRECTORY_PATH".to_string()],
+        &vec!["assert ${1}".to_string()],
+        &vec!["false".to_string()],
         true,
     );
 }

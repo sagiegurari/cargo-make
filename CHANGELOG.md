@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.25.1 (2020-01-03)
+
+* Bug Fix - Fixed CARGO_MAKE_PROJECT_VERSION when main_project_member is set
+* Ensure cargo-make working directory is not modified after duckscript execution.
+
 ### v0.25.0 (2020-01-01)
 
 * \[**backward compatability break**\] Ability to set multiple watch paths in watch options #354

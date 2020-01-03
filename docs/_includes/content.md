@@ -609,7 +609,7 @@ File paths support environment substitution.<br><br>
 #### Duckscript
 [Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
 [Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make
-environment variables and current working directory from inside the script.<br>
+environment variables from inside the script.<br>
 This allows a really powerful integration with cargo-make.
 
 ```toml
@@ -619,7 +619,7 @@ script = [
 '''
 task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
 echo The currently running cargo make task is: ${task_name}
-cd .. # this changes cargo-make current working directory
+cd .. # this changes cargo-make current working directory (cargo-make will revert to original directory after script execution)
 pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 '''
