@@ -405,11 +405,7 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
         None => get_base_directory_name(),
     };
 
-    if project_name.is_some() {
-        envmnt::set_optional("CARGO_MAKE_PROJECT_NAME", &project_name);
-    } else {
-        envmnt::remove("CARGO_MAKE_PROJECT_NAME");
-    }
+    envmnt::set_or_remove("CARGO_MAKE_PROJECT_NAME", &project_name);
 
     let project_version = match crate_info.workspace {
         Some(_) => {
@@ -420,6 +416,8 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
                     None => None,
                 },
             };
+
+            envmnt::set_or_remove("CARGO_MAKE_PROJECT_VERSION_MEMBER", &main_member);
 
             match main_member {
                 Some(member) => {
@@ -442,11 +440,7 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
         },
     };
 
-    if project_version.is_some() {
-        envmnt::set_optional("CARGO_MAKE_PROJECT_VERSION", &project_version);
-    } else {
-        envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
-    }
+    envmnt::set_or_remove("CARGO_MAKE_PROJECT_VERSION", &project_version);
 }
 
 /// Sets up the env before the tasks execution.

@@ -1757,6 +1757,10 @@ impl ConfigSection {
             self.default_to_workspace = extended.default_to_workspace.clone();
         }
 
+        if extended.main_project_member.is_some() {
+            self.main_project_member = extended.main_project_member.clone();
+        }
+
         if extended.load_script.is_some() {
             self.load_script = extended.load_script.clone();
         }

@@ -780,6 +780,7 @@ echo "*************************************"
 echo "Project:"
 echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
 echo "    Version: ${CARGO_MAKE_PROJECT_VERSION}"
+echo "    Version Member: ${CARGO_MAKE_PROJECT_VERSION_MEMBER}"
 echo "*************************************"
 '''
 ]
