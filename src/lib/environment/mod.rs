@@ -371,7 +371,6 @@ fn setup_env_for_rust() -> RustInfo {
         "CARGO_MAKE_RUST_TARGET_VENDOR",
         &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
     );
-    envmnt::set_optional("CARGO_MAKE_RUST_TARGET_TRIPLE", &rustinfo.target_triple);
     envmnt::set(
         "CARGO_MAKE_CRATE_TARGET_TRIPLE",
         &rustinfo.target_triple.unwrap_or("unknown".to_string()),
@@ -537,6 +536,15 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             envmnt::set_optional(
                 "CARGO_MAKE_CARGO_HOME",
                 &home::cargo_home_with_cwd(directory_path).ok(),
+            );
+            envmnt::set(
+                "CARGO_MAKE_CRATE_TARGET_TRIPLE",
+                &super::execution_plan::crate_target_triple(env::current_dir().unwrap())
+                    .unwrap_or_else(|| {
+                        rust_info::get()
+                            .target_triple
+                            .unwrap_or("unknown".to_string())
+                    }),
             );
         }
     }
