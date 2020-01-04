@@ -1080,6 +1080,7 @@ fn setup_env_for_rust_simple_check() {
     envmnt::set("CARGO_MAKE_RUST_TARGET_OS", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_TARGET_VENDOR", "EMPTY");
+    envmnt::set("CARGO_MAKE_RUST_TARGET_TRIPLE", "EMPTY");
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL") == "EMPTY");
@@ -1088,6 +1089,7 @@ fn setup_env_for_rust_simple_check() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_TRIPLE") == "EMPTY");
 
     setup_env_for_rust();
 
@@ -1098,6 +1100,7 @@ fn setup_env_for_rust_simple_check() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") != "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") != "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_TRIPLE") != "EMPTY");
 }
 
 #[test]

@@ -371,6 +371,10 @@ fn setup_env_for_rust() -> RustInfo {
         "CARGO_MAKE_RUST_TARGET_VENDOR",
         &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
     );
+    envmnt::set(
+        "CARGO_MAKE_RUST_TARGET_TRIPLE",
+        &rustinfo.target_triple.unwrap_or("unknown".to_string()),
+    );
 
     rust_info_clone
 }
