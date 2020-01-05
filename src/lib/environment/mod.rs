@@ -539,7 +539,8 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             );
             envmnt::set_or_remove(
                 "CARGO_MAKE_CRATE_TARGET_TRIPLE",
-                &crateinfo::crate_target_triple(env::current_dir().unwrap()),
+                &crateinfo::crate_target_triple(env::current_dir().unwrap())
+                    .or_else(|| rust_info::get().target_triple),
             );
         }
     }

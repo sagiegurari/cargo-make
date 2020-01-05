@@ -190,7 +190,7 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
 
 pub(crate) fn crate_target_triple(path: impl Into<PathBuf>) -> Option<String> {
     let path = path.into();
-    let mut target_triple = rust_info::get().target_triple;
+    let mut target_triple = None;
 
     let config_folders = path
         .ancestors()
