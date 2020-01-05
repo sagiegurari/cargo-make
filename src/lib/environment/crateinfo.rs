@@ -9,10 +9,12 @@ mod crateinfo_test;
 
 use crate::types::{CrateDependency, CrateInfo};
 use glob::glob;
+use std::env;
+use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use toml;
+use toml::{self, Value};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {
@@ -184,4 +186,42 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     } else {
         CrateInfo::new()
     }
+}
+
+pub(crate) fn crate_target_triple(path: impl Into<PathBuf>) -> Option<String> {
+    let path = path.into();
+    let mut target_triple = rust_info::get().target_triple;
+
+    let config_folders = path
+        .ancestors()
+        .map(|ancestor| ancestor.join(".cargo"))
+        .chain(env::var("CARGO_MAKE_CARGO_HOME").map(PathBuf::from));
+
+    for config_folder in config_folders {
+        let config_file = config_folder.join("config");
+        let config_file_with_extension = config_file.with_extension("toml");
+
+        let config_file = if config_file.exists() {
+            Some(config_file)
+        } else if config_file_with_extension.exists() {
+            Some(config_file_with_extension)
+        } else {
+            None
+        };
+
+        if let Some(path) = config_file {
+            if let Ok(content) = fs::read_to_string(path) {
+                if let Ok(Value::Table(mut table)) = content.parse() {
+                    if let Some(Value::Table(mut table)) = table.remove("build") {
+                        if let Some(Value::String(target)) = table.remove("target") {
+                            target_triple = Some(target);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    target_triple
 }

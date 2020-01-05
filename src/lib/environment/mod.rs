@@ -537,14 +537,9 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
                 "CARGO_MAKE_CARGO_HOME",
                 &home::cargo_home_with_cwd(directory_path).ok(),
             );
-            envmnt::set(
+            envmnt::set_or_remove(
                 "CARGO_MAKE_CRATE_TARGET_TRIPLE",
-                &super::execution_plan::crate_target_triple(env::current_dir().unwrap())
-                    .unwrap_or_else(|| {
-                        rust_info::get()
-                            .target_triple
-                            .unwrap_or("unknown".to_string())
-                    }),
+                &crateinfo::crate_target_triple(env::current_dir().unwrap()),
             );
         }
     }

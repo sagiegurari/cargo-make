@@ -16,11 +16,9 @@ use glob::Pattern;
 use indexmap::IndexMap;
 use std::collections::HashSet;
 use std::env;
-use std::fs;
 use std::path;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::vec::Vec;
-use toml::Value;
 
 /// Resolve aliases to different tasks, checking for cycles
 fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> String {
@@ -145,44 +143,6 @@ fn update_member_path(member: &str) -> String {
     member_path
 }
 
-pub(crate) fn crate_target_triple(path: impl Into<PathBuf>) -> Option<String> {
-    let path = path.into();
-    let mut target_triple = None;
-
-    let config_folders = path
-        .ancestors()
-        .map(|ancestor| ancestor.join(".cargo"))
-        .chain(env::var("CARGO_MAKE_CARGO_HOME").map(PathBuf::from));
-
-    for config_folder in config_folders {
-        let config_file = config_folder.join("config");
-        let config_file_with_extension = config_file.with_extension("toml");
-
-        let config_file = if config_file.exists() {
-            Some(config_file)
-        } else if config_file_with_extension.exists() {
-            Some(config_file_with_extension)
-        } else {
-            None
-        };
-
-        if let Some(path) = config_file {
-            if let Ok(content) = fs::read_to_string(path) {
-                if let Ok(Value::Table(mut table)) = content.parse() {
-                    if let Some(Value::Table(mut table)) = table.remove("build") {
-                        if let Some(Value::String(target)) = table.remove("target") {
-                            target_triple = Some(target);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    target_triple
-}
-
 fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let workspace = crate_info.workspace.unwrap();
     let members = workspace.members.unwrap_or(vec![]);
@@ -238,9 +198,9 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             make_line.push_str(" ");
             make_line.push_str(&task);
 
-            if let Some(triple) =
-                crate_target_triple(env::current_dir().unwrap().join(&member_path))
-            {
+            if let Some(triple) = environment::crateinfo::crate_target_triple(
+                env::current_dir().unwrap().join(&member_path),
+            ) {
                 make_line.push_str(" --env CARGO_MAKE_CRATE_TARGET_TRIPLE=");
                 make_line.push_str(&triple);
             }
