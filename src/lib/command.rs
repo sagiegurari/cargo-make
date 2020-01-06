@@ -12,7 +12,7 @@ use crate::toolchain;
 use crate::types::{CommandSpec, Step};
 use envmnt;
 use run_script;
-use run_script::{ScriptError, ScriptOptions};
+use run_script::{IoOptions, ScriptError, ScriptOptions};
 use std::io;
 use std::io::Error;
 use std::process::{Command, ExitStatus, Output, Stdio};
@@ -112,7 +112,11 @@ pub(crate) fn run_script_get_output(
 ) -> Result<(i32, String, String), ScriptError> {
     let mut options = ScriptOptions::new();
     options.runner = script_runner.clone();
-    options.capture_output = capture_output;
+    options.output_redirection = if capture_output {
+        IoOptions::Pipe
+    } else {
+        IoOptions::Inherit
+    };
     options.exit_on_error = true;
     options.print_commands = match print_commands {
         Some(bool_value) => bool_value,
@@ -120,7 +124,7 @@ pub(crate) fn run_script_get_output(
     };
 
     if is_silent() {
-        options.capture_output = true;
+        options.output_redirection = IoOptions::Pipe;
         options.print_commands = false;
     }
 
