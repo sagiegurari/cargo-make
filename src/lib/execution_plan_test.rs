@@ -996,7 +996,7 @@ fn create_workspace() {
 
     config.tasks.insert("test".to_string(), task);
 
-    env::set_current_dir("./examples/workspace1").unwrap();
+    env::set_current_dir("./examples/workspace").unwrap();
     let execution_plan = create(&config, "test", false, true, false);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
@@ -1016,7 +1016,7 @@ fn create_noworkspace() {
 
     config.tasks.insert("test".to_string(), task);
 
-    env::set_current_dir("./examples/workspace1").unwrap();
+    env::set_current_dir("./examples/workspace").unwrap();
     let execution_plan = create(&config, "test", true, true, false);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);

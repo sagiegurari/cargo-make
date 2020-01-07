@@ -368,7 +368,7 @@ fn merge_tasks_extend_task() {
 fn load_descriptors_load_workspace_makefile() {
     envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
-        "./examples/workspace1/Makefile.toml",
+        "./examples/workspace/Makefile.toml",
     );
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
@@ -381,7 +381,7 @@ fn load_descriptors_load_workspace_makefile() {
 fn load_descriptors_load_workspace_makefile_no_exists() {
     envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
-        "./examples/workspace1/Makefile2.toml",
+        "./examples/workspace/Makefile2.toml",
     );
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
