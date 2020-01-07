@@ -352,16 +352,16 @@ fn expand_glob_members_found() {
         .position(|member| member == "examples/workspace2/Makefile.toml")
         .is_some());
 
-    members = expand_glob_members("examples/workspace/member*");
+    members = expand_glob_members("examples/workspace1/member*");
 
     assert!(members.len() > 0);
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace/member1")
+        .position(|member| member == "examples/workspace1/member1")
         .is_some());
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace/member2")
+        .position(|member| member == "examples/workspace1/member2")
         .is_some());
 }
 
@@ -422,7 +422,7 @@ fn normalize_members_mixed() {
     workspace.members = Some(vec![
         "member1".to_string(),
         "member2".to_string(),
-        "examples/workspace/mem*".to_string(),
+        "examples/workspace1/mem*".to_string(),
         "member3".to_string(),
         "member4".to_string(),
     ]);
@@ -451,11 +451,11 @@ fn normalize_members_mixed() {
         .is_some());
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace/member1")
+        .position(|member| member == "examples/workspace1/member1")
         .is_some());
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace/member2")
+        .position(|member| member == "examples/workspace1/member2")
         .is_some());
 }
 
@@ -510,14 +510,14 @@ fn load_workspace_members_mixed() {
     workspace.members = Some(vec![
         "member1".to_string(),
         "member2".to_string(),
-        "examples/workspace/mem*".to_string(),
+        "examples/workspace1/mem*".to_string(),
         "member3".to_string(),
         "member4".to_string(),
     ]);
     workspace.exclude = Some(vec![
         "bad1".to_string(),
         "member3".to_string(),
-        "examples/workspace/member2".to_string(),
+        "examples/workspace1/member2".to_string(),
         "bad2".to_string(),
     ]);
 
@@ -550,7 +550,7 @@ fn load_workspace_members_mixed() {
         .is_some());
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace/member1")
+        .position(|member| member == "examples/workspace1/member1")
         .is_some());
     assert_eq!(members.len(), 7);
 }
