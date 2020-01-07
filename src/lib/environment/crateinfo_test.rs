@@ -554,3 +554,12 @@ fn load_workspace_members_mixed() {
         .is_some());
     assert_eq!(members.len(), 7);
 }
+
+#[test]
+fn get_crate_target_triple() {
+    assert_eq!(crate_target_triple(None), None);
+    env::set_current_dir("src/lib/test/workspace2").unwrap();
+    assert_eq!(crate_target_triple(None), None);
+    assert_eq!(crate_target_triple(Some("member2".into())), Some("wasm32-unknown-unknown".into()));
+    assert_eq!(crate_target_triple(Some("member/member3".into())), Some("aarch64-linux-android".into()));
+}
