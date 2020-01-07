@@ -52,7 +52,7 @@ indexmap = { version = "^1", features = ["serde-1"] }
 log = "^0.4"
 rand = "^0.7"
 run_script = "^0.4"
-rust_info = "^0.2"
+rust_info = "^0.3"
 semver = "^0.9"
 serde = "^1"
 serde_derive = "^1"
