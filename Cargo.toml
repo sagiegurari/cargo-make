@@ -51,7 +51,7 @@ home = "^0.5"
 indexmap = { version = "^1", features = ["serde-1"] }
 log = "^0.4"
 rand = "^0.7"
-run_script = "^0.4"
+run_script = "^0.5"
 rust_info = "^0.2"
 semver = "^0.9"
 serde = "^1"
