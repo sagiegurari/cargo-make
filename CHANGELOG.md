@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.26.0
+
+* Added new CARGO_MAKE_RUST_TARGET_TRIPLE environment variables #356 (thanks @daxpedda)
+* Increased minimal rust version to 1.39.0
+
 ### v0.25.1 (2020-01-03)
 
 * Bug Fix - Fixed CARGO_MAKE_PROJECT_VERSION when main_project_member is set
