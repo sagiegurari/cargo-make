@@ -417,7 +417,7 @@ cd -"#
 #[test]
 #[cfg(target_os = "linux")]
 fn create_workspace_with_cargo_config() {
-    setup_cwd(Some("../workspace2"));
+    env::current_dir("src/lib/test/workspace2").unwrap();
     let mut crate_info = CrateInfo::new();
     let members = vec![
         "member1".to_string(),
@@ -454,7 +454,6 @@ fn create_workspace_with_cargo_config() {
     };
     assert_eq!(script, expected_script);
     assert!(task.env.is_none());
-    setup_cwd(Some("../workspace1"));
 }
 
 #[test]
@@ -997,7 +996,7 @@ fn create_workspace() {
 
     config.tasks.insert("test".to_string(), task);
 
-    env::set_current_dir("./examples/workspace").unwrap();
+    env::set_current_dir("./examples/workspace1").unwrap();
     let execution_plan = create(&config, "test", false, true, false);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
@@ -1017,7 +1016,7 @@ fn create_noworkspace() {
 
     config.tasks.insert("test".to_string(), task);
 
-    env::set_current_dir("./examples/workspace").unwrap();
+    env::set_current_dir("./examples/workspace1").unwrap();
     let execution_plan = create(&config, "test", true, true, false);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);

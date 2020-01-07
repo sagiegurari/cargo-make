@@ -1011,7 +1011,7 @@ fn setup_env_for_crate_workspace() {
     envmnt::set("CARGO_MAKE_CRATE_IS_WORKSPACE", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
-    setup_cwd(Some("examples/workspace"));
+    setup_cwd(Some("examples/workspace1"));
     setup_env_for_crate();
     setup_cwd(Some("../.."));
 
