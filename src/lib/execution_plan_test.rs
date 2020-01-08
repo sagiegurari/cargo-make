@@ -417,6 +417,7 @@ cd -"#
 #[test]
 #[cfg(target_os = "linux")]
 fn create_workspace_with_cargo_config() {
+    let old_current_dir = env::current_dir().unwrap();
     env::set_current_dir("src/lib/test/workspace2").unwrap();
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -454,6 +455,7 @@ fn create_workspace_with_cargo_config() {
     };
     assert_eq!(script, expected_script);
     assert!(task.env.is_none());
+    env::set_current_dir(old_current_dir).unwrap();
 }
 
 #[test]

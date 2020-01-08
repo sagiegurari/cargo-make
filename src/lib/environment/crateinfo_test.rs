@@ -557,6 +557,8 @@ fn load_workspace_members_mixed() {
 
 #[test]
 fn get_crate_target_triple() {
+    let old_current_dir = env::current_dir().unwrap();
+
     assert_eq!(crate_target_triple(None), None);
     env::set_current_dir("src/lib/test/workspace2").unwrap();
     assert_eq!(crate_target_triple(None), None);
@@ -568,4 +570,6 @@ fn get_crate_target_triple() {
         crate_target_triple(Some("member/member3".into())),
         Some("aarch64-linux-android".into())
     );
+
+    env::set_current_dir(old_current_dir).unwrap();
 }
