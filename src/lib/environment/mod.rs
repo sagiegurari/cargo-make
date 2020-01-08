@@ -495,6 +495,7 @@ fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
     }
 }
 
+#[allow(unreachable_code)]
 pub(crate) fn setup_cwd(cwd: Option<&str>) {
     let cwd_str = cwd.unwrap_or(".");
     let directory = expand_value(cwd_str);
@@ -536,7 +537,8 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
             );
             envmnt::set_or_remove(
                 "CARGO_MAKE_CRATE_TARGET_TRIPLE",
-                &crateinfo::crate_target_triple(None).or_else(|| rust_info::get().target_triple),
+                &crateinfo::crate_target_triple(None)
+                    .or_else(|| env::var("CARGO_MAKE_RUST_TARGET_TRIPLE").ok()),
             );
         }
     }
