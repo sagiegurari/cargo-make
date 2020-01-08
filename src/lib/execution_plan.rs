@@ -198,13 +198,6 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
             make_line.push_str(" ");
             make_line.push_str(&task);
 
-            if let Some(triple) =
-                environment::crateinfo::crate_target_triple(Some(member_path.into()))
-            {
-                make_line.push_str(" --env CARGO_MAKE_CRATE_TARGET_TRIPLE=");
-                make_line.push_str(&triple);
-            }
-
             if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
                 for arg in args {
                     make_line.push_str(" ");
