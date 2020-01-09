@@ -632,10 +632,11 @@ fn initialize_env_all() {
             }),
         ],
         env,
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
-    initialize_env(&config);
+    initialize_env(&config, &vec![]);
 
     assert!(envmnt::exists("initialize_env_all_test"));
     assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
@@ -663,6 +664,7 @@ fn setup_env_empty() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -716,6 +718,7 @@ fn setup_env_cli_arguments() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -735,6 +738,7 @@ fn setup_env_values() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.env.insert(
@@ -763,6 +767,7 @@ fn setup_env_script() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.env.insert(
@@ -1358,6 +1363,7 @@ fn setup_env_for_project_crate() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -1384,6 +1390,7 @@ fn setup_env_for_project_workspace_with_main_crate() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -1405,6 +1412,7 @@ fn setup_env_for_project_workspace_no_main_crate() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 

@@ -1,5 +1,6 @@
 
 env_files = []
+env_scripts = []
 
 [config]
 init_task = "init"
@@ -49,8 +50,6 @@ CARGO_MAKE_RUN_CLIPPY = true
 CARGO_MAKE_BUILD_BENCH = true
 CARGO_MAKE_BUILD_EXAMPLES = true
 CARGO_MAKE_CHECK_OUTDATED = true
-
-[env_scripts]
 
 [tasks.empty]
 description = "Empty Task"

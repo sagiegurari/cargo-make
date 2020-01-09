@@ -2,6 +2,7 @@
 
 ### v0.26.0
 
+* New env_scripts to enable custom environment setup #360
 * Added new CARGO_MAKE_RUST_TARGET_TRIPLE environment variable #356 (thanks @daxpedda)
 * Added new CARGO_MAKE_CRATE_TARGET_TRIPLE environment variable (get default build target including from '.cargo/Config.toml') #357 (thanks @daxpedda)
 * Enable @script type detection with shebang line #359

@@ -84,100 +84,114 @@ fn get_internal_runner(script_runner: &str) -> EngineType {
     }
 }
 
-pub(crate) fn get_engine_type(task: &Task) -> EngineType {
-    match task.script {
-        None => EngineType::Unsupported,
-        Some(ref script) => {
-            match task.script_runner {
-                Some(ref script_runner) => {
-                    debug!("Checking script runner: {}", script_runner);
+pub(crate) fn get_engine_type(
+    script: &ScriptValue,
+    script_runner: &Option<String>,
+    script_extension: &Option<String>,
+) -> EngineType {
+    match script_runner {
+        Some(ref runner) => {
+            debug!("Checking script runner: {}", runner);
 
-                    let engine_type = get_internal_runner(script_runner);
+            let engine_type = get_internal_runner(runner);
 
-                    match engine_type {
-                        EngineType::Unsupported => {
-                            if task.script_extension.is_some() {
-                                // if both script runner and extension is defined, we use generic script runner
-                                debug!("Generic script detected.");
-                                EngineType::Generic
-                            } else {
-                                // use default OS extension with custom runner
-                                debug!("OS script with custom runner detected.");
-                                EngineType::OS
-                            }
-                        }
-                        _ => engine_type,
+            match engine_type {
+                EngineType::Unsupported => {
+                    if script_extension.is_some() {
+                        // if both script runner and extension is defined, we use generic script runner
+                        debug!("Generic script detected.");
+                        EngineType::Generic
+                    } else {
+                        // use default OS extension with custom runner
+                        debug!("OS script with custom runner detected.");
+                        EngineType::OS
                     }
                 }
-                None => {
-                    // if no runner specified, try to extract it from script content
-                    let script_text = get_script_text(&script);
+                _ => engine_type,
+            }
+        }
+        None => {
+            // if no runner specified, try to extract it from script content
+            let script_text = get_script_text(&script);
 
-                    let shebang = shebang_script::get_shebang(&script_text);
+            let shebang = shebang_script::get_shebang(&script_text);
 
-                    match shebang.runner {
-                        Some(script_runner) => {
-                            if shebang.arguments.is_none() {
-                                let engine_type = get_internal_runner(&script_runner);
+            match shebang.runner {
+                Some(script_runner) => {
+                    if shebang.arguments.is_none() {
+                        let engine_type = get_internal_runner(&script_runner);
 
-                                match engine_type {
-                                    EngineType::Unsupported => EngineType::Shebang,
-                                    _ => engine_type,
-                                }
-                            } else {
-                                EngineType::Shebang
-                            }
+                        match engine_type {
+                            EngineType::Unsupported => EngineType::Shebang,
+                            _ => engine_type,
                         }
-                        None => EngineType::OS,
+                    } else {
+                        EngineType::Shebang
                     }
                 }
+                None => EngineType::OS,
             }
         }
     }
 }
 
 pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
-    let engine_type = get_engine_type(&task);
-    let validate = !task.should_ignore_errors();
+    match task.script {
+        Some(ref script) => {
+            let validate = !task.should_ignore_errors();
+
+            invoke_script(
+                script,
+                task.script_runner.clone(),
+                task.script_extension.clone(),
+                validate,
+                cli_arguments,
+            )
+        }
+        None => false,
+    }
+}
+
+pub(crate) fn invoke_script(
+    script: &ScriptValue,
+    script_runner: Option<String>,
+    script_extension: Option<String>,
+    validate: bool,
+    cli_arguments: &Vec<String>,
+) -> bool {
+    let engine_type = get_engine_type(script, &script_runner, &script_extension);
 
     match engine_type {
         EngineType::OS => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
-            let runner = task.script_runner.clone();
-            os_script::execute(&script_text, runner, cli_arguments, validate);
+            let script_text = get_script_text(script);
+            os_script::execute(&script_text, script_runner, cli_arguments, validate);
 
             true
         }
         EngineType::Duckscript => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
+            let script_text = get_script_text(script);
             duck_script::execute(&script_text, cli_arguments, validate);
 
             true
         }
         EngineType::Rust => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
+            let script_text = get_script_text(script);
             rsscript::execute(&script_text, cli_arguments, validate);
 
             true
         }
         EngineType::Shell2Batch => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
+            let script_text = get_script_text(script);
             shell_to_batch::execute(&script_text, cli_arguments, validate);
 
             true
         }
         EngineType::Generic => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
-            let runner = task.script_runner.clone().unwrap();
-            let extension = task.script_extension.clone().unwrap();
+            let script_text = get_script_text(script);
+            let extension = script_extension.clone().unwrap();
             generic_script::execute(
                 &script_text,
-                runner,
+                script_runner.unwrap(),
                 extension,
                 None,
                 cli_arguments,
@@ -187,9 +201,8 @@ pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
             true
         }
         EngineType::Shebang => {
-            let script = task.script.as_ref().unwrap();
-            let script_text = get_script_text(&script);
-            let extension = task.script_extension.clone();
+            let script_text = get_script_text(script);
+            let extension = script_extension.clone();
             shebang_script::execute(&script_text, &extension, cli_arguments, validate);
 
             true

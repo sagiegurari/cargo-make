@@ -26,6 +26,7 @@ fn print_default_format() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -43,6 +44,7 @@ fn print_task_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 

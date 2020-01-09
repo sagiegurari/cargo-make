@@ -1814,7 +1814,7 @@ pub struct Config {
     /// The env vars to setup before running the flow
     pub env: IndexMap<String, EnvValue>,
     /// The env scripts to execute before running the flow
-    pub env_scripts: IndexMap<String, Vec<String>,
+    pub env_scripts: Vec<String>,
     /// All task definitions
     pub tasks: IndexMap<String, Task>,
 }
@@ -1856,7 +1856,7 @@ pub struct ExternalConfig {
     /// The env vars to setup before running the flow
     pub env: Option<IndexMap<String, EnvValue>>,
     /// The env scripts to execute before running the flow
-    pub env_scripts: Option<IndexMap<String, Vec<String>>,
+    pub env_scripts: Option<Vec<String>>,
     /// All task definitions
     pub tasks: Option<IndexMap<String, Task>>,
 }

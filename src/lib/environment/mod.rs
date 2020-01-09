@@ -12,9 +12,10 @@ mod mod_test;
 use crate::command;
 use crate::condition;
 use crate::profile;
+use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
-    EnvValueScript, PackageInfo, Step, Task, Workspace,
+    EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -240,6 +241,20 @@ fn set_env_files_for_config(
     all_loaded
 }
 
+fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
+    for env_script in env_scripts {
+        if !env_script.is_empty() {
+            scriptengine::invoke_script(
+                &ScriptValue::Text(vec![env_script]),
+                None,
+                None,
+                true,
+                cli_arguments,
+            );
+        }
+    }
+}
+
 pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
     debug!("Setting Up Env.");
 
@@ -256,7 +271,7 @@ pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
 }
 
 /// Updates the env for the current execution based on the descriptor.
-fn initialize_env(config: &Config) {
+fn initialize_env(config: &Config, cli_args: &Vec<String>) {
     debug!("Initializing Env.");
 
     let additional_profiles = match config.config.additional_profiles {
@@ -267,6 +282,8 @@ fn initialize_env(config: &Config) {
     set_env_files_for_config(config.env_files.clone(), additional_profiles);
 
     set_env_for_config(config.env.clone(), additional_profiles, true);
+
+    set_env_scripts(config.env_scripts.clone(), cli_args);
 }
 
 fn setup_env_for_crate() -> CrateInfo {
@@ -482,7 +499,7 @@ pub(crate) fn setup_env(
     setup_env_for_project(config, &crate_info);
 
     // load env vars
-    initialize_env(config);
+    initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]));
 
     EnvInfo {
         rust_info: rustinfo,

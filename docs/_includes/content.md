@@ -1226,6 +1226,45 @@ Relative paths are relative compared to the toml file that declared them and not
 The same **env_files** attribute can be defined on the task level, however relative paths on the task level are relative to the current working directory.<br>
 **If the task defines a different working directory, it will change after the env files are loaded.**
 
+<a name="usage-env-setup-scripts"></a>
+#### Env Setup Scripts
+
+Environment setup scripts are script that are invoked after environment files and the env block.<br>
+They are defined globally by the **env_scripts** attribute.<br>
+These scripts can be used to run anything needed before starting up the flow.<br>
+In case of duckscript scripts which are invoked by the embedded runtime, it is also possible to modify the
+cargo-make runtime environment variables directly.<br>
+For Example:
+
+```toml
+env_scripts = [
+'''
+#!@duckscript
+echo first env script...
+
+composite_env_value = get_env COMPOSITE
+echo COMPOSITE = ${composite_env_value}
+
+set_env COMPOSITE_2 ${composite_env_value}
+''',
+'''
+#!@duckscript
+echo second env script...
+
+composite_env_value = get_env COMPOSITE_2
+echo COMPOSITE_2 = ${composite_env_value}
+'''
+]
+
+[env]
+SIMPLE = "SIMPLE VALUE"
+SCRIPT = { script = ["echo SCRIPT VALUE"] }
+COMPOSITE = "simple value: ${SIMPLE} script value: ${SCRIPT}"
+```
+
+In this example, since the **env** block is invoked before the env scripts, the duckscripts have access to the COMPOSITE environment variable.<br>
+These scripts use that value to create a new environment variable **COMPOSITE_2** and in the second script we just print it.
+
 <a name="usage-env-vars-loading-order"></a>
 #### Loading Order
 
@@ -1237,6 +1276,7 @@ cargo-make will load the environment variables in the following order
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
+* Load global environment setup scripts defines in the **env_scripts** attribute.
 * Per Task
   *  Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
   *  Load environment variables defined in the **env** block (same behaviour as global env block).

@@ -103,6 +103,7 @@ fn run_flow_private() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -136,6 +137,7 @@ fn run_flow_private_sub_task() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -169,6 +171,7 @@ fn run_flow_allow_private() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -203,6 +206,7 @@ fn run_task_bad_script() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -239,6 +243,7 @@ fn run_task_script_with_args_error() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -274,6 +279,7 @@ fn run_task_script_with_args_valid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -308,6 +314,7 @@ fn run_task_command() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -344,6 +351,7 @@ fn run_task_bad_command_valid_script() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -379,6 +387,7 @@ fn run_task_no_command_valid_script() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -420,6 +429,7 @@ fn run_task_bad_run_task_valid_command() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -462,6 +472,7 @@ fn run_task_valid_run_task() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -497,6 +508,7 @@ fn run_task_invalid_task() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -532,6 +544,7 @@ fn run_task_set_env_file() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -583,6 +596,7 @@ fn run_task_set_env() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -630,6 +644,7 @@ fn run_task_cwd_no_such_dir() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -665,6 +680,7 @@ fn run_task_cwd_dir_exists() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -700,6 +716,7 @@ fn run_task_cwd_env_expansion() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -735,6 +752,7 @@ fn run_task_deprecated_message() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -771,6 +789,7 @@ fn run_task_deprecated_flag() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1131,6 +1150,7 @@ fn run_sub_task_and_report_for_name() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1169,6 +1189,7 @@ fn run_sub_task_and_report_for_name_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1204,6 +1225,7 @@ fn run_sub_task_and_report_for_details_single() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1246,6 +1268,7 @@ fn run_sub_task_and_report_for_details_multiple() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1287,6 +1310,7 @@ fn run_sub_task_and_report_routing_empty() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1324,6 +1348,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1367,6 +1392,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1425,6 +1451,7 @@ fn run_sub_task_and_report_routing_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     let flow_info = FlowInfo {
@@ -1460,6 +1487,7 @@ fn get_sub_task_info_for_routing_info_empty() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1491,6 +1519,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1545,6 +1574,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1599,6 +1629,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1653,6 +1684,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1693,6 +1725,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1733,6 +1766,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1796,6 +1830,7 @@ fn get_sub_task_info_for_routing_info_default() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1866,6 +1901,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1943,6 +1979,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1997,6 +2034,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2051,6 +2089,7 @@ fn create_fork_step_valid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {

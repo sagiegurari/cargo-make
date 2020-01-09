@@ -3353,6 +3353,7 @@ fn config_apply_modify_empty() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     config.apply(&modify_config);
@@ -3379,6 +3380,7 @@ fn config_apply_modify_all() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     config.apply(&modify_config);

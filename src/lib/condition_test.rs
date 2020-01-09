@@ -880,6 +880,7 @@ fn validate_channel_valid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
@@ -976,6 +977,7 @@ fn validate_channel_invalid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
@@ -1173,6 +1175,7 @@ fn validate_criteria_empty() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1219,6 +1222,7 @@ fn validate_criteria_valid_platform() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1269,6 +1273,7 @@ fn validate_criteria_invalid_platform() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1315,6 +1320,7 @@ fn validate_criteria_valid_profile() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1361,6 +1367,7 @@ fn validate_criteria_invalid_profile() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1407,6 +1414,7 @@ fn validate_criteria_valid_channel() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
@@ -1510,6 +1518,7 @@ fn validate_criteria_invalid_channel() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let mut flow_info = FlowInfo {
@@ -1557,6 +1566,7 @@ fn validate_criteria_valid_file_exists() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1605,6 +1615,7 @@ fn validate_criteria_invalid_file_exists() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1653,6 +1664,7 @@ fn validate_criteria_valid_file_not_exists() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1701,6 +1713,7 @@ fn validate_criteria_invalid_file_not_exists() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1754,6 +1767,7 @@ fn validate_condition_for_step_both_valid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1809,6 +1823,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1864,6 +1879,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1915,6 +1931,7 @@ fn validate_condition_for_step_invalid_env_set() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -1966,6 +1983,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2019,6 +2037,7 @@ fn validate_condition_for_step_valid_env() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2077,6 +2096,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2132,6 +2152,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2190,6 +2211,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2248,6 +2270,7 @@ fn validate_condition_for_step_valid_env_contains() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2306,6 +2329,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2361,6 +2385,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2419,6 +2444,7 @@ fn validate_condition_for_step_valid_rust_version() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
@@ -2476,6 +2502,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     let flow_info = FlowInfo {
