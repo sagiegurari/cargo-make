@@ -3,6 +3,7 @@
 ### v0.26.0
 
 * Added new CARGO_MAKE_RUST_TARGET_TRIPLE environment variables #356 (thanks @daxpedda)
+* Upgraded duckscript version
 * Increased minimal rust version to 1.39.0
 
 ### v0.25.1 (2020-01-03)
