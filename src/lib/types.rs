@@ -1809,10 +1809,12 @@ impl ConfigSection {
 pub struct Config {
     /// Runtime config
     pub config: ConfigSection,
-    /// The env files to setup before running the task commands
+    /// The env files to setup before running the flow
     pub env_files: Vec<EnvFile>,
-    /// The env vars to setup before running the tasks
+    /// The env vars to setup before running the flow
     pub env: IndexMap<String, EnvValue>,
+    /// The env scripts to execute before running the flow
+    pub env_scripts: IndexMap<String, Vec<String>,
     /// All task definitions
     pub tasks: IndexMap<String, Task>,
 }
@@ -1849,10 +1851,12 @@ pub struct ExternalConfig {
     pub extend: Option<Extend>,
     /// Runtime config
     pub config: Option<ConfigSection>,
-    /// The env files to setup before running the task commands
+    /// The env files to setup before running the flow
     pub env_files: Option<Vec<EnvFile>>,
-    /// The env vars to setup before running the tasks
+    /// The env vars to setup before running the flow
     pub env: Option<IndexMap<String, EnvValue>>,
+    /// The env scripts to execute before running the flow
+    pub env_scripts: Option<IndexMap<String, Vec<String>>,
     /// All task definitions
     pub tasks: Option<IndexMap<String, Task>>,
 }
@@ -1865,6 +1869,7 @@ impl ExternalConfig {
             config: None,
             env_files: None,
             env: None,
+            env_scripts: None,
             tasks: None,
         }
     }

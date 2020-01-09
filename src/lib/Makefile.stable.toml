@@ -50,6 +50,8 @@ CARGO_MAKE_BUILD_BENCH = true
 CARGO_MAKE_BUILD_EXAMPLES = true
 CARGO_MAKE_CHECK_OUTDATED = true
 
+[env_scripts]
+
 [tasks.empty]
 description = "Empty Task"
 category = "Tools"

@@ -957,6 +957,7 @@ fn external_config_new() {
     assert!(config.config.is_none());
     assert!(config.env_files.is_none());
     assert!(config.env.is_none());
+    assert!(config.env_scripts.is_none());
     assert!(config.tasks.is_none());
 }
 
