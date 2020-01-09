@@ -6,12 +6,6 @@ fn execute_duckscript() {
 }
 
 #[test]
-#[should_panic]
-fn execute_duckscript_error() {
-    execute(&vec!["badcommand".to_string()], &vec![], true);
-}
-
-#[test]
 fn execute_duckscript_error_no_validate() {
     execute(&vec!["badcommand".to_string()], &vec![], false);
 }
@@ -27,10 +21,6 @@ fn execute_duckscript_cli_arguments() {
 
 #[test]
 #[should_panic]
-fn execute_duckscript_cli_arguments_error() {
-    execute(
-        &vec!["assert ${1}".to_string()],
-        &vec!["false".to_string()],
-        true,
-    );
+fn execute_duckscript_crash() {
+    execute(&vec!["function test".to_string()], &vec![], true);
 }

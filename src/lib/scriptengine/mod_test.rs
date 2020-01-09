@@ -192,7 +192,7 @@ fn invoke_duckscript_runner_error() {
     if test::should_test(true) {
         let mut task = Task::new();
         task.script_runner = Some("@duckscript".to_string());
-        task.script = Some(ScriptValue::Text(vec!["badcommand".to_string()]));
+        task.script = Some(ScriptValue::Text(vec!["function test".to_string()]));
 
         let output = invoke(&task, &vec![]);
 
