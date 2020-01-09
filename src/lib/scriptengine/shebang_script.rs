@@ -11,11 +11,11 @@ use crate::scriptengine::generic_script;
 
 #[derive(Debug, Clone)]
 /// Holds flow information
-struct Shebang {
+pub(crate) struct Shebang {
     /// The script runner
-    runner: Option<String>,
+    pub(crate) runner: Option<String>,
     /// additional arguments
-    arguments: Option<Vec<String>>,
+    pub(crate) arguments: Option<Vec<String>>,
 }
 
 impl Shebang {
@@ -28,7 +28,7 @@ impl Shebang {
     }
 }
 
-fn get_shebang(script_text: &Vec<String>) -> Shebang {
+pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
     match script_text.first() {
         Some(line) => {
             if line.starts_with("#!") {
@@ -101,10 +101,4 @@ pub(crate) fn execute(
             }
         }
     };
-}
-
-pub(crate) fn is_shebang_exists(script_text: &Vec<String>) -> bool {
-    let shebang = get_shebang(&script_text);
-
-    shebang.runner.is_some()
 }

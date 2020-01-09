@@ -814,6 +814,20 @@ Hello, World!
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+Another trick you can do with shebang lines, is to define one of the special runners like @duckscript as follows:
+
+```toml
+[tasks.duckscript-shebang-example]
+script = [
+'''
+#!@duckscript
+echo Running duckscript without runner attribute.
+'''
+]
+```
+
+However that language must support comments starting with the **#** character.
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>

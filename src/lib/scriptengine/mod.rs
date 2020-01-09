@@ -69,6 +69,21 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
     }
 }
 
+fn get_internal_runner(script_runner: &str) -> EngineType {
+    if script_runner == "@duckscript" {
+        debug!("Duckscript detected.");
+        EngineType::Duckscript
+    } else if script_runner == "@rust" {
+        debug!("Rust script detected.");
+        EngineType::Rust
+    } else if script_runner == "@shell" {
+        debug!("Shell to batch detected.");
+        EngineType::Shell2Batch
+    } else {
+        EngineType::Unsupported
+    }
+}
+
 pub(crate) fn get_engine_type(task: &Task) -> EngineType {
     match task.script {
         None => EngineType::Unsupported,
@@ -77,32 +92,43 @@ pub(crate) fn get_engine_type(task: &Task) -> EngineType {
                 Some(ref script_runner) => {
                     debug!("Checking script runner: {}", script_runner);
 
-                    if script_runner == "@duckscript" {
-                        debug!("Duckscript detected.");
-                        EngineType::Duckscript
-                    } else if script_runner == "@rust" {
-                        debug!("Rust script detected.");
-                        EngineType::Rust
-                    } else if script_runner == "@shell" {
-                        debug!("Shell to batch detected.");
-                        EngineType::Shell2Batch
-                    } else if task.script_extension.is_some() {
-                        // if both script runner and extension is defined, we use generic script runner
-                        debug!("Generic script detected.");
-                        EngineType::Generic
-                    } else {
-                        // use default OS extension with custom runner
-                        debug!("OS script with custom runner detected.");
-                        EngineType::OS
+                    let engine_type = get_internal_runner(script_runner);
+
+                    match engine_type {
+                        EngineType::Unsupported => {
+                            if task.script_extension.is_some() {
+                                // if both script runner and extension is defined, we use generic script runner
+                                debug!("Generic script detected.");
+                                EngineType::Generic
+                            } else {
+                                // use default OS extension with custom runner
+                                debug!("OS script with custom runner detected.");
+                                EngineType::OS
+                            }
+                        }
+                        _ => engine_type,
                     }
                 }
                 None => {
                     // if no runner specified, try to extract it from script content
                     let script_text = get_script_text(&script);
-                    if shebang_script::is_shebang_exists(&script_text) {
-                        EngineType::Shebang
-                    } else {
-                        EngineType::OS
+
+                    let shebang = shebang_script::get_shebang(&script_text);
+
+                    match shebang.runner {
+                        Some(script_runner) => {
+                            if shebang.arguments.is_none() {
+                                let engine_type = get_internal_runner(&script_runner);
+
+                                match engine_type {
+                                    EngineType::Unsupported => EngineType::Shebang,
+                                    _ => engine_type,
+                                }
+                            } else {
+                                EngineType::Shebang
+                            }
+                        }
+                        None => EngineType::OS,
                     }
                 }
             }

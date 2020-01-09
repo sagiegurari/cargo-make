@@ -3,6 +3,7 @@
 ### v0.26.0
 
 * Added new CARGO_MAKE_RUST_TARGET_TRIPLE environment variables #356 (thanks @daxpedda)
+* Enable @script type detection with shebang line #359
 * Upgraded duckscript version
 * Increased minimal rust version to 1.39.0
 * Added condition for build-publish-flow to restrict only to master branch #364

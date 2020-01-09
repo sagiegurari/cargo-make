@@ -132,6 +132,46 @@ fn get_engine_type_generic() {
 }
 
 #[test]
+fn get_engine_type_shebang() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["#!bash".to_string()]));
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Shebang);
+}
+
+#[test]
+fn get_engine_type_duckscript_from_shebang() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["#!@duckscript".to_string()]));
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Duckscript);
+}
+
+#[test]
+fn get_engine_type_shell_to_batch_from_shebang() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["#!@shell".to_string()]));
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Shell2Batch);
+}
+
+#[test]
+fn get_engine_type_rust_from_shebang() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["#!@rust".to_string()]));
+
+    let output = get_engine_type(&task);
+
+    assert_eq!(output, EngineType::Rust);
+}
+
+#[test]
 fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
