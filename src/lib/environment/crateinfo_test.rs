@@ -559,15 +559,26 @@ fn load_workspace_members_mixed() {
 fn get_crate_target_triple() {
     let old_current_dir = env::current_dir().unwrap();
 
-    assert_eq!(crate_target_triple(None), None);
+    assert_eq!(crate_target_triple(None, None), None);
+
     env::set_current_dir("src/lib/test/workspace2").unwrap();
-    assert_eq!(crate_target_triple(None), None);
+    assert_eq!(crate_target_triple(None, None), None);
+
+    let target_triple = rust_info::get().target_triple;
     assert_eq!(
-        crate_target_triple(Some("member2".into())),
+        crate_target_triple(target_triple.clone(), None),
+        target_triple
+    );
+
+    env::set_current_dir("member2").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
         Some("wasm32-unknown-unknown".into())
     );
+
+    env::set_current_dir("../member/member3").unwrap();
     assert_eq!(
-        crate_target_triple(Some("member/member3".into())),
+        crate_target_triple(target_triple.clone(), None),
         Some("aarch64-linux-android".into())
     );
 

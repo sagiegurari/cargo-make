@@ -188,20 +188,17 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     }
 }
 
-pub(crate) fn crate_target_triple(member: Option<PathBuf>) -> Option<String> {
-    if let Ok(current_dir) = env::current_dir() {
-        let path = if let Some(member) = member {
-            current_dir.join(member)
-        } else {
-            current_dir
-        };
-
+pub(crate) fn crate_target_triple(
+    default_target_triple: Option<String>,
+    home: Option<PathBuf>,
+) -> Option<String> {
+    if let Ok(path) = env::current_dir() {
         let mut target_triple = None;
 
         let config_folders = path
             .ancestors()
             .map(|ancestor| ancestor.join(".cargo"))
-            .chain(env::var("CARGO_MAKE_CARGO_HOME").map(PathBuf::from));
+            .chain(home);
 
         for config_folder in config_folders {
             let config_file = config_folder.join("config");
@@ -229,8 +226,8 @@ pub(crate) fn crate_target_triple(member: Option<PathBuf>) -> Option<String> {
             }
         }
 
-        target_triple
+        target_triple.or(default_target_triple)
     } else {
-        None
+        default_target_triple
     }
 }
