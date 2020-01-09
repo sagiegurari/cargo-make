@@ -67,7 +67,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         Some(ref value) => Some(value.as_ref()),
         None => None,
     };
-    environment::setup_cwd(cwd);
+    let home = environment::setup_cwd(cwd);
 
     let force_makefile = cli_args.build_file.is_some();
     let build_file = &cli_args
@@ -107,7 +107,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => profile::set_additional(&vec![]),
     };
 
-    let env_info = environment::setup_env(&cli_args, &config, &task);
+    let env_info = environment::setup_env(&cli_args, &config, &task, home);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
     if crate_name.len() > 0 {

@@ -554,3 +554,33 @@ fn load_workspace_members_mixed() {
         .is_some());
     assert_eq!(members.len(), 7);
 }
+
+#[test]
+fn get_crate_target_triple() {
+    let old_current_dir = env::current_dir().unwrap();
+
+    assert_eq!(crate_target_triple(None, None), None);
+
+    env::set_current_dir("src/lib/test/workspace2").unwrap();
+    assert_eq!(crate_target_triple(None, None), None);
+
+    let target_triple = rust_info::get().target_triple;
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        target_triple
+    );
+
+    env::set_current_dir("member2").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        Some("wasm32-unknown-unknown".into())
+    );
+
+    env::set_current_dir("../member/member3").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        Some("aarch64-linux-android".into())
+    );
+
+    env::set_current_dir(old_current_dir).unwrap();
+}
