@@ -504,7 +504,6 @@ fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
     }
 }
 
-#[allow(unreachable_code)]
 pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
     let cwd_str = cwd.unwrap_or(".");
     let directory = expand_value(cwd_str);
