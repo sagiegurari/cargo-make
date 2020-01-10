@@ -1,5 +1,6 @@
 use super::*;
 use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, TestArg};
+use envmnt;
 
 #[test]
 fn get_cargo_plugin_info_from_command_no_command() {
@@ -154,6 +155,23 @@ fn install_script_error() {
     task.install_script = Some(vec!["exit 1".to_string()]);
 
     install(&task);
+}
+
+#[test]
+fn install_script_duckscript() {
+    envmnt::remove("install_script_duckscript");
+    assert!(!envmnt::exists("install_script_duckscript"));
+
+    let mut task = Task::new();
+    task.install_script = Some(vec![r#"#!@duckscript
+    set_env install_script_duckscript true
+    "#
+    .to_string()]);
+
+    install(&task);
+
+    assert!(envmnt::exists("install_script_duckscript"));
+    assert!(envmnt::is_or("install_script_duckscript", false));
 }
 
 #[test]

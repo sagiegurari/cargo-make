@@ -10,11 +10,11 @@
 #[path = "./descriptor_test.rs"]
 mod descriptor_test;
 
-use crate::command;
 use crate::io;
+use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
-    Task,
+    ScriptValue, Task,
 };
 use crate::version;
 use envmnt;
@@ -205,7 +205,13 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    command::run_script_get_exit_code(script, None, &vec![], true);
+                    scriptengine::invoke_script(
+                        &ScriptValue::Text(script.to_vec()),
+                        None,
+                        None,
+                        true,
+                        &vec![],
+                    );
 
                     true
                 }
