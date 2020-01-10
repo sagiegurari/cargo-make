@@ -185,6 +185,52 @@
 <span id="185">185</span>
 <span id="186">186</span>
 <span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # crateinfo</span>
 <span class="doccomment">//!</span>
@@ -197,10 +243,12 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CrateDependency</span>, <span class="ident">CrateInfo</span>};
 <span class="kw">use</span> <span class="ident">glob</span>::<span class="ident">glob</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
-<span class="kw">use</span> <span class="ident">toml</span>;
+<span class="kw">use</span> <span class="ident">toml</span>::{<span class="self">self</span>, <span class="ident">Value</span>};
 
 <span class="kw">fn</span> <span class="ident">expand_glob_members</span>(<span class="ident">glob_member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">glob</span>(<span class="ident">glob_member</span>) {
@@ -371,6 +419,50 @@
         <span class="ident">crate_info</span>
     } <span class="kw">else</span> {
         <span class="ident">CrateInfo</span>::<span class="ident">new</span>()
+    }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">crate_target_triple</span>(
+    <span class="ident">default_target_triple</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">home</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">env</span>::<span class="ident">current_dir</span>() {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">target_triple</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+
+        <span class="kw">let</span> <span class="ident">config_folders</span> <span class="op">=</span> <span class="ident">path</span>
+            .<span class="ident">ancestors</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">ancestor</span><span class="op">|</span> <span class="ident">ancestor</span>.<span class="ident">join</span>(<span class="string">&quot;.cargo&quot;</span>))
+            .<span class="ident">chain</span>(<span class="ident">home</span>);
+
+        <span class="kw">for</span> <span class="ident">config_folder</span> <span class="kw">in</span> <span class="ident">config_folders</span> {
+            <span class="kw">let</span> <span class="ident">config_file</span> <span class="op">=</span> <span class="ident">config_folder</span>.<span class="ident">join</span>(<span class="string">&quot;config&quot;</span>);
+            <span class="kw">let</span> <span class="ident">config_file_with_extension</span> <span class="op">=</span> <span class="ident">config_file</span>.<span class="ident">with_extension</span>(<span class="string">&quot;toml&quot;</span>);
+
+            <span class="kw">let</span> <span class="ident">config_file</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">config_file</span>.<span class="ident">exists</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">config_file</span>)
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">config_file_with_extension</span>.<span class="ident">exists</span>() {
+                <span class="prelude-val">Some</span>(<span class="ident">config_file_with_extension</span>)
+            } <span class="kw">else</span> {
+                <span class="prelude-val">None</span>
+            };
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">config_file</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">content</span>) <span class="op">=</span> <span class="ident">fs</span>::<span class="ident">read_to_string</span>(<span class="ident">path</span>) {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">Value</span>::<span class="ident">Table</span>(<span class="kw-2">mut</span> <span class="ident">table</span>)) <span class="op">=</span> <span class="ident">content</span>.<span class="ident">parse</span>() {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">Value</span>::<span class="ident">Table</span>(<span class="kw-2">mut</span> <span class="ident">table</span>)) <span class="op">=</span> <span class="ident">table</span>.<span class="ident">remove</span>(<span class="string">&quot;build&quot;</span>) {
+                            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">Value</span>::<span class="ident">String</span>(<span class="ident">target</span>)) <span class="op">=</span> <span class="ident">table</span>.<span class="ident">remove</span>(<span class="string">&quot;target&quot;</span>) {
+                                <span class="ident">target_triple</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">target</span>);
+                                <span class="kw">break</span>;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        <span class="ident">target_triple</span>.<span class="ident">or</span>(<span class="ident">default_target_triple</span>)
+    } <span class="kw">else</span> {
+        <span class="ident">default_target_triple</span>
     }
 }
 </pre></div>

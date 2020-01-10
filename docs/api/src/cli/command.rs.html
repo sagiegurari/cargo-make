@@ -212,6 +212,10 @@
 <span id="212">212</span>
 <span id="213">213</span>
 <span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # command</span>
 <span class="doccomment">//!</span>
@@ -227,7 +231,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CommandSpec</span>, <span class="ident">Step</span>};
 <span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">run_script</span>;
-<span class="kw">use</span> <span class="ident">run_script</span>::{<span class="ident">ScriptError</span>, <span class="ident">ScriptOptions</span>};
+<span class="kw">use</span> <span class="ident">run_script</span>::{<span class="ident">IoOptions</span>, <span class="ident">ScriptError</span>, <span class="ident">ScriptOptions</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Error</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">process</span>::{<span class="ident">Command</span>, <span class="ident">ExitStatus</span>, <span class="ident">Output</span>, <span class="ident">Stdio</span>};
@@ -327,7 +331,11 @@
 ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">String</span>, <span class="ident">String</span>), <span class="ident">ScriptError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">ScriptOptions</span>::<span class="ident">new</span>();
     <span class="ident">options</span>.<span class="ident">runner</span> <span class="op">=</span> <span class="ident">script_runner</span>.<span class="ident">clone</span>();
-    <span class="ident">options</span>.<span class="ident">capture_output</span> <span class="op">=</span> <span class="ident">capture_output</span>;
+    <span class="ident">options</span>.<span class="ident">output_redirection</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">capture_output</span> {
+        <span class="ident">IoOptions</span>::<span class="ident">Pipe</span>
+    } <span class="kw">else</span> {
+        <span class="ident">IoOptions</span>::<span class="ident">Inherit</span>
+    };
     <span class="ident">options</span>.<span class="ident">exit_on_error</span> <span class="op">=</span> <span class="bool-val">true</span>;
     <span class="ident">options</span>.<span class="ident">print_commands</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">print_commands</span> {
         <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) <span class="op">=&gt;</span> <span class="ident">bool_value</span>,
@@ -335,7 +343,7 @@
     };
 
     <span class="kw">if</span> <span class="ident">is_silent</span>() {
-        <span class="ident">options</span>.<span class="ident">capture_output</span> <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="ident">options</span>.<span class="ident">output_redirection</span> <span class="op">=</span> <span class="ident">IoOptions</span>::<span class="ident">Pipe</span>;
         <span class="ident">options</span>.<span class="ident">print_commands</span> <span class="op">=</span> <span class="bool-val">false</span>;
     }
 

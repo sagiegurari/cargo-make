@@ -2980,7 +2980,7 @@ Here are few snapshots:
 
 <a name="roadmap"></a>
 ## Roadmap
-While already feature rich, cargo-make is still young and under development.<br>
+While already feature rich, cargo-make is still under heavy development.<br>
 You can view the future development items list in the [github project issues](https://github.com/sagiegurari/cargo-make/issues)
 
 ## Contributing

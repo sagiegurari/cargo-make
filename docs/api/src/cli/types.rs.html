@@ -1894,6 +1894,11 @@
 <span id="1894">1894</span>
 <span id="1895">1895</span>
 <span id="1896">1896</span>
+<span id="1897">1897</span>
+<span id="1898">1898</span>
+<span id="1899">1899</span>
+<span id="1900">1900</span>
+<span id="1901">1901</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -3706,10 +3711,12 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Config</span> {
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="ident">ConfigSection</span>,
-    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="doccomment">/// The env files to setup before running the flow</span>
     <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The env vars to setup before running the tasks</span>
+    <span class="doccomment">/// The env vars to setup before running the flow</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The env scripts to execute before running the flow</span>
+    <span class="kw">pub</span> <span class="ident">env_scripts</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
     <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
 }
@@ -3746,10 +3753,12 @@
     <span class="kw">pub</span> <span class="ident">extend</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Extend</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ConfigSection</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The env files to setup before running the task commands</span>
+    <span class="doccomment">/// The env files to setup before running the flow</span>
     <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
-    <span class="doccomment">/// The env vars to setup before running the tasks</span>
+    <span class="doccomment">/// The env vars to setup before running the flow</span>
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// The env scripts to execute before running the flow</span>
+    <span class="kw">pub</span> <span class="ident">env_scripts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
     <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;&gt;</span>,
 }
@@ -3762,6 +3771,7 @@
             <span class="ident">config</span>: <span class="prelude-val">None</span>,
             <span class="ident">env_files</span>: <span class="prelude-val">None</span>,
             <span class="ident">env</span>: <span class="prelude-val">None</span>,
+            <span class="ident">env_scripts</span>: <span class="prelude-val">None</span>,
             <span class="ident">tasks</span>: <span class="prelude-val">None</span>,
         }
     }
