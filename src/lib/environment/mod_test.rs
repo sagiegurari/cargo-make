@@ -632,10 +632,11 @@ fn initialize_env_all() {
             }),
         ],
         env,
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
-    initialize_env(&config);
+    initialize_env(&config, &vec![]);
 
     assert!(envmnt::exists("initialize_env_all_test"));
     assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
@@ -663,15 +664,16 @@ fn setup_env_empty() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
-    setup_env(&cli_args, &config, "setup_env_empty1");
+    setup_env(&cli_args, &config, "setup_env_empty1", None);
 
     let mut value = envmnt::get_or_panic("CARGO_MAKE_TASK");
     assert_eq!(value, "setup_env_empty1");
 
-    setup_env(&cli_args, &config, "setup_env_empty2");
+    setup_env(&cli_args, &config, "setup_env_empty2", None);
 
     let delay = time::Duration::from_millis(10);
     thread::sleep(delay);
@@ -716,12 +718,13 @@ fn setup_env_cli_arguments() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    setup_env(&cli_args, &config, "setup_env_empty1");
+    setup_env(&cli_args, &config, "setup_env_empty1", None);
 
     let value = envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS");
     assert_eq!(value, "arg1;arg2");
@@ -735,6 +738,7 @@ fn setup_env_values() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.env.insert(
@@ -749,7 +753,7 @@ fn setup_env_values() {
     assert_eq!(envmnt::get_or("MY_ENV_KEY", "NONE"), "NONE".to_string());
     assert_eq!(envmnt::get_or("MY_ENV_KEY2", "NONE"), "NONE".to_string());
 
-    setup_env(&cli_args, &config, "set_env_values");
+    setup_env(&cli_args, &config, "set_env_values", None);
 
     assert_eq!(envmnt::get_or_panic("MY_ENV_KEY"), "MY_ENV_VALUE");
     assert_eq!(envmnt::get_or_panic("MY_ENV_KEY2"), "MY_ENV_VALUE2");
@@ -763,6 +767,7 @@ fn setup_env_script() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.env.insert(
@@ -786,7 +791,7 @@ fn setup_env_script() {
         "NONE".to_string()
     );
 
-    setup_env(&cli_args, &config, "set_env_values");
+    setup_env(&cli_args, &config, "set_env_values", None);
 
     assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY"), "MY_ENV_VALUE");
     assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY2"), "script1");
@@ -1080,6 +1085,8 @@ fn setup_env_for_rust_simple_check() {
     envmnt::set("CARGO_MAKE_RUST_TARGET_OS", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_TARGET_VENDOR", "EMPTY");
+    envmnt::set("CARGO_MAKE_RUST_TARGET_TRIPLE", "EMPTY");
+    envmnt::set("CARGO_MAKE_CRATE_TARGET_TRIPLE", "EMPTY");
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL") == "EMPTY");
@@ -1088,8 +1095,10 @@ fn setup_env_for_rust_simple_check() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") == "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_TRIPLE") == "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_CRATE_TARGET_TRIPLE") == "EMPTY");
 
-    setup_env_for_rust();
+    setup_env_for_rust(None);
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION") != "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL") != "EMPTY");
@@ -1098,6 +1107,8 @@ fn setup_env_for_rust_simple_check() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS") != "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_POINTER_WIDTH") != "EMPTY");
     assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_VENDOR") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_TRIPLE") != "EMPTY");
+    assert!(envmnt::get_or_panic("CARGO_MAKE_CRATE_TARGET_TRIPLE") != "EMPTY");
 }
 
 #[test]
@@ -1352,6 +1363,7 @@ fn setup_env_for_project_crate() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -1378,6 +1390,7 @@ fn setup_env_for_project_workspace_with_main_crate() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -1399,6 +1412,7 @@ fn setup_env_for_project_workspace_no_main_crate() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 

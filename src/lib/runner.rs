@@ -55,7 +55,9 @@ where
 
     // revert to original cwd
     match step.config.cwd {
-        Some(_) => environment::setup_cwd(Some(&revert_directory)),
+        Some(_) => {
+            environment::setup_cwd(Some(&revert_directory));
+        }
         _ => (),
     };
 }

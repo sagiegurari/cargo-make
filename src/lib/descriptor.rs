@@ -10,11 +10,11 @@
 #[path = "./descriptor_test.rs"]
 mod descriptor_test;
 
-use crate::command;
 use crate::io;
+use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
-    Task,
+    ScriptValue, Task,
 };
 use crate::version;
 use envmnt;
@@ -74,6 +74,19 @@ fn merge_env(
 
 fn merge_env_files(base: &mut Vec<EnvFile>, extended: &mut Vec<EnvFile>) -> Vec<EnvFile> {
     let mut merged: Vec<EnvFile> = vec![];
+
+    for value in extended.iter() {
+        merged.push(value.clone());
+    }
+    for value in base.iter() {
+        merged.push(value.clone());
+    }
+
+    merged
+}
+
+fn merge_env_scripts(base: &mut Vec<String>, extended: &mut Vec<String>) -> Vec<String> {
+    let mut merged: Vec<String> = vec![];
 
     for value in extended.iter() {
         merged.push(value.clone());
@@ -192,7 +205,13 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    command::run_script_get_exit_code(script, None, &vec![], true);
+                    scriptengine::invoke_script(
+                        &ScriptValue::Text(script.to_vec()),
+                        None,
+                        None,
+                        true,
+                        &vec![],
+                    );
 
                     true
                 }
@@ -232,6 +251,17 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
     };
     let all_env = merge_env(&mut parent_env, &mut extended_env);
 
+    // merge env scripts
+    let mut parent_env_scripts = match parent_config.env_scripts {
+        Some(env_scripts) => env_scripts,
+        None => vec![],
+    };
+    let mut extended_env_scripts = match config.env_scripts {
+        Some(env_scripts) => env_scripts,
+        None => vec![],
+    };
+    let all_env_scripts = merge_env_scripts(&mut parent_env_scripts, &mut extended_env_scripts);
+
     // merge tasks
     let mut parent_tasks = match parent_config.tasks {
         Some(tasks) => tasks,
@@ -260,6 +290,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         config: Some(config_section),
         env_files: Some(all_env_files),
         env: Some(all_env),
+        env_scripts: Some(all_env_scripts),
         tasks: Some(all_tasks),
     }
 }
@@ -503,6 +534,11 @@ fn load_descriptors(
         None => vec![],
     };
 
+    let env_scripts = match external_config.env_scripts {
+        Some(env_scripts) => env_scripts,
+        None => vec![],
+    };
+
     let mut external_env = match external_config.env {
         Some(env) => env,
         None => IndexMap::new(),
@@ -541,6 +577,7 @@ fn load_descriptors(
         config: config_section,
         env_files,
         env: all_env,
+        env_scripts,
         tasks: all_tasks,
     };
 

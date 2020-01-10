@@ -12,9 +12,10 @@ mod mod_test;
 use crate::command;
 use crate::condition;
 use crate::profile;
+use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
-    EnvValueScript, PackageInfo, Step, Task, Workspace,
+    EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use envmnt;
@@ -240,6 +241,20 @@ fn set_env_files_for_config(
     all_loaded
 }
 
+fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
+    for env_script in env_scripts {
+        if !env_script.is_empty() {
+            scriptengine::invoke_script(
+                &ScriptValue::Text(vec![env_script]),
+                None,
+                None,
+                true,
+                cli_arguments,
+            );
+        }
+    }
+}
+
 pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
     debug!("Setting Up Env.");
 
@@ -256,7 +271,7 @@ pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
 }
 
 /// Updates the env for the current execution based on the descriptor.
-fn initialize_env(config: &Config) {
+fn initialize_env(config: &Config, cli_args: &Vec<String>) {
     debug!("Initializing Env.");
 
     let additional_profiles = match config.config.additional_profiles {
@@ -267,6 +282,8 @@ fn initialize_env(config: &Config) {
     set_env_files_for_config(config.env_files.clone(), additional_profiles);
 
     set_env_for_config(config.env.clone(), additional_profiles, true);
+
+    set_env_scripts(config.env_scripts.clone(), cli_args);
 }
 
 fn setup_env_for_crate() -> CrateInfo {
@@ -331,7 +348,7 @@ fn setup_env_for_git_repo() -> GitInfo {
     git_info_clone
 }
 
-fn setup_env_for_rust() -> RustInfo {
+fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
     let rustinfo = rust_info::get();
     let rust_info_clone = rustinfo.clone();
 
@@ -370,6 +387,11 @@ fn setup_env_for_rust() -> RustInfo {
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_VENDOR",
         &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
+    );
+    envmnt::set_optional("CARGO_MAKE_RUST_TARGET_TRIPLE", &rustinfo.target_triple);
+    envmnt::set_or_remove(
+        "CARGO_MAKE_CRATE_TARGET_TRIPLE",
+        &crateinfo::crate_target_triple(rustinfo.target_triple, home),
     );
 
     rust_info_clone
@@ -444,7 +466,12 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
 }
 
 /// Sets up the env before the tasks execution.
-pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvInfo {
+pub(crate) fn setup_env(
+    cli_args: &CliArgs,
+    config: &Config,
+    task: &str,
+    home: Option<PathBuf>,
+) -> EnvInfo {
     envmnt::set_bool("CARGO_MAKE", true);
     envmnt::set("CARGO_MAKE_TASK", &task);
 
@@ -463,7 +490,7 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     let gitinfo = setup_env_for_git_repo();
 
     // load rust info
-    let rustinfo = setup_env_for_rust();
+    let rustinfo = setup_env_for_rust(home);
 
     // load CI info
     let ci_info_struct = setup_env_for_ci();
@@ -472,7 +499,7 @@ pub(crate) fn setup_env(cli_args: &CliArgs, config: &Config, task: &str) -> EnvI
     setup_env_for_project(config, &crate_info);
 
     // load env vars
-    initialize_env(config);
+    initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]));
 
     EnvInfo {
         rust_info: rustinfo,
@@ -494,7 +521,7 @@ fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
     }
 }
 
-pub(crate) fn setup_cwd(cwd: Option<&str>) {
+pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
     let cwd_str = cwd.unwrap_or(".");
     let directory = expand_value(cwd_str);
 
@@ -513,10 +540,13 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
     let directory_path = directory_path_buf.as_path();
 
     match env::set_current_dir(&directory_path) {
-        Err(error) => error!(
-            "Unable to set current working directory to: {} {:#?}",
-            &directory, error
-        ),
+        Err(error) => {
+            error!(
+                "Unable to set current working directory to: {} {:#?}",
+                &directory, error
+            );
+            None
+        }
         _ => {
             envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
 
@@ -529,10 +559,10 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) {
 
             debug!("Working directory changed to: {}", &directory);
 
-            envmnt::set_optional(
-                "CARGO_MAKE_CARGO_HOME",
-                &home::cargo_home_with_cwd(directory_path).ok(),
-            );
+            let home = home::cargo_home_with_cwd(directory_path).ok();
+
+            envmnt::set_optional("CARGO_MAKE_CARGO_HOME", &home);
+            home
         }
     }
 }

@@ -15,8 +15,8 @@ pub(crate) mod rustup_component_installer;
 #[path = "./mod_test.rs"]
 mod mod_test;
 
-use crate::command;
-use crate::types::{InstallCrate, Task};
+use crate::scriptengine;
+use crate::types::{InstallCrate, ScriptValue, Task};
 
 fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, String)> {
     match task_config.command {
@@ -114,11 +114,12 @@ pub(crate) fn install(task_config: &Task) {
         },
         None => match task_config.install_script {
             Some(ref script) => {
-                command::run_script_get_exit_code(
-                    &script,
+                scriptengine::invoke_script(
+                    &ScriptValue::Text(script.to_vec()),
                     task_config.script_runner.clone(),
-                    &vec![],
+                    task_config.script_extension.clone(),
                     validate,
+                    &vec![],
                 );
                 ()
             }

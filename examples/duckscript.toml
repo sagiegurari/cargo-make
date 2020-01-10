@@ -18,3 +18,11 @@ pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 '''
 ]
+
+[tasks.duckscript-shebang-example]
+script = [
+'''
+#!@duckscript
+echo Running duckscript without runner attribute.
+'''
+]

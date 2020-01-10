@@ -12,6 +12,7 @@ fn get_task_name_not_found() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -24,6 +25,7 @@ fn get_task_name_no_alias() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -40,6 +42,7 @@ fn get_task_name_alias() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -61,6 +64,7 @@ fn get_task_name_alias_self_referential() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -78,6 +82,7 @@ fn get_task_name_alias_circular() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -99,6 +104,7 @@ fn get_task_name_platform_alias() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -456,6 +462,7 @@ fn is_workspace_flow_true_default() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -483,6 +490,7 @@ fn is_workspace_flow_false_in_config() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -510,6 +518,7 @@ fn is_workspace_flow_true_in_config() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -535,6 +544,7 @@ fn is_workspace_flow_true_in_task() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -555,6 +565,7 @@ fn is_workspace_flow_no_workspace() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -580,6 +591,7 @@ fn is_workspace_flow_disabled_via_cli() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -605,6 +617,7 @@ fn is_workspace_flow_disabled_via_task() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("test".to_string(), task);
@@ -623,6 +636,7 @@ fn create_single() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -649,6 +663,7 @@ fn create_single_disabled() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -676,6 +691,7 @@ fn create_single_private() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -699,6 +715,7 @@ fn create_single_allow_private() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -726,6 +743,7 @@ fn create_with_dependencies() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -759,6 +777,7 @@ fn create_with_dependencies_sub_flow() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -790,6 +809,7 @@ fn create_disabled_task_with_dependencies() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -822,6 +842,7 @@ fn create_with_dependencies_disabled() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -852,6 +873,7 @@ fn create_platform_disabled() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -947,6 +969,7 @@ fn create_workspace() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -967,6 +990,7 @@ fn create_noworkspace() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -1092,6 +1116,7 @@ fn get_normalized_task_multi_extend() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("1".to_string(), task1);
@@ -1120,6 +1145,7 @@ fn get_normalized_task_simple() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
     config.tasks.insert("1".to_string(), task1);

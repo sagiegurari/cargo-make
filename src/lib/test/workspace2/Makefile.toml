@@ -1,7 +1,4 @@
 
-[config]
-main_project_member = "member2"
-
 [env]
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 

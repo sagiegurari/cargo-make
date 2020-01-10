@@ -957,6 +957,7 @@ fn external_config_new() {
     assert!(config.config.is_none());
     assert!(config.env_files.is_none());
     assert!(config.env.is_none());
+    assert!(config.env_scripts.is_none());
     assert!(config.tasks.is_none());
 }
 
@@ -3352,6 +3353,7 @@ fn config_apply_modify_empty() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     config.apply(&modify_config);
@@ -3378,6 +3380,7 @@ fn config_apply_modify_all() {
         config: config_section,
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks,
     };
     config.apply(&modify_config);

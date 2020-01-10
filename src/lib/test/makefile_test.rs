@@ -76,7 +76,11 @@ fn makefile_task_script_engine_test(name: &str, engine: EngineType) {
     let config = load_descriptor();
     let task = get_task(name, &config);
 
-    let output = scriptengine::get_engine_type(&task);
+    let output = scriptengine::get_engine_type(
+        &task.script.unwrap(),
+        &task.script_runner,
+        &task.script_extension,
+    );
 
     assert_eq!(output, engine);
 }

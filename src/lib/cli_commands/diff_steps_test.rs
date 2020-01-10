@@ -8,6 +8,7 @@ fn run_same() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -26,6 +27,7 @@ fn run_different() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -40,6 +42,7 @@ fn run_different() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -57,6 +60,7 @@ fn run_missing_task_in_first_config() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -67,6 +71,7 @@ fn run_missing_task_in_first_config() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -84,6 +89,7 @@ fn run_missing_task_in_second_config() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 
@@ -95,6 +101,7 @@ fn run_missing_task_in_second_config() {
         config: ConfigSection::new(),
         env_files: vec![],
         env: IndexMap::new(),
+        env_scripts: vec![],
         tasks: IndexMap::new(),
     };
 

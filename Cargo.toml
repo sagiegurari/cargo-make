@@ -23,6 +23,7 @@ include = [
     "/CHANGELOG.md",
     "/Makefile.toml"
 ]
+default-run = "cargo-make"
 
 [lib]
 name = "cli"
@@ -41,8 +42,8 @@ ci_info = "^0.9"
 clap = "^2"
 colored = "^1"
 dirs = "^2"
-duckscript = "^0.1"
-duckscriptsdk = "^0.1"
+duckscript = "^0.1.4"
+duckscriptsdk = "^0.1.5"
 envmnt = "^0.7.5"
 fern = "^0.5"
 git_info = "^0.1.1"
@@ -51,8 +52,8 @@ home = "^0.5"
 indexmap = { version = "^1", features = ["serde-1"] }
 log = "^0.4"
 rand = "^0.7"
-run_script = "^0.4"
-rust_info = "^0.2"
+run_script = "^0.5"
+rust_info = "^0.3"
 semver = "^0.9"
 serde = "^1"
 serde_derive = "^1"

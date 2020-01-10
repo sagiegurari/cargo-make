@@ -47,88 +47,105 @@ fn get_script_text_file_absolute() {
 }
 
 #[test]
-fn get_engine_type_no_runner_no_script() {
-    let task = Task::new();
-
-    let output = get_engine_type(&task);
-
-    assert_eq!(output, EngineType::Unsupported);
-}
-
-#[test]
 fn get_engine_type_no_runner() {
-    let mut task = Task::new();
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(&ScriptValue::Text(vec!["test".to_string()]), &None, &None);
 
     assert_eq!(output, EngineType::OS);
 }
 
 #[test]
-fn get_engine_type_no_script() {
-    let mut task = Task::new();
-    task.script_runner = Some("@rust".to_string());
-
-    let output = get_engine_type(&task);
-
-    assert_eq!(output, EngineType::Unsupported);
-}
-
-#[test]
 fn get_engine_type_runner_no_extension() {
-    let mut task = Task::new();
-    task.script_runner = Some("@bad".to_string());
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["test".to_string()]),
+        &Some("@bad".to_string()),
+        &None,
+    );
 
     assert_eq!(output, EngineType::OS);
 }
 
 #[test]
 fn get_engine_type_duckscript() {
-    let mut task = Task::new();
-    task.script_runner = Some("@duckscript".to_string());
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["test".to_string()]),
+        &Some("@duckscript".to_string()),
+        &None,
+    );
 
     assert_eq!(output, EngineType::Duckscript);
 }
 
 #[test]
 fn get_engine_type_rust() {
-    let mut task = Task::new();
-    task.script_runner = Some("@rust".to_string());
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["test".to_string()]),
+        &Some("@rust".to_string()),
+        &None,
+    );
 
     assert_eq!(output, EngineType::Rust);
 }
 
 #[test]
 fn get_engine_type_shell_to_batch() {
-    let mut task = Task::new();
-    task.script_runner = Some("@shell".to_string());
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["test".to_string()]),
+        &Some("@shell".to_string()),
+        &None,
+    );
 
     assert_eq!(output, EngineType::Shell2Batch);
 }
 
 #[test]
 fn get_engine_type_generic() {
-    let mut task = Task::new();
-    task.script_runner = Some("test1".to_string());
-    task.script_extension = Some("test2".to_string());
-    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
-
-    let output = get_engine_type(&task);
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["test".to_string()]),
+        &Some("test1".to_string()),
+        &Some("test2".to_string()),
+    );
 
     assert_eq!(output, EngineType::Generic);
+}
+
+#[test]
+fn get_engine_type_shebang() {
+    let output = get_engine_type(&ScriptValue::Text(vec!["#!bash".to_string()]), &None, &None);
+
+    assert_eq!(output, EngineType::Shebang);
+}
+
+#[test]
+fn get_engine_type_duckscript_from_shebang() {
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["#!@duckscript".to_string()]),
+        &None,
+        &None,
+    );
+
+    assert_eq!(output, EngineType::Duckscript);
+}
+
+#[test]
+fn get_engine_type_shell_to_batch_from_shebang() {
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["#!@shell".to_string()]),
+        &None,
+        &None,
+    );
+
+    assert_eq!(output, EngineType::Shell2Batch);
+}
+
+#[test]
+fn get_engine_type_rust_from_shebang() {
+    let output = get_engine_type(
+        &ScriptValue::Text(vec!["#!@rust".to_string()]),
+        &None,
+        &None,
+    );
+
+    assert_eq!(output, EngineType::Rust);
 }
 
 #[test]
@@ -192,7 +209,7 @@ fn invoke_duckscript_runner_error() {
     if test::should_test(true) {
         let mut task = Task::new();
         task.script_runner = Some("@duckscript".to_string());
-        task.script = Some(ScriptValue::Text(vec!["badcommand".to_string()]));
+        task.script = Some(ScriptValue::Text(vec!["function test".to_string()]));
 
         let output = invoke(&task, &vec![]);
 

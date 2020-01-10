@@ -713,6 +713,34 @@ fn run_load_script_invalid_load_script() {
 }
 
 #[test]
+fn run_load_script_valid_load_script_duckscript() {
+    envmnt::remove("run_load_script_valid_load_script_duckscript");
+    assert!(!envmnt::exists(
+        "run_load_script_valid_load_script_duckscript"
+    ));
+
+    let mut config = ConfigSection::new();
+    config.load_script = Some(vec![r#"#!@duckscript
+    set_env run_load_script_valid_load_script_duckscript true
+    "#
+    .to_string()]);
+
+    let mut external_config = ExternalConfig::new();
+    external_config.config = Some(config);
+
+    let invoked = run_load_script(&external_config);
+    assert!(invoked);
+
+    assert!(envmnt::exists(
+        "run_load_script_valid_load_script_duckscript"
+    ));
+    assert!(envmnt::is_or(
+        "run_load_script_valid_load_script_duckscript",
+        false
+    ));
+}
+
+#[test]
 fn load_descriptor_extended_makefiles_path_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(

@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### v0.26.0
+
+* New env_scripts to enable custom environment setup #360
+* Added new CARGO_MAKE_RUST_TARGET_TRIPLE environment variable #356 (thanks @daxpedda)
+* Added new CARGO_MAKE_CRATE_TARGET_TRIPLE environment variable (get default build target including from '.cargo/Config.toml') #357 (thanks @daxpedda)
+* Enable custom scripts via shebang line for load and install scripts.
+* Enable @script type detection with shebang line #359
+* Upgraded duckscript version
+* Increased minimal rust version to 1.39.0
+* Added condition for build-publish-flow to restrict only to master branch #364
+
 ### v0.25.1 (2020-01-03)
 
 * Bug Fix - Fixed CARGO_MAKE_PROJECT_VERSION when main_project_member is set

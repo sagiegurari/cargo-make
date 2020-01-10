@@ -1,5 +1,6 @@
 
 env_files = []
+env_scripts = []
 
 [config]
 init_task = "init"
@@ -831,6 +832,7 @@ echo "    Target Env: ${CARGO_MAKE_RUST_TARGET_ENV}"
 echo "    Target OS: ${CARGO_MAKE_RUST_TARGET_OS}"
 echo "    Pointer Width: ${CARGO_MAKE_RUST_TARGET_POINTER_WIDTH}"
 echo "    Target Vendor: ${CARGO_MAKE_RUST_TARGET_VENDOR}"
+echo "    Target Triple: ${CARGO_MAKE_RUST_TARGET_TRIPLE}"
 echo "*************************************"
 '''
 ]
@@ -1184,7 +1186,7 @@ script = [
 description = "Runs full sanity, generates github release and publishes the crate."
 category = "Publish"
 workspace = false
-condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] }
+condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ], env = { "CARGO_MAKE_GIT_BRANCH" = "master" } }
 env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = true }
 run_task = [
     { name = "workspace-build-publish-flow", condition = { env_true = ["CARGO_MAKE_CRATE_IS_WORKSPACE"] } },

@@ -814,6 +814,20 @@ Hello, World!
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+Another trick you can do with shebang lines, is to define one of the special runners like @duckscript as follows:
+
+```toml
+[tasks.duckscript-shebang-example]
+script = [
+'''
+#!@duckscript
+echo Running duckscript without runner attribute.
+'''
+]
+```
+
+However that language must support comments starting with the **#** character.
+
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
 There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
@@ -1212,6 +1226,45 @@ Relative paths are relative compared to the toml file that declared them and not
 The same **env_files** attribute can be defined on the task level, however relative paths on the task level are relative to the current working directory.<br>
 **If the task defines a different working directory, it will change after the env files are loaded.**
 
+<a name="usage-env-setup-scripts"></a>
+#### Env Setup Scripts
+
+Environment setup scripts are script that are invoked after environment files and the env block.<br>
+They are defined globally by the **env_scripts** attribute.<br>
+These scripts can be used to run anything needed before starting up the flow.<br>
+In case of duckscript scripts which are invoked by the embedded runtime, it is also possible to modify the
+cargo-make runtime environment variables directly.<br>
+For Example:
+
+```toml
+env_scripts = [
+'''
+#!@duckscript
+echo first env script...
+
+composite_env_value = get_env COMPOSITE
+echo COMPOSITE = ${composite_env_value}
+
+set_env COMPOSITE_2 ${composite_env_value}
+''',
+'''
+#!@duckscript
+echo second env script...
+
+composite_env_value = get_env COMPOSITE_2
+echo COMPOSITE_2 = ${composite_env_value}
+'''
+]
+
+[env]
+SIMPLE = "SIMPLE VALUE"
+SCRIPT = { script = ["echo SCRIPT VALUE"] }
+COMPOSITE = "simple value: ${SIMPLE} script value: ${SCRIPT}"
+```
+
+In this example, since the **env** block is invoked before the env scripts, the duckscripts have access to the COMPOSITE environment variable.<br>
+These scripts use that value to create a new environment variable **COMPOSITE_2** and in the second script we just print it.
+
 <a name="usage-env-vars-loading-order"></a>
 #### Loading Order
 
@@ -1223,6 +1276,7 @@ cargo-make will load the environment variables in the following order
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
+* Load global environment setup scripts defines in the **env_scripts** attribute.
 * Per Task
   *  Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
   *  Load environment variables defined in the **env** block (same behaviour as global env block).
@@ -1253,11 +1307,13 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
+* **CARGO_MAKE_RUST_TARGET_TRIPLE** - x86_64-unknown-linux-gnu, x86_64-apple-darwin, x86_64-pc-windows-msvc, etc ...
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects .cargo/config.toml's and ${CARGO_HOME}/config.toml.
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 * **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 * **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name (if available).

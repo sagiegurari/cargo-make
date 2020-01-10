@@ -14,6 +14,7 @@ fn run_empty() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -39,6 +40,7 @@ fn run_all_public() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -64,6 +66,7 @@ fn run_all_public_markdown() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -89,6 +92,7 @@ fn run_all_public_markdown_sub_section() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -114,6 +118,7 @@ fn run_all_public_markdown_single_page() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -141,6 +146,7 @@ fn run_all_private() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -175,6 +181,7 @@ fn run_mixed() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 
@@ -200,6 +207,7 @@ fn run_write_to_file() {
         config: config_section,
         env_files: vec![],
         env,
+        env_scripts: vec![],
         tasks,
     };
 

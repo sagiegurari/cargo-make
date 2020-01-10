@@ -1,5 +1,6 @@
 
 env_files = []
+env_scripts = []
 
 [config]
 init_task = "empty"
