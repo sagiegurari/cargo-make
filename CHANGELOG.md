@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.26.1
+
+* Enable custom project binary executable name for binary release zip
+
 ### v0.26.0 (2020-01-10)
 
 * New env_scripts to enable custom environment setup #360

@@ -29,6 +29,7 @@ CARGO_MAKE_CLIPPY_NO_ARGS = ""
 CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
 CARGO_MAKE_RUST_SCRIPT_PROVIDER = "cargo-script"
 CARGO_MAKE_USE_WORKSPACE_PROFILE = true
+CARGO_MAKE_BINARY_EXECUTABLE_NAME = "${CARGO_MAKE_PROJECT_NAME}"
 
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"
@@ -1319,12 +1320,12 @@ args = [
 [tasks.zip-release-binary-for-target]
 description = "Zips up the release binary, README, and license(s)"
 category = "Publish"
-condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ], env_true = [ "CARGO_MAKE_CI" ] }
+condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION", "CARGO_MAKE_BINARY_EXECUTABLE_NAME" ], env_true = [ "CARGO_MAKE_CI" ] }
 env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
 script_runner = "@shell"
 script = [
   "mkdir ${OUTPUT_NAME}",
-  "cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_PROJECT_NAME} ${OUTPUT_NAME}/",
+  "cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME} ${OUTPUT_NAME}/",
   "cp README.md LICENSE* ${OUTPUT_NAME}/",
   "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
 ]
@@ -1333,7 +1334,7 @@ script = [
 script = [
   "mkdir ${OUTPUT_NAME}",
   "dir target",
-  "powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_PROJECT_NAME}.exe -destination ${OUTPUT_NAME}",
+  "powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME}.exe -destination ${OUTPUT_NAME}",
   "powershell copy-item -path README.md -destination ${OUTPUT_NAME}",
   "powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}",
   "dir ${OUTPUT_NAME}",
