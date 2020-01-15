@@ -216,10 +216,13 @@ run_task = "do-clean-apidocs"
 [tasks.do-clean-apidocs]
 category = "Documentation"
 private = true
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-DOCS_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+CARGO_MAKE_DOCS_ROOT_FOLDER = get_env CARGO_MAKE_DOCS_ROOT_FOLDER
+CARGO_MAKE_DOCS_SUB_FOLDER = get_env CARGO_MAKE_DOCS_SUB_FOLDER
+
+DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 
 echo Docs Directory: ${DOCS_DIRECTORY}
 
