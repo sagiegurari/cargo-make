@@ -225,8 +225,7 @@ CARGO_MAKE_DOCS_SUB_FOLDER = get_env CARGO_MAKE_DOCS_SUB_FOLDER
 
 DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 
-echo Docs Directory: ${DOCS_DIRECTORY}
-
+Removing Documentation Directory: ${DOCS_DIRECTORY}
 rm -Rf ${DOCS_DIRECTORY}
 '''
 ]
@@ -252,18 +251,24 @@ run_task = [
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
 private = true
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
-    "rm -f ./Cargo.lock"
+'''
+rm ./Cargo.lock
+'''
 ]
 
 [tasks.workspace-delete-lock]
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
+condition = { env_set = [ "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY" ] }
 private = true
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
-    "rm -f ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock"
+'''
+CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY = get_env CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY
+rm ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock
+'''
 ]
 
 [tasks.upgrade-dependencies]
@@ -724,7 +729,9 @@ description = "Runs git commit command with the message defined in the COMMIT_MS
 category = "Git"
 script_runner = "@shell"
 script = [
-    "git commit -m \"${COMMIT_MSG}\""
+'''
+git commit -m "${COMMIT_MSG}"
+'''
 ]
 
 [tasks.post-git-commit]
@@ -760,10 +767,16 @@ git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 
 [tasks.print-cargo-make-env]
 category = "Tools"
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_TASK = get_env CARGO_MAKE_TASK
+CARGO_MAKE_TASK_ARGS = get_env CARGO_MAKE_TASK_ARGS
+CARGO_MAKE_COMMAND = get_env CARGO_MAKE_COMMAND
+CARGO_MAKE_WORKING_DIRECTORY = get_env CARGO_MAKE_WORKING_DIRECTORY
+CARGO_MAKE_PROFILE = get_env CARGO_MAKE_PROFILE
+CARGO_MAKE_ADDITIONAL_PROFILES = get_env CARGO_MAKE_ADDITIONAL_PROFILES
+
 echo "*************************************"
 echo "Cargo Make:"
 echo "    Task: ${CARGO_MAKE_TASK}"
@@ -778,10 +791,13 @@ echo "*************************************"
 
 [tasks.print-project-env]
 category = "Tools"
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_PROJECT_NAME = get_env CARGO_MAKE_PROJECT_NAME
+CARGO_MAKE_PROJECT_VERSION = get_env CARGO_MAKE_PROJECT_VERSION
+CARGO_MAKE_PROJECT_VERSION_MEMBER = get_env CARGO_MAKE_PROJECT_VERSION_MEMBER
+
 echo "*************************************"
 echo "Project:"
 echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
@@ -793,10 +809,12 @@ echo "*************************************"
 
 [tasks.print-ci-env]
 category = "Tools"
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_CI = get_env CARGO_MAKE_CI
+CARGO_MAKE_PR = get_env CARGO_MAKE_PR
+
 echo "*************************************"
 echo "CI:"
 echo "    CI: ${CARGO_MAKE_CI}"
@@ -808,10 +826,14 @@ echo "*************************************"
 [tasks.print-git-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_GIT_BRANCH = get_env CARGO_MAKE_GIT_BRANCH
+CARGO_MAKE_GIT_USER_NAME = get_env CARGO_MAKE_GIT_USER_NAME
+CARGO_MAKE_GIT_USER_EMAIL = get_env CARGO_MAKE_GIT_USER_EMAIL
+
+
 echo "*************************************"
 echo "Git:"
 echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
@@ -824,10 +846,18 @@ echo "*************************************"
 [tasks.print-rust-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_RUST_VERSION = get_env CARGO_MAKE_RUST_VERSION
+CARGO_MAKE_RUST_CHANNEL = get_env CARGO_MAKE_RUST_CHANNEL
+CARGO_MAKE_RUST_TARGET_ARCH = get_env CARGO_MAKE_RUST_TARGET_ARCH
+CARGO_MAKE_RUST_TARGET_ENV = get_env CARGO_MAKE_RUST_TARGET_ENV
+CARGO_MAKE_RUST_TARGET_OS = get_env CARGO_MAKE_RUST_TARGET_OS
+CARGO_MAKE_RUST_TARGET_POINTER_WIDTH = get_env CARGO_MAKE_RUST_TARGET_POINTER_WIDTH
+CARGO_MAKE_RUST_TARGET_VENDOR = get_env CARGO_MAKE_RUST_TARGET_VENDOR
+CARGO_MAKE_RUST_TARGET_TRIPLE = get_env CARGO_MAKE_RUST_TARGET_TRIPLE
+
 echo "*************************************"
 echo "Rust:"
 echo "    Version: ${CARGO_MAKE_RUST_VERSION}"
@@ -845,10 +875,12 @@ echo "*************************************"
 [tasks.print-cargo-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_CARGO_HOME = get_env CARGO_MAKE_CARGO_HOME
+CARGO_MAKE_CARGO_PROFILE = get_env CARGO_MAKE_CARGO_PROFILE
+
 echo "*************************************"
 echo "Cargo:"
 echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
@@ -860,10 +892,20 @@ echo "*************************************"
 [tasks.print-crate-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-set +x
+CARGO_MAKE_CRATE_NAME = get_env CARGO_MAKE_CRATE_NAME
+CARGO_MAKE_CRATE_VERSION = get_env CARGO_MAKE_CRATE_VERSION
+CARGO_MAKE_CRATE_DESCRIPTION = get_env CARGO_MAKE_CRATE_DESCRIPTION
+CARGO_MAKE_CRATE_LICENSE = get_env CARGO_MAKE_CRATE_LICENSE
+CARGO_MAKE_CRATE_DOCUMENTATION = get_env CARGO_MAKE_CRATE_DOCUMENTATION
+CARGO_MAKE_CRATE_HOMEPAGE = get_env CARGO_MAKE_CRATE_HOMEPAGE
+CARGO_MAKE_CRATE_REPOSITORY = get_env CARGO_MAKE_CRATE_REPOSITORY
+CARGO_MAKE_CRATE_IS_WORKSPACE = get_env CARGO_MAKE_CRATE_IS_WORKSPACE
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = get_env CARGO_MAKE_CRATE_WORKSPACE_MEMBERS
+CARGO_MAKE_CRATE_HAS_DEPENDENCIES = get_env CARGO_MAKE_CRATE_HAS_DEPENDENCIES
+
 echo "*************************************"
 echo "Crate:"
 echo "    Name: ${CARGO_MAKE_CRATE_NAME}"
@@ -1182,7 +1224,9 @@ install_crate = "cargo-hublish"
 args = ["hublish"]
 script_runner = "@shell"
 script = [
-    "cargo hublish --url \"https://api.github.com/repos/${GITHUB_REPO_NAME}/releases\""
+'''
+cargo hublish --url "https://api.github.com/repos/${GITHUB_REPO_NAME}/releases"
+'''
 ]
 
 [tasks.github-publish-curl]
@@ -1338,10 +1382,12 @@ condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_
 env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
 script_runner = "@shell"
 script = [
-  "mkdir ${OUTPUT_NAME}",
-  "cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME} ${OUTPUT_NAME}/",
-  "cp README.md LICENSE* ${OUTPUT_NAME}/",
-  "zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}",
+'''
+mkdir ${OUTPUT_NAME}
+cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME} ${OUTPUT_NAME}/
+cp README.md LICENSE* ${OUTPUT_NAME}/
+zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}
+'''
 ]
 
 [tasks.zip-release-binary-for-target.windows]
