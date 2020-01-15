@@ -973,7 +973,7 @@ run_task = [
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 category = "Test"
 windows_alias = "empty"
-condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ] }
+condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
 install_script = [
@@ -996,32 +996,42 @@ KCOV_HELP_INFO=`${KCOV_BINARY_DIRECTORY}kcov --help` || true
 # check needed arguments are supported, else install
 if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-line"* ]] || [[ $KCOV_HELP_INFO != *"--exclude-region"* ]]; then
     # check we are on a supported platform
-    if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
-        echo "Installing/Upgrading kcov..."
-        sudo apt-get update || true
-        sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
-
-        mkdir -p ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
-        cd ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
-        KCOV_DOWNLOAD_DIRECTORY=$(pwd)
-
-        wget https://github.com/SimonKagstrom/kcov/archive/v${CARGO_MAKE_KCOV_VERSION}.zip
-        unzip v${CARGO_MAKE_KCOV_VERSION}.zip
-        cd kcov-${CARGO_MAKE_KCOV_VERSION}
-        mkdir -p build
-        cd ./build
-        cmake ..
-        make
-
-        # if custom installation directory, leave kcov as local
-        if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then
-            cd ${KCOV_DOWNLOAD_DIRECTORY}/kcov-${CARGO_MAKE_KCOV_VERSION}
-            mv ./* ${KCOV_INSTALLATION_DIRECTORY}
-        else
-            sudo make install
-            cd ../..
-            rm -rf kcov-${CARGO_MAKE_KCOV_VERSION}
+    if [ "$(uname)" == "Linux" ]; then
+        if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+            echo "Installing/Upgrading kcov..."
+            sudo apt-get update || true
+            sudo apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev
         fi
+    elif [ "$(uname)" == "Darwin" ]; then
+        for brew_install in zlib bash cmake pkgconfig wget ; do
+            if brew info ${brew_install} | grep "Not installed" ; then
+                brew install ${brew_install}
+            else
+                echo "skipping ${brew_install} already installed"
+            fi
+        done
+    fi
+
+    mkdir -p ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+    cd ${CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY}
+    KCOV_DOWNLOAD_DIRECTORY=$(pwd)
+
+    wget https://github.com/SimonKagstrom/kcov/archive/v${CARGO_MAKE_KCOV_VERSION}.zip
+    unzip v${CARGO_MAKE_KCOV_VERSION}.zip
+    cd kcov-${CARGO_MAKE_KCOV_VERSION}
+    mkdir -p build
+    cd ./build
+    cmake ..
+    make
+
+    # if custom installation directory, leave kcov as local
+    if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then
+        cd ${KCOV_DOWNLOAD_DIRECTORY}/kcov-${CARGO_MAKE_KCOV_VERSION}
+        mv ./* ${KCOV_INSTALLATION_DIRECTORY}
+    else
+        sudo make install
+        cd ../..
+        rm -rf kcov-${CARGO_MAKE_KCOV_VERSION}
     fi
 fi
 '''
