@@ -814,11 +814,15 @@ script = [
 '''
 CARGO_MAKE_CI = get_env CARGO_MAKE_CI
 CARGO_MAKE_PR = get_env CARGO_MAKE_PR
+CARGO_MAKE_CI_BRANCH_NAME = get_env CARGO_MAKE_CI_BRANCH_NAME
+CARGO_MAKE_CI_VENDOR = get_env CARGO_MAKE_CI_VENDOR
 
 echo "*************************************"
 echo "CI:"
 echo "    CI: ${CARGO_MAKE_CI}"
 echo "    PR: ${CARGO_MAKE_PR}"
+echo "    Branch Name: ${CARGO_MAKE_CI_BRANCH_NAME}"
+echo "    CI Vendor: ${CARGO_MAKE_CI_VENDOR}"
 echo "*************************************"
 '''
 ]
