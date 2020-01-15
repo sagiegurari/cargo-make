@@ -131,7 +131,7 @@ fn makefile_copy_apidocs_test() {
 
 #[test]
 fn makefile_do_on_members_test() {
-    makefile_task_script_engine_test("do-on-members", EngineType::Shell2Batch);
+    makefile_task_script_engine_test("do-on-members", EngineType::OS);
     makefile_task_disabled_test("do-on-members", false);
 }
 
