@@ -29,9 +29,7 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
     let all_vars = envmnt::vars();
 
     for (key, value) in all_vars {
-        context
-            .variables
-            .insert(key, value);
+        context.variables.insert(key, value);
     }
 
     match duckscriptsdk::load(&mut context.commands) {

@@ -901,7 +901,6 @@ description = "Runs the requested task for every workspace member."
 category = "Tools"
 env = { CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY = "${CARGO_MAKE_WORKING_DIRECTORY}/target" }
 condition = { env_set = [ "CARGO_MAKE_MEMBER_TASK" ] }
-script_runner = "@shell"
 script = [
 '''
 #prevent codecov publish in member builds
