@@ -26,6 +26,14 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
             .insert(index.to_string(), argument.to_string());
     }
 
+    let all_vars = envmnt::vars();
+
+    for (key, value) in all_vars {
+        context
+            .variables
+            .insert(key, value);
+    }
+
     match duckscriptsdk::load(&mut context.commands) {
         Ok(_) => {
             let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
