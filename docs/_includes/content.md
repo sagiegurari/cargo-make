@@ -626,7 +626,8 @@ set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 ]
 ```
 
-Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.
+Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
+In addition, all environment variables are preloaded as duckscript variabes and can be directly read from the script (no need to invoke the **get_env** command).
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
