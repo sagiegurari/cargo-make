@@ -216,6 +216,7 @@ run_task = "do-clean-apidocs"
 [tasks.do-clean-apidocs]
 category = "Documentation"
 private = true
+condition = { env_set = [ "CARGO_MAKE_DOCS_ROOT_FOLDER" ] }
 script_runner = "@duckscript"
 script = [
 '''
