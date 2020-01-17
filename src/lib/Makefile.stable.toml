@@ -11,7 +11,7 @@ additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
-CARGO_MAKE_KCOV_VERSION = "37"
+CARGO_MAKE_KCOV_VERSION = "38"
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
 CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
@@ -973,7 +973,6 @@ run_task = [
 [tasks.coverage-kcov]
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 category = "Test"
-windows_alias = "empty"
 condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
@@ -1112,9 +1111,8 @@ dependencies = [
 [tasks.codecov]
 description = "Runs codecov script to upload coverage results to codecov."
 category = "Test"
-windows_alias = "empty"
+condition = { env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
-condition = { env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ] }
 script = [
     "#!/usr/bin/env bash",
     "bash <(curl -s https://codecov.io/bash)"
@@ -1123,7 +1121,7 @@ script = [
 [tasks.codecov-flow]
 description = "Runs the full coverage flow and uploads the results to codecov."
 category = "Test"
-windows_alias = "empty"
+condition = { platforms = ["linux", "mac"] }
 dependencies = [
     "coverage-flow",
     "codecov"
