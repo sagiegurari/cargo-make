@@ -5,6 +5,7 @@
 * Enable custom project binary executable name for binary release zip
 * Support kcov mac installation #340 (thanks @bluejekyll)
 * Migrate several task scripts from shell to duckscript to improve performance
+* duckscript should exit on any error like shell scripts
 * Update kcov to version 38 #367
 
 ### v0.26.0 (2020-01-10)

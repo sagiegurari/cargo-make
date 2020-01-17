@@ -14,7 +14,8 @@ use duckscriptsdk;
 use envmnt;
 
 pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
-    let script_text = script.join("\n");
+    let mut script_text = script.join("\n");
+    script_text.insert_str(0, "exit_on_error true\n");
 
     let mut context = Context::new();
     let mut index = 0;
