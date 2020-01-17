@@ -716,6 +716,11 @@ script = [
 '''
 task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
 echo The currently running cargo make task is: ${task_name}
+
+# since all env vars are auto loaded as duckscript variables by cargo-make
+# you can access them directly
+echo The currently running cargo make task is: ${CARGO_MAKE_CURRENT_TASK_NAME}
+
 cd .. # this changes cargo-make current working directory (cargo-make will revert to original directory after script execution)
 pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
@@ -723,7 +728,8 @@ set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 ]
 ```
 
-Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.
+Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
+In addition, all environment variables are preloaded as duckscript variabes and can be directly read from the script (no need to invoke the **get_env** command).
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code

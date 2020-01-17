@@ -116,7 +116,9 @@ fn makefile_ci_coverage_flow_test() {
 #[test]
 fn makefile_codecov_test() {
     makefile_task_script_engine_test("codecov", EngineType::OS);
-    makefile_task_enabled_test("codecov", false, false);
+    let enabled = if is_windows() { false } else { true };
+
+    makefile_task_condition_test("codecov", enabled, false, false);
 }
 
 #[test]
@@ -131,7 +133,7 @@ fn makefile_copy_apidocs_test() {
 
 #[test]
 fn makefile_do_on_members_test() {
-    makefile_task_script_engine_test("do-on-members", EngineType::Shell2Batch);
+    makefile_task_script_engine_test("do-on-members", EngineType::OS);
     makefile_task_disabled_test("do-on-members", false);
 }
 
