@@ -53,6 +53,13 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # duck_script</span>
 <span class="doccomment">//!</span>
@@ -70,7 +77,8 @@
 <span class="kw">use</span> <span class="ident">envmnt</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">execute</span>(<span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">validate</span>: <span class="ident">bool</span>) {
-    <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">script</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">script</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>);
+    <span class="ident">script_text</span>.<span class="ident">insert_str</span>(<span class="number">0</span>, <span class="string">&quot;exit_on_error true\n&quot;</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Context</span>::<span class="ident">new</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="number">0</span>;
@@ -80,6 +88,12 @@
         <span class="ident">context</span>
             .<span class="ident">variables</span>
             .<span class="ident">insert</span>(<span class="ident">index</span>.<span class="ident">to_string</span>(), <span class="ident">argument</span>.<span class="ident">to_string</span>());
+    }
+
+    <span class="kw">let</span> <span class="ident">all_vars</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">vars</span>();
+
+    <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">all_vars</span> {
+        <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(<span class="ident">key</span>, <span class="ident">value</span>);
     }
 
     <span class="kw">match</span> <span class="ident">duckscriptsdk</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">context</span>.<span class="ident">commands</span>) {

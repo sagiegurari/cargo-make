@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.26.1
+### v0.26.1 (2020-01-17)
 
 * Enable custom project binary executable name for binary release zip
 * Support kcov mac installation #340 (thanks @bluejekyll)

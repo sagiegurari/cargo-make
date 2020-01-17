@@ -233,7 +233,7 @@ script = [
 '''
 DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 
-Removing Documentation Directory: ${DOCS_DIRECTORY}
+# Removing Documentation Directory: ${DOCS_DIRECTORY}
 rm -Rf ${DOCS_DIRECTORY}
 '''
 ]
