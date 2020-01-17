@@ -56,6 +56,16 @@ CARGO_MAKE_CHECK_OUTDATED = true
 description = "Empty Task"
 category = "Tools"
 
+[tasks.wait]
+description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
+condition = { env_set = [ "CARGO_MAKE_WAIT_MILLISECONDS" ] }
+script_runner = "@duckscript"
+script = [
+'''
+sleep ${CARGO_MAKE_WAIT_MILLISECONDS}
+'''
+]
+
 [tasks.default]
 description = "Default task points to the development testing flow"
 category = "Development"
@@ -139,6 +149,7 @@ run_task = "pre-publish-clean-flow"
 description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
 category = "Publish"
 dependencies = [
+    "wait",
     "pre-publish-conditioned-clean-flow",
     "pre-publish-delete-lock",
     "pre-publish",
@@ -1255,7 +1266,7 @@ run_task = "do-on-members"
 description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
 category = "Publish"
 workspace = false
-env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow", "CARGO_MAKE_WAIT_MILLISECONDS" = "5000" }
 run_task = "do-on-members"
 
 [tasks.diff-files]

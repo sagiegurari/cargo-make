@@ -7,6 +7,8 @@
 * Migrate several task scripts from shell to duckscript to improve performance
 * duckscript should exit on any error like shell scripts
 * Update kcov to version 38 #367
+* New wait task to enable sleep as part of the flow
+* Add sleep before member publish during workspace publish flow #368
 
 ### v0.26.0 (2020-01-10)
 
