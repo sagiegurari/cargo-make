@@ -100,6 +100,7 @@
 ## No Category
 
 * **build-release-for-target** - Makes a release build for a given target
+* **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
 ## Publish
 
