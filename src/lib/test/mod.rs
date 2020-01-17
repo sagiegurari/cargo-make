@@ -16,12 +16,20 @@ pub(crate) fn is_linux() -> bool {
     }
 }
 
+pub(crate) fn is_windows() -> bool {
+    if cfg!(windows) {
+        true
+    } else {
+        false
+    }
+}
+
 fn is_travis_ci() -> bool {
     envmnt::is_or("TRAVIS", false)
 }
 
 pub(crate) fn is_windows_on_travis_ci() -> bool {
-    if cfg!(windows) {
+    if is_windows() {
         is_travis_ci()
     } else {
         false

@@ -116,7 +116,9 @@ fn makefile_ci_coverage_flow_test() {
 #[test]
 fn makefile_codecov_test() {
     makefile_task_script_engine_test("codecov", EngineType::OS);
-    makefile_task_enabled_test("codecov", false, false);
+    let enabled = if is_windows() { false } else { true };
+
+    makefile_task_condition_test("codecov", enabled, false, false);
 }
 
 #[test]
