@@ -158,7 +158,7 @@ We will create a toml file as follows:
 [tasks.format]
 install_crate = "rustfmt"
 command = "cargo"
-args = ["fmt", "--", "--write-mode=overwrite"]
+args = ["fmt", "--", "--emit=files"]
 
 [tasks.clean]
 command = "cargo"
@@ -196,7 +196,7 @@ The output would look something like this:
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: format
-[cargo-make] INFO - Execute Command: "cargo" "fmt" "--" "--write-mode=overwrite"
+[cargo-make] INFO - Execute Command: "cargo" "fmt" "--" "--emit=files"
 [cargo-make] INFO - Running Task: clean
 [cargo-make] INFO - Execute Command: "cargo" "clean"
 [cargo-make] INFO - Running Task: build
@@ -261,7 +261,7 @@ Such flow can be defined as follows:
 [tasks.format]
 install_crate = "rustfmt"
 command = "cargo"
-args = ["fmt", "--", "--write-mode=overwrite"]
+args = ["fmt", "--", "--emit=files"]
 
 [tasks.build]
 command = "cargo"
