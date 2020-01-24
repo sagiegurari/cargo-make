@@ -179,6 +179,7 @@
 * **print-cargo-make-env** - No Description.
 * **print-ci-env** - No Description.
 * **print-crate-env** - No Description.
+* **print-duckscript-env** - No Description.
 * **print-env-flow** - No Description.
 * **print-git-env** - No Description.
 * **print-project-env** - No Description.

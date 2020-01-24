@@ -14,13 +14,26 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|$
 ignore_errors = true
 
 [tasks.generate-readme]
+script_runner = "@duckscript"
 script = [
 '''
-echo "generating readme file"
-rm -f ./README.md
-cat ./docs/_includes/README.md ./docs/_includes/nav.md ./docs/_includes/content.md >> README.md
-sed -i 's,https://github.com/sagiegurari/cargo-make/blob/master/.github,.github,g' ./README.md
-sed -i "s,{{ site.version }},${CARGO_MAKE_CRATE_VERSION},g" ./README.md
+echo Generating README
+
+rm ./README.md
+
+# concat templates
+readme_text = readfile ./docs/_includes/README.md
+text = readfile ./docs/_includes/nav.md
+readme_text = set "${readme_text} ${text}"
+text = readfile ./docs/_includes/content.md
+readme_text = set "${readme_text} ${text}"
+
+# modify templates
+crate_version = get_env CARGO_MAKE_CRATE_VERSION
+readme_text = replace ${readme_text} https://github.com/sagiegurari/cargo-make/blob/master/.github .github
+readme_text = replace ${readme_text} "{{ site.version }}" ${crate_version}
+
+writefile ./README.md ${readme_text}
 '''
 ]
 

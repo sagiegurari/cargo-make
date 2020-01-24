@@ -734,12 +734,9 @@ args = ["commit"]
 [tasks.git-commit-message]
 description = "Runs git commit command with the message defined in the COMMIT_MSG environment variable."
 category = "Git"
-script_runner = "@shell"
-script = [
-'''
-git commit -m "${COMMIT_MSG}"
-'''
-]
+condition = { env_set = [ "COMMIT_MSG" ] }
+command = "git"
+args = ["commit", "-m", "${COMMIT_MSG}"]
 
 [tasks.post-git-commit]
 category = "Git"
@@ -766,6 +763,7 @@ args = ["pull"]
 description = "Deletes any merged git branches"
 category = "Git"
 ignore_errors = true
+condition = { platforms = ["linux", "mac"] }
 script = [
 '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
@@ -889,6 +887,19 @@ echo "*************************************"
 '''
 ]
 
+[tasks.print-duckscript-env]
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Duckscript:"
+echo "    Runtime: ${CARGO_MAKE_DUCKSCRIPT_VERSION}"
+echo "    SDK: ${CARGO_MAKE_DUCKSCRIPT_SDK_VERSION}"
+echo "*************************************"
+'''
+]
+
 [tasks.print-env-flow]
 category = "Tools"
 dependencies = [
@@ -898,7 +909,8 @@ dependencies = [
     "print-git-env",
     "print-rust-env",
     "print-cargo-env",
-    "print-crate-env"
+    "print-crate-env",
+    "print-duckscript-env"
 ]
 
 [tasks.pre-ci-flow]

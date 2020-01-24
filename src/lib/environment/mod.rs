@@ -18,6 +18,8 @@ use crate::types::{
     EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
+use duckscript;
+use duckscriptsdk;
 use envmnt;
 use envmnt::{ExpandOptions, ExpansionType};
 use git_info;
@@ -286,6 +288,14 @@ fn initialize_env(config: &Config, cli_args: &Vec<String>) {
     set_env_scripts(config.env_scripts.clone(), cli_args);
 }
 
+fn setup_env_for_duckscript() {
+    let mut version = duckscript::version();
+    envmnt::set("CARGO_MAKE_DUCKSCRIPT_VERSION", version);
+
+    version = duckscriptsdk::version();
+    envmnt::set("CARGO_MAKE_DUCKSCRIPT_SDK_VERSION", version);
+}
+
 fn setup_env_for_crate() -> CrateInfo {
     let crate_info = crateinfo::load();
     let crate_info_clone = crate_info.clone();
@@ -482,6 +492,9 @@ pub(crate) fn setup_env(
         None => vec![],
     };
     envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
+
+    // load duckscript_info
+    setup_env_for_duckscript();
 
     // load crate info
     let crate_info = setup_env_for_crate();

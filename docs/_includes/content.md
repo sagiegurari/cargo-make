@@ -1324,6 +1324,8 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 * **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name (if available).
 * **CARGO_MAKE_CI_VENDOR** - Holds the continuous integration vendor name (if available).
+* **CARGO_MAKE_DUCKSCRIPT_VERSION** - The embedded duckscript runtime version.
+* **CARGO_MAKE_DUCKSCRIPT_SDK_VERSION** - The embedded duckscript SDK version.
 
 The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
 

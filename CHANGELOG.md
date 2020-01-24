@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.26.2
+
+* Print duckscript version info env task #371
+* Duckscript upgrade
+* Migrate several task scripts from shell to duckscript to improve performance
+
 ### v0.26.1 (2020-01-17)
 
 * Enable custom project binary executable name for binary release zip
