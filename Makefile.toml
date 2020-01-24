@@ -24,9 +24,9 @@ rm ./README.md
 # concat templates
 readme_text = readfile ./docs/_includes/README.md
 text = readfile ./docs/_includes/nav.md
-readme_text = set "${readme_text} ${text}"
+readme_text = set "${readme_text}${text}"
 text = readfile ./docs/_includes/content.md
-readme_text = set "${readme_text} ${text}"
+readme_text = set "${readme_text}${text}"
 
 # modify templates
 crate_version = get_env CARGO_MAKE_CRATE_VERSION

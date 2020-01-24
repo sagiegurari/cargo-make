@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.26.2
+### v0.26.2 (2020-01-24)
 
 * Print duckscript version info env task #371
 * Duckscript upgrade

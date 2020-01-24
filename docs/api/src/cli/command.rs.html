@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/command.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>command.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/command.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>command.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -237,19 +237,19 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">process</span>::{<span class="ident">Command</span>, <span class="ident">ExitStatus</span>, <span class="ident">Output</span>, <span class="ident">Stdio</span>};
 
 <span class="doccomment">/// Returns the exit code (-1 if no exit code found)</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code</span>(<span class="ident">exit_status</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExitStatus</span>, <span class="ident">Error</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code</span>(<span class="ident">exit_status</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExitStatus</span>, <span class="ident">Error</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
     <span class="kw">match</span> <span class="ident">exit_status</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">code</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">code</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">code</span>.<span class="ident">success</span>() {
                 <span class="kw">match</span> <span class="ident">code</span>.<span class="ident">code</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="op">-</span><span class="number">1</span>,
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="op">-</span><span class="number">1</span>,
                 }
             } <span class="kw">else</span> {
                 <span class="number">0</span>
             }
         }
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
                 <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
@@ -260,10 +260,10 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code_from_output</span>(<span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code_from_output</span>(<span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
     <span class="kw">match</span> <span class="ident">output</span> {
-        <span class="kw-2">&amp;</span><span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="ident">output_struct</span>) <span class="op">=&gt;</span> <span class="ident">get_exit_code</span>(<span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>.<span class="ident">status</span>), <span class="ident">force</span>),
-        <span class="kw-2">&amp;</span><span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">error</span>) <span class="op">=&gt;</span> {
+        <span class="kw-2">&amp;</span><span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="ident">output_struct</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_exit_code</span>(<span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>.<span class="ident">status</span>), <span class="ident">force</span>),
+        <span class="kw-2">&amp;</span><span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
                 <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
@@ -276,30 +276,30 @@
 
 <span class="doccomment">/// Validates the exit code code and if not 0 or unable to validate it, panic.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_exit_code</span>(<span class="ident">code</span>: <span class="ident">i32</span>) {
-    <span class="kw">if</span> <span class="ident">code</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> {
+    <span class="kw">if</span> <span class="ident">code</span> <span class="op">=</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> {
         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, unable to extract exit code.&quot;</span>);
         <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, unable to extract exit code.&quot;</span>);
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span> <span class="op">!=</span> <span class="number">0</span> {
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, exit code: {}&quot;</span>, <span class="ident">code</span>);
         <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Error while executing command, exit code: {}&quot;</span>, <span class="ident">code</span>);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">is_silent</span>() <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">is_silent</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_log_level</span>();
     <span class="ident">is_silent_for_level</span>(<span class="ident">log_level</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">is_silent_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">is_silent_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_level</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
 
     <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">logger</span>::<span class="ident">LogLevel</span>::<span class="ident">ERROR</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        <span class="ident">logger</span>::<span class="ident">LogLevel</span>::<span class="ident">ERROR</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_print_commands_by_default</span>() <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">should_print_commands_by_default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_log_level</span>();
 
     <span class="kw">if</span> <span class="ident">should_print_commands_for_level</span>(<span class="ident">log_level</span>) {
@@ -312,12 +312,12 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_print_commands_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">should_print_commands_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_level</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
 
     <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">logger</span>::<span class="ident">LogLevel</span>::<span class="ident">VERBOSE</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        <span class="ident">logger</span>::<span class="ident">LogLevel</span>::<span class="ident">VERBOSE</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
     }
 }
 
@@ -328,7 +328,7 @@
     <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">capture_output</span>: <span class="ident">bool</span>,
     <span class="ident">print_commands</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">String</span>, <span class="ident">String</span>), <span class="ident">ScriptError</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">String</span>, <span class="ident">String</span>), <span class="ident">ScriptError</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">ScriptOptions</span>::<span class="ident">new</span>();
     <span class="ident">options</span>.<span class="ident">runner</span> <span class="op">=</span> <span class="ident">script_runner</span>.<span class="ident">clone</span>();
     <span class="ident">options</span>.<span class="ident">output_redirection</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">capture_output</span> {
@@ -338,8 +338,8 @@
     };
     <span class="ident">options</span>.<span class="ident">exit_on_error</span> <span class="op">=</span> <span class="bool-val">true</span>;
     <span class="ident">options</span>.<span class="ident">print_commands</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">print_commands</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) <span class="op">=&gt;</span> <span class="ident">bool_value</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">should_print_commands_by_default</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">bool_value</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">should_print_commands_by_default</span>(),
     };
 
     <span class="kw">if</span> <span class="ident">is_silent</span>() {
@@ -356,12 +356,12 @@
     <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">validate</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
     <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">run_script_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">script_lines</span>, <span class="ident">script_runner</span>, <span class="ident">cli_arguments</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>);
 
     <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">output</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>) <span class="op">=&gt;</span> <span class="ident">output_struct</span>.<span class="number">0</span>,
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="op">-</span><span class="number">1</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">output_struct</span>.<span class="number">0</span>,
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="op">-</span><span class="number">1</span>,
     };
 
     <span class="kw">if</span> <span class="ident">validate</span> {
@@ -374,19 +374,19 @@
 <span class="doccomment">/// Runs the requested command and return its output.</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command_get_output</span>(
     <span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">capture_output</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span> {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Execute Command: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>);
 
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args_vec</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args_vec</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args_vec</span>.<span class="ident">iter</span>() {
                 <span class="ident">command</span>.<span class="ident">arg</span>(<span class="ident">arg</span>);
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No command args defined.&quot;</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No command args defined.&quot;</span>),
     };
 
     <span class="ident">command</span>.<span class="ident">stdin</span>(<span class="ident">Stdio</span>::<span class="ident">inherit</span>());
@@ -402,7 +402,7 @@
 }
 
 <span class="doccomment">/// Runs the requested command and panics in case of any error.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command</span>(<span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">validate</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">i32</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command</span>(<span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">validate</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
     <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">run_command_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="bool-val">false</span>);
 
     <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">get_exit_code_from_output</span>(<span class="kw-2">&amp;</span><span class="ident">output</span>, <span class="op">!</span><span class="ident">validate</span>);
@@ -419,12 +419,12 @@
     <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">should_ignore_errors</span>();
 
     <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command_string</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command_string</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">command_spec</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">toolchain</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain</span>) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="ident">toolchain</span>::<span class="ident">wrap_command</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>)
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">CommandSpec</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">CommandSpec</span> {
                     <span class="ident">command</span>: <span class="ident">command_string</span>.<span class="ident">to_string</span>(),
                     <span class="ident">args</span>: <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>.<span class="ident">clone</span>(),
                 },
@@ -432,8 +432,8 @@
 
             <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No command defined.&quot;</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No command defined.&quot;</span>),
     };
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
