@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.26.3
+
+* Enable to pipe stdin for scripts #355 (thanks @dakom)
+
 ### v0.26.2 (2020-01-24)
 
 * Print duckscript version info env task #371
