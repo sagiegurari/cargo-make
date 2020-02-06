@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.26.3
+### v0.27.0 (2020-02-07)
 
 * Enable to pipe stdin for scripts #355 (thanks @dakom)
 * Upgrade to duckscript 0.2
