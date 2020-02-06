@@ -126,6 +126,8 @@ pub(crate) fn run_script_get_output(
     if is_silent() {
         options.output_redirection = IoOptions::Pipe;
         options.print_commands = false;
+    } else if !capture_output && envmnt::is("CARGO_MAKE_SCRIPT_FORCE_PIPE_STDIN") {
+        options.input_redirection = IoOptions::Pipe;
     }
 
     run_script::run(script_lines.join("\n").as_str(), cli_arguments, &options)

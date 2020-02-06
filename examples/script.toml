@@ -4,9 +4,11 @@ skip_core_tasks = true
 
 [tasks.hello-world]
 script = [
-    "echo start...",
-    "echo \"Hello World From Script\"",
-    "echo end..."
+'''
+    echo start...
+    echo "Hello World From Script"
+    echo end...
+'''
 ]
 
 [tasks.hello-world-from-script-file]
@@ -17,3 +19,22 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 
 [tasks.default]
 dependencies = ["hello-world"]
+
+[tasks.read-input]
+script = [
+'''
+    echo Enter Input
+    read
+    echo Input: ${REPLY}
+'''
+]
+
+[tasks.force-pipe-stdin]
+env = { CARGO_MAKE_SCRIPT_FORCE_PIPE_STDIN = true }
+script = [
+'''
+    echo start
+    sleep 20
+    echo end
+'''
+]
