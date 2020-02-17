@@ -1,7 +1,5 @@
 use super::*;
 use crate::test;
-use std::fs::File;
-use std::io::{Read, Write};
 
 #[test]
 #[cfg(target_os = "linux")]
@@ -63,11 +61,9 @@ fn migrate_from_directory_delete_legacy_directory() {
     let test_directory = test::get_temp_test_directory();
     let legacy_directory = test_directory.join("legacy");
     let target_directory = test_directory.join("target");
-    create_dir_all(&legacy_directory).unwrap();
 
     let legacy_file = legacy_directory.join("test.txt");
-    let mut legacy_file_pt = File::create(&legacy_file).unwrap();
-    legacy_file_pt.write_all("test 123".as_bytes()).unwrap();
+    fsio::file::write_text_file(&legacy_file, "test 123").unwrap();
 
     let done = migrate_from_directory(target_directory.clone(), "test.txt", &legacy_directory);
 
@@ -79,9 +75,7 @@ fn migrate_from_directory_delete_legacy_directory() {
     assert!(!legacy_directory.exists());
 
     let target_file = target_directory.join("test.txt");
-    let mut target_file_pt = File::open(&target_file).unwrap();
-    let mut file_text = String::new();
-    target_file_pt.read_to_string(&mut file_text).unwrap();
+    let file_text = fsio::file::read_text_file(&target_file).unwrap();
 
     assert_eq!(&file_text, "test 123");
 }

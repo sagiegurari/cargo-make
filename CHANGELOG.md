@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.28.0
+
+* Use fsio crate for file system apis.
+
 ### v0.27.0 (2020-02-07)
 
 * Enable to pipe stdin for scripts #355 (thanks @dakom)

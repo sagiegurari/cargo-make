@@ -8,11 +8,10 @@
 mod crate_version_check_test;
 
 use dirs;
+use fsio;
 use semver::Version;
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::path::Path;
 use toml;
 
@@ -50,19 +49,14 @@ fn load_crates_toml(cargo_home: &str) -> Option<CratesRegistryInfo> {
     let file_path = Path::new(cargo_home).join(".crates.toml");
 
     if file_path.exists() && file_path.is_file() {
-        match File::open(&file_path) {
-            Ok(mut file) => {
-                let mut file_content = String::new();
-                file.read_to_string(&mut file_content).unwrap();
-
-                match toml::from_str(&file_content) {
-                    Ok(info) => Some(info),
-                    Err(error) => {
-                        warn!("Unable to parse crates descriptor, error: {}", &error);
-                        None
-                    }
+        match fsio::file::read_text_file(&file_path) {
+            Ok(file_content) => match toml::from_str(&file_content) {
+                Ok(info) => Some(info),
+                Err(error) => {
+                    warn!("Unable to parse crates descriptor, error: {}", &error);
+                    None
                 }
-            }
+            },
             Err(error) => {
                 warn!("Unable to open crates descriptor, error: {}", &error);
                 None

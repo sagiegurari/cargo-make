@@ -18,9 +18,11 @@ use crate::types::{
 };
 use crate::version;
 use envmnt;
+use fsio::path::as_path::AsPath;
+use fsio::path::canonicalize_or;
+use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
 use std::env;
-use std::fs::canonicalize;
 use std::path::{Path, PathBuf};
 use toml;
 
@@ -133,11 +135,11 @@ fn merge_tasks(
 
 fn add_file_location_info(
     mut external_config: ExternalConfig,
-    file_path: &PathBuf,
+    file_path_string: &str,
 ) -> ExternalConfig {
-    let file_path_string = file_path.to_string_lossy().into_owned();
+    let file_path = file_path_string.as_path();
     let base_directory = match file_path.parent() {
-        Some(directory) => directory.to_string_lossy().into_owned(),
+        Some(directory) => FromPath::from_path(directory),
         None => "".to_string(),
     };
 
@@ -362,10 +364,8 @@ fn load_external_descriptor(
     let file_path = Path::new(base_path).join(file_name);
 
     if file_path.exists() && file_path.is_file() {
-        let absolute_file_path = match canonicalize(&file_path) {
-            Ok(result_path) => result_path,
-            _ => file_path.clone(),
-        };
+        let file_path_string: String = FromPath::from_path(&file_path);
+        let absolute_file_path = canonicalize_or(&file_path, &file_path_string);
 
         if set_env {
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);

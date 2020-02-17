@@ -10,8 +10,8 @@ mod config_test;
 use crate::storage;
 use crate::types::GlobalConfig;
 use dirs;
-use std::fs::File;
-use std::io::Read;
+use fsio::file::read_text_file;
+use fsio::path::from_path::FromPath;
 use std::path::{Path, PathBuf};
 use toml;
 
@@ -27,28 +27,22 @@ fn load_from_path(directory: PathBuf) -> GlobalConfig {
     debug!("Loading config from: {:#?}", &file_path);
 
     if file_path.exists() {
-        let mut file = match File::open(&file_path) {
-            Ok(value) => value,
+        match read_text_file(&file_path) {
+            Ok(config_str) => {
+                let mut global_config: GlobalConfig = match toml::from_str(&config_str) {
+                    Ok(value) => value,
+                    Err(error) => panic!("Unable to parse global configuration file, {}", error),
+                };
+
+                global_config.file_name = Some(FromPath::from_path(&file_path));
+
+                global_config
+            }
             Err(error) => panic!(
-                "Unable to open config file, directory: {:#?} error: {}",
-                &directory, error
+                "Unable to read config file: {:?} error: {}",
+                &file_path, error
             ),
-        };
-
-        let mut config_str = String::new();
-        file.read_to_string(&mut config_str).unwrap();
-
-        let mut global_config: GlobalConfig = match toml::from_str(&config_str) {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to parse global configuration file, {}", error),
-        };
-
-        match file_path.to_str() {
-            Some(value) => global_config.file_name = Some(value.to_string()),
-            None => global_config.file_name = None,
-        };
-
-        global_config
+        }
     } else {
         GlobalConfig::new()
     }

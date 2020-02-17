@@ -8,8 +8,9 @@
 mod legacy_test;
 
 use dirs;
+use fsio;
 use std::env;
-use std::fs::{copy, create_dir_all, remove_dir, remove_file};
+use std::fs::copy;
 use std::path::PathBuf;
 
 fn get_legacy_cargo_make_home() -> Option<PathBuf> {
@@ -37,7 +38,7 @@ fn migrate_from_directory(
         let exists = if target_directory.exists() {
             true
         } else {
-            match create_dir_all(&target_directory) {
+            match fsio::directory::create(&target_directory) {
                 Ok(_) => true,
                 _ => false,
             }
@@ -50,10 +51,10 @@ fn migrate_from_directory(
             match copy(&legacy_file, &target_file) {
                 Ok(_) => {
                     info!("Delete legacy cargo-make file: {:#?}", &legacy_file);
-                    remove_file(&legacy_file).unwrap_or(());
+                    fsio::file::delete(&legacy_file).unwrap_or(());
 
                     // delete old directory (will only work if empty)
-                    remove_dir(&legacy_directory).unwrap_or(());
+                    fsio::directory::delete(legacy_directory).unwrap_or(());
 
                     true
                 }
