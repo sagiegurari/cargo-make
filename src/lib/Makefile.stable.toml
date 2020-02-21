@@ -1185,9 +1185,46 @@ args = ["hublish"]
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release."
 category = "Publish"
+dependencies = [
+    "github-hub-find"
+]
+condition = { env = { "CARGO_MAKE_GIT_BRANCH" = "master" } }
 run_task = [
+    { name = "github-publish-hub", condition = { env_set = [ "GITHUB_API_TOKEN" ], env_true = [ "CARGO_MAKE_GITHUB_HUB_CLI_FOUND" ] } },
     { name = "github-publish-curl", condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] } },
     { name = "github-publish-hublish", condition = { env_set = [ "GITHUB_REPO_NAME" ] } },
+]
+
+[tasks.github-hub-find]
+script_runner = "@duckscript"
+script = [
+'''
+exit_on_error false
+
+output = exec hub --help
+exit_code = set ${output.code}
+valid = equals ${exit_code} 0
+
+if ${valid}
+    echo GitHub hub cli found
+    set_env CARGO_MAKE_GITHUB_HUB_CLI_FOUND true
+end
+'''
+]
+
+[tasks.github-publish-hub]
+# Creates a new github release.
+description = "Creates a new github release using hub."
+category = "Publish"
+condition = { env_set = [ "GITHUB_API_TOKEN", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
+env = { "GITHUB_TOKEN" = "${GITHUB_API_TOKEN}" }
+command = "hub"
+args = [
+    "release",
+    "create",
+    "-m",
+    "${CARGO_MAKE_PROJECT_NAME} v${CARGO_MAKE_PROJECT_VERSION}",
+    "${CARGO_MAKE_PROJECT_VERSION}"
 ]
 
 [tasks.github-publish-hublish]

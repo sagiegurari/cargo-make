@@ -2,6 +2,7 @@
 
 ### v0.28.0
 
+* Added github hub cli support #376
 * Use fsio crate for file system apis.
 
 ### v0.27.0 (2020-02-07)
