@@ -12,17 +12,12 @@ use crate::execution_plan::create as create_execution_plan;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, ExecutionPlan};
 use std::fs::File;
+use std::io;
 use std::io::{BufWriter, Write};
 
-fn write_as_string(execution_plan: &ExecutionPlan, file: &File, file_path: &str) {
+fn write_as_string(execution_plan: &ExecutionPlan, file: &File) -> io::Result<()> {
     let mut writer = BufWriter::new(file);
-    match writeln!(&mut writer, "{:#?}", &execution_plan.steps) {
-        Err(error) => {
-            error!("Unable to write to file: {} {:#?}", &file_path, &error);
-            panic!("Unable to write to file, error: {}", error);
-        }
-        _ => (),
-    };
+    writeln!(&mut writer, "{:#?}", &execution_plan.steps)
 }
 
 /// Runs the execution plan diff
@@ -49,15 +44,11 @@ pub(crate) fn run(
     );
 
     let internal_file = create_file(
-        &move |file: &mut File, file_path: &str| {
-            write_as_string(&internal_execution_plan, &file, &file_path)
-        },
+        &move |file: &mut File| write_as_string(&internal_execution_plan, &file),
         "toml",
     );
     let external_file = create_file(
-        &move |file: &mut File, file_path: &str| {
-            write_as_string(&external_execution_plan, &file, &file_path)
-        },
+        &move |file: &mut File| write_as_string(&external_execution_plan, &file),
         "toml",
     );
 

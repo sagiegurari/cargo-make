@@ -2,10 +2,10 @@
 mod makefile_test;
 
 use ci_info;
+use fsio;
 use rust_info;
 use rust_info::types::RustChannel;
 use std::env;
-use std::fs::{create_dir_all, remove_dir_all};
 use std::path::PathBuf;
 
 pub(crate) fn is_linux() -> bool {
@@ -82,9 +82,9 @@ pub(crate) fn get_temp_test_directory() -> PathBuf {
     let directory = path.join("target/_cargo_make_temp/test");
 
     if directory.exists() {
-        remove_dir_all(&directory).unwrap();
+        fsio::directory::delete(&directory).unwrap();
     }
-    create_dir_all(&directory).unwrap();
+    fsio::directory::create(&directory).unwrap();
 
     directory
 }

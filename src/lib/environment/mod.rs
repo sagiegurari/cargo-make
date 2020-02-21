@@ -22,6 +22,7 @@ use duckscript;
 use duckscriptsdk;
 use envmnt;
 use envmnt::{ExpandOptions, ExpansionType};
+use fsio::path::from_path::FromPath;
 use git_info;
 use git_info::types::GitInfo;
 use indexmap::IndexMap;
@@ -564,9 +565,11 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
             envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
 
             if !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
+                let directory_path_string: String = FromPath::from_path(directory_path);
+
                 envmnt::set(
                     "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
-                    directory_path.to_string_lossy().into_owned(),
+                    directory_path_string,
                 );
             }
 

@@ -8,11 +8,9 @@
 mod crateinfo_test;
 
 use crate::types::{CrateDependency, CrateInfo};
+use fsio;
 use glob::glob;
 use std::env;
-use std::fs;
-use std::fs::File;
-use std::io::Read;
 use std::path::{Path, PathBuf};
 use toml::{self, Value};
 
@@ -165,13 +163,11 @@ pub(crate) fn load() -> CrateInfo {
 
 pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     if file_path.exists() {
-        debug!("Opening file: {:#?}", &file_path);
-        let mut file = match File::open(&file_path) {
-            Ok(value) => value,
+        debug!("Reading file: {:#?}", &file_path);
+        let crate_info_string = match fsio::file::read_text_file(&file_path) {
+            Ok(content) => content,
             Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
         };
-        let mut crate_info_string = String::new();
-        file.read_to_string(&mut crate_info_string).unwrap();
 
         let mut crate_info: CrateInfo = match toml::from_str(&crate_info_string) {
             Ok(value) => value,
@@ -213,7 +209,7 @@ pub(crate) fn crate_target_triple(
             };
 
             if let Some(path) = config_file {
-                if let Ok(content) = fs::read_to_string(path) {
+                if let Ok(content) = fsio::file::read_text_file(&path) {
                     if let Ok(Value::Table(mut table)) = content.parse() {
                         if let Some(Value::Table(mut table)) = table.remove("build") {
                             if let Some(Value::String(target)) = table.remove("target") {

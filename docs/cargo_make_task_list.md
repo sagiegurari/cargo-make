@@ -100,6 +100,7 @@
 ## No Category
 
 * **build-release-for-target** - Makes a release build for a given target
+* **github-hub-find** - No Description.
 * **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
 ## Publish
@@ -109,6 +110,7 @@
 * **github-publish** - Creates a new github release.
 * **github-publish-curl** - Creates a new github release using curl.
 * **github-publish-custom-name** - Creates a new github release.
+* **github-publish-hub** - Creates a new github release using hub.
 * **github-publish-hublish** - Creates a new github release using cargo-hublish.
 * **package** - Runs the cargo package command.
 * **post-package** - No Description.

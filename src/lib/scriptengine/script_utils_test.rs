@@ -1,16 +1,13 @@
 use super::*;
 use crate::io;
-use std::fs::File;
-use std::io::Read;
+use fsio;
 
 #[test]
 fn create_script_file_text() {
     let file = create_script_file(&vec!["test".to_string(), "end".to_string()], ".testfile");
     assert!(file.ends_with(".testfile"));
 
-    let mut file_obj = File::open(&file).unwrap();
-    let mut text = String::new();
-    file_obj.read_to_string(&mut text).unwrap();
+    let text = fsio::file::read_text_file(&file).unwrap();
 
     io::delete_file(&file);
 
