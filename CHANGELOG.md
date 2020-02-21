@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.28.0
+### v0.28.0 (2020-02-21)
 
 * Added github hub cli support #376
 * Use fsio crate for file system apis.

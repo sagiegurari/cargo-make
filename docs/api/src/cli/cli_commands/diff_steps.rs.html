@@ -69,15 +69,6 @@
 <span id="69">69</span>
 <span id="70">70</span>
 <span id="71">71</span>
-<span id="72">72</span>
-<span id="73">73</span>
-<span id="74">74</span>
-<span id="75">75</span>
-<span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
-<span id="80">80</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # diff_steps</span>
 <span class="doccomment">//!</span>
@@ -93,17 +84,12 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">io</span>::{<span class="ident">create_file</span>, <span class="ident">delete_file</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">ExecutionPlan</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="ident">BufWriter</span>, <span class="ident">Write</span>};
 
-<span class="kw">fn</span> <span class="ident">write_as_string</span>(<span class="ident">execution_plan</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionPlan</span>, <span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="ident">File</span>, <span class="ident">file_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+<span class="kw">fn</span> <span class="ident">write_as_string</span>(<span class="ident">execution_plan</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionPlan</span>, <span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="ident">File</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">writer</span> <span class="op">=</span> <span class="ident">BufWriter</span>::<span class="ident">new</span>(<span class="ident">file</span>);
-    <span class="kw">match</span> <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">writer</span>, <span class="string">&quot;{:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>.<span class="ident">steps</span>) {
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to write to file: {} {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>, <span class="kw-2">&amp;</span><span class="ident">error</span>);
-            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to write to file, error: {}&quot;</span>, <span class="ident">error</span>);
-        }
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
-    };
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">writer</span>, <span class="string">&quot;{:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>.<span class="ident">steps</span>)
 }
 
 <span class="doccomment">/// Runs the execution plan diff</span>
@@ -130,15 +116,11 @@
     );
 
     <span class="kw">let</span> <span class="ident">internal_file</span> <span class="op">=</span> <span class="ident">create_file</span>(
-        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">File</span>, <span class="ident">file_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">|</span> {
-            <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">internal_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>)
-        },
+        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">File</span><span class="op">|</span> <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">internal_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>),
         <span class="string">&quot;toml&quot;</span>,
     );
     <span class="kw">let</span> <span class="ident">external_file</span> <span class="op">=</span> <span class="ident">create_file</span>(
-        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">File</span>, <span class="ident">file_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">|</span> {
-            <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">external_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>)
-        },
+        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">File</span><span class="op">|</span> <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">external_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>),
         <span class="string">&quot;toml&quot;</span>,
     );
 
