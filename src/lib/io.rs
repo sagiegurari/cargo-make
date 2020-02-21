@@ -7,10 +7,10 @@
 #[path = "./io_test.rs"]
 mod io_test;
 
-use fsio::directory::create_parent;
-use fsio::path::as_path::AsPath;
+use fsio::file::modify_file;
 use fsio::path::get_temporary_file_path;
 use std::fs::File;
+use std::io;
 use std::path::PathBuf;
 
 pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
@@ -25,33 +25,19 @@ pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
     }
 }
 
-pub(crate) fn create_file(write_content: &Fn(&mut File, &str), extension: &str) -> String {
+pub(crate) fn create_file(
+    write_content: &Fn(&mut File) -> io::Result<()>,
+    extension: &str,
+) -> String {
     let file_path = get_temporary_file_path(extension);
 
-    match create_parent(&file_path) {
-        _ => (),
-    };
-
-    let file_path_obj = file_path.as_path();
-
-    debug!("Creating temporary file: {}", &file_path);
-
-    let mut file = match File::create(&file_path_obj) {
+    match modify_file(&file_path, write_content, false) {
+        Ok(_) => file_path,
         Err(error) => {
-            error!("Unable to create file: {} {:#?}", &file_path, &error);
-            panic!("Unable to create file, error: {}", error);
+            error!("Unable to write to file: {} {:#?}", &file_path, &error);
+            panic!("Unable to write to file, error: {}", error);
         }
-        Ok(file) => file,
-    };
-
-    write_content(&mut file, &file_path);
-
-    match file.sync_all() {
-        Ok(_) => debug!("File Synched."),
-        Err(error) => debug!("Error Synching File: {:#?}", error),
-    };
-
-    file_path
+    }
 }
 
 pub(crate) fn delete_file(file: &str) {
