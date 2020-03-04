@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.29.0
+
+* Improve toml loading performance.
+
 ### v0.28.0 (2020-02-21)
 
 * Added github hub cli support #376
