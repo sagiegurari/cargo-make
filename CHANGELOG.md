@@ -3,6 +3,7 @@
 ### v0.29.0
 
 * Improve toml loading performance.
+* Split core makefiles to multiple files.
 
 ### v0.28.0 (2020-02-21)
 

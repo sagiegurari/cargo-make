@@ -1,0 +1,72 @@
+
+[tasks.pre-git-add]
+category = "Git"
+
+[tasks.git-add]
+description = "Runs the cargo add command."
+category = "Git"
+command = "git"
+args = ["add", "."]
+
+[tasks.post-git-add]
+category = "Git"
+
+[tasks.pre-git-status]
+category = "Git"
+
+[tasks.git-status]
+description = "Runs git status command."
+category = "Git"
+command = "git"
+args = ["status"]
+
+[tasks.post-git-status]
+category = "Git"
+
+[tasks.pre-git-commit]
+category = "Git"
+
+[tasks.git-commit]
+description = "Runs git commit command."
+category = "Git"
+command = "git"
+args = ["commit"]
+
+[tasks.git-commit-message]
+description = "Runs git commit command with the message defined in the COMMIT_MSG environment variable."
+category = "Git"
+condition = { env_set = [ "COMMIT_MSG" ] }
+command = "git"
+args = ["commit", "-m", "${COMMIT_MSG}"]
+
+[tasks.post-git-commit]
+category = "Git"
+
+[tasks.pre-git-push]
+category = "Git"
+
+[tasks.git-push]
+description = "Runs git push command."
+category = "Git"
+command = "git"
+args = ["push"]
+
+[tasks.post-git-push]
+category = "Git"
+
+[tasks.git-pull]
+description = "Runs git pull command."
+category = "Git"
+command = "git"
+args = ["pull"]
+
+[tasks.git-delete-merged-branches]
+description = "Deletes any merged git branches"
+category = "Git"
+ignore_errors = true
+condition = { platforms = ["linux", "mac"] }
+script = [
+'''
+git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
+'''
+]
