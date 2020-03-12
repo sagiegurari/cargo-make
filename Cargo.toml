@@ -44,7 +44,7 @@ dirs = "^2"
 duckscript = "^0.2.1"
 duckscriptsdk = "^0.2.1"
 envmnt = "^0.8"
-fern = "^0.5"
+fern = "^0.6"
 fsio = { version = "^0.1.2", features = ["temp-path"] }
 git_info = "^0.1.1"
 glob = "^0.3"
