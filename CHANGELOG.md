@@ -2,6 +2,7 @@
 
 ### v0.29.0
 
+* Provide accurate CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY when starting build from member crate #382
 * Improve toml loading performance.
 * Split core makefiles to multiple files.
 
