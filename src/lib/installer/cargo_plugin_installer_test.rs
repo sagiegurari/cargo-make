@@ -130,13 +130,14 @@ fn get_install_crate_args_locked() {
     );
     envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
 
-    assert_eq!(all_args.len(), 6);
+    assert_eq!(all_args.len(), 7);
     assert_eq!(all_args[0], "install");
     assert_eq!(all_args[1], "arg1");
     assert_eq!(all_args[2], "arg2");
     assert_eq!(all_args[3], "--locked");
-    assert_eq!(all_args[4], "1.2.3");
-    assert_eq!(all_args[5], "test123");
+    assert_eq!(all_args[4], "--version");
+    assert_eq!(all_args[5], "1.2.3");
+    assert_eq!(all_args[6], "test123");
 }
 
 #[test]
@@ -185,13 +186,14 @@ fn get_install_crate_args_frozen() {
     );
     envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_FROZEN");
 
-    assert_eq!(all_args.len(), 6);
+    assert_eq!(all_args.len(), 7);
     assert_eq!(all_args[0], "install");
     assert_eq!(all_args[1], "arg1");
     assert_eq!(all_args[2], "arg2");
     assert_eq!(all_args[3], "--frozen");
-    assert_eq!(all_args[4], "1.2.3");
-    assert_eq!(all_args[5], "test123");
+    assert_eq!(all_args[4], "--version");
+    assert_eq!(all_args[5], "1.2.3");
+    assert_eq!(all_args[6], "test123");
 }
 
 #[test]

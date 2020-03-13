@@ -101,9 +101,11 @@ pub(crate) fn get_install_crate_args(
         if let Some(version) = min_version {
             if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_FROZEN") {
                 install_args.push("--frozen".to_string());
+                install_args.push("--version".to_string());
                 install_args.push(version.to_string());
             } else if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
                 install_args.push("--locked".to_string());
+                install_args.push("--version".to_string());
                 install_args.push(version.to_string());
             }
         }
