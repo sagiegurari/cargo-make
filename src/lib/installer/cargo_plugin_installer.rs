@@ -10,6 +10,7 @@ mod cargo_plugin_installer_test;
 use crate::command;
 use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
+use envmnt;
 use std::process::Command;
 
 fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
@@ -77,6 +78,7 @@ pub(crate) fn get_install_crate_args(
     crate_name: &str,
     force: bool,
     args: &Option<Vec<String>>,
+    min_version: &Option<String>,
 ) -> Vec<String> {
     let mut install_args = vec!["install".to_string()];
 
@@ -95,6 +97,17 @@ pub(crate) fn get_install_crate_args(
 
     let skip_crate_name = should_skip_crate_name(&args);
     if !skip_crate_name {
+        // add frozen/locked flags
+        if let Some(version) = min_version {
+            if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_FROZEN") {
+                install_args.push("--frozen".to_string());
+                install_args.push(version.to_string());
+            } else if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
+                install_args.push("--locked".to_string());
+                install_args.push(version.to_string());
+            }
+        }
+
         install_args.push(crate_name.to_string());
     }
 
@@ -130,7 +143,7 @@ pub(crate) fn install_crate(
     };
 
     if run_installation {
-        let install_args = get_install_crate_args(crate_name, force, args);
+        let install_args = get_install_crate_args(crate_name, force, args, &min_version);
 
         match toolchain {
             Some(ref toolchain_string) => {
