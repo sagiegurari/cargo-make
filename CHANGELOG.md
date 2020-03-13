@@ -6,6 +6,7 @@
 * Support locked automatically for all crate installations via CARGO_MAKE_CRATE_INSTALLATION_LOCKED environment variable #381
 * Improve toml loading performance.
 * Split core makefiles to multiple files.
+* Upgrade duckscript to 0.3
 
 ### v0.28.0 (2020-02-21)
 
