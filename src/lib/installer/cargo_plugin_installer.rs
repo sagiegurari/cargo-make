@@ -97,13 +97,9 @@ pub(crate) fn get_install_crate_args(
 
     let skip_crate_name = should_skip_crate_name(&args);
     if !skip_crate_name {
-        // add frozen/locked flags
+        // add locked flags
         if let Some(version) = min_version {
-            if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_FROZEN") {
-                install_args.push("--frozen".to_string());
-                install_args.push("--version".to_string());
-                install_args.push(version.to_string());
-            } else if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
+            if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
                 install_args.push("--locked".to_string());
                 install_args.push("--version".to_string());
                 install_args.push(version.to_string());

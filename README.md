@@ -54,7 +54,7 @@
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Defining Minimal Version](#usage-installing-min-version)
-        * [Global Lock/Freeze Of Versions](#usage-installing-locked-frozen)
+        * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)
@@ -1582,7 +1582,7 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Rustup Components](#usage-installing-rustup-components)
 * [Native Dependencies](#usage-installing-native-dependencies)
 * [Defining Minimal Version](#usage-installing-min-version)
-* [Global Lock/Freeze Of Versions](#usage-installing-locked-frozen)
+* [Global Lock Of Versions](#usage-installing-locked)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
 
@@ -1744,16 +1744,11 @@ Currently there are few limitations when defining min_version:
 * Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
 * In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
-<a name="usage-installing-locked-frozen"></a>
-#### Global Lock/Freeze Of Versions
+<a name="usage-installing-locked"></a>
+#### Global Lock Of Versions
 
 In case [minimal version]((#usage-installing-min-version) is defined,
-you can automatically have **--locked** or **--frozen** to the crate installation by defining one of the following environment variables:
-
-* **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** - Will result in **--locked** being added.
-* **CARGO_MAKE_CRATE_INSTALLATION_FROZEN=true** - Will result in **--frozen** being added.
-
-*If both are defined, frozen will take priority over locked.*
+you can automatically have **--locked** to the crate installation by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities

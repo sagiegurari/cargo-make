@@ -3,7 +3,7 @@
 ### v0.29.0
 
 * Provide accurate CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY when starting build from member crate #382
-* Support locked/frozen automatically for all crate installations via CARGO_MAKE_CRATE_INSTALLATION_FROZEN and CARGO_MAKE_CRATE_INSTALLATION_LOCKED environment variables #381
+* Support locked automatically for all crate installations via CARGO_MAKE_CRATE_INSTALLATION_LOCKED environment variable #381
 * Improve toml loading performance.
 * Split core makefiles to multiple files.
 

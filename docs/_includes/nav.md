@@ -41,7 +41,7 @@
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Defining Minimal Version](#usage-installing-min-version)
-        * [Global Lock/Freeze Of Versions](#usage-installing-locked-frozen)
+        * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)

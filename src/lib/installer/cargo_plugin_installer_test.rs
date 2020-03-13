@@ -176,62 +176,6 @@ fn get_install_crate_args_without_crate_name_locked() {
 }
 
 #[test]
-fn get_install_crate_args_frozen() {
-    envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_FROZEN", true);
-    let all_args = get_install_crate_args(
-        "test123",
-        false,
-        &Some(vec!["arg1".to_string(), "arg2".to_string()]),
-        &Some("1.2.3".to_string()),
-    );
-    envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_FROZEN");
-
-    assert_eq!(all_args.len(), 7);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "arg1");
-    assert_eq!(all_args[2], "arg2");
-    assert_eq!(all_args[3], "--frozen");
-    assert_eq!(all_args[4], "--version");
-    assert_eq!(all_args[5], "1.2.3");
-    assert_eq!(all_args[6], "test123");
-}
-
-#[test]
-fn get_install_crate_args_no_version_frozen() {
-    envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_FROZEN", true);
-    let all_args = get_install_crate_args(
-        "test123",
-        false,
-        &Some(vec!["arg1".to_string(), "arg2".to_string()]),
-        &None,
-    );
-    envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_FROZEN");
-
-    assert_eq!(all_args.len(), 4);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "arg1");
-    assert_eq!(all_args[2], "arg2");
-    assert_eq!(all_args[3], "test123");
-}
-
-#[test]
-fn get_install_crate_args_without_crate_name_frozen() {
-    envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_FROZEN", true);
-    let all_args = get_install_crate_args(
-        "test123",
-        false,
-        &Some(vec!["--git".to_string(), "arg2".to_string()]),
-        &Some("1.2.3".to_string()),
-    );
-    envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_FROZEN");
-
-    assert_eq!(all_args.len(), 3);
-    assert_eq!(all_args[0], "install");
-    assert_eq!(all_args[1], "--git");
-    assert_eq!(all_args[2], "arg2");
-}
-
-#[test]
 fn should_skip_crate_name_none() {
     let output = should_skip_crate_name(&None);
 
