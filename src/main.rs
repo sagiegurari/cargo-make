@@ -25,7 +25,7 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
-extern crate cli;
+use cli;
 
 #[cfg(test)]
 #[path = "./main_test.rs"]
