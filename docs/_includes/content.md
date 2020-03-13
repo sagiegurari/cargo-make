@@ -632,7 +632,7 @@ set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 ```
 
 Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
-In addition, all environment variables are preloaded as duckscript variabes and can be directly read from the script (no need to invoke the **get_env** command).
+In addition, all environment variables are preloaded as duckscript variables and can be directly read from the script (no need to invoke the **get_env** command).
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
@@ -1475,8 +1475,9 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Cargo Plugins](#usage-installing-cargo-plugins)
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
-* [Defining Minimal Version](#usage-installing-min-version)
 * [Native Dependencies](#usage-installing-native-dependencies)
+* [Defining Minimal Version](#usage-installing-min-version)
+* [Global Lock/Freeze Of Versions](#usage-installing-locked-frozen)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
 
@@ -1549,29 +1550,6 @@ Example:
 install_crate = { rustup_component_name = "rust-src" }
 ```
 
-<a name="usage-installing-min-version"></a>
-#### Defining Minimal Version
-
-It is possible to define minimal version of depended crates, for example:
-
-```toml
-[tasks.simple-example]
-install_crate = { min_version = "0.0.1" }
-command = "cargo"
-args = ["make", "--version"]
-
-[tasks.complex-example]
-install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
-command = "cargo"
-args = ["make", "--version"]
-```
-
-This ensures we are using a crate version that supports the feature we require for the build.<br>
-Currently there are few limitations when defining min_version:
-
-* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
-* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
-
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies
 
@@ -1637,6 +1615,40 @@ fi
 ```
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
+
+<a name="usage-installing-min-version"></a>
+#### Defining Minimal Version
+
+It is possible to define minimal version of depended crates, for example:
+
+```toml
+[tasks.simple-example]
+install_crate = { min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
+This ensures we are using a crate version that supports the feature we require for the build.<br>
+Currently there are few limitations when defining min_version:
+
+* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
+* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
+
+<a name="usage-installing-locked-frozen"></a>
+#### Global Lock/Freeze Of Versions
+
+In case [minimal version]((#usage-installing-min-version) is defined,
+you can automatically have **--locked** or **--frozen** to the crate installation by defining one of the following environment variables:
+
+* **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** - Will result in **--locked** being added.
+* **CARGO_MAKE_CRATE_INSTALLATION_FROZEN=true** - Will result in **--frozen** being added.
+
+*If both are defined, frozen will take priority over locked.*
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
