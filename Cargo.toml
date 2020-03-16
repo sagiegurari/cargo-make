@@ -42,7 +42,7 @@ clap = "^2"
 colored = "^1"
 dirs = "^2"
 duckscript = "^0.2.1"
-duckscriptsdk = "^0.2.1"
+duckscriptsdk = "^0.3.0"
 envmnt = "^0.8"
 fern = "^0.5"
 fsio = { version = "^0.1.2", features = ["temp-path"] }
