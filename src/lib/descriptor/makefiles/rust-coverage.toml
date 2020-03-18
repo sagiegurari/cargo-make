@@ -34,11 +34,19 @@ run_task = [
 [tasks.coverage-kcov]
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 category = "Test"
+dependencies = [
+    "setup-sudo-env"
+]
 condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
 install_script = [
 '''
+if [ "${CARGO_MAKE_SUDO_ENABLED}" == "false" ]; then
+    echo "Skipping kcov installation as 'sudo' is disabled."
+    exit 0
+fi
+
 KCOV_INSTALLATION_DIRECTORY=""
 KCOV_BINARY_DIRECTORY=""
 if [ -n "${CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY}" ]; then

@@ -245,3 +245,23 @@ args = [
     "${CARGO_MAKE_DIFF_FILE1}",
     "${CARGO_MAKE_DIFF_FILE2}"
 ]
+
+[tasks.setup-sudo-env]
+description = "Sets the sudo enable/disable environment variables."
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+# disable sudo if the env is defined
+enable_sudo = not is_defined CARGO_MAKE_SUDO_DISABLE
+
+# always allow sudo in CI
+if equals ${CARGO_MAKE_CI} true
+    enable_sudo = set true
+end
+
+set_env CARGO_MAKE_SUDO_ENABLED ${enable_sudo}
+
+echo sudo enabled: ${enable_sudo}
+'''
+]

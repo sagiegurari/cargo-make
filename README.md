@@ -1747,8 +1747,9 @@ Currently there are few limitations when defining min_version:
 <a name="usage-installing-locked"></a>
 #### Global Lock Of Versions
 
-In case [minimal version]((#usage-installing-min-version) is defined,
-you can automatically have **--locked** to the crate installation by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
+In case [minimal version](#usage-installing-min-version) is defined,
+you can have the **--locked** flag automatically added to the crate installation command
+by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
