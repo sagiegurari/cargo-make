@@ -332,6 +332,17 @@ fn setup_env_for_crate() -> CrateInfo {
     envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace);
     if is_workspace {
         envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", true);
+    } else if !envmnt::exists("CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER") {
+        // in case we started the build directly from a workspace member, lets
+        // search for the workspace root (if any)
+        match crateinfo::search_workspace_root() {
+            Some(root_directory) => {
+                let root_directory_path_buf = get_directory_path(Some(&root_directory));
+                let root_directory_path = root_directory_path_buf.as_path();
+                set_workspace_cwd(&root_directory_path, true);
+            }
+            None => (),
+        }
     }
 
     let workspace = crate_info.workspace.unwrap_or(Workspace::new());
@@ -535,11 +546,20 @@ fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
     }
 }
 
-pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
-    let cwd_str = cwd.unwrap_or(".");
-    let directory = expand_value(cwd_str);
+fn set_workspace_cwd(directory_path: &Path, force: bool) {
+    if force || !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
+        let directory_path_string: String = FromPath::from_path(directory_path);
 
-    debug!("Changing working directory to: {}", &directory);
+        envmnt::set(
+            "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
+            directory_path_string,
+        );
+    }
+}
+
+fn get_directory_path(path_option: Option<&str>) -> PathBuf {
+    let cwd_str = path_option.unwrap_or(".");
+    let directory = expand_value(cwd_str);
 
     let mut directory_path_buf = PathBuf::from(&directory);
     directory_path_buf = directory_path_buf
@@ -551,29 +571,33 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
         directory_path_buf = remove_unc_prefix(&directory_path_buf);
     }
 
+    directory_path_buf
+}
+
+pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
+    let directory_path_buf = get_directory_path(cwd);
     let directory_path = directory_path_buf.as_path();
+
+    debug!(
+        "Changing working directory to: {}",
+        directory_path.display()
+    );
 
     match env::set_current_dir(&directory_path) {
         Err(error) => {
             error!(
                 "Unable to set current working directory to: {} {:#?}",
-                &directory, error
+                directory_path.display(),
+                error
             );
             None
         }
         _ => {
             envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
 
-            if !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
-                let directory_path_string: String = FromPath::from_path(directory_path);
+            set_workspace_cwd(&directory_path, false);
 
-                envmnt::set(
-                    "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY",
-                    directory_path_string,
-                );
-            }
-
-            debug!("Working directory changed to: {}", &directory);
+            debug!("Working directory changed to: {}", directory_path.display());
 
             let home = home::cargo_home_with_cwd(directory_path).ok();
 

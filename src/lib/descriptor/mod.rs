@@ -7,8 +7,10 @@
 //!
 
 #[cfg(test)]
-#[path = "./descriptor_test.rs"]
-mod descriptor_test;
+#[path = "./mod_test.rs"]
+mod mod_test;
+
+mod makefiles;
 
 use crate::io;
 use crate::scriptengine;
@@ -75,29 +77,11 @@ fn merge_env(
 }
 
 fn merge_env_files(base: &mut Vec<EnvFile>, extended: &mut Vec<EnvFile>) -> Vec<EnvFile> {
-    let mut merged: Vec<EnvFile> = vec![];
-
-    for value in extended.iter() {
-        merged.push(value.clone());
-    }
-    for value in base.iter() {
-        merged.push(value.clone());
-    }
-
-    merged
+    [&extended[..], &base[..]].concat()
 }
 
 fn merge_env_scripts(base: &mut Vec<String>, extended: &mut Vec<String>) -> Vec<String> {
-    let mut merged: Vec<String> = vec![];
-
-    for value in extended.iter() {
-        merged.push(value.clone());
-    }
-    for value in base.iter() {
-        merged.push(value.clone());
-    }
-
-    merged
+    [&extended[..], &base[..]].concat()
 }
 
 fn merge_tasks(
@@ -423,9 +407,9 @@ pub(crate) fn load_internal_descriptors(
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {
-        include_str!("Makefile.stable.toml")
+        makefiles::STABLE
     } else {
-        include_str!("Makefile.base.toml")
+        makefiles::BASE
     };
 
     let mut base_config: Config = match toml::from_str(base_descriptor) {
@@ -436,7 +420,7 @@ pub(crate) fn load_internal_descriptors(
 
     if experimental {
         debug!("Loading experimental tasks.");
-        let experimental_descriptor = include_str!("Makefile.beta.toml");
+        let experimental_descriptor = makefiles::BETA;
 
         let experimental_config: Config = match toml::from_str(experimental_descriptor) {
             Ok(value) => value,
@@ -475,6 +459,70 @@ pub(crate) fn load_internal_descriptors(
     base_config
 }
 
+fn merge_base_config_and_external_config(
+    base_config: Config,
+    external_config: ExternalConfig,
+    env_map: Option<Vec<String>>,
+) -> Config {
+    let mut external_tasks = match external_config.tasks {
+        Some(tasks) => tasks,
+        None => IndexMap::new(),
+    };
+    let mut base_tasks = base_config.tasks;
+
+    let env_files = match external_config.env_files {
+        Some(env_files) => env_files,
+        None => vec![],
+    };
+
+    let env_scripts = match external_config.env_scripts {
+        Some(env_scripts) => env_scripts,
+        None => vec![],
+    };
+
+    let mut external_env = match external_config.env {
+        Some(env) => env,
+        None => IndexMap::new(),
+    };
+    let mut base_env = base_config.env;
+
+    // merge env
+    let mut all_env = merge_env(&mut base_env, &mut external_env);
+    all_env = match env_map {
+        Some(values) => {
+            let mut cli_env = IndexMap::new();
+
+            for env_pair in &values {
+                let env_part: Vec<&str> = env_pair.split('=').collect();
+                debug!("Checking env pair: {}", &env_pair);
+
+                if env_part.len() == 2 {
+                    cli_env.insert(
+                        env_part[0].to_string(),
+                        EnvValue::Value(env_part[1].to_string()),
+                    );
+                }
+            }
+
+            merge_env(&mut all_env, &mut cli_env)
+        }
+        None => all_env,
+    };
+
+    let all_tasks = merge_tasks(&mut base_tasks, &mut external_tasks);
+
+    let mut config_section = base_config.config.clone();
+    config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
+
+    Config {
+        config: config_section,
+        env_files,
+        env: all_env,
+        env_scripts,
+        tasks: all_tasks,
+    }
+}
+
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
@@ -491,8 +539,7 @@ fn load_descriptors(
 ) -> Result<Config, String> {
     let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
 
-    let mut external_config: ExternalConfig =
-        load_external_descriptor(".", file_name, force, true)?;
+    let mut external_config = load_external_descriptor(".", file_name, force, true)?;
 
     external_config = match env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
         Ok(workspace_makefile) => {
@@ -523,63 +570,7 @@ fn load_descriptors(
         _ => external_config,
     };
 
-    let mut external_tasks = match external_config.tasks {
-        Some(tasks) => tasks,
-        None => IndexMap::new(),
-    };
-    let mut default_tasks = default_config.tasks;
-
-    let env_files = match external_config.env_files {
-        Some(env_files) => env_files,
-        None => vec![],
-    };
-
-    let env_scripts = match external_config.env_scripts {
-        Some(env_scripts) => env_scripts,
-        None => vec![],
-    };
-
-    let mut external_env = match external_config.env {
-        Some(env) => env,
-        None => IndexMap::new(),
-    };
-    let mut default_env = default_config.env;
-
-    // merge env
-    let mut all_env = merge_env(&mut default_env, &mut external_env);
-    all_env = match env_map {
-        Some(values) => {
-            let mut cli_env = IndexMap::new();
-
-            for env_pair in &values {
-                let env_part: Vec<&str> = env_pair.split('=').collect();
-                debug!("Checking env pair: {}", &env_pair);
-
-                if env_part.len() == 2 {
-                    cli_env.insert(
-                        env_part[0].to_string(),
-                        EnvValue::Value(env_part[1].to_string()),
-                    );
-                }
-            }
-
-            merge_env(&mut all_env, &mut cli_env)
-        }
-        None => all_env,
-    };
-
-    let all_tasks = merge_tasks(&mut default_tasks, &mut external_tasks);
-
-    let mut config_section = default_config.config.clone();
-    config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
-
-    let config = Config {
-        config: config_section,
-        env_files,
-        env: all_env,
-        env_scripts,
-        tasks: all_tasks,
-    };
+    let config = merge_base_config_and_external_config(default_config, external_config, env_map);
 
     debug!("Loaded merged config: {:#?}", &config);
 
@@ -598,17 +589,17 @@ pub(crate) fn load(
     env_map: Option<Vec<String>>,
     experimental: bool,
 ) -> Result<Config, String> {
-    let mut config =
-        load_descriptors(&file_name, force, env_map.clone(), true, experimental, None)?;
+    // load extended descriptor only
+    let mut config = load_descriptors(&file_name, force, env_map.clone(), false, false, None)?;
 
-    if config.config.skip_core_tasks.unwrap_or(false) {
-        config = load_descriptors(&file_name, force, env_map.clone(), false, false, None)?;
-    } else {
+    // need to load core tasks as well
+    if !config.config.skip_core_tasks.unwrap_or(false) {
         let modify_core_tasks = config.config.modify_core_tasks.clone();
 
         match modify_core_tasks {
             Some(modify_config) => {
                 if modify_config.is_modifications_defined() {
+                    // reload everything with core modifications
                     config = load_descriptors(
                         &file_name,
                         force,
@@ -619,7 +610,23 @@ pub(crate) fn load(
                     )?;
                 }
             }
-            None => (),
+            None => {
+                let core_config = load_internal_descriptors(true, experimental, modify_core_tasks);
+                let external_config = ExternalConfig {
+                    extend: None,
+                    config: Some(config.config),
+                    env_files: Some(config.env_files),
+                    env: Some(config.env),
+                    env_scripts: Some(config.env_scripts),
+                    tasks: Some(config.tasks),
+                };
+
+                config = merge_base_config_and_external_config(
+                    core_config,
+                    external_config,
+                    env_map.clone(),
+                );
+            }
         };
     }
 

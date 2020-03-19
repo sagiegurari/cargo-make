@@ -186,4 +186,5 @@
 * **print-git-env** - No Description.
 * **print-project-env** - No Description.
 * **print-rust-env** - No Description.
+* **setup-sudo-env** - Sets the sudo enable/disable environment variables.
 

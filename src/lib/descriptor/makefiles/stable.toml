@@ -1,0 +1,267 @@
+
+env_files = []
+env_scripts = []
+
+[config]
+init_task = "init"
+end_task = "end"
+skip_core_tasks = false
+default_to_workspace = true
+additional_profiles = []
+
+[env]
+RUST_BACKTRACE = "full"
+CARGO_MAKE_KCOV_VERSION = "38"
+CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
+CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
+CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
+CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
+CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
+CARGO_MAKE_CARGO_PROFILE = { source = "${CARGO_MAKE_PROFILE}", mapping = {"development" = "dev", "ci" = "test" } }
+CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
+CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
+CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
+CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_NO_ARGS}"
+CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = false
+CARGO_MAKE_CLIPPY_ALL_FEATURES_WARN = "${CARGO_MAKE_CARGO_ALL_FEATURES} -- -D warnings"
+CARGO_MAKE_CLIPPY_NO_ARGS = ""
+CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
+CARGO_MAKE_RUST_SCRIPT_PROVIDER = "cargo-script"
+CARGO_MAKE_USE_WORKSPACE_PROFILE = true
+CARGO_MAKE_BINARY_EXECUTABLE_NAME = "${CARGO_MAKE_PROJECT_NAME}"
+
+[env.none-thread-safe-tests]
+RUST_TEST_THREADS = "1"
+
+[env.publish-allow-dirty]
+CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
+
+[env.publish-pre-cleanup]
+CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE = true
+
+[env.ci-coverage-tasks]
+CARGO_MAKE_RUN_CODECOV = true
+
+[env.ci-static-code-analysis-tasks]
+CARGO_MAKE_RUN_CHECK_FORMAT = true
+CARGO_MAKE_RUN_CLIPPY = true
+
+[env.ci-all-build-tasks]
+CARGO_MAKE_BUILD_BENCH = true
+CARGO_MAKE_BUILD_EXAMPLES = true
+CARGO_MAKE_CHECK_OUTDATED = true
+
+[tasks.empty]
+description = "Empty Task"
+category = "Tools"
+
+[tasks.wait]
+description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
+condition = { env_set = [ "CARGO_MAKE_WAIT_MILLISECONDS" ] }
+script_runner = "@duckscript"
+script = [
+'''
+sleep ${CARGO_MAKE_WAIT_MILLISECONDS}
+'''
+]
+
+[tasks.default]
+description = "Default task points to the development testing flow"
+category = "Development"
+alias = "dev-test-flow"
+
+[tasks.watch-flow]
+description = "Watches for any file change and if any change is detected, it will invoke the default flow."
+category = "Development"
+watch = true
+
+[tasks.init]
+description = "By default this task is invoked at the start of every cargo-make run."
+category = "Hooks"
+
+[tasks.end]
+description = "By default this task is invoked at the end of every cargo-make run."
+category = "Hooks"
+
+[tasks.print-cargo-make-env]
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Cargo Make:"
+echo "    Task: ${CARGO_MAKE_TASK}"
+echo "    Task Arguments: ${CARGO_MAKE_TASK_ARGS}"
+echo "    Command: ${CARGO_MAKE_COMMAND}"
+echo "    Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
+echo "    Profile: ${CARGO_MAKE_PROFILE}"
+echo "    Additional Profiles: ${CARGO_MAKE_ADDITIONAL_PROFILES}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-project-env]
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Project:"
+echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
+echo "    Version: ${CARGO_MAKE_PROJECT_VERSION}"
+echo "    Version Member: ${CARGO_MAKE_PROJECT_VERSION_MEMBER}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-ci-env]
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "CI:"
+echo "    CI: ${CARGO_MAKE_CI}"
+echo "    PR: ${CARGO_MAKE_PR}"
+echo "    Branch Name: ${CARGO_MAKE_CI_BRANCH_NAME}"
+echo "    CI Vendor: ${CARGO_MAKE_CI_VENDOR}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-git-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Git:"
+echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
+echo "    User: ${CARGO_MAKE_GIT_USER_NAME}"
+echo "    Email: ${CARGO_MAKE_GIT_USER_EMAIL}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-rust-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Rust:"
+echo "    Version: ${CARGO_MAKE_RUST_VERSION}"
+echo "    Channel: ${CARGO_MAKE_RUST_CHANNEL}"
+echo "    Target Arch: ${CARGO_MAKE_RUST_TARGET_ARCH}"
+echo "    Target Env: ${CARGO_MAKE_RUST_TARGET_ENV}"
+echo "    Target OS: ${CARGO_MAKE_RUST_TARGET_OS}"
+echo "    Pointer Width: ${CARGO_MAKE_RUST_TARGET_POINTER_WIDTH}"
+echo "    Target Vendor: ${CARGO_MAKE_RUST_TARGET_VENDOR}"
+echo "    Target Triple: ${CARGO_MAKE_RUST_TARGET_TRIPLE}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-cargo-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Cargo:"
+echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
+echo "    Profile: ${CARGO_MAKE_CARGO_PROFILE}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-crate-env]
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Crate:"
+echo "    Name: ${CARGO_MAKE_CRATE_NAME}"
+echo "    Version: ${CARGO_MAKE_CRATE_VERSION}"
+echo "    Description: ${CARGO_MAKE_CRATE_DESCRIPTION}"
+echo "    License: ${CARGO_MAKE_CRATE_LICENSE}"
+echo "    Documentation: ${CARGO_MAKE_CRATE_DOCUMENTATION}"
+echo "    Homepage: ${CARGO_MAKE_CRATE_HOMEPAGE}"
+echo "    Repository: ${CARGO_MAKE_CRATE_REPOSITORY}"
+echo "    Workspace: ${CARGO_MAKE_CRATE_IS_WORKSPACE}"
+echo "    Workspace Working Directory: ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+echo "    Workspace Members: ${CARGO_MAKE_CRATE_WORKSPACE_MEMBERS}"
+echo "    Has Dependencies: ${CARGO_MAKE_CRATE_HAS_DEPENDENCIES}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-duckscript-env]
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+echo "*************************************"
+echo "Duckscript:"
+echo "    Runtime: ${CARGO_MAKE_DUCKSCRIPT_VERSION}"
+echo "    SDK: ${CARGO_MAKE_DUCKSCRIPT_SDK_VERSION}"
+echo "*************************************"
+'''
+]
+
+[tasks.print-env-flow]
+category = "Tools"
+dependencies = [
+    "print-cargo-make-env",
+    "print-project-env",
+    "print-ci-env",
+    "print-git-env",
+    "print-rust-env",
+    "print-cargo-env",
+    "print-crate-env",
+    "print-duckscript-env"
+]
+
+[tasks.diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+alias = "git-diff-files"
+
+[tasks.git-diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+ignore_errors = true
+condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
+command = "git"
+args = [
+    "diff",
+    "--no-index",
+    "${CARGO_MAKE_DIFF_FILE1}",
+    "${CARGO_MAKE_DIFF_FILE2}"
+]
+
+[tasks.setup-sudo-env]
+description = "Sets the sudo enable/disable environment variables."
+category = "Tools"
+script_runner = "@duckscript"
+script = [
+'''
+# disable sudo if the env is defined
+enable_sudo = not is_defined CARGO_MAKE_SUDO_DISABLE
+
+# always allow sudo in CI
+if equals ${CARGO_MAKE_CI} true
+    enable_sudo = set true
+end
+
+set_env CARGO_MAKE_SUDO_ENABLED ${enable_sudo}
+
+echo sudo enabled: ${enable_sudo}
+'''
+]

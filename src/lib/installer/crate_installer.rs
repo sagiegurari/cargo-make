@@ -33,8 +33,12 @@ fn invoke_cargo_install(
     args: &Option<Vec<String>>,
     validate: bool,
 ) {
-    let install_args =
-        cargo_plugin_installer::get_install_crate_args(&info.crate_name, true, &args);
+    let install_args = cargo_plugin_installer::get_install_crate_args(
+        &info.crate_name,
+        true,
+        &args,
+        &info.min_version,
+    );
 
     let command_spec = match toolchain {
         Some(ref toolchain_string) => wrap_command(toolchain_string, "cargo", &Some(install_args)),

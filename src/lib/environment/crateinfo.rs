@@ -7,11 +7,14 @@
 #[path = "./crateinfo_test.rs"]
 mod crateinfo_test;
 
-use crate::types::{CrateDependency, CrateInfo};
+use crate::command;
+use crate::types::{CargoMetadata, CrateDependency, CrateInfo};
 use fsio;
 use glob::glob;
+use serde_json;
 use std::env;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use toml::{self, Value};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
@@ -225,5 +228,41 @@ pub(crate) fn crate_target_triple(
         target_triple.or(default_target_triple)
     } else {
         default_target_triple
+    }
+}
+
+pub(crate) fn search_workspace_root() -> Option<String> {
+    debug!("Getting cargo metadata.");
+
+    let mut command_struct = Command::new("cargo");
+    let result = command_struct.arg("metadata").output();
+
+    match result {
+        Ok(output) => {
+            let exit_code = command::get_exit_code(Ok(output.status), false);
+
+            if exit_code == 0 {
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let metadata: CargoMetadata = match serde_json::from_str(&stdout) {
+                    Ok(metadata) => metadata,
+                    Err(error) => {
+                        debug!("Unable to extract cargo metadata, error: {:#?}", &error);
+                        CargoMetadata::new()
+                    }
+                };
+
+                metadata.workspace_root
+            } else {
+                debug!(
+                    "Unable to extract cargo metadata, error code: {}",
+                    exit_code
+                );
+                None
+            }
+        }
+        Err(error) => {
+            debug!("Unable to extract cargo metadata, error: {:#?}", &error);
+            None
+        }
     }
 }

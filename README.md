@@ -52,8 +52,9 @@
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
-        * [Defining Minimal Version](#usage-installing-min-version)
         * [Native Dependencies](#usage-installing-native-dependencies)
+        * [Defining Minimal Version](#usage-installing-min-version)
+        * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)
@@ -736,7 +737,7 @@ set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 ```
 
 Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
-In addition, all environment variables are preloaded as duckscript variabes and can be directly read from the script (no need to invoke the **get_env** command).
+In addition, all environment variables are preloaded as duckscript variables and can be directly read from the script (no need to invoke the **get_env** command).
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
@@ -943,7 +944,7 @@ However that language must support comments starting with the **#** character.
 There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
 cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
-tasks that are defined in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml).<br>
+tasks that are defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/).<br>
 Lets take the build task definition which comes already in the default toml:
 
 ```toml
@@ -1257,7 +1258,7 @@ Environment variables can be defined as:
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
 * Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) will be set before running the tasks.<br>
+All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running the tasks.<br>
 To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
@@ -1579,8 +1580,9 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Cargo Plugins](#usage-installing-cargo-plugins)
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
-* [Defining Minimal Version](#usage-installing-min-version)
 * [Native Dependencies](#usage-installing-native-dependencies)
+* [Defining Minimal Version](#usage-installing-min-version)
+* [Global Lock Of Versions](#usage-installing-locked)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
 
@@ -1653,29 +1655,6 @@ Example:
 install_crate = { rustup_component_name = "rust-src" }
 ```
 
-<a name="usage-installing-min-version"></a>
-#### Defining Minimal Version
-
-It is possible to define minimal version of depended crates, for example:
-
-```toml
-[tasks.simple-example]
-install_crate = { min_version = "0.0.1" }
-command = "cargo"
-args = ["make", "--version"]
-
-[tasks.complex-example]
-install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
-command = "cargo"
-args = ["make", "--version"]
-```
-
-This ensures we are using a crate version that supports the feature we require for the build.<br>
-Currently there are few limitations when defining min_version:
-
-* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
-* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
-
 <a name="usage-installing-native-dependencies"></a>
 #### Native Dependencies
 
@@ -1741,6 +1720,36 @@ fi
 ```
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
+
+<a name="usage-installing-min-version"></a>
+#### Defining Minimal Version
+
+It is possible to define minimal version of depended crates, for example:
+
+```toml
+[tasks.simple-example]
+install_crate = { min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], min_version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
+This ensures we are using a crate version that supports the feature we require for the build.<br>
+Currently there are few limitations when defining min_version:
+
+* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
+* In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
+
+<a name="usage-installing-locked"></a>
+#### Global Lock Of Versions
+
+In case [minimal version](#usage-installing-min-version) is defined,
+you can have the **--locked** flag automatically added to the crate installation command
+by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
@@ -2733,7 +2742,7 @@ pipeline:
 
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) file comes with many predefined tasks and flows.<br>
+The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with many predefined tasks and flows.<br>
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
 * **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
@@ -2984,7 +2993,7 @@ More info can be found in the [types](https://sagiegurari.github.io/cargo-make/a
 This section explains the logic behind the default task names.<br>
 While the default names logic can be used as a convention for any new task defined in some project Makefile.toml, it is not required.
 
-The [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml) file comes with several types of tasks:
+The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with several types of tasks:
 
 * Single command or script task (for example ```cargo build```)
 * Tasks that come before or after the single command tasks (hooks)
@@ -3010,7 +3019,7 @@ For example for task build the default toml also defines pre-build and post-buil
 [tasks.post-build]
 ```
 
-In the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/Makefile.stable.toml), all pre/post tasks are empty and are there as placeholders
+In the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/), all pre/post tasks are empty and are there as placeholders
 for external Makefile.toml to override so custom functionality can be defined easily before/after running a specific task.
 
 Flows are named with the flow suffix, for example: ci-flow

@@ -1,5 +1,14 @@
 ## CHANGELOG
 
+### v0.29.0
+
+* Provide accurate CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY when starting build from member crate #382
+* Support locked automatically for all crate installations via CARGO_MAKE_CRATE_INSTALLATION_LOCKED environment variable #381
+* Added ability to disable sudo invocation from cargo-make scripts via new environment variable CARGO_MAKE_SUDO_DISABLE #387
+* Improve toml loading performance.
+* Split core makefiles to multiple files.
+* Upgrade duckscript to 0.3
+
 ### v0.28.0 (2020-02-21)
 
 * Added github hub cli support #376
