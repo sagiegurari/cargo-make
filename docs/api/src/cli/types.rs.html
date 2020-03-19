@@ -1899,6 +1899,22 @@
 <span id="1899">1899</span>
 <span id="1900">1900</span>
 <span id="1901">1901</span>
+<span id="1902">1902</span>
+<span id="1903">1903</span>
+<span id="1904">1904</span>
+<span id="1905">1905</span>
+<span id="1906">1906</span>
+<span id="1907">1907</span>
+<span id="1908">1908</span>
+<span id="1909">1909</span>
+<span id="1910">1910</span>
+<span id="1911">1911</span>
+<span id="1912">1912</span>
+<span id="1913">1913</span>
+<span id="1914">1914</span>
+<span id="1915">1915</span>
+<span id="1916">1916</span>
+<span id="1917">1917</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -3800,6 +3816,22 @@
     <span class="kw">pub</span> <span class="ident">command</span>: <span class="ident">String</span>,
     <span class="doccomment">/// The command args</span>
     <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="doccomment">/// The output of cargo metadata command</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CargoMetadata</span> {
+    <span class="doccomment">/// The workspace root path</span>
+    <span class="kw">pub</span> <span class="ident">workspace_root</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">CargoMetadata</span> {
+    <span class="doccomment">/// Creates and returns a new instance.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CargoMetadata</span> {
+        <span class="ident">CargoMetadata</span> {
+            <span class="ident">workspace_root</span>: <span class="prelude-val">None</span>,
+        }
+    }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.29.0
+### v0.29.0 (2020-03-19)
 
 * Provide accurate CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY when starting build from member crate #382
 * Support locked automatically for all crate installations via CARGO_MAKE_CRATE_INSTALLATION_LOCKED environment variable #381
