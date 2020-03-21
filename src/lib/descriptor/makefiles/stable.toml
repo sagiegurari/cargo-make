@@ -242,6 +242,7 @@ ignore_errors = true
 condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
 command = "git"
 args = [
+    "--no-pager",
     "diff",
     "--no-index",
     "${CARGO_MAKE_DIFF_FILE1}",

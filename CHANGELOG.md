@@ -2,6 +2,7 @@
 
 ### v0.30.0
 * Default build and test tasks support verbose flag on CI environment.
+* Pager disabled for diff command.
 
 ### v0.29.0 (2020-03-19)
 
