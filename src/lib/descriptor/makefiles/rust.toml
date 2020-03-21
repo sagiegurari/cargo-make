@@ -285,13 +285,13 @@ category = "Build"
 description = "Runs the rust compiler."
 category = "Build"
 command = "cargo"
-args = ["build", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["build", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-verbose]
 description = "Runs the rust compiler with verbose output."
 category = "Build"
-command = "cargo"
-args = ["build", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
+run_task = "build"
 
 [tasks.build-release]
 description = "Runs release build."
@@ -309,7 +309,7 @@ category = "Test"
 description = "Runs all available tests."
 category = "Test"
 command = "cargo"
-args = ["test", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.test-flow]
 description = "Runs pre/post hooks and cargo test."
@@ -323,8 +323,8 @@ dependencies = [
 [tasks.test-verbose]
 description = "Runs all available tests with verbose output."
 category = "Test"
-command = "cargo"
-args = ["test", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
+run_task = "test"
 
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."

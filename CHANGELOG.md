@@ -1,5 +1,8 @@
 ## CHANGELOG
 
+### v0.30.0
+* Default build and test tasks support verbose flag on CI environment.
+
 ### v0.29.0 (2020-03-19)
 
 * Provide accurate CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY when starting build from member crate #382
