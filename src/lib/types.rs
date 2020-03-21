@@ -1404,8 +1404,8 @@ impl Task {
         }
     }
 
-    /// Returns true if the task is valid
-    pub fn is_valid(self: &Task) -> bool {
+    /// Returns the amount of actions defined on the task
+    pub fn get_actions_count(self: &Task) -> u8 {
         let mut actions_count = 0;
 
         if self.run_task.is_some() {
@@ -1417,6 +1417,64 @@ impl Task {
         if self.script.is_some() {
             actions_count = actions_count + 1;
         }
+
+        actions_count
+    }
+
+    /// Returns true if the task has any actions on its own
+    /// or if it modifies the environment in any way.
+    pub fn is_actionable(self: &Task) -> bool {
+        if self.disabled.unwrap_or(false) {
+            return false;
+        }
+
+        let actions_count = self.get_actions_count();
+        if actions_count > 0 {
+            return true;
+        }
+
+        if self.install_crate.is_some() || self.install_script.is_some() {
+            return true;
+        }
+
+        let mut actionable = match self.env {
+            Some(ref value) => value.len() > 0,
+            None => false,
+        };
+        if actionable {
+            return true;
+        }
+
+        actionable = match self.env_files {
+            Some(ref value) => value.len() > 0,
+            None => false,
+        };
+        if actionable {
+            return true;
+        }
+
+        actionable = match self.dependencies {
+            Some(ref value) => value.len() > 0,
+            None => false,
+        };
+        if actionable {
+            return true;
+        }
+
+        actionable = match self.watch {
+            Some(ref options) => match options {
+                TaskWatchOptions::Boolean(value) => *value,
+                _ => true,
+            },
+            None => false,
+        };
+
+        actionable
+    }
+
+    /// Returns true if the task is valid
+    pub fn is_valid(self: &Task) -> bool {
+        let actions_count = self.get_actions_count();
 
         if actions_count <= 1 {
             true

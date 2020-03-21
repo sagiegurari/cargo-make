@@ -5,6 +5,7 @@
 * New multi-phase-tests profile to enable splitting the tests to multiple phases (thread safe, multi threaded, custom).
 * Default build and test tasks support verbose flag on CI environment.
 * Pager disabled for diff command.
+* Ignoring non actionable tasks #390
 
 ### v0.29.0 (2020-03-19)
 
