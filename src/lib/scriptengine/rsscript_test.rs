@@ -2,6 +2,7 @@ use super::*;
 use crate::test;
 
 #[test]
+#[ignore]
 fn get_script_runner_default() {
     envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     let provider = get_script_runner();
@@ -10,6 +11,7 @@ fn get_script_runner_default() {
 }
 
 #[test]
+#[ignore]
 fn get_script_runner_cargo_script() {
     envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-script");
     let provider = get_script_runner();
@@ -19,6 +21,7 @@ fn get_script_runner_cargo_script() {
 }
 
 #[test]
+#[ignore]
 fn get_script_runner_cargo_play() {
     envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-play");
     let provider = get_script_runner();
@@ -28,6 +31,7 @@ fn get_script_runner_cargo_play() {
 }
 
 #[test]
+#[ignore]
 fn get_script_runner_cargo_other() {
     envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "bad value");
     let provider = get_script_runner();
@@ -37,6 +41,7 @@ fn get_script_runner_cargo_other() {
 }
 
 #[test]
+#[ignore]
 fn execute_default_valid() {
     if test::should_test(false) {
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
@@ -50,6 +55,7 @@ fn execute_default_valid() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_default_not_compile() {
     if test::should_test(true) {
@@ -66,6 +72,7 @@ fn execute_default_not_compile() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_default_runtime_panic() {
     if test::should_test(true) {
@@ -82,6 +89,7 @@ fn execute_default_runtime_panic() {
 }
 
 #[test]
+#[ignore]
 fn execute_default_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
@@ -97,6 +105,7 @@ fn execute_default_runtime_panic_no_validate() {
 }
 
 #[test]
+#[ignore]
 fn execute_cargo_script_valid() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-script");
@@ -112,6 +121,7 @@ fn execute_cargo_script_valid() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_cargo_script_not_compile() {
     if test::should_test(true) {
@@ -128,6 +138,7 @@ fn execute_cargo_script_not_compile() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_cargo_script_runtime_panic() {
     if test::should_test(true) {
@@ -144,6 +155,7 @@ fn execute_cargo_script_runtime_panic() {
 }
 
 #[test]
+#[ignore]
 fn execute_cargo_script_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-script");
@@ -159,6 +171,7 @@ fn execute_cargo_script_runtime_panic_no_validate() {
 }
 
 #[test]
+#[ignore]
 fn execute_cargo_play_valid() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-play");
@@ -174,6 +187,7 @@ fn execute_cargo_play_valid() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_cargo_play_not_compile() {
     if test::should_test(true) {
@@ -190,6 +204,7 @@ fn execute_cargo_play_not_compile() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn execute_cargo_play_runtime_panic() {
     if test::should_test(true) {
@@ -206,6 +221,7 @@ fn execute_cargo_play_runtime_panic() {
 }
 
 #[test]
+#[ignore]
 fn execute_cargo_play_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-play");

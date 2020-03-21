@@ -6,6 +6,7 @@
 * Default build and test tasks support verbose flag on CI environment.
 * Pager disabled for diff command.
 * Ignoring non actionable tasks #390
+* Split internal cargo-make tests to thread safe and single threaded to improve testing perf
 
 ### v0.29.0 (2020-03-19)
 

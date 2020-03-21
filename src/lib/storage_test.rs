@@ -1,6 +1,7 @@
 use super::*;
 
 #[test]
+#[ignore]
 fn get_storage_directory_no_env_no_os_dir() {
     envmnt::remove("CARGO_MAKE_HOME");
 
@@ -11,6 +12,7 @@ fn get_storage_directory_no_env_no_os_dir() {
 }
 
 #[test]
+#[ignore]
 fn get_storage_directory_with_env() {
     let env_directory = env::current_dir().unwrap();
     envmnt::set("CARGO_MAKE_HOME", env_directory.to_str().unwrap());
@@ -23,6 +25,7 @@ fn get_storage_directory_with_env() {
 }
 
 #[test]
+#[ignore]
 fn get_storage_directory_no_env_with_os_dir_file_exists() {
     envmnt::remove("CARGO_MAKE_HOME");
 

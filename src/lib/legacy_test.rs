@@ -12,6 +12,7 @@ fn get_legacy_cargo_make_home_linux() {
 }
 
 #[test]
+#[ignore]
 fn get_cargo_make_home_no_env() {
     envmnt::remove("CARGO_MAKE_HOME");
 
@@ -21,6 +22,7 @@ fn get_cargo_make_home_no_env() {
 }
 
 #[test]
+#[ignore]
 fn get_cargo_make_home_with_env() {
     let path = env::current_dir().unwrap();
     let directory = path.join("examples/cargo-make");
@@ -34,6 +36,7 @@ fn get_cargo_make_home_with_env() {
 }
 
 #[test]
+#[ignore]
 fn migrate_from_directory_not_exists() {
     let path = env::current_dir().unwrap();
     let legacy_directory = path.join("legacy_bad");
@@ -45,6 +48,7 @@ fn migrate_from_directory_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn migrate_from_directory_dir_exists_file_not_exists() {
     let path = env::current_dir().unwrap();
     let target_directory = path.join("target_bad");
@@ -57,6 +61,7 @@ fn migrate_from_directory_dir_exists_file_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn migrate_from_directory_delete_legacy_directory() {
     let test_directory = test::get_temp_test_directory();
     let legacy_directory = test_directory.join("legacy");

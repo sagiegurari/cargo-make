@@ -135,10 +135,6 @@ extern crate serde_derive;
 #[cfg(test)]
 mod test;
 
-#[cfg(test)]
-#[path = "./mod_test.rs"]
-mod mod_test;
-
 // make types public for docs
 pub mod types;
 

@@ -3,6 +3,7 @@ use crate::test;
 use envmnt;
 
 #[test]
+#[ignore]
 fn get_cargo_home_env() {
     let directory_path = env::current_dir().unwrap();
     let directory = directory_path.to_str().unwrap();
@@ -15,6 +16,7 @@ fn get_cargo_home_env() {
 }
 
 #[test]
+#[ignore]
 fn get_cargo_home_no_env() {
     envmnt::remove("CARGO_HOME");
 
@@ -24,6 +26,7 @@ fn get_cargo_home_no_env() {
 }
 
 #[test]
+#[ignore]
 fn get_cargo_home_file() {
     let directory_path = env::current_dir().unwrap();
     let directory = directory_path.to_str().unwrap();

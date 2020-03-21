@@ -172,6 +172,7 @@ fn create_error() {
 }
 
 #[test]
+#[ignore]
 fn update_disable_color_env_var() {
     envmnt::remove("CARGO_MAKE_DISABLE_COLOR");
 

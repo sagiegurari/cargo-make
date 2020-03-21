@@ -16,11 +16,11 @@ fn run_function_not_exists() {
 
 #[test]
 fn run_function_split() {
-    envmnt::set("TEST_SPLIT_FUNC_MOD", "1,2,3,4");
+    envmnt::set("TEST_MOD_SPLIT_FUNC_MOD", "1,2,3,4");
 
     let output = run_function(
         "split",
-        &vec!["TEST_SPLIT_FUNC_MOD".to_string(), ",".to_string()],
+        &vec!["TEST_MOD_SPLIT_FUNC_MOD".to_string(), ",".to_string()],
     );
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
@@ -28,11 +28,11 @@ fn run_function_split() {
 
 #[test]
 fn run_function_remove_empty() {
-    envmnt::set("TEST_REMOVE_EMPTY_FUNC_MOD", "");
+    envmnt::set("TEST_MOD_REMOVE_EMPTY_FUNC_MOD", "");
 
     let output = run_function(
         "remove-empty",
-        &vec!["TEST_REMOVE_EMPTY_FUNC_MOD".to_string()],
+        &vec!["TEST_MOD_REMOVE_EMPTY_FUNC_MOD".to_string()],
     );
 
     assert_eq!(output.len(), 0);
@@ -40,21 +40,21 @@ fn run_function_remove_empty() {
 
 #[test]
 fn run_function_trim() {
-    envmnt::set("TEST_TRIM_FUNC_MOD", "    ");
+    envmnt::set("TEST_MOD_TRIM_FUNC_MOD", "    ");
 
-    let output = run_function("trim", &vec!["TEST_TRIM_FUNC_MOD".to_string()]);
+    let output = run_function("trim", &vec!["TEST_MOD_TRIM_FUNC_MOD".to_string()]);
 
     assert_eq!(output.len(), 0);
 }
 
 #[test]
 fn run_function_decode() {
-    envmnt::set("TEST_DECODE_FUNC_MOD", "ci");
+    envmnt::set("TEST_MOD_DECODE_FUNC_MOD", "ci");
 
     let output = run_function(
         "decode",
         &vec![
-            "TEST_DECODE_FUNC_MOD".to_string(),
+            "TEST_MOD_DECODE_FUNC_MOD".to_string(),
             "development".to_string(),
             "dev".to_string(),
             "ci".to_string(),
@@ -152,9 +152,9 @@ fn get_function_arguments_multiple_with_spaces() {
 
 #[test]
 fn evaluate_and_run_valid() {
-    envmnt::set("TEST_RUN_FUNC_VALUE", "1 2 3 4");
+    envmnt::set("TEST_MOD_RUN_FUNC_VALUE", "1 2 3 4");
 
-    let output = evaluate_and_run("@@split(TEST_RUN_FUNC_VALUE, )");
+    let output = evaluate_and_run("@@split(TEST_MOD_RUN_FUNC_VALUE, )");
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
@@ -190,12 +190,12 @@ fn modify_arguments_with_functions() {
 
 #[test]
 fn run_with_functions() {
-    envmnt::set("TEST_STEP_FUNC_VALUE", "1 2 3 4");
+    envmnt::set("TEST_MOD_STEP_FUNC_VALUE", "1 2 3 4");
 
     let mut task = Task::new();
     task.args = Some(vec![
         "start".to_string(),
-        "@@split(TEST_STEP_FUNC_VALUE, )".to_string(),
+        "@@split(TEST_MOD_STEP_FUNC_VALUE, )".to_string(),
         "end".to_string(),
     ]);
     let mut step = Step {

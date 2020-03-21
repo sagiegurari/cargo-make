@@ -120,6 +120,7 @@ fn get_install_crate_args_without_crate_name() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(
@@ -141,6 +142,7 @@ fn get_install_crate_args_locked() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_no_version_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(
@@ -159,6 +161,7 @@ fn get_install_crate_args_no_version_locked() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_without_crate_name_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(

@@ -192,6 +192,7 @@ fn create_workspace_task_no_members() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_members() {
     let mut crate_info = CrateInfo::new();
@@ -236,6 +237,7 @@ cd -"#
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_members_no_workspace_profile() {
     let mut crate_info = CrateInfo::new();
@@ -277,6 +279,7 @@ cd -"#
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_members_and_arguments() {
     let mut crate_info = CrateInfo::new();
@@ -328,6 +331,7 @@ cd -"#
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_included_members() {
     let mut crate_info = CrateInfo::new();
@@ -373,6 +377,7 @@ cd -"#
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_workspace_task_with_included_and_skipped_members() {
     let mut crate_info = CrateInfo::new();
@@ -421,6 +426,7 @@ cd -"#
 }
 
 #[test]
+#[ignore]
 fn create_workspace_task_extend_workspace_makefile() {
     let mut crate_info = CrateInfo::new();
     let members = vec![];
@@ -964,6 +970,7 @@ fn create_platform_disabled() {
 }
 
 #[test]
+#[ignore]
 fn create_workspace() {
     let mut config = Config {
         config: ConfigSection::new(),
@@ -985,6 +992,7 @@ fn create_workspace() {
 }
 
 #[test]
+#[ignore]
 fn create_noworkspace() {
     let mut config = Config {
         config: ConfigSection::new(),

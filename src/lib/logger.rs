@@ -135,6 +135,12 @@ pub(crate) fn init(options: &LoggerOptions) {
             let name = env!("CARGO_PKG_NAME");
             let record_level = record.level();
 
+            if cfg!(test) {
+                if record_level == LevelFilter::Error {
+                    panic!("test error flow");
+                }
+            }
+
             let name_fmt = get_formatted_name(&name, color);
 
             let record_level_fmt = get_formatted_log_level(&record_level, color);

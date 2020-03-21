@@ -12,6 +12,7 @@ use rust_info::types::RustInfo;
 use crate::types::WatchOptions;
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_no_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -39,6 +40,7 @@ fn create_proxy_task_no_makefile() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_with_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -69,6 +71,7 @@ fn create_proxy_task_with_makefile() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_proxy_task_allow_private() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -97,6 +100,7 @@ fn create_proxy_task_allow_private() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_flow_private() {
     let mut config = Config {
@@ -132,6 +136,7 @@ fn run_flow_private() {
 }
 
 #[test]
+#[ignore]
 fn run_flow_private_sub_task() {
     let mut config = Config {
         config: ConfigSection::new(),
@@ -166,6 +171,7 @@ fn run_flow_private_sub_task() {
 }
 
 #[test]
+#[ignore]
 fn run_flow_allow_private() {
     let mut config = Config {
         config: ConfigSection::new(),
@@ -200,6 +206,7 @@ fn run_flow_allow_private() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_task_bad_script() {
     let config = Config {
@@ -236,6 +243,7 @@ fn run_task_bad_script() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 #[cfg(target_os = "linux")]
 fn run_task_script_with_args_error() {
@@ -273,6 +281,7 @@ fn run_task_script_with_args_error() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn run_task_script_with_args_valid() {
     let config = Config {
@@ -309,6 +318,7 @@ fn run_task_script_with_args_valid() {
 }
 
 #[test]
+#[ignore]
 fn run_task_command() {
     let config = Config {
         config: ConfigSection::new(),
@@ -345,6 +355,7 @@ fn run_task_command() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_task_bad_command_valid_script() {
     let config = Config {
@@ -382,6 +393,7 @@ fn run_task_bad_command_valid_script() {
 }
 
 #[test]
+#[ignore]
 fn run_task_no_command_valid_script() {
     let config = Config {
         config: ConfigSection::new(),
@@ -417,6 +429,7 @@ fn run_task_no_command_valid_script() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_task_bad_run_task_valid_command() {
     let mut sub_task = Task::new();
@@ -461,6 +474,7 @@ fn run_task_bad_run_task_valid_command() {
 }
 
 #[test]
+#[ignore]
 fn run_task_valid_run_task() {
     let mut sub_task = Task::new();
     sub_task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
@@ -502,6 +516,7 @@ fn run_task_valid_run_task() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_task_invalid_task() {
     let config = Config {
@@ -539,6 +554,7 @@ fn run_task_invalid_task() {
 }
 
 #[test]
+#[ignore]
 fn run_task_set_env_file() {
     let config = Config {
         config: ConfigSection::new(),
@@ -591,6 +607,7 @@ fn run_task_set_env_file() {
 }
 
 #[test]
+#[ignore]
 fn run_task_set_env() {
     let config = Config {
         config: ConfigSection::new(),
@@ -638,6 +655,7 @@ fn run_task_set_env() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_task_cwd_no_such_dir() {
     let config = Config {
@@ -675,6 +693,7 @@ fn run_task_cwd_no_such_dir() {
 }
 
 #[test]
+#[ignore]
 fn run_task_cwd_dir_exists() {
     let config = Config {
         config: ConfigSection::new(),
@@ -711,6 +730,7 @@ fn run_task_cwd_dir_exists() {
 }
 
 #[test]
+#[ignore]
 fn run_task_cwd_env_expansion() {
     let config = Config {
         config: ConfigSection::new(),
@@ -747,6 +767,7 @@ fn run_task_cwd_env_expansion() {
 }
 
 #[test]
+#[ignore]
 fn run_task_deprecated_message() {
     let config = Config {
         config: ConfigSection::new(),
@@ -784,6 +805,7 @@ fn run_task_deprecated_message() {
 }
 
 #[test]
+#[ignore]
 fn run_task_deprecated_flag() {
     let config = Config {
         config: ConfigSection::new(),
@@ -821,6 +843,7 @@ fn run_task_deprecated_flag() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_none_and_env_not_set() {
     envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let task = Task::new();
@@ -830,6 +853,7 @@ fn should_watch_none_and_env_not_set() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_none_and_env_false() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let task = Task::new();
@@ -839,6 +863,7 @@ fn should_watch_none_and_env_false() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_none_and_env_true() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let task = Task::new();
@@ -848,6 +873,7 @@ fn should_watch_none_and_env_true() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_false_and_env_not_set() {
     envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
@@ -858,6 +884,7 @@ fn should_watch_false_and_env_not_set() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_false_and_env_false() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let mut task = Task::new();
@@ -868,6 +895,7 @@ fn should_watch_false_and_env_false() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_false_and_env_true() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let mut task = Task::new();
@@ -878,6 +906,7 @@ fn should_watch_false_and_env_true() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_true_and_env_not_set() {
     envmnt::remove("CARGO_MAKE_DISABLE_WATCH");
     let mut task = Task::new();
@@ -888,6 +917,7 @@ fn should_watch_true_and_env_not_set() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_true_and_env_false() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", false);
     let mut task = Task::new();
@@ -898,6 +928,7 @@ fn should_watch_true_and_env_false() {
 }
 
 #[test]
+#[ignore]
 fn should_watch_true_and_env_true() {
     envmnt::set_bool("CARGO_MAKE_DISABLE_WATCH", true);
     let mut task = Task::new();
@@ -908,6 +939,7 @@ fn should_watch_true_and_env_true() {
 }
 
 #[test]
+#[ignore]
 fn create_watch_task_name_valid() {
     let output = create_watch_task_name("test_task");
 
@@ -915,6 +947,7 @@ fn create_watch_task_name_valid() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -947,6 +980,7 @@ fn create_watch_task_with_makefile() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_bool_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -979,6 +1013,7 @@ fn create_watch_task_with_makefile_and_bool_options() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_empty_object_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -1023,6 +1058,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_all_object_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -1077,6 +1113,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
 }
 
 #[test]
+#[ignore]
 #[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_false_object_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
@@ -1139,6 +1176,7 @@ fn create_watch_step_valid() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_for_name() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1177,6 +1215,7 @@ fn run_sub_task_and_report_for_name() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_sub_task_and_report_for_name_not_found() {
     let mut task = Task::new();
@@ -1214,6 +1253,7 @@ fn run_sub_task_and_report_for_name_not_found() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_for_details_single() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1256,6 +1296,7 @@ fn run_sub_task_and_report_for_details_single() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_for_details_multiple() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1299,6 +1340,7 @@ fn run_sub_task_and_report_for_details_multiple() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_routing_empty() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1337,6 +1379,7 @@ fn run_sub_task_and_report_routing_empty() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_routing_no_condition() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1381,6 +1424,7 @@ fn run_sub_task_and_report_routing_no_condition() {
 }
 
 #[test]
+#[ignore]
 fn run_sub_task_and_report_routing_condition_not_met() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
@@ -1439,6 +1483,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_sub_task_and_report_routing_not_found() {
     let mut task = Task::new();
