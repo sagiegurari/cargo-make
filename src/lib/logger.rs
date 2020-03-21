@@ -12,13 +12,6 @@ use envmnt;
 use fern;
 use log::{Level, LevelFilter};
 use std::io::stdout;
-
-#[cfg(test)]
-fn exit(code: i32) {
-    panic!(code);
-}
-
-#[cfg(not(test))]
 use std::process::exit;
 
 #[derive(Debug, PartialEq)]

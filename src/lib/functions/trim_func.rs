@@ -13,7 +13,6 @@ use envmnt;
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() > 2 {
         error!("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)");
-        panic!("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)");
     }
 
     let env_key = function_args[0].clone();

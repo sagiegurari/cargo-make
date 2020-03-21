@@ -12,7 +12,6 @@ use envmnt;
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 1 {
         error!("remove_empty expects only 1 argument (environment variable name)");
-        panic!("remove_empty expects only 1 argument (environment variable name)");
     }
 
     let env_key = function_args[0].clone();

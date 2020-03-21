@@ -15,7 +15,6 @@ use envmnt;
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() == 0 {
         error!("decode expects at least one argument.");
-        panic!("decode expects at least one argument.");
     }
 
     let env_key = function_args[0].clone();

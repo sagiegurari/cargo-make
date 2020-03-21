@@ -12,7 +12,6 @@ use envmnt;
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 2 {
         error!("split expects only 2 arguments (environment variable name, split by character)");
-        panic!("split expects only 2 arguments (environment variable name, split by character)");
     }
 
     let env_key = function_args[0].clone();
@@ -20,7 +19,6 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     if split_by.len() != 1 {
         error!("split expects a single character separator");
-        panic!("split expects a single character separator");
     }
 
     let split_by_char = split_by.chars().next().unwrap();
