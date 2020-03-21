@@ -156,7 +156,10 @@ if [ "${CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES}" == "true" ]; then
     fi
 fi
 
-for file in $(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
+TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
+echo "Test Files: ${TEST_FILES}"
+
+for file in $TEST_FILES
 do
     echo "Running coverage for file: $file"
     ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" ${TEST_OPTIONS} || true
