@@ -122,10 +122,11 @@ fi
 TARGET_DIRECTORY="target/coverage"
 if [ -n "$CARGO_MAKE_COVERAGE_REPORT_DIRECTORY" ]; then
     TARGET_DIRECTORY="$CARGO_MAKE_COVERAGE_REPORT_DIRECTORY"
-    mkdir -p ${TARGET_DIRECTORY}
-else
-    mkdir -p ./target/coverage
 fi
+echo "Target Directory: ${TARGET_DIRECTORY}"
+mkdir -p "${TARGET_DIRECTORY}"
+mkdir -p "${TARGET_DIRECTORY}/multithreaded"
+mkdir -p "${TARGET_DIRECTORY}/singlethreaded"
 
 BINARY_DIRECTORY=target/debug
 if [ -n "$CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY" ]; then
@@ -152,7 +153,15 @@ echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 for file in $(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
 do
     echo "Running coverage for file: $file"
-    ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
+    if [ "${CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES}" == "true" ]; then
+        ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" || true
+    else
+        unset RUST_TEST_THREADS
+        ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY/multithreaded" "$file" || true
+        export RUST_TEST_THREADS="1"
+        ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY/singlethreaded" "$file" -- --ignored || true
+        unset RUST_TEST_THREADS
+    fi
 done
 '''
 ]
