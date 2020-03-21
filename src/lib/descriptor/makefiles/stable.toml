@@ -36,6 +36,9 @@ CARGO_MAKE_BINARY_EXECUTABLE_NAME = "${CARGO_MAKE_PROJECT_NAME}"
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"
 
+[env.multi-phase-tests]
+CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES = true
+
 [env.publish-allow-dirty]
 CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
 
