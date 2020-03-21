@@ -15,7 +15,7 @@ use std::process::Command;
 pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: &[String]) -> bool {
     let mut command_struct = match toolchain {
         Some(ref toolchain_string) => {
-            let command_spec = wrap_command(toolchain_string, binary, &None);
+            let command_spec = wrap_command(toolchain_string, binary, &None, true);
             let mut cmd = Command::new(command_spec.command);
 
             let args_vec = command_spec.args.unwrap();

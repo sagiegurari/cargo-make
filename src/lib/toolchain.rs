@@ -14,9 +14,13 @@ pub(crate) fn wrap_command(
     toolchain: &str,
     command: &str,
     args: &Option<Vec<String>>,
+    validate_installed: bool,
 ) -> CommandSpec {
-    if !has_toolchain(toolchain) {
-        error!("Missing toolchain {}! Please install it using rustup.", &toolchain);
+    if validate_installed && !has_toolchain(toolchain) {
+        error!(
+            "Missing toolchain {}! Please install it using rustup.",
+            &toolchain
+        );
     }
 
     let mut rustup_args = vec![

@@ -41,7 +41,9 @@ fn invoke_cargo_install(
     );
 
     let command_spec = match toolchain {
-        Some(ref toolchain_string) => wrap_command(toolchain_string, "cargo", &Some(install_args)),
+        Some(ref toolchain_string) => {
+            wrap_command(toolchain_string, "cargo", &Some(install_args), true)
+        }
         None => CommandSpec {
             command: "cargo".to_string(),
             args: Some(install_args),

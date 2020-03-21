@@ -2,6 +2,7 @@
 
 ### v0.30.0
 
+* Ensure that the specified rustup toolchain exists before using it #388 (thanks @Ma27)
 * New multi-phase-tests profile to enable splitting the tests to multiple phases (thread safe, multi threaded, custom).
 * Default build and test tasks support verbose flag on CI environment.
 * Pager disabled for diff command.
