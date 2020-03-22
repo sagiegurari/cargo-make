@@ -1,10 +1,13 @@
 use super::*;
+use crate::test;
 use envmnt;
 
 #[test]
 #[should_panic]
 fn wrap_command_invalid_toolchain() {
-    wrap_command("invalid-chain", "true", &None);
+    if test::is_not_rust_stable() {
+        wrap_command("invalid-chain", "true", &None);
+    }
 }
 
 #[test]
