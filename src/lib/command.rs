@@ -201,7 +201,7 @@ pub(crate) fn run(step: &Step) {
         Some(ref command_string) => {
             let command_spec = match step.config.toolchain {
                 Some(ref toolchain) => {
-                    toolchain::wrap_command(&toolchain, &command_string, &step.config.args, true)
+                    toolchain::wrap_command(&toolchain, &command_string, &step.config.args)
                 }
                 None => CommandSpec {
                     command: command_string.to_string(),

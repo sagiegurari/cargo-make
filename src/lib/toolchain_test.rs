@@ -1,17 +1,16 @@
 use super::*;
-use crate::test;
 use envmnt;
 
 #[test]
 #[should_panic]
 fn wrap_command_invalid_toolchain() {
-    wrap_command("invalid-chain", "true", &None, true);
+    wrap_command("invalid-chain", "true", &None);
 }
 
 #[test]
 fn wrap_command_none_args() {
     let channel = envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL");
-    let output = wrap_command(&channel, "true", &None, test::is_not_rust_stable());
+    let output = wrap_command(&channel, "true", &None);
 
     assert_eq!(output.command, "rustup".to_string());
 
@@ -25,7 +24,7 @@ fn wrap_command_none_args() {
 #[test]
 fn wrap_command_empty_args() {
     let channel = envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL");
-    let output = wrap_command(&channel, "true", &Some(vec![]), test::is_not_rust_stable());
+    let output = wrap_command(&channel, "true", &Some(vec![]));
 
     assert_eq!(output.command, "rustup".to_string());
 
@@ -43,7 +42,6 @@ fn wrap_command_with_args() {
         &channel,
         "true",
         &Some(vec!["echo".to_string(), "test".to_string()]),
-        test::is_not_rust_stable(),
     );
 
     assert_eq!(output.command, "rustup".to_string());
