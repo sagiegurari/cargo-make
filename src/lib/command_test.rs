@@ -23,6 +23,8 @@ fn validate_exit_code_zero() {
 #[test]
 #[should_panic]
 fn get_exit_code_error() {
+    test::on_test_startup();
+
     get_exit_code(Err(Error::new(ErrorKind::Other, "test")), false);
 }
 
@@ -122,6 +124,8 @@ fn run_command_for_toolchain() {
 #[test]
 #[should_panic]
 fn run_command_error() {
+    test::on_test_startup();
+
     let mut task = Task::new();
     task.command = Some("badbadbad".to_string());
 

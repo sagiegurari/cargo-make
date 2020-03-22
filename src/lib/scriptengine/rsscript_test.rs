@@ -172,22 +172,6 @@ fn execute_cargo_script_runtime_panic_no_validate() {
 
 #[test]
 #[ignore]
-fn execute_cargo_play_valid() {
-    if test::should_test(false) {
-        envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-play");
-
-        execute(
-            &vec!["fn main() {println!(\"test\");}".to_string()],
-            &vec![],
-            true,
-        );
-
-        envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
-    }
-}
-
-#[test]
-#[ignore]
 #[should_panic]
 fn execute_cargo_play_not_compile() {
     if test::should_test(true) {

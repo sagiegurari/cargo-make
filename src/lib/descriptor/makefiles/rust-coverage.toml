@@ -148,21 +148,23 @@ echo "Running tests from directory: ${BINARY_DIRECTORY}"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX="$(sh -c "echo \"${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER}\"")"
 echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 
+TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
+echo "Test Files:"
+echo "${TEST_FILES}"
+
 if [ "${CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES}" == "true" ]; then
     export RUST_TEST_THREADS="1"
-
     if [ "${CARGO_MAKE_RUST_CHANNEL}" == "nightly" ]; then
         TEST_OPTIONS="--include-ignored -Zunstable-options"
     fi
 fi
 
-TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
-echo "Test Files: ${TEST_FILES}"
-
+i=0
 for file in $TEST_FILES
 do
+    ((i=i+1))
     echo "Running coverage for file: $file"
-    ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "$TARGET_DIRECTORY" "$file" ${TEST_OPTIONS} || true
+    ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "${TARGET_DIRECTORY}/${i}" "$file" ${TEST_OPTIONS} || true
 done
 '''
 ]

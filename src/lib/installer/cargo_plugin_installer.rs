@@ -18,7 +18,7 @@ fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
 
     let mut command_struct = match toolchain {
         Some(ref toolchain_string) => {
-            let command_spec = wrap_command(toolchain_string, "cargo", &None, true);
+            let command_spec = wrap_command(toolchain_string, "cargo", &None);
             let mut cmd = Command::new(command_spec.command);
 
             let args_vec = command_spec.args.unwrap();
@@ -145,8 +145,7 @@ pub(crate) fn install_crate(
 
         match toolchain {
             Some(ref toolchain_string) => {
-                let command_spec =
-                    wrap_command(&toolchain_string, "cargo", &Some(install_args), true);
+                let command_spec = wrap_command(&toolchain_string, "cargo", &Some(install_args));
                 command::run_command(&command_spec.command, &command_spec.args, validate)
             }
             None => command::run_command("cargo", &Some(install_args), validate),
