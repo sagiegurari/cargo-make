@@ -1,11 +1,67 @@
 language: rust
-rust:
-  - nightly
-os:
-  - linux
 matrix:
   allow_failures:
     - rust: nightly
+  include:
+  # Stable
+  - rust: stable
+    os: linux
+  - rust: stable
+    os: osx
+  - rust: stable
+    os: windows
+  # Beta
+  - rust: beta
+    os: linux
+  - rust: beta
+    os: osx
+  - rust: beta
+    os: windows
+  # Nightly
+  - rust: nightly
+    os: linux
+  - rust: nightly
+    os: osx
+  - rust: nightly
+    os: windows
+  # Minimum version
+  - rust: 1.40.0
+    os: linux
+    script:
+      - cargo make ci-flow
+  - rust: 1.40.0
+    os: osx
+    script:
+      - cargo make ci-flow
+  - rust: 1.40.0
+    os: windows
+    script:
+      - cargo make ci-flow
+  # Deploy jobs
+  - env: DEPLOY=1
+    rust: stable
+    os: osx
+    script:
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-apple-darwin
+  - env: DEPLOY=1
+    rust: stable
+    os: windows
+    before_script:
+      - rustup target add x86_64-pc-windows-msvc
+      - cargo install --debug cargo-make
+    script:
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-pc-windows-msvc
+  - env: DEPLOY=1
+    rust: stable
+    os: linux
+    script:
+      - cargo run --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=x86_64-unknown-linux-musl
+    addons:
+      apt:
+        packages:
+        - musl-tools
+before_script:
+  - cargo install --debug cargo-make
 script:
   - cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
 deploy:
