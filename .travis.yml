@@ -1,10 +1,11 @@
 language: rust
+rust:
+  - nightly
+os:
+  - linux
 matrix:
   allow_failures:
     - rust: nightly
-  # Nightly
-  - rust: nightly
-    os: linux
 script:
   - cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
 deploy:
