@@ -4,6 +4,7 @@
 
 * Ensure that the specified rustup toolchain exists before using it #388 (thanks @Ma27)
 * kcov coverage flow support for rustc >= 1.44 #393
+* Enable to timeout kcov test execution for each executable via new CARGO_MAKE_KCOV_TEST_TIMEOUT_VALUE environment variable #396
 * New multi-phase-tests profile to enable splitting the tests to multiple phases (thread safe, multi threaded, custom).
 * Default build and test tasks support verbose flag on CI environment.
 * Pager disabled for diff command.
