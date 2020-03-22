@@ -217,6 +217,7 @@ fn install_crate_already_installed_cargo_make() {
 }
 
 #[test]
+#[ignore]
 fn install_crate_already_installed_min_version_equal() {
     if test::is_local_or_travis_ci() {
         let version = crate_version_check::get_crate_version("cargo-make").unwrap();
@@ -239,6 +240,7 @@ fn install_crate_already_installed_min_version_equal() {
 }
 
 #[test]
+#[ignore]
 fn install_crate_already_installed_min_version_smaller() {
     if test::is_local_or_travis_ci() {
         let mut version = crate_version_check::get_crate_version("cargo-make").unwrap();

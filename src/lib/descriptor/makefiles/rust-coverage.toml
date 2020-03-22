@@ -130,6 +130,7 @@ BINARY_DIRECTORY=target/debug
 if [ -n "$CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY" ]; then
     BINARY_DIRECTORY="${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/debug"
 fi
+BINARY_DIRECTORY=${BINARY_DIRECTORY}/deps
 
 KCOV_EXCLUDE_LINE_ARG=""
 if [ -n "$CARGO_MAKE_KCOV_EXCLUDE_LINE" ]; then
@@ -166,6 +167,8 @@ do
     echo "Running coverage for file: $file"
     ${KCOV_BINARY_DIRECTORY}kcov --include-pattern=${CARGO_MAKE_KCOV_INCLUDE_PATTERN} ${KCOV_EXCLUDE_LINE_ARG} ${KCOV_EXCLUDE_REGION_ARG} "${TARGET_DIRECTORY}/${i}" "$file" ${TEST_OPTIONS} || true
 done
+
+rm -f ./core
 '''
 ]
 
