@@ -149,16 +149,18 @@ echo "Running tests from directory: ${BINARY_DIRECTORY}"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX="$(sh -c "echo \"${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER}\"")"
 echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 
-TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}")
+TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}") || true
 echo "Test Files:"
 echo "${TEST_FILES}"
 
+TEST_OPTIONS="--test-threads 1"
 if [ "${CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES}" == "true" ]; then
     export RUST_TEST_THREADS="1"
     if [ "${CARGO_MAKE_RUST_CHANNEL}" == "nightly" ]; then
-        TEST_OPTIONS="--include-ignored -Zunstable-options"
+        TEST_OPTIONS="${TEST_OPTIONS} --include-ignored -Zunstable-options"
     fi
 fi
+TEST_OPTIONS="${TEST_OPTIONS} ${CARGO_MAKE_KCOV_TEST_ARGUMENTS}"
 
 i=0
 for file in $TEST_FILES
