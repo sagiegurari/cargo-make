@@ -156,12 +156,6 @@ fn get_formatted_log_level_error_no_color() {
 
 #[test]
 #[should_panic]
-fn exit_test() {
-    exit(0);
-}
-
-#[test]
-#[should_panic]
 fn create_error() {
     init(&LoggerOptions {
         level: "error".to_string(),
