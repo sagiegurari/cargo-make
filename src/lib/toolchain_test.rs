@@ -7,6 +7,8 @@ use envmnt;
 fn wrap_command_invalid_toolchain() {
     if test::is_not_rust_stable() {
         wrap_command("invalid-chain", "true", &None);
+    } else {
+        panice!("test");
     }
 }
 
