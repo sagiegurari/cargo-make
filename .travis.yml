@@ -2,7 +2,8 @@ language: rust
 matrix:
   allow_failures:
     - rust: nightly
-    - os: osx
+    - rust: beta
+      os: osx
   include:
   # Stable
   - rust: stable
