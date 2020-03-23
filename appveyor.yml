@@ -14,8 +14,8 @@ environment:
     # Beta channel
     - TARGET: i686-pc-windows-gnu
       CHANNEL: beta
-    - TARGET: i686-pc-windows-msvc
-      CHANNEL: beta
+    #- TARGET: i686-pc-windows-msvc
+    #  CHANNEL: beta
     - TARGET: x86_64-pc-windows-gnu
       CHANNEL: beta
     - TARGET: x86_64-pc-windows-msvc
