@@ -172,14 +172,16 @@
     <span class="ident">absolute_paths_not_starting_with_crate</span>,
     <span class="ident">ambiguous_associated_items</span>,
     <span class="ident">anonymous_parameters</span>,
+    <span class="ident">arithmetic_overflow</span>,
     <span class="ident">array_into_iter</span>,
     <span class="ident">bindings_with_variant_name</span>,
+    <span class="ident">coherence_leak_check</span>,
+    <span class="ident">conflicting_repr_hints</span>,
     <span class="ident">const_err</span>,
     <span class="ident">dead_code</span>,
     <span class="ident">deprecated</span>,
     <span class="ident">deprecated_in_future</span>,
     <span class="ident">ellipsis_inclusive_range_patterns</span>,
-    <span class="ident">exceeding_bitshifts</span>,
     <span class="ident">explicit_outlives_requirements</span>,
     <span class="ident">exported_private_dependencies</span>,
     <span class="ident">ill_formed_attribute_input</span>,
@@ -187,6 +189,7 @@
     <span class="ident">improper_ctypes</span>,
     <span class="ident">incomplete_features</span>,
     <span class="ident">indirect_structural_match</span>,
+    <span class="ident">inline_no_sanitize</span>,
     <span class="ident">invalid_type_param_default</span>,
     <span class="ident">invalid_value</span>,
     <span class="ident">irrefutable_let_patterns</span>,
@@ -215,7 +218,7 @@
     <span class="ident">private_in_public</span>,
     <span class="ident">proc_macro_derive_resolution_fallback</span>,
     <span class="ident">pub_use_of_private_extern_crate</span>,
-    <span class="ident">redundant_semicolon</span>,
+    <span class="ident">redundant_semicolons</span>,
     <span class="ident">safe_packed_borrows</span>,
     <span class="ident">soft_unstable</span>,
     <span class="ident">stable_features</span>,
@@ -225,6 +228,7 @@
     <span class="ident">type_alias_bounds</span>,
     <span class="ident">tyvar_behind_raw_pointer</span>,
     <span class="ident">uncommon_codepoints</span>,
+    <span class="ident">unconditional_panic</span>,
     <span class="ident">unconditional_recursion</span>,
     <span class="ident">unknown_crate_types</span>,
     <span class="ident">unnameable_test_items</span>,
@@ -304,10 +308,6 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span>;
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./mod_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">mod_test</span>;
 
 <span class="comment">// make types public for docs</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span>;

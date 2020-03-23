@@ -58,8 +58,6 @@
 <span id="58">58</span>
 <span id="59">59</span>
 <span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # duck_script</span>
 <span class="doccomment">//!</span>
@@ -105,7 +103,6 @@
                 <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">if</span> <span class="ident">validate</span> {
                         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Error while running duckscript: {}&quot;</span>, <span class="ident">error</span>);
-                        <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Error while running duckscript: {}&quot;</span>, <span class="ident">error</span>)
                     }
                 }
             };
@@ -118,7 +115,6 @@
         <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="ident">validate</span> {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to load duckscript SDK: {}&quot;</span>, <span class="ident">error</span>);
-                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to load duckscript SDK: {}&quot;</span>, <span class="ident">error</span>)
             }
         }
     };
