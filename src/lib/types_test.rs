@@ -2727,6 +2727,143 @@ fn task_is_valid_both_command_and_script() {
 }
 
 #[test]
+fn task_is_actionable_all_none() {
+    let task = Task::new();
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_disabled() {
+    let mut task = Task::new();
+    task.disabled = Some(true);
+    task.command = Some("test".to_string());
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_command() {
+    let mut task = Task::new();
+    task.command = Some("test".to_string());
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_script() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["test".to_string()]));
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_run_task() {
+    let mut task = Task::new();
+    task.run_task = Some(RunTaskInfo::Name("test".to_string()));
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_install_crate() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Value("test".to_string()));
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_install_script() {
+    let mut task = Task::new();
+    task.install_script = Some(vec!["test".to_string()]);
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_empty_env() {
+    let mut task = Task::new();
+    task.env = Some(IndexMap::new());
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_env() {
+    let mut env = IndexMap::new();
+    env.insert("test".to_string(), EnvValue::Value("test".to_string()));
+
+    let mut task = Task::new();
+    task.env = Some(env);
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_empty_env_files() {
+    let mut task = Task::new();
+    task.env_files = Some(vec![]);
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_env_files() {
+    let mut task = Task::new();
+    task.env_files = Some(vec![EnvFile::Path("test".to_string())]);
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_empty_dependencies() {
+    let mut task = Task::new();
+    task.dependencies = Some(vec![]);
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_dependencies() {
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["test".to_string()]);
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_watch_false() {
+    let mut task = Task::new();
+    task.watch = Some(TaskWatchOptions::Boolean(false));
+
+    assert!(!task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_watch_true() {
+    let mut task = Task::new();
+    task.watch = Some(TaskWatchOptions::Boolean(true));
+
+    assert!(task.is_actionable());
+}
+
+#[test]
+fn task_is_actionable_with_watch_options() {
+    let mut task = Task::new();
+    task.watch = Some(TaskWatchOptions::Options(WatchOptions {
+        version: None,
+        postpone: None,
+        ignore_pattern: None,
+        no_git_ignore: None,
+        watch: None,
+    }));
+
+    assert!(task.is_actionable());
+}
+
+#[test]
 fn config_section_new() {
     let config = ConfigSection::new();
 

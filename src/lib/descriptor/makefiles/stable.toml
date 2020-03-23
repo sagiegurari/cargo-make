@@ -18,7 +18,9 @@ CARGO_MAKE_KCOV_DOWNLOAD_DIRECTORY = "./target/kcov"
 CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$\\|test_[_a-z0-9]*-[a-z0-9]*$\\|[a-z0-9]*_test-[_a-z0-9]*$"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
+CARGO_MAKE_CARGO_VERBOSE = "--verbose"
 CARGO_MAKE_CARGO_PROFILE = { source = "${CARGO_MAKE_PROFILE}", mapping = {"development" = "dev", "ci" = "test" } }
+CARGO_MAKE_CARGO_VERBOSE_FLAGS = { source = "${CARGO_MAKE_CI}", default_value = "", mapping = {"true" = "${CARGO_MAKE_CARGO_VERBOSE}"} }
 CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
 CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
 CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
@@ -33,6 +35,9 @@ CARGO_MAKE_BINARY_EXECUTABLE_NAME = "${CARGO_MAKE_PROJECT_NAME}"
 
 [env.none-thread-safe-tests]
 RUST_TEST_THREADS = "1"
+
+[env.multi-phase-tests]
+CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES = true
 
 [env.publish-allow-dirty]
 CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
@@ -240,6 +245,7 @@ ignore_errors = true
 condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
 command = "git"
 args = [
+    "--no-pager",
     "diff",
     "--no-index",
     "${CARGO_MAKE_DIFF_FILE1}",

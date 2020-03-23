@@ -56,6 +56,7 @@ pub(crate) fn run(
     command::run_command(
         "git",
         &Some(vec![
+            "--no-pager".to_string(),
             "diff".to_string(),
             "--no-index".to_string(),
             internal_file.to_string(),

@@ -8,11 +8,9 @@ dependencies = [
     "pre-build",
     "conditioned-check-format",
     "conditioned-clippy",
-    "build-verbose",
+    "build",
     "post-build",
-    "pre-test",
-    "test-verbose",
-    "post-test",
+    "test-flow",
     "examples-ci-flow",
     "bench-ci-flow",
     "outdated-ci-flow",
@@ -285,13 +283,7 @@ category = "Build"
 description = "Runs the rust compiler."
 category = "Build"
 command = "cargo"
-args = ["build", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
-
-[tasks.build-verbose]
-description = "Runs the rust compiler with verbose output."
-category = "Build"
-command = "cargo"
-args = ["build", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["build", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-release]
 description = "Runs release build."
@@ -309,22 +301,47 @@ category = "Test"
 description = "Runs all available tests."
 category = "Test"
 command = "cargo"
-args = ["test", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+
+[tasks.test-thread-safe]
+description = "Runs all available tests without limiting test threads."
+category = "Test"
+env = { RUST_TEST_THREADS = { unset = true } }
+run_task = "test"
+
+[tasks.test-single-threaded]
+description = "Runs all ignored tests with a single test thread."
+category = "Test"
+env = { RUST_TEST_THREADS = "1" }
+command = "cargo"
+args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )", "--", "--ignored"]
+
+[tasks.test-custom]
+description = "Runs custom test command."
+category = "Test"
+
+[tasks.test-multi-phases-cleanup]
+description = "Cleanup after multi phase tests flow."
+category = "Test"
+private = true
+env = { RUST_TEST_THREADS = { unset = true } }
+
+[tasks.test-multi-phases-flow]
+description = "Runs single/multi and custom test tasks."
+category = "Test"
+run_task = [
+    { name = [ "test-thread-safe", "test-single-threaded", "test-custom", "test-multi-phases-cleanup" ], condition = { env_true = [ "CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES" ] } },
+    { name = "test" }
+]
 
 [tasks.test-flow]
 description = "Runs pre/post hooks and cargo test."
 category = "Test"
 dependencies = [
     "pre-test",
-    "test",
+    "test-multi-phases-flow",
     "post-test"
 ]
-
-[tasks.test-verbose]
-description = "Runs all available tests with verbose output."
-category = "Test"
-command = "cargo"
-args = ["test", "--verbose", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."

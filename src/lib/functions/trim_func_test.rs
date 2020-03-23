@@ -56,33 +56,27 @@ fn trim_invoke_all_spaces() {
 
 #[test]
 fn trim_invoke_partial_spaces() {
-    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   123   ");
+    envmnt::set("TEST_TRIM_PARTIAL_SPACES", "   123   123   ");
 
-    let output = invoke(&vec!["TEST_TRIM_ALL_PARTIAL_SPACES".to_string()]);
+    let output = invoke(&vec!["TEST_TRIM_PARTIAL_SPACES".to_string()]);
 
     assert_eq!(output, vec!["123   123"]);
 }
 
 #[test]
 fn trim_invoke_trim_start() {
-    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+    envmnt::set("TEST_TRIM_START", "   123   ");
 
-    let output = invoke(&vec![
-        "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),
-        "start".to_string(),
-    ]);
+    let output = invoke(&vec!["TEST_TRIM_START".to_string(), "start".to_string()]);
 
     assert_eq!(output, vec!["123   "]);
 }
 
 #[test]
 fn trim_invoke_trim_end() {
-    envmnt::set("TEST_TRIM_ALL_PARTIAL_SPACES", "   123   ");
+    envmnt::set("TEST_TRIM_END", "   123   ");
 
-    let output = invoke(&vec![
-        "TEST_TRIM_ALL_PARTIAL_SPACES".to_string(),
-        "end".to_string(),
-    ]);
+    let output = invoke(&vec!["TEST_TRIM_END".to_string(), "end".to_string()]);
 
     assert_eq!(output, vec!["   123"]);
 }

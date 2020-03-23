@@ -42,7 +42,6 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
                 Err(error) => {
                     if validate {
                         error!("Error while running duckscript: {}", error);
-                        panic!("Error while running duckscript: {}", error)
                     }
                 }
             };
@@ -55,7 +54,6 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
         Err(error) => {
             if validate {
                 error!("Unable to load duckscript SDK: {}", error);
-                panic!("Unable to load duckscript SDK: {}", error)
             }
         }
     };

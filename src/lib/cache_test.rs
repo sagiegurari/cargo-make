@@ -21,6 +21,7 @@ fn load_from_path_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn load_with_cargo_home() {
     let path = env::current_dir().unwrap();
     let directory = path.join("examples/cargo-make");
@@ -33,6 +34,7 @@ fn load_with_cargo_home() {
 }
 
 #[test]
+#[ignore]
 fn load_without_cargo_home() {
     envmnt::remove("CARGO_MAKE_HOME");
     load();

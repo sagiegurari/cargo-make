@@ -32,6 +32,7 @@ fn validate_env_set_empty() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_set_valid() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -81,6 +82,7 @@ fn validate_env_set_invalid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_set_invalid_partial_found() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -134,6 +136,7 @@ fn validate_env_not_set_empty() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_not_set_valid() {
     let condition = TaskCondition {
         fail_message: None,
@@ -157,6 +160,7 @@ fn validate_env_not_set_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_not_set_invalid() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -183,6 +187,7 @@ fn validate_env_not_set_invalid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_not_set_invalid_partial_found() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -236,6 +241,7 @@ fn validate_env_bool_true_empty() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_true_valid() {
     envmnt::set_bool("ENV_TRUE1", true);
     envmnt::set_bool("ENV_TRUE2", true);
@@ -262,6 +268,7 @@ fn validate_env_bool_true_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_true_invalid() {
     envmnt::set_bool("ENV_TRUE1", false);
     envmnt::set_bool("ENV_TRUE2", false);
@@ -288,6 +295,7 @@ fn validate_env_bool_true_invalid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_true_invalid_partial_found() {
     envmnt::remove("ENV_TRUE1");
     envmnt::set_bool("ENV_TRUE2", true);
@@ -314,6 +322,7 @@ fn validate_env_bool_true_invalid_partial_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_true_invalid_partial_valid() {
     envmnt::set_bool("ENV_TRUE2", true);
     envmnt::set_bool("ENV_TRUE2", false);
@@ -363,6 +372,7 @@ fn validate_env_bool_false_empty() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_false_valid() {
     envmnt::set_bool("ENV_FALSE1", false);
     envmnt::set_bool("ENV_FALSE2", false);
@@ -389,6 +399,7 @@ fn validate_env_bool_false_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_false_invalid() {
     envmnt::set_bool("ENV_FALSE1", true);
     envmnt::set_bool("ENV_FALSE2", true);
@@ -415,6 +426,7 @@ fn validate_env_bool_false_invalid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_false_invalid_partial_found() {
     envmnt::remove("ENV_FALSE1");
     envmnt::set_bool("ENV_FALSE2", false);
@@ -441,6 +453,7 @@ fn validate_env_bool_false_invalid_partial_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_bool_false_invalid_partial_valid() {
     envmnt::set_bool("ENV_FALSE2", false);
     envmnt::set_bool("ENV_FALSE2", true);
@@ -490,6 +503,7 @@ fn validate_env_empty() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_valid() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -520,6 +534,7 @@ fn validate_env_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_invalid_not_found() {
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
@@ -547,6 +562,7 @@ fn validate_env_invalid_not_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_invalid_not_equal() {
     envmnt::set("ENV_SET2", "value");
 
@@ -575,6 +591,7 @@ fn validate_env_invalid_not_equal() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_invalid_partial_found() {
     envmnt::set("ENV_SET1", "good");
     envmnt::set("ENV_SET2", "good");
@@ -605,6 +622,7 @@ fn validate_env_invalid_partial_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_contains_valid_same() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -635,6 +653,7 @@ fn validate_env_contains_valid_same() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_contains_valid() {
     envmnt::set("ENV_SET1", "");
     envmnt::set("ENV_SET2", "value");
@@ -665,6 +684,7 @@ fn validate_env_contains_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_contains_invalid_not_found() {
     let mut env_values = IndexMap::<String, String>::new();
     env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
@@ -692,6 +712,7 @@ fn validate_env_contains_invalid_not_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_contains_invalid_not_equal() {
     envmnt::set("ENV_SET2", "value");
 
@@ -720,6 +741,7 @@ fn validate_env_contains_invalid_not_equal() {
 }
 
 #[test]
+#[ignore]
 fn validate_env_contains_invalid_partial_found() {
     envmnt::set("ENV_SET1", "good");
     envmnt::set("ENV_SET2", "good");
@@ -771,6 +793,7 @@ fn validate_script_invalid() {
 }
 
 #[test]
+#[ignore]
 fn validate_profile_valid() {
     profile::set("my_profile");
 
@@ -800,6 +823,7 @@ fn validate_profile_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_profile_invalid() {
     profile::set("my_profile");
 
@@ -1315,6 +1339,7 @@ fn validate_criteria_invalid_platform() {
 }
 
 #[test]
+#[ignore]
 fn validate_criteria_valid_profile() {
     let config = Config {
         config: ConfigSection::new(),
@@ -1362,6 +1387,7 @@ fn validate_criteria_valid_profile() {
 }
 
 #[test]
+#[ignore]
 fn validate_criteria_invalid_profile() {
     let config = Config {
         config: ConfigSection::new(),
@@ -1921,6 +1947,7 @@ fn validate_condition_for_step_invalid_script_valid() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_set() {
     let mut step = Step {
         name: "test".to_string(),
@@ -1973,6 +2000,7 @@ fn validate_condition_for_step_invalid_env_set() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_not_set() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2027,6 +2055,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_valid_env() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2086,6 +2115,7 @@ fn validate_condition_for_step_valid_env() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_not_found() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2142,6 +2172,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_not_equal() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2201,6 +2232,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_valid_env_contains_same() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2260,6 +2292,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_valid_env_contains() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2319,6 +2352,7 @@ fn validate_condition_for_step_valid_env_contains() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_contains_not_found() {
     let mut step = Step {
         name: "test".to_string(),
@@ -2375,6 +2409,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
 }
 
 #[test]
+#[ignore]
 fn validate_condition_for_step_invalid_env_contains_not_contains() {
     let mut step = Step {
         name: "test".to_string(),

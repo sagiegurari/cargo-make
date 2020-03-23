@@ -120,6 +120,7 @@ fn get_install_crate_args_without_crate_name() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(
@@ -141,6 +142,7 @@ fn get_install_crate_args_locked() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_no_version_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(
@@ -159,6 +161,7 @@ fn get_install_crate_args_no_version_locked() {
 }
 
 #[test]
+#[ignore]
 fn get_install_crate_args_without_crate_name_locked() {
     envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
     let all_args = get_install_crate_args(
@@ -214,6 +217,7 @@ fn install_crate_already_installed_cargo_make() {
 }
 
 #[test]
+#[ignore]
 fn install_crate_already_installed_min_version_equal() {
     if test::is_local_or_travis_ci() {
         let version = crate_version_check::get_crate_version("cargo-make").unwrap();
@@ -236,6 +240,7 @@ fn install_crate_already_installed_min_version_equal() {
 }
 
 #[test]
+#[ignore]
 fn install_crate_already_installed_min_version_smaller() {
     if test::is_local_or_travis_ci() {
         let mut version = crate_version_check::get_crate_version("cargo-make").unwrap();

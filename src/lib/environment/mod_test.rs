@@ -8,6 +8,7 @@ use std::path::Path;
 use std::{thread, time};
 
 #[test]
+#[ignore]
 fn load_env_file_none() {
     let output = load_env_file(None);
 
@@ -15,12 +16,14 @@ fn load_env_file_none() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_env_file_no_exists() {
     load_env_file(Some("./bad.env".to_string()));
 }
 
 #[test]
+#[ignore]
 fn load_env_file_exists() {
     envmnt::remove("ENV1_TEST");
     envmnt::remove("ENV2_TEST");
@@ -36,6 +39,7 @@ fn load_env_file_exists() {
 }
 
 #[test]
+#[ignore]
 fn evaluate_and_set_env_simple() {
     envmnt::remove("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
@@ -46,6 +50,7 @@ fn evaluate_and_set_env_simple() {
 }
 
 #[test]
+#[ignore]
 fn evaluate_and_set_env_exists() {
     envmnt::set("eval_test1", "test");
     evaluate_and_set_env(
@@ -59,6 +64,7 @@ fn evaluate_and_set_env_exists() {
 }
 
 #[test]
+#[ignore]
 fn evaluate_and_set_env_not_exists() {
     evaluate_and_set_env(
         "evaluate_and_set_env_not_exists",
@@ -71,6 +77,7 @@ fn evaluate_and_set_env_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn evaluate_and_set_env_complex() {
     envmnt::set("eval_test10", "10");
     envmnt::set("eval_test20", "20");
@@ -85,6 +92,7 @@ fn evaluate_and_set_env_complex() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_bool_false() {
     envmnt::remove("BOOL_ENV_FALSE");
     set_env_for_bool("BOOL_ENV_FALSE", false);
@@ -93,6 +101,7 @@ fn set_env_for_bool_false() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_bool_true() {
     envmnt::remove("BOOL_ENV_FALSE");
     set_env_for_bool("BOOL_ENV_FALSE", true);
@@ -101,6 +110,7 @@ fn set_env_for_bool_true() {
 }
 
 #[test]
+#[ignore]
 fn set_env_multi_types() {
     let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
     let mut profile_env = IndexMap::<String, EnvValue>::new();
@@ -159,6 +169,7 @@ fn set_env_multi_types() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_decode_info_strings_found() {
     envmnt::remove("ENV_DECODE_STRING_FOUND");
 
@@ -179,6 +190,7 @@ fn set_env_for_decode_info_strings_found() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_decode_info_strings_default() {
     envmnt::remove("ENV_DECODE_STRING_DEFAULT");
 
@@ -202,6 +214,7 @@ fn set_env_for_decode_info_strings_default() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_decode_info_strings_default_none() {
     envmnt::remove("ENV_DECODE_STRING_DEFAULT_NONE");
 
@@ -222,6 +235,7 @@ fn set_env_for_decode_info_strings_default_none() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_decode_info_expressions() {
     envmnt::remove("ENV_DECODE_EXPRESSIONS");
     envmnt::set("ENV_DECODE_EXPRESSIONS_VAR1", "ENV1");
@@ -249,6 +263,7 @@ fn set_env_for_decode_info_expressions() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_conditional_value_no_condition() {
     envmnt::remove("ENV_CONDITIONAL_NO_CONDITION");
 
@@ -266,6 +281,7 @@ fn set_env_for_conditional_value_no_condition() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_conditional_value_condition_true() {
     envmnt::remove("ENV_CONDITIONAL_CONDITION_TRUE");
 
@@ -299,6 +315,7 @@ fn set_env_for_conditional_value_condition_true() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_conditional_value_condition_false() {
     envmnt::remove("ENV_CONDITIONAL_CONDITION_FALSE");
 
@@ -329,6 +346,7 @@ fn set_env_for_conditional_value_condition_false() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_profile_none_not_found() {
     let mut env = IndexMap::new();
     env.insert(
@@ -342,6 +360,7 @@ fn set_env_for_profile_none_not_found() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_profile_some_not_found() {
     let mut env = IndexMap::new();
     env.insert(
@@ -359,6 +378,7 @@ fn set_env_for_profile_some_not_found() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_profile_some_found() {
     let mut env = IndexMap::new();
     env.insert("TEST_PROFILE_FOUND".to_string(), EnvValue::Boolean(true));
@@ -374,6 +394,7 @@ fn set_env_for_profile_some_found() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_config_unset() {
     envmnt::set("set_env_for_config_unset", "true");
     assert!(envmnt::exists("set_env_for_config_unset"));
@@ -392,6 +413,7 @@ fn set_env_for_config_unset() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_config_conditional() {
     envmnt::remove("set_env_for_config_conditional");
     assert!(!envmnt::exists("set_env_for_config_conditional"));
@@ -430,6 +452,7 @@ fn set_env_for_config_conditional() {
 }
 
 #[test]
+#[ignore]
 fn set_env_for_config_profile_override() {
     let profile_name = profile::get();
 
@@ -458,6 +481,7 @@ fn set_env_for_config_profile_override() {
 }
 
 #[test]
+#[ignore]
 fn set_env_files_for_config_files() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -486,6 +510,7 @@ fn set_env_files_for_config_files() {
 }
 
 #[test]
+#[ignore]
 fn set_env_files_for_config_base_directory() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -518,6 +543,7 @@ fn set_env_files_for_config_base_directory() {
 }
 
 #[test]
+#[ignore]
 fn set_env_files_for_config_profile() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -556,6 +582,7 @@ fn set_env_files_for_config_profile() {
 }
 
 #[test]
+#[ignore]
 fn set_env_files_for_config_additional_profiles() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -594,6 +621,7 @@ fn set_env_files_for_config_additional_profiles() {
 }
 
 #[test]
+#[ignore]
 fn initialize_env_all() {
     let mut env_data = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env_data.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -648,6 +676,7 @@ fn initialize_env_all() {
 }
 
 #[test]
+#[ignore]
 fn setup_cwd_empty() {
     envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", "EMPTY");
 
@@ -657,6 +686,7 @@ fn setup_cwd_empty() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_empty() {
     let cli_args = CliArgs::new();
 
@@ -683,6 +713,7 @@ fn setup_env_empty() {
 }
 
 #[test]
+#[ignore]
 fn setup_cargo_home() {
     setup_cwd(None);
 
@@ -693,6 +724,7 @@ fn setup_cargo_home() {
 }
 
 #[test]
+#[ignore]
 fn setup_cargo_home_overwrite() {
     let path = Path::new("path");
     envmnt::set("CARGO_HOME", path);
@@ -710,6 +742,7 @@ fn setup_cargo_home_overwrite() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_cli_arguments() {
     let mut cli_args = CliArgs::new();
     cli_args.arguments = Some(vec!["arg1".to_string(), "arg2".to_string()]);
@@ -731,6 +764,7 @@ fn setup_env_cli_arguments() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_values() {
     let cli_args = CliArgs::new();
 
@@ -760,6 +794,7 @@ fn setup_env_values() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_script() {
     let cli_args = CliArgs::new();
 
@@ -849,6 +884,7 @@ fn evaluate_env_value_multi_line() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_crate_load_toml_found() {
     envmnt::set("CARGO_MAKE_CRATE_NAME", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
@@ -908,6 +944,7 @@ fn setup_env_for_crate_load_toml_found() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     envmnt::set("CARGO_MAKE_CRATE_NAME", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
@@ -1003,6 +1040,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_crate_workspace() {
     envmnt::set("CARGO_MAKE_CRATE_NAME", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_FS_NAME", "EMPTY");
@@ -1049,6 +1087,7 @@ fn setup_env_for_crate_workspace() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_git_repo_with_values() {
     envmnt::set("CARGO_MAKE_GIT_BRANCH", "EMPTY");
     envmnt::set("CARGO_MAKE_GIT_USER_NAME", "EMPTY");
@@ -1077,6 +1116,7 @@ fn setup_env_for_git_repo_with_values() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_rust_simple_check() {
     envmnt::set("CARGO_MAKE_RUST_VERSION", "EMPTY");
     envmnt::set("CARGO_MAKE_RUST_CHANNEL", "EMPTY");
@@ -1112,6 +1152,7 @@ fn setup_env_for_rust_simple_check() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_ci_simple_check() {
     envmnt::set("CARGO_MAKE_CI", "EMPTY");
 
@@ -1199,6 +1240,7 @@ fn expand_env_no_env_vars() {
 }
 
 #[test]
+#[ignore]
 fn expand_env_with_env_vars() {
     envmnt::set("TEST_ENV_EXPAND1", "ENV1");
     envmnt::set("TEST_ENV_EXPAND2", "ENV2");
@@ -1229,6 +1271,7 @@ fn expand_env_with_env_vars() {
 }
 
 #[test]
+#[ignore]
 fn expand_env_with_env_vars_and_task_args() {
     envmnt::set("TEST_ENV_EXPAND1", "ENV1");
     envmnt::set("TEST_ENV_EXPAND2", "ENV2");
@@ -1270,6 +1313,7 @@ fn expand_env_with_env_vars_and_task_args() {
 }
 
 #[test]
+#[ignore]
 fn expand_env_with_env_vars_and_empty_task_args() {
     envmnt::set("TEST_ENV_EXPAND1", "ENV1");
     envmnt::set("TEST_ENV_EXPAND2", "ENV2");
@@ -1317,6 +1361,7 @@ fn remove_unc_prefix_not_found() {
 }
 
 #[test]
+#[ignore]
 fn set_current_task_meta_info_env_mixed() {
     let mut env = IndexMap::<String, EnvValue>::new();
 
@@ -1358,6 +1403,7 @@ fn get_base_directory_name_valid() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_project_crate() {
     let config = Config {
         config: ConfigSection::new(),
@@ -1382,6 +1428,7 @@ fn setup_env_for_project_crate() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_project_workspace_with_main_crate() {
     let mut config_section = ConfigSection::new();
     config_section.main_project_member = Some("member2".to_string());
@@ -1407,6 +1454,7 @@ fn setup_env_for_project_workspace_with_main_crate() {
 }
 
 #[test]
+#[ignore]
 fn setup_env_for_project_workspace_no_main_crate() {
     let config = Config {
         config: ConfigSection::new(),

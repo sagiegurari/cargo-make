@@ -33,7 +33,6 @@ pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool)
         Err(error) => {
             if !force {
                 error!("Error while executing command, error: {:#?}", error);
-                panic!("Error while executing command, error: {:#?}", error);
             }
 
             -1
@@ -47,7 +46,6 @@ pub(crate) fn get_exit_code_from_output(output: &io::Result<Output>, force: bool
         &Err(ref error) => {
             if !force {
                 error!("Error while executing command, error: {:#?}", error);
-                panic!("Error while executing command, error: {:#?}", error);
             }
 
             -1
@@ -59,10 +57,8 @@ pub(crate) fn get_exit_code_from_output(output: &io::Result<Output>, force: bool
 pub(crate) fn validate_exit_code(code: i32) {
     if code == -1 {
         error!("Error while executing command, unable to extract exit code.");
-        panic!("Error while executing command, unable to extract exit code.");
     } else if code != 0 {
         error!("Error while executing command, exit code: {}", code);
-        panic!("Error while executing command, exit code: {}", code);
     }
 }
 

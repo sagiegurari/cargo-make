@@ -5,7 +5,7 @@
 * **build** - Runs the rust compiler.
 * **build-flow** - Full sanity testing flow.
 * **build-release** - Runs release build.
-* **build-verbose** - Runs the rust compiler with verbose output.
+* **build-verbose** - Runs the rust compiler with verbose output. (deprecated - Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
 * **end-build-flow** - No Description.
 * **init-build-flow** - No Description.
 * **post-build** - No Description.
@@ -162,8 +162,12 @@
 * **pre-coverage** - No Description.
 * **pre-test** - No Description.
 * **test** - Runs all available tests.
+* **test-custom** - Runs custom test command.
 * **test-flow** - Runs pre/post hooks and cargo test.
-* **test-verbose** - Runs all available tests with verbose output.
+* **test-multi-phases-flow** - Runs single/multi and custom test tasks.
+* **test-single-threaded** - Runs all ignored tests with a single test thread.
+* **test-thread-safe** - Runs all available tests without limiting test threads.
+* **test-verbose** - Runs all available tests with verbose output. (deprecated - Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
 * **test-with-args** - Runs cargo test with command line arguments.
 * **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.

@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::test;
 use envmnt;
 
 #[test]
@@ -11,12 +12,14 @@ fn split_invoke_empty() {
 #[test]
 #[should_panic]
 fn split_invoke_invalid_too_many_args() {
+    test::on_test_startup();
     invoke(&vec!["TEST".to_string(), "1".to_string(), "2".to_string()]);
 }
 
 #[test]
 #[should_panic]
 fn split_invoke_invalid_split_by_big() {
+    test::on_test_startup();
     invoke(&vec!["TEST".to_string(), "ab".to_string()]);
 }
 
@@ -28,27 +31,30 @@ fn split_invoke_invalid_split_by_empty() {
 
 #[test]
 fn split_invoke_exists_splitted_comma() {
-    envmnt::set("TEST_SPLIT_VALUE", "1,2,3,4");
+    envmnt::set("TEST_SPLIT_VALUE_COMMA", "1,2,3,4");
 
-    let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), ",".to_string()]);
+    let output = invoke(&vec!["TEST_SPLIT_VALUE_COMMA".to_string(), ",".to_string()]);
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
 
 #[test]
 fn split_invoke_exists_splitted_space() {
-    envmnt::set("TEST_SPLIT_VALUE", "1 2 3 4");
+    envmnt::set("TEST_SPLIT_VALUE_SPACE", "1 2 3 4");
 
-    let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), " ".to_string()]);
+    let output = invoke(&vec!["TEST_SPLIT_VALUE_SPACE".to_string(), " ".to_string()]);
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
 
 #[test]
 fn split_invoke_exists_not_splitted() {
-    envmnt::set("TEST_SPLIT_VALUE", "1,2,3,4");
+    envmnt::set("TEST_SPLIT_VALUE_NOT_SPLITTED", "1,2,3,4");
 
-    let output = invoke(&vec!["TEST_SPLIT_VALUE".to_string(), "|".to_string()]);
+    let output = invoke(&vec![
+        "TEST_SPLIT_VALUE_NOT_SPLITTED".to_string(),
+        "|".to_string(),
+    ]);
 
     assert_eq!(output, vec!["1,2,3,4"]);
 }

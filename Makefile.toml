@@ -1,7 +1,7 @@
 
 [config]
 additional_profiles = [
-    "none-thread-safe-tests",
+    "multi-phase-tests",
     "ci-coverage-tasks",
     "ci-all-build-tasks",
     "publish-pre-cleanup"
@@ -60,3 +60,9 @@ run_task = { name = ["generate-readme", "generate-task-list"] }
 
 [tasks.post-docs]
 linux_alias = "generate-docs"
+[tasks.temp]
+script = [
+'''
+echo $CARGO_MAKE_CARGO_VERBOSE_FLAGS
+'''
+]

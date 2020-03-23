@@ -556,6 +556,7 @@ fn load_workspace_members_mixed() {
 }
 
 #[test]
+#[ignore]
 fn get_crate_target_triple() {
     let old_current_dir = env::current_dir().unwrap();
 

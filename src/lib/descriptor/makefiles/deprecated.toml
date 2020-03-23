@@ -1,0 +1,15 @@
+
+[tasks.build-verbose]
+description = "Runs the rust compiler with verbose output."
+category = "Build"
+deprecated = "Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead."
+env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
+run_task = "build"
+
+[tasks.test-verbose]
+description = "Runs all available tests with verbose output."
+category = "Test"
+deprecated = "Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead."
+env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
+run_task = "test"
+

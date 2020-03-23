@@ -365,6 +365,7 @@ fn merge_tasks_extend_task() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptors_load_workspace_makefile() {
     envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
@@ -378,6 +379,7 @@ fn load_descriptors_load_workspace_makefile() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptors_load_workspace_makefile_no_exists() {
     envmnt::set(
         "CARGO_MAKE_WORKSPACE_MAKEFILE",
@@ -391,6 +393,7 @@ fn load_descriptors_load_workspace_makefile_no_exists() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptors_no_load_workspace_makefile() {
     envmnt::remove("CARGO_MAKE_WORKSPACE_MAKEFILE");
     let config = load_descriptors("./bad/bad.toml", false, None, false, false, None).unwrap();
@@ -400,6 +403,7 @@ fn load_descriptors_no_load_workspace_makefile() {
 }
 
 #[test]
+#[ignore]
 fn load_no_stable() {
     let config = load("./examples/skip_core_tasks.toml", true, None, false).unwrap();
 
@@ -412,6 +416,7 @@ fn load_no_stable() {
 }
 
 #[test]
+#[ignore]
 fn load_with_stable() {
     let config = load("./examples/simple-example.toml", true, None, false).unwrap();
 
@@ -424,6 +429,7 @@ fn load_with_stable() {
 }
 
 #[test]
+#[ignore]
 fn load_with_modify() {
     let config = load("./examples/modify_core_tasks.toml", true, None, false).unwrap();
 
@@ -546,6 +552,7 @@ fn load_internal_descriptors_modify_namespace() {
 }
 
 #[test]
+#[ignore]
 fn load_external_descriptor_no_file() {
     let config = load_external_descriptor(".", "bad_file.toml2", false, false).unwrap();
 
@@ -567,6 +574,7 @@ fn load_external_descriptor_extended_not_found_force() {
 }
 
 #[test]
+#[ignore]
 fn load_external_descriptor_simple_file() {
     let config = load_external_descriptor(".", "./examples/alias.toml", true, false).unwrap();
 
@@ -581,6 +589,7 @@ fn load_external_descriptor_simple_file() {
 }
 
 #[test]
+#[ignore]
 fn load_external_descriptor_extending_file() {
     let config = load_external_descriptor(".", "examples/extending.toml", true, false).unwrap();
 
@@ -601,6 +610,7 @@ fn load_external_descriptor_extending_file() {
 }
 
 #[test]
+#[ignore]
 fn load_external_descriptor_extending_file_sub_folder() {
     let config =
         load_external_descriptor(".", "examples/files/extending.toml", true, false).unwrap();
@@ -631,6 +641,7 @@ fn load_external_descriptor_extending_file_sub_folder() {
 }
 
 #[test]
+#[ignore]
 fn load_external_descriptor_set_env() {
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH"), "EMPTY");
@@ -741,6 +752,7 @@ fn run_load_script_valid_load_script_duckscript() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_path_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
@@ -754,6 +766,7 @@ fn load_descriptor_extended_makefiles_path_exists() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_descriptor_extended_makefiles_path_not_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
@@ -765,6 +778,7 @@ fn load_descriptor_extended_makefiles_path_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_options_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
@@ -781,6 +795,7 @@ fn load_descriptor_extended_makefiles_options_exists() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
@@ -795,6 +810,7 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_options_exists_optional() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
@@ -811,6 +827,7 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_options_exists_not_optional() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let descriptor = load_descriptor_extended_makefiles(
@@ -827,6 +844,7 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists_optional() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
@@ -844,6 +862,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
@@ -858,6 +877,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_list_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let list = vec![
@@ -878,6 +898,7 @@ fn load_descriptor_extended_makefiles_list_exists() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn load_descriptor_extended_makefiles_list_not_exists() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
@@ -895,6 +916,7 @@ fn load_descriptor_extended_makefiles_list_not_exists() {
 }
 
 #[test]
+#[ignore]
 fn load_descriptor_extended_makefiles_list_exists_optional() {
     let parent_path = envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY");
     let list = vec![

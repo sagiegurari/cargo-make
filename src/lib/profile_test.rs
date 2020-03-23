@@ -53,6 +53,7 @@ fn normalize_additional_profiles_multiple() {
 }
 
 #[test]
+#[ignore]
 fn get_not_defined() {
     envmnt::remove("CARGO_MAKE_PROFILE");
     let output = get();
@@ -60,6 +61,7 @@ fn get_not_defined() {
 }
 
 #[test]
+#[ignore]
 fn get_defined() {
     envmnt::set("CARGO_MAKE_PROFILE", "TEST123");
     let output = get();
@@ -67,6 +69,7 @@ fn get_defined() {
 }
 
 #[test]
+#[ignore]
 fn set_empty() {
     envmnt::remove("CARGO_MAKE_PROFILE");
     let mut output = set("");
@@ -78,6 +81,7 @@ fn set_empty() {
 }
 
 #[test]
+#[ignore]
 fn set_spaces() {
     envmnt::remove("CARGO_MAKE_PROFILE");
     let mut output = set("   ");
@@ -89,6 +93,7 @@ fn set_spaces() {
 }
 
 #[test]
+#[ignore]
 fn set_mixed() {
     envmnt::remove("CARGO_MAKE_PROFILE");
     let mut output = set("   SOME profile NAME  ");
@@ -100,6 +105,7 @@ fn set_mixed() {
 }
 
 #[test]
+#[ignore]
 fn set_additional_multiple() {
     envmnt::remove("CARGO_MAKE_ADDITIONAL_PROFILES");
     set_additional(&vec!["  TEst1  ".to_string(), "  test2  ".to_string()]);

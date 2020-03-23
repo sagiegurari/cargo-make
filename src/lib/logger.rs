@@ -12,13 +12,6 @@ use envmnt;
 use fern;
 use log::{Level, LevelFilter};
 use std::io::stdout;
-
-#[cfg(test)]
-fn exit(code: i32) {
-    panic!(code);
-}
-
-#[cfg(not(test))]
 use std::process::exit;
 
 #[derive(Debug, PartialEq)]
@@ -134,6 +127,12 @@ pub(crate) fn init(options: &LoggerOptions) {
         .format(move |out, message, record| {
             let name = env!("CARGO_PKG_NAME");
             let record_level = record.level();
+
+            if cfg!(test) {
+                if record_level == LevelFilter::Error {
+                    panic!("test error flow");
+                }
+            }
 
             let name_fmt = get_formatted_name(&name, color);
 

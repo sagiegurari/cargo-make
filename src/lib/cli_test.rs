@@ -4,6 +4,7 @@ use std::env;
 use std::path::Path;
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_makefile_not_found() {
     let global_config = GlobalConfig::new();
@@ -37,6 +38,7 @@ fn run_makefile_not_found() {
 }
 
 #[test]
+#[ignore]
 fn run_empty_task() {
     let global_config = GlobalConfig::new();
 
@@ -69,6 +71,7 @@ fn run_empty_task() {
 }
 
 #[test]
+#[ignore]
 fn print_empty_task() {
     let global_config = GlobalConfig::new();
 
@@ -101,6 +104,7 @@ fn print_empty_task() {
 }
 
 #[test]
+#[ignore]
 fn list_empty_task() {
     let global_config = GlobalConfig::new();
 
@@ -133,6 +137,7 @@ fn list_empty_task() {
 }
 
 #[test]
+#[ignore]
 fn run_file_and_task() {
     let global_config = GlobalConfig::new();
 
@@ -165,6 +170,7 @@ fn run_file_and_task() {
 }
 
 #[test]
+#[ignore]
 fn run_cwd_with_file() {
     let global_config = GlobalConfig::new();
 
@@ -200,6 +206,7 @@ fn run_cwd_with_file() {
 }
 
 #[test]
+#[ignore]
 fn run_file_not_go_to_project_root() {
     let mut global_config = GlobalConfig::new();
     global_config.search_project_root = Some(false);
@@ -233,6 +240,7 @@ fn run_file_not_go_to_project_root() {
 }
 
 #[test]
+#[ignore]
 fn run_cwd_go_to_project_root_current_dir() {
     let mut global_config = GlobalConfig::new();
     global_config.search_project_root = Some(true);
@@ -266,6 +274,7 @@ fn run_cwd_go_to_project_root_current_dir() {
 }
 
 #[test]
+#[ignore]
 fn run_cwd_go_to_project_root_child_dir() {
     let mut global_config = GlobalConfig::new();
     global_config.search_project_root = Some(true);
@@ -302,6 +311,7 @@ fn run_cwd_go_to_project_root_child_dir() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_cwd_task_not_found() {
     let global_config = GlobalConfig::new();
@@ -339,12 +349,6 @@ fn run_cwd_task_not_found() {
 
 #[test]
 #[should_panic]
-fn run_cli_panic() {
-    run_cli("make".to_string(), true);
-}
-
-#[test]
-#[should_panic]
 fn run_for_args_bad_subcommand() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -355,6 +359,7 @@ fn run_for_args_bad_subcommand() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_valid() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -376,6 +381,7 @@ fn run_for_args_valid() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_with_global_config() {
     let mut global_config = GlobalConfig::new();
     global_config.log_level = Some("info".to_string());
@@ -389,6 +395,7 @@ fn run_for_args_with_global_config() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_log_level_override() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -409,6 +416,7 @@ fn run_for_args_log_level_override() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_set_env_values() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -440,6 +448,7 @@ fn run_for_args_set_env_values() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_set_env_via_file() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -466,6 +475,7 @@ fn run_for_args_set_env_via_file() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_set_env_both() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -504,6 +514,7 @@ fn run_for_args_set_env_both() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_print_only() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -527,6 +538,7 @@ fn run_for_args_print_only() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_diff_steps() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -548,6 +560,7 @@ fn run_for_args_diff_steps() {
 }
 
 #[test]
+#[ignore]
 #[should_panic]
 fn run_protected_flow_example() {
     let global_config = GlobalConfig::new();
@@ -564,6 +577,7 @@ fn run_protected_flow_example() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_no_task_args() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);
@@ -583,6 +597,7 @@ fn run_for_args_no_task_args() {
 }
 
 #[test]
+#[ignore]
 fn run_for_args_set_task_args() {
     let global_config = GlobalConfig::new();
     let app = create_cli(&global_config, &"make".to_string(), true);

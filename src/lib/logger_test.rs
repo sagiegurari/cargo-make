@@ -156,12 +156,6 @@ fn get_formatted_log_level_error_no_color() {
 
 #[test]
 #[should_panic]
-fn exit_test() {
-    exit(0);
-}
-
-#[test]
-#[should_panic]
 fn create_error() {
     init(&LoggerOptions {
         level: "error".to_string(),
@@ -172,6 +166,7 @@ fn create_error() {
 }
 
 #[test]
+#[ignore]
 fn update_disable_color_env_var() {
     envmnt::remove("CARGO_MAKE_DISABLE_COLOR");
 

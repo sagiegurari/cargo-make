@@ -2060,6 +2060,7 @@ cargo-make comes with few built in profiles to quickly enable additional conditi
 
 * **ci-coverage-tasks** - Will enable all code coverage tasks and setup rust compilation to remove dead code.
 * **none-thread-safe-tests** - Sets up rust test runner to a single thread
+* **multi-phase-tests** - Enable to split the tests to multiple phases (thread safe, multi threaded, custom)
 * **ci-static-code-analysis-tasks** - Will enable all static code analysis tasks such as format checking and clippy as part of the CI flow (see special note about backward compatibility below).
 * **ci-all-build-tasks** - Will enable all extra compilation tasks (i.e. bench and example code) as part of the CI flow (see special note about backward compatibility below).
 
