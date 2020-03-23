@@ -23,8 +23,8 @@ environment:
     # Nightly channel
     - TARGET: i686-pc-windows-gnu
       CHANNEL: nightly
-    - TARGET: i686-pc-windows-msvc
-      CHANNEL: nightly
+    #- TARGET: i686-pc-windows-msvc
+    #  CHANNEL: nightly
     - TARGET: x86_64-pc-windows-gnu
       CHANNEL: nightly
     - TARGET: x86_64-pc-windows-msvc
