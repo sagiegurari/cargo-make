@@ -292,7 +292,11 @@ else
     build_number = set 1
 end
 
+# update build number file
 writefile ${CARGO_MAKE_BUILD_NUMBER_FILE} ${build_number}
+
+# set the CARGO_MAKE_BUILD_NUMBER environment variable
+set_env CARGO_MAKE_BUILD_NUMBER ${build_number}
 '''
 ]
 

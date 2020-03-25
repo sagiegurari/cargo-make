@@ -1,15 +1,15 @@
 use crate::condition;
 use crate::descriptor;
-use crate::scriptengine;
 use crate::runner;
+use crate::scriptengine;
 use crate::scriptengine::EngineType;
-use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo,RunTaskInfo, Step, Task};
-use ci_info;
 use crate::test;
-use git_info::types::GitInfo;
-use rust_info::types::RustInfo;
+use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, RunTaskInfo, Step, Task};
+use ci_info;
 use envmnt;
 use fsio;
+use git_info::types::GitInfo;
+use rust_info::types::RustInfo;
 
 fn load_descriptor() -> Config {
     descriptor::load_internal_descriptors(true, false, None)
@@ -181,6 +181,8 @@ fn makefile_build_file_increment_no_file_test() {
 
     let text = fsio::file::read_text_file(&file).unwrap();
     assert_eq!(text, "1");
+    let number = envmnt::get_or_panic("CARGO_MAKE_BUILD_NUMBER");
+    assert_eq!(number, "1");
 }
 
 #[test]
@@ -192,6 +194,7 @@ fn makefile_build_file_increment_file_exists_test() {
     file.push("buildnumber.txt");
 
     envmnt::set("CARGO_MAKE_BUILD_NUMBER_FILE", &file);
+    envmnt::remove("CARGO_MAKE_BUILD_NUMBER");
 
     let name = "build-file-increment";
 
@@ -212,6 +215,8 @@ fn makefile_build_file_increment_file_exists_test() {
 
     let text = fsio::file::read_text_file(&file).unwrap();
     assert_eq!(text, "3");
+    let number = envmnt::get_or_panic("CARGO_MAKE_BUILD_NUMBER");
+    assert_eq!(number, "3");
 }
 
 #[test]
@@ -225,6 +230,7 @@ fn makefile_build_file_increment_panic_invalid_data_test() {
     fsio::file::write_text_file(&file, "abc").unwrap();
 
     envmnt::set("CARGO_MAKE_BUILD_NUMBER_FILE", &file);
+    envmnt::remove("CARGO_MAKE_BUILD_NUMBER");
 
     let name = "build-file-increment";
 
