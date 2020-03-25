@@ -191,6 +191,27 @@ fn set_env_for_decode_info_strings_found() {
 
 #[test]
 #[ignore]
+#[cfg(target_os = "linux")]
+fn set_env_multi_line_script() {
+    envmnt::remove("SET_ENV_MULTI_LINE_SCRIPT");
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "script".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script1\necho script2".to_string()],
+            multi_line: Some(true),
+        }),
+    );
+
+    set_env(env);
+
+    assert!(envmnt::is_equal("script", "script1\nscript2\n"));
+    envmnt::remove("SET_ENV_MULTI_LINE_SCRIPT");
+}
+
+#[test]
+#[ignore]
 fn set_env_for_decode_info_strings_default() {
     envmnt::remove("ENV_DECODE_STRING_DEFAULT");
 
@@ -881,6 +902,19 @@ fn evaluate_env_value_multi_line() {
 
     assert!(output.contains("1"));
     assert!(output.contains("2"));
+}
+
+#[test]
+#[cfg(target_os = "linux")]
+fn evaluate_env_value_multi_line_linux() {
+    let output = evaluate_env_value(&EnvValueScript {
+        script: vec!["echo 1\necho 2".to_string()],
+        multi_line: Some(true),
+    });
+
+    assert!(output.contains("1"));
+    assert!(output.contains("2"));
+    assert_eq!(output, "1\n2\n");
 }
 
 #[test]
