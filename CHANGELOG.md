@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.1
+
+* New build-file-increment task and flow #399
+
 ### v0.30.0 (2020-03-23)
 
 * Ensure that the specified rustup toolchain exists before using it #388 (thanks @Ma27)

@@ -1,6 +1,3 @@
-#[path = "./makefile_test.rs"]
-mod makefile_test;
-
 use crate::logger;
 use crate::logger::LoggerOptions;
 use ci_info;

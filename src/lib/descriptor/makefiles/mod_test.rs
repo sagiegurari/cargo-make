@@ -1,13 +1,15 @@
-use super::*;
 use crate::condition;
 use crate::descriptor;
-use crate::runner;
 use crate::scriptengine;
+use crate::runner;
 use crate::scriptengine::EngineType;
-use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, RunTaskInfo, Step, Task};
+use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo,RunTaskInfo, Step, Task};
 use ci_info;
+use crate::test;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
+use envmnt;
+use fsio;
 
 fn load_descriptor() -> Config {
     descriptor::load_internal_descriptors(true, false, None)
@@ -39,7 +41,7 @@ fn create_flow_info(config: &Config) -> FlowInfo {
 }
 
 fn makefile_task_condition_test(name: &str, expect_enabled: bool, linux_only: bool, ci_only: bool) {
-    if !linux_only || is_linux() {
+    if !linux_only || test::is_linux() {
         let config = load_descriptor();
         let task = get_task(name, &config);
         let flow_info = create_flow_info(&config);
@@ -87,7 +89,7 @@ fn makefile_task_script_engine_test(name: &str, engine: EngineType) {
 
 #[test]
 fn makefile_coverage_test() {
-    if is_linux() {
+    if test::is_linux() {
         let config = load_descriptor();
         let task = get_task("coverage", &config);
         let run_task_info = task.run_task.unwrap();
@@ -116,7 +118,7 @@ fn makefile_ci_coverage_flow_test() {
 #[test]
 fn makefile_codecov_test() {
     makefile_task_script_engine_test("codecov", EngineType::OS);
-    let enabled = if is_windows() { false } else { true };
+    let enabled = if test::is_windows() { false } else { true };
 
     makefile_task_condition_test("codecov", enabled, false, false);
 }
@@ -145,4 +147,95 @@ fn makefile_audit_test() {
 #[test]
 fn makefile_outdated_test() {
     makefile_task_enabled_test("outdated", false, false);
+}
+
+#[test]
+fn makefile_build_file_increment_test() {
+    makefile_task_disabled_test("build-file-increment", false);
+}
+
+#[test]
+#[ignore]
+fn makefile_build_file_increment_no_file_test() {
+    let mut file = test::get_temp_test_directory();
+    file.push("build_file_increment_test_no_file");
+    fsio::directory::delete(&file).unwrap();
+    file.push("buildnumber.txt");
+
+    envmnt::set("CARGO_MAKE_BUILD_NUMBER_FILE", &file);
+
+    let name = "build-file-increment";
+
+    let config = load_descriptor();
+    let task = get_task(name, &config);
+
+    let flow_info = create_flow_info(&config);
+    let step = Step {
+        name: name.to_string(),
+        config: task,
+    };
+
+    runner::run_task(&flow_info, &step);
+
+    envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
+
+    let text = fsio::file::read_text_file(&file).unwrap();
+    assert_eq!(text, "1");
+}
+
+#[test]
+#[ignore]
+fn makefile_build_file_increment_file_exists_test() {
+    let mut file = test::get_temp_test_directory();
+    file.push("build_file_increment_test_file_exists");
+    fsio::directory::delete(&file).unwrap();
+    file.push("buildnumber.txt");
+
+    envmnt::set("CARGO_MAKE_BUILD_NUMBER_FILE", &file);
+
+    let name = "build-file-increment";
+
+    let config = load_descriptor();
+    let task = get_task(name, &config);
+
+    let flow_info = create_flow_info(&config);
+    let step = Step {
+        name: name.to_string(),
+        config: task,
+    };
+
+    runner::run_task(&flow_info, &step);
+    runner::run_task(&flow_info, &step);
+    runner::run_task(&flow_info, &step);
+
+    envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
+
+    let text = fsio::file::read_text_file(&file).unwrap();
+    assert_eq!(text, "3");
+}
+
+#[test]
+#[ignore]
+#[should_panic]
+fn makefile_build_file_increment_panic_invalid_data_test() {
+    let mut file = test::get_temp_test_directory();
+    file.push("build_file_increment_test_invalid_data");
+    fsio::directory::delete(&file).unwrap();
+    file.push("buildnumber.txt");
+    fsio::file::write_text_file(&file, "abc").unwrap();
+
+    envmnt::set("CARGO_MAKE_BUILD_NUMBER_FILE", &file);
+
+    let name = "build-file-increment";
+
+    let config = load_descriptor();
+    let task = get_task(name, &config);
+
+    let flow_info = create_flow_info(&config);
+    let step = Step {
+        name: name.to_string(),
+        config: task,
+    };
+
+    runner::run_task(&flow_info, &step);
 }

@@ -3,6 +3,10 @@
 //! Provides access to internal makefiles.
 //!
 
+#[cfg(test)]
+#[path = "./mod_test.rs"]
+mod mod_test;
+
 pub(crate) static BASE: &str = include_str!("base.toml");
 pub(crate) static STABLE: &str = concat!(
     include_str!("stable.toml"),
