@@ -7,8 +7,8 @@
 #[path = "./logger_test.rs"]
 mod logger_test;
 
-use colored::*;
 use crate::recursion_level;
+use colored::*;
 use envmnt;
 use fern;
 use log::{Level, LevelFilter};
@@ -124,7 +124,12 @@ pub(crate) fn init(options: &LoggerOptions) {
     envmnt::set("CARGO_MAKE_LOG_LEVEL", &level_name_value);
     envmnt::set_bool("CARGO_MAKE_DISABLE_COLOR", !color);
 
-    let level = recursion_level::recursion_level();
+    let recursion_lvl = recursion_level::get();
+    let recursion_level_log = if recursion_lvl == 0 {
+        "".to_string()
+    } else {
+        format!("[{}]", recursion_lvl)
+    };
 
     let result = fern::Dispatch::new()
         .format(move |out, message, record| {
@@ -143,8 +148,8 @@ pub(crate) fn init(options: &LoggerOptions) {
             let record_level_fmt = get_formatted_log_level(&record_level, color);
 
             out.finish(format_args!(
-                "[{}] {} {} - {}",
-                &name_fmt, level, &record_level_fmt, &message
+                "[{}]{} {} - {}",
+                &name_fmt, &recursion_level_log, &record_level_fmt, &message
             ));
 
             if record_level == Level::Error {

@@ -29,14 +29,14 @@ static DEFAULT_TASK_NAME: &str = "default";
 static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
-    recursion_level::increase_level();
+    recursion_level::increment();
 
     logger::init(&LoggerOptions {
         level: cli_args.log_level.clone(),
         color: !cli_args.disable_color,
     });
 
-    if recursion_level::is_first_level() {
+    if recursion_level::is_top() {
         info!("{} {}", &cli_args.command, &VERSION);
         debug!("Written By {}", &AUTHOR);
     }

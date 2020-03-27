@@ -3,6 +3,7 @@
 ### v0.30.1
 
 * New build-file-increment task and flow #399
+* Display recursion level like `make(1)` #389 (thanks @Ma27)
 
 ### v0.30.0 (2020-03-23)
 
