@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::test;
 use crate::types::{ExtendOptions, InstallCrate};
 
 #[test]
@@ -564,6 +565,10 @@ fn load_external_descriptor_no_file() {
 #[test]
 #[should_panic]
 fn load_external_descriptor_no_file_force() {
+    if test::is_appveyor_ci() {
+        panic!("skipped");
+    }
+
     load_external_descriptor(".", "bad_file.toml2", true, false).unwrap();
 }
 

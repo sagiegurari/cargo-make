@@ -14,8 +14,8 @@ environment:
     # Beta channel
     - TARGET: i686-pc-windows-gnu
       CHANNEL: beta
-    #- TARGET: i686-pc-windows-msvc
-    #  CHANNEL: beta
+    - TARGET: i686-pc-windows-msvc
+      CHANNEL: beta
     - TARGET: x86_64-pc-windows-gnu
       CHANNEL: beta
     - TARGET: x86_64-pc-windows-msvc
@@ -23,12 +23,12 @@ environment:
     # Nightly channel
     - TARGET: i686-pc-windows-gnu
       CHANNEL: nightly
-    #- TARGET: i686-pc-windows-msvc
-    #  CHANNEL: nightly
-    #- TARGET: x86_64-pc-windows-gnu
-    #  CHANNEL: nightly
-    #- TARGET: x86_64-pc-windows-msvc
-    #  CHANNEL: nightly
+    - TARGET: i686-pc-windows-msvc
+      CHANNEL: nightly
+    - TARGET: x86_64-pc-windows-gnu
+      CHANNEL: nightly
+    - TARGET: x86_64-pc-windows-msvc
+      CHANNEL: nightly
 
 matrix:
   allow_failures:

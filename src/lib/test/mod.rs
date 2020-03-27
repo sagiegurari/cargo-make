@@ -1,6 +1,7 @@
 use crate::logger;
 use crate::logger::LoggerOptions;
 use ci_info;
+use ci_info::types::Vendor;
 use fsio;
 use rust_info;
 use rust_info::types::RustChannel;
@@ -38,6 +39,16 @@ fn is_travis_ci() -> bool {
     on_test_startup();
 
     envmnt::is_or("TRAVIS", false)
+}
+
+pub(crate) fn is_appveyor_ci() -> bool {
+    let info = ci_info::get();
+
+    if !info.ci {
+        false
+    } else {
+        info.vendor.unwrap() == Vendor::AppVeyor
+    }
 }
 
 pub(crate) fn is_windows_on_travis_ci() -> bool {
