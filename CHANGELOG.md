@@ -1,5 +1,12 @@
 ## CHANGELOG
 
+### v0.30.1
+
+* New build-file-increment task and flow #399
+* Display recursion level like `make(1)` #389 (thanks @Ma27)
+* Document github actions CI instructions.
+* Migrate CI to github actions.
+
 ### v0.30.0 (2020-03-23)
 
 * Ensure that the specified rustup toolchain exists before using it #388 (thanks @Ma27)

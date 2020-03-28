@@ -1,6 +1,3 @@
-#[path = "./makefile_test.rs"]
-mod makefile_test;
-
 use crate::logger;
 use crate::logger::LoggerOptions;
 use ci_info;
@@ -37,28 +34,6 @@ pub(crate) fn is_windows() -> bool {
     }
 }
 
-fn is_travis_ci() -> bool {
-    on_test_startup();
-
-    envmnt::is_or("TRAVIS", false)
-}
-
-pub(crate) fn is_windows_on_travis_ci() -> bool {
-    on_test_startup();
-
-    if is_windows() {
-        is_travis_ci()
-    } else {
-        false
-    }
-}
-
-pub(crate) fn is_local_or_travis_ci() -> bool {
-    on_test_startup();
-
-    !ci_info::is_ci() || is_travis_ci()
-}
-
 pub(crate) fn should_test(panic_if_false: bool) -> bool {
     on_test_startup();
 
@@ -78,11 +53,7 @@ pub(crate) fn get_os_runner() -> String {
     on_test_startup();
 
     if cfg!(windows) {
-        if is_travis_ci() {
-            "sh".to_string()
-        } else {
-            "powershell.exe".to_string()
-        }
+        "powershell.exe".to_string()
     } else {
         "sh".to_string()
     }
@@ -92,11 +63,7 @@ pub(crate) fn get_os_extension() -> String {
     on_test_startup();
 
     if cfg!(windows) {
-        if is_travis_ci() {
-            "sh".to_string()
-        } else {
-            "ps1".to_string()
-        }
+        "ps1".to_string()
     } else {
         "sh".to_string()
     }

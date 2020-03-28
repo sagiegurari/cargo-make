@@ -157,6 +157,7 @@ mod io;
 mod legacy;
 mod logger;
 mod profile;
+mod recursion_level;
 mod runner;
 mod scriptengine;
 mod storage;

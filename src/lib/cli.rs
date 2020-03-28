@@ -14,6 +14,7 @@ use crate::environment;
 use crate::logger;
 use crate::logger::LoggerOptions;
 use crate::profile;
+use crate::recursion_level;
 use crate::runner;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
@@ -28,13 +29,17 @@ static DEFAULT_TASK_NAME: &str = "default";
 static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
+    recursion_level::increment();
+
     logger::init(&LoggerOptions {
         level: cli_args.log_level.clone(),
         color: !cli_args.disable_color,
     });
 
-    info!("{} {}", &cli_args.command, &VERSION);
-    debug!("Written By {}", &AUTHOR);
+    if recursion_level::is_top() {
+        info!("{} {}", &cli_args.command, &VERSION);
+        debug!("Written By {}", &AUTHOR);
+    }
 
     debug!("Cli Args {:#?}", &cli_args);
     debug!("Global Configuration {:#?}", &global_config);

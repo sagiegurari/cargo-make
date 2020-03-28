@@ -271,3 +271,43 @@ set_env CARGO_MAKE_SUDO_ENABLED ${enable_sudo}
 echo sudo enabled: ${enable_sudo}
 '''
 ]
+
+[tasks.pre-build-file-increment]
+category = "Tools"
+
+[tasks.build-file-increment]
+description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
+category = "Tools"
+condition = { env_set = [ "CARGO_MAKE_BUILD_NUMBER_FILE" ] }
+script_runner = "@duckscript"
+script = [
+'''
+build_number_file_exists = is_path_exists ${CARGO_MAKE_BUILD_NUMBER_FILE}
+
+if ${build_number_file_exists}
+    build_number = readfile ${CARGO_MAKE_BUILD_NUMBER_FILE}
+    build_number = trim ${build_number}
+    build_number = calc ${build_number} + 1
+else
+    build_number = set 1
+end
+
+# update build number file
+writefile ${CARGO_MAKE_BUILD_NUMBER_FILE} ${build_number}
+
+# set the CARGO_MAKE_BUILD_NUMBER environment variable
+set_env CARGO_MAKE_BUILD_NUMBER ${build_number}
+'''
+]
+
+[tasks.post-build-file-increment]
+category = "Tools"
+
+[tasks.build-file-increment-flow]
+description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
+category = "Tools"
+dependencies = [
+    "pre-build-file-increment",
+    "build-file-increment",
+    "post-build-file-increment"
+]

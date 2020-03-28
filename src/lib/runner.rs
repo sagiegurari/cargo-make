@@ -227,7 +227,7 @@ fn should_watch(task: &Task) -> bool {
     }
 }
 
-fn run_task(flow_info: &FlowInfo, step: &Step) {
+pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
     if step.config.is_actionable() {
         match step.config.env {
             Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),

@@ -710,6 +710,7 @@ private = true
 dependencies = [
     "delete-lock",
     "build-flow",
+    "build-file-increment-flow",
     "git-add",
     "git-status",
     "git-commit-message",
@@ -726,6 +727,7 @@ private = true
 dependencies = [
     "delete-lock",
     "workspace-build-flow",
+    "build-file-increment-flow",
     "git-add",
     "git-status",
     "git-commit-message",

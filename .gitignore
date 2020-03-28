@@ -1,6 +1,6 @@
 .idea
 .c9
-target/
+/target
 temp/
 **/*.rs.bk
 Cargo.lock
@@ -8,3 +8,4 @@ Cargo.lock
 dump.rdb
 /rs*.sh
 /docs/_site
+/core
