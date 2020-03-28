@@ -1,5 +1,4 @@
 use super::*;
-use crate::test;
 use envmnt;
 
 #[test]
@@ -221,26 +220,22 @@ fn is_min_version_valid_old_version() {
 
 #[test]
 fn is_min_version_valid_newer_version() {
-    if test::is_local_or_travis_ci() {
-        let valid = is_min_version_valid("cargo-make", "10000.0.0");
+    let valid = is_min_version_valid("cargo-make", "10000.0.0");
 
-        assert!(!valid);
-    }
+    assert!(!valid);
 }
 
 #[test]
 fn is_min_version_valid_same_version() {
-    if test::is_local_or_travis_ci() {
-        let version = get_crate_version("cargo-make").unwrap();
-        let mut version_string = String::new();
-        version_string.push_str(&version.major.to_string());
-        version_string.push_str(".");
-        version_string.push_str(&version.minor.to_string());
-        version_string.push_str(".");
-        version_string.push_str(&version.patch.to_string());
+    let version = get_crate_version("cargo-make").unwrap();
+    let mut version_string = String::new();
+    version_string.push_str(&version.major.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.minor.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.patch.to_string());
 
-        let valid = is_min_version_valid("cargo-make", &version_string);
+    let valid = is_min_version_valid("cargo-make", &version_string);
 
-        assert!(valid);
-    }
+    assert!(valid);
 }
