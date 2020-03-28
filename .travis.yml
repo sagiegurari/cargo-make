@@ -3,19 +3,6 @@ matrix:
   allow_failures:
     - rust: nightly
   include:
-  # Minimum version
-  - rust: 1.40.0
-    os: linux
-    script:
-      - cargo make ci-flow
-  - rust: 1.40.0
-    os: osx
-    script:
-      - cargo make ci-flow
-  - rust: 1.40.0
-    os: windows
-    script:
-      - cargo make ci-flow
   # Deploy jobs
   - env: DEPLOY=1
     rust: stable
@@ -39,8 +26,6 @@ matrix:
       apt:
         packages:
         - musl-tools
-before_script:
-  - cargo install --debug cargo-make
 script:
   - cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
 deploy:
