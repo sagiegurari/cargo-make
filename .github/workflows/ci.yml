@@ -24,15 +24,21 @@ jobs:
         command: install
         args: --debug cargo-make
     - name: Run CI
-      if: matrix.rust != 'nightly'
+      if: matrix.rust == 'stable' || matrix.rust == 'stable'
       uses: actions-rs/cargo@v1
       with:
         command: run
-        args: run --bin cargo-make --target-dir target/ci -- make ci-flow
+        args: --bin cargo-make --target-dir target/ci -- make ci-flow
     - name: Run CI (Allow Failures)
       if: matrix.rust == 'nightly'
       continue-on-error: true
       uses: actions-rs/cargo@v1
       with:
         command: run
-        args: run --bin cargo-make --target-dir target/ci -- make ci-flow
+        args: --bin cargo-make --target-dir target/ci -- make ci-flow
+    - name: Run CI (Minimal Supported Rust Version)
+      if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly'
+      uses: actions-rs/cargo@v1
+      with:
+        command: make
+        args: ci-flow
