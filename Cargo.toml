@@ -60,15 +60,6 @@ serde_derive = "^1"
 shell2batch = "^0.4"
 toml = "^0.5"
 
-[badges.travis-ci]
-branch = "master"
-repository = "sagiegurari/cargo-make"
-
-[badges.appveyor]
-repository = "sagiegurari/cargo-make"
-service = "github"
-branch = "master"
-
 [badges.codecov]
 branch = "master"
 repository = "sagiegurari/cargo-make"

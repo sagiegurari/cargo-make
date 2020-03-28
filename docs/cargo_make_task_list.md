@@ -175,12 +175,16 @@
 
 ## Tools
 
+* **build-file-increment** - Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable.
+* **build-file-increment-flow** - Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable.
 * **diff-files** - Run diff on two provided files.
 * **do-on-members** - Runs the requested task for every workspace member.
 * **empty** - Empty Task
 * **git-diff-files** - Run diff on two provided files.
 * **install-rls** - No Description.
 * **install-rust-src** - No Description.
+* **post-build-file-increment** - No Description.
+* **pre-build-file-increment** - No Description.
 * **print-cargo-env** - No Description.
 * **print-cargo-make-env** - No Description.
 * **print-ci-env** - No Description.

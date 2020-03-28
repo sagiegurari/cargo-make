@@ -1,0 +1,38 @@
+name: Continuous Integration
+on: [push, pull_request]
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [stable, beta, nightly, 1.40.0]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        profile: minimal
+        override: true
+    - name: Install cargo-make
+      uses: actions-rs/cargo@v1
+      with:
+        command: install
+        args: --debug cargo-make
+    - name: Run CI
+      if: matrix.rust != 'nightly'
+      uses: actions-rs/cargo@v1
+      with:
+        command: make
+        args: ci-flow
+    - name: Run CI (Allow Failures)
+      if: matrix.rust == 'nightly'
+      continue-on-error: true
+      uses: actions-rs/cargo@v1
+      with:
+        command: make
+        args: ci-flow

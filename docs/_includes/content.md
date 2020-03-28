@@ -2455,6 +2455,48 @@ Env: test Decoded: The current profile is: development
 cargo-make comes with a predefined flow for continuous integration build executed by internal or online services such as travis-ci and appveyor.<br>
 It is recommended to install cargo-make with the debug flag for faster installation.
 
+<a name="usage-ci-github-actions"></a>
+#### Github Actions
+Add the following to your workflow yml file:
+
+```yaml
+- name: Install cargo-make
+  uses: actions-rs/cargo@v1
+  with:
+    command: install
+    args: --debug cargo-make
+- name: Run CI
+  uses: actions-rs/cargo@v1
+  with:
+    command: make
+    args: ci-flow
+```
+
+This will use the latest cargo-make with all latest features.
+
+You can see full yaml file at: [ci.yml](https://github.com/sagiegurari/ci_info/blob/master/.github/workflows/ci.yml)
+
+If you want to run code coverage and upload it to codecov, also define the following environment variable:
+
+```toml
+CARGO_MAKE_RUN_CODECOV="true"
+```
+
+When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
+
+```yaml
+- name: Install cargo-make
+  uses: actions-rs/cargo@v1
+  with:
+    command: install
+    args: --debug cargo-make
+- name: Run CI
+  uses: actions-rs/cargo@v1
+  with:
+    command: make
+    args: --no-workspace workspace-ci-flow
+```
+
 <a name="usage-ci-travis"></a>
 #### Travis
 Add the following to .travis.yml file:
@@ -2486,8 +2528,6 @@ env:
     - CARGO_MAKE_RUN_CODECOV="true"
 ```
 
-You can see full yaml file at: [.travis.yml](https://github.com/sagiegurari/rust_info/blob/master/.travis.yml)
-
 *NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY environment variable to a location which is cached by travis.*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
@@ -2509,8 +2549,6 @@ test_script:
   - cargo install --debug cargo-make
   - cargo make ci-flow
 ```
-
-You can see full yaml file at: [appveyor.yml](https://github.com/sagiegurari/cargo-make/blob/master/appveyor.yml)
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 

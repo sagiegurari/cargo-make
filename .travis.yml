@@ -3,27 +3,6 @@ matrix:
   allow_failures:
     - rust: nightly
   include:
-  # Stable
-  - rust: stable
-    os: linux
-  - rust: stable
-    os: osx
-  - rust: stable
-    os: windows
-  # Beta
-  - rust: beta
-    os: linux
-  - rust: beta
-    os: osx
-  - rust: beta
-    os: windows
-  # Nightly
-  - rust: nightly
-    os: linux
-  - rust: nightly
-    os: osx
-  - rust: nightly
-    os: windows
   # Minimum version
   - rust: 1.40.0
     os: linux

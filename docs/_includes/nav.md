@@ -62,6 +62,7 @@
         * [Trim](#usage-functions-trim)
         * [Decode](#usage-functions-decode)
     * [Continuous Integration](#usage-ci)
+        * [Github Actions](#usage-ci-github-actions)
         * [Travis](#usage-ci-travis)
         * [AppVeyor](#usage-ci-appveyor)
         * [GitLab](#usage-ci-gitlab)
