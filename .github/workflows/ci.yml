@@ -27,12 +27,12 @@ jobs:
       if: matrix.rust != 'nightly'
       uses: actions-rs/cargo@v1
       with:
-        command: make
-        args: ci-flow
+        command: run
+        args: run --bin cargo-make --target-dir target/ci -- make ci-flow
     - name: Run CI (Allow Failures)
       if: matrix.rust == 'nightly'
       continue-on-error: true
       uses: actions-rs/cargo@v1
       with:
-        command: make
-        args: ci-flow
+        command: run
+        args: run --bin cargo-make --target-dir target/ci -- make ci-flow
