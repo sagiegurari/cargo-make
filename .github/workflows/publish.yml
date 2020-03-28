@@ -1,5 +1,8 @@
 name: Publish
-on: push
+on:
+  push:
+    tags:
+      - '*'
 jobs:
   build:
     name: Publish for ${{ matrix.os }}
@@ -38,4 +41,11 @@ jobs:
       with:
         command: run
         args: --bin cargo-make --target-dir target_ci -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=${{ matrix.binary_target }}
-
+    - name: Upload Binaries
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: '*.zip'
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
