@@ -4,6 +4,8 @@
 
 * New build-file-increment task and flow #399
 * Display recursion level like `make(1)` #389 (thanks @Ma27)
+* Document github actions CI instructions.
+* Migrate CI to github actions.
 
 ### v0.30.0 (2020-03-23)
 
