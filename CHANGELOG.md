@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.1
+### v0.30.1 (2020-03-28)
 
 * New build-file-increment task and flow #399
 * Display recursion level like `make(1)` #389 (thanks @Ma27)
