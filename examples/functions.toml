@@ -18,6 +18,10 @@ args = ["@@split(MULTIPLE_VALUES,|)"]
 command = "echo"
 args = ["${MULTIPLE_VALUES}"]
 
+[tasks.getat]
+command = "echo"
+args = ["@@getat(MULTIPLE_VALUES,|,3)"]
+
 [tasks.remove-empty]
 command = "echo"
 args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]

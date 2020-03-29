@@ -70,6 +70,7 @@
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
+        * [GetAt](#usage-functions-getat)
         * [Remove Empty](#usage-functions-remove-empty)
         * [Trim](#usage-functions-trim)
         * [Decode](#usage-functions-decode)
@@ -2295,6 +2296,7 @@ args = ["@@split(ENV_VAR,|)"]
 Currently Supported Functions:
 
 * [Split](#usage-functions-split)
+* [GetAt](#usage-functions-getat)
 * [Remove Empty](#usage-functions-remove-empty)
 * [Trim](#usage-functions-trim)
 * [Decode](#usage-functions-decode)
@@ -2347,6 +2349,39 @@ args = ["${MULTIPLE_VALUES}"]
 1 2 3 4
 [cargo-make] INFO - Running Task: end
 [cargo-make] INFO - Build Done  in 0 seconds.
+```
+
+<a name="usage-functions-getat"></a>
+#### GetAt
+
+The getat function accepts three arguments:
+
+* environment variable name
+* split by character
+* index of the item to return
+
+And returns an array with a single value based on the given index.<br>
+This enables to split an environment variable and extract only the needed param, for example:
+
+```toml
+[env]
+MULTIPLE_VALUES="1 2 3 4"
+
+[tasks.getat]
+command = "echo"
+args = ["@@getat(MULTIPLE_VALUES,|,3)"]
+```
+
+```console
+> cargo make --cwd ./examples --makefile functions.toml getat
+[cargo-make] INFO - cargo make 0.30.1
+[cargo-make] INFO - Build File: functions.toml
+[cargo-make] INFO - Task: getat
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: getat
+[cargo-make] INFO - Execute Command: "echo" "4"
+4
+[cargo-make] INFO - Build Done in 0 seconds.
 ```
 
 <a name="usage-functions-remove-empty"></a>

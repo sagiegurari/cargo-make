@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.2
+
+* New getat function #402
+
 ### v0.30.1 (2020-03-28)
 
 * New build-file-increment task and flow #399

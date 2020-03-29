@@ -27,6 +27,22 @@ fn run_function_split() {
 }
 
 #[test]
+fn run_function_getat() {
+    envmnt::set("TEST_MOD_GETAT_FUNC_MOD", "1,2,3,4");
+
+    let output = run_function(
+        "getat",
+        &vec![
+            "TEST_MOD_GETAT_FUNC_MOD".to_string(),
+            ",".to_string(),
+            "2".to_string(),
+        ],
+    );
+
+    assert_eq!(output, vec!["3"]);
+}
+
+#[test]
 fn run_function_remove_empty() {
     envmnt::set("TEST_MOD_REMOVE_EMPTY_FUNC_MOD", "");
 
