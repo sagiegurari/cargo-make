@@ -59,7 +59,7 @@ pub(crate) fn wrap_command(
 
 fn has_toolchain(toolchain: &str) -> bool {
     Command::new("rustup")
-        .args(&["run", toolchain, "true"])
+        .args(&["run", toolchain, "rustc"])
         .stderr(Stdio::null())
         .stdout(Stdio::null())
         .status()
