@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.2
+### v0.30.2 (2020-04-04)
 
 * New getat function #402
 * Update openssl version to 1.1.1f
