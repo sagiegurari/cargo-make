@@ -3,6 +3,7 @@
 ### v0.30.2
 
 * New getat function #402
+* Update openssl version to 1.1.1f
 
 ### v0.30.1 (2020-03-28)
 

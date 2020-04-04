@@ -788,12 +788,12 @@ linux_alias = "setup-musl"
 description = "Sets up a musl build environment"
 category = "CI"
 condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
-env = { "OPENSSL_DIR" = "${HOME}/openssl-musl", "OPENSSL_VERSION" = "1.0.2l" }
+env = { "OPENSSL_DIR" = "${HOME}/openssl-musl" }
 script = [
 '''
 rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
-curl https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz | tar xzf -
-cd openssl-$OPENSSL_VERSION
+curl https://www.openssl.org/source/openssl-$CARGO_MAKE_OPENSSL_VERSION.tar.gz | tar xzf -
+cd openssl-$CARGO_MAKE_OPENSSL_VERSION
 CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
 make -j"$(nproc)"
 make install
