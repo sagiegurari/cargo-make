@@ -58,6 +58,7 @@
     * [Watch](#usage-watch)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
+        * [GetAt](#usage-functions-getat)
         * [Remove Empty](#usage-functions-remove-empty)
         * [Trim](#usage-functions-trim)
         * [Decode](#usage-functions-decode)

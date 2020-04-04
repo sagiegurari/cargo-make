@@ -8,6 +8,7 @@
 mod mod_test;
 
 mod decode_func;
+mod getat_func;
 mod remove_empty_func;
 mod split_func;
 mod trim_func;
@@ -24,6 +25,7 @@ fn run_function(function_name: &str, function_args: &Vec<String>) -> Vec<String>
         "split" => split_func::invoke(function_args),
         "remove-empty" => remove_empty_func::invoke(function_args),
         "trim" => trim_func::invoke(function_args),
+        "getat" => getat_func::invoke(function_args),
         "decode" => decode_func::invoke(function_args),
         _ => {
             error!("Unknown function: {}", &function_name);
