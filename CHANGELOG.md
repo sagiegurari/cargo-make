@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.3 (2020-04-04)
+
+* Fix linux release build.
+
 ### v0.30.2 (2020-04-04)
 
 * New getat function #402
