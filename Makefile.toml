@@ -3,6 +3,7 @@
 additional_profiles = [
     "multi-phase-tests",
     "ci-coverage-tasks",
+    "ci-static-code-analysis-tasks",
     "ci-all-build-tasks",
     "publish-pre-cleanup"
 ]

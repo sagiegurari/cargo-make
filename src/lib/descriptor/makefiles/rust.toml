@@ -219,7 +219,7 @@ args = ["fmt", "--", "--check"]
 [tasks.conditioned-check-format]
 description = "Runs cargo fmt --check if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ] }
+condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ], channels = [ "nightly" ], platforms = [ "linux" ] }
 run_task = "check-format"
 
 [tasks.post-format]
@@ -559,7 +559,7 @@ args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 [tasks.conditioned-clippy]
 description = "Runs clippy code linter if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ] }
+condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ], channels = [ "nightly" ], platforms = [ "linux" ] }
 run_task = "clippy"
 
 [tasks.copy-apidocs]
