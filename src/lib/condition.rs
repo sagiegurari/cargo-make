@@ -25,10 +25,9 @@ fn validate_env_map(env: Option<IndexMap<String, String>>, equal: bool) -> bool 
             let mut all_valid = true;
 
             for (key, current_value) in env_vars.iter() {
-                if equal && !envmnt::is_equal(key, current_value) {
-                    all_valid = false;
-                    break;
-                } else if !equal && !envmnt::contains_ignore_case(key, current_value) {
+                if (equal && !envmnt::is_equal(key, current_value))
+                    || (!equal && !envmnt::contains_ignore_case(key, current_value))
+                {
                     all_valid = false;
                     break;
                 }
