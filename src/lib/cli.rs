@@ -186,7 +186,7 @@ fn run_for_args(
     };
 
     let default_log_level = match global_config.log_level {
-        Some(ref value) => value.as_str().clone(),
+        Some(ref value) => value.as_str(),
         None => &DEFAULT_LOG_LEVEL,
     };
     cli_args.log_level = if cmd_matches.is_present("v") {
@@ -237,7 +237,7 @@ fn run_for_args(
     cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
     let default_task_name = match global_config.default_task_name {
-        Some(ref value) => value.as_str().clone(),
+        Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
     };
     let task = cmd_matches.value_of("task").unwrap_or(default_task_name);
@@ -261,11 +261,11 @@ fn create_cli<'a, 'b>(
     sub_command: bool,
 ) -> App<'a, 'b> {
     let default_task_name = match global_config.default_task_name {
-        Some(ref value) => value.as_str().clone(),
+        Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
     };
     let default_log_level = match global_config.log_level {
-        Some(ref value) => value.as_str().clone(),
+        Some(ref value) => value.as_str(),
         None => &DEFAULT_LOG_LEVEL,
     };
 
@@ -273,7 +273,7 @@ fn create_cli<'a, 'b>(
         SubCommand::with_name(&command_name)
     } else {
         let name = command_name.as_str();
-        App::new(name.clone()).bin_name(name.clone())
+        App::new(name).bin_name(name)
     };
 
     cli_app = cli_app

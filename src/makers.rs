@@ -12,8 +12,6 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
-use cli;
-
 #[cfg(test)]
 #[path = "./makers_test.rs"]
 mod makers_test;
