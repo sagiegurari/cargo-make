@@ -13,3 +13,11 @@ deprecated = "Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose
 env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
 run_task = "test"
 
+[tasks.conditioned-check-format]
+deprecated = "Please use task: check-format-ci-flow"
+run_task = "check-format-ci-flow"
+
+[tasks.conditioned-clippy]
+deprecated = "Please use task: clippy-ci-flow"
+run_task = "clippy-ci-flow"
+
