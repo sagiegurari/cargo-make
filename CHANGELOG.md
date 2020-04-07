@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.30.4
+
+* Added clippy pre/post flow hook tasks.
+* Added check format pre/post flow hook tasks.
+* clippy and check-format CI flow tasks will only run on nightly linux.
+
 ### v0.30.3 (2020-04-04)
 
 * Fix linux release build.

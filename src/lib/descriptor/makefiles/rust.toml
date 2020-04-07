@@ -6,8 +6,8 @@ dependencies = [
     "pre-ci-flow",
     "print-env-flow",
     "pre-build",
-    "conditioned-check-format",
-    "conditioned-clippy",
+    "check-format-ci-flow",
+    "clippy-ci-flow",
     "build",
     "post-build",
     "test-flow",
@@ -209,6 +209,12 @@ install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustf
 command = "cargo"
 args = ["fmt"]
 
+[tasks.post-format]
+category = "Development"
+
+[tasks.pre-check-format]
+category = "Test"
+
 [tasks.check-format]
 description = "Runs cargo fmt to check appropriate code format."
 category = "Test"
@@ -216,14 +222,23 @@ install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustf
 command = "cargo"
 args = ["fmt", "--", "--check"]
 
-[tasks.conditioned-check-format]
+[tasks.post-check-format]
+category = "Test"
+
+[tasks.check-format-flow]
+description = "Runs cargo fmt check flow."
+category = "Test"
+dependencies = [
+    "pre-check-format",
+    "check-format",
+    "post-check-format"
+]
+
+[tasks.check-format-ci-flow]
 description = "Runs cargo fmt --check if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ] }
-run_task = "check-format"
-
-[tasks.post-format]
-category = "Development"
+condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+run_task = "check-format-flow"
 
 [tasks.format-flow]
 description = "Runs the cargo rustfmt plugin as part of a flow."
@@ -547,6 +562,9 @@ run_task = [
     { name = "install-clippy-rustup" }
 ]
 
+[tasks.pre-clippy]
+category = "Test"
+
 [tasks.clippy]
 description = "Runs clippy code linter."
 category = "Test"
@@ -556,11 +574,23 @@ dependencies = [
 command = "cargo"
 args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 
-[tasks.conditioned-clippy]
-description = "Runs clippy code linter if conditions are met."
+[tasks.post-clippy]
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ] }
-run_task = "clippy"
+
+[tasks.clippy-flow]
+description = "Runs clippy flow."
+category = "Test"
+dependencies = [
+    "pre-clippy",
+    "clippy",
+    "post-clippy"
+]
+
+[tasks.clippy-ci-flow]
+description = "Runs clippy code linter if conditions are met."
+category = "CI"
+condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+run_task = "clippy-flow"
 
 [tasks.copy-apidocs]
 description = "Copies the generated documentation to the docs/api directory."
