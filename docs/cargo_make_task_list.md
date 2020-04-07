@@ -18,6 +18,7 @@
 * **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **ci-flow** - CI task will run cargo build and cargo test with verbose output
+* **clippy-ci-flow** - Runs clippy code linter if conditions are met.
 * **examples-ci-flow** - Compiles the examples if conditions are met.
 * **outdated** - Runs cargo-outdated cargo plugin.
 * **outdated-ci-flow** - Runs outdated cargo conditioned CI flow.
@@ -100,6 +101,8 @@
 ## No Category
 
 * **build-release-for-target** - Makes a release build for a given target
+* **conditioned-check-format** - No Description. (deprecated - Please use task: check-format-ci-flow)
+* **conditioned-clippy** - No Description. (deprecated - Please use task: clippy-ci-flow)
 * **github-hub-find** - No Description.
 * **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
@@ -137,12 +140,13 @@
 * **check-examples** - Runs cargo check for project examples.
 * **check-flow** - Runs cargo check flow.
 * **check-format** - Runs cargo fmt to check appropriate code format.
+* **check-format-ci-flow** - Runs cargo fmt --check if conditions are met.
+* **check-format-flow** - Runs cargo fmt check flow.
 * **check-tests** - Runs cargo check for project tests.
 * **clippy** - Runs clippy code linter.
+* **clippy-flow** - Runs clippy flow.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
-* **conditioned-check-format** - Runs cargo fmt --check if conditions are met.
-* **conditioned-clippy** - Runs clippy code linter if conditions are met.
 * **coverage** - Runs coverage (by default using kcov).
 * **coverage-flow** - Runs the full coverage flow.
 * **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
@@ -155,10 +159,14 @@
 * **install-clippy-rustup** - Installs the clippy code linter via rustup.
 * **post-bench** - No Description.
 * **post-check** - No Description.
+* **post-check-format** - No Description.
+* **post-clippy** - No Description.
 * **post-coverage** - No Description.
 * **post-test** - No Description.
 * **pre-bench** - No Description.
 * **pre-check** - No Description.
+* **pre-check-format** - No Description.
+* **pre-clippy** - No Description.
 * **pre-coverage** - No Description.
 * **pre-test** - No Description.
 * **test** - Runs all available tests.

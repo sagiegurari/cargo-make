@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.4
+### v0.30.4 (2020-04-07)
 
 * Added clippy pre/post flow hook tasks.
 * Added check format pre/post flow hook tasks.
