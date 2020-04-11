@@ -5,6 +5,7 @@
 * Fixed default core task init/end task names pickup #407
 * Enable to provide custom arguments to git-push task #408
 * build-publish flow will skip git hooks while publishing #408
+* Improve clippy installation flow
 
 ### v0.30.4 (2020-04-07)
 
