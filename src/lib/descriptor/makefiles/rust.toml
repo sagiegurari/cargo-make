@@ -546,6 +546,7 @@ category = "CI"
 description = "Installs the latest clippy code linter via cargo install via rustup or directly from github."
 category = "Test"
 condition = { channels = ["nightly"] }
+ignore_errors = true
 install_crate = { crate_name = "clippy", rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
 install_crate_args = ["--git", "https://github.com/rust-lang/rust-clippy/", "clippy"]
 args = [ "clippy", "--help" ]
@@ -553,6 +554,7 @@ args = [ "clippy", "--help" ]
 [tasks.install-clippy-rustup]
 description = "Installs the clippy code linter via rustup."
 category = "Test"
+ignore_errors = true
 install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
 
 [tasks.install-clippy]
