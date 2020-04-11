@@ -579,12 +579,24 @@ args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 [tasks.post-clippy]
 category = "Test"
 
+[tasks.clippy-allow-fail]
+extends = "clippy"
+ignore_errors = true
+
+[tasks.clippy-router]
+description = "Selects clippy task based on current environment."
+category = "Test"
+run_task = [
+    { name = "clippy-allow-fail", condition = { env_true = [ "CARGO_MAKE_CLIPPY_ALLOW_FAIL" ] } },
+    { name = "clippy" }
+]
+
 [tasks.clippy-flow]
 description = "Runs clippy flow."
 category = "Test"
 dependencies = [
     "pre-clippy",
-    "clippy",
+    "clippy-router",
     "post-clippy"
 ]
 
