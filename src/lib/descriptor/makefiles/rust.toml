@@ -580,7 +580,7 @@ args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 category = "Test"
 
 [tasks.clippy-allow-fail]
-extends = "clippy"
+extend = "clippy"
 ignore_errors = true
 
 [tasks.clippy-router]
