@@ -1823,7 +1823,10 @@ The order of the members is defined by the member attribute in the workspace Car
 
 This flow is called a **workspace** flow, as it identifies the workspace and handles the request for each workspace member, while the root directory which defines the workspace structure is ignored.
 
-We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.<br>
+
+Member crate makefiles can also automatically extend the workspace directory makefile.<br>
+See more info at the [relevant section.](#usage-workspace-extend)
 
 <a name="usage-workspace-disabling-workspace-support"></a>
 #### Disabling Workspace Support
