@@ -113,7 +113,7 @@ impl CliArgs {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds persisted data used by cargo-make
 pub struct Cache {
     /// File from which the cache file was loaded from
@@ -126,14 +126,11 @@ pub struct Cache {
 impl Cache {
     /// Returns new instance
     pub fn new() -> Cache {
-        Cache {
-            file_name: None,
-            last_update_check: None,
-        }
+        Default::default()
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds configuration info for cargo-make
 pub struct GlobalConfig {
     /// File from which the global config was loaded from
@@ -155,17 +152,13 @@ impl GlobalConfig {
     /// Returns new instance
     pub fn new() -> GlobalConfig {
         GlobalConfig {
-            file_name: None,
-            log_level: None,
-            disable_color: None,
-            default_task_name: None,
-            update_check_minimum_interval: None,
             search_project_root: Some(false),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section
 pub struct Workspace {
     /// members paths
@@ -177,14 +170,11 @@ pub struct Workspace {
 impl Workspace {
     /// Creates and returns a new instance.
     pub fn new() -> Workspace {
-        Workspace {
-            members: None,
-            exclude: None,
-        }
+        Default::default()
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {
     /// name
@@ -206,15 +196,7 @@ pub struct PackageInfo {
 impl PackageInfo {
     /// Creates and returns a new instance.
     pub fn new() -> PackageInfo {
-        PackageInfo {
-            name: None,
-            version: None,
-            description: None,
-            license: None,
-            documentation: None,
-            homepage: None,
-            repository: None,
-        }
+        Default::default()
     }
 }
 
@@ -235,7 +217,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
@@ -249,11 +231,7 @@ pub struct CrateInfo {
 impl CrateInfo {
     /// Creates and returns a new instance.
     pub fn new() -> CrateInfo {
-        CrateInfo {
-            package: None,
-            workspace: None,
-            dependencies: None,
-        }
+        Default::default()
     }
 }
 
@@ -843,7 +821,7 @@ pub enum ScriptValue {
     File(FileScriptValue),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -919,42 +897,7 @@ pub struct Task {
 impl Task {
     /// Creates and returns a new instance.
     pub fn new() -> Task {
-        Task {
-            clear: None,
-            description: None,
-            category: None,
-            disabled: None,
-            private: None,
-            deprecated: None,
-            extend: None,
-            workspace: None,
-            watch: None,
-            condition: None,
-            condition_script: None,
-            ignore_errors: None,
-            force: None,
-            env_files: None,
-            env: None,
-            cwd: None,
-            alias: None,
-            linux_alias: None,
-            windows_alias: None,
-            mac_alias: None,
-            install_crate: None,
-            install_crate_args: None,
-            install_script: None,
-            command: None,
-            args: None,
-            script: None,
-            script_runner: None,
-            script_extension: None,
-            run_task: None,
-            dependencies: None,
-            toolchain: None,
-            linux: None,
-            windows: None,
-            mac: None,
-        }
+        Default::default()
     }
 
     /// Apply modifications
@@ -1697,7 +1640,7 @@ impl ModifyConfig {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
     /// If true, the default core tasks will not be loaded
@@ -1731,21 +1674,7 @@ pub struct ConfigSection {
 impl ConfigSection {
     /// Creates and returns a new instance.
     pub fn new() -> ConfigSection {
-        ConfigSection {
-            skip_core_tasks: None,
-            modify_core_tasks: None,
-            init_task: None,
-            end_task: None,
-            on_error_task: None,
-            additional_profiles: None,
-            min_version: None,
-            default_to_workspace: None,
-            main_project_member: None,
-            load_script: None,
-            linux_load_script: None,
-            windows_load_script: None,
-            mac_load_script: None,
-        }
+        Default::default()
     }
 
     /// Apply modifications
@@ -1902,7 +1831,7 @@ impl Config {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the entire externally read configuration such as task definitions and env vars where all values are optional
 pub struct ExternalConfig {
     /// Path to another toml file to extend
@@ -1922,14 +1851,7 @@ pub struct ExternalConfig {
 impl ExternalConfig {
     /// Creates and returns a new instance.
     pub fn new() -> ExternalConfig {
-        ExternalConfig {
-            extend: None,
-            config: None,
-            env_files: None,
-            env: None,
-            env_scripts: None,
-            tasks: None,
-        }
+        Default::default()
     }
 }
 
@@ -1958,7 +1880,7 @@ pub struct CommandSpec {
     pub args: Option<Vec<String>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Default)]
 /// The output of cargo metadata command
 pub struct CargoMetadata {
     /// The workspace root path
@@ -1968,8 +1890,6 @@ pub struct CargoMetadata {
 impl CargoMetadata {
     /// Creates and returns a new instance.
     pub fn new() -> CargoMetadata {
-        CargoMetadata {
-            workspace_root: None,
-        }
+        Default::default()
     }
 }
