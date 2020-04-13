@@ -61,7 +61,7 @@ shell2batch = "^0.4"
 toml = "^0.5"
 
 [dev-dependencies]
-rusty-hook = "^0.10"
+rusty-hook = "^0.11"
 
 [badges.codecov]
 branch = "master"
