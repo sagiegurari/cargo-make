@@ -801,7 +801,7 @@ run_task = "do-on-members"
 description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
 category = "Publish"
 workspace = false
-env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow", "CARGO_MAKE_WAIT_MILLISECONDS" = "10000" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow", "CARGO_MAKE_WAIT_MILLISECONDS" = "20000" }
 run_task = "do-on-members"
 
 [tasks.install-rust-src]
