@@ -3,13 +3,22 @@ env_files = []
 env_scripts = []
 
 [config]
-init_task = "empty"
-end_task = "empty"
+init_task = "init"
+end_task = "end"
 
 [env]
 
+[tasks.init]
+description = "By default this task is invoked at the start of every cargo-make run."
+category = "Hooks"
+
+[tasks.end]
+description = "By default this task is invoked at the end of every cargo-make run."
+category = "Hooks"
+
 [tasks.empty]
 description = "Empty Task"
+category = "Tools"
 
 [tasks.default]
 description = "Empty Task"

@@ -409,10 +409,21 @@ fn load_no_stable() {
 
     assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_none());
 
+    assert!(config.env_scripts.is_empty());
+    assert!(config.env_files.is_empty());
+
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
+    task = config.tasks.get("default");
+    assert!(task.is_some());
     task = config.tasks.get("init");
+    assert!(task.is_some());
+    task = config.tasks.get("end");
+    assert!(task.is_some());
+    task = config.tasks.get("wait");
     assert!(task.is_none());
+    assert_eq!(config.config.init_task.unwrap(), "init");
+    assert_eq!(config.config.end_task.unwrap(), "end");
 }
 
 #[test]
@@ -422,10 +433,21 @@ fn load_with_stable() {
 
     assert!(config.env.get(&"RUST_BACKTRACE".to_string()).is_some());
 
+    assert!(config.env_scripts.is_empty());
+    assert!(config.env_files.is_empty());
+
     let mut task = config.tasks.get("empty");
+    assert!(task.is_some());
+    task = config.tasks.get("default");
     assert!(task.is_some());
     task = config.tasks.get("init");
     assert!(task.is_some());
+    task = config.tasks.get("end");
+    assert!(task.is_some());
+    task = config.tasks.get("wait");
+    assert!(task.is_some());
+    assert_eq!(config.config.init_task.unwrap(), "init");
+    assert_eq!(config.config.end_task.unwrap(), "end");
 }
 
 #[test]
@@ -456,7 +478,7 @@ fn load_internal_descriptors_no_stable() {
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
-    task = config.tasks.get("init");
+    task = config.tasks.get("wait");
     assert!(task.is_none());
 }
 
@@ -466,7 +488,7 @@ fn load_internal_descriptors_with_stable() {
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
-    task = config.tasks.get("init");
+    task = config.tasks.get("wait");
     assert!(task.is_some());
 }
 

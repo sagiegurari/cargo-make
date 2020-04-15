@@ -57,7 +57,10 @@
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)
-        * [Skipping Specific Members](#usage-workspace-support-skip-members)
+        * [Disabling Workspace Support](#usage-workspace-disabling-workspace-support)
+        * [Composite Flow](#usage-workspace-composite-flow)
+        * [Profiles](#usage-workspace-profiles)
+        * [Skipping/Including Specific Members](#usage-workspace-support-skip-include-members)
     * [Toolchain](#usage-toochain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
@@ -407,7 +410,7 @@ The actual operation that a task invokes can be defined in 3 ways.<br>
 The below explains each one:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
-* **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what attributes to provide as part of the command.
+* **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what command line arguments to provide as part of the command.
 * **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
 
 Only one of the definitions will be used.<br>
@@ -1801,7 +1804,7 @@ dependencies = [ "xbuild1", "xbuild2" ]
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
-In case cargo-make detects that the current working directory is a workspace crate (crate with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
+In case cargo-make detects that the current working directory is a workspace root (A directory with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
 Instead, it will generate a task definition in runtime which will go to each member directory and invoke the requested task on that member.<br>
 For example if we have the following directory structure:
 
@@ -1818,34 +1821,23 @@ And we ran ```cargo make mytask```, it will go to each workspace member director
 where mytask is the original task that was requested on the workspace level.<br>
 The order of the members is defined by the member attribute in the workspace Cargo.toml.
 
-We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.
+This flow is called a **workspace** flow, as it identifies the workspace and handles the request for each workspace member, while the root directory which defines the workspace structure is ignored.
 
-In case you wish to run the tasks on the workspace level and not on the members, use the ```--no-workspace``` cli flag when running cargo make, for example:
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.<br>
+
+Member crate makefiles can also automatically extend the workspace directory makefile.<br>
+See more info at the [relevant section.](#usage-workspace-extend)
+
+<a name="usage-workspace-disabling-workspace-support"></a>
+#### Disabling Workspace Support
+In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the ```--no-workspace``` cli flag when running cargo make.<br>
+For example:
 
 ```sh
 cargo make --no-workspace mytask
 ```
 
-You can define a composite flow that runs both workspace level tasks and member level tasks using this flag.<br>
-This is an example of a workspace level Makefile.toml which enables to run such a flow:
-
-```toml
-[tasks.composite]
-dependencies = ["member_flow", "workspace_flow"]
-
-[tasks.member_flow]
-command = "cargo"
-args = ["make", "member_task"]
-
-[tasks.workspace_flow]
-#run some workspace level command or flow
-```
-
-You can start this composite flow as follows:
-
-```sh
-cargo make --no-workspace composite
-```
+This makes cargo-make ignore that this directory is a workspace root and just runs a simple flow as if this was a simple directory with a makefile.
 
 Another way to call a task on the workspace level and not for each member, is to define that task in the workspace Makefile.toml with **workspace** set to false as follows:
 
@@ -1865,6 +1857,33 @@ default_to_workspace = false
 
 In which case, workspace level support is **always** disabled unless a task defines **workspace=true**.
 
+<a name="usage-workspace-composite-flow"></a>
+#### Composite Flow
+
+You can define a composite flow that runs tasks on both the workspace root directory and member directories.<br>
+This is an example of a workspace level Makefile.toml which enables to run such a flow:
+
+```toml
+[tasks.composite]
+dependencies = ["member_flow", "workspace_flow"]
+
+[tasks.member_flow]
+# by forking, cargo make starts and by default detects it is a workspace and runs the member_task for each member
+run_task = { name = "member_task", fork = true }
+
+[tasks.workspace_flow]
+#run some workspace level command or flow
+```
+
+You can start this composite flow as follows:
+
+```sh
+cargo make --no-workspace composite
+```
+
+<a name="usage-workspace-profiles"></a>
+#### Profiles
+
 You can prevent profiles from being passed down to workspace members by setting **CARGO_MAKE_USE_WORKSPACE_PROFILE** to false:
 
 ```toml
@@ -1874,8 +1893,8 @@ CARGO_MAKE_USE_WORKSPACE_PROFILE = false
 
 See more on profiles in the [profile section](#profiles).
 
-<a name="usage-workspace-support-skip-members"></a>
-#### Skipping Specific Members
+<a name="usage-workspace-support-skip-include-members"></a>
+#### Skipping/Including Specific Members
 
 In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
 
@@ -1895,17 +1914,15 @@ You can also define glob paths, for example:
 CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "tools/*"
 ```
 
-However there are some cases you will want to skip specific members only if a specific condition is met.
-
-For example, you want to build a member module only if we are running on a rust nightly compiler.
-
+However there are some cases you will want to skip specific members only if a specific condition is met.<br>
+For example, you want to build a member module only if we are running on a rust nightly compiler.<br>
 This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
 
 ```toml
 [tasks.workspace-task]
 condition = { channels = ["beta", "stable"] }
-env = { "CARGO_MAKE_MEMBER_TASK" = "member-task", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
-run_task = "do-on-members"
+env = { "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+run_task = { name = "member-task", fork = true }
 ```
 
 You will have to invoke this as a composite flow:

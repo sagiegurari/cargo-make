@@ -49,7 +49,7 @@ category = "Git"
 description = "Runs git push command."
 category = "Git"
 command = "git"
-args = ["push"]
+args = ["push", "@@split(CARGO_MAKE_GIT_PUSH_ARGS, )"]
 
 [tasks.post-git-push]
 category = "Git"

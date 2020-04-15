@@ -1,5 +1,13 @@
 ## CHANGELOG
 
+### v0.30.5
+
+* Fixed default core task init/end task names pickup #407
+* New readme-set-crate-version task which modifies README with crate version.
+* Enable to provide custom arguments to git-push task #408
+* build-publish flow will skip git hooks while publishing #408
+* Improve clippy installation flow
+
 ### v0.30.4 (2020-04-07)
 
 * Added clippy pre/post flow hook tasks.

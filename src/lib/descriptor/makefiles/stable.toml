@@ -56,6 +56,7 @@ CARGO_MAKE_RUN_CODECOV = true
 [env.ci-static-code-analysis-tasks]
 CARGO_MAKE_RUN_CHECK_FORMAT = true
 CARGO_MAKE_RUN_CLIPPY = true
+CARGO_MAKE_CLIPPY_ALLOW_FAIL = "${CARGO_MAKE_CI}"
 
 [env.ci-all-build-tasks]
 CARGO_MAKE_BUILD_BENCH = true

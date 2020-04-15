@@ -72,6 +72,7 @@
 * **post-workspace-docs** - No Description.
 * **pre-docs** - No Description.
 * **pre-workspace-docs** - No Description.
+* **readme-set-crate-version** - Modifies the current README.md file with the current crate version.
 * **workspace-docs** - Generate workspace level rust documentation.
 * **workspace-docs-flow** - Generate workspace level rust documentation.
 
@@ -144,7 +145,9 @@
 * **check-format-flow** - Runs cargo fmt check flow.
 * **check-tests** - Runs cargo check for project tests.
 * **clippy** - Runs clippy code linter.
+* **clippy-allow-fail** - Runs clippy code linter.
 * **clippy-flow** - Runs clippy flow.
+* **clippy-router** - Selects clippy task based on current environment.
 * **codecov** - Runs codecov script to upload coverage results to codecov.
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
