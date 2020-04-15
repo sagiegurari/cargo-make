@@ -295,14 +295,14 @@ dependencies = [
 [tasks.readme-set-crate-version]
 description = "Modifies the current README.md file with the current crate version."
 category = "Documentation"
-env = { "CARGO_MAKE_SET_CRATE_VERSION" = true }
+env = { "CARGO_MAKE_DOCS_README_SET_CRATE_VERSION" = true }
 run_task = "readme-set-crate-version-conditioned"
 
 [tasks.readme-set-crate-version-conditioned]
 description = "Modifies the current README.md file with the current crate version."
 category = "Documentation"
 private = true
-condition = { env_true = ["CARGO_MAKE_SET_CRATE_VERSION"] }
+condition = { env_true = ["CARGO_MAKE_DOCS_README_SET_CRATE_VERSION"] }
 script_runner = "@duckscript"
 script = [
 '''
