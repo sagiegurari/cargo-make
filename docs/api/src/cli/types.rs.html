@@ -1893,86 +1893,6 @@
 <span id="1893">1893</span>
 <span id="1894">1894</span>
 <span id="1895">1895</span>
-<span id="1896">1896</span>
-<span id="1897">1897</span>
-<span id="1898">1898</span>
-<span id="1899">1899</span>
-<span id="1900">1900</span>
-<span id="1901">1901</span>
-<span id="1902">1902</span>
-<span id="1903">1903</span>
-<span id="1904">1904</span>
-<span id="1905">1905</span>
-<span id="1906">1906</span>
-<span id="1907">1907</span>
-<span id="1908">1908</span>
-<span id="1909">1909</span>
-<span id="1910">1910</span>
-<span id="1911">1911</span>
-<span id="1912">1912</span>
-<span id="1913">1913</span>
-<span id="1914">1914</span>
-<span id="1915">1915</span>
-<span id="1916">1916</span>
-<span id="1917">1917</span>
-<span id="1918">1918</span>
-<span id="1919">1919</span>
-<span id="1920">1920</span>
-<span id="1921">1921</span>
-<span id="1922">1922</span>
-<span id="1923">1923</span>
-<span id="1924">1924</span>
-<span id="1925">1925</span>
-<span id="1926">1926</span>
-<span id="1927">1927</span>
-<span id="1928">1928</span>
-<span id="1929">1929</span>
-<span id="1930">1930</span>
-<span id="1931">1931</span>
-<span id="1932">1932</span>
-<span id="1933">1933</span>
-<span id="1934">1934</span>
-<span id="1935">1935</span>
-<span id="1936">1936</span>
-<span id="1937">1937</span>
-<span id="1938">1938</span>
-<span id="1939">1939</span>
-<span id="1940">1940</span>
-<span id="1941">1941</span>
-<span id="1942">1942</span>
-<span id="1943">1943</span>
-<span id="1944">1944</span>
-<span id="1945">1945</span>
-<span id="1946">1946</span>
-<span id="1947">1947</span>
-<span id="1948">1948</span>
-<span id="1949">1949</span>
-<span id="1950">1950</span>
-<span id="1951">1951</span>
-<span id="1952">1952</span>
-<span id="1953">1953</span>
-<span id="1954">1954</span>
-<span id="1955">1955</span>
-<span id="1956">1956</span>
-<span id="1957">1957</span>
-<span id="1958">1958</span>
-<span id="1959">1959</span>
-<span id="1960">1960</span>
-<span id="1961">1961</span>
-<span id="1962">1962</span>
-<span id="1963">1963</span>
-<span id="1964">1964</span>
-<span id="1965">1965</span>
-<span id="1966">1966</span>
-<span id="1967">1967</span>
-<span id="1968">1968</span>
-<span id="1969">1969</span>
-<span id="1970">1970</span>
-<span id="1971">1971</span>
-<span id="1972">1972</span>
-<span id="1973">1973</span>
-<span id="1974">1974</span>
-<span id="1975">1975</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2089,7 +2009,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds persisted data used by cargo-make</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Cache</span> {
     <span class="doccomment">/// File from which the cache file was loaded from</span>
@@ -2102,14 +2022,11 @@
 <span class="kw">impl</span> <span class="ident">Cache</span> {
     <span class="doccomment">/// Returns new instance</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cache</span> {
-        <span class="ident">Cache</span> {
-            <span class="ident">file_name</span>: <span class="prelude-val">None</span>,
-            <span class="ident">last_update_check</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds configuration info for cargo-make</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalConfig</span> {
     <span class="doccomment">/// File from which the global config was loaded from</span>
@@ -2131,17 +2048,13 @@
     <span class="doccomment">/// Returns new instance</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">GlobalConfig</span> {
         <span class="ident">GlobalConfig</span> {
-            <span class="ident">file_name</span>: <span class="prelude-val">None</span>,
-            <span class="ident">log_level</span>: <span class="prelude-val">None</span>,
-            <span class="ident">disable_color</span>: <span class="prelude-val">None</span>,
-            <span class="ident">default_task_name</span>: <span class="prelude-val">None</span>,
-            <span class="ident">update_check_minimum_interval</span>: <span class="prelude-val">None</span>,
             <span class="ident">search_project_root</span>: <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+            ..<span class="ident">Default</span>::<span class="ident">default</span>()
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// members paths</span>
@@ -2153,14 +2066,11 @@
 <span class="kw">impl</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Workspace</span> {
-        <span class="ident">Workspace</span> {
-            <span class="ident">members</span>: <span class="prelude-val">None</span>,
-            <span class="ident">exclude</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds crate package information loaded from the Cargo.toml file package section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PackageInfo</span> {
     <span class="doccomment">/// name</span>
@@ -2182,15 +2092,7 @@
 <span class="kw">impl</span> <span class="ident">PackageInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PackageInfo</span> {
-        <span class="ident">PackageInfo</span> {
-            <span class="ident">name</span>: <span class="prelude-val">None</span>,
-            <span class="ident">version</span>: <span class="prelude-val">None</span>,
-            <span class="ident">description</span>: <span class="prelude-val">None</span>,
-            <span class="ident">license</span>: <span class="prelude-val">None</span>,
-            <span class="ident">documentation</span>: <span class="prelude-val">None</span>,
-            <span class="ident">homepage</span>: <span class="prelude-val">None</span>,
-            <span class="ident">repository</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 
@@ -2211,7 +2113,7 @@
     <span class="ident">Info</span>(<span class="ident">CrateDependencyInfo</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds crate information loaded from the Cargo.toml file.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// package info</span>
@@ -2225,11 +2127,7 @@
 <span class="kw">impl</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CrateInfo</span> {
-        <span class="ident">CrateInfo</span> {
-            <span class="ident">package</span>: <span class="prelude-val">None</span>,
-            <span class="ident">workspace</span>: <span class="prelude-val">None</span>,
-            <span class="ident">dependencies</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 
@@ -2819,7 +2717,7 @@
     <span class="ident">File</span>(<span class="ident">FileScriptValue</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds a single task configuration such as command and dependencies list</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Task</span> {
     <span class="doccomment">/// if true, it should ignore all data in base task</span>
@@ -2895,42 +2793,7 @@
 <span class="kw">impl</span> <span class="ident">Task</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
-        <span class="ident">Task</span> {
-            <span class="ident">clear</span>: <span class="prelude-val">None</span>,
-            <span class="ident">description</span>: <span class="prelude-val">None</span>,
-            <span class="ident">category</span>: <span class="prelude-val">None</span>,
-            <span class="ident">disabled</span>: <span class="prelude-val">None</span>,
-            <span class="ident">private</span>: <span class="prelude-val">None</span>,
-            <span class="ident">deprecated</span>: <span class="prelude-val">None</span>,
-            <span class="ident">extend</span>: <span class="prelude-val">None</span>,
-            <span class="ident">workspace</span>: <span class="prelude-val">None</span>,
-            <span class="ident">watch</span>: <span class="prelude-val">None</span>,
-            <span class="ident">condition</span>: <span class="prelude-val">None</span>,
-            <span class="ident">condition_script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">ignore_errors</span>: <span class="prelude-val">None</span>,
-            <span class="ident">force</span>: <span class="prelude-val">None</span>,
-            <span class="ident">env_files</span>: <span class="prelude-val">None</span>,
-            <span class="ident">env</span>: <span class="prelude-val">None</span>,
-            <span class="ident">cwd</span>: <span class="prelude-val">None</span>,
-            <span class="ident">alias</span>: <span class="prelude-val">None</span>,
-            <span class="ident">linux_alias</span>: <span class="prelude-val">None</span>,
-            <span class="ident">windows_alias</span>: <span class="prelude-val">None</span>,
-            <span class="ident">mac_alias</span>: <span class="prelude-val">None</span>,
-            <span class="ident">install_crate</span>: <span class="prelude-val">None</span>,
-            <span class="ident">install_crate_args</span>: <span class="prelude-val">None</span>,
-            <span class="ident">install_script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">command</span>: <span class="prelude-val">None</span>,
-            <span class="ident">args</span>: <span class="prelude-val">None</span>,
-            <span class="ident">script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">script_runner</span>: <span class="prelude-val">None</span>,
-            <span class="ident">script_extension</span>: <span class="prelude-val">None</span>,
-            <span class="ident">run_task</span>: <span class="prelude-val">None</span>,
-            <span class="ident">dependencies</span>: <span class="prelude-val">None</span>,
-            <span class="ident">toolchain</span>: <span class="prelude-val">None</span>,
-            <span class="ident">linux</span>: <span class="prelude-val">None</span>,
-            <span class="ident">windows</span>: <span class="prelude-val">None</span>,
-            <span class="ident">mac</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 
     <span class="doccomment">/// Apply modifications</span>
@@ -3673,7 +3536,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds the configuration found in the makefile toml config section.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// If true, the default core tasks will not be loaded</span>
@@ -3707,21 +3570,7 @@
 <span class="kw">impl</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ConfigSection</span> {
-        <span class="ident">ConfigSection</span> {
-            <span class="ident">skip_core_tasks</span>: <span class="prelude-val">None</span>,
-            <span class="ident">modify_core_tasks</span>: <span class="prelude-val">None</span>,
-            <span class="ident">init_task</span>: <span class="prelude-val">None</span>,
-            <span class="ident">end_task</span>: <span class="prelude-val">None</span>,
-            <span class="ident">on_error_task</span>: <span class="prelude-val">None</span>,
-            <span class="ident">additional_profiles</span>: <span class="prelude-val">None</span>,
-            <span class="ident">min_version</span>: <span class="prelude-val">None</span>,
-            <span class="ident">default_to_workspace</span>: <span class="prelude-val">None</span>,
-            <span class="ident">main_project_member</span>: <span class="prelude-val">None</span>,
-            <span class="ident">load_script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">linux_load_script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">windows_load_script</span>: <span class="prelude-val">None</span>,
-            <span class="ident">mac_load_script</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 
     <span class="doccomment">/// Apply modifications</span>
@@ -3878,7 +3727,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// Holds the entire externally read configuration such as task definitions and env vars where all values are optional</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// Path to another toml file to extend</span>
@@ -3898,14 +3747,7 @@
 <span class="kw">impl</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExternalConfig</span> {
-        <span class="ident">ExternalConfig</span> {
-            <span class="ident">extend</span>: <span class="prelude-val">None</span>,
-            <span class="ident">config</span>: <span class="prelude-val">None</span>,
-            <span class="ident">env_files</span>: <span class="prelude-val">None</span>,
-            <span class="ident">env</span>: <span class="prelude-val">None</span>,
-            <span class="ident">env_scripts</span>: <span class="prelude-val">None</span>,
-            <span class="ident">tasks</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 
@@ -3934,7 +3776,7 @@
     <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Default</span>)]</span>
 <span class="doccomment">/// The output of cargo metadata command</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CargoMetadata</span> {
     <span class="doccomment">/// The workspace root path</span>
@@ -3944,9 +3786,7 @@
 <span class="kw">impl</span> <span class="ident">CargoMetadata</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CargoMetadata</span> {
-        <span class="ident">CargoMetadata</span> {
-            <span class="ident">workspace_root</span>: <span class="prelude-val">None</span>,
-        }
+        <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
 </pre></div>

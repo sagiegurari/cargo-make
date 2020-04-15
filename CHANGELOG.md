@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.5
+### v0.30.5 (2020-04-15)
 
 * Fixed default core task init/end task names pickup #407
 * New readme-set-crate-version task which modifies README with crate version.
