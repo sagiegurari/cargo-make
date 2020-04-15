@@ -268,6 +268,7 @@ dependencies = [
     "pre-docs",
     "docs",
     "post-docs",
+    "readme-set-crate-version-conditioned",
     "copy-apidocs"
 ]
 
@@ -289,6 +290,65 @@ dependencies = [
     "pre-workspace-docs",
     "workspace-docs",
     "post-workspace-docs"
+]
+
+[tasks.readme-set-crate-version]
+description = "Modifies the current README.md file with the current crate version."
+category = "Documentation"
+env = { "CARGO_MAKE_SET_CRATE_VERSION" = true }
+run_task = "readme-set-crate-version-conditioned"
+
+[tasks.readme-set-crate-version-conditioned]
+description = "Modifies the current README.md file with the current crate version."
+category = "Documentation"
+private = true
+condition = { env_true = ["CARGO_MAKE_SET_CRATE_VERSION"] }
+script_runner = "@duckscript"
+script = [
+'''
+if is_defined CARGO_MAKE_DOCS_README_FILE
+    readme_file_name = set ${CARGO_MAKE_DOCS_README_FILE}
+else
+    readme_file_name = set "${CARGO_MAKE_WORKING_DIRECTORY}/README.md"
+end
+
+if is_file ${readme_file_name}
+    readme_text = readfile ${readme_file_name}
+    prefix = set "dependencies]\n"
+    index = indexof ${readme_text} ${prefix}
+
+    if is_defined index
+        prefix_length = strlen ${prefix}
+        end = calc ${index} + ${prefix_length}
+        readme_start = substring ${readme_text} 0 ${end}
+        readme_end = substring ${readme_text} ${end}
+
+        prefix = set "${CARGO_MAKE_PROJECT_NAME} = \""
+        found = starts_with ${readme_end} ${prefix}
+        if ${found}
+            prefix_length = strlen ${prefix}
+            readme_start = set "${readme_start}${prefix}"
+            readme_end = substring ${readme_end} ${prefix_length}
+
+            index = indexof ${readme_end} \"
+            if is_defined index
+                readme_end = substring ${readme_end} ${index}
+                readme_text = set "${readme_start}^${CARGO_MAKE_PROJECT_VERSION}${readme_end}"
+
+                writefile ${readme_file_name} ${readme_text}
+            else
+                echo "Dependency end not found."
+            end
+        else
+            echo "${CARGO_MAKE_PROJECT_NAME} dependency prefix not found."
+        end
+    else
+        echo "Dependencies prefix not found."
+    end
+else
+    echo "README file: ${readme_file_name} not found."
+end
+'''
 ]
 
 [tasks.pre-build]

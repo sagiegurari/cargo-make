@@ -72,6 +72,7 @@
 * **post-workspace-docs** - No Description.
 * **pre-docs** - No Description.
 * **pre-workspace-docs** - No Description.
+* **readme-set-crate-version** - Modifies the current README.md file with the current crate version.
 * **workspace-docs** - Generate workspace level rust documentation.
 * **workspace-docs-flow** - Generate workspace level rust documentation.
 
