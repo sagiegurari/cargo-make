@@ -1,0 +1,19 @@
+
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+CARGO_MAKE_WORKSPACE_EMULATION = true
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = "member1;member2"
+
+[tasks.echo]
+script = ["echo hello from workspace"]
+
+[tasks.echo_top_and_members]
+workspace = false
+dependencies = [ "echo" ]
+run_task = { name = "echo", fork = true }
+
+[tasks.echo_top_and_member2]
+env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = "member2" }
+dependencies = [ "echo" ]
+run_task = { name = "echo", fork = true }
+

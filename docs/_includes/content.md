@@ -1826,7 +1826,24 @@ In addition you can also state the opposite, meaning which members to include vi
 It follows the same rules as the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable.<br>
 If you define both, the included members will be a subset of the non excluded members, meaning both filters will apply.
 
-<a name="usage-toochain"></a>
+<a name="usage-workspace-emulation"></a>
+#### Workspace Emulation
+Workspace emulation enables you to create a workspace like structure for your project without actually defining a rust workspace.<br>
+This means you can have a project directory without a Cargo.toml and have many child crates.<br>
+This enables to run cargo make on all **member** crates while on the root project folder without having the need of an actual cargo workspace which has some side effects (such as shared target folder and dependencies).
+
+In order to setup the workspace emulation, you will need to define the following in your workspace level Makefile.toml:
+
+```toml
+[env]
+# this tells cargo-make that this directory acts as a workspace root
+CARGO_MAKE_WORKSPACE_EMULATION = true
+
+# a list of crate members. since we do not have a Cargo.toml, we will need to specify this in here.
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = "member1;member2"
+```
+
+<a name="usage-toolchain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
 the **toolchain** attribute as part of the task definition.<br>
@@ -3049,7 +3066,7 @@ The articles are missing some of the new features which have been added after th
 * [Private Tasks](#usage-private-tasks)
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 * [Rust Version Conditions](#usage-conditions-structure)
-* [Toolchain](#usage-toochain)
+* [Toolchain](#usage-toolchain)
 * [Watch](#usage-watch)
 * [Profiles](#usage-profiles)
 * [Functions](#usage-functions)

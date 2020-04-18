@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.6
+
+* Workspace emulation support #415
+
 ### v0.30.5 (2020-04-15)
 
 * Fixed default core task init/end task names pickup #407
