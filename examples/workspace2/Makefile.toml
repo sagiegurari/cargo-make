@@ -10,7 +10,14 @@ workspace = false
 dependencies = [ "echo" ]
 run_task = { name = "echo", fork = true }
 
-[tasks.echo_top_and_member2]
+[tasks.echo_top_and_member_1_2]
+workspace = false
+env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = ["member1", "member2"] }
+dependencies = [ "echo" ]
+run_task = { name = "echo", fork = true }
+
+[tasks.echo_top_and_member_2]
+workspace = false
 env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = "member2" }
 dependencies = [ "echo" ]
 run_task = { name = "echo", fork = true }

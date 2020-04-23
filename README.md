@@ -1924,7 +1924,7 @@ This is a simple example of a conditioned skip for member3 and memeber4 (should 
 ```toml
 [tasks.workspace-task]
 condition = { channels = ["beta", "stable"] }
-env = { "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+env = { "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = ["member3", "member4"] }
 run_task = { name = "member-task", fork = true }
 ```
 
