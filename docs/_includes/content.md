@@ -1791,13 +1791,13 @@ See more on profiles in the [profile section](#profiles).
 
 In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
 
-By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a ';' character), you can define if you want those members not to participate in the flow.
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (as an array), you can define if you want those members not to participate in the flow.
 
 In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
 
 ```toml
 [env]
-CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = ["member3", "member4"]
 ```
 
 You can also define glob paths, for example:
