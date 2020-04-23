@@ -110,6 +110,30 @@ fn set_env_for_bool_true() {
 }
 
 #[test]
+fn set_env_for_list_empty() {
+    envmnt::remove("SET_ENV_FOR_LIST_EMPTY");
+    set_env_for_list("SET_ENV_FOR_LIST_EMPTY", &vec![]);
+    let output = envmnt::get_or_panic("SET_ENV_FOR_LIST_EMPTY");
+    assert!(output.is_empty());
+}
+
+#[test]
+fn set_env_for_list_with_values() {
+    envmnt::remove("SET_ENV_FOR_LIST_WITH_VALUES");
+    envmnt::set("SET_ENV_FOR_LIST_WITH_VALUES_1", "TEST");
+    set_env_for_list(
+        "SET_ENV_FOR_LIST_WITH_VALUES",
+        &vec![
+            "START".to_string(),
+            "COMPOSITE:${SET_ENV_FOR_LIST_WITH_VALUES_1} DONE".to_string(),
+            "END".to_string(),
+        ],
+    );
+    let output = envmnt::get_or_panic("SET_ENV_FOR_LIST_WITH_VALUES");
+    assert_eq!(output, "START;COMPOSITE:TEST DONE;END");
+}
+
+#[test]
 #[ignore]
 fn set_env_multi_types() {
     let current_profile_name = envmnt::get_or("CARGO_MAKE_PROFILE", "development");
@@ -412,6 +436,28 @@ fn set_env_for_profile_some_found() {
 
     assert!(envmnt::exists("TEST_PROFILE_FOUND"));
     assert!(envmnt::is("TEST_PROFILE_FOUND"));
+}
+
+#[test]
+fn set_env_for_config_list() {
+    envmnt::remove("SET_ENV_FOR_CONFIG_LIST_MATCH_TEST");
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "SET_ENV_FOR_CONFIG_LIST_MATCH_TEST".to_string(),
+        EnvValue::List(vec![
+            "ARG1".to_string(),
+            "ARG2".to_string(),
+            "ARG3".to_string(),
+        ]),
+    );
+
+    set_env_for_config(env, None, true);
+
+    assert_eq!(
+        envmnt::get_or_panic("SET_ENV_FOR_CONFIG_LIST_MATCH_TEST"),
+        "ARG1;ARG2;ARG3"
+    );
 }
 
 #[test]

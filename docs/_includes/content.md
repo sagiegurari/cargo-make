@@ -1134,6 +1134,7 @@ LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "
 TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
 OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
+ENV_FROM_LIST = ["ARG1", "${SIMPLE}", "simple value: ${SIMPLE} script value: ${SCRIPT}"]
 
 # profile based environment override
 [env.development]
@@ -1148,6 +1149,7 @@ Environment variables can be defined as:
 * Simple key/value pair, where the value can be either string or boolean
   * ```RUST_BACKTRACE = "1"```
   * ```BOOL_VALUE = true```
+* Key and an array which will be joined with the ';' separator - ```LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]```
 * Key and output of a script - ```EVALUATED_VAR = { script = ["echo SOME VALUE"] }```
 * Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
 * Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
@@ -1840,7 +1842,10 @@ In order to setup the workspace emulation, you will need to define the following
 CARGO_MAKE_WORKSPACE_EMULATION = true
 
 # a list of crate members. since we do not have a Cargo.toml, we will need to specify this in here.
-CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = "member1;member2"
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = [
+    "member1",
+    "member2"
+]
 ```
 
 <a name="usage-toolchain"></a>

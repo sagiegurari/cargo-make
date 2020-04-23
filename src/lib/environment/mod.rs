@@ -91,6 +91,17 @@ fn set_env_for_bool(key: &str, value: bool) {
     envmnt::set_bool(&key, value);
 }
 
+fn set_env_for_list(key: &str, list: &Vec<String>) {
+    let mut expanded_list = vec![];
+
+    for value in list {
+        let env_value = expand_value(&value);
+        expanded_list.push(env_value);
+    }
+
+    envmnt::set_list(&key, &expanded_list);
+}
+
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     let value = evaluate_env_value(&env_value);
 
@@ -167,6 +178,7 @@ fn set_env_for_config(
         match *env_value {
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
+            EnvValue::List(ref value) => set_env_for_list(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
             EnvValue::Conditional(ref conditioned_value) => {
