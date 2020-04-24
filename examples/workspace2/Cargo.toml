@@ -1,8 +1,8 @@
 
 [workspace]
-members = ["member1", "member2"]
+members = ["member", "member1", "member2"]
 
-exclude = ["member1"]
+exclude = ["member"]
 
 [dependencies]
 test = "1.0.0"

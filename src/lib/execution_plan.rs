@@ -10,7 +10,9 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::profile;
-use crate::types::{Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task};
+use crate::types::{
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, Workspace,
+};
 use envmnt;
 use glob::Pattern;
 use indexmap::IndexMap;
@@ -144,8 +146,12 @@ fn update_member_path(member: &str) -> String {
 }
 
 fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
-    let workspace = crate_info.workspace.unwrap();
-    let members = workspace.members.unwrap_or(vec![]);
+    let members = if crate_info.workspace.is_some() {
+        let workspace = crate_info.workspace.unwrap_or(Workspace::new());
+        workspace.members.unwrap_or(vec![])
+    } else {
+        envmnt::get_list("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap_or(vec![])
+    };
 
     let log_level = logger::get_log_level();
 
@@ -250,7 +256,10 @@ fn is_workspace_flow(
     crate_info: &CrateInfo,
 ) -> bool {
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
-    if disable_workspace || crate_info.workspace.is_none() {
+    if disable_workspace
+        || (crate_info.workspace.is_none() && !envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION"))
+        || envmnt::exists("CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER")
+    {
         false
     } else {
         // project is a workspace and wasn't disabled via cli, need to check requested task

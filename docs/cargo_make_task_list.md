@@ -192,8 +192,8 @@
 * **do-on-members** - Runs the requested task for every workspace member.
 * **empty** - Empty Task
 * **git-diff-files** - Run diff on two provided files.
-* **install-rls** - No Description.
-* **install-rust-src** - No Description.
+* **install-rls** - Installs rust Language server rustup component.
+* **install-rust-src** - Installs rust-src rustup component.
 * **post-build-file-increment** - No Description.
 * **pre-build-file-increment** - No Description.
 * **print-cargo-env** - No Description.
@@ -206,4 +206,12 @@
 * **print-project-env** - No Description.
 * **print-rust-env** - No Description.
 * **setup-sudo-env** - Sets the sudo enable/disable environment variables.
+
+## wasm
+
+* **install-wasm-pack** - Installs wasm-pack crate.
+* **wasm-pack-base** - No Description.
+* **wasm-pack-pack** - Run wasm-pack pack command.
+* **wasm-pack-publish** - Run wasm-pack publish command.
+* **wasm-pack-test** - Run wasm-pack test command.
 

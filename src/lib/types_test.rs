@@ -771,6 +771,44 @@ fn env_value_deserialize_bool_false() {
 }
 
 #[test]
+fn env_value_deserialize_list_empty() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = []
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::List(value) => assert!(value.is_empty()),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
+fn env_value_deserialize_list_with_values() {
+    let config: ExternalConfig = toml::from_str(
+        r#"
+        [env]
+        key = ["1", "2", "3"]
+        "#,
+    )
+    .unwrap();
+    let env = config.env.unwrap();
+
+    for (_, info) in &env {
+        match info {
+            EnvValue::List(value) => assert_eq!(value, &vec!["1", "2", "3"]),
+            _ => panic!("invalid env value type"),
+        };
+    }
+}
+
+#[test]
 fn env_value_deserialize_script() {
     let config: ExternalConfig = toml::from_str(
         r#"

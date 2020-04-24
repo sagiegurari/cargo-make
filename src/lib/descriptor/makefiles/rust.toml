@@ -865,10 +865,12 @@ env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publ
 run_task = "do-on-members"
 
 [tasks.install-rust-src]
+description = "Installs rust-src rustup component."
 category = "Tools"
 install_crate = { rustup_component_name = "rust-src" }
 
 [tasks.install-rls]
+description = "Installs rust Language server rustup component."
 category = "Tools"
 install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_arg = "--help" }
 

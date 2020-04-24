@@ -61,7 +61,8 @@
         * [Composite Flow](#usage-workspace-composite-flow)
         * [Profiles](#usage-workspace-profiles)
         * [Skipping/Including Specific Members](#usage-workspace-support-skip-include-members)
-    * [Toolchain](#usage-toochain)
+        * [Workspace Emulation](#usage-workspace-emulation)
+    * [Toolchain](#usage-toolchain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
     * [Profiles](#usage-profiles)
@@ -128,8 +129,10 @@ Make sure to add ~/.cargo/bin directory to your PATH variable.<br>
 <br>
 You will have two executables available: *cargo-make* and *makers*<br>
 
-* **cargo-make** - This is a cargo plugin invoked using ```cargo make ...```
+* **cargo-make** - This is a cargo plugin invoked using **cargo make ...**
 * **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
+
+See [Cli Options](#usage-cli) section for full CLI instructions.
 
 <a name="installation-binary-release"></a>
 ### Binary Release
@@ -506,7 +509,7 @@ run_task = [
 ]
 ```
 
-In order to run multiple tasks in parallel, add ```parallel = true``` to the run_task object.<br>
+In order to run multiple tasks in parallel, add **parallel = true** to the run_task object.<br>
 For example:
 
 ```toml
@@ -823,7 +826,7 @@ See [shell2batch](https://github.com/sagiegurari/shell2batch) project for comple
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
 cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
-Any runner which takes the form of ```command file``` (for example ```python ./program.py```) is supported.
+Any runner which takes the form of **command file** (for example **python ./program.py**) is supported.
 
 Below are few examples:
 
@@ -869,7 +872,7 @@ Write-Host "Hello, World!"
 #### Shebang Support
 Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
 
-In case of windows, make sure not to use a runner which doesn't have the ```#``` character defined as comment (for example cmd.exe does not), which would lead to an error.
+In case of windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example cmd.exe does not), which would lead to an error.
 
 Example task using bash:
 
@@ -1243,6 +1246,7 @@ LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "
 TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
 OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
+ENV_FROM_LIST = ["ARG1", "${SIMPLE}", "simple value: ${SIMPLE} script value: ${SCRIPT}"]
 
 # profile based environment override
 [env.development]
@@ -1255,15 +1259,30 @@ PROD = true
 Environment variables can be defined as:
 
 * Simple key/value pair, where the value can be either string or boolean
-  * ```RUST_BACKTRACE = "1"```
-  * ```BOOL_VALUE = true```
-* Key and output of a script - ```EVALUATED_VAR = { script = ["echo SOME VALUE"] }```
-* Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
-* Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
+```toml
+RUST_BACKTRACE = "1"
+BOOL_VALUE = true
+```
+* Key and an array which will be joined with the ';' separator
+```toml
+LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
+```
+* Key and output of a script
+```toml
+EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+```
+* Key and a decode map (if **default_value** not provided, it will default to the source value)
+```toml
+LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+```
+* Key and a value expression built from strings and other env variables using the ${} syntax
+```toml
+COMPOSITE = "${TEST1} and ${TEST2}"
+```
 * Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running the tasks.<br>
-To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
+To unset an environment variable, use the **MY_VAR = { unset = true }** syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>
@@ -1602,7 +1621,7 @@ args = ["audit"]
 ```
 
 cargo-make will first check the command is available.<br>
-Only if the command is not available, it will attempt to install it by running ```cargo install cargo-<first arg>```<br>
+Only if the command is not available, it will attempt to install it by running **cargo install cargo-<first arg>**<br>
 In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
 You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
@@ -1621,7 +1640,7 @@ install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustf
 command = "rustfmt"
 ```
 
-In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
+In this example, cargo will first test that the command **rustfmt --help** works well and only if fails, it will first attempt
 to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
 
 If passing multiple arguments is necessary, `test_arg` may contain an array of arguments. For example:
@@ -1817,20 +1836,20 @@ workspace
     └── Cargo.toml
 ```
 
-And we ran ```cargo make mytask```, it will go to each workspace member directory and execute: ```cargo make mytask``` at that directory,
+And we ran **cargo make mytask**, it will go to each workspace member directory and execute: **cargo make mytask** at that directory,
 where mytask is the original task that was requested on the workspace level.<br>
 The order of the members is defined by the member attribute in the workspace Cargo.toml.
 
 This flow is called a **workspace** flow, as it identifies the workspace and handles the request for each workspace member, while the root directory which defines the workspace structure is ignored.
 
-We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.<br>
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: **cargo make format**.<br>
 
 Member crate makefiles can also automatically extend the workspace directory makefile.<br>
 See more info at the [relevant section.](#usage-workspace-extend)
 
 <a name="usage-workspace-disabling-workspace-support"></a>
 #### Disabling Workspace Support
-In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the ```--no-workspace``` cli flag when running cargo make.<br>
+In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the **--no-workspace** cli flag when running cargo make.<br>
 For example:
 
 ```sh
@@ -1898,13 +1917,13 @@ See more on profiles in the [profile section](#profiles).
 
 In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
 
-By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (seperated by a ';' character), you can define if you want those members not to participate in the flow.
+By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (as an array), you can define if you want those members not to participate in the flow.
 
 In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
 
 ```toml
 [env]
-CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "member3;member4"
+CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = ["member3", "member4"]
 ```
 
 You can also define glob paths, for example:
@@ -1921,7 +1940,7 @@ This is a simple example of a conditioned skip for member3 and memeber4 (should 
 ```toml
 [tasks.workspace-task]
 condition = { channels = ["beta", "stable"] }
-env = { "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member3;member4" }
+env = { "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = ["member3", "member4"] }
 run_task = { name = "member-task", fork = true }
 ```
 
@@ -1935,7 +1954,27 @@ In addition you can also state the opposite, meaning which members to include vi
 It follows the same rules as the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable.<br>
 If you define both, the included members will be a subset of the non excluded members, meaning both filters will apply.
 
-<a name="usage-toochain"></a>
+<a name="usage-workspace-emulation"></a>
+#### Workspace Emulation
+Workspace emulation enables you to create a workspace like structure for your project without actually defining a rust workspace.<br>
+This means you can have a project directory without a Cargo.toml and have many child crates.<br>
+This enables to run cargo make on all **member** crates while on the root project folder without having the need of an actual cargo workspace which has some side effects (such as shared target folder and dependencies).
+
+In order to setup the workspace emulation, you will need to define the following in your workspace level Makefile.toml:
+
+```toml
+[env]
+# this tells cargo-make that this directory acts as a workspace root
+CARGO_MAKE_WORKSPACE_EMULATION = true
+
+# a list of crate members. since we do not have a Cargo.toml, we will need to specify this in here.
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = [
+    "member1",
+    "member2"
+]
+```
+
+<a name="usage-toolchain"></a>
 ### Toolchain
 cargo-make supports setting the toolchain to be used when invoking commands and installing rust dependencies by setting
 the **toolchain** attribute as part of the task definition.<br>
@@ -2004,7 +2043,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 
 <a name="usage-catching-errors"></a>
 ### Catching Errors
-By default any error in any task that does not have ```ignore_errors=true``` set to it, will cause the entire flow to fail.<br>
+By default any error in any task that does not have **ignore_errors=true** set to it, will cause the entire flow to fail.<br>
 However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
@@ -2036,7 +2075,10 @@ cargo make --profile production mytask
 Profiles provide multiple capabilities:
 
 * [Environment variables](#usage-profiles-env) overrides
-* [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
+* [Conditions by profiles](#usage-profiles-conditions), for example:
+```toml
+condition = { profiles = ["development", "production"] }
+```
 * [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
 
 Additional profiles can be set in the config section but have limited support.
@@ -2301,7 +2343,7 @@ watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/file
 
 cargo-make comes with built in functions which help extend capabilities missing with environment variables.<br>
 Functions are not supported everywhere in the makefile and are currently only supported in command arguments array structure.<br>
-In order to define a function call, the following format is used ```@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)```<br>
+In order to define a function call, the following format is used **@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)**<br>
 For example:
 
 ```toml
@@ -2654,6 +2696,8 @@ When working with workspaces, in order to run the ci-flow for each member and pa
     args: --no-workspace workspace-ci-flow
 ```
 
+To speed up cargo-make installation during the build, you can use the [rust-cargo-make](https://github.com/marketplace/actions/rust-cargo-make) github action to download the prebuilt binary.
+
 <a name="usage-ci-travis"></a>
 #### Travis
 Add the following to .travis.yml file:
@@ -2837,7 +2881,7 @@ The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/sr
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
 * **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
-* **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ```cargo make```).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
+* **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simply run **cargo make**).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **workspace-ci-flow** - Should be used in CI builds (such as travis/appveyor) for workspace projects.
@@ -2914,7 +2958,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 
-See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via ```cargo make --list-all-steps```)
+See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via **cargo make --list-all-steps**)
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
@@ -3086,7 +3130,7 @@ While the default names logic can be used as a convention for any new task defin
 
 The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with several types of tasks:
 
-* Single command or script task (for example ```cargo build```)
+* Single command or script task (for example **cargo build**)
 * Tasks that come before or after the single command tasks (hooks)
 * Tasks that define flows using dependencies
 * Tasks which only install some dependency
@@ -3158,7 +3202,7 @@ The articles are missing some of the new features which have been added after th
 * [Private Tasks](#usage-private-tasks)
 * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
 * [Rust Version Conditions](#usage-conditions-structure)
-* [Toolchain](#usage-toochain)
+* [Toolchain](#usage-toolchain)
 * [Watch](#usage-watch)
 * [Profiles](#usage-profiles)
 * [Functions](#usage-functions)

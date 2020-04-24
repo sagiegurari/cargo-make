@@ -12,7 +12,7 @@ Fixed a bug or just want to provided additional functionality?<br>
 Simply fork this repository, implement your changes and create a pull request.<br>
 Few guidelines regarding pull requests:
 
-* This repository is integrated with travis.ci and appveyor for continuous integration.<br>
+* This repository is integrated with github actions for continuous integration.<br>
 
 Your pull request build must pass (the build will run automatically).<br>
 You can run the following command locally to ensure the build will pass:

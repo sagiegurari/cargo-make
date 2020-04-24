@@ -387,6 +387,8 @@ pub enum EnvValue {
     Value(String),
     /// The value as boolean
     Boolean(bool),
+    /// The value as a list of strings
+    List(Vec<String>),
     /// Unset env
     Unset(EnvValueUnset),
     /// Script which will return the value
