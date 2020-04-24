@@ -2233,7 +2233,7 @@ watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/file
 
 cargo-make comes with built in functions which help extend capabilities missing with environment variables.<br>
 Functions are not supported everywhere in the makefile and are currently only supported in command arguments array structure.<br>
-In order to define a function call, the following format is used ```@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)```<br>
+In order to define a function call, the following format is used **@@FUNCTION_NAME(ARG1,ARG2,ARG3,...)**<br>
 For example:
 
 ```toml
@@ -2771,7 +2771,7 @@ The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/sr
 The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
 
 * **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
-* **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simple run ```cargo make```).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
+* **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simply run **cargo make**).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **workspace-ci-flow** - Should be used in CI builds (such as travis/appveyor) for workspace projects.
@@ -2848,7 +2848,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 
-See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via ```cargo make --list-all-steps```)
+See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via **cargo make --list-all-steps**)
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
@@ -3020,7 +3020,7 @@ While the default names logic can be used as a convention for any new task defin
 
 The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with several types of tasks:
 
-* Single command or script task (for example ```cargo build```)
+* Single command or script task (for example **cargo build**)
 * Tasks that come before or after the single command tasks (hooks)
 * Tasks that define flows using dependencies
 * Tasks which only install some dependency
