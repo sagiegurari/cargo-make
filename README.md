@@ -129,8 +129,10 @@ Make sure to add ~/.cargo/bin directory to your PATH variable.<br>
 <br>
 You will have two executables available: *cargo-make* and *makers*<br>
 
-* **cargo-make** - This is a cargo plugin invoked using ```cargo make ...```
+* **cargo-make** - This is a cargo plugin invoked using **cargo make ...**
 * **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
+
+See [Cli Options](#usage-cli) section for full CLI instructions.
 
 <a name="installation-binary-release"></a>
 ### Binary Release
@@ -507,7 +509,7 @@ run_task = [
 ]
 ```
 
-In order to run multiple tasks in parallel, add ```parallel = true``` to the run_task object.<br>
+In order to run multiple tasks in parallel, add **parallel = true** to the run_task object.<br>
 For example:
 
 ```toml
@@ -824,7 +826,7 @@ See [shell2batch](https://github.com/sagiegurari/shell2batch) project for comple
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
 cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
-Any runner which takes the form of ```command file``` (for example ```python ./program.py```) is supported.
+Any runner which takes the form of **command file** (for example **python ./program.py**) is supported.
 
 Below are few examples:
 
@@ -870,7 +872,7 @@ Write-Host "Hello, World!"
 #### Shebang Support
 Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
 
-In case of windows, make sure not to use a runner which doesn't have the ```#``` character defined as comment (for example cmd.exe does not), which would lead to an error.
+In case of windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example cmd.exe does not), which would lead to an error.
 
 Example task using bash:
 
@@ -1257,16 +1259,30 @@ PROD = true
 Environment variables can be defined as:
 
 * Simple key/value pair, where the value can be either string or boolean
-  * ```RUST_BACKTRACE = "1"```
-  * ```BOOL_VALUE = true```
-* Key and an array which will be joined with the ';' separator - ```LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]```
-* Key and output of a script - ```EVALUATED_VAR = { script = ["echo SOME VALUE"] }```
-* Key and a decode map (if **default_value** not provided, it will default to the source value) - ```LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }```
-* Key and a value expression built from strings and other env variables using the ${} syntax - ```COMPOSITE = "${TEST1} and ${TEST2}"```
+```toml
+RUST_BACKTRACE = "1"
+BOOL_VALUE = true
+```
+* Key and an array which will be joined with the ';' separator
+```toml
+LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
+```
+* Key and output of a script
+```toml
+EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+```
+* Key and a decode map (if **default_value** not provided, it will default to the source value)
+```toml
+LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+```
+* Key and a value expression built from strings and other env variables using the ${} syntax
+```toml
+COMPOSITE = "${TEST1} and ${TEST2}"
+```
 * Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running the tasks.<br>
-To unset an environment variable, use the ```MY_VAR = { unset = true }``` syntax.<br>
+To unset an environment variable, use the **MY_VAR = { unset = true }** syntax.<br>
 See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
 
 <a name="usage-env-task"></a>
@@ -1605,7 +1621,7 @@ args = ["audit"]
 ```
 
 cargo-make will first check the command is available.<br>
-Only if the command is not available, it will attempt to install it by running ```cargo install cargo-<first arg>```<br>
+Only if the command is not available, it will attempt to install it by running **cargo install cargo-<first arg>**<br>
 In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
 You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
@@ -1624,7 +1640,7 @@ install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustf
 command = "rustfmt"
 ```
 
-In this example, cargo will first test that the command ```rustfmt --help``` works well and only if fails, it will first attempt
+In this example, cargo will first test that the command **rustfmt --help** works well and only if fails, it will first attempt
 to install via rustup the component **rustfmt-preview** and if failed, it will try to run cargo install for the crate name **rustfmt-nightly**.
 
 If passing multiple arguments is necessary, `test_arg` may contain an array of arguments. For example:
@@ -1820,20 +1836,20 @@ workspace
     └── Cargo.toml
 ```
 
-And we ran ```cargo make mytask```, it will go to each workspace member directory and execute: ```cargo make mytask``` at that directory,
+And we ran **cargo make mytask**, it will go to each workspace member directory and execute: **cargo make mytask** at that directory,
 where mytask is the original task that was requested on the workspace level.<br>
 The order of the members is defined by the member attribute in the workspace Cargo.toml.
 
 This flow is called a **workspace** flow, as it identifies the workspace and handles the request for each workspace member, while the root directory which defines the workspace structure is ignored.
 
-We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: ```cargo make format```.<br>
+We can use this capability to run same functionality on all workspace member crates, for example if we want to format all crates, we can run in the workspace directory: **cargo make format**.<br>
 
 Member crate makefiles can also automatically extend the workspace directory makefile.<br>
 See more info at the [relevant section.](#usage-workspace-extend)
 
 <a name="usage-workspace-disabling-workspace-support"></a>
 #### Disabling Workspace Support
-In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the ```--no-workspace``` cli flag when running cargo make.<br>
+In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the **--no-workspace** cli flag when running cargo make.<br>
 For example:
 
 ```sh
@@ -2027,7 +2043,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 
 <a name="usage-catching-errors"></a>
 ### Catching Errors
-By default any error in any task that does not have ```ignore_errors=true``` set to it, will cause the entire flow to fail.<br>
+By default any error in any task that does not have **ignore_errors=true** set to it, will cause the entire flow to fail.<br>
 However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
 In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
@@ -2059,7 +2075,10 @@ cargo make --profile production mytask
 Profiles provide multiple capabilities:
 
 * [Environment variables](#usage-profiles-env) overrides
-* [Conditions by profiles](#usage-profiles-conditions), for example: ```condition = { profiles = ["development", "production"] }```
+* [Conditions by profiles](#usage-profiles-conditions), for example:
+```toml
+condition = { profiles = ["development", "production"] }
+```
 * [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
 
 Additional profiles can be set in the config section but have limited support.
