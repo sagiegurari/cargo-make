@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.6
+### v0.30.6 (2020-04-24)
 
 * Workspace emulation support #415
 * Support array definition of environment variable values.

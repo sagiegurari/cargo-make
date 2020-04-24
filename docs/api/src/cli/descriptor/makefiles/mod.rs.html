@@ -17,6 +17,7 @@
 <span id="17">17</span>
 <span id="18">18</span>
 <span id="19">19</span>
+<span id="20">20</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # makefiles</span>
 <span class="doccomment">//!</span>
@@ -34,6 +35,7 @@
     <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;github.toml&quot;</span>),
     <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;rust.toml&quot;</span>),
     <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;rust-coverage.toml&quot;</span>),
+    <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;rust-wasm.toml&quot;</span>),
     <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;deprecated.toml&quot;</span>)
 );
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">BETA</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;beta.toml&quot;</span>);
