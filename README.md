@@ -2677,6 +2677,8 @@ When working with workspaces, in order to run the ci-flow for each member and pa
     args: --no-workspace workspace-ci-flow
 ```
 
+To speed up cargo-make installation during the build, you can use the [rust-cargo-make](https://github.com/marketplace/actions/rust-cargo-make) github action to download the prebuilt binary.
+
 <a name="usage-ci-travis"></a>
 #### Travis
 Add the following to .travis.yml file:
