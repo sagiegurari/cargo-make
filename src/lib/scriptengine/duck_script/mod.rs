@@ -4,16 +4,30 @@
 //!
 
 #[cfg(test)]
-#[path = "./duck_script_test.rs"]
-mod duck_script_test;
+#[path = "./mod_test.rs"]
+mod mod_test;
+
+mod sdk;
 
 use crate::environment;
+use crate::types::FlowInfo;
 use duckscript::runner;
-use duckscript::types::runtime::Context;
+use duckscript::types::command::Commands;
+use duckscript::types::error::ScriptError;
+use duckscript::types::runtime::{Context, StateValue};
 use duckscriptsdk;
 use envmnt;
+use std::cell::RefCell;
+use std::rc::Rc;
 
-pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
+pub(crate) static FLOW_INFO_KEY: &str = "cargo_make::flow_info";
+
+pub(crate) fn execute(
+    script: &Vec<String>,
+    cli_arguments: &Vec<String>,
+    flow_info: Option<&FlowInfo>,
+    validate: bool,
+) {
     let mut script_text = script.join("\n");
     script_text.insert_str(0, "exit_on_error true\n");
 
@@ -33,7 +47,17 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
         context.variables.insert(key, value);
     }
 
-    match duckscriptsdk::load(&mut context.commands) {
+    match flow_info {
+        Some(info) => {
+            context.state.insert(
+                FLOW_INFO_KEY.to_string(),
+                StateValue::Any(Rc::new(RefCell::new(info.clone()))),
+            );
+        }
+        None => (),
+    }
+
+    match load_sdk(&mut context.commands) {
         Ok(_) => {
             let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
@@ -57,4 +81,11 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
             }
         }
     };
+}
+
+fn load_sdk(commands: &mut Commands) -> Result<(), ScriptError> {
+    duckscriptsdk::load(commands)?;
+    sdk::load(commands)?;
+
+    Ok(())
 }

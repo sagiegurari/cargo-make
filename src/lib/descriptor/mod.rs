@@ -191,7 +191,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    scriptengine::invoke_script(
+                    scriptengine::invoke_script_pre_flow(
                         &ScriptValue::Text(script.to_vec()),
                         None,
                         None,

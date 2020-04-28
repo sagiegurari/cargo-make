@@ -290,22 +290,16 @@ pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
                 watch_task(&flow_info, &step.name, step.config.watch.clone());
             } else {
                 do_in_task_working_directory(&step, || {
-                    installer::install(&updated_step.config);
+                    installer::install(&updated_step.config, flow_info);
                 });
 
                 match step.config.run_task {
                     Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
                     None => {
                         do_in_task_working_directory(&step, || {
-                            // get cli arguments
-                            let cli_arguments = match flow_info.cli_arguments {
-                                Some(ref args) => args.clone(),
-                                None => vec![],
-                            };
-
                             // run script
                             let script_runner_done =
-                                scriptengine::invoke(&updated_step.config, &cli_arguments);
+                                scriptengine::invoke(&updated_step.config, flow_info);
 
                             // run command
                             if !script_runner_done {

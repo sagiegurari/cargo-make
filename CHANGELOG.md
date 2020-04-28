@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.7
+
+* New cm_run_task duckscript command which enables to run cargo-make tasks from within duckscript #417
+
 ### v0.30.6 (2020-04-24)
 
 * Workspace emulation support #415

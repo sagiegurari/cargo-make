@@ -17,7 +17,7 @@ mod mod_test;
 
 use crate::environment;
 use crate::io;
-use crate::types::{ScriptValue, Task};
+use crate::types::{FlowInfo, ScriptValue, Task};
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -135,28 +135,71 @@ pub(crate) fn get_engine_type(
     }
 }
 
-pub(crate) fn invoke(task: &Task, cli_arguments: &Vec<String>) -> bool {
+pub(crate) fn invoke(task: &Task, flow_info: &FlowInfo) -> bool {
     match task.script {
         Some(ref script) => {
             let validate = !task.should_ignore_errors();
 
-            invoke_script(
+            invoke_script_in_flow_context(
                 script,
                 task.script_runner.clone(),
                 task.script_extension.clone(),
                 validate,
-                cli_arguments,
+                Some(flow_info),
             )
         }
         None => false,
     }
 }
 
-pub(crate) fn invoke_script(
+pub(crate) fn invoke_script_in_flow_context(
     script: &ScriptValue,
     script_runner: Option<String>,
     script_extension: Option<String>,
     validate: bool,
+    flow_info: Option<&FlowInfo>,
+) -> bool {
+    let cli_arguments = match flow_info {
+        Some(info) => match info.cli_arguments {
+            Some(ref args) => args.clone(),
+            None => vec![],
+        },
+        None => vec![],
+    };
+
+    invoke_script(
+        script,
+        script_runner,
+        script_extension,
+        validate,
+        flow_info,
+        &cli_arguments,
+    )
+}
+
+pub(crate) fn invoke_script_pre_flow(
+    script: &ScriptValue,
+    script_runner: Option<String>,
+    script_extension: Option<String>,
+    validate: bool,
+    cli_arguments: &Vec<String>,
+) -> bool {
+    invoke_script(
+        script,
+        script_runner,
+        script_extension,
+        validate,
+        None,
+        cli_arguments,
+    )
+}
+
+fn invoke_script(
+    script: &ScriptValue,
+    script_runner: Option<String>,
+    script_extension: Option<String>,
+    validate: bool,
+    flow_info: Option<&FlowInfo>,
     cli_arguments: &Vec<String>,
 ) -> bool {
     let engine_type = get_engine_type(script, &script_runner, &script_extension);
@@ -170,7 +213,7 @@ pub(crate) fn invoke_script(
         }
         EngineType::Duckscript => {
             let script_text = get_script_text(script);
-            duck_script::execute(&script_text, cli_arguments, validate);
+            duck_script::execute(&script_text, cli_arguments, flow_info, validate);
 
             true
         }

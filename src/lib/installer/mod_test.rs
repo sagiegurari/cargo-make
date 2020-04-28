@@ -1,4 +1,5 @@
 use super::*;
+use crate::test;
 use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, TestArg};
 use envmnt;
 
@@ -62,7 +63,7 @@ fn get_cargo_plugin_info_from_command_valid() {
 fn install_empty() {
     let task = Task::new();
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -72,7 +73,7 @@ fn install_crate_already_installed() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -82,7 +83,7 @@ fn install_crate_missing_cargo_command() {
     task.install_crate = Some(InstallCrate::Value("test".to_string()));
     task.command = Some("cargo".to_string());
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -91,7 +92,7 @@ fn install_crate_auto_detect_already_installed() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -101,7 +102,7 @@ fn install_crate_auto_detect_unable_to_install() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["badbadbad".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -120,7 +121,7 @@ fn install_rustup_via_crate_info() {
     task.command = Some("test".to_string());
     task.install_crate = Some(InstallCrate::CrateInfo(info));
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -137,7 +138,7 @@ fn install_rustup_via_rustup_info() {
     task.command = Some("test".to_string());
     task.install_crate = Some(InstallCrate::RustupComponentInfo(info));
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -145,7 +146,7 @@ fn install_script_ok() {
     let mut task = Task::new();
     task.install_script = Some(vec!["exit 0".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -154,7 +155,7 @@ fn install_script_error() {
     let mut task = Task::new();
     task.install_script = Some(vec!["exit 1".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }
 
 #[test]
@@ -168,7 +169,7 @@ fn install_script_duckscript() {
     "#
     .to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 
     assert!(envmnt::exists("install_script_duckscript"));
     assert!(envmnt::is_or("install_script_duckscript", false));
@@ -180,5 +181,5 @@ fn install_script_error_ignore_errors() {
     task.ignore_errors = Some(true);
     task.install_script = Some(vec!["exit 1".to_string()]);
 
-    install(&task);
+    install(&task, &test::create_empty_flow_info());
 }

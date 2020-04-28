@@ -259,7 +259,7 @@ fn set_env_files_for_config(
 fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
     for env_script in env_scripts {
         if !env_script.is_empty() {
-            scriptengine::invoke_script(
+            scriptengine::invoke_script_pre_flow(
                 &ScriptValue::Text(vec![env_script]),
                 None,
                 None,
