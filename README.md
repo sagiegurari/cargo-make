@@ -1497,6 +1497,8 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_BRANCH** - The current branch name.
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
+* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH** - The last HEAD commit hash.
+* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX** - The last HEAD commit hash prefix.
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors

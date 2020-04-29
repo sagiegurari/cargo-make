@@ -378,6 +378,14 @@ fn setup_env_for_git_repo() -> GitInfo {
     envmnt::set_optional("CARGO_MAKE_GIT_BRANCH", &info.current_branch);
     envmnt::set_optional("CARGO_MAKE_GIT_USER_NAME", &info.user_name);
     envmnt::set_optional("CARGO_MAKE_GIT_USER_EMAIL", &info.user_email);
+    envmnt::set_optional(
+        "CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH",
+        &info.head.last_commit_hash,
+    );
+    envmnt::set_optional(
+        "CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX",
+        &info.head.last_commit_hash_short,
+    );
 
     git_info_clone
 }

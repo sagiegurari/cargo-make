@@ -3,6 +3,7 @@
 ### v0.30.7
 
 * New cm_run_task duckscript command which enables to run cargo-make tasks from within duckscript #417
+* New CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH and CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX environment variables.
 
 ### v0.30.6 (2020-04-24)
 

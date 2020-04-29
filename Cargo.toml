@@ -46,7 +46,7 @@ duckscriptsdk = "^0.3.3"
 envmnt = "^0.8.2"
 fern = "^0.6"
 fsio = { version = "^0.1.2", features = ["temp-path"] }
-git_info = "^0.1.1"
+git_info = "^0.1.2"
 glob = "^0.3"
 home = "^0.5"
 indexmap = { version = "^1", features = ["serde-1"] }

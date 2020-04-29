@@ -152,6 +152,8 @@ echo "Git:"
 echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
 echo "    User: ${CARGO_MAKE_GIT_USER_NAME}"
 echo "    Email: ${CARGO_MAKE_GIT_USER_EMAIL}"
+echo "    Commit Hash: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH}"
+echo "    Commit Hash Prefix: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX}"
 echo "*************************************"
 '''
 ]
