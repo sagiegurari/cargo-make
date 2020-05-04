@@ -4,6 +4,7 @@
 
 * New cm_run_task duckscript command which enables to run cargo-make tasks from within duckscript #417
 * New CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH and CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX environment variables.
+* Bug Fix - no need to define member task names in workspace makefile #420
 * rust_info upgrade.
 
 ### v0.30.6 (2020-04-24)

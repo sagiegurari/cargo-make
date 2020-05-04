@@ -1,3 +1,6 @@
 
 [tasks.echo]
 script = ["echo hello from member1"]
+
+[tasks.member-only]
+script = ["echo member 1"]
