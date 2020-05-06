@@ -10,7 +10,10 @@ additional_profiles = [
 
 [env]
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
+CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}", default_value = "false", mapping = {"macos-beta" = "true"} }
 
+[tasks.t]
+script = ["echo ${CARGO_MAKE_TEMP_UNSTABLE_ENV}"]
 [tasks.audit]
 ignore_errors = true
 

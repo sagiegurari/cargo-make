@@ -11,6 +11,18 @@ use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::PathBuf;
 
+pub(crate) fn skip_on_unstable_test_env(should_panic: bool) -> bool {
+    if envmnt::is("CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV") {
+        if should_panic {
+            panic!("Skipped");
+        }
+
+        true
+    } else {
+        false
+    }
+}
+
 pub(crate) fn on_test_startup() {
     logger::init(&LoggerOptions {
         level: "error".to_string(),
@@ -47,7 +59,7 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
     if (is_linux() && rust_channel == RustChannel::Nightly) || !ci_info::is_ci() {
         true
     } else if panic_if_false {
-        panic!("Skippied");
+        panic!("Skipped");
     } else {
         false
     }

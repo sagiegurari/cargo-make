@@ -1,4 +1,5 @@
 use super::*;
+use crate::test;
 use crate::types::{CliArgs, GlobalConfig};
 use std::env;
 use std::path::Path;
@@ -314,6 +315,10 @@ fn run_cwd_go_to_project_root_child_dir() {
 #[ignore]
 #[should_panic]
 fn run_cwd_task_not_found() {
+    if test::skip_on_unstable_test_env(true) {
+        return;
+    }
+
     let global_config = GlobalConfig::new();
 
     let directory = Path::new("./examples");
