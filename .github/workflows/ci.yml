@@ -26,7 +26,7 @@ jobs:
         command: install
         args: --debug cargo-make
     - name: Run CI
-      if: matrix.rust == 'stable' || matrix.rust == 'stable'
+      if: matrix.rust == 'stable' || matrix.rust == 'beta'
       uses: actions-rs/cargo@v1
       with:
         command: run
