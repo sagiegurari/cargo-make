@@ -13,6 +13,7 @@
 * Support array definition of environment variable values.
 * New wasm related tasks for built in wasm support.
 * Fixed env extension bug when extending a core task.
+* Enable adding custom hooks into print-env flow.
 
 ### v0.30.5 (2020-04-15)
 

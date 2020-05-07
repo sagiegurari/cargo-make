@@ -228,9 +228,16 @@ echo "*************************************"
 '''
 ]
 
+[tasks.pre-print-env]
+category = "Tools"
+
+[tasks.post-print-env]
+category = "Tools"
+
 [tasks.print-env-flow]
 category = "Tools"
 dependencies = [
+    "pre-print-env",
     "print-cargo-make-env",
     "print-project-env",
     "print-ci-env",
@@ -238,7 +245,8 @@ dependencies = [
     "print-rust-env",
     "print-cargo-env",
     "print-crate-env",
-    "print-duckscript-env"
+    "print-duckscript-env",
+    "post-print-env"
 ]
 
 [tasks.diff-files]
