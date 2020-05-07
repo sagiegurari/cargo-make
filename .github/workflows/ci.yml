@@ -1,10 +1,10 @@
-name: Continuous Integration
+name: CI
 on: [push, pull_request]
 env:
   CLICOLOR_FORCE: 1
 jobs:
   ci:
-    name: Continuous Integration
+    name: CI
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

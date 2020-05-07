@@ -1,7 +1,7 @@
 # cargo-make
 
 [![crates.io](https://img.shields.io/crates/v/cargo-make.svg)](https://crates.io/crates/cargo-make)
-[![Continuous Integration](https://github.com/sagiegurari/cargo-make/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/sagiegurari/cargo-make/actions)
+[![CI](https://github.com/sagiegurari/cargo-make/workflows/CI/badge.svg?branch=master)](https://github.com/sagiegurari/cargo-make/actions)
 [![codecov](https://codecov.io/gh/sagiegurari/cargo-make/branch/master/graph/badge.svg)](https://codecov.io/gh/sagiegurari/cargo-make)
 [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE)
 [![Crates.io](https://img.shields.io/crates/d/cargo-make?label=cargo%20installs)](https://crates.io/crates/cargo-make)
