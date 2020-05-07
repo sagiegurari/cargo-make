@@ -202,7 +202,7 @@ fn merge_tasks_both_empty() {
     let mut map1 = IndexMap::<String, Task>::new();
     let mut map2 = IndexMap::<String, Task>::new();
 
-    let output = merge_tasks(&mut map1, &mut map2);
+    let output = merge_tasks(&mut map1, &mut map2, false);
     assert_eq!(output.len(), 0);
 }
 
@@ -217,7 +217,7 @@ fn merge_tasks_first_empty() {
 
     map2.insert("test".to_string(), task);
 
-    let output = merge_tasks(&mut map1, &mut map2);
+    let output = merge_tasks(&mut map1, &mut map2, false);
     assert_eq!(output.len(), 1);
     let task = output.get("test").unwrap();
     assert!(task.disabled.is_none());
@@ -247,7 +247,7 @@ fn merge_tasks_second_empty() {
 
     map1.insert("test".to_string(), task);
 
-    let output = merge_tasks(&mut map1, &mut map2);
+    let output = merge_tasks(&mut map1, &mut map2, false);
     assert_eq!(output.len(), 1);
     let task = output.get("test").unwrap();
     assert!(task.disabled.is_none());
@@ -282,7 +282,7 @@ fn merge_tasks_both_with_values() {
 
     map2.insert("test2".to_string(), task2);
 
-    let output = merge_tasks(&mut map1, &mut map2);
+    let output = merge_tasks(&mut map1, &mut map2, false);
     assert_eq!(output.len(), 2);
 
     let mut task = output.get("test").unwrap();
@@ -336,7 +336,7 @@ fn merge_tasks_extend_task() {
 
     map2.insert("test".to_string(), task2);
 
-    let output = merge_tasks(&mut map1, &mut map2);
+    let output = merge_tasks(&mut map1, &mut map2, false);
     assert_eq!(output.len(), 1);
 
     let task = output.get("test").unwrap();
