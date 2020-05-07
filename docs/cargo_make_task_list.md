@@ -196,7 +196,9 @@
 * **install-rls** - Installs rust Language server rustup component.
 * **install-rust-src** - Installs rust-src rustup component.
 * **post-build-file-increment** - No Description.
+* **post-print-env** - No Description.
 * **pre-build-file-increment** - No Description.
+* **pre-print-env** - No Description.
 * **print-cargo-env** - No Description.
 * **print-cargo-make-env** - No Description.
 * **print-ci-env** - No Description.

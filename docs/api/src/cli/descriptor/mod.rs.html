@@ -632,6 +632,22 @@
 <span id="632">632</span>
 <span id="633">633</span>
 <span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -722,6 +738,7 @@
 <span class="kw">fn</span> <span class="ident">merge_tasks</span>(
     <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
     <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
+    <span class="ident">merge_task_env</span>: <span class="ident">bool</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>::<span class="ident">new</span>();
 
@@ -740,6 +757,18 @@
 
                 <span class="ident">merged_task</span>.<span class="ident">extend</span>(<span class="ident">value</span>);
                 <span class="ident">merged_task</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+
+                <span class="kw">if</span> <span class="ident">merge_task_env</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">value</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
+                    <span class="kw">let</span> <span class="ident">extended_env</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>();
+                    <span class="kw">if</span> <span class="ident">extended_env</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">2</span>
+                        <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">extended_env</span>.<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
+                        <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">extended_env</span>
+                            .<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>)
+                    {
+                        <span class="kw">let</span> <span class="ident">base_env</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">env</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>();
+                        <span class="ident">merged_task</span>.<span class="ident">env</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base_env</span>);
+                    }
+                }
 
                 <span class="ident">merged_task</span>
             }
@@ -826,7 +855,7 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Load script found.&quot;</span>);
 
-                    <span class="ident">scriptengine</span>::<span class="ident">invoke_script</span>(
+                    <span class="ident">scriptengine</span>::<span class="ident">invoke_script_pre_flow</span>(
                         <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>::<span class="ident">Text</span>(<span class="ident">script</span>.<span class="ident">to_vec</span>()),
                         <span class="prelude-val">None</span>,
                         <span class="prelude-val">None</span>,
@@ -892,7 +921,7 @@
         <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tasks</span>,
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
-    <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_tasks</span>);
+    <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_tasks</span>, <span class="bool-val">false</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config_section</span> <span class="op">=</span> <span class="ident">ConfigSection</span>::<span class="ident">new</span>();
     <span class="kw">if</span> <span class="ident">parent_config</span>.<span class="ident">config</span>.<span class="ident">is_some</span>() {
@@ -1065,7 +1094,7 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_tasks</span> <span class="op">=</span> <span class="ident">base_config</span>.<span class="ident">tasks</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">experimental_tasks</span> <span class="op">=</span> <span class="ident">experimental_config</span>.<span class="ident">tasks</span>;
-        <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">experimental_tasks</span>);
+        <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">experimental_tasks</span>, <span class="bool-val">false</span>);
 
         <span class="ident">base_config</span>.<span class="ident">tasks</span> <span class="op">=</span> <span class="ident">all_tasks</span>;
     }
@@ -1098,6 +1127,7 @@
     <span class="ident">base_config</span>: <span class="ident">Config</span>,
     <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span>,
     <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">late_merge</span>: <span class="ident">bool</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Config</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">tasks</span> {
         <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tasks</span>,
@@ -1144,7 +1174,7 @@
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">all_env</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_tasks</span>);
+    <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_tasks</span>, <span class="ident">late_merge</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config_section</span> <span class="op">=</span> <span class="ident">base_config</span>.<span class="ident">config</span>.<span class="ident">clone</span>();
     <span class="ident">config_section</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_config</span>.<span class="ident">config</span>.<span class="ident">unwrap_or</span>(<span class="ident">ConfigSection</span>::<span class="ident">new</span>()));
@@ -1205,7 +1235,8 @@
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">external_config</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">merge_base_config_and_external_config</span>(<span class="ident">default_config</span>, <span class="ident">external_config</span>, <span class="ident">env_map</span>);
+    <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span>
+        <span class="ident">merge_base_config_and_external_config</span>(<span class="ident">default_config</span>, <span class="ident">external_config</span>, <span class="ident">env_map</span>, <span class="bool-val">false</span>);
 
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loaded merged config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>);
 
@@ -1260,6 +1291,7 @@
                     <span class="ident">core_config</span>,
                     <span class="ident">external_config</span>,
                     <span class="ident">env_map</span>.<span class="ident">clone</span>(),
+                    <span class="bool-val">true</span>,
                 );
             }
         };
