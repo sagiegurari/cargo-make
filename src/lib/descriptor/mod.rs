@@ -87,6 +87,7 @@ fn merge_env_scripts(base: &mut Vec<String>, extended: &mut Vec<String>) -> Vec<
 fn merge_tasks(
     base: &mut IndexMap<String, Task>,
     extended: &mut IndexMap<String, Task>,
+    merge_task_env: bool,
 ) -> IndexMap<String, Task> {
     let mut merged = IndexMap::<String, Task>::new();
 
@@ -105,6 +106,18 @@ fn merge_tasks(
 
                 merged_task.extend(value);
                 merged_task.extend(&task);
+
+                if merge_task_env && value.env.is_some() && task.env.is_some() {
+                    let extended_env = task.env.clone().unwrap();
+                    if extended_env.len() == 2
+                        && extended_env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
+                        && extended_env
+                            .contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY")
+                    {
+                        let base_env = value.env.clone().unwrap();
+                        merged_task.env = Some(base_env);
+                    }
+                }
 
                 merged_task
             }
@@ -257,7 +270,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         Some(tasks) => tasks,
         None => IndexMap::new(),
     };
-    let all_tasks = merge_tasks(&mut parent_tasks, &mut extended_tasks);
+    let all_tasks = merge_tasks(&mut parent_tasks, &mut extended_tasks, false);
 
     let mut config_section = ConfigSection::new();
     if parent_config.config.is_some() {
@@ -430,7 +443,7 @@ pub(crate) fn load_internal_descriptors(
 
         let mut base_tasks = base_config.tasks;
         let mut experimental_tasks = experimental_config.tasks;
-        let all_tasks = merge_tasks(&mut base_tasks, &mut experimental_tasks);
+        let all_tasks = merge_tasks(&mut base_tasks, &mut experimental_tasks, false);
 
         base_config.tasks = all_tasks;
     }
@@ -463,6 +476,7 @@ fn merge_base_config_and_external_config(
     base_config: Config,
     external_config: ExternalConfig,
     env_map: Option<Vec<String>>,
+    late_merge: bool,
 ) -> Config {
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
@@ -509,7 +523,7 @@ fn merge_base_config_and_external_config(
         None => all_env,
     };
 
-    let all_tasks = merge_tasks(&mut base_tasks, &mut external_tasks);
+    let all_tasks = merge_tasks(&mut base_tasks, &mut external_tasks, late_merge);
 
     let mut config_section = base_config.config.clone();
     config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
@@ -570,7 +584,8 @@ fn load_descriptors(
         _ => external_config,
     };
 
-    let config = merge_base_config_and_external_config(default_config, external_config, env_map);
+    let config =
+        merge_base_config_and_external_config(default_config, external_config, env_map, false);
 
     debug!("Loaded merged config: {:#?}", &config);
 
@@ -625,6 +640,7 @@ pub(crate) fn load(
                     core_config,
                     external_config,
                     env_map.clone(),
+                    true,
                 );
             }
         };
