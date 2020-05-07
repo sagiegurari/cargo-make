@@ -57,6 +57,7 @@
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
+* **install-rustfmt** - Installs cargo rustfmt plugin.
 * **post-format** - No Description.
 * **pre-format** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.

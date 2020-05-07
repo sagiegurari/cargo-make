@@ -199,13 +199,18 @@ dependencies = [
     "dev-test-flow"
 ]
 
+[tasks.install-rustfmt]
+description = "Installs cargo rustfmt plugin."
+category = "Development"
+install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "--help" }
+
 [tasks.pre-format]
 category = "Development"
 
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."
 category = "Development"
-install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "--help" }
+dependencies = [ "install-rustfmt" ]
 command = "cargo"
 args = ["fmt"]
 
@@ -218,7 +223,7 @@ category = "Test"
 [tasks.check-format]
 description = "Runs cargo fmt to check appropriate code format."
 category = "Test"
-install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "--help" }
+dependencies = [ "install-rustfmt" ]
 command = "cargo"
 args = ["fmt", "--", "--check"]
 

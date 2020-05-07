@@ -6,7 +6,6 @@ use indexmap::IndexMap;
 use std::env;
 
 #[test]
-#[should_panic]
 fn get_task_name_not_found() {
     let config = Config {
         config: ConfigSection::new(),
@@ -16,7 +15,9 @@ fn get_task_name_not_found() {
         tasks: IndexMap::new(),
     };
 
-    get_task_name(&config, "test");
+    let name = get_task_name(&config, "test");
+
+    assert!(name.is_none());
 }
 
 #[test]
@@ -33,7 +34,7 @@ fn get_task_name_no_alias() {
 
     let name = get_task_name(&config, "test");
 
-    assert_eq!(name, "test");
+    assert_eq!(name.unwrap(), "test");
 }
 
 #[test]
@@ -54,7 +55,7 @@ fn get_task_name_alias() {
 
     let name = get_task_name(&config, "test");
 
-    assert_eq!(name, "test2");
+    assert_eq!(name.unwrap(), "test2");
 }
 
 #[test]
@@ -72,7 +73,7 @@ fn get_task_name_alias_self_referential() {
     task.alias = Some("rec".to_string());
     config.tasks.insert("rec".to_string(), task);
 
-    let _ = get_task_name(&config, "rec");
+    get_task_name(&config, "rec");
 }
 
 #[test]
@@ -95,7 +96,7 @@ fn get_task_name_alias_circular() {
     config.tasks.insert("rec-mut-a".to_string(), task_a);
     config.tasks.insert("rec-mut-b".to_string(), task_b);
 
-    let _ = get_task_name(&config, "rec-mut-a");
+    get_task_name(&config, "rec-mut-a");
 }
 
 #[test]
@@ -123,7 +124,7 @@ fn get_task_name_platform_alias() {
 
     let name = get_task_name(&config, "test");
 
-    assert_eq!(name, "test2");
+    assert_eq!(name.unwrap(), "test2");
 }
 
 #[test]
@@ -556,6 +557,28 @@ fn is_workspace_flow_true_in_task() {
     config.tasks.insert("test".to_string(), task);
 
     let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+
+    assert!(workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_task_not_defined() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info);
 
     assert!(workspace_flow);
 }

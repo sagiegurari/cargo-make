@@ -16,7 +16,7 @@ pub(crate) mod rustup_component_installer;
 mod mod_test;
 
 use crate::scriptengine;
-use crate::types::{InstallCrate, ScriptValue, Task};
+use crate::types::{FlowInfo, InstallCrate, ScriptValue, Task};
 
 fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, String)> {
     match task_config.command {
@@ -44,7 +44,7 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
     }
 }
 
-pub(crate) fn install(task_config: &Task) {
+pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
     let validate = !task_config.should_ignore_errors();
 
     let toolchain = match task_config.toolchain {
@@ -114,12 +114,12 @@ pub(crate) fn install(task_config: &Task) {
         },
         None => match task_config.install_script {
             Some(ref script) => {
-                scriptengine::invoke_script(
+                scriptengine::invoke_script_in_flow_context(
                     &ScriptValue::Text(script.to_vec()),
                     task_config.script_runner.clone(),
                     task_config.script_extension.clone(),
                     validate,
-                    &vec![],
+                    Some(flow_info),
                 );
                 ()
             }

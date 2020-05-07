@@ -1,10 +1,20 @@
 ## CHANGELOG
 
+### v0.30.7
+
+* New cm_run_task duckscript command which enables to run cargo-make tasks from within duckscript #417
+* New CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH and CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX environment variables.
+* Bug Fix - no need to define member task names in workspace makefile #420
+* rust_info upgrade.
+* duckscript 0.4 upgrade.
+
 ### v0.30.6 (2020-04-24)
 
 * Workspace emulation support #415
 * Support array definition of environment variable values.
 * New wasm related tasks for built in wasm support.
+* Fixed env extension bug when extending a core task.
+* Enable adding custom hooks into print-env flow.
 
 ### v0.30.5 (2020-04-15)
 

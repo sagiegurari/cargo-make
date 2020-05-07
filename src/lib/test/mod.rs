@@ -1,9 +1,13 @@
 use crate::logger;
 use crate::logger::LoggerOptions;
+use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo};
 use ci_info;
+use ci_info::types::CiInfo;
 use fsio;
+use git_info::types::GitInfo;
+use indexmap::IndexMap;
 use rust_info;
-use rust_info::types::RustChannel;
+use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::PathBuf;
 
@@ -43,7 +47,7 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
     if (is_linux() && rust_channel == RustChannel::Nightly) || !ci_info::is_ci() {
         true
     } else if panic_if_false {
-        panic!("Skippied");
+        panic!("Skipped");
     } else {
         false
     }
@@ -107,4 +111,28 @@ pub(crate) fn get_toolchain() -> String {
     };
 
     toolchain.to_string()
+}
+
+pub(crate) fn create_empty_flow_info() -> FlowInfo {
+    FlowInfo {
+        config: Config {
+            config: ConfigSection::new(),
+            env_files: vec![],
+            env: IndexMap::new(),
+            env_scripts: vec![],
+            tasks: IndexMap::new(),
+        },
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: CiInfo::new(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    }
 }

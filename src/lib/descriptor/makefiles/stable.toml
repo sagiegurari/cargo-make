@@ -152,6 +152,8 @@ echo "Git:"
 echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
 echo "    User: ${CARGO_MAKE_GIT_USER_NAME}"
 echo "    Email: ${CARGO_MAKE_GIT_USER_EMAIL}"
+echo "    Commit Hash: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH}"
+echo "    Commit Hash Prefix: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX}"
 echo "*************************************"
 '''
 ]
@@ -226,9 +228,16 @@ echo "*************************************"
 '''
 ]
 
+[tasks.pre-print-env]
+category = "Tools"
+
+[tasks.post-print-env]
+category = "Tools"
+
 [tasks.print-env-flow]
 category = "Tools"
 dependencies = [
+    "pre-print-env",
     "print-cargo-make-env",
     "print-project-env",
     "print-ci-env",
@@ -236,7 +245,8 @@ dependencies = [
     "print-rust-env",
     "print-cargo-env",
     "print-crate-env",
-    "print-duckscript-env"
+    "print-duckscript-env",
+    "post-print-env"
 ]
 
 [tasks.diff-files]

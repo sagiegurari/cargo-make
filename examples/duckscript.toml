@@ -31,3 +31,25 @@ script = [
 echo Running duckscript without runner attribute.
 '''
 ]
+
+[tasks.run-task-from-duckscript]
+script_runner = "@duckscript"
+script = [
+'''
+echo first invocation of echo1 task:
+cm_run_task echo1
+echo second invocation of echo1 task:
+cm_run_task echo1
+
+echo running task: echo2:
+cm_run_task echo2
+'''
+]
+
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]

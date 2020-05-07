@@ -610,9 +610,9 @@ File paths support environment substitution.<br><br>
 <a name="usage-task-command-script-task-exampleduckscript"></a>
 #### Duckscript
 [Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
-[Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make
-environment variables from inside the script.<br>
-This allows a really powerful integration with cargo-make.
+[Duckscript](https://sagiegurari.github.io/duckscript/) is embedded inside cargo-make so unlike other scripting solutions or commands, duckscript can change cargo-make environment variables from inside the script.<br>
+In addition you can run cargo-make tasks from within duckscript script.<br>
+This allows a really powerful two way integration with cargo-make.
 
 ```toml
 [tasks.duckscript-example]
@@ -631,6 +631,32 @@ pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 '''
 ]
+```
+
+The next example shows how to invoke cargo-make tasks from duckscript:
+
+```toml
+[tasks.run-task-from-duckscript]
+script_runner = "@duckscript"
+script = [
+'''
+echo first invocation of echo1 task:
+cm_run_task echo1
+echo second invocation of echo1 task:
+cm_run_task echo1
+
+echo running task: echo2:
+cm_run_task echo2
+'''
+]
+
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]
 ```
 
 Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
@@ -1361,6 +1387,8 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_BRANCH** - The current branch name.
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
+* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH** - The last HEAD commit hash.
+* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX** - The last HEAD commit hash prefix.
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors

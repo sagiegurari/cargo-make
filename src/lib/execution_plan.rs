@@ -23,7 +23,7 @@ use std::path::Path;
 use std::vec::Vec;
 
 /// Resolve aliases to different tasks, checking for cycles
-fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> String {
+fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> Option<String> {
     seen.push(name.to_string());
 
     match config.tasks.get(name) {
@@ -37,51 +37,60 @@ fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) 
                     panic!("Detected cycle while resolving alias {}: {}", &name, chain);
                 }
                 Some(ref alias) => get_task_name_recursive(config, alias, seen),
-                _ => name.to_string(),
+                _ => Some(name.to_string()),
             }
         }
-        None => {
-            error!("Task not found: {}", &name);
-            panic!("Task not found: {}", &name);
-        }
+        None => None,
     }
 }
 
 /// Returns the actual task name to invoke as tasks may have aliases
-fn get_task_name(config: &Config, name: &str) -> String {
+fn get_task_name(config: &Config, name: &str) -> Option<String> {
     let mut seen = Vec::new();
 
     get_task_name_recursive(config, name, &mut seen)
 }
 
 pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
-    let actual_task_name = if support_alias {
+    match get_optional_normalized_task(config, name, support_alias) {
+        Some(task) => task,
+        None => {
+            error!("Task {} not found", &name);
+            panic!("Task {} not found", &name);
+        }
+    }
+}
+
+fn get_optional_normalized_task(config: &Config, name: &str, support_alias: bool) -> Option<Task> {
+    let actual_task_name_option = if support_alias {
         get_task_name(config, name)
     } else {
-        name.to_string()
+        Some(name.to_string())
     };
 
-    match config.tasks.get(&actual_task_name) {
-        Some(task_config) => {
-            let mut clone_task = task_config.clone();
-            let normalized_task = clone_task.get_normalized_task();
+    match actual_task_name_option {
+        Some(actual_task_name) => match config.tasks.get(&actual_task_name) {
+            Some(task_config) => {
+                let mut clone_task = task_config.clone();
+                let mut normalized_task = clone_task.get_normalized_task();
 
-            match normalized_task.extend {
-                Some(ref extended_task_name) => {
-                    let mut extended_task =
-                        get_normalized_task(config, extended_task_name, support_alias);
+                normalized_task = match normalized_task.extend {
+                    Some(ref extended_task_name) => {
+                        let mut extended_task =
+                            get_normalized_task(config, extended_task_name, support_alias);
 
-                    extended_task.extend(&normalized_task);
+                        extended_task.extend(&normalized_task);
 
-                    extended_task
-                }
-                None => normalized_task,
+                        extended_task
+                    }
+                    None => normalized_task,
+                };
+
+                Some(normalized_task)
             }
-        }
-        None => {
-            error!("Task {} not found using name: {}", &name, &actual_task_name);
-            panic!("Task {} not found using name: {}", &name, &actual_task_name);
-        }
+            None => None,
+        },
+        None => None,
     }
 }
 
@@ -262,13 +271,14 @@ fn is_workspace_flow(
     {
         false
     } else {
-        // project is a workspace and wasn't disabled via cli, need to check requested task
-        let cli_task = get_normalized_task(config, task, true);
-
         // check for configured default workspace flag
         let default_to_workspace = config.config.default_to_workspace.unwrap_or(true);
 
-        cli_task.workspace.unwrap_or(default_to_workspace)
+        // project is a workspace and wasn't disabled via cli, need to check requested task
+        match get_optional_normalized_task(config, task, true) {
+            Some(cli_task) => cli_task.workspace.unwrap_or(default_to_workspace),
+            None => default_to_workspace,
+        }
     }
 }
 
