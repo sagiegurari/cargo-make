@@ -90,7 +90,7 @@
         * [Coverage](#usage-predefined-flows-coverage)
         * [Full List](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md)
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
-        * [Modifing Predefined Tasks/Flows](#usage-predefined-flows-modify)
+        * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
@@ -489,7 +489,7 @@ run_task = { name = "echo", fork = true }
 
 The **name** attribute can hold either a single task name or a list of tasks.<br>
 In case of a list, the tasks would be invoked one after the other in sequence.<br>
-For exmaple, below **simple-multi** and **routing-multi** both demonstrate different ways to define multi task invocations via **run_task**:
+For example, below **simple-multi** and **routing-multi** both demonstrate different ways to define multi task invocations via **run_task**:
 
 ```toml
 [tasks.echo1]
@@ -525,7 +525,7 @@ args = ["2"]
 run_task = { name = ["echo1", "echo2"], parallel = true }
 ```
 
-This allows to run independend tasks in parallel and speed the overall performance of the flow.<br>
+This allows to run independent tasks in parallel and speed the overall performance of the flow.<br>
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
 * Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
@@ -715,7 +715,7 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 ```
 
 File paths support environment substitution.<br><br>
-**Favor commands over scripts, as commands support more featues such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
+**Favor commands over scripts, as commands support more features such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
 <a name="usage-task-command-script-task-exampleduckscript"></a>
 #### Duckscript
@@ -1063,13 +1063,13 @@ The workspace level makefile **env** section must contain the following environm
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
-This allows you to maintina a single makefile for the entire workspace but having access to those custom tasks in every member crate.
+This allows you to maintaining a single makefile for the entire workspace but having access to those custom tasks in every member crate.
 
 <a name="usage-load-scripts"></a>
 #### Load Scripts
 In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
 Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
-The extend however, only knows to find the extending files in the localt file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
+The extend however, only knows to find the extending files in the local file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
 
 Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
 This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
@@ -1104,7 +1104,7 @@ There are multiple ways of extending tasks in the same or from extended makefile
 #### Task Override
 cargo-make comes with many predefined tasks and flows that can be used without redefining them in your project.<br>
 However in some cases, you would like to change them a bit to fit your needs without rewriting the entire task.<br>
-Let’s take for example the **build** task which is predefined internally inside cargo-make as follows:
+Lets take for example the **build** task which is predefined internally inside cargo-make as follows:
 
 ```toml
 [tasks.build]
@@ -1369,7 +1369,7 @@ env_files = [
 ```
 
 In this example, the env files will be loaded in the order in which they were defined.<br>
-To enable profile based flitering, you can use the object form as follows:
+To enable profile based filtering, you can use the object form as follows:
 
 ```toml
 env_files = [
@@ -1443,11 +1443,11 @@ cargo-make will load the environment variables in the following order
 
 <a name="usage-env-global"></a>
 #### Global
-In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc:
+In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc.
 
 * **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
-* **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, seperated with a ';' character.
+* **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, separated with a ';' character.
 * **CARGO_MAKE_CURRENT_TASK_NAME** - Holds the currently executed task name.
 * **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE** - Holds the full path to the makefile which **initially** defined the currently executed task (not available for internal core tasks).
 * **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY** - Holds the full path to the directory containing the makefile which **initially** defined the currently executed task (not available for internal core tasks).
@@ -1455,7 +1455,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
-* **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, seperated with a ';' character (should not be manually modified by global/task env blocks)
+* **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, separated with a ';' character (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_PROJECT_NAME** - For standalone crates, this will be the same as CARGO_MAKE_CRATE_NAME and for workspace it will default to the working directory basename.
 * **CARGO_MAKE_PROJECT_VERSION** For standalone crates, this will be the same as CARGO_MAKE_CRATE_VERSION and for workspaces it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
 * **CARGO_MAKE_CARGO_HOME** - The path to CARGO_HOME as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
@@ -1473,7 +1473,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
-* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects .cargo/config.toml's and ${CARGO_HOME}/config.toml.
+* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects .cargo/config.toml and ${CARGO_HOME}/config.toml.
 * **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
 * **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 * **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name (if available).
@@ -1792,7 +1792,7 @@ args = ["make", "--version"]
 This ensures we are using a crate version that supports the feature we require for the build.<br>
 Currently there are few limitations when defining min_version:
 
-* Specifing **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
+* Specifying **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
 * In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
 <a name="usage-installing-locked"></a>
@@ -2074,7 +2074,7 @@ Therefore it is not recommended to use the init/end tasks also inside your flows
 By default any error in any task that does not have **ignore_errors=true** set to it, will cause the entire flow to fail.<br>
 However, there are scenarios in which you would like to run some sort of cleanups before the failed flow finishes.<br>
 cargo make enables you to define an **on error** task which will only be invoked in case the flow failed.<br>
-In order to define this special task you must add the **on_error_task** attribute in the the **config** section in your Makefile and point it to your task, for example:
+In order to define this special task you must add the **on_error_task** attribute in the **config** section in your Makefile and point it to your task, for example:
 
 ```toml
 [config]
@@ -2999,7 +2999,7 @@ skip_core_tasks = true
 ```
 
 <a name="usage-predefined-flows-modify"></a>
-#### Modifing Predefined Tasks/Flows
+#### Modifying Predefined Tasks/Flows
 
 It is possible to modify the internal core tasks.<br>
 All modifications are defines in the **config.modify_core_tasks** section.
