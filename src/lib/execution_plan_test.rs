@@ -369,7 +369,8 @@ POPD
 PUSHD member2
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
 if %errorlevel% neq 0 exit /b %errorlevel%
-PUSHD dir1/member3
+POPD
+PUSHD dir1\member3
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development some_task
 if %errorlevel% neq 0 exit /b %errorlevel%
 POPD"#.to_string()
