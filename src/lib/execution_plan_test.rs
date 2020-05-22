@@ -333,7 +333,6 @@ cd -"#
 
 #[test]
 #[ignore]
-#[cfg(target_os = "linux")]
 fn create_workspace_task_with_included_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -357,13 +356,21 @@ fn create_workspace_task_with_included_members() {
 
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
 
-    let mut expected_script = r#"cd ./member1
+    let mut expected_script = if cfg!(windows) {
+        r#"PUSHD member1
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
+POPD
+PUSHD member2
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
+POPD"#.to_string()
+    } else {
+        r#"cd ./member1
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
 cd -
 cd ./member2
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
-cd -"#
-        .to_string();
+cd -"#.to_string()
+    };
 
     let log_level = logger::get_log_level();
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
