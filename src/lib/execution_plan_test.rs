@@ -359,9 +359,11 @@ fn create_workspace_task_with_included_members() {
     let mut expected_script = if cfg!(windows) {
         r#"PUSHD member1
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development some_task
+if %errorlevel% neq 0 exit /b %errorlevel%
 POPD
 PUSHD member2
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
+if %errorlevel% neq 0 exit /b %errorlevel%
 POPD"#.to_string()
     } else {
         r#"cd ./member1
