@@ -339,6 +339,7 @@ fn create_workspace_task_with_included_members() {
         "member1".to_string(),
         "member2".to_string(),
         "dir1/member3".to_string(),
+        "dir1/member4".to_string(),
     ];
     crate_info.workspace = Some(Workspace {
         members: Some(members),
@@ -347,7 +348,11 @@ fn create_workspace_task_with_included_members() {
 
     envmnt::set_list(
         "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS",
-        &vec!["member1".to_string(), "member2".to_string()],
+        &vec![
+            "member1".to_string(),
+            "member2".to_string(),
+            "dir1/member3".to_string(),
+        ],
     );
 
     profile::set(profile::DEFAULT_PROFILE);
@@ -364,6 +369,9 @@ POPD
 PUSHD member2
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
 if %errorlevel% neq 0 exit /b %errorlevel%
+PUSHD dir1/member3
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development some_task
+if %errorlevel% neq 0 exit /b %errorlevel%
 POPD"#.to_string()
     } else {
         r#"cd ./member1
@@ -371,6 +379,9 @@ cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=
 cd -
 cd ./member2
 cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development some_task
+cd -
+cd ./dir1/member3
+cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development some_task
 cd -"#.to_string()
     };
 
