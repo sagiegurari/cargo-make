@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.30.8
+
+* Fix rustfmt nightly installation issue due to rust env issue: rust-lang/rust#72423
+
 ### v0.30.7 (2020-05-07)
 
 * New cm_run_task duckscript command which enables to run cargo-make tasks from within duckscript #417

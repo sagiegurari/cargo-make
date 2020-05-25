@@ -202,6 +202,8 @@ dependencies = [
 [tasks.install-rustfmt]
 description = "Installs cargo rustfmt plugin."
 category = "Development"
+env.CFG_RELEASE = { value = "${CARGO_MAKE_RUST_VERSION}", condition = { env_not_set = ["CFG_RELEASE"] } }
+env.CFG_RELEASE_CHANNEL = { value = "${CARGO_MAKE_RUST_CHANNEL}", condition = { env_not_set = ["CFG_RELEASE_CHANNEL"] } }
 install_crate = { crate_name = "rustfmt-nightly", rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "--help" }
 
 [tasks.pre-format]
