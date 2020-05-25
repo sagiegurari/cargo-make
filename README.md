@@ -525,7 +525,7 @@ args = ["2"]
 run_task = { name = ["echo1", "echo2"], parallel = true }
 ```
 
-This allows to run independent tasks in parallel and speed the overall performance of the flow.<br>
+This allows to run independent tasks in parallel and speed up the overall performance of the flow.<br>
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
 * Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
