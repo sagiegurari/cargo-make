@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.30.7"
+version = "0.30.8"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -54,7 +54,7 @@ serde_json = "^1"
 log = "^0.4"
 run_script = "^0.6"
 rust_info = "^0.3.1"
-semver = "^0.9"
+semver = "^0.10"
 serde = "^1"
 serde_derive = "^1"
 shell2batch = "^0.4"

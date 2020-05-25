@@ -400,6 +400,17 @@
 <span id="400">400</span>
 <span id="401">401</span>
 <span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # execution_plan</span>
 <span class="doccomment">//!</span>
@@ -557,6 +568,27 @@
     <span class="ident">member_path</span>
 }
 
+<span class="kw">fn</span> <span class="ident">filter_workspace_members</span>(<span class="ident">members</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">skip_members_config</span>);
+
+    <span class="kw">let</span> <span class="ident">include_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let</span> <span class="ident">include_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">include_members_config</span>);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">filtered_members</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="ident">members</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">should_skip_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">skip_members</span>)
+            <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">should_include_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">include_members</span>)
+        {
+            <span class="ident">filtered_members</span>.<span class="ident">push</span>(<span class="ident">member</span>.<span class="ident">to_string</span>());
+        } <span class="kw">else</span> {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Skipping Member: {}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
+        }
+    }
+
+    <span class="ident">filtered_members</span>
+}
+
 <span class="kw">fn</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>: <span class="ident">CrateInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
     <span class="kw">let</span> <span class="ident">members</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>() {
         <span class="kw">let</span> <span class="ident">workspace</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">unwrap_or</span>(<span class="ident">Workspace</span>::<span class="ident">new</span>());
@@ -573,67 +605,57 @@
         <span class="ident">profile</span>::<span class="ident">DEFAULT_PROFILE</span>.<span class="ident">to_string</span>()
     };
 
-    <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">skip_members_config</span>);
-
-    <span class="kw">let</span> <span class="ident">include_members_config</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">let</span> <span class="ident">include_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">include_members_config</span>);
+    <span class="kw">let</span> <span class="ident">filtered_members</span> <span class="op">=</span> <span class="ident">filter_workspace_members</span>(<span class="kw-2">&amp;</span><span class="ident">members</span>);
 
     <span class="kw">let</span> <span class="ident">cargo_make_command</span> <span class="op">=</span> <span class="string">&quot;cargo make&quot;</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">members</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">should_skip_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">skip_members</span>)
-            <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">should_include_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">include_members</span>)
-        {
-            <span class="comment">//convert to OS path separators</span>
-            <span class="kw">let</span> <span class="ident">member_path</span> <span class="op">=</span> <span class="ident">update_member_path</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>);
+    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">filtered_members</span> {
+        <span class="comment">//convert to OS path separators</span>
+        <span class="kw">let</span> <span class="ident">member_path</span> <span class="op">=</span> <span class="ident">update_member_path</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-                <span class="string">&quot;PUSHD &quot;</span>.<span class="ident">to_string</span>()
-            } <span class="kw">else</span> {
-                <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>()
-            };
-            <span class="ident">cd_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_path</span>);
-            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">cd_line</span>);
-
-            <span class="comment">//get member name</span>
-            <span class="kw">let</span> <span class="ident">member_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">member_path</span>).<span class="ident">file_name</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>()),
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">member_path</span>.<span class="ident">clone</span>(),
-            };
-
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Adding Member: {} Path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member_name</span>, <span class="kw-2">&amp;</span><span class="ident">member_path</span>);
-
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_line</span> <span class="op">=</span> <span class="ident">cargo_make_command</span>.<span class="ident">to_string</span>();
-            <span class="ident">make_line</span>
-                .<span class="ident">push_str</span>(<span class="string">&quot; --disable-check-for-updates --allow-private --no-on-error --loglevel=&quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=&quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_name</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --profile &quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
-
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args</span> {
-                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
-                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>);
-                }
-            }
-
-            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
-
-            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;if %errorlevel% neq 0 exit /b %errorlevel%&quot;</span>.<span class="ident">to_string</span>());
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;POPD&quot;</span>.<span class="ident">to_string</span>());
-            } <span class="kw">else</span> {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd -&quot;</span>.<span class="ident">to_string</span>());
-            };
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+            <span class="string">&quot;PUSHD &quot;</span>.<span class="ident">to_string</span>()
         } <span class="kw">else</span> {
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Skipping Member: {}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
+            <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>()
+        };
+        <span class="ident">cd_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_path</span>);
+        <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">cd_line</span>);
+
+        <span class="comment">//get member name</span>
+        <span class="kw">let</span> <span class="ident">member_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">member_path</span>).<span class="ident">file_name</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>()),
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">member_path</span>.<span class="ident">clone</span>(),
+        };
+
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Adding Member: {} Path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member_name</span>, <span class="kw-2">&amp;</span><span class="ident">member_path</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_line</span> <span class="op">=</span> <span class="ident">cargo_make_command</span>.<span class="ident">to_string</span>();
+        <span class="ident">make_line</span>
+            .<span class="ident">push_str</span>(<span class="string">&quot; --disable-check-for-updates --allow-private --no-on-error --loglevel=&quot;</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=&quot;</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_name</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --profile &quot;</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
+        <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
+            <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args</span> {
+                <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
+                <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>);
+            }
         }
+
+        <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
+
+        <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
+            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;if %errorlevel% neq 0 exit /b %errorlevel%&quot;</span>.<span class="ident">to_string</span>());
+            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;POPD&quot;</span>.<span class="ident">to_string</span>());
+        } <span class="kw">else</span> {
+            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd -&quot;</span>.<span class="ident">to_string</span>());
+        };
     }
 
     <span class="comment">//only if environment variable is set</span>

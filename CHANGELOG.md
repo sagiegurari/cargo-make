@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.30.8
+### v0.30.8 (2020-05-25)
 
 * Fix rustfmt nightly installation issue due to rust env issue: rust-lang/rust#72423
 
