@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.31.0 (2020-06-06)
+
+* Upgrade duckscript to 0.5
+* Upgrade cargo-watch to 7.4.1
+
 ### v0.30.8 (2020-05-25)
 
 * Fix rustfmt nightly installation issue due to rust env issue: rust-lang/rust#72423
