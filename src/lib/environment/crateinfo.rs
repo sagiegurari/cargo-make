@@ -232,6 +232,30 @@ pub(crate) fn crate_target_triple(
 }
 
 pub(crate) fn search_workspace_root() -> Option<String> {
+    if envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION") {
+        search_workspace_root_for_emulation()
+    } else {
+        search_workspace_root_via_metadata()
+    }
+}
+
+fn search_workspace_root_for_emulation() -> Option<String> {
+    let path_value = envmnt::get_any(
+        &vec![
+            "CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY",
+            "CARGO_MAKE_WORKING_DIRECTORY",
+        ],
+        "",
+    );
+
+    if path_value.is_empty() {
+        None
+    } else {
+        Some(path_value)
+    }
+}
+
+fn search_workspace_root_via_metadata() -> Option<String> {
     debug!("Getting cargo metadata.");
 
     let mut command_struct = Command::new("cargo");

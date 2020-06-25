@@ -22,3 +22,11 @@ env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = "member2" }
 dependencies = [ "echo" ]
 run_task = { name = "echo", fork = true }
 
+[tasks.workspace_root]
+script = ["echo root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"]
+
+[tasks.workspace_root_top_and_members]
+workspace = false
+dependencies = ["workspace_root"]
+run_task = { name = "workspace_root", fork = true }
+

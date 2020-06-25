@@ -176,6 +176,17 @@ fn filter_workspace_members(members: &Vec<String>) -> Vec<String> {
 }
 
 fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
+    let workspace_emulation =
+        crate_info.workspace.is_none() && envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION");
+    if workspace_emulation {
+        environment::search_and_set_workspace_cwd();
+        let root_directory = envmnt::get_or_panic("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY");
+        envmnt::set(
+            "CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY",
+            &root_directory,
+        );
+    }
+
     let members = if crate_info.workspace.is_some() {
         let workspace = crate_info.workspace.unwrap_or(Workspace::new());
         workspace.members.unwrap_or(vec![])
@@ -262,6 +273,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
         None
     };
 
+    debug!("Workspace Task Script: {:#?}", &script_lines);
+
     let mut workspace_task = Task::new();
     workspace_task.script = Some(ScriptValue::Text(script_lines));
     workspace_task.env = task_env;
@@ -277,7 +290,7 @@ fn is_workspace_flow(
 ) -> bool {
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
     if disable_workspace
-        || (crate_info.workspace.is_none() && !envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION"))
+        || crate_info.workspace.is_none() && !envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION")
         || envmnt::exists("CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER")
     {
         false

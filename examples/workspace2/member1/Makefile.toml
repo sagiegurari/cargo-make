@@ -4,3 +4,7 @@ script = ["echo hello from member1"]
 
 [tasks.member-only]
 script = ["echo member 1"]
+
+[tasks.workspace_root]
+script = ["echo member 1 found root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"]
+
