@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.31.1
+
+* Support CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY in workspace emulation mode #434
+* New readme-include-files markdown-include-files tasks to modify markdown files based on content from other files #426
+
 ### v0.31.0 (2020-06-06)
 
 * Upgrade duckscript to 0.5

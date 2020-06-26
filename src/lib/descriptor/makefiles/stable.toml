@@ -44,6 +44,10 @@ RUST_TEST_THREADS = "1"
 [env.multi-phase-tests]
 CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES = true
 
+[env.docs-all-modification-tasks]
+CARGO_MAKE_DOCS_README_SET_CRATE_VERSION = true
+CARGO_MAKE_DOCS_README_INCLUDE_FILES = true
+
 [env.publish-allow-dirty]
 CARGO_MAKE_CARGO_PUBLISH_FLAGS = "${CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY}"
 

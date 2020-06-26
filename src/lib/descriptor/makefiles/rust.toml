@@ -276,6 +276,7 @@ dependencies = [
     "docs",
     "post-docs",
     "readme-set-crate-version-conditioned",
+    "readme-include-files-conditioned",
     "copy-apidocs"
 ]
 
@@ -299,6 +300,13 @@ dependencies = [
     "post-workspace-docs"
 ]
 
+[tasks.readme-file-set-env]
+description = "Sets the CARGO_MAKE_DOCS_README_FILE environment variable."
+category = "Documentation"
+private = true
+condition = { env_not_set = ["CARGO_MAKE_DOCS_README_FILE"] }
+env = { CARGO_MAKE_DOCS_README_FILE = "${CARGO_MAKE_WORKING_DIRECTORY}/README.md" }
+
 [tasks.readme-set-crate-version]
 description = "Modifies the current README.md file with the current crate version."
 category = "Documentation"
@@ -309,15 +317,14 @@ run_task = "readme-set-crate-version-conditioned"
 description = "Modifies the current README.md file with the current crate version."
 category = "Documentation"
 private = true
+dependencies = [
+    "readme-file-set-env"
+]
 condition = { env_true = ["CARGO_MAKE_DOCS_README_SET_CRATE_VERSION"] }
 script_runner = "@duckscript"
 script = [
 '''
-if is_defined CARGO_MAKE_DOCS_README_FILE
-    readme_file_name = set ${CARGO_MAKE_DOCS_README_FILE}
-else
-    readme_file_name = set "${CARGO_MAKE_WORKING_DIRECTORY}/README.md"
-end
+readme_file_name = set ${CARGO_MAKE_DOCS_README_FILE}
 
 if is_file ${readme_file_name}
     readme_text = readfile ${readme_file_name}
@@ -357,6 +364,32 @@ else
 end
 '''
 ]
+
+[tasks.readme-include-files]
+description = "Modifies the current README.md by including external files."
+category = "Documentation"
+env = { "CARGO_MAKE_DOCS_README_INCLUDE_FILES" = true }
+run_task = "readme-include-files-conditioned"
+
+[tasks.readme-include-files-conditioned]
+description = "Modifies the current README.md by including external files."
+category = "Documentation"
+private = true
+condition = { env_true = ["CARGO_MAKE_DOCS_README_INCLUDE_FILES"], files_exist = ["${CARGO_MAKE_DOCS_README_FILE}"] }
+dependencies = [
+    "readme-file-set-env"
+]
+install_crate = { crate_name = "md-inc", binary = "md-inc", test_arg = "--help" }
+env = { CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE = "${CARGO_MAKE_DOCS_README_FILE}" }
+run_task = "markdown-include-files"
+
+[tasks.markdown-include-files]
+description = "Modifies the markdown file defined by the CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE environment variable, by including external files."
+category = "Documentation"
+condition = { files_exist = ["${CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE}"] }
+install_crate = { crate_name = "md-inc", binary = "md-inc", test_arg = "--help" }
+command = "md-inc"
+args = ["${CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE}"]
 
 [tasks.pre-build]
 category = "Build"

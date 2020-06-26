@@ -176,6 +176,18 @@ fn filter_workspace_members(members: &Vec<String>) -> Vec<String> {
 }
 
 fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
+    let set_workspace_emulation = crate_info.workspace.is_none()
+        && envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION")
+        && !envmnt::exists("CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY");
+    if set_workspace_emulation {
+        environment::search_and_set_workspace_cwd();
+        let root_directory = envmnt::get_or_panic("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY");
+        envmnt::set(
+            "CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY",
+            &root_directory,
+        );
+    }
+
     let members = if crate_info.workspace.is_some() {
         let workspace = crate_info.workspace.unwrap_or(Workspace::new());
         workspace.members.unwrap_or(vec![])
@@ -261,6 +273,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     } else {
         None
     };
+
+    debug!("Workspace Task Script: {:#?}", &script_lines);
 
     let mut workspace_task = Task::new();
     workspace_task.script = Some(ScriptValue::Text(script_lines));
