@@ -768,6 +768,13 @@
 <span id="768">768</span>
 <span id="769">769</span>
 <span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -1115,17 +1122,13 @@
     <span class="ident">envmnt</span>::<span class="ident">set_bool</span>(<span class="string">&quot;CARGO_MAKE_CRATE_IS_WORKSPACE&quot;</span>, <span class="ident">is_workspace</span>);
     <span class="kw">if</span> <span class="ident">is_workspace</span> {
         <span class="ident">envmnt</span>::<span class="ident">set_bool</span>(<span class="string">&quot;CARGO_MAKE_USE_WORKSPACE_PROFILE&quot;</span>, <span class="bool-val">true</span>);
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="string">&quot;CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER&quot;</span>) {
-        <span class="comment">// in case we started the build directly from a workspace member, lets</span>
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="string">&quot;CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER&quot;</span>)
+        <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>)
+    {
+        <span class="comment">// in case we started the build directly from a workspace member</span>
+        <span class="comment">// or we are running in a workspace emulation mode, lets</span>
         <span class="comment">// search for the workspace root (if any)</span>
-        <span class="kw">match</span> <span class="ident">crateinfo</span>::<span class="ident">search_workspace_root</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">root_directory</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">root_directory_path_buf</span> <span class="op">=</span> <span class="ident">get_directory_path</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory</span>));
-                <span class="kw">let</span> <span class="ident">root_directory_path</span> <span class="op">=</span> <span class="ident">root_directory_path_buf</span>.<span class="ident">as_path</span>();
-                <span class="ident">set_workspace_cwd</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory_path</span>, <span class="bool-val">true</span>);
-            }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
-        }
+        <span class="ident">search_and_set_workspace_cwd</span>();
     }
 
     <span class="kw">let</span> <span class="ident">workspace</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">unwrap_or</span>(<span class="ident">Workspace</span>::<span class="ident">new</span>());
@@ -1345,6 +1348,17 @@
             <span class="string">&quot;CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY&quot;</span>,
             <span class="ident">directory_path_string</span>,
         );
+    }
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">search_and_set_workspace_cwd</span>() {
+    <span class="kw">match</span> <span class="ident">crateinfo</span>::<span class="ident">search_workspace_root</span>() {
+        <span class="prelude-val">Some</span>(<span class="ident">root_directory</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="ident">root_directory_path_buf</span> <span class="op">=</span> <span class="ident">get_directory_path</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory</span>));
+            <span class="kw">let</span> <span class="ident">root_directory_path</span> <span class="op">=</span> <span class="ident">root_directory_path_buf</span>.<span class="ident">as_path</span>();
+            <span class="ident">set_workspace_cwd</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory_path</span>, <span class="bool-val">true</span>);
+        }
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
     }
 }
 

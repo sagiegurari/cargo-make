@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.31.1
+### v0.31.1 (2020-06-26)
 
 * Support CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY in workspace emulation mode #434
 * New readme-include-files markdown-include-files tasks to modify markdown files based on content from other files #426

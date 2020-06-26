@@ -69,10 +69,12 @@
 * **copy-apidocs** - Copies the generated documentation to the docs/api directory.
 * **docs** - Generate rust documentation.
 * **docs-flow** - Generate rust documentation.
+* **markdown-include-files** - Modifies the markdown file defined by the CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE environment variable, by including external files.
 * **post-docs** - No Description.
 * **post-workspace-docs** - No Description.
 * **pre-docs** - No Description.
 * **pre-workspace-docs** - No Description.
+* **readme-include-files** - Modifies the current README.md by including external files.
 * **readme-set-crate-version** - Modifies the current README.md file with the current crate version.
 * **workspace-docs** - Generate workspace level rust documentation.
 * **workspace-docs-flow** - Generate workspace level rust documentation.

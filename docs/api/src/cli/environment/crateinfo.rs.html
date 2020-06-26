@@ -266,6 +266,30 @@
 <span id="266">266</span>
 <span id="267">267</span>
 <span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # crateinfo</span>
 <span class="doccomment">//!</span>
@@ -501,6 +525,30 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">search_workspace_root</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="ident">envmnt</span>::<span class="ident">is</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>) {
+        <span class="ident">search_workspace_root_for_emulation</span>()
+    } <span class="kw">else</span> {
+        <span class="ident">search_workspace_root_via_metadata</span>()
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">search_workspace_root_for_emulation</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">path_value</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_any</span>(
+        <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[
+            <span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>,
+            <span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>,
+        ],
+        <span class="string">&quot;&quot;</span>,
+    );
+
+    <span class="kw">if</span> <span class="ident">path_value</span>.<span class="ident">is_empty</span>() {
+        <span class="prelude-val">None</span>
+    } <span class="kw">else</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">path_value</span>)
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">search_workspace_root_via_metadata</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Getting cargo metadata.&quot;</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command_struct</span> <span class="op">=</span> <span class="ident">Command</span>::<span class="ident">new</span>(<span class="string">&quot;cargo&quot;</span>);
