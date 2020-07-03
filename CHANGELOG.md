@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.0 (2020-07-03)
+
+* Upgrade duckscript SDK to 0.6
+
 ### v0.31.1 (2020-06-26)
 
 * Support CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY in workspace emulation mode #434
