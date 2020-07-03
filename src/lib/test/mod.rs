@@ -8,6 +8,7 @@ use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
+use rusty_hook as _;
 use std::env;
 use std::path::PathBuf;
 
