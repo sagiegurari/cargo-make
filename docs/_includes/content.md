@@ -954,6 +954,9 @@ CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 ```
 
 This allows you to maintaining a single makefile for the entire workspace but having access to those custom tasks in every member crate.
+<br>
+**This is only relevant for workspace builds which are triggered in the workspace root.<br>
+Flows that start directly in the member crate, must manually extend the workspace level makefile using the extend keyword.**
 
 <a name="usage-load-scripts"></a>
 #### Load Scripts
