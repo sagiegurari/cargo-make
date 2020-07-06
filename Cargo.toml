@@ -10,7 +10,7 @@ homepage = "https://sagiegurari.github.io/cargo-make"
 repository = "https://github.com/sagiegurari/cargo-make.git"
 readme = "README.md"
 keywords = ["task", "build", "cargo", "plugin", "subcommand"]
-categories = ["development-tools", "development-tools::cargo-plugins", "development-tools::build-utils", "development-tools::testing"]
+categories = ["command-line-utilities", "development-tools", "development-tools::cargo-plugins", "development-tools::build-utils", "development-tools::testing"]
 include = [
     "/benches/*",
     "/docs/*",
