@@ -3160,6 +3160,10 @@ Here are few snapshots:
 While already feature rich, cargo-make is still under heavy development.<br>
 You can view the future development items list in the [github project issues](https://github.com/sagiegurari/cargo-make/issues)
 
+<a name="editor-support"></a>
+## Editor Support
+* Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
+
 ## Contributing
 See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 

@@ -105,6 +105,7 @@
     * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
+* [Editor Support](#editor-support)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
@@ -3269,6 +3270,10 @@ Here are few snapshots:
 ## Roadmap
 While already feature rich, cargo-make is still under heavy development.<br>
 You can view the future development items list in the [github project issues](https://github.com/sagiegurari/cargo-make/issues)
+
+<a name="editor-support"></a>
+## Editor Support
+* Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)
