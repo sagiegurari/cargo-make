@@ -107,7 +107,6 @@
 * **build-release-for-target** - Makes a release build for a given target
 * **conditioned-check-format** - No Description. (deprecated - Please use task: check-format-ci-flow)
 * **conditioned-clippy** - No Description. (deprecated - Please use task: clippy-ci-flow)
-* **github-hub-find** - No Description.
 * **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
 ## Publish
@@ -195,6 +194,7 @@
 * **do-on-members** - Runs the requested task for every workspace member.
 * **empty** - Empty Task
 * **git-diff-files** - Run diff on two provided files.
+* **github-hub-find** - Sets the CARGO_MAKE_GITHUB_HUB_CLI_FOUND environment variable with the current hub executable location (if found).
 * **install-rls** - Installs rust Language server rustup component.
 * **install-rust-src** - Installs rust-src rustup component.
 * **post-build-file-increment** - No Description.

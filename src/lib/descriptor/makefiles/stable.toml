@@ -74,9 +74,9 @@ category = "Tools"
 [tasks.wait]
 description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
 condition = { env_set = [ "CARGO_MAKE_WAIT_MILLISECONDS" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 sleep ${CARGO_MAKE_WAIT_MILLISECONDS}
 '''
 ]
@@ -101,9 +101,9 @@ category = "Hooks"
 
 [tasks.print-cargo-make-env]
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Cargo Make:"
 echo "    Task: ${CARGO_MAKE_TASK}"
@@ -118,9 +118,9 @@ echo "*************************************"
 
 [tasks.print-project-env]
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Project:"
 echo "    Name: ${CARGO_MAKE_PROJECT_NAME}"
@@ -132,9 +132,9 @@ echo "*************************************"
 
 [tasks.print-ci-env]
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "CI:"
 echo "    CI: ${CARGO_MAKE_CI}"
@@ -148,9 +148,9 @@ echo "*************************************"
 [tasks.print-git-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Git:"
 echo "    Branch: ${CARGO_MAKE_GIT_BRANCH}"
@@ -165,9 +165,9 @@ echo "*************************************"
 [tasks.print-rust-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Rust:"
 echo "    Version: ${CARGO_MAKE_RUST_VERSION}"
@@ -185,9 +185,9 @@ echo "*************************************"
 [tasks.print-cargo-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Cargo:"
 echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
@@ -199,9 +199,9 @@ echo "*************************************"
 [tasks.print-crate-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Crate:"
 echo "    Name: ${CARGO_MAKE_CRATE_NAME}"
@@ -221,9 +221,9 @@ echo "*************************************"
 
 [tasks.print-duckscript-env]
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Duckscript:"
 echo "    Runtime: ${CARGO_MAKE_DUCKSCRIPT_VERSION}"
@@ -275,9 +275,9 @@ args = [
 [tasks.setup-sudo-env]
 description = "Sets the sudo enable/disable environment variables."
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 # disable sudo if the env is defined
 enable_sudo = not is_defined CARGO_MAKE_SUDO_DISABLE
 
@@ -299,9 +299,9 @@ category = "Tools"
 description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_BUILD_NUMBER_FILE" ] }
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 build_number_file_exists = is_path_exists ${CARGO_MAKE_BUILD_NUMBER_FILE}
 
 if ${build_number_file_exists}

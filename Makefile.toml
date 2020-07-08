@@ -14,9 +14,9 @@ CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_RUST_TARGET_OS}-${C
 
 [tasks.post-print-env]
 category = "Tools"
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo "*************************************"
 echo "Extended Info:"
 echo "    Unstable Test Environment: ${CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV}"
@@ -32,9 +32,9 @@ condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV"] }
 ignore_errors = true
 
 [tasks.generate-readme]
-script_runner = "@duckscript"
 script = [
 '''
+#!@duckscript
 echo Generating README
 
 rm ./README.md
