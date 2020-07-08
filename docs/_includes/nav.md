@@ -93,6 +93,7 @@
     * [Predefined Tasks, CI Support and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
 * [Badge](#badge)
 * [Roadmap](#roadmap)
+* [Editor Support](#editor-support)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
