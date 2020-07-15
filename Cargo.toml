@@ -39,7 +39,7 @@ path = "src/makers.rs"
 [dependencies]
 ci_info = "^0.10"
 clap = "^2"
-colored = "^1"
+colored = "^2"
 dirs = "^3"
 duckscript = "^0.5"
 duckscriptsdk = "^0.6"
