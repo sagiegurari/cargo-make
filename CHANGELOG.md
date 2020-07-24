@@ -3,7 +3,7 @@
 ### v0.32.1
 
 * Support numeric environment variables
-* Upgrade duckscript SDK to 0.6.2
+* Upgrade duckscript SDK to 0.6.3
 
 ### v0.32.0 (2020-07-03)
 
