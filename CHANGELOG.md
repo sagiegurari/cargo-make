@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.32.1 (2020-07-31)
+
+* Support numeric environment variables
+* Upgrade duckscript SDK to 0.6.5
+
 ### v0.32.0 (2020-07-03)
 
 * Upgrade duckscript SDK to 0.6

@@ -167,6 +167,7 @@ fn set_env_multi_types() {
     let mut env = IndexMap::new();
     env.insert("value".to_string(), EnvValue::Value("test val".to_string()));
     env.insert("bool".to_string(), EnvValue::Boolean(false));
+    env.insert("number_isize".to_string(), EnvValue::Number(650));
     env.insert(
         "script".to_string(),
         EnvValue::Script(EnvValueScript {
@@ -184,6 +185,7 @@ fn set_env_multi_types() {
 
     assert!(envmnt::is_equal("value", "test val"));
     assert!(!envmnt::is_or("bool", true));
+    assert!(envmnt::is_equal("number_isize", "650"));
     assert!(envmnt::is_equal("script", "script1"));
     assert!(envmnt::is_equal(
         "ENV_DECODE_EXPRESSIONS_MULTI_TYPE",

@@ -178,6 +178,7 @@ fn set_env_for_config(
         match *env_value {
             EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
             EnvValue::Boolean(value) => set_env_for_bool(&key, value),
+            EnvValue::Number(value) => evaluate_and_set_env(&key, &value.to_string()),
             EnvValue::List(ref value) => set_env_for_list(&key, value),
             EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
             EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),

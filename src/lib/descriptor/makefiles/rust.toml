@@ -427,7 +427,7 @@ run_task = "test"
 [tasks.test-single-threaded]
 description = "Runs all ignored tests with a single test thread."
 category = "Test"
-env = { RUST_TEST_THREADS = "1" }
+env = { RUST_TEST_THREADS = 1 }
 command = "cargo"
 args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )", "--", "--ignored"]
 
@@ -903,7 +903,7 @@ run_task = "do-on-members"
 description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
 category = "Publish"
 workspace = false
-env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow", "CARGO_MAKE_WAIT_MILLISECONDS" = "20000" }
+env = { "CARGO_MAKE_MEMBER_TASK" = "${CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX}publish-flow", "CARGO_MAKE_WAIT_MILLISECONDS" = 20000 }
 run_task = "do-on-members"
 
 [tasks.install-rust-src]

@@ -10,7 +10,9 @@ additional_profiles = [
 
 [env]
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
-CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}-${CARGO_MAKE_CI}", default_value = "false", mapping = {"macos-stable-true" = "true"} }
+CARGO_MAKE_TEMP_UNSTABLE_KEY = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}-${CARGO_MAKE_CI}"
+CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"macos-stable-true" = "true"} }
+CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"linux-nightly-true" = "true", "windows-stable-true" = "true", "windows-beta-true" = "true", "windows-nightly-true" = "true"} }
 
 [tasks.post-print-env]
 category = "Tools"
@@ -19,7 +21,9 @@ script = [
 #!@duckscript
 echo "*************************************"
 echo "Extended Info:"
+echo "    Unstable Environment Key: ${CARGO_MAKE_TEMP_UNSTABLE_KEY}"
 echo "    Unstable Test Environment: ${CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV}"
+echo "    Unstable Format Environment: ${CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV}"
 echo "*************************************"
 '''
 ]
@@ -27,6 +31,9 @@ echo "*************************************"
 
 [tasks.test-multi-phases-flow]
 condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV"] }
+
+[tasks.check-format-ci-flow]
+condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV"] }
 
 [tasks.audit]
 ignore_errors = true
