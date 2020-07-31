@@ -1152,7 +1152,7 @@ You can define env vars to be set as part of the execution of the flow in the gl
 
 ```toml
 [env]
-RUST_BACKTRACE = "1"
+RUST_BACKTRACE = 1
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 TEST1 = "value1"
 TEST2 = "value2"
@@ -1177,9 +1177,9 @@ PROD = true
 
 Environment variables can be defined as:
 
-* Simple key/value pair, where the value can be either string or boolean
+* Simple key/value pair, where the value can be either string, boolean or a number.
 ```toml
-RUST_BACKTRACE = "1"
+RUST_BACKTRACE = 1
 BOOL_VALUE = true
 ```
 * Key and an array which will be joined with the ';' separator
