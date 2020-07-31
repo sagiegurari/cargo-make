@@ -12,7 +12,7 @@ additional_profiles = [
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_TEMP_UNSTABLE_KEY = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}-${CARGO_MAKE_CI}"
 CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"macos-stable-true" = "true"} }
-CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"linux-nightly-true" = "true"} }
+CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"linux-nightly-true" = "true", "windows-stable-true" = "true", "windows-beta-true" = "true", "windows-nightly-true" = "true"} }
 
 [tasks.post-print-env]
 category = "Tools"
