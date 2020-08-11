@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.2
+
+* Fix watch invocation in case makefile file path contains spaces #445
+
 ### v0.32.1 (2020-07-31)
 
 * Support numeric environment variables
