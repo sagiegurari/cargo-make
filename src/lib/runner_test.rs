@@ -56,8 +56,9 @@ fn create_proxy_task_with_makefile() {
     let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
 
-    let mut makefile_arg = "--makefile=".to_string();
+    let mut makefile_arg = "\"--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
+    makefile_arg.push('"');
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 7);
@@ -967,9 +968,9 @@ fn create_watch_task_with_makefile() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks \"--makefile=");
     make_command_line.push_str(&makefile.clone());
-    make_command_line.push_str(" some_task");
+    make_command_line.push_str("\" some_task");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
@@ -1000,9 +1001,9 @@ fn create_watch_task_with_makefile_and_bool_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks \"--makefile=");
     make_command_line.push_str(&makefile.clone());
-    make_command_line.push_str(" some_task");
+    make_command_line.push_str("\" some_task");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
@@ -1045,9 +1046,9 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks \"--makefile=");
     make_command_line.push_str(&makefile.clone());
-    make_command_line.push_str(" some_task");
+    make_command_line.push_str("\" some_task");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
@@ -1092,9 +1093,9 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks \"--makefile=");
     make_command_line.push_str(&makefile.clone());
-    make_command_line.push_str(" some_task");
+    make_command_line.push_str("\" some_task");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 12);
@@ -1145,9 +1146,9 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks \"--makefile=");
     make_command_line.push_str(&makefile.clone());
-    make_command_line.push_str(" some_task");
+    make_command_line.push_str("\" some_task");
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
@@ -2167,8 +2168,9 @@ fn create_fork_step_valid() {
     profile_arg.push_str(&profile::get());
 
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
-    let mut makefile_arg = "--makefile=".to_string();
+    let mut makefile_arg = "\"--makefile=".to_string();
     makefile_arg.push_str(&makefile.clone());
+    makefile_arg.push('"');
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 9);
