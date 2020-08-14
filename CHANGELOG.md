@@ -4,6 +4,7 @@
 
 * Fix watch invocation in case makefile file path contains spaces #445
 * Clear RUST_RECURSION_COUNT at start of flow #447
+* Fix do-copy-apidocs issue with triple folder #444 (thanks @haraldh)
 
 ### v0.32.1 (2020-07-31)
 

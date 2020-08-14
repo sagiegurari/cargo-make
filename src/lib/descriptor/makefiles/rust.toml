@@ -737,32 +737,32 @@ script_runner = "@duckscript"
 script = [
 '''
 if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
-    SRC_DIR= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}
+    src_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}
 else
-    SRC_DIR= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/${CARGO_MAKE_DOCS_SUB_FOLDER}
+    src_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/${CARGO_MAKE_DOCS_SUB_FOLDER}
 end
 
-if is_dir ${SRC_DIR}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
-    SRC_DIR= set ${SRC_DIR}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
+if is_dir ${src_dir}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
+    src_dir= set ${src_dir}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
 else
-    SRC_DIR= set ${SRC_DIR}/target/doc
+    src_dir= set ${src_dir}/target/doc
 end
 
 if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
-    DST_DIR= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api
+    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api
 else
-    DST_DIR= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 end
 
-echo Source Directory: ${SRC_DIR}
-echo Target Directory: ${DST_DIR}
+echo Source Directory: ${src_dir}
+echo Target Directory: ${dest_dir}
 
-rm -r ${DST_DIR}
-mkdir ${DST_DIR}
+rm -r ${dest_dir}
+mkdir ${dest_dir}
 
-handle = glob_array ${SRC_DIR}/*
+handle = glob_array ${src_dir}/*
 for path in ${handle}
-    mv ${path} ${DST_DIR}
+    mv ${path} ${dest_dir}
 end
 '''
 ]
