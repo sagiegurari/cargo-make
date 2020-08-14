@@ -130,7 +130,7 @@ fn makefile_coverage_kcov_test() {
 
 #[test]
 fn makefile_copy_apidocs_test() {
-    makefile_task_script_engine_test("do-copy-apidocs", EngineType::Shell2Batch);
+    makefile_task_script_engine_test("do-copy-apidocs", EngineType::Duckscript);
 }
 
 #[test]
