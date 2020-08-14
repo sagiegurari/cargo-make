@@ -3,6 +3,7 @@
 ### v0.32.2
 
 * Fix watch invocation in case makefile file path contains spaces #445
+* Clear RUST_RECURSION_COUNT at start of flow #447
 
 ### v0.32.1 (2020-07-31)
 
