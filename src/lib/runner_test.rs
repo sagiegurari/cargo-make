@@ -133,7 +133,7 @@ fn run_flow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, false);
+    run_flow(&flow_info, &mut FlowState::new(), false);
 }
 
 #[test]
@@ -168,7 +168,7 @@ fn run_flow_private_sub_task() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, true);
+    run_flow(&flow_info, &mut FlowState::new(), true);
 }
 
 #[test]
@@ -203,7 +203,7 @@ fn run_flow_allow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, false);
+    run_flow(&flow_info, &mut FlowState::new(), false);
 }
 
 #[test]
@@ -240,7 +240,7 @@ fn run_task_bad_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -278,7 +278,7 @@ fn run_task_script_with_args_error() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -315,7 +315,7 @@ fn run_task_script_with_args_valid() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -352,7 +352,7 @@ fn run_task_command() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -390,7 +390,7 @@ fn run_task_bad_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -426,7 +426,7 @@ fn run_task_no_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -471,7 +471,7 @@ fn run_task_bad_run_task_valid_command() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -513,7 +513,7 @@ fn run_task_valid_run_task() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -551,7 +551,7 @@ fn run_task_invalid_task() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -598,7 +598,7 @@ fn run_task_set_env_file() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_ENV_FILE_TEST1"), "1");
 
@@ -650,7 +650,7 @@ fn run_task_set_env() {
 
     envmnt::set("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 
     assert_eq!(envmnt::get_or_panic("TEST_RUN_TASK_SET_ENV"), "VALID");
 }
@@ -690,7 +690,7 @@ fn run_task_cwd_no_such_dir() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -727,7 +727,7 @@ fn run_task_cwd_dir_exists() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -764,7 +764,7 @@ fn run_task_cwd_env_expansion() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -802,7 +802,7 @@ fn run_task_deprecated_message() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -840,7 +840,7 @@ fn run_task_deprecated_flag() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -1210,7 +1210,7 @@ fn run_sub_task_and_report_for_name() {
 
     let sub_task = RunTaskInfo::Name("test".to_string());
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1250,7 +1250,7 @@ fn run_sub_task_and_report_for_name_not_found() {
 
     let sub_task = RunTaskInfo::Name("test2".to_string());
 
-    run_sub_task_and_report(&flow_info, &sub_task);
+    run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 }
 
 #[test]
@@ -1291,7 +1291,7 @@ fn run_sub_task_and_report_for_details_single() {
         parallel: None,
     });
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1335,7 +1335,7 @@ fn run_sub_task_and_report_for_details_multiple() {
         parallel: None,
     });
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1374,7 +1374,7 @@ fn run_sub_task_and_report_routing_empty() {
 
     let sub_task = RunTaskInfo::Routing(vec![]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(!output);
 }
@@ -1419,7 +1419,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         condition_script: None,
     }]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1478,7 +1478,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         condition_script: None,
     }]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(!output);
 }
@@ -1524,7 +1524,7 @@ fn run_sub_task_and_report_routing_not_found() {
         condition_script: None,
     }]);
 
-    run_sub_task_and_report(&flow_info, &sub_task);
+    run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 }
 
 #[test]

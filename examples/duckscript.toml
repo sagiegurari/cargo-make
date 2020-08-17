@@ -53,3 +53,15 @@ args = ["1"]
 [tasks.echo2]
 command = "echo"
 args = ["2"]
+
+[tasks.sleep_wrapper]
+run_task = { name = ["sleep", "sleep"] }
+
+[tasks.sleep]
+script = [
+'''
+#!@duckscript
+sleep 1000
+'''
+]
+

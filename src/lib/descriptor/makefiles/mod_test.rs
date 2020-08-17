@@ -4,7 +4,7 @@ use crate::runner;
 use crate::scriptengine;
 use crate::scriptengine::EngineType;
 use crate::test;
-use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, RunTaskInfo, Step, Task};
+use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, FlowState, RunTaskInfo, Step, Task};
 use ci_info;
 use envmnt;
 use fsio;
@@ -175,7 +175,7 @@ fn makefile_build_file_increment_no_file_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &step);
+    runner::run_task(&flow_info, &mut FlowState::new(), &step);
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -207,9 +207,9 @@ fn makefile_build_file_increment_file_exists_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &step);
-    runner::run_task(&flow_info, &step);
-    runner::run_task(&flow_info, &step);
+    runner::run_task(&flow_info, &mut FlowState::new(), &step);
+    runner::run_task(&flow_info, &mut FlowState::new(), &step);
+    runner::run_task(&flow_info, &mut FlowState::new(), &step);
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -243,5 +243,5 @@ fn makefile_build_file_increment_panic_invalid_data_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &step);
+    runner::run_task(&flow_info, &mut FlowState::new(), &step);
 }

@@ -173,6 +173,7 @@ mod recursion_level;
 mod runner;
 mod scriptengine;
 mod storage;
+mod time_summary;
 mod toolchain;
 mod version;
 

@@ -2972,6 +2972,7 @@ FLAGS:
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
         --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
         --skip-init-end-tasks          If set, init and end tasks are skipped
+        --time-summary                 Print task level time summary at end of flow
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 

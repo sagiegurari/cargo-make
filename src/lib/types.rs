@@ -82,6 +82,8 @@ pub struct CliArgs {
     pub output_format: String,
     /// Output file name
     pub output_file: Option<String>,
+    /// Print time summary at end of the flow
+    pub print_time_summary: bool,
 }
 
 impl CliArgs {
@@ -109,6 +111,7 @@ impl CliArgs {
             arguments: None,
             output_format: "default".to_string(),
             output_file: None,
+            print_time_summary: false,
         }
     }
 }
@@ -267,6 +270,20 @@ pub struct FlowInfo {
     pub skip_init_end_tasks: bool,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Default)]
+/// Holds mutable flow state
+pub struct FlowState {
+    /// timing info for summary
+    pub time_summary: Vec<(String, u128)>,
+}
+
+impl FlowState {
+    /// Creates and returns a new instance.
+    pub fn new() -> FlowState {
+        Default::default()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1663,6 +1680,8 @@ pub struct ConfigSection {
     pub min_version: Option<String>,
     /// The task.workspace default value
     pub default_to_workspace: Option<bool>,
+    /// True to print time summary at the end of the flow
+    pub time_summary: Option<bool>,
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
@@ -1746,6 +1765,10 @@ impl ConfigSection {
 
         if extended.default_to_workspace.is_some() {
             self.default_to_workspace = extended.default_to_workspace.clone();
+        }
+
+        if extended.time_summary.is_some() {
+            self.time_summary = extended.time_summary.clone();
         }
 
         if extended.main_project_member.is_some() {

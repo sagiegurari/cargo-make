@@ -5,7 +5,7 @@
 
 use crate::runner;
 use crate::scriptengine::duck_script::sdk;
-use crate::types::{FlowInfo, Step};
+use crate::types::{FlowInfo, FlowState, Step};
 use duckscript::types::command::{Command, CommandResult, Commands};
 use duckscript::types::instruction::Instruction;
 use duckscript::types::runtime::StateValue;
@@ -43,8 +43,13 @@ impl Command for CommandImpl {
             sdk::run_in_flow_context(state, &|flow_info: &FlowInfo| -> CommandResult {
                 match flow_info.config.tasks.get(&arguments[0]) {
                     Some(task) => {
+                        // we currently do not support sharing same state
+                        // as main flow invocation
+                        let mut flow_state = FlowState::new();
+
                         runner::run_task(
                             flow_info,
+                            &mut flow_state,
                             &Step {
                                 name: arguments[0].clone(),
                                 config: task.clone(),
