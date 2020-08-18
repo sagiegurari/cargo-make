@@ -950,7 +950,7 @@ The workspace level makefile **env** section must contain the following environm
 
 ```toml
 [env]
-CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 ```
 
 This allows you to maintaining a single makefile for the entire workspace but having access to those custom tasks in every member crate.
@@ -1450,7 +1450,7 @@ Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
+condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
 ```
 
 To setup a custom failure message, use the **fail_message** inside the condition object, for example:
@@ -1499,7 +1499,7 @@ For example, if you have a coverage flow that should only be invoked on linux in
 ```toml
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
-condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = "true", "CARGO_MAKE_RUN_CODECOV" = "true" } }
+condition = { platforms = ["linux"], env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true } }
 run_task = "codecov-flow"
 
 [tasks.codecov-flow]
@@ -2026,10 +2026,10 @@ COMPOSITE = "${TEST1} ${TEST2}"
 
 # profile based environment override
 [env.development]
-DEV = "TRUE"
+DEV = true
 
 [env.production]
-PROD = "TRUE"
+PROD = true
 ```
 
 Example:
@@ -2042,12 +2042,12 @@ COMMON = "COMMON"
 PROFILE_NAME = "${CARGO_MAKE_PROFILE}"
 
 [env.development]
-IS_DEV = "TRUE"
-IS_PROD = "FALSE"
+IS_DEV = true
+IS_PROD = false
 
 [env.production]
-IS_DEV = "FALSE"
-IS_PROD = "TRUE"
+IS_DEV = false
+IS_PROD = true
 
 [tasks.echo]
 script = [
@@ -2599,7 +2599,7 @@ You can see full yaml file at: [ci.yml](https://github.com/sagiegurari/ci_info/b
 If you want to run code coverage and upload it to codecov, also define the following environment variable:
 
 ```toml
-CARGO_MAKE_RUN_CODECOV="true"
+CARGO_MAKE_RUN_CODECOV=true
 ```
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
