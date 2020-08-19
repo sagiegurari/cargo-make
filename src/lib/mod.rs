@@ -6,6 +6,7 @@
     array_into_iter,
     asm_sub_register,
     bindings_with_variant_name,
+    broken_intra_doc_links,
     cenum_impl_drop_cast,
     clashing_extern_declarations,
     coherence_leak_check,
@@ -26,7 +27,7 @@
     incomplete_include,
     indirect_structural_match,
     inline_no_sanitize,
-    invalid_codeblock_attribute,
+    invalid_codeblock_attributes,
     invalid_type_param_default,
     invalid_value,
     irrefutable_let_patterns,
@@ -37,7 +38,6 @@
     missing_copy_implementations,
     missing_crate_level_docs,
     missing_docs,
-    missing_fragment_specifier,
     mixed_script_confusables,
     mutable_borrow_reservation_conflict,
     mutable_transmutes,
@@ -98,15 +98,13 @@
     unused_qualifications,
     unused_unsafe,
     unused_variables,
-    where_clauses_object_safety,
-    while_true
+    where_clauses_object_safety
 )]
 #![warn(macro_use_extern_crate, unknown_lints)]
 #![allow(
     bare_trait_objects,
     box_pointers,
     elided_lifetimes_in_paths,
-    intra_doc_link_resolution_failure,
     missing_doc_code_examples,
     missing_debug_implementations,
     single_use_lifetimes,
