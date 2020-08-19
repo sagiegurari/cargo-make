@@ -5,6 +5,7 @@
 * Fix watch invocation in case makefile file path contains spaces #445
 * Clear RUST_RECURSION_COUNT at start of flow #447
 * Fix do-copy-apidocs issue with triple folder #444 (thanks @haraldh)
+* Fix workspace detection for sub flows
 * Add task time summary via new cli flag **--time-summary** or config **time_summary=true** #446
 * Upgrade duckscript SDK to 0.6.6
 
