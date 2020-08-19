@@ -38,7 +38,7 @@ pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
                         let mut shebang_line = first_line.replace("#!", "");
                         shebang_line = shebang_line.trim().to_string();
 
-                        if shebang_line.len() > 0 {
+                        if !shebang_line.is_empty() {
                             let mut values = shebang_line.split_whitespace();
                             let runner = match values.next() {
                                 Some(value) => Some(value.trim().to_string()),
@@ -50,7 +50,7 @@ pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
                                 argument_values.push(arg.trim().to_string());
                             }
 
-                            let arguments = if argument_values.len() > 0 {
+                            let arguments = if !argument_values.is_empty() {
                                 Some(argument_values)
                             } else {
                                 None

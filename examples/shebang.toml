@@ -2,6 +2,14 @@
 [tasks.shebang-sh]
 script = [
 '''
+#!/bin/bash
+echo hello
+'''
+]
+
+[tasks.shebang-sh-arg]
+script = [
+'''
 #!/usr/bin/env bash
 echo hello
 '''

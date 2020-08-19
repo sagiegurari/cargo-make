@@ -115,14 +115,16 @@ pub(crate) fn get_engine_type(
             let script_text = get_script_text(&script);
 
             let shebang = shebang_script::get_shebang(&script_text);
-
             match shebang.runner {
                 Some(script_runner) => {
                     if shebang.arguments.is_none() {
                         let engine_type = get_internal_runner(&script_runner);
 
                         match engine_type {
-                            EngineType::Unsupported => EngineType::Shebang,
+                            EngineType::Unsupported => {
+                                debug!("Shebang line does not point to an internal engine, using normal shebang script runner.");
+                                EngineType::Shebang
+                            }
                             _ => engine_type,
                         }
                     } else {
