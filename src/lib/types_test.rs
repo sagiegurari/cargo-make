@@ -2921,6 +2921,7 @@ fn config_section_new() {
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
     assert!(config.default_to_workspace.is_none());
+    assert!(config.reduce_output.is_none());
     assert!(config.time_summary.is_none());
     assert!(config.main_project_member.is_none());
     assert!(config.load_script.is_none());
@@ -2945,6 +2946,7 @@ fn config_section_extend_all_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_script = Some(vec!["base_info".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
@@ -2962,6 +2964,7 @@ fn config_section_extend_all_values() {
     extended.additional_profiles = Some(vec!["e1".to_string(), "e2".to_string()]);
     extended.min_version = Some("2.0.0".to_string());
     extended.default_to_workspace = Some(false);
+    extended.reduce_output = Some(false);
     extended.time_summary = Some(false);
     extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
     extended.linux_load_script = Some(vec!["extended_info".to_string()]);
@@ -2983,6 +2986,7 @@ fn config_section_extend_all_values() {
     );
     assert_eq!(base.min_version.unwrap(), "2.0.0".to_string());
     assert!(!base.default_to_workspace.unwrap());
+    assert!(!base.reduce_output.unwrap());
     assert!(!base.time_summary.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 1);
@@ -3006,6 +3010,7 @@ fn config_section_extend_no_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
@@ -3027,6 +3032,7 @@ fn config_section_extend_no_values() {
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert!(base.default_to_workspace.unwrap());
+    assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);
@@ -3050,6 +3056,7 @@ fn config_section_extend_some_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
     base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
@@ -3074,6 +3081,7 @@ fn config_section_extend_some_values() {
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert!(base.default_to_workspace.unwrap());
+    assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert_eq!(base.load_script.unwrap().len(), 2);
     assert_eq!(base.linux_load_script.unwrap().len(), 2);

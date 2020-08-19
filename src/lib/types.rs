@@ -1680,6 +1680,8 @@ pub struct ConfigSection {
     pub min_version: Option<String>,
     /// The task.workspace default value
     pub default_to_workspace: Option<bool>,
+    /// True to reduce console output for non CI execution
+    pub reduce_output: Option<bool>,
     /// True to print time summary at the end of the flow
     pub time_summary: Option<bool>,
     /// The project information member (used by workspaces)
@@ -1765,6 +1767,10 @@ impl ConfigSection {
 
         if extended.default_to_workspace.is_some() {
             self.default_to_workspace = extended.default_to_workspace.clone();
+        }
+
+        if extended.reduce_output.is_some() {
+            self.reduce_output = extended.reduce_output.clone();
         }
 
         if extended.time_summary.is_some() {

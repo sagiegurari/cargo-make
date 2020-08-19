@@ -8,6 +8,7 @@
 mod logger_test;
 
 use crate::recursion_level;
+use crate::types::FlowInfo;
 use colored::*;
 use envmnt;
 use fern;
@@ -100,6 +101,13 @@ fn get_formatted_log_level(level: &Level, use_color: bool) -> ColoredString {
         fmt_value.bold()
     } else {
         level_name.normal()
+    }
+}
+
+pub(crate) fn should_reduce_output(flow_info: &FlowInfo) -> bool {
+    match flow_info.config.config.reduce_output {
+        Some(value) => value,
+        None => !envmnt::is("CARGO_MAKE_CI"),
     }
 }
 

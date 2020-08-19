@@ -250,7 +250,11 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
         };
 
         if validate_condition(&flow_info, &step) {
-            info!("Running Task: {}", &step.name);
+            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+                debug!("Running Task: {}", &step.name);
+            } else {
+                info!("Running Task: {}", &step.name);
+            }
 
             if !step.config.is_valid() {
                 error!(

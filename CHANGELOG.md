@@ -7,6 +7,7 @@
 * Fix do-copy-apidocs issue with triple folder #444 (thanks @haraldh)
 * Fix workspace detection for sub flows
 * Add task time summary via new cli flag **--time-summary** or config **time_summary=true** #446
+* Reduce console output for non CI environment (can be disabled via new reduce_output config attribute)
 * Upgrade duckscript SDK to 0.6.6
 
 ### v0.32.1 (2020-07-31)
