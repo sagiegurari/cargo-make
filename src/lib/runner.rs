@@ -343,7 +343,12 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
                 },
                 None => "".to_string(),
             };
-            info!("Skipping Task: {} {}", &step.name, &fail_message);
+
+            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+                debug!("Skipping Task: {} {}", &step.name, &fail_message);
+            } else {
+                info!("Skipping Task: {} {}", &step.name, &fail_message);
+            }
         }
     } else {
         debug!("Ignoring Empty Task: {}", &step.name);
