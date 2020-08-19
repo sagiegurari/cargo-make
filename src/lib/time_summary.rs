@@ -5,6 +5,7 @@
 
 use crate::types::{CliArgs, Config};
 use envmnt;
+use std::cmp::Ordering;
 use std::time::SystemTime;
 
 pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time: SystemTime) {
@@ -16,9 +17,13 @@ pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time
 
 pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
     if envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY") {
+        let mut time_summary_sorted = time_summary.clone();
+        time_summary_sorted
+            .sort_by(|entry1, entry2| entry2.1.partial_cmp(&entry1.1).unwrap_or(Ordering::Equal));
+
         let mut total_time = 0;
         let mut max_name_size = 0;
-        for entry in time_summary {
+        for entry in &time_summary_sorted {
             total_time = total_time + entry.1;
             let name_size = entry.0.len();
             if max_name_size < name_size {
@@ -27,7 +32,7 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
         }
 
         info!("================Time Summary================");
-        for entry in time_summary {
+        for entry in &time_summary_sorted {
             let percentage = (entry.1 as f64 / total_time as f64) * 100.0;
             let seconds = entry.1 as f64 / 1000.0;
             let name_size = entry.0.len();
