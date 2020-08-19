@@ -363,7 +363,19 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config.env = Some(env_map);
 
     let make_args = task_config.args.unwrap();
-    let make_command = &make_args.join(" ");
+    let mut make_command = String::new();
+    for make_arg in make_args {
+        if make_arg.contains(" ") {
+            make_command.push_str("\"");
+            make_command.push_str(&make_arg);
+            make_command.push_str("\"");
+        } else {
+            make_command.push_str(&make_arg);
+        }
+
+        make_command.push(' ');
+    }
+    make_command = make_command.trim().to_string();
 
     let mut watch_args = vec!["watch".to_string(), "-q".to_string()];
 
@@ -454,14 +466,11 @@ fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool)
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
         Ok(makefile_path) => {
             if makefile_path.len() > 0 {
-                let mut makefile_arg = "\"--makefile=".to_string();
-                makefile_arg.push_str(&makefile_path);
-                makefile_arg.push('"');
-
-                args.push(makefile_arg.to_string());
+                args.push("--makefile".to_string());
+                args.push(makefile_path);
             }
         }
-        _ => {}
+        _ => (),
     };
 
     args.push(task.to_string());
