@@ -495,7 +495,7 @@ fn is_workspace_flow_true_default() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -523,7 +523,7 @@ fn is_workspace_flow_false_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -551,7 +551,7 @@ fn is_workspace_flow_true_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -577,9 +577,35 @@ fn is_workspace_flow_true_in_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_true_in_task_and_sub_flow() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let mut task = Task::new();
+    task.workspace = Some(true);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+
+    assert!(!workspace_flow);
 }
 
 #[test]
@@ -599,7 +625,7 @@ fn is_workspace_flow_task_not_defined() {
         tasks: IndexMap::new(),
     };
 
-    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -620,7 +646,7 @@ fn is_workspace_flow_no_workspace() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -646,7 +672,7 @@ fn is_workspace_flow_disabled_via_cli() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -672,7 +698,7 @@ fn is_workspace_flow_disabled_via_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
