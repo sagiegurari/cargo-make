@@ -26,7 +26,7 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
             }
         }
 
-        info!("=====Time Summary=====");
+        info!("================Time Summary================");
         for entry in time_summary {
             let percentage = (entry.1 as f64 / total_time as f64) * 100.0;
             let seconds = entry.1 as f64 / 1000.0;
@@ -38,6 +38,7 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
                 entry.0, gap, percentage, seconds
             );
         }
+        info!("============================================");
     }
 }
 

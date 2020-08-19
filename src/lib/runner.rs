@@ -318,7 +318,11 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
                 });
 
                 match step.config.run_task {
-                    Some(ref sub_task) => run_sub_task(&flow_info, flow_state, sub_task),
+                    Some(ref sub_task) => {
+                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
+
+                        run_sub_task(&flow_info, flow_state, sub_task);
+                    }
                     None => {
                         do_in_task_working_directory(&step, || {
                             // run script
@@ -330,11 +334,11 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
                                 command::run(&updated_step);
                             };
                         });
+
+                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
                     }
                 };
             }
-
-            time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
         } else {
             let fail_message = match step.config.condition {
                 Some(ref condition) => match condition.fail_message {
