@@ -206,6 +206,9 @@ fn run_for_args(
         || envmnt::is("CARGO_MAKE_DISABLE_COLOR")
         || default_disable_color;
 
+    cli_args.print_time_summary =
+        cmd_matches.is_present("time-summary") || envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY");
+
     cli_args.env_file = match cmd_matches.value_of("envfile") {
         Some(value) => Some(value.to_string()),
         None => None,
@@ -366,6 +369,11 @@ fn create_cli<'a, 'b>(
             Arg::with_name("no-color")
                 .long("--no-color")
                 .help("Disables colorful output"),
+        )
+        .arg(
+            Arg::with_name("time-summary")
+                .long("--time-summary")
+                .help("Print task level time summary at end of flow"),
         )
         .arg(
             Arg::with_name("experimental")

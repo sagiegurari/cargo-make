@@ -56,18 +56,16 @@ fn create_proxy_task_with_makefile() {
     let mut profile_arg = "--profile=".to_string();
     profile_arg.push_str(&profile::get());
 
-    let mut makefile_arg = "--makefile=".to_string();
-    makefile_arg.push_str(&makefile.clone());
-
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 7);
+    assert_eq!(args.len(), 8);
     assert_eq!(args[0], "make".to_string());
     assert_eq!(args[1], "--disable-check-for-updates".to_string());
     assert_eq!(args[2], "--no-on-error".to_string());
     assert_eq!(args[3], log_level_arg.to_string());
     assert_eq!(args[4], profile_arg.to_string());
-    assert_eq!(args[5], makefile_arg.to_string());
-    assert_eq!(args[6], "some_task".to_string());
+    assert_eq!(args[5], "--makefile".to_string());
+    assert_eq!(args[6], makefile);
+    assert_eq!(args[7], "some_task".to_string());
 }
 
 #[test]
@@ -132,7 +130,7 @@ fn run_flow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, false);
+    run_flow(&flow_info, &mut FlowState::new(), false);
 }
 
 #[test]
@@ -167,7 +165,7 @@ fn run_flow_private_sub_task() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, true);
+    run_flow(&flow_info, &mut FlowState::new(), true);
 }
 
 #[test]
@@ -202,7 +200,7 @@ fn run_flow_allow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, false);
+    run_flow(&flow_info, &mut FlowState::new(), false);
 }
 
 #[test]
@@ -239,7 +237,7 @@ fn run_task_bad_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -277,7 +275,7 @@ fn run_task_script_with_args_error() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -314,7 +312,7 @@ fn run_task_script_with_args_valid() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -351,7 +349,7 @@ fn run_task_command() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -389,7 +387,7 @@ fn run_task_bad_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -425,7 +423,7 @@ fn run_task_no_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -470,7 +468,7 @@ fn run_task_bad_run_task_valid_command() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -512,7 +510,7 @@ fn run_task_valid_run_task() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -550,7 +548,7 @@ fn run_task_invalid_task() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -597,7 +595,7 @@ fn run_task_set_env_file() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_ENV_FILE_TEST1"), "1");
 
@@ -649,7 +647,7 @@ fn run_task_set_env() {
 
     envmnt::set("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 
     assert_eq!(envmnt::get_or_panic("TEST_RUN_TASK_SET_ENV"), "VALID");
 }
@@ -689,7 +687,7 @@ fn run_task_cwd_no_such_dir() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -726,7 +724,7 @@ fn run_task_cwd_dir_exists() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -763,7 +761,7 @@ fn run_task_cwd_env_expansion() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -801,7 +799,7 @@ fn run_task_deprecated_message() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -839,7 +837,7 @@ fn run_task_deprecated_flag() {
         config: task,
     };
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, &mut FlowState::new(), &step);
 }
 
 #[test]
@@ -967,9 +965,44 @@ fn create_watch_task_with_makefile() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 4);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "-x".to_string());
+    assert_eq!(args[3], make_command_line.to_string());
+}
+
+#[test]
+#[ignore]
+#[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_with_spaces_in_path() {
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    let test_makefile = "/path with spaces/mymakefile.toml";
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &test_makefile);
+    let task = create_watch_task("some_task", None);
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "true"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str(
+        " --allow-private --skip-init-end-tasks --makefile \"/path with spaces/mymakefile.toml\" some_task"
+    );
 
     let args = task.args.unwrap();
     assert_eq!(args.len(), 4);
@@ -1000,7 +1033,7 @@ fn create_watch_task_with_makefile_and_bool_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -1045,7 +1078,7 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -1092,7 +1125,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -1145,7 +1178,7 @@ fn create_watch_task_with_makefile_and_false_object_options() {
     make_command_line.push_str(&log_level);
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
-    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile=");
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
     make_command_line.push_str(&makefile.clone());
     make_command_line.push_str(" some_task");
 
@@ -1209,7 +1242,7 @@ fn run_sub_task_and_report_for_name() {
 
     let sub_task = RunTaskInfo::Name("test".to_string());
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1249,7 +1282,7 @@ fn run_sub_task_and_report_for_name_not_found() {
 
     let sub_task = RunTaskInfo::Name("test2".to_string());
 
-    run_sub_task_and_report(&flow_info, &sub_task);
+    run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 }
 
 #[test]
@@ -1290,7 +1323,7 @@ fn run_sub_task_and_report_for_details_single() {
         parallel: None,
     });
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1334,7 +1367,7 @@ fn run_sub_task_and_report_for_details_multiple() {
         parallel: None,
     });
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1373,7 +1406,7 @@ fn run_sub_task_and_report_routing_empty() {
 
     let sub_task = RunTaskInfo::Routing(vec![]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(!output);
 }
@@ -1418,7 +1451,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         condition_script: None,
     }]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(output);
 }
@@ -1477,7 +1510,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         condition_script: None,
     }]);
 
-    let output = run_sub_task_and_report(&flow_info, &sub_task);
+    let output = run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 
     assert!(!output);
 }
@@ -1523,7 +1556,7 @@ fn run_sub_task_and_report_routing_not_found() {
         condition_script: None,
     }]);
 
-    run_sub_task_and_report(&flow_info, &sub_task);
+    run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
 }
 
 #[test]
@@ -2167,11 +2200,9 @@ fn create_fork_step_valid() {
     profile_arg.push_str(&profile::get());
 
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
-    let mut makefile_arg = "--makefile=".to_string();
-    makefile_arg.push_str(&makefile.clone());
 
     let args = task.args.unwrap();
-    assert_eq!(args.len(), 9);
+    assert_eq!(args.len(), 10);
     assert_eq!(args[0], "make".to_string());
     assert_eq!(args[1], "--disable-check-for-updates".to_string());
     assert_eq!(args[2], "--no-on-error".to_string());
@@ -2179,6 +2210,7 @@ fn create_fork_step_valid() {
     assert_eq!(args[4], profile_arg.to_string());
     assert_eq!(args[5], "--allow-private".to_string());
     assert_eq!(args[6], "--skip-init-end-tasks".to_string());
-    assert_eq!(args[7], makefile_arg.to_string());
-    assert_eq!(args[8], "test".to_string());
+    assert_eq!(args[7], "--makefile".to_string());
+    assert_eq!(args[8], makefile);
+    assert_eq!(args[9], "test".to_string());
 }

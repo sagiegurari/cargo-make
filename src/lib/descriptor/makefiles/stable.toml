@@ -11,6 +11,7 @@ additional_profiles = []
 
 [env]
 RUST_BACKTRACE = "full"
+RUST_RECURSION_COUNT = { unset = true }
 CARGO_MAKE_KCOV_VERSION = 38
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"

@@ -288,9 +288,11 @@ fn is_workspace_flow(
     task: &str,
     disable_workspace: bool,
     crate_info: &CrateInfo,
+    sub_flow: bool,
 ) -> bool {
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
     if disable_workspace
+        || sub_flow
         || (crate_info.workspace.is_none() && !envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION"))
         || envmnt::exists("CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER")
     {
@@ -385,7 +387,8 @@ pub(crate) fn create(
     // load crate info and look for workspace info
     let crate_info = environment::crateinfo::load();
 
-    let workspace_flow = is_workspace_flow(&config, &task, disable_workspace, &crate_info);
+    let workspace_flow =
+        is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
 
     if workspace_flow {
         let workspace_task = create_workspace_task(crate_info, task);

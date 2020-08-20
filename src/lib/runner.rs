@@ -21,9 +21,10 @@ use crate::installer;
 use crate::logger;
 use crate::profile;
 use crate::scriptengine;
+use crate::time_summary;
 use crate::types::{
-    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, RunTaskInfo,
-    RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
+    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
+    RunTaskInfo, RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use std::env;
@@ -114,14 +115,18 @@ fn create_fork_step(flow_info: &FlowInfo) -> Step {
     }
 }
 
-fn run_forked_task(flow_info: &FlowInfo) {
+fn run_forked_task(flow_info: &FlowInfo, flow_state: &mut FlowState) {
     // run task as a sub process
     let step = create_fork_step(&flow_info);
-    run_task(&flow_info, &step);
+    run_task(&flow_info, flow_state, &step);
 }
 
 /// runs a sub task and returns true/false based if a sub task was actually invoked
-fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool {
+fn run_sub_task_and_report(
+    flow_info: &FlowInfo,
+    flow_state: &mut FlowState,
+    sub_task: &RunTaskInfo,
+) -> bool {
     let (task_names, fork, parallel) = match sub_task {
         RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false, false),
         RunTaskInfo::Details(ref details) => {
@@ -145,24 +150,27 @@ fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool
         let mut threads = vec![];
 
         for name in names {
-            let task_run_fn = |flow_info: &FlowInfo, fork: bool| {
-                let mut sub_flow_info = flow_info.clone();
-                sub_flow_info.task = name;
+            let task_run_fn =
+                move |flow_info: &FlowInfo, flow_state: &mut FlowState, fork: bool| {
+                    let mut sub_flow_info = flow_info.clone();
+                    sub_flow_info.task = name;
 
-                if fork {
-                    run_forked_task(&sub_flow_info);
-                } else {
-                    run_flow(&sub_flow_info, true);
-                }
-            };
+                    if fork {
+                        run_forked_task(&sub_flow_info, flow_state);
+                    } else {
+                        run_flow(&sub_flow_info, flow_state, true);
+                    }
+                };
 
             if parallel {
                 let run_flow_info = flow_info.clone();
+                // we do not support merging changes back to parent
+                let mut cloned_flow_state = flow_state.clone();
                 threads.push(thread::spawn(move || {
-                    task_run_fn(&run_flow_info, fork);
+                    task_run_fn(&run_flow_info, &mut cloned_flow_state, fork);
                 }));
             } else {
-                task_run_fn(&flow_info, fork);
+                task_run_fn(&flow_info, flow_state, fork);
             }
         }
 
@@ -178,8 +186,8 @@ fn run_sub_task_and_report(flow_info: &FlowInfo, sub_task: &RunTaskInfo) -> bool
     }
 }
 
-fn run_sub_task(flow_info: &FlowInfo, sub_task: &RunTaskInfo) {
-    run_sub_task_and_report(&flow_info, &sub_task);
+fn run_sub_task(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_task: &RunTaskInfo) {
+    run_sub_task_and_report(&flow_info, flow_state, &sub_task);
 }
 
 fn create_watch_task_name(task: &str) -> String {
@@ -201,10 +209,15 @@ fn create_watch_step(task: &str, options: Option<TaskWatchOptions>) -> Step {
     }
 }
 
-fn watch_task(flow_info: &FlowInfo, task: &str, options: Option<TaskWatchOptions>) {
+fn watch_task(
+    flow_info: &FlowInfo,
+    flow_state: &mut FlowState,
+    task: &str,
+    options: Option<TaskWatchOptions>,
+) {
     let step = create_watch_step(&task, options);
 
-    run_task(&flow_info, &step);
+    run_task(&flow_info, flow_state, &step);
 }
 
 fn is_watch_enabled() -> bool {
@@ -227,7 +240,9 @@ fn should_watch(task: &Task) -> bool {
     }
 }
 
-pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
+pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &Step) {
+    let start_time = SystemTime::now();
+
     if step.config.is_actionable() {
         match step.config.env {
             Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),
@@ -235,7 +250,11 @@ pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
         };
 
         if validate_condition(&flow_info, &step) {
-            info!("Running Task: {}", &step.name);
+            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+                debug!("Running Task: {}", &step.name);
+            } else {
+                info!("Running Task: {}", &step.name);
+            }
 
             if !step.config.is_valid() {
                 error!(
@@ -287,14 +306,23 @@ pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
             let watch = should_watch(&step.config);
 
             if watch {
-                watch_task(&flow_info, &step.name, step.config.watch.clone());
+                watch_task(
+                    &flow_info,
+                    flow_state,
+                    &step.name,
+                    step.config.watch.clone(),
+                );
             } else {
                 do_in_task_working_directory(&step, || {
                     installer::install(&updated_step.config, flow_info);
                 });
 
                 match step.config.run_task {
-                    Some(ref sub_task) => run_sub_task(&flow_info, sub_task),
+                    Some(ref sub_task) => {
+                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
+
+                        run_sub_task(&flow_info, flow_state, sub_task);
+                    }
                     None => {
                         do_in_task_working_directory(&step, || {
                             // run script
@@ -306,6 +334,8 @@ pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
                                 command::run(&updated_step);
                             };
                         });
+
+                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
                     }
                 };
             }
@@ -317,16 +347,21 @@ pub(crate) fn run_task(flow_info: &FlowInfo, step: &Step) {
                 },
                 None => "".to_string(),
             };
-            info!("Skipping Task: {} {}", &step.name, &fail_message);
+
+            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+                debug!("Skipping Task: {} {}", &step.name, &fail_message);
+            } else {
+                info!("Skipping Task: {} {}", &step.name, &fail_message);
+            }
         }
     } else {
         debug!("Ignoring Empty Task: {}", &step.name);
     }
 }
 
-fn run_task_flow(flow_info: &FlowInfo, execution_plan: &ExecutionPlan) {
+fn run_task_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, execution_plan: &ExecutionPlan) {
     for step in &execution_plan.steps {
-        run_task(&flow_info, &step);
+        run_task(&flow_info, flow_state, &step);
     }
 }
 
@@ -341,7 +376,19 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config.env = Some(env_map);
 
     let make_args = task_config.args.unwrap();
-    let make_command = &make_args.join(" ");
+    let mut make_command = String::new();
+    for make_arg in make_args {
+        if make_arg.contains(" ") {
+            make_command.push_str("\"");
+            make_command.push_str(&make_arg);
+            make_command.push_str("\"");
+        } else {
+            make_command.push_str(&make_arg);
+        }
+
+        make_command.push(' ');
+    }
+    make_command = make_command.trim().to_string();
 
     let mut watch_args = vec!["watch".to_string(), "-q".to_string()];
 
@@ -432,13 +479,11 @@ fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool)
     match env::var("CARGO_MAKE_MAKEFILE_PATH") {
         Ok(makefile_path) => {
             if makefile_path.len() > 0 {
-                let mut makefile_arg = "--makefile=".to_string();
-                makefile_arg.push_str(&makefile_path);
-
-                args.push(makefile_arg.to_string());
+                args.push("--makefile".to_string());
+                args.push(makefile_path);
             }
         }
-        _ => {}
+        _ => (),
     };
 
     args.push(task.to_string());
@@ -450,7 +495,7 @@ fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool)
     proxy_task.get_normalized_task()
 }
 
-fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
+fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flow: bool) {
     let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = create_execution_plan(
@@ -462,10 +507,10 @@ fn run_flow(flow_info: &FlowInfo, sub_flow: bool) {
     );
     debug!("Created execution plan: {:#?}", &execution_plan);
 
-    run_task_flow(&flow_info, &execution_plan);
+    run_task_flow(&flow_info, flow_state, &execution_plan);
 }
 
-fn run_protected_flow(flow_info: &FlowInfo) {
+fn run_protected_flow(flow_info: &FlowInfo, flow_state: &mut FlowState) {
     let proxy_task = create_proxy_task(
         &flow_info.task,
         flow_info.allow_private,
@@ -481,7 +526,7 @@ fn run_protected_flow(flow_info: &FlowInfo) {
                 error_flow_info.disable_on_error = true;
                 error_flow_info.task = on_error_task.clone();
 
-                run_flow(&error_flow_info, false);
+                run_flow(&error_flow_info, flow_state, false);
             }
             _ => (),
         };
@@ -498,6 +543,8 @@ fn run_protected_flow(flow_info: &FlowInfo) {
 pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliArgs) {
     let start_time = SystemTime::now();
 
+    time_summary::init(&config, &cli_args);
+
     let flow_info = FlowInfo {
         config,
         task: task.to_string(),
@@ -508,11 +555,12 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         skip_init_end_tasks: cli_args.skip_init_end_tasks,
         cli_arguments: cli_args.arguments.clone(),
     };
+    let mut flow_state = FlowState::new();
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(&flow_info, false);
+        run_flow(&flow_info, &mut flow_state, false);
     } else {
-        run_protected_flow(&flow_info);
+        run_protected_flow(&flow_info, &mut flow_state);
     }
 
     let time_string = match start_time.elapsed() {
@@ -525,6 +573,8 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         }
         _ => "".to_string(),
     };
+
+    time_summary::print(&flow_state.time_summary);
 
     info!("Build Done {}.", &time_string);
 }

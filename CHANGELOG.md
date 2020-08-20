@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### v0.32.2
+
+* Fix watch invocation in case makefile file path contains spaces #445
+* Clear RUST_RECURSION_COUNT at start of flow #447
+* Fix do-copy-apidocs issue with triple folder #444 (thanks @haraldh)
+* Fix workspace detection for sub flows
+* Add task time summary via new cli flag **--time-summary** or config **time_summary=true** #446
+* Reduce console output for non CI environment (can be disabled via new reduce_output config attribute)
+* Workaround critical bug in rust nightly which breaks shebang based script invocations
+* Upgrade duckscript SDK to 0.6.6
+
 ### v0.32.1 (2020-07-31)
 
 * Support numeric environment variables

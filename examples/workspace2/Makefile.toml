@@ -5,6 +5,9 @@ CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 [tasks.echo]
 script = ["echo hello from workspace"]
 
+[tasks.echo-member]
+script = ["echo hello from member"]
+
 [tasks.echo_top_and_members]
 workspace = false
 dependencies = [ "echo" ]
@@ -29,4 +32,12 @@ script = ["echo root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WOR
 workspace = false
 dependencies = ["workspace_root"]
 run_task = { name = "workspace_root", fork = true }
+
+[tasks.echo_run_task]
+run_task = "echo"
+
+[tasks.composite_with_run_task]
+workspace = false
+dependencies = ["echo_run_task"]
+run_task = { name = "echo-member", fork = true }
 

@@ -733,17 +733,37 @@ run_task = "do-copy-apidocs"
 description = "Copies the generated documentation to the docs/api directory."
 category = "Documentation"
 private = true
-script_runner = "@shell"
+script_runner = "@duckscript"
 script = [
 '''
-SOURCE_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/target/doc
-TARGET_DIRECTORY=${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
+    src_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}
+else
+    src_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/${CARGO_MAKE_DOCS_SUB_FOLDER}
+end
 
-echo Source Directory: ${SOURCE_DIRECTORY}
-echo Target Directory: ${TARGET_DIRECTORY}
+if is_dir ${src_dir}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
+    src_dir= set ${src_dir}/target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/doc
+else
+    src_dir= set ${src_dir}/target/doc
+end
 
-mkdir -p ${TARGET_DIRECTORY}
-mv ${SOURCE_DIRECTORY}/* ${TARGET_DIRECTORY}
+if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
+    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api
+else
+    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+end
+
+echo Source Directory: ${src_dir}
+echo Target Directory: ${dest_dir}
+
+rm -r ${dest_dir}
+mkdir ${dest_dir}
+
+handle = glob_array ${src_dir}/*
+for path in ${handle}
+    mv ${path} ${dest_dir}
+end
 '''
 ]
 

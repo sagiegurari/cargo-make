@@ -406,7 +406,7 @@ fn load_external_descriptor(
         error!("Descriptor file: {:#?} not found.", &file_path);
         panic!("Descriptor file: {:#?} not found.", &file_path);
     } else {
-        info!("External file not found or is not a file, skipping.");
+        debug!("External file not found or is not a file, skipping.");
 
         Ok(ExternalConfig::new())
     }
