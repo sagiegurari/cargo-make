@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/functions/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cli/index.html'><div class='logo-container'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/functions/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cli/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -143,34 +144,34 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">Step</span>, <span class="ident">Task</span>};
 
-<span class="kw">fn</span> <span class="ident">run_function</span>(<span class="ident">function_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">function_args</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">run_function</span>(<span class="ident">function_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">function_args</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="macro">debug</span><span class="macro">!</span>(
         <span class="string">&quot;Running function: {} arguments: {:#?}&quot;</span>,
         <span class="kw-2">&amp;</span><span class="ident">function_name</span>, <span class="kw-2">&amp;</span><span class="ident">function_args</span>
     );
 
     <span class="kw">match</span> <span class="ident">function_name</span> {
-        <span class="string">&quot;split&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">split_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;remove-empty&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">remove_empty_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;trim&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">trim_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;getat&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">getat_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;decode&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">decode_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="string">&quot;split&quot;</span> <span class="op">=&gt;</span> <span class="ident">split_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
+        <span class="string">&quot;remove-empty&quot;</span> <span class="op">=&gt;</span> <span class="ident">remove_empty_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
+        <span class="string">&quot;trim&quot;</span> <span class="op">=&gt;</span> <span class="ident">trim_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
+        <span class="string">&quot;getat&quot;</span> <span class="op">=&gt;</span> <span class="ident">getat_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
+        <span class="string">&quot;decode&quot;</span> <span class="op">=&gt;</span> <span class="ident">decode_func</span>::<span class="ident">invoke</span>(<span class="ident">function_args</span>),
+        <span class="kw">_</span> <span class="op">=&gt;</span> {
             <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">function_name</span>);
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">function_name</span>);
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_name</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_function_name</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">function_string</span>.<span class="ident">find</span>(<span class="string">&#39;(&#39;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">function_string</span>[<span class="number">0</span>..<span class="ident">index</span>].<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">function_string</span>[<span class="number">0</span>..<span class="ident">index</span>].<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_argument</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">str_value</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+<span class="kw">fn</span> <span class="ident">get_function_argument</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">let</span> <span class="ident">str_value</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
         <span class="ident">value</span>
     } <span class="kw">else</span> {
         <span class="ident">value</span>.<span class="ident">trim</span>()
@@ -179,8 +180,8 @@
     <span class="ident">str_value</span>.<span class="ident">to_string</span>()
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_arguments</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">function_string</span>.<span class="ident">starts_with</span>(<span class="string">&quot;(&quot;</span>) <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">function_string</span>.<span class="ident">ends_with</span>(<span class="string">&quot;)&quot;</span>) {
+<span class="kw">fn</span> <span class="ident">get_function_arguments</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">if</span> <span class="ident">function_string</span>.<span class="ident">starts_with</span>(<span class="string">&quot;(&quot;</span>) <span class="op">&amp;&amp;</span> <span class="ident">function_string</span>.<span class="ident">ends_with</span>(<span class="string">&quot;)&quot;</span>) {
         <span class="kw">let</span> <span class="ident">args_string</span> <span class="op">=</span> <span class="ident">function_string</span>[<span class="number">1</span>..(<span class="ident">function_string</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>)].<span class="ident">to_string</span>();
 
         <span class="kw">let</span> <span class="ident">arguments</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">args_string</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
@@ -198,7 +199,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">evaluate_and_run</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">evaluate_and_run</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">value_string</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
 
     <span class="kw">if</span> <span class="ident">value_string</span>.<span class="ident">starts_with</span>(<span class="string">&quot;@@&quot;</span>) {
@@ -206,16 +207,16 @@
 
         <span class="kw">let</span> <span class="ident">func_name_option</span> <span class="op">=</span> <span class="ident">get_function_name</span>(<span class="kw-2">&amp;</span><span class="ident">function_string</span>);
         <span class="kw">match</span> <span class="ident">func_name_option</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">function_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">function_name</span>) <span class="op">=&gt;</span> {
                 <span class="ident">function_string</span> <span class="op">=</span> <span class="ident">function_string</span>[<span class="ident">function_name</span>.<span class="ident">len</span>()..].<span class="ident">to_string</span>();
                 <span class="kw">let</span> <span class="ident">func_args_option</span> <span class="op">=</span> <span class="ident">get_function_arguments</span>(<span class="kw-2">&amp;</span><span class="ident">function_string</span>);
 
                 <span class="kw">match</span> <span class="ident">func_args_option</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">function_args</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">run_function</span>(<span class="kw-2">&amp;</span><span class="ident">function_name</span>, <span class="kw-2">&amp;</span><span class="ident">function_args</span>),
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">value_string</span>],
+                    <span class="prelude-val">Some</span>(<span class="ident">function_args</span>) <span class="op">=&gt;</span> <span class="ident">run_function</span>(<span class="kw-2">&amp;</span><span class="ident">function_name</span>, <span class="kw-2">&amp;</span><span class="ident">function_args</span>),
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">value_string</span>],
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">value_string</span>],
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">value_string</span>],
         }
     } <span class="kw">else</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">value_string</span>]
@@ -224,7 +225,7 @@
 
 <span class="kw">fn</span> <span class="ident">modify_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) {
     <span class="ident">task</span>.<span class="ident">args</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_args</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
             <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">args</span>.<span class="ident">len</span>() {
@@ -237,11 +238,11 @@
 
             <span class="prelude-val">Some</span>(<span class="ident">new_args</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Step</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">Step</span> {
     <span class="comment">//clone data before modify</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">clone</span>();
 

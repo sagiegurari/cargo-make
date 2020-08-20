@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/types.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>types.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1897,6 +1898,35 @@
 <span id="1897">1897</span>
 <span id="1898">1898</span>
 <span id="1899">1899</span>
+<span id="1900">1900</span>
+<span id="1901">1901</span>
+<span id="1902">1902</span>
+<span id="1903">1903</span>
+<span id="1904">1904</span>
+<span id="1905">1905</span>
+<span id="1906">1906</span>
+<span id="1907">1907</span>
+<span id="1908">1908</span>
+<span id="1909">1909</span>
+<span id="1910">1910</span>
+<span id="1911">1911</span>
+<span id="1912">1912</span>
+<span id="1913">1913</span>
+<span id="1914">1914</span>
+<span id="1915">1915</span>
+<span id="1916">1916</span>
+<span id="1917">1917</span>
+<span id="1918">1918</span>
+<span id="1919">1919</span>
+<span id="1920">1920</span>
+<span id="1921">1921</span>
+<span id="1922">1922</span>
+<span id="1923">1923</span>
+<span id="1924">1924</span>
+<span id="1925">1925</span>
+<span id="1926">1926</span>
+<span id="1927">1927</span>
+<span id="1928">1928</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -1915,17 +1945,17 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="doccomment">/// Returns the platform name</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_platform_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_platform_name</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
         <span class="string">&quot;windows&quot;</span>.<span class="ident">to_string</span>()
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>) {
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>) <span class="op">||</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>) {
         <span class="string">&quot;mac&quot;</span>.<span class="ident">to_string</span>()
     } <span class="kw">else</span> {
         <span class="string">&quot;linux&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">namespaced_task</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 
     <span class="kw">if</span> <span class="ident">namespace</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
@@ -1955,7 +1985,7 @@
     <span class="doccomment">/// Current working directory</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Environment variables</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables file</span>
     <span class="kw">pub</span> <span class="ident">env_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Prevent workspace support</span>
@@ -1977,16 +2007,18 @@
     <span class="doccomment">/// Allows access unsupported experimental predefined tasks</span>
     <span class="kw">pub</span> <span class="ident">experimental</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// additional command line arguments</span>
-    <span class="kw">pub</span> <span class="ident">arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Output format</span>
     <span class="kw">pub</span> <span class="ident">output_format</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Output file name</span>
     <span class="kw">pub</span> <span class="ident">output_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Print time summary at end of the flow</span>
+    <span class="kw">pub</span> <span class="ident">print_time_summary</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CliArgs</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CliArgs</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CliArgs</span> {
         <span class="ident">CliArgs</span> {
             <span class="ident">command</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">build_file</span>: <span class="prelude-val">None</span>,
@@ -2009,6 +2041,7 @@
             <span class="ident">arguments</span>: <span class="prelude-val">None</span>,
             <span class="ident">output_format</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">output_file</span>: <span class="prelude-val">None</span>,
+            <span class="ident">print_time_summary</span>: <span class="bool-val">false</span>,
         }
     }
 }
@@ -2025,7 +2058,7 @@
 
 <span class="kw">impl</span> <span class="ident">Cache</span> {
     <span class="doccomment">/// Returns new instance</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cache</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Cache</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
@@ -2050,7 +2083,7 @@
 
 <span class="kw">impl</span> <span class="ident">GlobalConfig</span> {
     <span class="doccomment">/// Returns new instance</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">GlobalConfig</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">GlobalConfig</span> {
         <span class="ident">GlobalConfig</span> {
             <span class="ident">search_project_root</span>: <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
             ..<span class="ident">Default</span>::<span class="ident">default</span>()
@@ -2062,14 +2095,14 @@
 <span class="doccomment">/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// members paths</span>
-    <span class="kw">pub</span> <span class="ident">members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">members</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// exclude paths</span>
-    <span class="kw">pub</span> <span class="ident">exclude</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">exclude</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Workspace</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Workspace</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Workspace</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
@@ -2095,7 +2128,7 @@
 
 <span class="kw">impl</span> <span class="ident">PackageInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PackageInfo</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">PackageInfo</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
@@ -2125,12 +2158,12 @@
     <span class="doccomment">/// workspace info</span>
     <span class="kw">pub</span> <span class="ident">workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Workspace</span><span class="op">&gt;</span>,
     <span class="doccomment">/// crate dependencies</span>
-    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">CrateDependency</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">CrateDependency</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CrateInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CrateInfo</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CrateInfo</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
@@ -2166,7 +2199,21 @@
     <span class="doccomment">/// If true, the init and end tasks are skipped</span>
     <span class="kw">pub</span> <span class="ident">skip_init_end_tasks</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// additional command line arguments</span>
-    <span class="kw">pub</span> <span class="ident">cli_arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">cli_arguments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="doccomment">/// Holds mutable flow state</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FlowState</span> {
+    <span class="doccomment">/// timing info for summary</span>
+    <span class="kw">pub</span> <span class="ident">time_summary</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">u128</span>)<span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">FlowState</span> {
+    <span class="doccomment">/// Creates and returns a new instance.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">FlowState</span> {
+        <span class="ident">Default</span>::<span class="ident">default</span>()
+    }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2186,29 +2233,29 @@
     <span class="doccomment">/// Failure message</span>
     <span class="kw">pub</span> <span class="ident">fail_message</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Profile names (development, ...)</span>
-    <span class="kw">pub</span> <span class="ident">profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Platform names (linux, windows, mac)</span>
-    <span class="kw">pub</span> <span class="ident">platforms</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">platforms</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Channel names (stable, beta, nightly)</span>
-    <span class="kw">pub</span> <span class="ident">channels</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">channels</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables which must be defined</span>
-    <span class="kw">pub</span> <span class="ident">env_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables which must not be defined</span>
-    <span class="kw">pub</span> <span class="ident">env_not_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_not_set</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables and their values</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables which are defined as true</span>
-    <span class="kw">pub</span> <span class="ident">env_true</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_true</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables which are defined as false</span>
-    <span class="kw">pub</span> <span class="ident">env_false</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_false</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Environment variables and the values which they are required to contain</span>
-    <span class="kw">pub</span> <span class="ident">env_contains</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_contains</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Rust version condition</span>
     <span class="kw">pub</span> <span class="ident">rust_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RustVersionCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Files exist</span>
-    <span class="kw">pub</span> <span class="ident">files_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">files_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Files which do not exist</span>
-    <span class="kw">pub</span> <span class="ident">files_not_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">files_not_exist</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2224,7 +2271,7 @@
 
 <span class="kw">impl</span> <span class="ident">EnvFileInfo</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EnvFileInfo</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">EnvFileInfo</span> {
         <span class="ident">EnvFileInfo</span> {
             <span class="ident">path</span>,
             <span class="ident">base_path</span>: <span class="prelude-val">None</span>,
@@ -2316,19 +2363,19 @@
 
 <span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">TestArg</span> {
     <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
+    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">TestArg</span> {
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Target</span> {
+    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Target</span> {
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TestArg</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D</span>::<span class="ident">Error</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D</span>::<span class="ident">Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">D</span>: <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
     {
@@ -2336,11 +2383,11 @@
         <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StringVecVisitor</span> {
             <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> <span class="ident">TestArg</span>;
 
-            <span class="kw">fn</span> <span class="ident">expecting</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+            <span class="kw">fn</span> <span class="ident">expecting</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
                 <span class="ident">formatter</span>.<span class="ident">write_str</span>(<span class="string">&quot;A string or an array of strings&quot;</span>)
             }
 
-            <span class="kw">fn</span> <span class="ident">visit_str</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span>, <span class="ident">E</span><span class="op">&gt;</span>
+            <span class="kw">fn</span> <span class="ident">visit_str</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span>, <span class="ident">E</span><span class="op">&gt;</span>
             <span class="kw">where</span>
                 <span class="ident">E</span>: <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">Error</span>,
             {
@@ -2349,7 +2396,7 @@
                 })
             }
 
-            <span class="kw">fn</span> <span class="ident">visit_seq</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">seq</span>: <span class="ident">A</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span>, <span class="ident">A</span>::<span class="ident">Error</span><span class="op">&gt;</span>
+            <span class="kw">fn</span> <span class="ident">visit_seq</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">seq</span>: <span class="ident">A</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span>, <span class="ident">A</span>::<span class="ident">Error</span><span class="op">&gt;</span>
             <span class="kw">where</span>
                 <span class="ident">A</span>: <span class="ident">serde</span>::<span class="ident">de</span>::<span class="ident">SeqAccess</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
             {
@@ -2375,18 +2422,18 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCargoPluginInfo</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCargoPluginInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">min_version</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCargoPluginInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">min_version</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
             <span class="bool-val">false</span>
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">crate_name</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">crate_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_crate_name</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_crate_name</span>) <span class="op">=&gt;</span> <span class="ident">crate_name</span> <span class="op">==</span> <span class="ident">other_crate_name</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         }
@@ -2409,36 +2456,36 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCrateInfo</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCrateInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">crate_name</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">crate_name</span>
-            <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">binary</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">binary</span>
-            <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">test_arg</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">test_arg</span>
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCrateInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">crate_name</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">crate_name</span>
+            <span class="op">||</span> <span class="self">self</span>.<span class="ident">binary</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">binary</span>
+            <span class="op">||</span> <span class="self">self</span>.<span class="ident">test_arg</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">test_arg</span>
         {
             <span class="bool-val">false</span>
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="kw">if</span> <span class="ident">rustup_component_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_rustup_component_name</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">rustup_component_name</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_rustup_component_name</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="ident">rustup_component_name</span> <span class="op">==</span> <span class="ident">other_rustup_component_name</span> {
                             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">min_version</span> {
-                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span>,
-                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=&gt;</span> <span class="ident">min_version</span> <span class="op">==</span> <span class="ident">other_min_version</span>,
+                                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                                 },
-                                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                                 },
                             }
                         } <span class="kw">else</span> {
                             <span class="bool-val">false</span>
                         }
                     }
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         }
@@ -2457,23 +2504,23 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallRustupComponentInfo</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallRustupComponentInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallRustupComponentInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> <span class="op">!=</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
             <span class="bool-val">false</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">binary</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">binary</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             };
 
             <span class="kw">if</span> <span class="ident">same</span> {
-                <span class="self">self</span>.<span class="ident">test_arg</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">test_arg</span>
+                <span class="self">self</span>.<span class="ident">test_arg</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">test_arg</span>
             } <span class="kw">else</span> {
                 <span class="bool-val">false</span>
             }
@@ -2496,23 +2543,23 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCrate</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCrate</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCrate</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">InstallCrate</span>::<span class="ident">Value</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">InstallCrate</span>::<span class="ident">Value</span>(<span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">InstallCrate</span>::<span class="ident">Value</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">Value</span>(<span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">InstallCrate</span>::<span class="ident">CargoPluginInfo</span>(<span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">InstallCrate</span>::<span class="ident">CargoPluginInfo</span>(<span class="ident">other_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">info</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_info</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">InstallCrate</span>::<span class="ident">CargoPluginInfo</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">CargoPluginInfo</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">other_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">info</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_info</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">CrateInfo</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">other_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">info</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_info</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">InstallCrate</span>::<span class="ident">RustupComponentInfo</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         }
     }
@@ -2551,7 +2598,7 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if script exit code is not 0, the task will not be invoked</span>
-    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2578,31 +2625,31 @@
     <span class="doccomment">/// Do not use .gitignore files</span>
     <span class="kw">pub</span> <span class="ident">no_git_ignore</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Select which files/folders to watch</span>
-    <span class="kw">pub</span> <span class="ident">watch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">watch</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">WatchOptions</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">WatchOptions</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">WatchOptions</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         };
 
         <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">postpone</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">postpone</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         } <span class="kw">else</span> {
@@ -2611,13 +2658,13 @@
 
         <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">ignore_pattern</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">ignore_pattern</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">ignore_pattern</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">ignore_pattern</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">ignore_pattern</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         } <span class="kw">else</span> {
@@ -2626,13 +2673,13 @@
 
         <span class="ident">same</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">same</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">no_git_ignore</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">no_git_ignore</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         } <span class="kw">else</span> {
@@ -2641,13 +2688,13 @@
 
         <span class="kw">if</span> <span class="ident">same</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">watch</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">watch</span> {
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                 },
             }
         } <span class="kw">else</span> {
@@ -2667,15 +2714,15 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">TaskWatchOptions</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">TaskWatchOptions</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">TaskWatchOptions</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">other_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">info</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_info</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">info</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">other_info</span>) <span class="op">=&gt;</span> <span class="ident">info</span> <span class="op">==</span> <span class="ident">other_info</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         }
     }
@@ -2692,15 +2739,15 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">DeprecationInfo</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">DeprecationInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">DeprecationInfo</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">DeprecationInfo</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">DeprecationInfo</span>::<span class="ident">Boolean</span>(<span class="ident">other_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_value</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">DeprecationInfo</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">DeprecationInfo</span>::<span class="ident">Boolean</span>(<span class="ident">other_value</span>) <span class="op">=&gt;</span> <span class="ident">value</span> <span class="op">==</span> <span class="ident">other_value</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
-            <span class="ident">DeprecationInfo</span>::<span class="ident">Message</span>(<span class="ident">message</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
-                <span class="ident">DeprecationInfo</span>::<span class="ident">Message</span>(<span class="ident">other_message</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">message</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_message</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">DeprecationInfo</span>::<span class="ident">Message</span>(<span class="ident">message</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">other</span> {
+                <span class="ident">DeprecationInfo</span>::<span class="ident">Message</span>(<span class="ident">other_message</span>) <span class="op">=&gt;</span> <span class="ident">message</span> <span class="op">==</span> <span class="ident">other_message</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         }
     }
@@ -2749,15 +2796,15 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be</span>
-    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build</span>
     <span class="kw">pub</span> <span class="ident">ignore_errors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env files to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, task points to another task and all other properties are ignored</span>
@@ -2771,13 +2818,13 @@
     <span class="doccomment">/// if defined, the provided crate will be installed (if needed) before running the task</span>
     <span class="kw">pub</span> <span class="ident">install_crate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InstallCrate</span><span class="op">&gt;</span>,
     <span class="doccomment">/// additional cargo install arguments</span>
-    <span class="kw">pub</span> <span class="ident">install_crate_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">install_crate_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// if defined, the provided script will be executed before running the task</span>
-    <span class="kw">pub</span> <span class="ident">install_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">install_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The command to execute</span>
     <span class="kw">pub</span> <span class="ident">command</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The command args</span>
-    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// If command is not defined, and script is defined, the provided script will be executed</span>
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ScriptValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script runner (defaults to cmd in windows and sh for other platforms)</span>
@@ -2787,7 +2834,7 @@
     <span class="doccomment">/// The task name to execute</span>
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RunTaskInfo</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
-    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
     <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Linux (takes precedence over alias)</span>
@@ -2800,23 +2847,23 @@
 
 <span class="kw">impl</span> <span class="ident">Task</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Task</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 
     <span class="doccomment">/// Apply modifications</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">apply</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>, <span class="ident">modify_config</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) {
         <span class="kw">match</span> <span class="ident">modify_config</span>.<span class="ident">private</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="ident">value</span> {
                     <span class="self">self</span>.<span class="ident">private</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>);
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
         };
 
         <span class="kw">match</span> <span class="ident">modify_config</span>.<span class="ident">namespace</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="ident">namespace</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">extend</span>.<span class="ident">is_some</span>() {
                         <span class="self">self</span>.<span class="ident">extend</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">get_namespaced_task_name</span>(
@@ -2857,17 +2904,17 @@
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">run_task</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>();
 
                         <span class="ident">run_task</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">run_task</span> {
-                            <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
                                 <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>))
                             }
-                            <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">mut</span> <span class="ident">run_task_details</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">mut</span> <span class="ident">run_task_details</span>) <span class="op">=&gt;</span> {
                                 <span class="kw">match</span> <span class="ident">run_task_details</span>.<span class="ident">name</span> {
-                                    <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                    <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> {
                                         <span class="ident">run_task_details</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(
                                             <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="ident">name</span>),
                                         )
                                     }
-                                    <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                    <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=&gt;</span> {
                                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
                                         <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
                                             <span class="ident">updated_names</span>
@@ -2881,15 +2928,15 @@
 
                                 <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="ident">run_task_details</span>)
                             }
-                            <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">mut</span> <span class="ident">routing_info_vector</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                            <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">mut</span> <span class="ident">routing_info_vector</span>) <span class="op">=&gt;</span> {
                                 <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">routing_info</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">routing_info_vector</span> {
                                     <span class="kw">match</span> <span class="ident">routing_info</span>.<span class="ident">name</span> {
-                                        <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                        <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> {
                                             <span class="ident">routing_info</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(
                                                 <span class="ident">get_namespaced_task_name</span>(<span class="ident">namespace</span>, <span class="ident">name</span>),
                                             )
                                         }
-                                        <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                        <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="kw-2">ref</span> <span class="ident">names</span>) <span class="op">=&gt;</span> {
                                             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
                                             <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
                                                 <span class="ident">updated_names</span>.<span class="ident">push</span>(<span class="ident">get_namespaced_task_name</span>(
@@ -2922,7 +2969,7 @@
                     }
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
         };
     }
 
@@ -2933,8 +2980,8 @@
     <span class="doccomment">/// * `task` - The task to copy from</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extend</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) {
         <span class="kw">let</span> <span class="ident">override_values</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">clear</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         };
 
         <span class="kw">if</span> <span class="ident">task</span>.<span class="ident">clear</span>.<span class="ident">is_some</span>() {
@@ -3141,45 +3188,45 @@
     }
 
     <span class="doccomment">/// Returns true if the task ignore_errors attribute is defined and true</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_ignore_errors</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_ignore_errors</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">ignore_errors</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">force</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">force</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
                     <span class="ident">legacy</span>::<span class="ident">show_deprecated_attriute_warning</span>(<span class="string">&quot;force&quot;</span>, <span class="string">&quot;ignore_errors&quot;</span>);
 
                     <span class="ident">value</span>
                 }
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             },
         }
     }
 
     <span class="doccomment">/// Returns the override task definition based on the current platform.</span>
-    <span class="kw">fn</span> <span class="ident">get_override</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_override</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">platform_name</span> <span class="op">=</span> <span class="ident">get_platform_name</span>();
-        <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;windows&quot;</span> {
+        <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;windows&quot;</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">windows</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;mac&quot;</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;mac&quot;</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mac</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">linux</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
         }
     }
 
     <span class="doccomment">/// Returns a new task based on the override information and current platform.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">Task</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">get_override</span>() {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">override_task</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">override_task</span>) <span class="op">=&gt;</span> {
                 <span class="ident">override_task</span>.<span class="ident">extend</span>(<span class="self">self</span>);
 
                 <span class="ident">Task</span> {
@@ -3219,40 +3266,40 @@
                     <span class="ident">mac</span>: <span class="prelude-val">None</span>,
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">clone</span>(),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">clone</span>(),
         }
     }
 
     <span class="doccomment">/// Returns the alias value based on the current platform and task definition.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_alias</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_alias</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">alias</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">windows_alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>) {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;macos&quot;</span>) <span class="op">||</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;ios&quot;</span>) {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mac_alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">linux_alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             }
         };
 
         <span class="kw">match</span> <span class="ident">alias</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">os_alias</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">os_alias</span>.<span class="ident">clone</span>()),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">alias</span>.<span class="ident">clone</span>()),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">os_alias</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">os_alias</span>.<span class="ident">clone</span>()),
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">alias</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">alias</span>.<span class="ident">clone</span>()),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             },
         }
     }
 
     <span class="doccomment">/// Returns the amount of actions defined on the task</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_actions_count</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_actions_count</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">actions_count</span> <span class="op">=</span> <span class="number">0</span>;
 
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>() {
@@ -3270,7 +3317,7 @@
 
     <span class="doccomment">/// Returns true if the task has any actions on its own</span>
     <span class="doccomment">/// or if it modifies the environment in any way.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_actionable</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_actionable</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">disabled</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
@@ -3280,50 +3327,50 @@
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate</span>.<span class="ident">is_some</span>() <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">install_script</span>.<span class="ident">is_some</span>() {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate</span>.<span class="ident">is_some</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">install_script</span>.<span class="ident">is_some</span>() {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">actionable</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">env</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         };
         <span class="kw">if</span> <span class="ident">actionable</span> {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
         <span class="ident">actionable</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">env_files</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         };
         <span class="kw">if</span> <span class="ident">actionable</span> {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
         <span class="ident">actionable</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dependencies</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         };
         <span class="kw">if</span> <span class="ident">actionable</span> {
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
 
         <span class="ident">actionable</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">watch</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">options</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">options</span> {
-                <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">value</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">options</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">options</span> {
+                <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span><span class="ident">value</span>,
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             },
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         };
 
         <span class="ident">actionable</span>
     }
 
     <span class="doccomment">/// Returns true if the task is valid</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_valid</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_valid</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="ident">actions_count</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_actions_count</span>();
 
-        <span class="kw">if</span> <span class="ident">actions_count</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">1</span> {
+        <span class="kw">if</span> <span class="ident">actions_count</span> <span class="op">&lt;=</span> <span class="number">1</span> {
             <span class="bool-val">true</span>
         } <span class="kw">else</span> {
             <span class="bool-val">false</span>
@@ -3349,27 +3396,27 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be</span>
-    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">condition_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build</span>
     <span class="kw">pub</span> <span class="ident">ignore_errors</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors</span>
     <span class="kw">pub</span> <span class="ident">force</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env files to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the task commands</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The working directory for the task to execute its command/script</span>
     <span class="kw">pub</span> <span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if defined, the provided crate will be installed (if needed) before running the task</span>
     <span class="kw">pub</span> <span class="ident">install_crate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InstallCrate</span><span class="op">&gt;</span>,
     <span class="doccomment">/// additional cargo install arguments</span>
-    <span class="kw">pub</span> <span class="ident">install_crate_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">install_crate_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// if defined, the provided script will be executed before running the task</span>
-    <span class="kw">pub</span> <span class="ident">install_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">install_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The command to execute</span>
     <span class="kw">pub</span> <span class="ident">command</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The command args</span>
-    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// If command is not defined, and script is defined, the provided script will be executed</span>
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ScriptValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The script runner (defaults to cmd in windows and sh for other platforms)</span>
@@ -3379,7 +3426,7 @@
     <span class="doccomment">/// The task name to execute</span>
     <span class="kw">pub</span> <span class="ident">run_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RunTaskInfo</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A list of tasks to execute before this task</span>
-    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
     <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
@@ -3392,100 +3439,100 @@
     <span class="doccomment">/// * `task` - The task to copy from</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extend</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">PlatformOverrideTask</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) {
         <span class="kw">let</span> <span class="ident">copy_values</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">clear</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="op">!</span><span class="ident">value</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="op">!</span><span class="ident">value</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
         };
 
         <span class="kw">if</span> <span class="ident">copy_values</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">disabled</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">disabled</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">disabled</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">private</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">private</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">private</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">private</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">private</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">private</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">deprecated</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">deprecated</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">deprecated</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">deprecated</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">deprecated</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">deprecated</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">extend</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">extend</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">extend</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">extend</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">extend</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">extend</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">watch</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">watch</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">watch</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">watch</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">watch</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">watch</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">condition</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">condition</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">condition</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">condition</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">condition</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">condition</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">condition_script</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">condition_script</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">condition_script</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">condition_script</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">condition_script</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">condition_script</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ignore_errors</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">ignore_errors</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ignore_errors</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">ignore_errors</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">ignore_errors</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">ignore_errors</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">force</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">force</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">force</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">force</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">force</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">force</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env_files</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env_files</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">env_files</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">env</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cwd</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">cwd</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cwd</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">cwd</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">cwd</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">cwd</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">install_crate</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">install_crate</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">install_crate</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">install_crate</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate_args</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">install_crate_args</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_crate_args</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">install_crate_args</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">install_crate_args</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">install_crate_args</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_script</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">install_script</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">install_script</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">install_script</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">install_script</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">install_script</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">command</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">command</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">command</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">command</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">command</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">args</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">args</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">args</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">args</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">script</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">script</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">script</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">script</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script_runner</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">script_runner</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script_runner</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">script_runner</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">script_runner</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script_extension</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">script_extension</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">script_extension</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">script_extension</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">script_extension</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">script_extension</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">run_task</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">run_task</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dependencies</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dependencies</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">dependencies</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">clone</span>();
             }
 
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">toolchain</span>.<span class="ident">is_none</span>() <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">is_some</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">toolchain</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">toolchain</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">clone</span>();
             }
         }
@@ -3524,22 +3571,22 @@
 
 <span class="kw">impl</span> <span class="ident">ModifyConfig</span> {
     <span class="doccomment">/// Returns true if config modifications is needed based on the current state</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_modifications_defined</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_modifications_defined</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">private</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
             <span class="bool-val">true</span>
         } <span class="kw">else</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">namespace</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             }
         }
     }
 
     <span class="doccomment">/// Returns the namespace prefix for task names</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_namespace_prefix</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_namespace_prefix</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">namespace</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_namespaced_task_name</span>(<span class="ident">value</span>, <span class="string">&quot;&quot;</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">get_namespaced_task_name</span>(<span class="ident">value</span>, <span class="string">&quot;&quot;</span>),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
         }
     }
 }
@@ -3558,33 +3605,37 @@
     <span class="doccomment">/// The name of the task to run in case of any error during the invocation of the flow</span>
     <span class="kw">pub</span> <span class="ident">on_error_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Additional profile names to load</span>
-    <span class="kw">pub</span> <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Minimum cargo-make/makers version</span>
     <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The task.workspace default value</span>
     <span class="kw">pub</span> <span class="ident">default_to_workspace</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to reduce console output for non CI execution</span>
+    <span class="kw">pub</span> <span class="ident">reduce_output</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to print time summary at the end of the flow</span>
+    <span class="kw">pub</span> <span class="ident">time_summary</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The project information member (used by workspaces)</span>
     <span class="kw">pub</span> <span class="ident">main_project_member</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor</span>
-    <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Linux (takes precedence over load_script)</span>
-    <span class="kw">pub</span> <span class="ident">linux_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">linux_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Windows (takes precedence over load_script)</span>
-    <span class="kw">pub</span> <span class="ident">windows_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">windows_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// acts like load_script if runtime OS is Mac (takes precedence over load_script)</span>
-    <span class="kw">pub</span> <span class="ident">mac_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">mac_load_script</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ConfigSection</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ConfigSection</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ConfigSection</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 
     <span class="doccomment">/// Apply modifications</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">apply</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ConfigSection</span>, <span class="ident">modify_config</span>: <span class="kw-2">&amp;</span><span class="ident">ModifyConfig</span>) {
         <span class="kw">match</span> <span class="ident">modify_config</span>.<span class="ident">namespace</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">init_task</span>.<span class="ident">is_some</span>() {
                     <span class="self">self</span>.<span class="ident">init_task</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">get_namespaced_task_name</span>(
                         <span class="ident">namespace</span>,
@@ -3606,7 +3657,7 @@
                     ));
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
         }
     }
 
@@ -3648,6 +3699,14 @@
             <span class="self">self</span>.<span class="ident">default_to_workspace</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">default_to_workspace</span>.<span class="ident">clone</span>();
         }
 
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">reduce_output</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">reduce_output</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">reduce_output</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">time_summary</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">time_summary</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">time_summary</span>.<span class="ident">clone</span>();
+        }
+
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">main_project_member</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">main_project_member</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">main_project_member</span>.<span class="ident">clone</span>();
         }
@@ -3670,16 +3729,16 @@
     }
 
     <span class="doccomment">/// Returns the load script based on the current platform</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_load_script</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ConfigSection</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_load_script</span>(<span class="self">self</span>: <span class="kw-2">&amp;</span><span class="ident">ConfigSection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">platform_name</span> <span class="op">=</span> <span class="ident">get_platform_name</span>();
 
-        <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;windows&quot;</span> {
+        <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;windows&quot;</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">windows_load_script</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">windows_load_script</span>.<span class="ident">clone</span>()
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">load_script</span>.<span class="ident">clone</span>()
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;mac&quot;</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">platform_name</span> <span class="op">==</span> <span class="string">&quot;mac&quot;</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mac_load_script</span>.<span class="ident">is_some</span>() {
                 <span class="self">self</span>.<span class="ident">mac_load_script</span>.<span class="ident">clone</span>()
             } <span class="kw">else</span> {
@@ -3716,8 +3775,8 @@
         <span class="self">self</span>.<span class="ident">config</span>.<span class="ident">apply</span>(<span class="kw-2">&amp;</span><span class="ident">modify_config</span>);
 
         <span class="kw">let</span> <span class="ident">namespace</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">modify_config</span>.<span class="ident">namespace</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">namespace</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=&gt;</span> <span class="ident">namespace</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>,
         };
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">modified_tasks</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>::<span class="ident">new</span>();
@@ -3743,18 +3802,18 @@
     <span class="doccomment">/// Runtime config</span>
     <span class="kw">pub</span> <span class="ident">config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ConfigSection</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The env files to setup before running the flow</span>
-    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env vars to setup before running the flow</span>
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// The env scripts to execute before running the flow</span>
-    <span class="kw">pub</span> <span class="ident">env_scripts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">env_scripts</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// All task definitions</span>
-    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ExternalConfig</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExternalConfig</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }
@@ -3781,7 +3840,7 @@
     <span class="doccomment">/// The command to execute</span>
     <span class="kw">pub</span> <span class="ident">command</span>: <span class="ident">String</span>,
     <span class="doccomment">/// The command args</span>
-    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Default</span>)]</span>
@@ -3793,7 +3852,7 @@
 
 <span class="kw">impl</span> <span class="ident">CargoMetadata</span> {
     <span class="doccomment">/// Creates and returns a new instance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CargoMetadata</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">CargoMetadata</span> {
         <span class="ident">Default</span>::<span class="ident">default</span>()
     }
 }

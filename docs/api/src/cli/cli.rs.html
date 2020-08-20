@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -426,6 +427,14 @@
 <span id="426">426</span>
 <span id="427">427</span>
 <span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -475,31 +484,31 @@
 
     <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check</span>
     <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span>
-        <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
-        <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">version</span>::<span class="ident">should_check</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>)
+        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ci_info</span>::<span class="ident">is_ci</span>()
+        <span class="op">&amp;&amp;</span> <span class="ident">version</span>::<span class="ident">should_check</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>)
     {
         <span class="ident">version</span>::<span class="ident">check</span>();
     }
 
     <span class="kw">let</span> <span class="ident">cwd_string_option</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">cwd</span>.<span class="ident">clone</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">search</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">search</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="ident">search</span> {
                     <span class="kw">match</span> <span class="ident">environment</span>::<span class="ident">get_project_root</span>() {
-                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
                     }
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         },
     };
     <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_string_option</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
     <span class="kw">let</span> <span class="ident">home</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="ident">cwd</span>);
 
@@ -523,8 +532,8 @@
     <span class="kw">let</span> <span class="ident">descriptor_load_result</span> <span class="op">=</span> <span class="ident">descriptor</span>::<span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="ident">build_file</span>, <span class="ident">force_makefile</span>, <span class="ident">env</span>, <span class="ident">experimental</span>);
 
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">descriptor_load_result</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">config</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">config</span>,
-        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">config</span>) <span class="op">=&gt;</span> <span class="ident">config</span>,
+        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=&gt;</span> {
             <span class="macro">error</span><span class="macro">!</span>(
                 <span class="string">&quot;{} version: {} does not meet minimum required version: {}&quot;</span>,
                 <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>
@@ -537,8 +546,8 @@
     };
 
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">additional_profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profile</span>::<span class="ident">set_additional</span>(<span class="ident">profiles</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profile</span>::<span class="ident">set_additional</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[]),
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) <span class="op">=&gt;</span> <span class="ident">profile</span>::<span class="ident">set_additional</span>(<span class="ident">profiles</span>),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">profile</span>::<span class="ident">set_additional</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[]),
     };
 
     <span class="kw">let</span> <span class="ident">env_info</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">setup_env</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">home</span>);
@@ -580,8 +589,8 @@
 ) {
     <span class="kw">let</span> <span class="ident">cmd_matches</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sub_command</span> {
         <span class="kw">match</span> <span class="ident">matches</span>.<span class="ident">subcommand_matches</span>(<span class="ident">command_name</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;cargo-{} not invoked via cargo command.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;cargo-{} not invoked via cargo command.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>),
         }
     } <span class="kw">else</span> {
         <span class="kw-2">&amp;</span><span class="ident">matches</span>
@@ -599,7 +608,7 @@
 
     <span class="ident">cli_args</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">values_of_lossy</span>(<span class="string">&quot;env&quot;</span>);
 
-    <span class="ident">cli_args</span>.<span class="ident">build_file</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">occurrences_of</span>(<span class="string">&quot;makefile&quot;</span>) <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+    <span class="ident">cli_args</span>.<span class="ident">build_file</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">occurrences_of</span>(<span class="string">&quot;makefile&quot;</span>) <span class="op">==</span> <span class="number">0</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="kw">let</span> <span class="ident">makefile</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -610,13 +619,13 @@
     };
 
     <span class="ident">cli_args</span>.<span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;cwd&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
     };
     <span class="ident">cli_args</span>.<span class="ident">log_level</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;v&quot;</span>) {
         <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>()
@@ -628,16 +637,19 @@
     };
 
     <span class="kw">let</span> <span class="ident">default_disable_color</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">disable_color</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
     };
     <span class="ident">cli_args</span>.<span class="ident">disable_color</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;no-color&quot;</span>)
-        <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt</span>::<span class="ident">is</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>)
-        <span class="op">|</span><span class="op">|</span> <span class="ident">default_disable_color</span>;
+        <span class="op">||</span> <span class="ident">envmnt</span>::<span class="ident">is</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>)
+        <span class="op">||</span> <span class="ident">default_disable_color</span>;
+
+    <span class="ident">cli_args</span>.<span class="ident">print_time_summary</span> <span class="op">=</span>
+        <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;time-summary&quot;</span>) <span class="op">||</span> <span class="ident">envmnt</span>::<span class="ident">is</span>(<span class="string">&quot;CARGO_MAKE_PRINT_TIME_SUMMARY&quot;</span>);
 
     <span class="ident">cli_args</span>.<span class="ident">env_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;envfile&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 
     <span class="ident">cli_args</span>.<span class="ident">output_format</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -646,8 +658,8 @@
         .<span class="ident">to_string</span>();
 
     <span class="ident">cli_args</span>.<span class="ident">output_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;output_file&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -666,19 +678,19 @@
     <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;diff-steps&quot;</span>);
 
     <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
     };
     <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;task&quot;</span>).<span class="ident">unwrap_or</span>(<span class="ident">default_task_name</span>);
     <span class="ident">cli_args</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;TASK&quot;</span>).<span class="ident">unwrap_or</span>(<span class="ident">task</span>).<span class="ident">to_string</span>();
 
     <span class="ident">cli_args</span>.<span class="ident">arguments</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">values_of</span>(<span class="string">&quot;TASK_ARGS&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">args_str</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">collect</span>();
             <span class="kw">let</span> <span class="ident">args_strings</span> <span class="op">=</span> <span class="ident">args_str</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">to_string</span>()).<span class="ident">collect</span>();
             <span class="prelude-val">Some</span>(<span class="ident">args_strings</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
     };
 
     <span class="ident">run</span>(<span class="ident">cli_args</span>, <span class="ident">global_config</span>);
@@ -688,14 +700,14 @@
     <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">GlobalConfig</span>,
     <span class="ident">command_name</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>,
     <span class="ident">sub_command</span>: <span class="ident">bool</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
+) <span class="op">-&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
     };
     <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_app</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sub_command</span> {
@@ -795,6 +807,11 @@
             <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;no-color&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--no-color&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Disables colorful output&quot;</span>),
+        )
+        .<span class="ident">arg</span>(
+            <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;time-summary&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--time-summary&quot;</span>)
+                .<span class="ident">help</span>(<span class="string">&quot;Print task level time summary at end of flow&quot;</span>),
         )
         .<span class="ident">arg</span>(
             <span class="ident">Arg</span>::<span class="ident">with_name</span>(<span class="string">&quot;experimental&quot;</span>)

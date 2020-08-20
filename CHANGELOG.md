@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.2
+### v0.32.2 (2020-08-20)
 
 * Fix watch invocation in case makefile file path contains spaces #445
 * Clear RUST_RECURSION_COUNT at start of flow #447
