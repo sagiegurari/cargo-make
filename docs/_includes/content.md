@@ -399,6 +399,30 @@ run_task = [
 ]
 ```
 
+You can also setup a **cleanup** task to run after the sub task even if the sub task failed.<br>
+This is only supported in combination with **fork=true** attribute.<br>
+For example:<br>
+
+```toml
+[tasks.echo1]
+command = "echo"
+args = ["1"]
+
+[tasks.echo2]
+command = "echo"
+args = ["2"]
+
+[tasks.fail]
+script = ["exit 1"]
+
+[tasks.cleanup]
+command = "echo"
+args = ["cleanup"]
+
+[tasks.cleanup-example]
+run_task = { name = ["echo1", "echo2", "fail"], fork = true, cleanup_task = "cleanup" }
+```
+
 In order to run multiple tasks in parallel, add **parallel = true** to the run_task object.<br>
 For example:
 

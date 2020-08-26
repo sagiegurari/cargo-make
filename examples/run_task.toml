@@ -28,3 +28,13 @@ run_task = [
 
 [tasks.parallel-multi]
 run_task = { name = ["echo1", "echo2"], parallel = true }
+
+[tasks.fail]
+script = ["exit 1"]
+
+[tasks.cleanup]
+command = "echo"
+args = ["cleanup"]
+
+[tasks.cleanup-example]
+run_task = { name = ["echo1", "echo2", "fail"], fork = true, cleanup_task = "cleanup" }
