@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.3
+
+* Support cleanup task for forked sub flow #452
+
 ### v0.32.2 (2020-08-20)
 
 * Fix watch invocation in case makefile file path contains spaces #445

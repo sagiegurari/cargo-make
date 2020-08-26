@@ -1565,6 +1565,49 @@ fn run_sub_task_and_report_routing_not_found() {
 }
 
 #[test]
+#[ignore]
+#[should_panic]
+fn run_sub_task_and_report_with_cleanup_task_but_no_fork() {
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
+
+    let mut tasks = IndexMap::new();
+    tasks.insert("test".to_string(), task);
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        cli_arguments: None,
+    };
+
+    let sub_task = RunTaskInfo::Details(RunTaskDetails {
+        name: RunTaskName::Single("test".to_string()),
+        fork: Some(false),
+        parallel: None,
+        cleanup_task: Some("test".to_string()),
+    });
+
+    run_sub_task_and_report(&flow_info, &mut FlowState::new(), &sub_task);
+}
+
+#[test]
 fn get_sub_task_info_for_routing_info_empty() {
     let config = Config {
         config: ConfigSection::new(),
