@@ -2226,7 +2226,7 @@ fn create_fork_step_valid() {
     assert_eq!(task.command.unwrap(), "cargo".to_string());
 
     let log_level = logger::get_log_level();
-    let mut log_level_arg = "--loglevel=".to_string()<F3>;
+    let mut log_level_arg = "--loglevel=".to_string();
     log_level_arg.push_str(&log_level);
 
     let mut profile_arg = "--profile=".to_string();
