@@ -579,6 +579,50 @@
 <span id="578">578</span>
 <span id="579">579</span>
 <span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -660,11 +704,12 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_sub_task_info_for_routing_info</span>(
     <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">routing_info</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RunTaskRoutingInfo</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">bool</span>, <span class="ident">bool</span>) {
+) <span class="op">-&gt;</span> (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">bool</span>, <span class="ident">bool</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_name</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fork</span> <span class="op">=</span> <span class="bool-val">false</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parallel</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cleanup_task</span> <span class="op">=</span> <span class="prelude-val">None</span>;
     <span class="kw">for</span> <span class="ident">routing_step</span> <span class="kw">in</span> <span class="ident">routing_info</span> {
         <span class="kw">let</span> <span class="ident">invoke</span> <span class="op">=</span> <span class="ident">condition</span>::<span class="ident">validate_conditions</span>(
             <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
@@ -681,11 +726,12 @@
             <span class="ident">task_name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">task_name_values</span>);
             <span class="ident">fork</span> <span class="op">=</span> <span class="ident">routing_step</span>.<span class="ident">fork</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
             <span class="ident">parallel</span> <span class="op">=</span> <span class="ident">routing_step</span>.<span class="ident">parallel</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+            <span class="ident">cleanup_task</span> <span class="op">=</span> <span class="ident">routing_step</span>.<span class="ident">cleanup_task</span>.<span class="ident">clone</span>();
             <span class="kw">break</span>;
         }
     }
 
-    (<span class="ident">task_name</span>, <span class="ident">fork</span>, <span class="ident">parallel</span>)
+    (<span class="ident">task_name</span>, <span class="ident">fork</span>, <span class="ident">parallel</span>, <span class="ident">cleanup_task</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">create_fork_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-&gt;</span> <span class="ident">Step</span> {
@@ -697,10 +743,38 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">run_forked_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>) {
+<span class="kw">fn</span> <span class="ident">run_forked_task</span>(
+    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
+    <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>,
+    <span class="ident">cleanup_task</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+) {
     <span class="comment">// run task as a sub process</span>
     <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_fork_step</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>);
-    <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
+
+    <span class="kw">match</span> <span class="ident">cleanup_task</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_name</span>) <span class="op">=&gt;</span> {
+            <span class="comment">// run the forked task (forked tasks only run a command + args)</span>
+            <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
+                <span class="ident">command</span>::<span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
+
+            <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">cleanup_task_name</span>) {
+                <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_info</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">run_task</span>(
+                        <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
+                        <span class="ident">flow_state</span>,
+                        <span class="kw-2">&amp;</span><span class="ident">Step</span> {
+                            <span class="ident">name</span>: <span class="ident">cleanup_task_name</span>.<span class="ident">to_string</span>(),
+                            <span class="ident">config</span>: <span class="ident">cleanup_task_info</span>.<span class="ident">clone</span>(),
+                        },
+                    );
+
+                    <span class="ident">command</span>::<span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
+                }
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task_name</span>),
+            }
+        }
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>),
+    }
 }
 
 <span class="doccomment">/// runs a sub task and returns true/false based if a sub task was actually invoked</span>
@@ -709,8 +783,8 @@
     <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>,
     <span class="ident">sub_task</span>: <span class="kw-2">&amp;</span><span class="ident">RunTaskInfo</span>,
 ) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> (<span class="ident">task_names</span>, <span class="ident">fork</span>, <span class="ident">parallel</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">sub_task</span> {
-        <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>.<span class="ident">to_string</span>()]), <span class="bool-val">false</span>, <span class="bool-val">false</span>),
+    <span class="kw">let</span> (<span class="ident">task_names</span>, <span class="ident">fork</span>, <span class="ident">parallel</span>, <span class="ident">cleanup_task</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">sub_task</span> {
+        <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>.<span class="ident">to_string</span>()]), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>),
         <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">ref</span> <span class="ident">details</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">task_name_values</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">details</span>.<span class="ident">name</span>.<span class="ident">clone</span>() {
                 <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="ident">name</span>) <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>],
@@ -720,6 +794,7 @@
                 <span class="prelude-val">Some</span>(<span class="ident">task_name_values</span>),
                 <span class="ident">details</span>.<span class="ident">fork</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>),
                 <span class="ident">details</span>.<span class="ident">parallel</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>),
+                <span class="ident">details</span>.<span class="ident">cleanup_task</span>.<span class="ident">clone</span>(),
             )
         }
         <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">ref</span> <span class="ident">routing_info</span>) <span class="op">=&gt;</span> {
@@ -731,28 +806,41 @@
         <span class="kw">let</span> <span class="ident">names</span> <span class="op">=</span> <span class="ident">task_names</span>.<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">threads</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
-        <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
-            <span class="kw">let</span> <span class="ident">task_run_fn</span> <span class="op">=</span>
-                <span class="kw">move</span> <span class="op">|</span><span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>, <span class="ident">fork</span>: <span class="ident">bool</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
-                    <span class="ident">sub_flow_info</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">name</span>;
+        <span class="comment">// clean up task only supported for forked tasks</span>
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">fork</span> <span class="op">&amp;&amp;</span> <span class="ident">cleanup_task</span>.<span class="ident">is_some</span>() {
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Invalid task, cannot use cleanup_task without fork.&quot;</span>);
+        }
 
-                    <span class="kw">if</span> <span class="ident">fork</span> {
-                        <span class="ident">run_forked_task</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="ident">flow_state</span>);
-                    } <span class="kw">else</span> {
-                        <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="ident">flow_state</span>, <span class="bool-val">true</span>);
-                    }
-                };
+        <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
+            <span class="kw">let</span> <span class="ident">task_run_fn</span> <span class="op">=</span> <span class="kw">move</span> <span class="op">|</span><span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
+                                    <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>,
+                                    <span class="ident">fork</span>: <span class="ident">bool</span>,
+                                    <span class="ident">cleanup_task</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sub_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
+                <span class="ident">sub_flow_info</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">name</span>;
+
+                <span class="kw">if</span> <span class="ident">fork</span> {
+                    <span class="ident">run_forked_task</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">cleanup_task</span>);
+                } <span class="kw">else</span> {
+                    <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">sub_flow_info</span>, <span class="ident">flow_state</span>, <span class="bool-val">true</span>);
+                }
+            };
 
             <span class="kw">if</span> <span class="ident">parallel</span> {
                 <span class="kw">let</span> <span class="ident">run_flow_info</span> <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">clone</span>();
                 <span class="comment">// we do not support merging changes back to parent</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cloned_flow_state</span> <span class="op">=</span> <span class="ident">flow_state</span>.<span class="ident">clone</span>();
+                <span class="kw">let</span> <span class="ident">cloned_cleanup_task</span> <span class="op">=</span> <span class="ident">cleanup_task</span>.<span class="ident">clone</span>();
                 <span class="ident">threads</span>.<span class="ident">push</span>(<span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
-                    <span class="ident">task_run_fn</span>(<span class="kw-2">&amp;</span><span class="ident">run_flow_info</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cloned_flow_state</span>, <span class="ident">fork</span>);
+                    <span class="ident">task_run_fn</span>(
+                        <span class="kw-2">&amp;</span><span class="ident">run_flow_info</span>,
+                        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cloned_flow_state</span>,
+                        <span class="ident">fork</span>,
+                        <span class="kw-2">&amp;</span><span class="ident">cloned_cleanup_task</span>,
+                    );
                 }));
             } <span class="kw">else</span> {
-                <span class="ident">task_run_fn</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">fork</span>);
+                <span class="ident">task_run_fn</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">fork</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task</span>);
             }
         }
 

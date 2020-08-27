@@ -1927,6 +1927,10 @@
 <span id="1926">1926</span>
 <span id="1927">1927</span>
 <span id="1928">1928</span>
+<span id="1929">1929</span>
+<span id="1930">1930</span>
+<span id="1931">1931</span>
+<span id="1932">1932</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2584,6 +2588,8 @@
     <span class="kw">pub</span> <span class="ident">fork</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// True to run all tasks in parallel (default false)</span>
     <span class="kw">pub</span> <span class="ident">parallel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Cleanup task name</span>
+    <span class="kw">pub</span> <span class="ident">cleanup_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2595,6 +2601,8 @@
     <span class="kw">pub</span> <span class="ident">fork</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
     <span class="doccomment">/// True to run all tasks in parallel (default false)</span>
     <span class="kw">pub</span> <span class="ident">parallel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Cleanup task name</span>
+    <span class="kw">pub</span> <span class="ident">cleanup_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
     <span class="doccomment">/// if script exit code is not 0, the task will not be invoked</span>

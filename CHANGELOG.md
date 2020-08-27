@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.3
+### v0.32.3 (2020-08-27)
 
 * Support cleanup task for forked sub flow #452
 * Upgrade duckscript SDK to 0.6.7
