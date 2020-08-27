@@ -3348,6 +3348,7 @@ fn task_apply_run_task_details_single_modify_namespace() {
         name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
         parallel: None,
+        cleanup_task: None,
     }));
 
     task.apply(&modify_config);
@@ -3380,6 +3381,7 @@ fn task_apply_run_task_details_multiple_modify_namespace() {
         name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
         fork: None,
         parallel: None,
+        cleanup_task: None,
     }));
 
     task.apply(&modify_config);
@@ -3415,6 +3417,7 @@ fn task_apply_run_task_routing_info_single_modify_namespace() {
         name: RunTaskName::Single("run_task1".to_string()),
         fork: None,
         parallel: None,
+        cleanup_task: None,
         condition: None,
         condition_script: None,
     }]));
@@ -3449,6 +3452,7 @@ fn task_apply_run_task_routing_info_multiple_modify_namespace() {
         name: RunTaskName::Multiple(vec!["run_task1".to_string(), "run_task2".to_string()]),
         fork: None,
         parallel: None,
+        cleanup_task: None,
         condition: None,
         condition_script: None,
     }]));

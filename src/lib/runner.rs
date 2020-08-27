@@ -78,11 +78,12 @@ fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
 pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
-) -> (Option<Vec<String>>, bool, bool) {
+) -> (Option<Vec<String>>, bool, bool, Option<String>) {
     let mut task_name = None;
 
     let mut fork = false;
     let mut parallel = false;
+    let mut cleanup_task = None;
     for routing_step in routing_info {
         let invoke = condition::validate_conditions(
             &flow_info,
@@ -99,11 +100,12 @@ pub(crate) fn get_sub_task_info_for_routing_info(
             task_name = Some(task_name_values);
             fork = routing_step.fork.unwrap_or(false);
             parallel = routing_step.parallel.unwrap_or(false);
+            cleanup_task = routing_step.cleanup_task.clone();
             break;
         }
     }
 
-    (task_name, fork, parallel)
+    (task_name, fork, parallel, cleanup_task)
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
@@ -115,10 +117,38 @@ fn create_fork_step(flow_info: &FlowInfo) -> Step {
     }
 }
 
-fn run_forked_task(flow_info: &FlowInfo, flow_state: &mut FlowState) {
+fn run_forked_task(
+    flow_info: &FlowInfo,
+    flow_state: &mut FlowState,
+    cleanup_task: &Option<String>,
+) {
     // run task as a sub process
     let step = create_fork_step(&flow_info);
-    run_task(&flow_info, flow_state, &step);
+
+    match cleanup_task {
+        Some(cleanup_task_name) => {
+            // run the forked task (forked tasks only run a command + args)
+            let exit_code =
+                command::run_command(&step.config.command.unwrap(), &step.config.args, false);
+
+            match flow_info.config.tasks.get(cleanup_task_name) {
+                Some(cleanup_task_info) => {
+                    run_task(
+                        &flow_info,
+                        flow_state,
+                        &Step {
+                            name: cleanup_task_name.to_string(),
+                            config: cleanup_task_info.clone(),
+                        },
+                    );
+
+                    command::validate_exit_code(exit_code);
+                }
+                None => error!("Cleanup task: {} not found.", &cleanup_task_name),
+            }
+        }
+        None => run_task(&flow_info, flow_state, &step),
+    }
 }
 
 /// runs a sub task and returns true/false based if a sub task was actually invoked
@@ -127,8 +157,8 @@ fn run_sub_task_and_report(
     flow_state: &mut FlowState,
     sub_task: &RunTaskInfo,
 ) -> bool {
-    let (task_names, fork, parallel) = match sub_task {
-        RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false, false),
+    let (task_names, fork, parallel, cleanup_task) = match sub_task {
+        RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false, false, None),
         RunTaskInfo::Details(ref details) => {
             let task_name_values = match details.name.clone() {
                 RunTaskName::Single(name) => vec![name],
@@ -138,6 +168,7 @@ fn run_sub_task_and_report(
                 Some(task_name_values),
                 details.fork.unwrap_or(false),
                 details.parallel.unwrap_or(false),
+                details.cleanup_task.clone(),
             )
         }
         RunTaskInfo::Routing(ref routing_info) => {
@@ -149,28 +180,41 @@ fn run_sub_task_and_report(
         let names = task_names.unwrap();
         let mut threads = vec![];
 
-        for name in names {
-            let task_run_fn =
-                move |flow_info: &FlowInfo, flow_state: &mut FlowState, fork: bool| {
-                    let mut sub_flow_info = flow_info.clone();
-                    sub_flow_info.task = name;
+        // clean up task only supported for forked tasks
+        if !fork && cleanup_task.is_some() {
+            error!("Invalid task, cannot use cleanup_task without fork.");
+        }
 
-                    if fork {
-                        run_forked_task(&sub_flow_info, flow_state);
-                    } else {
-                        run_flow(&sub_flow_info, flow_state, true);
-                    }
-                };
+        for name in names {
+            let task_run_fn = move |flow_info: &FlowInfo,
+                                    flow_state: &mut FlowState,
+                                    fork: bool,
+                                    cleanup_task: &Option<String>| {
+                let mut sub_flow_info = flow_info.clone();
+                sub_flow_info.task = name;
+
+                if fork {
+                    run_forked_task(&sub_flow_info, flow_state, cleanup_task);
+                } else {
+                    run_flow(&sub_flow_info, flow_state, true);
+                }
+            };
 
             if parallel {
                 let run_flow_info = flow_info.clone();
                 // we do not support merging changes back to parent
                 let mut cloned_flow_state = flow_state.clone();
+                let cloned_cleanup_task = cleanup_task.clone();
                 threads.push(thread::spawn(move || {
-                    task_run_fn(&run_flow_info, &mut cloned_flow_state, fork);
+                    task_run_fn(
+                        &run_flow_info,
+                        &mut cloned_flow_state,
+                        fork,
+                        &cloned_cleanup_task,
+                    );
                 }));
             } else {
-                task_run_fn(&flow_info, flow_state, fork);
+                task_run_fn(&flow_info, flow_state, fork, &cleanup_task);
             }
         }
 
