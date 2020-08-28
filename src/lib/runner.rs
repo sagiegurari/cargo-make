@@ -117,6 +117,20 @@ fn create_fork_step(flow_info: &FlowInfo) -> Step {
     }
 }
 
+fn run_cleanup_task(flow_info: &FlowInfo, flow_state: &mut FlowState, task: &str) {
+    match flow_info.config.tasks.get(task) {
+        Some(cleanup_task_info) => run_task(
+            &flow_info,
+            flow_state,
+            &Step {
+                name: task.to_string(),
+                config: cleanup_task_info.clone(),
+            },
+        ),
+        None => error!("Cleanup task: {} not found.", &task),
+    }
+}
+
 fn run_forked_task(
     flow_info: &FlowInfo,
     flow_state: &mut FlowState,
@@ -131,20 +145,9 @@ fn run_forked_task(
             let exit_code =
                 command::run_command(&step.config.command.unwrap(), &step.config.args, false);
 
-            match flow_info.config.tasks.get(cleanup_task_name) {
-                Some(cleanup_task_info) => {
-                    run_task(
-                        &flow_info,
-                        flow_state,
-                        &Step {
-                            name: cleanup_task_name.to_string(),
-                            config: cleanup_task_info.clone(),
-                        },
-                    );
-
-                    command::validate_exit_code(exit_code);
-                }
-                None => error!("Cleanup task: {} not found.", &cleanup_task_name),
+            if exit_code != 0 {
+                run_cleanup_task(&flow_info, flow_state, &cleanup_task_name);
+                command::validate_exit_code(exit_code);
             }
         }
         None => run_task(&flow_info, flow_state, &step),
@@ -222,6 +225,10 @@ fn run_sub_task_and_report(
             for task_thread in threads {
                 task_thread.join().unwrap();
             }
+        }
+
+        if let Some(cleanup_task_name) = cleanup_task {
+            run_cleanup_task(&flow_info, flow_state, &cleanup_task_name);
         }
 
         true

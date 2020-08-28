@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.4 (2020-08-28)
+
+* Prevent multiple calls to cleanup task
+
 ### v0.32.3 (2020-08-27)
 
 * Support cleanup task for forked sub flow #452

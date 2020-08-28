@@ -623,6 +623,13 @@
 <span id="622">622</span>
 <span id="623">623</span>
 <span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
@@ -743,6 +750,20 @@
     }
 }
 
+<span class="kw">fn</span> <span class="ident">run_cleanup_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+    <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">task</span>) {
+        <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_info</span>) <span class="op">=&gt;</span> <span class="ident">run_task</span>(
+            <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
+            <span class="ident">flow_state</span>,
+            <span class="kw-2">&amp;</span><span class="ident">Step</span> {
+                <span class="ident">name</span>: <span class="ident">task</span>.<span class="ident">to_string</span>(),
+                <span class="ident">config</span>: <span class="ident">cleanup_task_info</span>.<span class="ident">clone</span>(),
+            },
+        ),
+        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
+    }
+}
+
 <span class="kw">fn</span> <span class="ident">run_forked_task</span>(
     <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>,
@@ -757,20 +778,9 @@
             <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
                 <span class="ident">command</span>::<span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
 
-            <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">cleanup_task_name</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_info</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">run_task</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
-                        <span class="ident">flow_state</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">Step</span> {
-                            <span class="ident">name</span>: <span class="ident">cleanup_task_name</span>.<span class="ident">to_string</span>(),
-                            <span class="ident">config</span>: <span class="ident">cleanup_task_info</span>.<span class="ident">clone</span>(),
-                        },
-                    );
-
-                    <span class="ident">command</span>::<span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
-                }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task_name</span>),
+            <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">!=</span> <span class="number">0</span> {
+                <span class="ident">run_cleanup_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task_name</span>);
+                <span class="ident">command</span>::<span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
             }
         }
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>),
@@ -848,6 +858,10 @@
             <span class="kw">for</span> <span class="ident">task_thread</span> <span class="kw">in</span> <span class="ident">threads</span> {
                 <span class="ident">task_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();
             }
+        }
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_name</span>) <span class="op">=</span> <span class="ident">cleanup_task</span> {
+            <span class="ident">run_cleanup_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task_name</span>);
         }
 
         <span class="bool-val">true</span>
