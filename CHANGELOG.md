@@ -2,7 +2,7 @@
 
 ### v0.32.5
 
-* Allow for explicit workspace flow in sub flows
+* Allow for explicit workspace flow in sub flows #455 (thanks @epontan)
 
 ### v0.32.4 (2020-08-28)
 
