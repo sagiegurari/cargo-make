@@ -583,6 +583,31 @@ fn is_workspace_flow_true_in_task() {
 }
 
 #[test]
+fn is_workspace_flow_default_false_in_task_and_sub_flow() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let task = Task::new();
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+
+    assert!(!workspace_flow);
+}
+
+#[test]
 fn is_workspace_flow_true_in_task_and_sub_flow() {
     let mut crate_info = CrateInfo::new();
     let members = vec![];
@@ -593,6 +618,32 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
 
     let mut task = Task::new();
     task.workspace = Some(true);
+
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+    config.tasks.insert("test".to_string(), task);
+
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+
+    assert!(workspace_flow);
+}
+
+#[test]
+fn is_workspace_flow_false_in_task_and_sub_flow() {
+    let mut crate_info = CrateInfo::new();
+    let members = vec![];
+    crate_info.workspace = Some(Workspace {
+        members: Some(members),
+        exclude: None,
+    });
+
+    let mut task = Task::new();
+    task.workspace = Some(false);
 
     let mut config = Config {
         config: ConfigSection::new(),

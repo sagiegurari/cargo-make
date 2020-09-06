@@ -290,21 +290,32 @@ fn is_workspace_flow(
     crate_info: &CrateInfo,
     sub_flow: bool,
 ) -> bool {
+    // determine if workspace flow is explicitly set and enabled in the requested task
+    let (task_set_workspace, task_enable_workspace) =
+        match get_optional_normalized_task(config, task, true) {
+            Some(normalized_task) => match normalized_task.workspace {
+                Some(enable_workspace) => (true, enable_workspace),
+                None => (false, false),
+            },
+            None => (false, false),
+        };
+
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
     if disable_workspace
-        || sub_flow
+        || (sub_flow && !task_enable_workspace)
         || (crate_info.workspace.is_none() && !envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION"))
         || envmnt::exists("CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER")
     {
         false
     } else {
-        // check for configured default workspace flag
-        let default_to_workspace = config.config.default_to_workspace.unwrap_or(true);
-
         // project is a workspace and wasn't disabled via cli, need to check requested task
-        match get_optional_normalized_task(config, task, true) {
-            Some(cli_task) => cli_task.workspace.unwrap_or(default_to_workspace),
-            None => default_to_workspace,
+
+        // use requested task's workspace flag if set
+        if task_set_workspace {
+            task_enable_workspace
+        } else {
+            // use configured default workspace flag if set
+            config.config.default_to_workspace.unwrap_or(true)
         }
     }
 }

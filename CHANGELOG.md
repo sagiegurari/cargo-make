@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.5
+
+* Allow for explicit workspace flow in sub flows
+
 ### v0.32.4 (2020-08-28)
 
 * Prevent multiple calls to cleanup task
