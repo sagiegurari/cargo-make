@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.5
+### v0.32.5 (2020-09-11)
 
 * Allow for explicit workspace flow in sub flows #455 (thanks @epontan)
 
