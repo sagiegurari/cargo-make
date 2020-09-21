@@ -74,6 +74,7 @@
         * [CircleCI](#usage-ci-circleci)
         * [Azure Pipelines](#usage-ci-azure-pipelines)
         * [drone.io](#usage-ci-drone-io)
+        * [Cirrus CI](#usage-ci-cirrus)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Full List](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md)
