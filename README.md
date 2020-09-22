@@ -86,6 +86,7 @@
         * [CircleCI](#usage-ci-circleci)
         * [Azure Pipelines](#usage-ci-azure-pipelines)
         * [drone.io](#usage-ci-drone-io)
+        * [Cirrus CI](#usage-ci-cirrus)
     * [Predefined Flows](#usage-predefined-flows)
         * [Coverage](#usage-predefined-flows-coverage)
         * [Full List](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md)
@@ -2929,6 +2930,20 @@ pipeline:
     commands:
     - cargo install --debug cargo-make
     - cargo make ci-flow
+```
+
+<a name="usage-ci-cirrus"></a>
+#### Cirrus CI
+This is a minimal `.cirrus.yml` example for running the ci-flow task:
+
+```yaml
+container:
+  image: rust:latest
+
+task:
+  name: ci-flow
+  install_script: cargo install --debug cargo-make
+  flow_script: cargo make ci-flow
 ```
 
 <a name="usage-predefined-flows"></a>

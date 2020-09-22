@@ -2,6 +2,10 @@
 
 ### v0.32.5 (2020-09-11)
 
+* Add example usage with cirrus CI #260 (thanks @fkorotkov)
+
+### v0.32.5 (2020-09-11)
+
 * Allow for explicit workspace flow in sub flows #455 (thanks @epontan)
 
 ### v0.32.4 (2020-08-28)
