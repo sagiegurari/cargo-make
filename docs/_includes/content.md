@@ -2820,6 +2820,20 @@ pipeline:
     - cargo make ci-flow
 ```
 
+<a name="usage-ci-cirrus"></a>
+#### Cirrus CI
+This is a minimal `.cirrus.yml` example for running the ci-flow task:
+
+```yaml
+container:
+  image: rust:latest
+
+task:
+  name: ci-flow
+  install_script: cargo install --debug cargo-make
+  flow_script: cargo make ci-flow
+```
+
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with many predefined tasks and flows.<br>
