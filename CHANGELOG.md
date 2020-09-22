@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.5 (2020-09-11)
+### v0.32.6
 
 * Add example usage with cirrus CI #260 (thanks @fkorotkov)
 
