@@ -1698,6 +1698,8 @@ pub struct ConfigSection {
     pub windows_load_script: Option<Vec<String>>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
     pub mac_load_script: Option<Vec<String>>,
+    /// Toolchain to use for all tasks, this can be overwritten by individual tasks
+    pub toolchain: Option<String>,
 }
 
 impl ConfigSection {
@@ -1799,6 +1801,10 @@ impl ConfigSection {
 
         if extended.mac_load_script.is_some() {
             self.mac_load_script = extended.mac_load_script.clone();
+        }
+
+        if extended.toolchain.is_some() {
+            self.toolchain = extended.toolchain.clone();
         }
     }
 
