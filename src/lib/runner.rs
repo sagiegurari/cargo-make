@@ -354,6 +354,12 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
             let mut updated_step = functions::run(&step);
             updated_step = environment::expand_env(&updated_step);
 
+            if updated_step.config.toolchain.is_none()
+                && flow_info.config.config.toolchain.is_some()
+            {
+                updated_step.config.toolchain = flow_info.config.config.toolchain.clone();
+            }
+
             let watch = should_watch(&step.config);
 
             if watch {

@@ -86,10 +86,6 @@ fn get_optional_normalized_task(config: &Config, name: &str, support_alias: bool
                     None => normalized_task,
                 };
 
-                if normalized_task.toolchain.is_none() && config.config.toolchain.is_some() {
-                    normalized_task.toolchain = config.config.toolchain.clone();
-                }
-
                 Some(normalized_task)
             }
             None => None,
