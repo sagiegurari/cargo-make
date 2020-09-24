@@ -22,6 +22,7 @@ use crate::logger;
 use crate::profile;
 use crate::scriptengine;
 use crate::time_summary;
+use crate::toolchain;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
     RunTaskInfo, RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
@@ -353,12 +354,9 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
             // modify step using env and functions
             let mut updated_step = functions::run(&step);
             updated_step = environment::expand_env(&updated_step);
+            toolchain::expand(flow_info, &mut updated_step);
 
-            if updated_step.config.toolchain.is_none()
-                && flow_info.config.config.toolchain.is_some()
-            {
-                updated_step.config.toolchain = flow_info.config.config.toolchain.clone();
-            }
+            debug!("Updated step definition {:#?}", &updated_step.config);
 
             let watch = should_watch(&step.config);
 

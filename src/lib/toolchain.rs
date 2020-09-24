@@ -7,7 +7,7 @@
 #[path = "./toolchain_test.rs"]
 mod toolchain_test;
 
-use crate::types::CommandSpec;
+use crate::types::{CommandSpec, FlowInfo, Step};
 use std::process::{Command, Stdio};
 
 #[cfg(test)]
@@ -65,4 +65,11 @@ fn has_toolchain(toolchain: &str) -> bool {
         .status()
         .expect("Failed to check rustup toolchain")
         .success()
+}
+
+pub(crate) fn expand(flow_info: &FlowInfo, step: &mut Step) {
+    println!("{:?}", flow_info.config.config.toolchain);
+    if step.config.toolchain.is_none() && flow_info.config.config.toolchain.is_some() {
+        step.config.toolchain = flow_info.config.config.toolchain.clone();
+    }
 }
