@@ -652,6 +652,45 @@ fn set_env_files_for_config_profile() {
 
 #[test]
 #[ignore]
+fn set_env_files_for_config_profile_inverse() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    profile::set("env_test1");
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test2".to_string()),
+            }),
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/profile.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test1".to_string()),
+            }),
+        ],
+        None,
+    );
+
+    assert!(!loaded);
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+#[ignore]
 fn set_env_files_for_config_additional_profiles() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());

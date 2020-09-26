@@ -227,31 +227,32 @@ fn set_env_files_for_config(
 ) -> bool {
     let mut all_loaded = true;
     for env_file in env_files {
-        all_loaded = all_loaded
-            && match env_file {
-                EnvFile::Path(file) => load_env_file(Some(file)),
-                EnvFile::Info(info) => {
-                    let is_valid_profile = match info.profile {
-                        Some(profile_name) => {
-                            let current_profile_name = profile::get();
+        let loaded = match env_file {
+            EnvFile::Path(file) => load_env_file(Some(file)),
+            EnvFile::Info(info) => {
+                let is_valid_profile = match info.profile {
+                    Some(profile_name) => {
+                        let current_profile_name = profile::get();
 
-                            let found = match additional_profiles {
-                                Some(profiles) => profiles.contains(&profile_name),
-                                None => false,
-                            };
+                        let found = match additional_profiles {
+                            Some(profiles) => profiles.contains(&profile_name),
+                            None => false,
+                        };
 
-                            current_profile_name == profile_name || found
-                        }
-                        None => true,
-                    };
-
-                    if is_valid_profile {
-                        load_env_file_with_base_directory(Some(info.path), info.base_path)
-                    } else {
-                        false
+                        current_profile_name == profile_name || found
                     }
+                    None => true,
+                };
+
+                if is_valid_profile {
+                    load_env_file_with_base_directory(Some(info.path), info.base_path)
+                } else {
+                    false
                 }
             }
+        };
+
+        all_loaded = all_loaded && loaded;
     }
 
     all_loaded
