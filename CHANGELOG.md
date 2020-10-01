@@ -2,7 +2,9 @@
 
 ### v0.32.6
 
+* Fix env_files loading #459 (thanks @wolf4ood)
 * Add example usage with cirrus CI #260 (thanks @fkorotkov)
+* Upgrade duckscript runtime to 0.5.1 and SDK to 0.6.8
 
 ### v0.32.5 (2020-09-11)
 
