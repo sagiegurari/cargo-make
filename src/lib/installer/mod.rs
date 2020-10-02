@@ -117,6 +117,7 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                 scriptengine::invoke_script_in_flow_context(
                     &ScriptValue::Text(script.to_vec()),
                     task_config.script_runner.clone(),
+                    task_config.script_runner_args.clone(),
                     task_config.script_extension.clone(),
                     validate,
                     Some(flow_info),

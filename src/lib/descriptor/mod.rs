@@ -208,6 +208,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                         &ScriptValue::Text(script.to_vec()),
                         None,
                         None,
+                        None,
                         true,
                         &vec![],
                     );

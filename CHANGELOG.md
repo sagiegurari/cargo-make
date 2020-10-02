@@ -2,6 +2,7 @@
 
 ### v0.32.6
 
+* New script_runner_args task attribute to enable custom cli arguments before the script file #461
 * Fix env_files loading #459 (thanks @wolf4ood)
 * Add example usage with cirrus CI #260 (thanks @fkorotkov)
 * Upgrade duckscript runtime to 0.5.1 and SDK to 0.6.8

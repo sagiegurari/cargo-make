@@ -903,6 +903,8 @@ pub struct Task {
     pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The script runner arguments before the script file path
+    pub script_runner_args: Option<Vec<String>>,
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
@@ -1218,6 +1220,12 @@ impl Task {
             self.script_runner = None;
         }
 
+        if task.script_runner_args.is_some() {
+            self.script_runner_args = task.script_runner_args.clone();
+        } else if override_values {
+            self.script_runner_args = None;
+        }
+
         if task.script_extension.is_some() {
             self.script_extension = task.script_extension.clone();
         } else if override_values {
@@ -1331,6 +1339,7 @@ impl Task {
                     args: override_task.args.clone(),
                     script: override_task.script.clone(),
                     script_runner: override_task.script_runner.clone(),
+                    script_runner_args: override_task.script_runner_args.clone(),
                     script_extension: override_task.script_extension.clone(),
                     run_task: override_task.run_task.clone(),
                     dependencies: override_task.dependencies.clone(),
@@ -1495,6 +1504,8 @@ pub struct PlatformOverrideTask {
     pub script: Option<ScriptValue>,
     /// The script runner (defaults to cmd in windows and sh for other platforms)
     pub script_runner: Option<String>,
+    /// The script runner arguments before the script file path
+    pub script_runner_args: Option<Vec<String>>,
     /// The script file extension
     pub script_extension: Option<String>,
     /// The task name to execute
@@ -1592,6 +1603,10 @@ impl PlatformOverrideTask {
 
             if self.script_runner.is_none() && task.script_runner.is_some() {
                 self.script_runner = task.script_runner.clone();
+            }
+
+            if self.script_runner_args.is_none() && task.script_runner_args.is_some() {
+                self.script_runner_args = task.script_runner_args.clone();
             }
 
             if self.script_extension.is_none() && task.script_extension.is_some() {

@@ -265,6 +265,7 @@ fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
                 &ScriptValue::Text(vec![env_script]),
                 None,
                 None,
+                None,
                 true,
                 cli_arguments,
             );
