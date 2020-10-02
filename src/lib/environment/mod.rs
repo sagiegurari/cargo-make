@@ -715,6 +715,23 @@ pub(crate) fn get_project_root() -> Option<String> {
     }
 }
 
+fn expand_env_for_script_runner_arguments(task: &mut Task) {
+    let updated_args = match task.script_runner_args {
+        Some(ref args) => {
+            let mut expanded_args = vec![];
+
+            for index in 0..args.len() {
+                expanded_args.push(expand_value(&args[index]));
+            }
+
+            Some(expanded_args)
+        }
+        None => None,
+    };
+
+    task.script_runner_args = updated_args;
+}
+
 fn expand_env_for_arguments(task: &mut Task) {
     //update args by replacing any env vars
     let updated_args = match task.args {
@@ -772,6 +789,7 @@ pub(crate) fn expand_env(step: &Step) -> Step {
 
     //update args by replacing any env vars
     expand_env_for_arguments(&mut config);
+    expand_env_for_script_runner_arguments(&mut config);
 
     Step {
         name: step.name.clone(),
