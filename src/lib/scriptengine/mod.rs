@@ -145,6 +145,7 @@ pub(crate) fn invoke(task: &Task, flow_info: &FlowInfo) -> bool {
             invoke_script_in_flow_context(
                 script,
                 task.script_runner.clone(),
+                task.script_runner_args.clone(),
                 task.script_extension.clone(),
                 validate,
                 Some(flow_info),
@@ -157,6 +158,7 @@ pub(crate) fn invoke(task: &Task, flow_info: &FlowInfo) -> bool {
 pub(crate) fn invoke_script_in_flow_context(
     script: &ScriptValue,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
     script_extension: Option<String>,
     validate: bool,
     flow_info: Option<&FlowInfo>,
@@ -172,6 +174,7 @@ pub(crate) fn invoke_script_in_flow_context(
     invoke_script(
         script,
         script_runner,
+        script_runner_args,
         script_extension,
         validate,
         flow_info,
@@ -182,6 +185,7 @@ pub(crate) fn invoke_script_in_flow_context(
 pub(crate) fn invoke_script_pre_flow(
     script: &ScriptValue,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
     script_extension: Option<String>,
     validate: bool,
     cli_arguments: &Vec<String>,
@@ -189,6 +193,7 @@ pub(crate) fn invoke_script_pre_flow(
     invoke_script(
         script,
         script_runner,
+        script_runner_args,
         script_extension,
         validate,
         None,
@@ -199,6 +204,7 @@ pub(crate) fn invoke_script_pre_flow(
 fn invoke_script(
     script: &ScriptValue,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
     script_extension: Option<String>,
     validate: bool,
     flow_info: Option<&FlowInfo>,
@@ -238,7 +244,7 @@ fn invoke_script(
                 &script_text,
                 script_runner.unwrap(),
                 extension,
-                None,
+                script_runner_args.clone(),
                 cli_arguments,
                 validate,
             );

@@ -31,40 +31,47 @@ use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::{Path, PathBuf};
 
-fn evaluate_env_value(env_value: &EnvValueScript) -> String {
+fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true, Some(false)) {
         Ok(output) => {
             let exit_code = output.0;
             let stdout = output.1;
+            let stderr = output.2;
 
-            command::validate_exit_code(exit_code);
+            if exit_code != 0 {
+                error!(
+                    concat!(
+                        "Error while evaluating script for env: {}, exit code: {}\n",
+                        "Script:\n{:#?}\n",
+                        "Stdout:\n{}\n",
+                        "Stderr:\n{}\n"
+                    ),
+                    key, exit_code, env_value.script, &stdout, &stderr
+                );
+            }
 
             debug!("Env script stdout:\n{}", &stdout);
 
-            if exit_code == 0 {
-                let multi_line = match env_value.multi_line {
-                    Some(bool_value) => bool_value,
-                    None => false,
-                };
+            let multi_line = match env_value.multi_line {
+                Some(bool_value) => bool_value,
+                None => false,
+            };
 
-                if multi_line {
-                    stdout.to_string()
-                } else {
-                    let mut lines: Vec<&str> = stdout.split("\n").collect();
-                    lines.retain(|&line| line.len() > 0);
-
-                    if lines.len() > 0 {
-                        let line = lines[lines.len() - 1].to_string();
-
-                        let line_str = str::replace(&line, "\r", "");
-
-                        line_str.to_string()
-                    } else {
-                        "".to_string()
-                    }
-                }
+            if multi_line {
+                stdout.to_string()
             } else {
-                "".to_string()
+                let mut lines: Vec<&str> = stdout.split("\n").collect();
+                lines.retain(|&line| line.len() > 0);
+
+                if lines.len() > 0 {
+                    let line = lines[lines.len() - 1].to_string();
+
+                    let line_str = str::replace(&line, "\r", "");
+
+                    line_str.to_string()
+                } else {
+                    "".to_string()
+                }
             }
         }
         _ => "".to_string(),
@@ -103,7 +110,7 @@ fn set_env_for_list(key: &str, list: &Vec<String>) {
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
-    let value = evaluate_env_value(&env_value);
+    let value = evaluate_env_value(&key, &env_value);
 
     evaluate_and_set_env(&key, &value);
 }
@@ -227,31 +234,32 @@ fn set_env_files_for_config(
 ) -> bool {
     let mut all_loaded = true;
     for env_file in env_files {
-        all_loaded = all_loaded
-            && match env_file {
-                EnvFile::Path(file) => load_env_file(Some(file)),
-                EnvFile::Info(info) => {
-                    let is_valid_profile = match info.profile {
-                        Some(profile_name) => {
-                            let current_profile_name = profile::get();
+        let loaded = match env_file {
+            EnvFile::Path(file) => load_env_file(Some(file)),
+            EnvFile::Info(info) => {
+                let is_valid_profile = match info.profile {
+                    Some(profile_name) => {
+                        let current_profile_name = profile::get();
 
-                            let found = match additional_profiles {
-                                Some(profiles) => profiles.contains(&profile_name),
-                                None => false,
-                            };
+                        let found = match additional_profiles {
+                            Some(profiles) => profiles.contains(&profile_name),
+                            None => false,
+                        };
 
-                            current_profile_name == profile_name || found
-                        }
-                        None => true,
-                    };
-
-                    if is_valid_profile {
-                        load_env_file_with_base_directory(Some(info.path), info.base_path)
-                    } else {
-                        false
+                        current_profile_name == profile_name || found
                     }
+                    None => true,
+                };
+
+                if is_valid_profile {
+                    load_env_file_with_base_directory(Some(info.path), info.base_path)
+                } else {
+                    false
                 }
             }
+        };
+
+        all_loaded = all_loaded && loaded;
     }
 
     all_loaded
@@ -262,6 +270,7 @@ fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
         if !env_script.is_empty() {
             scriptengine::invoke_script_pre_flow(
                 &ScriptValue::Text(vec![env_script]),
+                None,
                 None,
                 None,
                 true,
@@ -713,6 +722,23 @@ pub(crate) fn get_project_root() -> Option<String> {
     }
 }
 
+fn expand_env_for_script_runner_arguments(task: &mut Task) {
+    let updated_args = match task.script_runner_args {
+        Some(ref args) => {
+            let mut expanded_args = vec![];
+
+            for index in 0..args.len() {
+                expanded_args.push(expand_value(&args[index]));
+            }
+
+            Some(expanded_args)
+        }
+        None => None,
+    };
+
+    task.script_runner_args = updated_args;
+}
+
 fn expand_env_for_arguments(task: &mut Task) {
     //update args by replacing any env vars
     let updated_args = match task.args {
@@ -770,6 +796,7 @@ pub(crate) fn expand_env(step: &Step) -> Step {
 
     //update args by replacing any env vars
     expand_env_for_arguments(&mut config);
+    expand_env_for_script_runner_arguments(&mut config);
 
     Step {
         name: step.name.clone(),

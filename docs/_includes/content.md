@@ -798,12 +798,38 @@ console.log('Hello, World!');
 '''
 ]
 
+[tasks.php]
+script_runner = "php"
+script_extension = "php"
+script = [
+'''
+<?php
+echo "Hello, World!\n";
+'''
+]
+
 [tasks.powershell]
 script_runner = "powershell"
 script_extension = "ps1"
 script = [
 '''
 Write-Host "Hello, World!"
+'''
+]
+```
+
+In case you need to provider the script runner arguments before the script file, you can use the **script_runner_args** attribute.<br>
+For example:
+
+```toml
+[tasks.php-with-args]
+script_runner = "php"
+script_runner_args = ["-f"]
+script_extension = "php"
+script = [
+'''
+<?php
+echo "Hello, World!\n";
 '''
 ]
 ```

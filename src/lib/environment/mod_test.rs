@@ -652,6 +652,45 @@ fn set_env_files_for_config_profile() {
 
 #[test]
 #[ignore]
+fn set_env_files_for_config_profile_inverse() {
+    let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
+    env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
+    for (key, _) in env.clone().iter() {
+        envmnt::remove(&key);
+    }
+
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    profile::set("env_test1");
+
+    let loaded = set_env_files_for_config(
+        vec![
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/env.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test2".to_string()),
+            }),
+            EnvFile::Info(EnvFileInfo {
+                path: "./test/test_files/profile.env".to_string(),
+                base_path: Some("./src/lib".to_string()),
+                profile: Some("env_test1".to_string()),
+            }),
+        ],
+        None,
+    );
+
+    assert!(!loaded);
+    assert!(!envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
+    assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_PROFILE_TEST1"));
+
+    for (key, _) in env.iter() {
+        envmnt::remove(&key);
+    }
+}
+
+#[test]
+#[ignore]
 fn set_env_files_for_config_additional_profiles() {
     let mut env = envmnt::parse_file("./src/lib/test/test_files/env.env").unwrap();
     env.extend(envmnt::parse_file("./src/lib/test/test_files/profile.env").unwrap());
@@ -903,10 +942,13 @@ fn setup_env_script() {
 
 #[test]
 fn evaluate_env_value_valid() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo script1".to_string()],
-        multi_line: None,
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo script1".to_string()],
+            multi_line: None,
+        },
+    );
 
     assert_eq!(output, "script1".to_string());
 }
@@ -914,10 +956,13 @@ fn evaluate_env_value_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_empty() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["".to_string()],
-        multi_line: None,
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["".to_string()],
+            multi_line: None,
+        },
+    );
 
     assert_eq!(output, "".to_string());
 }
@@ -925,28 +970,37 @@ fn evaluate_env_value_empty() {
 #[test]
 #[should_panic]
 fn evaluate_env_error() {
-    evaluate_env_value(&EnvValueScript {
-        script: vec!["exit 1".to_string()],
-        multi_line: None,
-    });
+    evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["exit 1".to_string()],
+            multi_line: None,
+        },
+    );
 }
 
 #[test]
 fn evaluate_env_value_single_line() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo test".to_string()],
-        multi_line: Some(false),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo test".to_string()],
+            multi_line: Some(false),
+        },
+    );
 
     assert!(output.contains("test"));
 }
 
 #[test]
 fn evaluate_env_value_multi_line() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo 1\necho 2".to_string()],
-        multi_line: Some(true),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo 1\necho 2".to_string()],
+            multi_line: Some(true),
+        },
+    );
 
     assert!(output.contains("1"));
     assert!(output.contains("2"));
@@ -955,10 +1009,13 @@ fn evaluate_env_value_multi_line() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_multi_line_linux() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo 1\necho 2".to_string()],
-        multi_line: Some(true),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo 1\necho 2".to_string()],
+            multi_line: Some(true),
+        },
+    );
 
     assert!(output.contains("1"));
     assert!(output.contains("2"));
@@ -1336,6 +1393,11 @@ fn expand_env_with_env_vars() {
         "arg3-${TEST_ENV_EXPAND1}-${TEST_ENV_EXPAND2}".to_string(),
         "arg4".to_string(),
     ]);
+    task.script_runner_args = Some(vec![
+        "sr1".to_string(),
+        "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
+        "sr3".to_string(),
+    ]);
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -1349,7 +1411,24 @@ fn expand_env_with_env_vars() {
     );
     let args = updated_step.config.args.unwrap();
     assert_eq!(args.len(), 5);
-    assert_eq!(args[3], "arg3-ENV1-ENV2".to_string());
+    assert_eq!(
+        args,
+        vec![
+            "arg0".to_string(),
+            "arg1".to_string(),
+            "arg2".to_string(),
+            "arg3-ENV1-ENV2".to_string(),
+            "arg4".to_string(),
+        ]
+    );
+    assert_eq!(
+        updated_step.config.script_runner_args.unwrap(),
+        vec![
+            "sr1".to_string(),
+            "sr2-ENV2-end".to_string(),
+            "sr3".to_string(),
+        ]
+    );
 }
 
 #[test]
