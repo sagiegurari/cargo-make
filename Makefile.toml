@@ -28,7 +28,6 @@ echo "*************************************"
 '''
 ]
 
-
 [tasks.test-multi-phases-flow]
 condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV"] }
 
