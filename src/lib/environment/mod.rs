@@ -31,40 +31,47 @@ use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::{Path, PathBuf};
 
-fn evaluate_env_value(env_value: &EnvValueScript) -> String {
+fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true, Some(false)) {
         Ok(output) => {
             let exit_code = output.0;
             let stdout = output.1;
+            let stderr = output.2;
 
-            command::validate_exit_code(exit_code);
+            if exit_code != 0 {
+                error!(
+                    concat!(
+                        "Error while evaluating script for env: {}, exit code: {}\n",
+                        "script:\n{:#?}\n",
+                        "stdout:\n{}\n",
+                        "stderr:\n{}\n"
+                    ),
+                    key, exit_code, env_value.script, &stdout, &stderr
+                );
+            }
 
             debug!("Env script stdout:\n{}", &stdout);
 
-            if exit_code == 0 {
-                let multi_line = match env_value.multi_line {
-                    Some(bool_value) => bool_value,
-                    None => false,
-                };
+            let multi_line = match env_value.multi_line {
+                Some(bool_value) => bool_value,
+                None => false,
+            };
 
-                if multi_line {
-                    stdout.to_string()
-                } else {
-                    let mut lines: Vec<&str> = stdout.split("\n").collect();
-                    lines.retain(|&line| line.len() > 0);
-
-                    if lines.len() > 0 {
-                        let line = lines[lines.len() - 1].to_string();
-
-                        let line_str = str::replace(&line, "\r", "");
-
-                        line_str.to_string()
-                    } else {
-                        "".to_string()
-                    }
-                }
+            if multi_line {
+                stdout.to_string()
             } else {
-                "".to_string()
+                let mut lines: Vec<&str> = stdout.split("\n").collect();
+                lines.retain(|&line| line.len() > 0);
+
+                if lines.len() > 0 {
+                    let line = lines[lines.len() - 1].to_string();
+
+                    let line_str = str::replace(&line, "\r", "");
+
+                    line_str.to_string()
+                } else {
+                    "".to_string()
+                }
             }
         }
         _ => "".to_string(),
@@ -103,7 +110,7 @@ fn set_env_for_list(key: &str, list: &Vec<String>) {
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
-    let value = evaluate_env_value(&env_value);
+    let value = evaluate_env_value(&key, &env_value);
 
     evaluate_and_set_env(&key, &value);
 }

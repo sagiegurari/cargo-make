@@ -942,10 +942,13 @@ fn setup_env_script() {
 
 #[test]
 fn evaluate_env_value_valid() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo script1".to_string()],
-        multi_line: None,
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo script1".to_string()],
+            multi_line: None,
+        },
+    );
 
     assert_eq!(output, "script1".to_string());
 }
@@ -953,10 +956,13 @@ fn evaluate_env_value_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_empty() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["".to_string()],
-        multi_line: None,
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["".to_string()],
+            multi_line: None,
+        },
+    );
 
     assert_eq!(output, "".to_string());
 }
@@ -964,28 +970,37 @@ fn evaluate_env_value_empty() {
 #[test]
 #[should_panic]
 fn evaluate_env_error() {
-    evaluate_env_value(&EnvValueScript {
-        script: vec!["exit 1".to_string()],
-        multi_line: None,
-    });
+    evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["exit 1".to_string()],
+            multi_line: None,
+        },
+    );
 }
 
 #[test]
 fn evaluate_env_value_single_line() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo test".to_string()],
-        multi_line: Some(false),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo test".to_string()],
+            multi_line: Some(false),
+        },
+    );
 
     assert!(output.contains("test"));
 }
 
 #[test]
 fn evaluate_env_value_multi_line() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo 1\necho 2".to_string()],
-        multi_line: Some(true),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo 1\necho 2".to_string()],
+            multi_line: Some(true),
+        },
+    );
 
     assert!(output.contains("1"));
     assert!(output.contains("2"));
@@ -994,10 +1009,13 @@ fn evaluate_env_value_multi_line() {
 #[test]
 #[cfg(target_os = "linux")]
 fn evaluate_env_value_multi_line_linux() {
-    let output = evaluate_env_value(&EnvValueScript {
-        script: vec!["echo 1\necho 2".to_string()],
-        multi_line: Some(true),
-    });
+    let output = evaluate_env_value(
+        "MY_ENV_SCRIPT_KEY",
+        &EnvValueScript {
+            script: vec!["echo 1\necho 2".to_string()],
+            multi_line: Some(true),
+        },
+    );
 
     assert!(output.contains("1"));
     assert!(output.contains("2"));
