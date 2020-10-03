@@ -42,9 +42,9 @@ fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
                 error!(
                     concat!(
                         "Error while evaluating script for env: {}, exit code: {}\n",
-                        "script:\n{:#?}\n",
-                        "stdout:\n{}\n",
-                        "stderr:\n{}\n"
+                        "Script:\n{:#?}\n",
+                        "Stdout:\n{}\n",
+                        "Stderr:\n{}\n"
                     ),
                     key, exit_code, env_value.script, &stdout, &stderr
                 );
