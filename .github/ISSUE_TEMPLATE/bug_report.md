@@ -7,18 +7,20 @@ assignees: sagiegurari
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Describe the bug
+<!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## To Reproduce
+<!-- Steps to reproduce the behavior: -->
 
-**Error Stack**
+## Error Stack
+
 ```console
 The error stack trace
 ```
 
-**Code Sample**
+## Code Sample
+
 ```rust
 /// paste code here
 ```
