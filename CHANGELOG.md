@@ -1,11 +1,11 @@
 ## CHANGELOG
 
-### v0.32.6
+### v0.32.6 (2020-10-03)
 
 * New script_runner_args task attribute to enable custom cli arguments before the script file #461
 * Fix env_files loading #459 (thanks @wolf4ood)
 * Provide more detailed error message when env-script fails #463 (thanks @epontan)
-* Add example usage with cirrus CI #260 (thanks @fkorotkov)
+* Add example usage with cirrus CI #260 (thanks @fkorotkov and @mtmn)
 * Upgrade duckscript runtime to 0.5.1 and SDK to 0.6.8
 
 ### v0.32.5 (2020-09-11)
