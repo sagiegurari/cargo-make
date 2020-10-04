@@ -236,7 +236,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
         make_line.push_str(&member_name);
         make_line.push_str(" --profile ");
         make_line.push_str(&profile_name);
-        make_line.push_str(" ");
+        make_line.push_str(" -- ");
         make_line.push_str(&task);
 
         if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
