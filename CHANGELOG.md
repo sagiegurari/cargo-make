@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.7
+### v0.32.7 (2020-10-07)
 
 * Fix passing task args to workspace members #470
 * Update script_runner_args related documentation #471
