@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.32.7
+
+* Fix passing task args to workspace members #470
+* Update script_runner_args related documentation #471
+
 ### v0.32.6 (2020-10-03)
 
 * New script_runner_args task attribute to enable custom cli arguments before the script file #461
