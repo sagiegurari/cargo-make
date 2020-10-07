@@ -946,6 +946,8 @@ echo "Hello, World!\n";
 ]
 ```
 
+*script_runner_args requires script_extension defined as well.*
+
 <a name="usage-task-command-script-task-exampleshebang"></a>
 #### Shebang Support
 Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
