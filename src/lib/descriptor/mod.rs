@@ -375,7 +375,16 @@ fn load_external_descriptor(
 
         let mut file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
-            Err(error) => panic!("Unable to parse external descriptor, {}", error),
+            Err(error) => {
+                error!(
+                    "Unable to parse external file: {:#?}, {}",
+                    &file_path, error
+                );
+                panic!(
+                    "Unable to parse external file: {:#?}, {}",
+                    &file_path, error
+                );
+            }
         };
         debug!("Loaded external config: {:#?}", &file_config);
 
