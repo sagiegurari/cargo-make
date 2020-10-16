@@ -3,7 +3,7 @@
 category = "Git"
 
 [tasks.git-add]
-description = "Runs the cargo add command."
+description = "Runs the git add command."
 category = "Git"
 command = "git"
 args = ["add", "."]
