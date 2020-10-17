@@ -2,6 +2,7 @@
 
 ### v0.32.8
 
+* Fixed invocation of cargo commands with flag arguments #476
 * Improved error message when failing to parse external descriptor #475 (thanks @mrmanne)
 * Fixed git add task description #477 (thanks @knutwalker)
 

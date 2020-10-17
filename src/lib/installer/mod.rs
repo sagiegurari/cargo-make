@@ -24,7 +24,7 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
             if command == "cargo" {
                 match task_config.args {
                     Some(ref args) => {
-                        if args.len() > 0 {
+                        if args.len() > 0 && !args[0].starts_with("-") {
                             // create crate name
                             let mut crate_name = "cargo-".to_string();
                             crate_name = crate_name + &args[0];
