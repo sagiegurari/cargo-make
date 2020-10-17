@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.32.8
+
+* Improved error message when failing to parse external descriptor #475 (thanks @mrmanne)
+* Fixed git add task description #477 (thanks @knutwalker)
+
 ### v0.32.7 (2020-10-07)
 
 * Fix passing task args to workspace members #470
