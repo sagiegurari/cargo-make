@@ -1,10 +1,14 @@
 use super::*;
 
-fn get_script_vec(task: &Task) -> Vec<String> {
-    match task.script.as_ref().unwrap() {
+fn get_script_as_vec(script: Option<ScriptValue>) -> Vec<String> {
+    match script.unwrap() {
         ScriptValue::Text(value) => value.clone(),
         _ => panic!("Invalid script value type."),
     }
+}
+
+fn get_script_vec(task: &Task) -> Vec<String> {
+    get_script_as_vec(task.script.clone())
 }
 
 #[test]
@@ -3147,10 +3151,19 @@ fn config_section_extend_all_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
-    base.load_script = Some(vec!["base_info".to_string()]);
-    base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
-    base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
-    base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
+    base.load_script = Some(ScriptValue::Text(vec!["base_info".to_string()]));
+    base.linux_load_script = Some(ScriptValue::Text(vec![
+        "linux".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.windows_load_script = Some(ScriptValue::Text(vec![
+        "windows".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.mac_load_script = Some(ScriptValue::Text(vec![
+        "mac".to_string(),
+        "base_info".to_string(),
+    ]));
 
     extended.skip_core_tasks = Some(false);
     extended.modify_core_tasks = Some(ModifyConfig {
@@ -3165,10 +3178,13 @@ fn config_section_extend_all_values() {
     extended.default_to_workspace = Some(false);
     extended.reduce_output = Some(false);
     extended.time_summary = Some(false);
-    extended.load_script = Some(vec!["extended_info".to_string(), "arg2".to_string()]);
-    extended.linux_load_script = Some(vec!["extended_info".to_string()]);
-    extended.windows_load_script = Some(vec!["extended_info".to_string()]);
-    extended.mac_load_script = Some(vec!["extended_info".to_string()]);
+    extended.load_script = Some(ScriptValue::Text(vec![
+        "extended_info".to_string(),
+        "arg2".to_string(),
+    ]));
+    extended.linux_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
+    extended.windows_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
+    extended.mac_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
 
     base.extend(&mut extended);
 
@@ -3187,10 +3203,10 @@ fn config_section_extend_all_values() {
     assert!(!base.default_to_workspace.unwrap());
     assert!(!base.reduce_output.unwrap());
     assert!(!base.time_summary.unwrap());
-    assert_eq!(base.load_script.unwrap().len(), 2);
-    assert_eq!(base.linux_load_script.unwrap().len(), 1);
-    assert_eq!(base.windows_load_script.unwrap().len(), 1);
-    assert_eq!(base.mac_load_script.unwrap().len(), 1);
+    assert_eq!(get_script_as_vec(base.load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.linux_load_script).len(), 1);
+    assert_eq!(get_script_as_vec(base.windows_load_script).len(), 1);
+    assert_eq!(get_script_as_vec(base.mac_load_script).len(), 1);
 }
 
 #[test]
@@ -3211,10 +3227,22 @@ fn config_section_extend_no_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
-    base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
-    base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
-    base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
-    base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
+    base.load_script = Some(ScriptValue::Text(vec![
+        "base_info".to_string(),
+        "arg2".to_string(),
+    ]));
+    base.linux_load_script = Some(ScriptValue::Text(vec![
+        "linux".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.windows_load_script = Some(ScriptValue::Text(vec![
+        "windows".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.mac_load_script = Some(ScriptValue::Text(vec![
+        "mac".to_string(),
+        "base_info".to_string(),
+    ]));
 
     base.extend(&mut extended);
 
@@ -3233,10 +3261,10 @@ fn config_section_extend_no_values() {
     assert!(base.default_to_workspace.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
-    assert_eq!(base.load_script.unwrap().len(), 2);
-    assert_eq!(base.linux_load_script.unwrap().len(), 2);
-    assert_eq!(base.windows_load_script.unwrap().len(), 2);
-    assert_eq!(base.mac_load_script.unwrap().len(), 2);
+    assert_eq!(get_script_as_vec(base.load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.mac_load_script).len(), 2);
 }
 
 #[test]
@@ -3257,10 +3285,22 @@ fn config_section_extend_some_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
-    base.load_script = Some(vec!["base_info".to_string(), "arg2".to_string()]);
-    base.linux_load_script = Some(vec!["linux".to_string(), "base_info".to_string()]);
-    base.windows_load_script = Some(vec!["windows".to_string(), "base_info".to_string()]);
-    base.mac_load_script = Some(vec!["mac".to_string(), "base_info".to_string()]);
+    base.load_script = Some(ScriptValue::Text(vec![
+        "base_info".to_string(),
+        "arg2".to_string(),
+    ]));
+    base.linux_load_script = Some(ScriptValue::Text(vec![
+        "linux".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.windows_load_script = Some(ScriptValue::Text(vec![
+        "windows".to_string(),
+        "base_info".to_string(),
+    ]));
+    base.mac_load_script = Some(ScriptValue::Text(vec![
+        "mac".to_string(),
+        "base_info".to_string(),
+    ]));
 
     extended.skip_core_tasks = Some(false);
     extended.init_task = Some("extended_init".to_string());
@@ -3282,10 +3322,10 @@ fn config_section_extend_some_values() {
     assert!(base.default_to_workspace.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
-    assert_eq!(base.load_script.unwrap().len(), 2);
-    assert_eq!(base.linux_load_script.unwrap().len(), 2);
-    assert_eq!(base.windows_load_script.unwrap().len(), 2);
-    assert_eq!(base.mac_load_script.unwrap().len(), 2);
+    assert_eq!(get_script_as_vec(base.load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.mac_load_script).len(), 2);
 }
 
 #[test]
@@ -3299,7 +3339,7 @@ fn config_section_get_get_load_script_all_none() {
 #[test]
 fn config_section_get_get_load_script_platform_none() {
     let mut config = ConfigSection::new();
-    config.load_script = Some(vec!["exit 0".to_string()]);
+    config.load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
 
     let load_script = config.get_load_script();
     assert!(load_script.is_some());
@@ -3308,9 +3348,9 @@ fn config_section_get_get_load_script_platform_none() {
 #[test]
 fn config_section_get_get_load_script_platform_some() {
     let mut config = ConfigSection::new();
-    config.linux_load_script = Some(vec!["exit 0".to_string()]);
-    config.windows_load_script = Some(vec!["exit 0".to_string()]);
-    config.mac_load_script = Some(vec!["exit 0".to_string()]);
+    config.linux_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    config.windows_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    config.mac_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
 
     let load_script = config.get_load_script();
     assert!(load_script.is_some());
@@ -3319,15 +3359,15 @@ fn config_section_get_get_load_script_platform_some() {
 #[test]
 fn config_section_get_get_load_script_all_defined() {
     let mut config = ConfigSection::new();
-    config.load_script = Some(vec!["base".to_string(), "0".to_string()]);
-    config.linux_load_script = Some(vec!["linux".to_string()]);
-    config.windows_load_script = Some(vec!["windows".to_string()]);
-    config.mac_load_script = Some(vec!["mac".to_string()]);
+    config.load_script = Some(ScriptValue::Text(vec!["base".to_string(), "0".to_string()]));
+    config.linux_load_script = Some(ScriptValue::Text(vec!["linux".to_string()]));
+    config.windows_load_script = Some(ScriptValue::Text(vec!["windows".to_string()]));
+    config.mac_load_script = Some(ScriptValue::Text(vec!["mac".to_string()]));
 
     let load_script = config.get_load_script();
     assert!(load_script.is_some());
 
-    let script = load_script.unwrap();
+    let script = get_script_as_vec(load_script);
     assert_eq!(script.len(), 1);
     assert_eq!(script[0], get_platform_name());
 }

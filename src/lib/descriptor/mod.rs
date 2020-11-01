@@ -16,7 +16,7 @@ use crate::io;
 use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
-    ScriptValue, Task,
+    Task,
 };
 use crate::version;
 use envmnt;
@@ -204,14 +204,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    scriptengine::invoke_script_pre_flow(
-                        &ScriptValue::Text(script.to_vec()),
-                        None,
-                        None,
-                        None,
-                        true,
-                        &vec![],
-                    );
+                    scriptengine::invoke_script_pre_flow(script, None, None, None, true, &vec![]);
 
                     true
                 }

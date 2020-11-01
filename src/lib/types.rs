@@ -1758,13 +1758,13 @@ pub struct ConfigSection {
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
-    pub load_script: Option<Vec<String>>,
+    pub load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
-    pub linux_load_script: Option<Vec<String>>,
+    pub linux_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
-    pub windows_load_script: Option<Vec<String>>,
+    pub windows_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
-    pub mac_load_script: Option<Vec<String>>,
+    pub mac_load_script: Option<ScriptValue>,
 }
 
 impl ConfigSection {
@@ -1853,24 +1853,34 @@ impl ConfigSection {
         }
 
         if extended.load_script.is_some() {
-            self.load_script = extended.load_script.clone();
+            self.load_script =
+                extend_script_value(self.load_script.clone(), extended.load_script.clone());
         }
 
         if extended.linux_load_script.is_some() {
-            self.linux_load_script = extended.linux_load_script.clone();
+            self.linux_load_script = extend_script_value(
+                self.linux_load_script.clone(),
+                extended.linux_load_script.clone(),
+            );
         }
 
         if extended.windows_load_script.is_some() {
-            self.windows_load_script = extended.windows_load_script.clone();
+            self.windows_load_script = extend_script_value(
+                self.windows_load_script.clone(),
+                extended.windows_load_script.clone(),
+            );
         }
 
         if extended.mac_load_script.is_some() {
-            self.mac_load_script = extended.mac_load_script.clone();
+            self.mac_load_script = extend_script_value(
+                self.mac_load_script.clone(),
+                extended.mac_load_script.clone(),
+            );
         }
     }
 
     /// Returns the load script based on the current platform
-    pub fn get_load_script(self: &ConfigSection) -> Option<Vec<String>> {
+    pub fn get_load_script(self: &ConfigSection) -> Option<ScriptValue> {
         let platform_name = get_platform_name();
 
         if platform_name == "windows" {

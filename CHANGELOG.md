@@ -4,6 +4,7 @@
 
 * Support script content as a simple string instead of an array.
 * Support script content as fielded sections (pre/main/post) to enable sharing of common script content between tasks #473
+* The load_script attribute type supports all script input types (string/vec/file/sections).
 * Fixed invocation of cargo commands with flag arguments #476
 * Improved error message when failing to parse external descriptor #475 (thanks @mrmanne)
 * Fixed git add task description #477 (thanks @knutwalker)

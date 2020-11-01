@@ -1002,14 +1002,14 @@ Here is an example of a load script which downloads the common toml from a remot
 
 ```toml
 [config]
-load_script = ["wget -O /home/myuser/common.toml companyserver.com/common.toml"]
+load_script = "wget -O /home/myuser/common.toml companyserver.com/common.toml"
 ```
 
 Here is an example of pulling the common toml file from some git repo:
 
 ```toml
 [config]
-load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
+load_script = "git clone git@mygitserver:user/project.git /home/myuser/common"
 ```
 
 You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
