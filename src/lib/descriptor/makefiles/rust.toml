@@ -173,6 +173,7 @@ private = true
 script = '''
 #!@duckscript
 rm ./Cargo.lock
+'''
 
 [tasks.workspace-delete-lock]
 description = "Deletes the Cargo.lock file."

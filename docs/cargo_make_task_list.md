@@ -81,7 +81,7 @@
 
 ## Git
 
-* **git-add** - Runs the cargo add command.
+* **git-add** - Runs the git add command.
 * **git-commit** - Runs git commit command.
 * **git-commit-message** - Runs git commit command with the message defined in the COMMIT_MSG environment variable.
 * **git-delete-merged-branches** - Deletes any merged git branches
