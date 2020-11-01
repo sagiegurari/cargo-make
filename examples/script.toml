@@ -3,13 +3,11 @@
 skip_core_tasks = true
 
 [tasks.hello-world]
-script = [
-'''
+script = '''
     echo start...
     echo "Hello World From Script"
     echo end...
 '''
-]
 
 [tasks.hello-world-from-script-file]
 script = { file = "script.sh" }
@@ -38,3 +36,12 @@ script = [
     echo end
 '''
 ]
+
+[tasks.base-script]
+script.pre = "echo start"
+script.main = "echo old"
+script.post = "echo end"
+
+[tasks.extended-script]
+extend = "base-script"
+script.main = "echo new"

@@ -631,6 +631,27 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more features such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
+In order to share common script content among multiple tasks, you can use the script pre/main/post form as follows:
+
+```toml
+[tasks.base-script]
+script.pre = "echo start"
+script.main = "echo old"
+script.post = "echo end"
+
+[tasks.extended-script]
+extend = "base-script"
+script.main = "echo new"
+```
+
+Running extended-script task would print:
+
+```console
+start
+new
+end
+```
+
 <a name="usage-task-command-script-task-exampleduckscript"></a>
 #### Duckscript
 [Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>

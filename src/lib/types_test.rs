@@ -8,6 +8,159 @@ fn get_script_vec(task: &Task) -> Vec<String> {
 }
 
 #[test]
+fn extend_script_value_both_none() {
+    let output = extend_script_value(None, None);
+
+    assert!(output.is_none());
+}
+
+#[test]
+fn extend_script_value_current_text_new_none() {
+    let output = extend_script_value(Some(ScriptValue::SingleLine("test".to_string())), None);
+
+    match output.unwrap() {
+        ScriptValue::SingleLine(value) => assert_eq!(value, "test"),
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_current_none_new_text() {
+    let output = extend_script_value(None, Some(ScriptValue::SingleLine("test".to_string())));
+
+    match output.unwrap() {
+        ScriptValue::SingleLine(value) => assert_eq!(value, "test"),
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_current_text_new_text() {
+    let output = extend_script_value(
+        Some(ScriptValue::SingleLine("current".to_string())),
+        Some(ScriptValue::SingleLine("new".to_string())),
+    );
+
+    match output.unwrap() {
+        ScriptValue::SingleLine(value) => assert_eq!(value, "new"),
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_current_new_different_types() {
+    let output = extend_script_value(
+        Some(ScriptValue::Text(vec!["current".to_string()])),
+        Some(ScriptValue::SingleLine("new".to_string())),
+    );
+
+    match output.unwrap() {
+        ScriptValue::SingleLine(value) => assert_eq!(value, "new"),
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_new_all_content_sections() {
+    let output = extend_script_value(
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("current_pre".to_string()),
+            main: Some("current_main".to_string()),
+            post: Some("current_post".to_string()),
+        })),
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("new_pre".to_string()),
+            main: Some("new_main".to_string()),
+            post: Some("new_post".to_string()),
+        })),
+    );
+
+    match output.unwrap() {
+        ScriptValue::Sections(sections) => {
+            assert_eq!(sections.pre.unwrap(), "new_pre");
+            assert_eq!(sections.main.unwrap(), "new_main");
+            assert_eq!(sections.post.unwrap(), "new_post");
+        }
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_new_only_pre_content_section() {
+    let output = extend_script_value(
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("current_pre".to_string()),
+            main: Some("current_main".to_string()),
+            post: Some("current_post".to_string()),
+        })),
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("new_pre".to_string()),
+            main: None,
+            post: None,
+        })),
+    );
+
+    match output.unwrap() {
+        ScriptValue::Sections(sections) => {
+            assert_eq!(sections.pre.unwrap(), "new_pre");
+            assert_eq!(sections.main.unwrap(), "current_main");
+            assert_eq!(sections.post.unwrap(), "current_post");
+        }
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_new_only_post_content_section() {
+    let output = extend_script_value(
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("current_pre".to_string()),
+            main: Some("current_main".to_string()),
+            post: Some("current_post".to_string()),
+        })),
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: None,
+            main: None,
+            post: Some("new_post".to_string()),
+        })),
+    );
+
+    match output.unwrap() {
+        ScriptValue::Sections(sections) => {
+            assert_eq!(sections.pre.unwrap(), "current_pre");
+            assert_eq!(sections.main.unwrap(), "current_main");
+            assert_eq!(sections.post.unwrap(), "new_post");
+        }
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
+fn extend_script_value_new_only_main_content_section() {
+    let output = extend_script_value(
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: Some("current_pre".to_string()),
+            main: Some("current_main".to_string()),
+            post: Some("current_post".to_string()),
+        })),
+        Some(ScriptValue::Sections(ScriptSections {
+            pre: None,
+            main: Some("new_main".to_string()),
+            post: None,
+        })),
+    );
+
+    match output.unwrap() {
+        ScriptValue::Sections(sections) => {
+            assert_eq!(sections.pre.unwrap(), "current_pre");
+            assert_eq!(sections.main.unwrap(), "new_main");
+            assert_eq!(sections.post.unwrap(), "current_post");
+        }
+        _ => panic!("invalid type"),
+    };
+}
+
+#[test]
 fn cli_args_new() {
     let cli_args = CliArgs::new();
 

@@ -1,6 +1,13 @@
 use super::*;
 use crate::test;
-use crate::types::FileScriptValue;
+use crate::types::{FileScriptValue, ScriptSections};
+
+#[test]
+fn get_script_text_single_line() {
+    let output = get_script_text(&ScriptValue::SingleLine("test".to_string())).join("\n");
+
+    assert_eq!(output, "test");
+}
 
 #[test]
 fn get_script_text_vector() {
@@ -44,6 +51,29 @@ fn get_script_text_file_absolute() {
     let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
 
     assert_eq!(output, "text 1\ntext 2");
+}
+
+#[test]
+fn get_script_text_script_content_sections() {
+    let output = get_script_text(&ScriptValue::Sections(ScriptSections {
+        pre: Some("pre".to_string()),
+        main: Some("main".to_string()),
+        post: Some("post".to_string()),
+    }))
+    .join("\n");
+
+    assert_eq!(output, "pre\nmain\npost");
+}
+
+#[test]
+fn get_script_text_script_content_sections_empty() {
+    let output = get_script_text(&ScriptValue::Sections(ScriptSections {
+        pre: None,
+        main: None,
+        post: None,
+    }));
+
+    assert!(output.is_empty());
 }
 
 #[test]

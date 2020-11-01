@@ -41,6 +41,7 @@ pub(crate) enum EngineType {
 
 pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
     match script {
+        ScriptValue::SingleLine(text) => vec![text.clone()],
         ScriptValue::Text(text) => text.clone(),
         ScriptValue::File(info) => {
             let mut file_path_string = String::new();
@@ -62,6 +63,21 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
 
             for line in lines.iter() {
                 script_lines.push(line.to_string());
+            }
+
+            script_lines
+        }
+        ScriptValue::Sections(sections) => {
+            let mut script_lines = vec![];
+
+            if let Some(ref text) = sections.pre {
+                script_lines.push(text.to_string());
+            }
+            if let Some(ref text) = sections.main {
+                script_lines.push(text.to_string());
+            }
+            if let Some(ref text) = sections.post {
+                script_lines.push(text.to_string());
             }
 
             script_lines

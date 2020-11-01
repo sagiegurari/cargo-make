@@ -37,6 +37,43 @@ fn get_namespaced_task_name(namespace: &str, task: &str) -> String {
     namespaced_task
 }
 
+fn extend_script_value(
+    current_script_value: Option<ScriptValue>,
+    new_script_value: Option<ScriptValue>,
+) -> Option<ScriptValue> {
+    match current_script_value {
+        Some(ref current_value) => match new_script_value {
+            Some(ref new_value) => match current_value {
+                ScriptValue::Sections(current_sections) => match new_value {
+                    ScriptValue::Sections(new_sections) => {
+                        let pre = if new_sections.pre.is_some() {
+                            new_sections.pre.clone()
+                        } else {
+                            current_sections.pre.clone()
+                        };
+                        let main = if new_sections.main.is_some() {
+                            new_sections.main.clone()
+                        } else {
+                            current_sections.main.clone()
+                        };
+                        let post = if new_sections.post.is_some() {
+                            new_sections.post.clone()
+                        } else {
+                            current_sections.post.clone()
+                        };
+
+                        Some(ScriptValue::Sections(ScriptSections { pre, main, post }))
+                    }
+                    _ => current_script_value,
+                },
+                _ => new_script_value,
+            },
+            None => current_script_value,
+        },
+        None => new_script_value,
+    }
+}
+
 #[derive(Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
@@ -837,13 +874,28 @@ pub struct FileScriptValue {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Script content split to parts to enable a more fine tuned extension capability
+pub struct ScriptSections {
+    /// Script section
+    pub pre: Option<String>,
+    /// Script section
+    pub main: Option<String>,
+    /// Script section
+    pub post: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Script value (text, file name, ...)
 pub enum ScriptValue {
+    /// The script text as single line
+    SingleLine(String),
     /// The script text lines
     Text(Vec<String>),
     /// Script file name
     File(FileScriptValue),
+    /// Script content split to multiple parts to enable fine tuned extension
+    Sections(ScriptSections),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -1209,7 +1261,7 @@ impl Task {
         }
 
         if task.script.is_some() {
-            self.script = task.script.clone();
+            self.script = extend_script_value(self.script.clone(), task.script.clone());
         } else if override_values {
             self.script = None;
         }
@@ -1598,7 +1650,7 @@ impl PlatformOverrideTask {
             }
 
             if self.script.is_none() && task.script.is_some() {
-                self.script = task.script.clone();
+                self.script = extend_script_value(None, task.script.clone());
             }
 
             if self.script_runner.is_none() && task.script_runner.is_some() {
