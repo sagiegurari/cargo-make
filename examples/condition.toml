@@ -5,15 +5,15 @@ FALSE_ENV = "false"
 
 [tasks.test-condition]
 condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 
 [tasks.test-rust-version-condition]
 condition = { rust_version = { min = "1.20.0", max = "1.30.0" } }
-script = [
-    "echo \"rust version condition was met\""
-]
+script = '''
+echo "rust version condition was met"
+'''
 
 [tasks.test1]
 command = "echo"
@@ -41,27 +41,27 @@ run_task = [
 
 [tasks.test-true-condition]
 condition = { env_true = ["TRUE_ENV"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 
 [tasks.test-false-condition]
 condition = { env_false = ["FALSE_ENV"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 
 [tasks.test-file-exists-condition]
 condition = { files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 
 [tasks.test-file-not-exists-condition]
 condition = { files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml2"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 
 [tasks.test-condition-script]
 condition_script = [

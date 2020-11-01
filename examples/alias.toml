@@ -9,9 +9,7 @@ dependencies = ["D"]
 dependencies = ["D2"]
 
 [tasks.D]
-script = [
-    "echo hello"
-]
+script = "echo hello"
 
 [tasks.D2]
 alias="D"

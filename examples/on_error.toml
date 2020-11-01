@@ -6,11 +6,9 @@ on_error_task = "catch"
 alias = "error"
 
 [tasks.error]
-script = [
-    "exit 1"
-]
+script = "exit 1"
 
 [tasks.catch]
-script = [
-    "echo \"Doing cleanups in catch\""
-]
+script = '''
+echo "Doing cleanups in catch"
+'''

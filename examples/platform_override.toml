@@ -6,17 +6,17 @@ skip_core_tasks = true
 dependencies = ["hello-world-common", "hello-world"]
 
 [tasks.hello-world-common]
-script = [
-    "echo \"Hello World From All Platforms\""
-]
+script = '''
+echo "Hello World From All Platforms"
+'''
 
 [tasks.hello-world]
-script = [
-    "echo \"Hello World From Unknown\""
-]
+script = '''
+echo "Hello World From Unknown"
+'''
 
 [tasks.hello-world.linux]
-script = [
-    "echo \"Hello World From Linux\""
-]
+script = '''
+echo "Hello World From Linux"
+'''
 

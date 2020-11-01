@@ -1,24 +1,18 @@
 
 [tasks.shebang-sh]
-script = [
-'''
+script = '''
 #!/bin/bash
 echo hello
 '''
-]
 
 [tasks.shebang-sh-arg]
-script = [
-'''
+script = '''
 #!/usr/bin/env bash
 echo hello
 '''
-]
 
 [tasks.shebang-python]
-script = [
-'''
+script = '''
 #!/usr/bin/env python3
 print("Hello, World!")
 '''
-]
