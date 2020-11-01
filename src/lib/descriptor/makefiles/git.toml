@@ -65,8 +65,6 @@ description = "Deletes any merged git branches"
 category = "Git"
 ignore_errors = true
 condition = { platforms = ["linux", "mac"] }
-script = [
-'''
+script = '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 '''
-]

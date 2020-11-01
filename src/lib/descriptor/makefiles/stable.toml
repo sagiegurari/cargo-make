@@ -75,12 +75,10 @@ category = "Tools"
 [tasks.wait]
 description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
 condition = { env_set = [ "CARGO_MAKE_WAIT_MILLISECONDS" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 sleep ${CARGO_MAKE_WAIT_MILLISECONDS}
 '''
-]
 
 [tasks.default]
 description = "Default task points to the development testing flow"
@@ -102,8 +100,7 @@ category = "Hooks"
 
 [tasks.print-cargo-make-env]
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Cargo Make:"
@@ -115,12 +112,10 @@ echo "    Profile: ${CARGO_MAKE_PROFILE}"
 echo "    Additional Profiles: ${CARGO_MAKE_ADDITIONAL_PROFILES}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-project-env]
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Project:"
@@ -129,12 +124,10 @@ echo "    Version: ${CARGO_MAKE_PROJECT_VERSION}"
 echo "    Version Member: ${CARGO_MAKE_PROJECT_VERSION_MEMBER}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-ci-env]
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "CI:"
@@ -144,13 +137,11 @@ echo "    Branch Name: ${CARGO_MAKE_CI_BRANCH_NAME}"
 echo "    CI Vendor: ${CARGO_MAKE_CI_VENDOR}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-git-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Git:"
@@ -161,13 +152,11 @@ echo "    Commit Hash: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH}"
 echo "    Commit Hash Prefix: ${CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-rust-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Rust:"
@@ -181,13 +170,11 @@ echo "    Target Vendor: ${CARGO_MAKE_RUST_TARGET_VENDOR}"
 echo "    Target Triple: ${CARGO_MAKE_RUST_TARGET_TRIPLE}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-cargo-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Cargo:"
@@ -195,13 +182,11 @@ echo "    Home: ${CARGO_MAKE_CARGO_HOME}"
 echo "    Profile: ${CARGO_MAKE_CARGO_PROFILE}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-crate-env]
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Crate:"
@@ -218,12 +203,10 @@ echo "    Workspace Members: ${CARGO_MAKE_CRATE_WORKSPACE_MEMBERS}"
 echo "    Has Dependencies: ${CARGO_MAKE_CRATE_HAS_DEPENDENCIES}"
 echo "*************************************"
 '''
-]
 
 [tasks.print-duckscript-env]
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Duckscript:"
@@ -231,7 +214,6 @@ echo "    Runtime: ${CARGO_MAKE_DUCKSCRIPT_VERSION}"
 echo "    SDK: ${CARGO_MAKE_DUCKSCRIPT_SDK_VERSION}"
 echo "*************************************"
 '''
-]
 
 [tasks.pre-print-env]
 category = "Tools"
@@ -276,8 +258,7 @@ args = [
 [tasks.setup-sudo-env]
 description = "Sets the sudo enable/disable environment variables."
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 # disable sudo if the env is defined
 enable_sudo = not is_defined CARGO_MAKE_SUDO_DISABLE
@@ -291,7 +272,6 @@ set_env CARGO_MAKE_SUDO_ENABLED ${enable_sudo}
 
 echo sudo enabled: ${enable_sudo}
 '''
-]
 
 [tasks.pre-build-file-increment]
 category = "Tools"
@@ -300,8 +280,7 @@ category = "Tools"
 description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
 category = "Tools"
 condition = { env_set = [ "CARGO_MAKE_BUILD_NUMBER_FILE" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 build_number_file_exists = is_path_exists ${CARGO_MAKE_BUILD_NUMBER_FILE}
 
@@ -319,7 +298,6 @@ writefile ${CARGO_MAKE_BUILD_NUMBER_FILE} ${build_number}
 # set the CARGO_MAKE_BUILD_NUMBER environment variable
 set_env CARGO_MAKE_BUILD_NUMBER ${build_number}
 '''
-]
 
 [tasks.post-build-file-increment]
 category = "Tools"
