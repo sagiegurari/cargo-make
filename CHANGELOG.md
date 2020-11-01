@@ -7,6 +7,7 @@
 * Fixed invocation of cargo commands with flag arguments #476
 * Improved error message when failing to parse external descriptor #475 (thanks @mrmanne)
 * Fixed git add task description #477 (thanks @knutwalker)
+* Bump rust minimal version to 0.44 due to dependencies updates
 
 ### v0.32.7 (2020-10-07)
 
