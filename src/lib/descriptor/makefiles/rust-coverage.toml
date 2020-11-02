@@ -40,8 +40,7 @@ dependencies = [
 condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
-install_script = [
-'''
+install_script = '''
 if [ "${CARGO_MAKE_SUDO_ENABLED}" == "false" ]; then
     echo "Skipping kcov installation as 'sudo' is disabled."
     exit 0
@@ -104,7 +103,6 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
     fi
 fi
 '''
-]
 script = '''
 echo "Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
 
