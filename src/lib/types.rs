@@ -946,7 +946,7 @@ pub struct Task {
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
+    pub install_script: Option<ScriptValue>,
     /// The command to execute
     pub command: Option<String>,
     /// The command args
@@ -1243,7 +1243,8 @@ impl Task {
         }
 
         if task.install_script.is_some() {
-            self.install_script = task.install_script.clone();
+            self.install_script =
+                extend_script_value(self.install_script.clone(), task.install_script.clone());
         } else if override_values {
             self.install_script = None;
         }
@@ -1547,7 +1548,7 @@ pub struct PlatformOverrideTask {
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
+    pub install_script: Option<ScriptValue>,
     /// The command to execute
     pub command: Option<String>,
     /// The command args
@@ -1638,7 +1639,8 @@ impl PlatformOverrideTask {
             }
 
             if self.install_script.is_none() && task.install_script.is_some() {
-                self.install_script = task.install_script.clone();
+                self.install_script =
+                    extend_script_value(self.install_script.clone(), task.install_script.clone());
             }
 
             if self.command.is_none() && task.command.is_some() {

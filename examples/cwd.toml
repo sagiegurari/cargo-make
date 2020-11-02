@@ -12,10 +12,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.change-cwd]
 command = "pwd"
@@ -24,10 +24,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.makefile-cwd]
 command = "pwd"
@@ -36,10 +36,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.back-again]
 alias = "cwd"

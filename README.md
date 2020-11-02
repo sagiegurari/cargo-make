@@ -1754,8 +1754,7 @@ For example:
 ```toml
 [tasks.coverage-kcov]
 windows_alias = "empty"
-install_script = [
-'''
+install_script = '''
 KCOV_INSTALLATION_DIRECTORY=""
 KCOV_BINARY_DIRECTORY=""
 if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
@@ -1803,7 +1802,6 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
     fi
 fi
 '''
-]
 ```
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
