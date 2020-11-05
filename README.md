@@ -1690,6 +1690,15 @@ Only if the command is not available, it will attempt to install it by running *
 In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
 You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
+To disable the automatic crate installation, you can set the **install_crate** attribute as false, for example:
+
+```toml
+[tasks.test]
+command = "cargo"
+args = ["test"]
+install_crate = false
+```
+
 <a name="usage-installing-crates"></a>
 #### Crates
 
