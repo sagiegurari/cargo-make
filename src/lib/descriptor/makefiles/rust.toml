@@ -152,6 +152,7 @@ rm -Rf ${DOCS_DIRECTORY}
 [tasks.clean]
 description = "Runs the cargo clean command."
 category = "Cleanup"
+install_crate = false
 command = "cargo"
 args = ["clean"]
 
@@ -256,6 +257,7 @@ category = "Documentation"
 [tasks.docs]
 description = "Generate rust documentation."
 category = "Documentation"
+install_crate = false
 command = "cargo"
 args = ["doc", "--no-deps"]
 
@@ -389,12 +391,14 @@ category = "Build"
 [tasks.build]
 description = "Runs the rust compiler."
 category = "Build"
+install_crate = false
 command = "cargo"
 args = ["build", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-release]
 description = "Runs release build."
 category = "Build"
+install_crate = false
 command = "cargo"
 args = ["build", "--release", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -407,6 +411,7 @@ category = "Test"
 [tasks.test]
 description = "Runs all available tests."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -419,6 +424,7 @@ run_task = "test"
 [tasks.test-single-threaded]
 description = "Runs all ignored tests with a single test thread."
 category = "Test"
+install_crate = false
 env = { RUST_TEST_THREADS = 1 }
 command = "cargo"
 args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )", "--", "--ignored"]
@@ -453,6 +459,7 @@ dependencies = [
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["test", "${@}"]
 
@@ -465,6 +472,7 @@ category = "Test"
 [tasks.bench]
 description = "Runs all available bench files."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["bench", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -489,6 +497,7 @@ run_task = "bench-flow"
 [tasks.bench-compile]
 description = "Compiles all available bench files."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["build", "--benches", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -512,6 +521,7 @@ category = "Test"
 [tasks.check]
 description = "Runs cargo check."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check"]
 
@@ -530,18 +540,21 @@ dependencies = [
 [tasks.check-tests]
 description = "Runs cargo check for project tests."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check", "--tests"]
 
 [tasks.check-examples]
 description = "Runs cargo check for project examples."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check", "--examples"]
 
 [tasks.examples-compile]
 description = "Runs cargo build for project examples."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["build", "--examples"]
 
@@ -766,6 +779,7 @@ category = "Publish"
 [tasks.package]
 description = "Runs the cargo package command."
 category = "Publish"
+install_crate = false
 command = "cargo"
 args = ["package"]
 
@@ -778,6 +792,7 @@ category = "Publish"
 [tasks.publish]
 description = "Runs the cargo publish command."
 category = "Publish"
+install_crate = false
 command = "cargo"
 args = ["publish", "@@split(CARGO_MAKE_CARGO_PUBLISH_FLAGS, )"]
 
@@ -953,6 +968,7 @@ make install
 [tasks.build-release-for-target]
 description = "Makes a release build for a given target"
 condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ] }
+install_crate = false
 command = "cargo"
 args = [
   "build",
