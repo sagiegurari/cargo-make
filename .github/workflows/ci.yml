@@ -39,7 +39,7 @@ jobs:
         command: run
         args: --bin cargo-make --target-dir target/ci -- make ci-flow
     - name: Run CI (Minimal Supported Rust Version)
-      if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly'
+      if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
       uses: actions-rs/cargo@v1
       with:
         command: make
