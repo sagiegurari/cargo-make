@@ -2008,6 +2008,21 @@ echo "Doing cleanups in catch"
 '''
 ```
 
+<a name="usage-cargo-alias-tasks"></a>
+### Cargo Alias Tasks
+
+[Cargo alias commands](https://doc.rust-lang.org/cargo/reference/config.html#alias) can be automatically loaded as cargo-make tasks.<br>
+To automatically loading them, the following must be defined in the Makefile.toml config section:
+
+```toml
+[config]
+load_cargo_aliases = true
+```
+
+Each alias defined in the config.toml will be loaded as a task with the same name as the alias.<Br>
+In case a task with that name already exists, it will be ignored.<br>
+The task definition will simply call cargo and the alias value, therefore no automatic cargo plugin installation will be invoked.
+
 <a name="usage-profiles"></a>
 ### Profiles
 

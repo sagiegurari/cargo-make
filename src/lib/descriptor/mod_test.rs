@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::environment::setup_cwd;
 use crate::types::{ExtendOptions, InstallCrate, ScriptValue};
 
 #[test]
@@ -1028,4 +1029,27 @@ fn check_makefile_min_version_same_min_version() {
     let result = check_makefile_min_version(toml_string);
 
     assert!(result.is_ok());
+}
+
+#[test]
+fn load_cargo_aliases_no_file() {
+    let mut config = load_internal_descriptors(false, false, None);
+    let count = config.tasks.len();
+
+    load_cargo_aliases(&mut config);
+
+    assert_eq!(count, config.tasks.len());
+}
+
+#[test]
+#[ignore]
+fn load_cargo_aliases_found() {
+    let mut config = load_internal_descriptors(false, false, None);
+    let count = config.tasks.len();
+
+    setup_cwd(Some("src/lib/test/workspace1/member1"));
+    load_cargo_aliases(&mut config);
+    setup_cwd(Some("../../../../.."));
+
+    assert_eq!(count, config.tasks.len());
 }

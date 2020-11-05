@@ -639,6 +639,8 @@ impl PartialEq for InstallRustupComponentInfo {
 #[serde(untagged)]
 /// Install crate name or params
 pub enum InstallCrate {
+    /// Enables to prevent installation flow
+    Enabled(bool),
     /// The value as string
     Value(String),
     /// Install crate params
@@ -652,6 +654,10 @@ pub enum InstallCrate {
 impl PartialEq for InstallCrate {
     fn eq(&self, other: &InstallCrate) -> bool {
         match self {
+            InstallCrate::Enabled(value) => match other {
+                InstallCrate::Enabled(other_value) => value == other_value,
+                _ => false,
+            },
             InstallCrate::Value(value) => match other {
                 InstallCrate::Value(other_value) => value == other_value,
                 _ => false,
@@ -1757,6 +1763,8 @@ pub struct ConfigSection {
     pub reduce_output: Option<bool>,
     /// True to print time summary at the end of the flow
     pub time_summary: Option<bool>,
+    /// Automatically load cargo aliases as cargo-make tasks
+    pub load_cargo_aliases: Option<bool>,
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
@@ -1848,6 +1856,10 @@ impl ConfigSection {
 
         if extended.time_summary.is_some() {
             self.time_summary = extended.time_summary.clone();
+        }
+
+        if extended.load_cargo_aliases.is_some() {
+            self.load_cargo_aliases = extended.load_cargo_aliases.clone();
         }
 
         if extended.main_project_member.is_some() {

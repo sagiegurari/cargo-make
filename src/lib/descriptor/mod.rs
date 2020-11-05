@@ -10,6 +10,7 @@
 #[path = "./mod_test.rs"]
 mod mod_test;
 
+mod cargo_alias;
 mod makefiles;
 
 use crate::io;
@@ -595,6 +596,23 @@ fn load_descriptors(
     Ok(config)
 }
 
+fn load_cargo_aliases(config: &mut Config) {
+    if let Some(load_cargo_aliases) = config.config.load_cargo_aliases {
+        if load_cargo_aliases {
+            let alias_tasks = cargo_alias::load();
+            for (name, task) in alias_tasks {
+                match config.tasks.get(&name) {
+                    None => {
+                        debug!("Creating cargo alias task: {}", &name);
+                        config.tasks.insert(name, task);
+                    }
+                    Some(_) => debug!("Ignoring cargo alias task: {}", &name),
+                }
+            }
+        }
+    }
+}
+
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
@@ -648,6 +666,8 @@ pub(crate) fn load(
             }
         };
     }
+
+    load_cargo_aliases(&mut config);
 
     Ok(config)
 }

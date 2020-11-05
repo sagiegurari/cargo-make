@@ -8,6 +8,7 @@ end_task = "end"
 skip_core_tasks = false
 default_to_workspace = true
 additional_profiles = []
+load_cargo_aliases = false
 
 [env]
 RUST_BACKTRACE = "full"

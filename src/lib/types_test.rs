@@ -684,6 +684,22 @@ fn install_rustup_component_info_eq_different_test_arg_type() {
 }
 
 #[test]
+fn install_crate_eq_same_enabled_value() {
+    let first = InstallCrate::Enabled(true);
+    let second = InstallCrate::Enabled(true);
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_same_disabled_value() {
+    let first = InstallCrate::Enabled(false);
+    let second = InstallCrate::Enabled(false);
+
+    assert_eq!(first, second);
+}
+
+#[test]
 fn install_crate_eq_same_value() {
     let first = InstallCrate::Value("crate".to_string());
     let second = InstallCrate::Value("crate".to_string());
@@ -733,6 +749,14 @@ fn install_crate_eq_same_rustup_component_info() {
     let second = InstallCrate::RustupComponentInfo(info.clone());
 
     assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_eq_different_enabled_value() {
+    let first = InstallCrate::Enabled(true);
+    let second = InstallCrate::Enabled(false);
+
+    assert!(first != second);
 }
 
 #[test]
@@ -3146,6 +3170,7 @@ fn config_section_new() {
     assert!(config.default_to_workspace.is_none());
     assert!(config.reduce_output.is_none());
     assert!(config.time_summary.is_none());
+    assert!(config.load_cargo_aliases.is_none());
     assert!(config.main_project_member.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
@@ -3171,6 +3196,7 @@ fn config_section_extend_all_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
+    base.load_cargo_aliases = Some(true);
     base.load_script = Some(ScriptValue::Text(vec!["base_info".to_string()]));
     base.linux_load_script = Some(ScriptValue::Text(vec![
         "linux".to_string(),
@@ -3198,6 +3224,7 @@ fn config_section_extend_all_values() {
     extended.default_to_workspace = Some(false);
     extended.reduce_output = Some(false);
     extended.time_summary = Some(false);
+    extended.load_cargo_aliases = Some(false);
     extended.load_script = Some(ScriptValue::Text(vec![
         "extended_info".to_string(),
         "arg2".to_string(),
@@ -3223,6 +3250,7 @@ fn config_section_extend_all_values() {
     assert!(!base.default_to_workspace.unwrap());
     assert!(!base.reduce_output.unwrap());
     assert!(!base.time_summary.unwrap());
+    assert!(!base.load_cargo_aliases.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 1);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 1);
@@ -3247,6 +3275,7 @@ fn config_section_extend_no_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
+    base.load_cargo_aliases = Some(true);
     base.load_script = Some(ScriptValue::Text(vec![
         "base_info".to_string(),
         "arg2".to_string(),
@@ -3281,6 +3310,7 @@ fn config_section_extend_no_values() {
     assert!(base.default_to_workspace.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
+    assert!(base.load_cargo_aliases.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
@@ -3305,6 +3335,7 @@ fn config_section_extend_some_values() {
     base.default_to_workspace = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
+    base.load_cargo_aliases = Some(true);
     base.load_script = Some(ScriptValue::Text(vec![
         "base_info".to_string(),
         "arg2".to_string(),
@@ -3342,6 +3373,7 @@ fn config_section_extend_some_values() {
     assert!(base.default_to_workspace.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
+    assert!(base.load_cargo_aliases.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);

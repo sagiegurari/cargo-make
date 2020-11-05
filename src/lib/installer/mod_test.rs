@@ -67,6 +67,26 @@ fn install_empty() {
 }
 
 #[test]
+fn install_disabled_bad_crate() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Enabled(false));
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["badbadbad".to_string()]);
+
+    install(&task, &test::create_empty_flow_info());
+}
+
+#[test]
+fn install_enabled_crate_already_installed() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Enabled(true));
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["test".to_string()]);
+
+    install(&task, &test::create_empty_flow_info());
+}
+
+#[test]
 fn install_crate_already_installed() {
     let mut task = Task::new();
     task.install_crate = Some(InstallCrate::Value("test".to_string()));

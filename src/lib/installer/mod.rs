@@ -52,8 +52,19 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
         None => None,
     };
 
-    match task_config.install_crate {
+    let mut install_crate = task_config.install_crate.clone();
+    if let Some(ref install_crate_value) = install_crate {
+        if let InstallCrate::Enabled(enabled) = install_crate_value {
+            if *enabled {
+                // enabled true is the same as no install_crate defined
+                install_crate = None;
+            }
+        }
+    }
+
+    match install_crate {
         Some(ref install_crate_info) => match install_crate_info {
+            InstallCrate::Enabled(_) => (),
             InstallCrate::Value(ref crate_name) => {
                 let cargo_command = match task_config.args {
                     Some(ref args) => &args[0],
