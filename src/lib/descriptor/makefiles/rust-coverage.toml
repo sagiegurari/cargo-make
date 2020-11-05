@@ -40,8 +40,7 @@ dependencies = [
 condition = { env_set = [ "CARGO_MAKE_KCOV_VERSION" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
-install_script = [
-'''
+install_script = '''
 if [ "${CARGO_MAKE_SUDO_ENABLED}" == "false" ]; then
     echo "Skipping kcov installation as 'sudo' is disabled."
     exit 0
@@ -104,9 +103,7 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
     fi
 fi
 '''
-]
-script = [
-'''
+script = '''
 echo "Working Directory: ${CARGO_MAKE_WORKING_DIRECTORY}"
 
 KCOV_BINARY_DIRECTORY=""
@@ -177,7 +174,6 @@ done
 
 rm -f ./core
 '''
-]
 
 [tasks.coverage-tarpaulin]
 description = "Runs coverage using tarpaulin rust crate (linux only)"
@@ -204,10 +200,10 @@ description = "Runs codecov script to upload coverage results to codecov."
 category = "Test"
 condition = { env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], platforms = ["linux", "mac"] }
 script_runner = "bash"
-script = [
-    "#!/usr/bin/env bash",
-    "bash <(curl -s https://codecov.io/bash)"
-]
+script = '''
+#!/usr/bin/env bash
+bash <(curl -s https://codecov.io/bash)
+'''
 
 [tasks.codecov-flow]
 description = "Runs the full coverage flow and uploads the results to codecov."

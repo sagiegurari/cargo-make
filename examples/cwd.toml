@@ -1,10 +1,10 @@
 
 [tasks.env]
-script = [
-    "echo CARGO_MAKE_CURRENT_TASK_NAME: ${CARGO_MAKE_CURRENT_TASK_NAME}",
-    "echo CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE: ${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}",
-    "echo CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY: ${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}"
-]
+script = '''
+echo CARGO_MAKE_CURRENT_TASK_NAME: ${CARGO_MAKE_CURRENT_TASK_NAME}
+echo CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE: ${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}
+echo CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY: ${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}
+'''
 
 [tasks.cwd]
 command = "pwd"
@@ -12,10 +12,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.change-cwd]
 command = "pwd"
@@ -24,10 +24,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.makefile-cwd]
 command = "pwd"
@@ -36,10 +36,10 @@ condition_script = [
     "echo pwd during condition:",
     "pwd"
 ]
-install_script = [
-    "echo pwd during installation:",
-    "pwd"
-]
+install_script = '''
+echo pwd during installation:
+pwd
+'''
 
 [tasks.back-again]
 alias = "cwd"

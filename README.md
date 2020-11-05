@@ -65,6 +65,7 @@
     * [Toolchain](#usage-toolchain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
+    * [Cargo Alias Tasks](#usage-cargo-alias-tasks)
     * [Profiles](#usage-profiles)
         * [Environment Variables](#usage-profiles-env)
         * [Conditions](#usage-profiles-conditions)
@@ -307,9 +308,7 @@ dependencies = ["D"]
 dependencies = ["D"]
 
 [tasks.D]
-script = [
-    "echo hello"
-]
+script = "echo hello"
 ```
 
 In this example, A depends on B and C, and both B and C are dependent on D.<br>
@@ -346,9 +345,7 @@ dependencies = ["D"]
 dependencies = ["D2"]
 
 [tasks.D]
-script = [
-    "echo hello"
-]
+script = "echo hello"
 
 [tasks.D2]
 alias="D"
@@ -397,9 +394,7 @@ linux_alias = "run"
 alias = "do_nothing"
 
 [tasks.run]
-script = [
-    "echo hello"
-]
+script = "echo hello"
 
 [tasks.do_nothing]
 ```
@@ -437,9 +432,7 @@ In this example, if we execute the **flow** task, it will invoke the **echo** ta
 
 ```toml
 [tasks.echo]
-script = [
-    "echo hello world"
-]
+script = "echo hello world"
 
 [tasks.flow]
 run_task = "echo"
@@ -525,7 +518,7 @@ command = "echo"
 args = ["2"]
 
 [tasks.fail]
-script = ["exit 1"]
+script =  "exit 1"
 
 [tasks.cleanup]
 command = "echo"
@@ -672,13 +665,11 @@ You can use multi line toml string to make the script more readable as follows:
 
 ```toml
 [tasks.hello-world]
-script = [
-'''
+script = '''
 echo start...
 echo "Hello World From Script"
 echo end...
 '''
-]
 ```
 
 cargo-make cli also supports additional arguments which will be available to all tasks.<br>
@@ -686,9 +677,7 @@ Following example task, will print those additional arguments:
 
 ```toml
 [tasks.cli-args]
-script = [
-    "echo args are: ${@}"
-]
+script = "echo args are: ${@}"
 ```
 
 Invoking cargo-make with additional arguments would result in the following:
@@ -743,6 +732,27 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 File paths support environment substitution.<br><br>
 **Favor commands over scripts, as commands support more features such as [automatic dependencies installation](#usage-installing-dependencies), [argument functions](#usage-functions), and more...**
 
+In order to share common script content among multiple tasks, you can use the script pre/main/post form as follows:
+
+```toml
+[tasks.base-script]
+script.pre = "echo start"
+script.main = "echo old"
+script.post = "echo end"
+
+[tasks.extended-script]
+extend = "base-script"
+script.main = "echo new"
+```
+
+Running extended-script task would print:
+
+```console
+start
+new
+end
+```
+
 <a name="usage-task-command-script-task-exampleduckscript"></a>
 #### Duckscript
 [Duckscript](https://sagiegurari.github.io/duckscript/) is incredibly simple shell like language which provides cross platform shell scripting capability.<br>
@@ -753,8 +763,7 @@ This allows a really powerful two way integration with cargo-make.
 ```toml
 [tasks.duckscript-example]
 script_runner = "@duckscript"
-script = [
-'''
+script = '''
 task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
 echo The currently running cargo make task is: ${task_name}
 
@@ -766,7 +775,6 @@ cd .. # this changes cargo-make current working directory (cargo-make will rever
 pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 '''
-]
 ```
 
 The next example shows how to invoke cargo-make tasks from duckscript:
@@ -774,8 +782,7 @@ The next example shows how to invoke cargo-make tasks from duckscript:
 ```toml
 [tasks.run-task-from-duckscript]
 script_runner = "@duckscript"
-script = [
-'''
+script = '''
 echo first invocation of echo1 task:
 cm_run_task echo1
 echo second invocation of echo1 task:
@@ -784,7 +791,6 @@ cm_run_task echo1
 echo running task: echo2:
 cm_run_task echo2
 '''
-]
 
 [tasks.echo1]
 command = "echo"
@@ -806,8 +812,7 @@ You can see how dependencies are defined in Cargo.toml format inside the code.
 ```toml
 [tasks.rust]
 script_runner = "@rust"
-script = [
-'''
+script = '''
 //! ```cargo
 //! [dependencies]
 //! time = "*"
@@ -817,7 +822,6 @@ fn main() {
     println!("{}", time::now().rfc822z());
 }
 '''
-]
 ```
 
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
@@ -834,24 +838,20 @@ For example:
 [tasks.cargo-script]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-script" }
 script_runner = "@rust"
-script = [
-'''
+script = '''
 fn main() {
     println!("test");
 }
 '''
-]
 
 [tasks.cargo-play]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
 script_runner = "@rust"
-script = [
-'''
+script = '''
 fn main() {
     println!("test");
 }
 '''
-]
 ```
 
 Keep in mind that dependencies used by the rust script are defined differently for each runner.<br>
@@ -864,11 +864,9 @@ In this example, when the **shell** task is invoked, the **script** content will
 ```toml
 [tasks.shell]
 script_runner = "@shell"
-script = [
-'''
+script = '''
 rm ./myfile.txt
 '''
-]
 ```
 
 Same as OS scripts, the @shell runner also supports the cargo-make CLI arguments access.<br>
@@ -886,48 +884,38 @@ Below are few examples:
 [tasks.python]
 script_runner = "python"
 script_extension = "py"
-script = [
-'''
+script = '''
 print("Hello, World!")
 '''
-]
 
 [tasks.perl]
 script_runner = "perl"
 script_extension = "pl"
-script = [
-'''
+script = '''
 print "Hello, World!\n";
 '''
-]
 
 [tasks.javascript]
 script_runner = "node"
 script_extension = "js"
-script = [
-'''
+script = '''
 console.log('Hello, World!');
 '''
-]
 
 [tasks.php]
 script_runner = "php"
 script_extension = "php"
-script = [
-'''
+script = '''
 <?php
 echo "Hello, World!\n";
 '''
-]
 
 [tasks.powershell]
 script_runner = "powershell"
 script_extension = "ps1"
-script = [
-'''
+script = '''
 Write-Host "Hello, World!"
 '''
-]
 ```
 
 In case you need to provider the script runner arguments before the script file, you can use the **script_runner_args** attribute.<br>
@@ -938,12 +926,10 @@ For example:
 script_runner = "php"
 script_runner_args = ["-f"]
 script_extension = "php"
-script = [
-'''
+script = '''
 <?php
 echo "Hello, World!\n";
 '''
-]
 ```
 
 *script_runner_args requires script_extension defined as well.*
@@ -958,12 +944,10 @@ Example task using bash:
 
 ```toml
 [tasks.shebang-sh]
-script = [
-'''
+script = '''
 #!/usr/bin/env bash
 echo hello
 '''
-]
 ```
 
 Output:
@@ -987,12 +971,10 @@ Example task using python:
 
 ```toml
 [tasks.shebang-python]
-script = [
-'''
+script = '''
 #!/usr/bin/env python3
 print("Hello, World!")
 '''
-]
 ```
 
 Output:
@@ -1016,12 +998,10 @@ Another trick you can do with shebang lines, is to define one of the special run
 
 ```toml
 [tasks.duckscript-shebang-example]
-script = [
-'''
+script = '''
 #!@duckscript
 echo Running duckscript without runner attribute.
 '''
-]
 ```
 
 However that language must support comments starting with the **#** character.
@@ -1135,14 +1115,14 @@ Here is an example of a load script which downloads the common toml from a remot
 
 ```toml
 [config]
-load_script = ["wget -O /home/myuser/common.toml companyserver.com/common.toml"]
+load_script = "wget -O /home/myuser/common.toml companyserver.com/common.toml"
 ```
 
 Here is an example of pulling the common toml file from some git repo:
 
 ```toml
 [config]
-load_script = ["git clone git@mygitserver:user/project.git /home/myuser/common"]
+load_script = "git clone git@mygitserver:user/project.git /home/myuser/common"
 ```
 
 You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
@@ -1199,14 +1179,14 @@ For example:
 
 ```toml
 [tasks.hello-world]
-script = [
-    "echo \"Hello World From Unknown\""
-]
+script = '''
+echo "Hello World From Unknown"
+'''
 
 [tasks.hello-world.linux]
-script = [
-    "echo \"Hello World From Linux\""
-]
+script = '''
+echo "Hello World From Linux"
+'''
 ```
 
 If you run cargo make with task 'hello-world' on linux, it would redirect to hello-world.linux while on other platforms it will execute the original hello-world.<br>
@@ -1239,9 +1219,9 @@ have to clear the parent task in the override task using the clear attribute as 
 ```toml
 [tasks.hello-world.linux]
 clear = true
-script = [
-    "echo \"Hello World From Linux\""
-]
+script = '''
+echo "Hello World From Linux"
+'''
 ```
 
 This means, however, that you will have to redefine all attributes in the override task that you want to carry with you from the parent task.<br>
@@ -1379,9 +1359,9 @@ run_task = "actual-task"
 
 [tasks.actual-task]
 condition = { env_set = [ "SOME_ENV_VAR" ] }
-script = [
-    "echo var: ${SOME_ENV_VAR}"
-]
+script = '''
+echo var: ${SOME_ENV_VAR}
+'''
 ```
 
 In task level, environment variables capabilities are the same as in the [global level](#usage-env-config).
@@ -1590,9 +1570,9 @@ Below is an example of a condition definition that checks that we are running on
 ```toml
 [tasks.test-condition]
 condition = { platforms = ["windows", "linux"], channels = ["beta", "nightly"] }
-script = [
-    "echo \"condition was met\""
-]
+script = '''
+echo "condition was met"
+'''
 ```
 
 The following condition types are available:
@@ -1710,6 +1690,15 @@ Only if the command is not available, it will attempt to install it by running *
 In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
 You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
+To disable the automatic crate installation, you can set the **install_crate** attribute as false, for example:
+
+```toml
+[tasks.test]
+command = "cargo"
+args = ["test"]
+install_crate = false
+```
+
 <a name="usage-installing-crates"></a>
 #### Crates
 
@@ -1775,8 +1764,7 @@ For example:
 ```toml
 [tasks.coverage-kcov]
 windows_alias = "empty"
-install_script = [
-'''
+install_script = '''
 KCOV_INSTALLATION_DIRECTORY=""
 KCOV_BINARY_DIRECTORY=""
 if [ -n "CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY" ]; then
@@ -1824,7 +1812,6 @@ if [[ $KCOV_HELP_INFO != *"--include-pattern"* ]] || [[ $KCOV_HELP_INFO != *"--e
     fi
 fi
 '''
-]
 ```
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
@@ -2138,10 +2125,25 @@ In order to define this special task you must add the **on_error_task** attribut
 on_error_task = "catch"
 
 [tasks.catch]
-script = [
-    "echo \"Doing cleanups in catch\""
-]
+script = '''
+echo "Doing cleanups in catch"
+'''
 ```
+
+<a name="usage-cargo-alias-tasks"></a>
+### Cargo Alias Tasks
+
+[Cargo alias commands](https://doc.rust-lang.org/cargo/reference/config.html#alias) can be automatically loaded as cargo-make tasks.<br>
+To automatically loading them, the following must be defined in the Makefile.toml config section:
+
+```toml
+[config]
+load_cargo_aliases = true
+```
+
+Each alias defined in the config.toml will be loaded as a task with the same name as the alias.<Br>
+In case a task with that name already exists, it will be ignored.<br>
+The task definition will simply call cargo and the alias value, therefore no automatic cargo plugin installation will be invoked.
 
 <a name="usage-profiles"></a>
 ### Profiles

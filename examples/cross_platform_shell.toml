@@ -1,8 +1,7 @@
 
 [tasks.shell]
 script_runner = "@shell"
-script = [
-'''
+script = '''
 rm ./myfile.txt
 '''
-]
+

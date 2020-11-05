@@ -2,8 +2,7 @@
 [tasks.python]
 script_runner = "python"
 script_extension = "py"
-script = [
-'''
+script = '''
 print("Hello, World!")
 '''
-]
+

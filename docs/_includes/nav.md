@@ -53,6 +53,7 @@
     * [Toolchain](#usage-toolchain)
     * [Init and End tasks](#usage-init-end-tasks)
     * [Catching Errors](#usage-catching-errors)
+    * [Cargo Alias Tasks](#usage-cargo-alias-tasks)
     * [Profiles](#usage-profiles)
         * [Environment Variables](#usage-profiles-env)
         * [Conditions](#usage-profiles-conditions)

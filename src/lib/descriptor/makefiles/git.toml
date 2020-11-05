@@ -3,7 +3,7 @@
 category = "Git"
 
 [tasks.git-add]
-description = "Runs the cargo add command."
+description = "Runs the git add command."
 category = "Git"
 command = "git"
 args = ["add", "."]
@@ -65,8 +65,6 @@ description = "Deletes any merged git branches"
 category = "Git"
 ignore_errors = true
 condition = { platforms = ["linux", "mac"] }
-script = [
-'''
+script = '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 '''
-]

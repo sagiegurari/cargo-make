@@ -16,7 +16,7 @@ pub(crate) mod rustup_component_installer;
 mod mod_test;
 
 use crate::scriptengine;
-use crate::types::{FlowInfo, InstallCrate, ScriptValue, Task};
+use crate::types::{FlowInfo, InstallCrate, Task};
 
 fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, String)> {
     match task_config.command {
@@ -24,7 +24,7 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
             if command == "cargo" {
                 match task_config.args {
                     Some(ref args) => {
-                        if args.len() > 0 {
+                        if args.len() > 0 && !args[0].starts_with("-") {
                             // create crate name
                             let mut crate_name = "cargo-".to_string();
                             crate_name = crate_name + &args[0];
@@ -52,8 +52,19 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
         None => None,
     };
 
-    match task_config.install_crate {
+    let mut install_crate = task_config.install_crate.clone();
+    if let Some(ref install_crate_value) = install_crate {
+        if let InstallCrate::Enabled(enabled) = install_crate_value {
+            if *enabled {
+                // enabled true is the same as no install_crate defined
+                install_crate = None;
+            }
+        }
+    }
+
+    match install_crate {
         Some(ref install_crate_info) => match install_crate_info {
+            InstallCrate::Enabled(_) => (),
             InstallCrate::Value(ref crate_name) => {
                 let cargo_command = match task_config.args {
                     Some(ref args) => &args[0],
@@ -115,7 +126,7 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
         None => match task_config.install_script {
             Some(ref script) => {
                 scriptengine::invoke_script_in_flow_context(
-                    &ScriptValue::Text(script.to_vec()),
+                    &script,
                     task_config.script_runner.clone(),
                     task_config.script_runner_args.clone(),
                     task_config.script_extension.clone(),

@@ -1,20 +1,17 @@
 [tasks.php]
 script_runner = "php"
 script_extension = "php"
-script = [
-'''
+script = '''
 <?php
 echo "Hello, World!\n";
 '''
-]
 
 [tasks.php-with-args]
 script_runner = "php"
 script_runner_args = ["-f"]
 script_extension = "php"
-script = [
-'''
+script = '''
 <?php
 echo "Hello, World!\n";
 '''
-]
+

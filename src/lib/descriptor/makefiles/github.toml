@@ -25,8 +25,7 @@ run_task = [
 [tasks.github-hub-find]
 description = "Sets the CARGO_MAKE_GITHUB_HUB_CLI_FOUND environment variable with the current hub executable location (if found)."
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 exit_on_error false
 
@@ -39,7 +38,6 @@ if ${valid}
     set_env CARGO_MAKE_GITHUB_HUB_CLI_FOUND true
 end
 '''
-]
 
 [tasks.github-publish-hub]
 # Creates a new github release.
@@ -65,20 +63,16 @@ condition = { env_set = [ "GITHUB_REPO_NAME" ] }
 install_crate = "cargo-hublish"
 args = ["hublish"]
 script_runner = "@shell"
-script = [
-'''
+script = '''
 cargo hublish --url "https://api.github.com/repos/${GITHUB_REPO_NAME}/releases"
 '''
-]
 
 [tasks.github-publish-curl]
 # Creates a new github release.
 description = "Creates a new github release using curl."
 category = "Publish"
 condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
-script = [
-'''
+script = '''
 API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_PROJECT_VERSION} ${CARGO_MAKE_PROJECT_NAME} ${CARGO_MAKE_PROJECT_VERSION})
 curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}
 '''
-]

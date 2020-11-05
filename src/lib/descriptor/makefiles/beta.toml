@@ -10,13 +10,12 @@ env_scripts = []
 description = "WARNING, THIS TASK IS UNTESTED!!!! Installs (if missing) and runs coverage using llvm-cov (not supported on windows/mac)"
 
 [tasks.coverage-lcov.linux]
-install_script = [
-'''
+install_script = '''
 command -v lcov >/dev/null 2>&1 || {
     if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
         sudo apt-get update || true
         sudo apt-get install -y clang llvm-3.9 lcov
-        
+
         git clone https://github.com/linux-test-project/lcov.git
         cd lcov
         sudo make install
@@ -25,9 +24,7 @@ command -v lcov >/dev/null 2>&1 || {
     fi
 }
 '''
-]
-script = [
-'''
+script = '''
 #based on https://users.rust-lang.org/t/howto-generating-a-branch-coverage-report/8524
 if [ -n "$LLVM_VERSION" ]; then
     rm -f *.gcda *.gcno
@@ -62,4 +59,3 @@ if [ -n "$LLVM_VERSION" ]; then
     genhtml --branch-coverage --demangle-cpp --legend "${CARGO_MAKE_CRATE_FS_NAME}.info" -o target/coverage/
 fi
 '''
-]

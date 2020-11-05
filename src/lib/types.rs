@@ -37,6 +37,43 @@ fn get_namespaced_task_name(namespace: &str, task: &str) -> String {
     namespaced_task
 }
 
+fn extend_script_value(
+    current_script_value: Option<ScriptValue>,
+    new_script_value: Option<ScriptValue>,
+) -> Option<ScriptValue> {
+    match current_script_value {
+        Some(ref current_value) => match new_script_value {
+            Some(ref new_value) => match current_value {
+                ScriptValue::Sections(current_sections) => match new_value {
+                    ScriptValue::Sections(new_sections) => {
+                        let pre = if new_sections.pre.is_some() {
+                            new_sections.pre.clone()
+                        } else {
+                            current_sections.pre.clone()
+                        };
+                        let main = if new_sections.main.is_some() {
+                            new_sections.main.clone()
+                        } else {
+                            current_sections.main.clone()
+                        };
+                        let post = if new_sections.post.is_some() {
+                            new_sections.post.clone()
+                        } else {
+                            current_sections.post.clone()
+                        };
+
+                        Some(ScriptValue::Sections(ScriptSections { pre, main, post }))
+                    }
+                    _ => current_script_value,
+                },
+                _ => new_script_value,
+            },
+            None => current_script_value,
+        },
+        None => new_script_value,
+    }
+}
+
 #[derive(Debug, Clone)]
 /// Holds CLI args
 pub struct CliArgs {
@@ -602,6 +639,8 @@ impl PartialEq for InstallRustupComponentInfo {
 #[serde(untagged)]
 /// Install crate name or params
 pub enum InstallCrate {
+    /// Enables to prevent installation flow
+    Enabled(bool),
     /// The value as string
     Value(String),
     /// Install crate params
@@ -615,6 +654,10 @@ pub enum InstallCrate {
 impl PartialEq for InstallCrate {
     fn eq(&self, other: &InstallCrate) -> bool {
         match self {
+            InstallCrate::Enabled(value) => match other {
+                InstallCrate::Enabled(other_value) => value == other_value,
+                _ => false,
+            },
             InstallCrate::Value(value) => match other {
                 InstallCrate::Value(other_value) => value == other_value,
                 _ => false,
@@ -837,13 +880,28 @@ pub struct FileScriptValue {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Script content split to parts to enable a more fine tuned extension capability
+pub struct ScriptSections {
+    /// Script section
+    pub pre: Option<String>,
+    /// Script section
+    pub main: Option<String>,
+    /// Script section
+    pub post: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 /// Script value (text, file name, ...)
 pub enum ScriptValue {
+    /// The script text as single line
+    SingleLine(String),
     /// The script text lines
     Text(Vec<String>),
     /// Script file name
     File(FileScriptValue),
+    /// Script content split to multiple parts to enable fine tuned extension
+    Sections(ScriptSections),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -894,7 +952,7 @@ pub struct Task {
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
+    pub install_script: Option<ScriptValue>,
     /// The command to execute
     pub command: Option<String>,
     /// The command args
@@ -1191,7 +1249,8 @@ impl Task {
         }
 
         if task.install_script.is_some() {
-            self.install_script = task.install_script.clone();
+            self.install_script =
+                extend_script_value(self.install_script.clone(), task.install_script.clone());
         } else if override_values {
             self.install_script = None;
         }
@@ -1209,7 +1268,7 @@ impl Task {
         }
 
         if task.script.is_some() {
-            self.script = task.script.clone();
+            self.script = extend_script_value(self.script.clone(), task.script.clone());
         } else if override_values {
             self.script = None;
         }
@@ -1495,7 +1554,7 @@ pub struct PlatformOverrideTask {
     /// additional cargo install arguments
     pub install_crate_args: Option<Vec<String>>,
     /// if defined, the provided script will be executed before running the task
-    pub install_script: Option<Vec<String>>,
+    pub install_script: Option<ScriptValue>,
     /// The command to execute
     pub command: Option<String>,
     /// The command args
@@ -1586,7 +1645,8 @@ impl PlatformOverrideTask {
             }
 
             if self.install_script.is_none() && task.install_script.is_some() {
-                self.install_script = task.install_script.clone();
+                self.install_script =
+                    extend_script_value(self.install_script.clone(), task.install_script.clone());
             }
 
             if self.command.is_none() && task.command.is_some() {
@@ -1598,7 +1658,7 @@ impl PlatformOverrideTask {
             }
 
             if self.script.is_none() && task.script.is_some() {
-                self.script = task.script.clone();
+                self.script = extend_script_value(None, task.script.clone());
             }
 
             if self.script_runner.is_none() && task.script_runner.is_some() {
@@ -1703,16 +1763,18 @@ pub struct ConfigSection {
     pub reduce_output: Option<bool>,
     /// True to print time summary at the end of the flow
     pub time_summary: Option<bool>,
+    /// Automatically load cargo aliases as cargo-make tasks
+    pub load_cargo_aliases: Option<bool>,
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
-    pub load_script: Option<Vec<String>>,
+    pub load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Linux (takes precedence over load_script)
-    pub linux_load_script: Option<Vec<String>>,
+    pub linux_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Windows (takes precedence over load_script)
-    pub windows_load_script: Option<Vec<String>>,
+    pub windows_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
-    pub mac_load_script: Option<Vec<String>>,
+    pub mac_load_script: Option<ScriptValue>,
 }
 
 impl ConfigSection {
@@ -1796,29 +1858,43 @@ impl ConfigSection {
             self.time_summary = extended.time_summary.clone();
         }
 
+        if extended.load_cargo_aliases.is_some() {
+            self.load_cargo_aliases = extended.load_cargo_aliases.clone();
+        }
+
         if extended.main_project_member.is_some() {
             self.main_project_member = extended.main_project_member.clone();
         }
 
         if extended.load_script.is_some() {
-            self.load_script = extended.load_script.clone();
+            self.load_script =
+                extend_script_value(self.load_script.clone(), extended.load_script.clone());
         }
 
         if extended.linux_load_script.is_some() {
-            self.linux_load_script = extended.linux_load_script.clone();
+            self.linux_load_script = extend_script_value(
+                self.linux_load_script.clone(),
+                extended.linux_load_script.clone(),
+            );
         }
 
         if extended.windows_load_script.is_some() {
-            self.windows_load_script = extended.windows_load_script.clone();
+            self.windows_load_script = extend_script_value(
+                self.windows_load_script.clone(),
+                extended.windows_load_script.clone(),
+            );
         }
 
         if extended.mac_load_script.is_some() {
-            self.mac_load_script = extended.mac_load_script.clone();
+            self.mac_load_script = extend_script_value(
+                self.mac_load_script.clone(),
+                extended.mac_load_script.clone(),
+            );
         }
     }
 
     /// Returns the load script based on the current platform
-    pub fn get_load_script(self: &ConfigSection) -> Option<Vec<String>> {
+    pub fn get_load_script(self: &ConfigSection) -> Option<ScriptValue> {
         let platform_name = get_platform_name();
 
         if platform_name == "windows" {

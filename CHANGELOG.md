@@ -1,5 +1,17 @@
 ## CHANGELOG
 
+### v0.32.8
+
+* Load cargo aliases as tasks #484
+* Support script content as a simple string instead of an array.
+* Support script content as fielded sections (pre/main/post) to enable sharing of common script content between tasks #473
+* The load_script and install_script attribute types supports all script input types (string/vec/file/sections).
+* Fixed invocation of cargo commands with flag arguments #476
+* Improved error message when failing to parse external descriptor #475 (thanks @mrmanne)
+* Fixed git add task description #477 (thanks @knutwalker)
+* Improve core task performance #487
+* Bump rust minimal version to 0.44 due to dependencies updates
+
 ### v0.32.7 (2020-10-07)
 
 * Fix passing task args to workspace members #470

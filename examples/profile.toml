@@ -20,8 +20,7 @@ IS_PROD = "TRUE"
 IS_CI = true
 
 [tasks.echo]
-script = [
-'''
+script = '''
 echo COMMON: ${COMMON}
 echo PROFILE_NAME: ${PROFILE_NAME}
 echo CARGO_PROFILE_NAME: ${CARGO_PROFILE_NAME}
@@ -35,7 +34,6 @@ echo CARGO_MAKE_RUN_BENCH: ${CARGO_MAKE_RUN_BENCH}
 echo CARGO_MAKE_RUN_CLIPPY: ${CARGO_MAKE_RUN_CLIPPY}
 echo CARGO_MAKE_RUN_CODECOV: ${CARGO_MAKE_RUN_CODECOV}
 '''
-]
 
 [tasks.echo-development]
 condition = { profiles = [ "development" ] }

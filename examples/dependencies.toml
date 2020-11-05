@@ -9,6 +9,4 @@ dependencies = ["D"]
 dependencies = ["D"]
 
 [tasks.D]
-script = [
-    "echo hello"
-]
+script = "echo hello"

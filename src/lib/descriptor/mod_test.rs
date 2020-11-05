@@ -1,6 +1,7 @@
 use super::*;
 
-use crate::types::{ExtendOptions, InstallCrate};
+use crate::environment::setup_cwd;
+use crate::types::{ExtendOptions, InstallCrate, ScriptValue};
 
 #[test]
 fn merge_env_both_empty() {
@@ -724,7 +725,7 @@ fn run_load_script_no_load_script() {
 #[test]
 fn run_load_script_valid_load_script() {
     let mut config = ConfigSection::new();
-    config.load_script = Some(vec!["exit 0".to_string()]);
+    config.load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
@@ -737,7 +738,7 @@ fn run_load_script_valid_load_script() {
 #[should_panic]
 fn run_load_script_invalid_load_script() {
     let mut config = ConfigSection::new();
-    config.load_script = Some(vec!["exit 1".to_string()]);
+    config.load_script = Some(ScriptValue::Text(vec!["exit 1".to_string()]));
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
@@ -753,10 +754,10 @@ fn run_load_script_valid_load_script_duckscript() {
     ));
 
     let mut config = ConfigSection::new();
-    config.load_script = Some(vec![r#"#!@duckscript
+    config.load_script = Some(ScriptValue::Text(vec![r#"#!@duckscript
     set_env run_load_script_valid_load_script_duckscript true
     "#
-    .to_string()]);
+    .to_string()]));
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
@@ -1028,4 +1029,27 @@ fn check_makefile_min_version_same_min_version() {
     let result = check_makefile_min_version(toml_string);
 
     assert!(result.is_ok());
+}
+
+#[test]
+fn load_cargo_aliases_no_file() {
+    let mut config = load_internal_descriptors(false, false, None);
+    let count = config.tasks.len();
+
+    load_cargo_aliases(&mut config);
+
+    assert_eq!(count, config.tasks.len());
+}
+
+#[test]
+#[ignore]
+fn load_cargo_aliases_found() {
+    let mut config = load_internal_descriptors(false, false, None);
+    let count = config.tasks.len();
+
+    setup_cwd(Some("src/lib/test/workspace1/member1"));
+    load_cargo_aliases(&mut config);
+    setup_cwd(Some("../../../../.."));
+
+    assert_eq!(count, config.tasks.len());
 }

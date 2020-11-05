@@ -141,19 +141,18 @@ run_task = "do-clean-apidocs"
 category = "Documentation"
 private = true
 condition = { env_set = [ "CARGO_MAKE_DOCS_ROOT_FOLDER" ] }
-script = [
-'''
+script = '''
 #!@duckscript
 DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 
 # Removing Documentation Directory: ${DOCS_DIRECTORY}
 rm -Rf ${DOCS_DIRECTORY}
 '''
-]
 
 [tasks.clean]
 description = "Runs the cargo clean command."
 category = "Cleanup"
+install_crate = false
 command = "cargo"
 args = ["clean"]
 
@@ -172,24 +171,20 @@ run_task = [
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
 private = true
-script = [
-'''
+script = '''
 #!@duckscript
 rm ./Cargo.lock
 '''
-]
 
 [tasks.workspace-delete-lock]
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
 condition = { env_set = [ "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY" ] }
 private = true
-script = [
-'''
+script = '''
 #!@duckscript
 rm ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock
 '''
-]
 
 [tasks.upgrade-dependencies]
 description = "Rebuilds the crate with most updated dependencies."
@@ -262,6 +257,7 @@ category = "Documentation"
 [tasks.docs]
 description = "Generate rust documentation."
 category = "Documentation"
+install_crate = false
 command = "cargo"
 args = ["doc", "--no-deps"]
 
@@ -321,8 +317,7 @@ dependencies = [
     "readme-file-set-env"
 ]
 condition = { env_true = ["CARGO_MAKE_DOCS_README_SET_CRATE_VERSION"] }
-script = [
-'''
+script = '''
 #!@duckscript
 readme_file_name = set ${CARGO_MAKE_DOCS_README_FILE}
 
@@ -363,7 +358,6 @@ else
     echo "README file: ${readme_file_name} not found."
 end
 '''
-]
 
 [tasks.readme-include-files]
 description = "Modifies the current README.md by including external files."
@@ -397,12 +391,14 @@ category = "Build"
 [tasks.build]
 description = "Runs the rust compiler."
 category = "Build"
+install_crate = false
 command = "cargo"
 args = ["build", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
 [tasks.build-release]
 description = "Runs release build."
 category = "Build"
+install_crate = false
 command = "cargo"
 args = ["build", "--release", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -415,6 +411,7 @@ category = "Test"
 [tasks.test]
 description = "Runs all available tests."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -427,6 +424,7 @@ run_task = "test"
 [tasks.test-single-threaded]
 description = "Runs all ignored tests with a single test thread."
 category = "Test"
+install_crate = false
 env = { RUST_TEST_THREADS = 1 }
 command = "cargo"
 args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )", "--", "--ignored"]
@@ -461,6 +459,7 @@ dependencies = [
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["test", "${@}"]
 
@@ -473,6 +472,7 @@ category = "Test"
 [tasks.bench]
 description = "Runs all available bench files."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["bench", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -497,6 +497,7 @@ run_task = "bench-flow"
 [tasks.bench-compile]
 description = "Compiles all available bench files."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["build", "--benches", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -520,6 +521,7 @@ category = "Test"
 [tasks.check]
 description = "Runs cargo check."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check"]
 
@@ -538,18 +540,21 @@ dependencies = [
 [tasks.check-tests]
 description = "Runs cargo check for project tests."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check", "--tests"]
 
 [tasks.check-examples]
 description = "Runs cargo check for project examples."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["check", "--examples"]
 
 [tasks.examples-compile]
 description = "Runs cargo build for project examples."
 category = "Test"
+install_crate = false
 command = "cargo"
 args = ["build", "--examples"]
 
@@ -734,8 +739,7 @@ description = "Copies the generated documentation to the docs/api directory."
 category = "Documentation"
 private = true
 script_runner = "@duckscript"
-script = [
-'''
+script = '''
 if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
     src_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}
 else
@@ -765,7 +769,6 @@ for path in ${handle}
     mv ${path} ${dest_dir}
 end
 '''
-]
 
 [tasks.end-build-flow]
 category = "Build"
@@ -776,6 +779,7 @@ category = "Publish"
 [tasks.package]
 description = "Runs the cargo package command."
 category = "Publish"
+install_crate = false
 command = "cargo"
 args = ["package"]
 
@@ -788,6 +792,7 @@ category = "Publish"
 [tasks.publish]
 description = "Runs the cargo publish command."
 category = "Publish"
+install_crate = false
 command = "cargo"
 args = ["publish", "@@split(CARGO_MAKE_CARGO_PUBLISH_FLAGS, )"]
 
@@ -805,8 +810,7 @@ description = "Runs the requested task for every workspace member."
 category = "Tools"
 env = { CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY = "${CARGO_MAKE_WORKING_DIRECTORY}/target" }
 condition = { env_set = [ "CARGO_MAKE_MEMBER_TASK" ] }
-script = [
-'''
+script = '''
 #prevent codecov publish in member builds
 export CARGO_MAKE_SKIP_CODECOV="true"
 
@@ -819,16 +823,13 @@ unset CARGO_MAKE_COVERAGE_REPORT_DIRECTORY
 unset CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY
 unset CARGO_MAKE_SKIP_CODECOV
 '''
-]
 
 [tasks.do-on-members.windows]
 clear = true
-script = [
-'''
+script = '''
 cargo make --loglevel=%CARGO_MAKE_LOG_LEVEL% --profile="%CARGO_MAKE_PROFILE%" %CARGO_MAKE_MEMBER_TASK%
 if %errorlevel% neq 0 exit /b %errorlevel%
 '''
-]
 
 [tasks.pre-workspace-ci-flow]
 category = "CI"
@@ -853,12 +854,10 @@ category = "Publish"
 
 [tasks.bintray-upload.linux]
 condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME", "CARGO_MAKE_CRATE_NAME", "CARGO_MAKE_CRATE_VERSION" ] }
-script = [
-'''
+script = '''
 curl -T "./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H "X-Bintray-Package:${BINTRAY_PACKAGE_NAME}" -H "X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1
 curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish
 '''
-]
 
 [tasks.build-publish-flow]
 description = "Runs full sanity, generates github release and publishes the crate."
@@ -957,8 +956,7 @@ description = "Sets up a musl build environment"
 category = "CI"
 condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_OPENSSL_VERSION", "CARGO_MAKE_OPENSSL_DOWNLOAD_URL" ], env_true = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
 env = { "OPENSSL_DIR" = "${HOME}/openssl-musl" }
-script = [
-'''
+script = '''
 rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
 curl ${CARGO_MAKE_OPENSSL_DOWNLOAD_URL} | tar xzf -
 cd openssl-${CARGO_MAKE_OPENSSL_VERSION}
@@ -966,11 +964,11 @@ CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86
 make -j"$(nproc)"
 make install
 '''
-]
 
 [tasks.build-release-for-target]
 description = "Makes a release build for a given target"
 condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ] }
+install_crate = false
 command = "cargo"
 args = [
   "build",
@@ -986,18 +984,15 @@ category = "Publish"
 condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION", "CARGO_MAKE_BINARY_EXECUTABLE_NAME" ], env_true = [ "CARGO_MAKE_CI" ] }
 env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
 script_runner = "@shell"
-script = [
-'''
+script = '''
 mkdir ${OUTPUT_NAME}
 cp target/$CARGO_MAKE_RELEASE_FLOW_TARGET/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME} ${OUTPUT_NAME}/
 cp README.md LICENSE* ${OUTPUT_NAME}/
 zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}
 '''
-]
 
 [tasks.zip-release-binary-for-target.windows]
-script = [
-'''
+script = '''
 mkdir ${OUTPUT_NAME}
 dir target
 powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME}.exe -destination ${OUTPUT_NAME}
@@ -1006,4 +1001,3 @@ powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}
 dir ${OUTPUT_NAME}
 powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip
 '''
-]

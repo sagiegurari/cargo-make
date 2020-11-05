@@ -1,16 +1,11 @@
 
 [tasks.duckscript]
 script_runner = "@duckscript"
-script = [
-'''
-echo Hello World!
-'''
-]
+script = "echo Hello World!"
 
 [tasks.duckscript-example]
 script_runner = "@duckscript"
-script = [
-'''
+script = '''
 task_name = get_env CARGO_MAKE_CURRENT_TASK_NAME
 echo The currently running cargo make task is: ${task_name}
 
@@ -22,20 +17,16 @@ cd .. # this changes cargo-make current working directory (cargo-make will rever
 pwd
 set_env CARGO_MAKE_CURRENT_TASK_NAME tricking_cargo_make
 '''
-]
 
 [tasks.duckscript-shebang-example]
-script = [
-'''
+script = '''
 #!@duckscript
 echo Running duckscript without runner attribute.
 '''
-]
 
 [tasks.run-task-from-duckscript]
 script_runner = "@duckscript"
-script = [
-'''
+script = '''
 echo first invocation of echo1 task:
 cm_run_task echo1
 echo second invocation of echo1 task:
@@ -44,7 +35,6 @@ cm_run_task echo1
 echo running task: echo2:
 cm_run_task echo2
 '''
-]
 
 [tasks.echo1]
 command = "echo"
@@ -58,10 +48,8 @@ args = ["2"]
 run_task = { name = ["sleep", "sleep"] }
 
 [tasks.sleep]
-script = [
-'''
+script = '''
 #!@duckscript
 sleep 1000
 '''
-]
 

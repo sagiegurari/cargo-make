@@ -1,11 +1,11 @@
 
 [tasks.error]
-script = [ "exit 1" ]
+script = "exit 1"
 
 [tasks.ignore]
-script = [ "exit 1" ]
+script = "exit 1"
 ignore_errors = true
 
 [tasks.force]
-script = [ "exit 1" ]
+script = "exit 1"
 force = true

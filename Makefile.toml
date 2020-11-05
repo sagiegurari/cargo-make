@@ -16,8 +16,7 @@ CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}",
 
 [tasks.post-print-env]
 category = "Tools"
-script = [
-'''
+script = '''
 #!@duckscript
 echo "*************************************"
 echo "Extended Info:"
@@ -26,7 +25,6 @@ echo "    Unstable Test Environment: ${CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV}"
 echo "    Unstable Format Environment: ${CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV}"
 echo "*************************************"
 '''
-]
 
 [tasks.test-multi-phases-flow]
 condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV"] }
@@ -38,8 +36,7 @@ condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV"] }
 ignore_errors = true
 
 [tasks.generate-readme]
-script = [
-'''
+script = '''
 #!@duckscript
 echo Generating README
 
@@ -59,7 +56,6 @@ readme_text = replace ${readme_text} "{{ site.version }}" ${crate_version}
 
 writefile ./README.md ${readme_text}
 '''
-]
 
 [tasks.generate-task-list]
 command = "cargo"

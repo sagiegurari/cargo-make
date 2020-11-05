@@ -10,13 +10,14 @@
 #[path = "./mod_test.rs"]
 mod mod_test;
 
+mod cargo_alias;
 mod makefiles;
 
 use crate::io;
 use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
-    ScriptValue, Task,
+    Task,
 };
 use crate::version;
 use envmnt;
@@ -204,14 +205,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    scriptengine::invoke_script_pre_flow(
-                        &ScriptValue::Text(script.to_vec()),
-                        None,
-                        None,
-                        None,
-                        true,
-                        &vec![],
-                    );
+                    scriptengine::invoke_script_pre_flow(script, None, None, None, true, &vec![]);
 
                     true
                 }
@@ -375,7 +369,16 @@ fn load_external_descriptor(
 
         let mut file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
             Ok(value) => value,
-            Err(error) => panic!("Unable to parse external descriptor, {}", error),
+            Err(error) => {
+                error!(
+                    "Unable to parse external file: {:#?}, {}",
+                    &file_path, error
+                );
+                panic!(
+                    "Unable to parse external file: {:#?}, {}",
+                    &file_path, error
+                );
+            }
         };
         debug!("Loaded external config: {:#?}", &file_config);
 
@@ -593,6 +596,23 @@ fn load_descriptors(
     Ok(config)
 }
 
+fn load_cargo_aliases(config: &mut Config) {
+    if let Some(load_cargo_aliases) = config.config.load_cargo_aliases {
+        if load_cargo_aliases {
+            let alias_tasks = cargo_alias::load();
+            for (name, task) in alias_tasks {
+                match config.tasks.get(&name) {
+                    None => {
+                        debug!("Creating cargo alias task: {}", &name);
+                        config.tasks.insert(name, task);
+                    }
+                    Some(_) => debug!("Ignoring cargo alias task: {}", &name),
+                }
+            }
+        }
+    }
+}
+
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
@@ -646,6 +666,8 @@ pub(crate) fn load(
             }
         };
     }
+
+    load_cargo_aliases(&mut config);
 
     Ok(config)
 }

@@ -1,6 +1,6 @@
 use super::*;
 use crate::test;
-use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, TestArg};
+use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, ScriptValue, TestArg};
 use envmnt;
 
 #[test]
@@ -62,6 +62,26 @@ fn get_cargo_plugin_info_from_command_valid() {
 #[test]
 fn install_empty() {
     let task = Task::new();
+
+    install(&task, &test::create_empty_flow_info());
+}
+
+#[test]
+fn install_disabled_bad_crate() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Enabled(false));
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["badbadbad".to_string()]);
+
+    install(&task, &test::create_empty_flow_info());
+}
+
+#[test]
+fn install_enabled_crate_already_installed() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Enabled(true));
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec!["test".to_string()]);
 
     install(&task, &test::create_empty_flow_info());
 }
@@ -144,7 +164,7 @@ fn install_rustup_via_rustup_info() {
 #[test]
 fn install_script_ok() {
     let mut task = Task::new();
-    task.install_script = Some(vec!["exit 0".to_string()]);
+    task.install_script = Some(ScriptValue::SingleLine("exit 0".to_string()));
 
     install(&task, &test::create_empty_flow_info());
 }
@@ -153,7 +173,7 @@ fn install_script_ok() {
 #[should_panic]
 fn install_script_error() {
     let mut task = Task::new();
-    task.install_script = Some(vec!["exit 1".to_string()]);
+    task.install_script = Some(ScriptValue::SingleLine("exit 1".to_string()));
 
     install(&task, &test::create_empty_flow_info());
 }
@@ -164,10 +184,12 @@ fn install_script_duckscript() {
     assert!(!envmnt::exists("install_script_duckscript"));
 
     let mut task = Task::new();
-    task.install_script = Some(vec![r#"#!@duckscript
+    task.install_script = Some(ScriptValue::SingleLine(
+        r#"#!@duckscript
     set_env install_script_duckscript true
     "#
-    .to_string()]);
+        .to_string(),
+    ));
 
     install(&task, &test::create_empty_flow_info());
 
@@ -179,7 +201,7 @@ fn install_script_duckscript() {
 fn install_script_error_ignore_errors() {
     let mut task = Task::new();
     task.ignore_errors = Some(true);
-    task.install_script = Some(vec!["exit 1".to_string()]);
+    task.install_script = Some(ScriptValue::SingleLine("exit 1".to_string()));
 
     install(&task, &test::create_empty_flow_info());
 }

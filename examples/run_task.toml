@@ -1,8 +1,6 @@
 
 [tasks.echo]
-script = [
-    "echo hello world"
-]
+script = "echo hello world"
 
 [tasks.flow]
 run_task = "echo"
@@ -30,7 +28,7 @@ run_task = [
 run_task = { name = ["echo1", "echo2"], parallel = true }
 
 [tasks.fail]
-script = ["exit 1"]
+script = "exit 1"
 
 [tasks.cleanup]
 command = "echo"

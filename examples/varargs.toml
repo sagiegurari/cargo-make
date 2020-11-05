@@ -12,24 +12,18 @@ args = [
 ]
 
 [tasks.cli-args]
-script = [
-    "echo args are: ${@}"
-]
+script = "echo args are: ${@}"
 
 [tasks.cli-args-shell]
 script_runner = "@shell"
-script = [
-    "echo args are: ${@}"
-]
+script = "echo args are: ${@}"
 
 [tasks.cli-args-rust]
 script_runner = "@rust"
-script = [
-'''
+script = '''
 use std::env;
 fn main() {
     let args: Vec<String> = env::args().collect();
     println!("args are: {:?}", args);
 }
 '''
-]
