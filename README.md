@@ -202,7 +202,7 @@ cargo make --makefile simple-example.toml my-flow
 The output would look something like this:
 
 ```console
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: simple-example.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
@@ -590,7 +590,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -607,7 +607,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -634,7 +634,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -685,7 +685,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -702,7 +702,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -954,7 +954,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -981,7 +981,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -1267,7 +1267,7 @@ args = ["3"]
 We run task **3** the output would be:
 
 ```console
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: task_extend.toml
 [cargo-make] INFO - Task: 3
 [cargo-make] INFO - Profile: development
@@ -2235,7 +2235,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -2354,7 +2354,7 @@ deprecated = true
 When invoking **legacy** task for example, the output is:
 
 ```console
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: deprecated.toml
 [cargo-make] INFO - Task: legacy
 [cargo-make] INFO - Profile: development
@@ -2395,7 +2395,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2403,7 +2403,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2473,7 +2473,7 @@ args = ["${MULTIPLE_VALUES}"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml split
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: split
 [cargo-make] INFO - Profile: development
@@ -2485,7 +2485,7 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml no-split
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: no-split
 [cargo-make] INFO - Profile: development
@@ -2520,7 +2520,7 @@ args = ["@@getat(MULTIPLE_VALUES,|,3)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml getat
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: getat
 [cargo-make] INFO - Profile: development
@@ -2547,7 +2547,7 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: remove-empty
 [cargo-make] INFO - Profile: development
@@ -2580,7 +2580,7 @@ args = ["@@trim(TRIM_VALUE)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim
 [cargo-make] INFO - Profile: development
@@ -2609,7 +2609,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml trim-start
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-start
 [cargo-make] INFO - Profile: development
@@ -2621,7 +2621,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml trim-end
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-end
 [cargo-make] INFO - Profile: development
@@ -2659,7 +2659,7 @@ Sample run for a mapping that was found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=development decode
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -2675,7 +2675,7 @@ Another sample run for a mapping that was not found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -2700,7 +2700,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode-with-default
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-default
 [cargo-make] INFO - Profile: development
@@ -2724,7 +2724,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=test decode-with-eval
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-eval
 [cargo-make] INFO - Profile: development
@@ -3093,7 +3093,7 @@ In order to specify the minimal version, use the **min_version** in the config s
 
 ```toml
 [config]
-min_version = "0.32.7"
+min_version = "0.32.8"
 ```
 
 <a name="usage-diff-changes"></a>
@@ -3104,7 +3104,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.32.7
+[cargo-make] INFO - cargo make 0.32.8
 [cargo-make] INFO - Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.

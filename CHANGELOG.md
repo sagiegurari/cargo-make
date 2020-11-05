@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.8
+### v0.32.8 (2020-11-05)
 
 * Load cargo aliases as tasks #484
 * Support script content as a simple string instead of an array.

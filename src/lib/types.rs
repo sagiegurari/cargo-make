@@ -1714,7 +1714,7 @@ pub enum Extend {
 pub struct ModifyConfig {
     /// If true, all core tasks will be set to private (default false)
     pub private: Option<bool>,
-    /// If set to some value, all core tasks are modified to: <namespace>::<name> for example default::build
+    /// If set to some value, all core tasks are modified to: namespace::name for example default::build
     pub namespace: Option<String>,
 }
 

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/descriptor/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cli/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/descriptor/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cli/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -650,6 +652,28 @@
 <span id="649">649</span>
 <span id="650">650</span>
 <span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -663,13 +687,14 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./mod_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">mod_test</span>;
 
+<span class="kw">mod</span> <span class="ident">cargo_alias</span>;
 <span class="kw">mod</span> <span class="ident">makefiles</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">scriptengine</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{
     <span class="ident">Config</span>, <span class="ident">ConfigSection</span>, <span class="ident">EnvFile</span>, <span class="ident">EnvFileInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">Extend</span>, <span class="ident">ExternalConfig</span>, <span class="ident">ModifyConfig</span>,
-    <span class="ident">ScriptValue</span>, <span class="ident">Task</span>,
+    <span class="ident">Task</span>,
 };
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">version</span>;
 <span class="kw">use</span> <span class="ident">envmnt</span>;
@@ -684,7 +709,7 @@
 <span class="kw">fn</span> <span class="ident">merge_env</span>(
     <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
     <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>::<span class="ident">new</span>();
 
     <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">base</span>.<span class="ident">iter</span>() {
@@ -706,7 +731,7 @@
                     (
                         <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="kw-2">ref</span> <span class="ident">base_profile_env</span>),
                         <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="kw-2">ref</span> <span class="ident">extended_profile_env</span>),
-                    ) <span class="op">=&gt;</span> {
+                    ) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_profile_env_mut</span> <span class="op">=</span> <span class="ident">base_profile_env</span>.<span class="ident">clone</span>();
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_profile_env_mut</span> <span class="op">=</span> <span class="ident">extended_profile_env</span>.<span class="ident">clone</span>();
 
@@ -715,7 +740,7 @@
 
                         <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">EnvValue</span>::<span class="ident">Profile</span>(<span class="ident">merged_sub_env</span>));
                     }
-                    <span class="kw">_</span> <span class="op">=&gt;</span> {
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value_clone</span>);
                         ()
                     }
@@ -729,11 +754,11 @@
     <span class="ident">merged</span>
 }
 
-<span class="kw">fn</span> <span class="ident">merge_env_files</span>(<span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>, <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">merge_env_files</span>(<span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>, <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span> {
     [<span class="kw-2">&amp;</span><span class="ident">extended</span>[..], <span class="kw-2">&amp;</span><span class="ident">base</span>[..]].<span class="ident">concat</span>()
 }
 
-<span class="kw">fn</span> <span class="ident">merge_env_scripts</span>(<span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">merge_env_scripts</span>(<span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     [<span class="kw-2">&amp;</span><span class="ident">extended</span>[..], <span class="kw-2">&amp;</span><span class="ident">base</span>[..]].<span class="ident">concat</span>()
 }
 
@@ -741,7 +766,7 @@
     <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
     <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>,
     <span class="ident">merge_task_env</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Task</span><span class="op">&gt;</span>::<span class="ident">new</span>();
 
     <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">base</span>.<span class="ident">iter</span>() {
@@ -754,7 +779,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">clone</span>();
 
         <span class="ident">task</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">base</span>.<span class="ident">get</span>(<span class="ident">key</span>) {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merged_task</span> <span class="op">=</span> <span class="ident">Task</span>::<span class="ident">new</span>();
 
                 <span class="ident">merged_task</span>.<span class="ident">extend</span>(<span class="ident">value</span>);
@@ -762,7 +787,7 @@
 
                 <span class="kw">if</span> <span class="ident">merge_task_env</span> <span class="op">&amp;&amp;</span> <span class="ident">value</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>() {
                     <span class="kw">let</span> <span class="ident">extended_env</span> <span class="op">=</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>();
-                    <span class="kw">if</span> <span class="ident">extended_env</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">2</span>
+                    <span class="kw">if</span> <span class="ident">extended_env</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">2</span>
                         <span class="op">&amp;&amp;</span> <span class="ident">extended_env</span>.<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
                         <span class="op">&amp;&amp;</span> <span class="ident">extended_env</span>
                             .<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>)
@@ -774,7 +799,7 @@
 
                 <span class="ident">merged_task</span>
             }
-            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">task</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">task</span>,
         };
 
         <span class="ident">merged</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">task</span>);
@@ -786,26 +811,26 @@
 <span class="kw">fn</span> <span class="ident">add_file_location_info</span>(
     <span class="kw-2">mut</span> <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span>,
     <span class="ident">file_path_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExternalConfig</span> {
     <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">file_path_string</span>.<span class="ident">as_path</span>();
     <span class="kw">let</span> <span class="ident">base_directory</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">file_path</span>.<span class="ident">parent</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> <span class="ident">FromPath</span>::<span class="ident">from_path</span>(<span class="ident">directory</span>),
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">FromPath</span>::<span class="ident">from_path</span>(<span class="ident">directory</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
     };
 
     <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">env_files</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">modified_env_files</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
             <span class="kw">for</span> <span class="ident">env_file</span> <span class="kw">in</span> <span class="ident">env_files</span> {
                 <span class="kw">match</span> <span class="ident">env_file</span> {
-                    <span class="ident">EnvFile</span>::<span class="ident">Path</span>(<span class="ident">path</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">EnvFile</span>::<span class="ident">Path</span>(<span class="ident">path</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">EnvFileInfo</span>::<span class="ident">new</span>(<span class="ident">path</span>);
                         <span class="ident">info</span>.<span class="ident">base_path</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base_directory</span>.<span class="ident">clone</span>());
 
                         <span class="ident">modified_env_files</span>.<span class="ident">push</span>(<span class="ident">EnvFile</span>::<span class="ident">Info</span>(<span class="ident">info</span>));
                     }
-                    <span class="ident">EnvFile</span>::<span class="ident">Info</span>(<span class="kw-2">mut</span> <span class="ident">info</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">EnvFile</span>::<span class="ident">Info</span>(<span class="kw-2">mut</span> <span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">if</span> <span class="ident">info</span>.<span class="ident">base_path</span>.<span class="ident">is_none</span>() {
                             <span class="ident">info</span>.<span class="ident">base_path</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">base_directory</span>.<span class="ident">clone</span>());
                         }
@@ -817,15 +842,15 @@
 
             <span class="ident">external_config</span>.<span class="ident">env_files</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">modified_env_files</span>);
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tasks_map</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>();
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span> <span class="ident">external_config</span>.<span class="ident">tasks</span>.<span class="ident">clone</span>() {
         <span class="kw">for</span> (<span class="ident">task_name</span>, <span class="ident">task</span>) <span class="kw">in</span> <span class="ident">tasks</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">clone</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+                <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
             };
 
             <span class="ident">env</span>.<span class="ident">insert</span>(
@@ -848,81 +873,74 @@
     <span class="ident">external_config</span>
 }
 
-<span class="kw">fn</span> <span class="ident">run_load_script</span>(<span class="ident">external_config</span>: <span class="kw-2">&amp;</span><span class="ident">ExternalConfig</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">run_load_script</span>(<span class="ident">external_config</span>: <span class="kw-2">&amp;</span><span class="ident">ExternalConfig</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">config</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">config</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">config</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">load_script</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">get_load_script</span>();
 
             <span class="kw">match</span> <span class="ident">load_script</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Load script found.&quot;</span>);
 
-                    <span class="ident">scriptengine</span>::<span class="ident">invoke_script_pre_flow</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>::<span class="ident">Text</span>(<span class="ident">script</span>.<span class="ident">to_vec</span>()),
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                        <span class="prelude-val">None</span>,
-                        <span class="bool-val">true</span>,
-                        <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[],
-                    );
+                    <span class="ident">scriptengine</span>::<span class="ident">invoke_script_pre_flow</span>(<span class="ident">script</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[]);
 
                     <span class="bool-val">true</span>
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No load script defined.&quot;</span>);
                     <span class="bool-val">false</span>
                 }
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;No load script defined.&quot;</span>);
             <span class="bool-val">false</span>
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">merge_external_configs</span>(<span class="ident">config</span>: <span class="ident">ExternalConfig</span>, <span class="ident">parent_config</span>: <span class="ident">ExternalConfig</span>) <span class="op">-&gt;</span> <span class="ident">ExternalConfig</span> {
+<span class="kw">fn</span> <span class="ident">merge_external_configs</span>(<span class="ident">config</span>: <span class="ident">ExternalConfig</span>, <span class="ident">parent_config</span>: <span class="ident">ExternalConfig</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExternalConfig</span> {
     <span class="comment">// merge env files</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_env_files</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">env_files</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=&gt;</span> <span class="ident">env_files</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_files</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_env_files</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">env_files</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=&gt;</span> <span class="ident">env_files</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_files</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
     <span class="kw">let</span> <span class="ident">all_env_files</span> <span class="op">=</span> <span class="ident">merge_env_files</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_env_files</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env_files</span>);
 
     <span class="comment">// merge env</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env</span>);
 
     <span class="comment">// merge env scripts</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_env_scripts</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">env_scripts</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=&gt;</span> <span class="ident">env_scripts</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_scripts</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_env_scripts</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">env_scripts</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=&gt;</span> <span class="ident">env_scripts</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_scripts</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
     <span class="kw">let</span> <span class="ident">all_env_scripts</span> <span class="op">=</span> <span class="ident">merge_env_scripts</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_env_scripts</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_env_scripts</span>);
 
     <span class="comment">// merge tasks</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">parent_config</span>.<span class="ident">tasks</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tasks</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tasks</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parent_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extended_tasks</span>, <span class="bool-val">false</span>);
 
@@ -951,14 +969,14 @@
 <span class="kw">fn</span> <span class="ident">load_descriptor_extended_makefiles</span>(
     <span class="ident">parent_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">extend_struct</span>: <span class="kw-2">&amp;</span><span class="ident">Extend</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExternalConfig</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExternalConfig</span>, <span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">extend_struct</span> {
-        <span class="ident">Extend</span>::<span class="ident">Path</span>(<span class="ident">base_file</span>) <span class="op">=&gt;</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="kw-2">&amp;</span><span class="ident">base_file</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
-        <span class="ident">Extend</span>::<span class="ident">Options</span>(<span class="ident">extend_options</span>) <span class="op">=&gt;</span> {
+        <span class="ident">Extend</span>::<span class="ident">Path</span>(<span class="ident">base_file</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="kw-2">&amp;</span><span class="ident">base_file</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+        <span class="ident">Extend</span>::<span class="ident">Options</span>(<span class="ident">extend_options</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">force</span> <span class="op">=</span> <span class="op">!</span><span class="ident">extend_options</span>.<span class="ident">optional</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
             <span class="ident">load_external_descriptor</span>(<span class="ident">parent_path</span>, <span class="kw-2">&amp;</span><span class="ident">extend_options</span>.<span class="ident">path</span>, <span class="ident">force</span>, <span class="bool-val">false</span>)
         }
-        <span class="ident">Extend</span>::<span class="ident">List</span>(<span class="ident">extend_list</span>) <span class="op">=&gt;</span> {
+        <span class="ident">Extend</span>::<span class="ident">List</span>(<span class="ident">extend_list</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ordered_list_config</span> <span class="op">=</span> <span class="ident">ExternalConfig</span>::<span class="ident">new</span>();
 
             <span class="kw">for</span> <span class="ident">entry</span> <span class="kw">in</span> <span class="ident">extend_list</span>.<span class="ident">iter</span>() {
@@ -979,12 +997,12 @@
 
 <span class="doccomment">/// Ensure the Makefile&#39;s min_version, if present, is older than cargo-make&#39;s</span>
 <span class="doccomment">/// currently running version.</span>
-<span class="kw">fn</span> <span class="ident">check_makefile_min_version</span>(<span class="ident">external_descriptor</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">check_makefile_min_version</span>(<span class="ident">external_descriptor</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">value</span>: <span class="ident">toml</span>::<span class="ident">Value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">toml</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">external_descriptor</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
         <span class="comment">// If there&#39;s an error parsing the file, let the caller function figure</span>
         <span class="comment">// it out</span>
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
     };
 
     <span class="kw">let</span> <span class="ident">min_version</span> <span class="op">=</span> <span class="ident">value</span>
@@ -1006,7 +1024,7 @@
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">force</span>: <span class="ident">bool</span>,
     <span class="ident">set_env</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExternalConfig</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExternalConfig</span>, <span class="ident">String</span><span class="op">&gt;</span> {
     <span class="macro">debug</span><span class="macro">!</span>(
         <span class="string">&quot;Loading tasks from file: {} base directory: {}&quot;</span>,
         <span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="kw-2">&amp;</span><span class="ident">base_path</span>
@@ -1027,8 +1045,17 @@
         <span class="ident">check_makefile_min_version</span>(<span class="kw-2">&amp;</span><span class="ident">external_descriptor</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file_config</span>: <span class="ident">ExternalConfig</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">toml</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">external_descriptor</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to parse external descriptor, {}&quot;</span>, <span class="ident">error</span>),
+            <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">error</span><span class="macro">!</span>(
+                    <span class="string">&quot;Unable to parse external file: {:#?}, {}&quot;</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">file_path</span>, <span class="ident">error</span>
+                );
+                <span class="macro">panic</span><span class="macro">!</span>(
+                    <span class="string">&quot;Unable to parse external file: {:#?}, {}&quot;</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">file_path</span>, <span class="ident">error</span>
+                );
+            }
         };
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loaded external config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_config</span>);
 
@@ -1037,7 +1064,7 @@
         <span class="ident">run_load_script</span>(<span class="kw-2">&amp;</span><span class="ident">file_config</span>);
 
         <span class="kw">match</span> <span class="ident">file_config</span>.<span class="ident">extend</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extend_struct</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extend_struct</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">parent_path_buf</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="ident">base_path</span>).<span class="ident">join</span>(<span class="ident">file_name</span>).<span class="ident">join</span>(<span class="string">&quot;..&quot;</span>);
                 <span class="kw">let</span> <span class="ident">parent_path</span> <span class="op">=</span> <span class="ident">file_path</span>
                     .<span class="ident">parent</span>()
@@ -1054,7 +1081,7 @@
                     <span class="ident">base_file_config</span>,
                 ))
             }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">file_config</span>),
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">file_config</span>),
         }
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">force</span> {
         <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Descriptor file: {:#?} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path</span>);
@@ -1070,7 +1097,7 @@
     <span class="ident">stable</span>: <span class="ident">bool</span>,
     <span class="ident">experimental</span>: <span class="ident">bool</span>,
     <span class="ident">modify_config</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ModifyConfig</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Config</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Config</span> {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loading base tasks.&quot;</span>);
 
     <span class="kw">let</span> <span class="ident">base_descriptor</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">stable</span> {
@@ -1080,8 +1107,8 @@
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_config</span>: <span class="ident">Config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">toml</span>::<span class="ident">from_str</span>(<span class="ident">base_descriptor</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to parse base descriptor, {}&quot;</span>, <span class="ident">error</span>),
+        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to parse base descriptor, {}&quot;</span>, <span class="ident">error</span>),
     };
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loaded base config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">base_config</span>);
 
@@ -1090,8 +1117,8 @@
         <span class="kw">let</span> <span class="ident">experimental_descriptor</span> <span class="op">=</span> <span class="ident">makefiles</span>::<span class="ident">BETA</span>;
 
         <span class="kw">let</span> <span class="ident">experimental_config</span>: <span class="ident">Config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">toml</span>::<span class="ident">from_str</span>(<span class="ident">experimental_descriptor</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to parse experimental descriptor, {}&quot;</span>, <span class="ident">error</span>),
+            <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unable to parse experimental descriptor, {}&quot;</span>, <span class="ident">error</span>),
         };
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loaded experimental config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">experimental_config</span>);
 
@@ -1107,20 +1134,20 @@
     <span class="ident">envmnt</span>::<span class="ident">set</span>(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX&quot;</span>, <span class="string">&quot;&quot;</span>);
 
     <span class="kw">match</span> <span class="ident">modify_config</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">props</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">props</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="ident">base_config</span>.<span class="ident">apply</span>(<span class="kw-2">&amp;</span><span class="ident">props</span>);
 
             <span class="kw">match</span> <span class="ident">props</span>.<span class="ident">namespace</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">namespace</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">props</span>.<span class="ident">get_namespace_prefix</span>();
 
                     <span class="ident">envmnt</span>::<span class="ident">set</span>(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">namespace</span>);
                     <span class="ident">envmnt</span>::<span class="ident">set</span>(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">prefix</span>);
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
             };
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> (),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
     };
 
     <span class="ident">base_config</span>
@@ -1129,42 +1156,42 @@
 <span class="kw">fn</span> <span class="ident">merge_base_config_and_external_config</span>(
     <span class="ident">base_config</span>: <span class="ident">Config</span>,
     <span class="ident">external_config</span>: <span class="ident">ExternalConfig</span>,
-    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">late_merge</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="ident">Config</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Config</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_tasks</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">tasks</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=&gt;</span> <span class="ident">tasks</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">tasks</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">tasks</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_tasks</span> <span class="op">=</span> <span class="ident">base_config</span>.<span class="ident">tasks</span>;
 
     <span class="kw">let</span> <span class="ident">env_files</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">env_files</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=&gt;</span> <span class="ident">env_files</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_files</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
 
     <span class="kw">let</span> <span class="ident">env_scripts</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">env_scripts</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=&gt;</span> <span class="ident">env_scripts</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">env_scripts</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env_scripts</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">external_config</span>.<span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=&gt;</span> <span class="ident">env</span>,
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">env</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>(),
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">base_env</span> <span class="op">=</span> <span class="ident">base_config</span>.<span class="ident">env</span>;
 
     <span class="comment">// merge env</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_env</span> <span class="op">=</span> <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_env</span>);
     <span class="ident">all_env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env_map</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_env</span> <span class="op">=</span> <span class="ident">IndexMap</span>::<span class="ident">new</span>();
 
             <span class="kw">for</span> <span class="ident">env_pair</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">values</span> {
                 <span class="kw">let</span> <span class="ident">env_part</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">env_pair</span>.<span class="ident">split</span>(<span class="string">&#39;=&#39;</span>).<span class="ident">collect</span>();
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking env pair: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">env_pair</span>);
 
-                <span class="kw">if</span> <span class="ident">env_part</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">2</span> {
+                <span class="kw">if</span> <span class="ident">env_part</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">2</span> {
                     <span class="ident">cli_env</span>.<span class="ident">insert</span>(
                         <span class="ident">env_part</span>[<span class="number">0</span>].<span class="ident">to_string</span>(),
                         <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="ident">env_part</span>[<span class="number">1</span>].<span class="ident">to_string</span>()),
@@ -1174,7 +1201,7 @@
 
             <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">all_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cli_env</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">all_env</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">all_env</span>,
     };
 
     <span class="kw">let</span> <span class="ident">all_tasks</span> <span class="op">=</span> <span class="ident">merge_tasks</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">base_tasks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">external_tasks</span>, <span class="ident">late_merge</span>);
@@ -1200,25 +1227,25 @@
 <span class="kw">fn</span> <span class="ident">load_descriptors</span>(
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">force</span>: <span class="ident">bool</span>,
-    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">stable</span>: <span class="ident">bool</span>,
     <span class="ident">experimental</span>: <span class="ident">bool</span>,
     <span class="ident">modify_core_tasks</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ModifyConfig</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Config</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Config</span>, <span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">default_config</span> <span class="op">=</span> <span class="ident">load_internal_descriptors</span>(<span class="ident">stable</span>, <span class="ident">experimental</span>, <span class="ident">modify_core_tasks</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">external_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">file_name</span>, <span class="ident">force</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
     <span class="ident">external_config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">workspace_makefile</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">workspace_makefile</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pathbuf</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">workspace_makefile</span>);
             <span class="kw">match</span> <span class="ident">pathbuf</span>.<span class="ident">clone</span>().<span class="ident">file_name</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">workspace_file_name</span>.<span class="ident">to_str</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name_str</span>) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">workspace_file_name</span>.<span class="ident">to_str</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">workspace_file_name_str</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="ident">pathbuf</span>.<span class="ident">pop</span>();
 
                         <span class="kw">match</span> <span class="ident">pathbuf</span>.<span class="ident">to_str</span>() {
-                            <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=&gt;</span> {
+                            <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="kw">let</span> <span class="ident">workspace_config</span> <span class="op">=</span> <span class="ident">load_external_descriptor</span>(
                                     <span class="ident">directory</span>,
                                     <span class="ident">workspace_file_name_str</span>,
@@ -1227,15 +1254,15 @@
                                 )<span class="question-mark">?</span>;
                                 <span class="ident">merge_external_configs</span>(<span class="ident">external_config</span>, <span class="ident">workspace_config</span>)
                             }
-                            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+                            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">external_config</span>,
                         }
                     }
-                    <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">external_config</span>,
                 },
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">external_config</span>,
             }
         }
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="ident">external_config</span>,
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">external_config</span>,
     };
 
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span>
@@ -1244,6 +1271,23 @@
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Loaded merged config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>);
 
     <span class="prelude-val">Ok</span>(<span class="ident">config</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">load_cargo_aliases</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Config</span>) {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">load_cargo_aliases</span>) <span class="op">=</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">load_cargo_aliases</span> {
+        <span class="kw">if</span> <span class="ident">load_cargo_aliases</span> {
+            <span class="kw">let</span> <span class="ident">alias_tasks</span> <span class="op">=</span> <span class="ident">cargo_alias</span>::<span class="ident">load</span>();
+            <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">task</span>) <span class="kw">in</span> <span class="ident">alias_tasks</span> {
+                <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
+                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Creating cargo alias task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
+                        <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">insert</span>(<span class="ident">name</span>, <span class="ident">task</span>);
+                    }
+                    <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Ignoring cargo alias task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>),
+                }
+            }
+        }
+    }
 }
 
 <span class="doccomment">/// Loads the tasks descriptor.&lt;br&gt;</span>
@@ -1255,9 +1299,9 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>(
     <span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">force</span>: <span class="ident">bool</span>,
-    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">env_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">experimental</span>: <span class="ident">bool</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Config</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Config</span>, <span class="ident">String</span><span class="op">&gt;</span> {
     <span class="comment">// load extended descriptor only</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(<span class="kw-2">&amp;</span><span class="ident">file_name</span>, <span class="ident">force</span>, <span class="ident">env_map</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
 
@@ -1266,7 +1310,7 @@
         <span class="kw">let</span> <span class="ident">modify_core_tasks</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">modify_core_tasks</span>.<span class="ident">clone</span>();
 
         <span class="kw">match</span> <span class="ident">modify_core_tasks</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">modify_config</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">modify_config</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">if</span> <span class="ident">modify_config</span>.<span class="ident">is_modifications_defined</span>() {
                     <span class="comment">// reload everything with core modifications</span>
                     <span class="ident">config</span> <span class="op">=</span> <span class="ident">load_descriptors</span>(
@@ -1279,7 +1323,7 @@
                     )<span class="question-mark">?</span>;
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">core_config</span> <span class="op">=</span> <span class="ident">load_internal_descriptors</span>(<span class="bool-val">true</span>, <span class="ident">experimental</span>, <span class="ident">modify_core_tasks</span>);
                 <span class="kw">let</span> <span class="ident">external_config</span> <span class="op">=</span> <span class="ident">ExternalConfig</span> {
                     <span class="ident">extend</span>: <span class="prelude-val">None</span>,
@@ -1299,6 +1343,8 @@
             }
         };
     }
+
+    <span class="ident">load_cargo_aliases</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">config</span>);
 
     <span class="prelude-val">Ok</span>(<span class="ident">config</span>)
 }

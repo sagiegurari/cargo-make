@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib/condition.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condition.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/condition.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condition.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
                 <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -358,14 +360,14 @@
 <span class="kw">use</span> <span class="ident">rust_info</span>::<span class="ident">types</span>::{<span class="ident">RustChannel</span>, <span class="ident">RustInfo</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
 
-<span class="kw">fn</span> <span class="ident">validate_env_map</span>(<span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">equal</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env_map</span>(<span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">equal</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">current_value</span>) <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
                 <span class="kw">if</span> (<span class="ident">equal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">is_equal</span>(<span class="ident">key</span>, <span class="ident">current_value</span>))
-                    <span class="op">||</span> (<span class="op">!</span><span class="ident">equal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">contains_ignore_case</span>(<span class="ident">key</span>, <span class="ident">current_value</span>))
+                    <span class="op">|</span><span class="op">|</span> (<span class="op">!</span><span class="ident">equal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">contains_ignore_case</span>(<span class="ident">key</span>, <span class="ident">current_value</span>))
                 {
                     <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
@@ -374,23 +376,23 @@
 
             <span class="ident">all_valid</span>
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="ident">validate_env_map</span>(<span class="ident">condition</span>.<span class="ident">env</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_contains</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env_contains</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="ident">validate_env_map</span>(<span class="ident">condition</span>.<span class="ident">env_contains</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">env_set</span>.<span class="ident">clone</span>();
 
     <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
@@ -402,15 +404,15 @@
 
             <span class="ident">all_valid</span>
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_not_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env_not_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">env_not_set</span>.<span class="ident">clone</span>();
 
     <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
@@ -422,11 +424,11 @@
 
             <span class="ident">all_valid</span>
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_bool</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">truthy</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_env_bool</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">truthy</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">truthy</span> {
         <span class="ident">condition</span>.<span class="ident">env_true</span>.<span class="ident">clone</span>()
     } <span class="kw">else</span> {
@@ -434,13 +436,13 @@
     };
 
     <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
             <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
                 <span class="kw">let</span> <span class="ident">is_true</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="ident">key</span>, <span class="op">!</span><span class="ident">truthy</span>);
 
-                <span class="kw">if</span> <span class="ident">is_true</span> <span class="op">!=</span> <span class="ident">truthy</span> {
+                <span class="kw">if</span> <span class="ident">is_true</span> <span class="op">!</span><span class="op">=</span> <span class="ident">truthy</span> {
                     <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
@@ -448,120 +450,120 @@
 
             <span class="ident">all_valid</span>
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_platform</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_platform</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">platforms</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">platforms</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">platforms</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">platform_names</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">platform_names</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">platform_name</span> <span class="op">=</span> <span class="ident">types</span>::<span class="ident">get_platform_name</span>();
 
             <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">platform_names</span>
                 .<span class="ident">iter</span>()
-                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="ident">platform_name</span>);
+                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">platform_name</span>);
 
             <span class="kw">match</span> <span class="ident">index</span> {
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(
                         <span class="string">&quot;Failed platform condition, current platform: {}&quot;</span>,
                         <span class="kw-2">&amp;</span><span class="ident">platform_name</span>
                     );
                     <span class="bool-val">false</span>
                 }
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_profile</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_profile</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">profiles</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">profiles</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">profile_names</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">profile_names</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">get</span>();
 
             <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">profile_names</span>
                 .<span class="ident">iter</span>()
-                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="ident">profile_name</span>);
+                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="ident">profile_name</span>);
 
             <span class="kw">match</span> <span class="ident">index</span> {
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(
                         <span class="string">&quot;Failed profile condition, current profile: {}&quot;</span>,
                         <span class="kw-2">&amp;</span><span class="ident">profile_name</span>
                     );
                     <span class="bool-val">false</span>
                 }
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_channel</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">flow_info_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_channel</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">flow_info_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">flow_info_option</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">channels</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">channels</span>.<span class="ident">clone</span>();
             <span class="kw">match</span> <span class="ident">channels</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">channel_names</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">env_info</span>.<span class="ident">rust_info</span>.<span class="ident">channel</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">channel_names</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">env_info</span>.<span class="ident">rust_info</span>.<span class="ident">channel</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value</span> {
-                            <span class="ident">RustChannel</span>::<span class="ident">Stable</span> <span class="op">=&gt;</span> <span class="ident">channel_names</span>
+                            <span class="ident">RustChannel</span>::<span class="ident">Stable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">channel_names</span>
                                 .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;stable&quot;</span>.<span class="ident">to_string</span>()),
-                            <span class="ident">RustChannel</span>::<span class="ident">Beta</span> <span class="op">=&gt;</span> <span class="ident">channel_names</span>
+                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;stable&quot;</span>.<span class="ident">to_string</span>()),
+                            <span class="ident">RustChannel</span>::<span class="ident">Beta</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">channel_names</span>
                                 .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;beta&quot;</span>.<span class="ident">to_string</span>()),
-                            <span class="ident">RustChannel</span>::<span class="ident">Nightly</span> <span class="op">=&gt;</span> <span class="ident">channel_names</span>
+                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;beta&quot;</span>.<span class="ident">to_string</span>()),
+                            <span class="ident">RustChannel</span>::<span class="ident">Nightly</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">channel_names</span>
                                 .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;nightly&quot;</span>.<span class="ident">to_string</span>()),
+                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;nightly&quot;</span>.<span class="ident">to_string</span>()),
                         };
 
                         <span class="kw">match</span> <span class="ident">index</span> {
-                            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
                                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Failed channel condition&quot;</span>);
                                 <span class="bool-val">false</span>
                             }
-                            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
                         }
                     }
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_rust_version_condition</span>(<span class="ident">rustinfo</span>: <span class="ident">RustInfo</span>, <span class="ident">condition</span>: <span class="ident">RustVersionCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_rust_version_condition</span>(<span class="ident">rustinfo</span>: <span class="ident">RustInfo</span>, <span class="ident">condition</span>: <span class="ident">RustVersionCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">if</span> <span class="ident">rustinfo</span>.<span class="ident">version</span>.<span class="ident">is_some</span>() {
         <span class="kw">let</span> <span class="ident">current_version</span> <span class="op">=</span> <span class="ident">rustinfo</span>.<span class="ident">version</span>.<span class="ident">unwrap</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">min</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=&gt;</span> {
-                <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span> <span class="op">||</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>)
+            <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">current_version</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>)
             }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
         };
 
         <span class="kw">if</span> <span class="ident">valid</span> {
             <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">max</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span> <span class="op">||</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="bool-val">true</span>)
+                <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">current_version</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="bool-val">true</span>)
                 }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             };
         }
 
         <span class="kw">if</span> <span class="ident">valid</span> {
             <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">equal</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=&gt;</span> <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span>,
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">current_version</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
             };
         }
 
@@ -571,24 +573,24 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_rust_version</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_rust_version</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">rust_version</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">rust_version</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">rust_version</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">rust_version_condition</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">rust_version_condition</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">rustinfo</span> <span class="op">=</span> <span class="ident">rust_info</span>::<span class="ident">get</span>();
 
             <span class="ident">validate_rust_version_condition</span>(<span class="ident">rustinfo</span>, <span class="ident">rust_version_condition</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">exist</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">exist</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">for</span> <span class="ident">file_path</span> <span class="kw">in</span> <span class="ident">file_paths</span>.<span class="ident">iter</span>() {
         <span class="kw">let</span> <span class="ident">expanded_file_path</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">expand_value</span>(<span class="ident">file_path</span>);
         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">expanded_file_path</span>);
 
-        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">exists</span>() <span class="op">!=</span> <span class="ident">exist</span> {
+        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">exists</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">exist</span> {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
     }
@@ -596,25 +598,25 @@
     <span class="bool-val">true</span>
 }
 
-<span class="kw">fn</span> <span class="ident">validate_files_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_files_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">files_exist</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">files</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) <span class="op">=&gt;</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">true</span>),
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">true</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_files_not_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_files_not_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">files_not_exist</span>.<span class="ident">clone</span>();
     <span class="kw">match</span> <span class="ident">files</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) <span class="op">=&gt;</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">false</span>),
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">false</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_criteria</span>(<span class="ident">flow_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>, <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_criteria</span>(<span class="ident">flow_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>, <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">condition</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition_struct</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition_struct</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking task condition structure.&quot;</span>);
 
             <span class="ident">validate_platform</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
@@ -630,43 +632,43 @@
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_files_exist</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
                 <span class="op">&amp;&amp;</span> <span class="ident">validate_files_not_exist</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_script</span>(<span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>, <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">validate_script</span>(<span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">condition_script</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Checking task condition script.&quot;</span>);
 
             <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
                 <span class="ident">command</span>::<span class="ident">run_script_get_exit_code</span>(<span class="kw-2">&amp;</span><span class="ident">script</span>, <span class="ident">script_runner</span>, <span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[], <span class="bool-val">false</span>);
 
-            <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="bool-val">true</span>
             } <span class="kw">else</span> {
                 <span class="bool-val">false</span>
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions_without_context</span>(<span class="ident">condition</span>: <span class="ident">TaskCondition</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions_without_context</span>(<span class="ident">condition</span>: <span class="ident">TaskCondition</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="ident">validate_criteria</span>(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="ident">condition</span>))
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions</span>(
     <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
     <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
-    <span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="ident">validate_criteria</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>), <span class="kw-2">&amp;</span><span class="ident">condition</span>)
         <span class="op">&amp;&amp;</span> <span class="ident">validate_script</span>(<span class="kw-2">&amp;</span><span class="ident">condition_script</span>, <span class="ident">script_runner</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_condition_for_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_condition_for_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="ident">validate_conditions</span>(
         <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
         <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition</span>,
