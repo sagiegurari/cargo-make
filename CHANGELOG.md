@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.9
+
+* Add new toml formatting tasks.
+
 ### v0.32.8 (2020-11-05)
 
 * Load cargo aliases as tasks #484

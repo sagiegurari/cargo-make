@@ -12,14 +12,15 @@ args = ["hublish"]
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release."
 category = "Publish"
-dependencies = [
-    "github-hub-find"
-]
+dependencies = ["github-hub-find"]
 condition = { env = { "CARGO_MAKE_GIT_BRANCH" = "master" } }
 run_task = [
-    { name = "github-publish-hub", condition = { env_set = [ "GITHUB_API_TOKEN" ], env_true = [ "CARGO_MAKE_GITHUB_HUB_CLI_FOUND" ] } },
-    { name = "github-publish-curl", condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ] } },
-    { name = "github-publish-hublish", condition = { env_set = [ "GITHUB_REPO_NAME" ] } },
+  { name = "github-publish-hub", condition = { env_set = ["GITHUB_API_TOKEN"], env_true = ["CARGO_MAKE_GITHUB_HUB_CLI_FOUND"] } },
+  { name = "github-publish-curl", condition = { platforms = ["linux", "mac"], env_set = [
+    "GITHUB_API_TOKEN",
+    "GITHUB_REPO_NAME",
+  ] } },
+  { name = "github-publish-hublish", condition = { env_set = ["GITHUB_REPO_NAME"] } },
 ]
 
 [tasks.github-hub-find]
@@ -43,15 +44,19 @@ end
 # Creates a new github release.
 description = "Creates a new github release using hub."
 category = "Publish"
-condition = { env_set = [ "GITHUB_API_TOKEN", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
+condition = { env_set = [
+  "GITHUB_API_TOKEN",
+  "CARGO_MAKE_PROJECT_NAME",
+  "CARGO_MAKE_PROJECT_VERSION",
+] }
 env = { "GITHUB_TOKEN" = "${GITHUB_API_TOKEN}" }
 command = "hub"
 args = [
-    "release",
-    "create",
-    "-m",
-    "${CARGO_MAKE_PROJECT_NAME} v${CARGO_MAKE_PROJECT_VERSION}",
-    "${CARGO_MAKE_PROJECT_VERSION}"
+  "release",
+  "create",
+  "-m",
+  "${CARGO_MAKE_PROJECT_NAME} v${CARGO_MAKE_PROJECT_VERSION}",
+  "${CARGO_MAKE_PROJECT_VERSION}",
 ]
 
 [tasks.github-publish-hublish]
@@ -59,7 +64,7 @@ args = [
 # Set the GITHUB_API_TOKEN environment variables to automatically authenticate.
 description = "Creates a new github release using cargo-hublish."
 category = "Publish"
-condition = { env_set = [ "GITHUB_REPO_NAME" ] }
+condition = { env_set = ["GITHUB_REPO_NAME"] }
 install_crate = "cargo-hublish"
 args = ["hublish"]
 script_runner = "@shell"
@@ -71,7 +76,12 @@ cargo hublish --url "https://api.github.com/repos/${GITHUB_REPO_NAME}/releases"
 # Creates a new github release.
 description = "Creates a new github release using curl."
 category = "Publish"
-condition = { platforms = ["linux", "mac"], env_set = [ "GITHUB_API_TOKEN", "GITHUB_REPO_NAME", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION" ] }
+condition = { platforms = ["linux", "mac"], env_set = [
+  "GITHUB_API_TOKEN",
+  "GITHUB_REPO_NAME",
+  "CARGO_MAKE_PROJECT_NAME",
+  "CARGO_MAKE_PROJECT_VERSION",
+] }
 script = '''
 API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_PROJECT_VERSION} ${CARGO_MAKE_PROJECT_NAME} ${CARGO_MAKE_PROJECT_VERSION})
 curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}

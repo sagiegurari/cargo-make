@@ -6,15 +6,13 @@ install_crate = { crate_name = "wasm-pack", binary = "wasm-pack", test_arg = "-V
 
 [tasks.wasm-pack-base]
 category = "wasm"
-dependencies = [
-    "install-wasm-pack"
-]
+dependencies = ["install-wasm-pack"]
 command = "wasm-pack"
 
 [tasks.wasm-pack-test]
 description = "Run wasm-pack test command."
 extend = "wasm-pack-base"
-condition = { env_set = [ "CARGO_MAKE_WASM_TEST_ARGS" ] }
+condition = { env_set = ["CARGO_MAKE_WASM_TEST_ARGS"] }
 args = ["test", "@@split(CARGO_MAKE_WASM_TEST_ARGS, )"]
 
 [tasks.wasm-pack-pack]
@@ -26,4 +24,3 @@ args = ["pack", "@@split(CARGO_MAKE_WASM_PACK_ARGS, )"]
 description = "Run wasm-pack publish command."
 extend = "wasm-pack-base"
 args = ["publish", "@@split(CARGO_MAKE_WASM_PUBLISH_ARGS, )"]
-

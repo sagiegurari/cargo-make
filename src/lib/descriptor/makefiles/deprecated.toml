@@ -20,4 +20,3 @@ run_task = "check-format-ci-flow"
 [tasks.conditioned-clippy]
 deprecated = "Please use task: clippy-ci-flow"
 run_task = "clippy-ci-flow"
-
