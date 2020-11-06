@@ -57,9 +57,14 @@
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
+* **format-toml** - Formats all toml files defined in the CARGO_MAKE_FORMAT_TOML_FILES environment variable.
+* **format-toml-conditioned-flow** - Runs the format toml tasks if conditions are met.
+* **format-toml-flow** - Runs the format toml tasks.
 * **install-rustfmt** - Installs cargo rustfmt plugin.
 * **post-format** - No Description.
+* **post-format-toml** - No Description.
 * **pre-format** - No Description.
+* **pre-format-toml** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow.
 
