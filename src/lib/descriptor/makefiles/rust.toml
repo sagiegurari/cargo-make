@@ -953,6 +953,7 @@ make install
 
 [tasks.build-release-for-target]
 description = "Makes a release build for a given target"
+category = "Build"
 condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = ["CARGO_MAKE_CI"] }
 install_crate = false
 command = "cargo"

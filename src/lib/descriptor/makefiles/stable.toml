@@ -79,6 +79,7 @@ category = "Tools"
 
 [tasks.wait]
 description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
+category = "Tools"
 condition = { env_set = ["CARGO_MAKE_WAIT_MILLISECONDS"] }
 script = '''
 #!@duckscript
