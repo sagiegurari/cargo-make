@@ -5,4 +5,4 @@ extend = "../extending.toml"
 init_task = "test_init"
 
 [tasks.extended2]
-alias="extended"
+alias = "extended"

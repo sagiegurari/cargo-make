@@ -3,5 +3,5 @@ name = "member2"
 version = "5.4.3"
 
 [dependencies]
-test200 = {version = "1.0.0", features = ["abc"]}
+test200 = { version = "1.0.0", features = ["abc"] }
 test100 = { path = "../test100" }

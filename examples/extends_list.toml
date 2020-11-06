@@ -1,5 +1,9 @@
 
-extend = [ { path = "alias.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "cwd.toml" } ]
+extend = [
+  { path = "alias.toml" },
+  { path = "optional_makefile.toml", optional = true },
+  { path = "cwd.toml" },
+]
 
 [tasks.extended]
-alias="D2"
+alias = "D2"

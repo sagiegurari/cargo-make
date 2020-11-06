@@ -10,23 +10,25 @@ script = ["echo hello from member"]
 
 [tasks.echo_top_and_members]
 workspace = false
-dependencies = [ "echo" ]
+dependencies = ["echo"]
 run_task = { name = "echo", fork = true }
 
 [tasks.echo_top_and_member_1_2]
 workspace = false
 env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = ["member1", "member2"] }
-dependencies = [ "echo" ]
+dependencies = ["echo"]
 run_task = { name = "echo", fork = true }
 
 [tasks.echo_top_and_member_2]
 workspace = false
 env = { "CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS" = "member2" }
-dependencies = [ "echo" ]
+dependencies = ["echo"]
 run_task = { name = "echo", fork = true }
 
 [tasks.workspace_root]
-script = ["echo root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"]
+script = [
+  "echo root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}",
+]
 
 [tasks.workspace_root_top_and_members]
 workspace = false
@@ -43,7 +45,4 @@ run_task = { name = "echo-member", fork = true }
 
 [tasks.varargs]
 command = "echo"
-args = [
-    "args are:", "${@}"
-]
-
+args = ["args are:", "${@}"]

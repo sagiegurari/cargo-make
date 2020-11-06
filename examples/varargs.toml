@@ -1,15 +1,11 @@
 
 [tasks.varargs]
 command = "echo"
-args = [
-    "args are:", "${@}"
-]
+args = ["args are:", "${@}"]
 
 [tasks.varargs-template]
 command = "echo"
-args = [
-    "args are:", "-o=${@}"
-]
+args = ["args are:", "-o=${@}"]
 
 [tasks.cli-args]
 script = "echo args are: ${@}"

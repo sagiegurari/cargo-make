@@ -6,5 +6,6 @@ script = ["echo hello from member3"]
 script = ["echo member 3"]
 
 [tasks.workspace_root]
-script = ["echo member 3 found root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"]
-
+script = [
+  "echo member 3 found root at: CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY=${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}",
+]

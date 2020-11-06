@@ -1,3 +1,2 @@
 [hooks]
 pre-push = "cargo run --bin cargo-make -- make ci-flow"
-
