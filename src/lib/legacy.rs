@@ -7,14 +7,14 @@
 #[path = "./legacy_test.rs"]
 mod legacy_test;
 
-use dirs;
+use dirs_next;
 use fsio;
 use std::env;
 use std::fs::copy;
 use std::path::PathBuf;
 
 fn get_legacy_cargo_make_home() -> Option<PathBuf> {
-    match dirs::home_dir() {
+    match dirs_next::home_dir() {
         Some(directory) => Some(directory.join(".cargo-make")),
         None => None,
     }

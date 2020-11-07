@@ -9,7 +9,7 @@ mod config_test;
 
 use crate::storage;
 use crate::types::GlobalConfig;
-use dirs;
+use dirs_next;
 use fsio::file::read_text_file;
 use fsio::path::from_path::FromPath;
 use std::path::{Path, PathBuf};
@@ -18,7 +18,7 @@ use toml;
 static CONFIG_FILE: &'static str = "config.toml";
 
 fn get_config_directory() -> Option<PathBuf> {
-    let os_directory = dirs::config_dir();
+    let os_directory = dirs_next::config_dir();
     storage::get_storage_directory(os_directory, CONFIG_FILE, true)
 }
 

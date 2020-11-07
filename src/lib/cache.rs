@@ -9,7 +9,7 @@ mod cache_test;
 
 use crate::storage;
 use crate::types::Cache;
-use dirs;
+use dirs_next;
 use fsio;
 use fsio::file::{read_text_file, write_text_file};
 use std::path::{Path, PathBuf};
@@ -55,7 +55,7 @@ fn load_from_path(directory: PathBuf) -> Cache {
 }
 
 fn get_cache_directory(migrate: bool) -> Option<PathBuf> {
-    let os_directory = dirs::cache_dir();
+    let os_directory = dirs_next::cache_dir();
     storage::get_storage_directory(os_directory, CACHE_FILE, migrate)
 }
 

@@ -7,7 +7,7 @@
 #[path = "./crate_version_check_test.rs"]
 mod crate_version_check_test;
 
-use dirs;
+use dirs_next;
 use fsio;
 use semver::Version;
 use std::collections::HashMap;
@@ -23,7 +23,7 @@ struct CratesRegistryInfo {
 fn get_cargo_home() -> Option<String> {
     let cargo_home = match env::var("CARGO_HOME") {
         Ok(value) => Some(value.to_string()),
-        Err(_) => match dirs::home_dir() {
+        Err(_) => match dirs_next::home_dir() {
             Some(directory) => match directory.join(".cargo").to_str() {
                 Some(value) => Some(value.to_string()),
                 None => None,
