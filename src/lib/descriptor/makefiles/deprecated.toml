@@ -1,23 +1,24 @@
 
 [tasks.build-verbose]
 description = "Runs the rust compiler with verbose output."
-category = "Build"
+category = "Deprecated"
 deprecated = "Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead."
 env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
 run_task = "build"
 
 [tasks.test-verbose]
 description = "Runs all available tests with verbose output."
-category = "Test"
+category = "Deprecated"
 deprecated = "Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead."
 env = { "CARGO_MAKE_CARGO_VERBOSE_FLAGS" = "${CARGO_MAKE_CARGO_VERBOSE}" }
 run_task = "test"
 
 [tasks.conditioned-check-format]
+category = "Deprecated"
 deprecated = "Please use task: check-format-ci-flow"
 run_task = "check-format-ci-flow"
 
 [tasks.conditioned-clippy]
+category = "Deprecated"
 deprecated = "Please use task: clippy-ci-flow"
 run_task = "clippy-ci-flow"
-

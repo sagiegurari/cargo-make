@@ -21,8 +21,8 @@ CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_CARGO_ALL_FEATURES = "--all-features"
 CARGO_MAKE_CARGO_VERBOSE = "--verbose"
-CARGO_MAKE_CARGO_PROFILE = { source = "${CARGO_MAKE_PROFILE}", mapping = {"development" = "dev", "ci" = "test" } }
-CARGO_MAKE_CARGO_VERBOSE_FLAGS = { source = "${CARGO_MAKE_CI}", default_value = "", mapping = {"true" = "${CARGO_MAKE_CARGO_VERBOSE}"} }
+CARGO_MAKE_CARGO_PROFILE = { source = "${CARGO_MAKE_PROFILE}", mapping = { "development" = "dev", "ci" = "test" } }
+CARGO_MAKE_CARGO_VERBOSE_FLAGS = { source = "${CARGO_MAKE_CI}", default_value = "", mapping = { "true" = "${CARGO_MAKE_CARGO_VERBOSE}" } }
 CARGO_MAKE_CARGO_BUILD_TEST_FLAGS = "${CARGO_MAKE_CARGO_ALL_FEATURES}"
 CARGO_MAKE_CARGO_PUBLISH_NO_ARGS = ""
 CARGO_MAKE_CARGO_PUBLISH_ALLOW_DIRTY = "--allow-dirty"
@@ -34,6 +34,7 @@ CARGO_MAKE_CLIPPY_ARGS = "${CARGO_MAKE_CLIPPY_NO_ARGS}"
 CARGO_MAKE_RUST_SCRIPT_PROVIDER = "cargo-script"
 CARGO_MAKE_USE_WORKSPACE_PROFILE = true
 CARGO_MAKE_BINARY_EXECUTABLE_NAME = "${CARGO_MAKE_PROJECT_NAME}"
+CARGO_MAKE_FORMAT_TOML_FILES = "**/*.toml"
 CARGO_MAKE_OPENSSL_VERSION_NO_PATCH = "1.0.2"
 CARGO_MAKE_OPENSSL_VERSION_PATCH = "l"
 CARGO_MAKE_OPENSSL_VERSION = "${CARGO_MAKE_OPENSSL_VERSION_NO_PATCH}${CARGO_MAKE_OPENSSL_VERSION_PATCH}"
@@ -69,13 +70,17 @@ CARGO_MAKE_BUILD_BENCH = true
 CARGO_MAKE_BUILD_EXAMPLES = true
 CARGO_MAKE_CHECK_OUTDATED = true
 
+[env.all-default-tasks]
+CARGO_MAKE_RUN_TOML_FORMAT = true
+
 [tasks.empty]
 description = "Empty Task"
 category = "Tools"
 
 [tasks.wait]
 description = "Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value"
-condition = { env_set = [ "CARGO_MAKE_WAIT_MILLISECONDS" ] }
+category = "Tools"
+condition = { env_set = ["CARGO_MAKE_WAIT_MILLISECONDS"] }
 script = '''
 #!@duckscript
 sleep ${CARGO_MAKE_WAIT_MILLISECONDS}
@@ -141,7 +146,7 @@ echo "*************************************"
 
 [tasks.print-git-env]
 category = "Tools"
-condition = { env_set = [ "CARGO_MAKE_GIT_BRANCH" ] }
+condition = { env_set = ["CARGO_MAKE_GIT_BRANCH"] }
 script = '''
 #!@duckscript
 echo "*************************************"
@@ -156,7 +161,7 @@ echo "*************************************"
 
 [tasks.print-rust-env]
 category = "Tools"
-condition = { env_set = [ "CARGO_MAKE_RUST_CHANNEL" ] }
+condition = { env_set = ["CARGO_MAKE_RUST_CHANNEL"] }
 script = '''
 #!@duckscript
 echo "*************************************"
@@ -174,7 +179,7 @@ echo "*************************************"
 
 [tasks.print-cargo-env]
 category = "Tools"
-condition = { env_set = [ "CARGO_MAKE_CARGO_HOME" ] }
+condition = { env_set = ["CARGO_MAKE_CARGO_HOME"] }
 script = '''
 #!@duckscript
 echo "*************************************"
@@ -186,7 +191,7 @@ echo "*************************************"
 
 [tasks.print-crate-env]
 category = "Tools"
-condition = { env_set = [ "CARGO_MAKE_CRATE_NAME" ] }
+condition = { env_set = ["CARGO_MAKE_CRATE_NAME"] }
 script = '''
 #!@duckscript
 echo "*************************************"
@@ -225,16 +230,16 @@ category = "Tools"
 [tasks.print-env-flow]
 category = "Tools"
 dependencies = [
-    "pre-print-env",
-    "print-cargo-make-env",
-    "print-project-env",
-    "print-ci-env",
-    "print-git-env",
-    "print-rust-env",
-    "print-cargo-env",
-    "print-crate-env",
-    "print-duckscript-env",
-    "post-print-env"
+  "pre-print-env",
+  "print-cargo-make-env",
+  "print-project-env",
+  "print-ci-env",
+  "print-git-env",
+  "print-rust-env",
+  "print-cargo-env",
+  "print-crate-env",
+  "print-duckscript-env",
+  "post-print-env",
 ]
 
 [tasks.diff-files]
@@ -246,14 +251,14 @@ alias = "git-diff-files"
 description = "Run diff on two provided files."
 category = "Tools"
 ignore_errors = true
-condition = { env_set = [ "CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2" ] }
+condition = { env_set = ["CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2"] }
 command = "git"
 args = [
-    "--no-pager",
-    "diff",
-    "--no-index",
-    "${CARGO_MAKE_DIFF_FILE1}",
-    "${CARGO_MAKE_DIFF_FILE2}"
+  "--no-pager",
+  "diff",
+  "--no-index",
+  "${CARGO_MAKE_DIFF_FILE1}",
+  "${CARGO_MAKE_DIFF_FILE2}",
 ]
 
 [tasks.setup-sudo-env]
@@ -280,7 +285,7 @@ category = "Tools"
 [tasks.build-file-increment]
 description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
 category = "Tools"
-condition = { env_set = [ "CARGO_MAKE_BUILD_NUMBER_FILE" ] }
+condition = { env_set = ["CARGO_MAKE_BUILD_NUMBER_FILE"] }
 script = '''
 #!@duckscript
 build_number_file_exists = is_path_exists ${CARGO_MAKE_BUILD_NUMBER_FILE}
@@ -307,7 +312,7 @@ category = "Tools"
 description = "Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable."
 category = "Tools"
 dependencies = [
-    "pre-build-file-increment",
-    "build-file-increment",
-    "post-build-file-increment"
+  "pre-build-file-increment",
+  "build-file-increment",
+  "post-build-file-increment",
 ]

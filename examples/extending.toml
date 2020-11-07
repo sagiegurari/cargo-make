@@ -2,4 +2,4 @@
 extend = "alias.toml"
 
 [tasks.extended]
-alias="D2"
+alias = "D2"

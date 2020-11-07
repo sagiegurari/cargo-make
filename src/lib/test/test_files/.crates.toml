@@ -1,4 +1,7 @@
 [v1]
 "test1 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = ["test1"]
-"cargo-make 1.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = ["cargo-make", "makers"]
+"cargo-make 1.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = [
+  "cargo-make",
+  "makers",
+]
 "test2 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = ["test2"]

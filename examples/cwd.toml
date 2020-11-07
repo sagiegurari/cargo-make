@@ -8,10 +8,7 @@ echo CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY: ${CARGO_MAKE_CURRENT_TA
 
 [tasks.cwd]
 command = "pwd"
-condition_script = [
-    "echo pwd during condition:",
-    "pwd"
-]
+condition_script = ["echo pwd during condition:", "pwd"]
 install_script = '''
 echo pwd during installation:
 pwd
@@ -20,10 +17,7 @@ pwd
 [tasks.change-cwd]
 command = "pwd"
 cwd = "./examples/files"
-condition_script = [
-    "echo pwd during condition:",
-    "pwd"
-]
+condition_script = ["echo pwd during condition:", "pwd"]
 install_script = '''
 echo pwd during installation:
 pwd
@@ -32,10 +26,7 @@ pwd
 [tasks.makefile-cwd]
 command = "pwd"
 cwd = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}"
-condition_script = [
-    "echo pwd during condition:",
-    "pwd"
-]
+condition_script = ["echo pwd during condition:", "pwd"]
 install_script = '''
 echo pwd during installation:
 pwd

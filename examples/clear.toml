@@ -3,6 +3,4 @@ extend = "script.toml"
 [tasks.hello-world]
 clear = true
 command = "echo"
-args = [
-    "extended hello world"
-]
+args = ["extended hello world"]

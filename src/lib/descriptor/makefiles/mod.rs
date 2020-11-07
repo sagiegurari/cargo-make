@@ -12,6 +12,7 @@ pub(crate) static STABLE: &str = concat!(
     include_str!("stable.toml"),
     include_str!("git.toml"),
     include_str!("github.toml"),
+    include_str!("toml.toml"),
     include_str!("rust.toml"),
     include_str!("rust-coverage.toml"),
     include_str!("rust-wasm.toml"),

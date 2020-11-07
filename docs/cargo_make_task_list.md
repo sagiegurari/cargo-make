@@ -5,7 +5,7 @@
 * **build** - Runs the rust compiler.
 * **build-flow** - Full sanity testing flow.
 * **build-release** - Runs release build.
-* **build-verbose** - Runs the rust compiler with verbose output. (deprecated - Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
+* **build-release-for-target** - Makes a release build for a given target
 * **end-build-flow** - No Description.
 * **init-build-flow** - No Description.
 * **post-build** - No Description.
@@ -51,15 +51,27 @@
 * **post-clean** - No Description.
 * **pre-clean** - No Description.
 
+## Deprecated
+
+* **build-verbose** - Runs the rust compiler with verbose output. (deprecated - Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
+* **conditioned-check-format** - No Description. (deprecated - Please use task: check-format-ci-flow)
+* **conditioned-clippy** - No Description. (deprecated - Please use task: clippy-ci-flow)
+* **test-verbose** - Runs all available tests with verbose output. (deprecated - Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
+
 ## Development
 
 * **default** - Development testing flow will first format the code, and than run cargo build and test
 * **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
+* **format-toml** - Formats all toml files defined in the CARGO_MAKE_FORMAT_TOML_FILES environment variable.
+* **format-toml-conditioned-flow** - Runs the format toml tasks if conditions are met.
+* **format-toml-flow** - Runs the format toml tasks.
 * **install-rustfmt** - Installs cargo rustfmt plugin.
 * **post-format** - No Description.
+* **post-format-toml** - No Description.
 * **pre-format** - No Description.
+* **pre-format-toml** - No Description.
 * **upgrade-dependencies** - Rebuilds the crate with most updated dependencies.
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the default flow.
 
@@ -101,13 +113,6 @@
 
 * **end** - By default this task is invoked at the end of every cargo-make run.
 * **init** - By default this task is invoked at the start of every cargo-make run.
-
-## No Category
-
-* **build-release-for-target** - Makes a release build for a given target
-* **conditioned-check-format** - No Description. (deprecated - Please use task: check-format-ci-flow)
-* **conditioned-clippy** - No Description. (deprecated - Please use task: clippy-ci-flow)
-* **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
 ## Publish
 
@@ -180,7 +185,6 @@
 * **test-multi-phases-flow** - Runs single/multi and custom test tasks.
 * **test-single-threaded** - Runs all ignored tests with a single test thread.
 * **test-thread-safe** - Runs all available tests without limiting test threads.
-* **test-verbose** - Runs all available tests with verbose output. (deprecated - Use test task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
 * **test-with-args** - Runs cargo test with command line arguments.
 * **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
 * **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.
@@ -211,6 +215,7 @@
 * **print-project-env** - No Description.
 * **print-rust-env** - No Description.
 * **setup-sudo-env** - Sets the sudo enable/disable environment variables.
+* **wait** - Waits based on the CARGO_MAKE_WAIT_MILLISECONDS environment variable value
 
 ## wasm
 

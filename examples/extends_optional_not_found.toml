@@ -2,4 +2,4 @@
 extend = { path = "does_not_exist_makefile.toml", optional = true }
 
 [tasks.extended]
-alias="D2"
+alias = "D2"

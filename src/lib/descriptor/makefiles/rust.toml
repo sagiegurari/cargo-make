@@ -3,19 +3,19 @@
 description = "CI task will run cargo build and cargo test with verbose output"
 category = "CI"
 dependencies = [
-    "pre-ci-flow",
-    "print-env-flow",
-    "pre-build",
-    "check-format-ci-flow",
-    "clippy-ci-flow",
-    "build",
-    "post-build",
-    "test-flow",
-    "examples-ci-flow",
-    "bench-ci-flow",
-    "outdated-ci-flow",
-    "ci-coverage-flow",
-    "post-ci-flow"
+  "pre-ci-flow",
+  "print-env-flow",
+  "pre-build",
+  "check-format-ci-flow",
+  "clippy-ci-flow",
+  "build",
+  "post-build",
+  "test-flow",
+  "examples-ci-flow",
+  "bench-ci-flow",
+  "outdated-ci-flow",
+  "ci-coverage-flow",
+  "post-ci-flow",
 ]
 
 [tasks.workspace-ci-flow]
@@ -23,21 +23,22 @@ description = "CI task will run CI flow for each member and merge coverage repor
 category = "CI"
 workspace = false
 dependencies = [
-    "pre-workspace-ci-flow",
-    "workspace-members-ci",
-    "workspace-coverage-pack",
-    "post-workspace-ci-flow"
+  "pre-workspace-ci-flow",
+  "workspace-members-ci",
+  "workspace-coverage-pack",
+  "post-workspace-ci-flow",
 ]
 
 [tasks.dev-test-flow]
 description = "Development testing flow will first format the code, and than run cargo build and test"
 category = "Development"
 dependencies = [
-    "format-flow",
-    "pre-build",
-    "build",
-    "post-build",
-    "test-flow"
+  "format-flow",
+  "format-toml-conditioned-flow",
+  "pre-build",
+  "build",
+  "post-build",
+  "test-flow",
 ]
 
 [tasks.dev-watch-flow]
@@ -48,34 +49,30 @@ alias = "test-flow"
 [tasks.pre-publish-delete-lock]
 description = "Deletes lock file before publishing"
 category = "Publish"
-condition = { env_true = [ "CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE" ] }
+condition = { env_true = ["CARGO_MAKE_CARGO_PUBLISH_DELETE_LOCK_FILE"] }
 run_task = "delete-lock"
 
 [tasks.pre-publish-clean-flow]
 description = "Clears old artifactes before publishing"
 category = "Publish"
-dependencies = [
-    "pre-clean",
-    "clean",
-    "post-clean"
-]
+dependencies = ["pre-clean", "clean", "post-clean"]
 
 [tasks.pre-publish-conditioned-clean-flow]
 description = "Clears old artifactes before publishing"
 category = "Publish"
-condition = { env_not_set = [ "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" ] }
+condition = { env_not_set = ["CARGO_MAKE_SKIP_PREPUBLISH_CLEAN"] }
 run_task = "pre-publish-clean-flow"
 
 [tasks.publish-flow]
 description = "Publish flow - First clean the target directory of any old leftovers, package and publish"
 category = "Publish"
 dependencies = [
-    "wait",
-    "pre-publish-conditioned-clean-flow",
-    "pre-publish-delete-lock",
-    "pre-publish",
-    "publish",
-    "post-publish"
+  "wait",
+  "pre-publish-conditioned-clean-flow",
+  "pre-publish-delete-lock",
+  "pre-publish",
+  "publish",
+  "post-publish",
 ]
 
 [tasks.build-flow]
@@ -87,27 +84,27 @@ dependencies = [
 description = "Full sanity testing flow."
 category = "Build"
 dependencies = [
-    "init-build-flow",
-    "pre-clean",
-    "clean-apidocs",
-    "clean",
-    "post-clean",
-    "format-flow",
-    "pre-build",
-    "build",
-    "post-build",
-    "test-flow",
-    "examples-ci-flow",
-    "bench-ci-flow",
-    "pre-verify-project",
-    "verify-project",
-    "post-verify-project",
-    "pre-audit",
-    "audit",
-    "post-audit",
-    "outdated-flow",
-    "docs-flow",
-    "end-build-flow"
+  "init-build-flow",
+  "pre-clean",
+  "clean-apidocs",
+  "clean",
+  "post-clean",
+  "format-flow",
+  "pre-build",
+  "build",
+  "post-build",
+  "test-flow",
+  "examples-ci-flow",
+  "bench-ci-flow",
+  "pre-verify-project",
+  "verify-project",
+  "post-verify-project",
+  "pre-audit",
+  "audit",
+  "post-audit",
+  "outdated-flow",
+  "docs-flow",
+  "end-build-flow",
 ]
 
 [tasks.init-build-flow]
@@ -121,8 +118,8 @@ description = "Delete API docs."
 category = "Documentation"
 workspace = false
 run_task = [
-    { name = "workspace-clean-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
-    { name = "crate-clean-apidocs" }
+  { name = "workspace-clean-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+  { name = "crate-clean-apidocs" },
 ]
 
 [tasks.crate-clean-apidocs]
@@ -140,7 +137,7 @@ run_task = "do-clean-apidocs"
 [tasks.do-clean-apidocs]
 category = "Documentation"
 private = true
-condition = { env_set = [ "CARGO_MAKE_DOCS_ROOT_FOLDER" ] }
+condition = { env_set = ["CARGO_MAKE_DOCS_ROOT_FOLDER"] }
 script = '''
 #!@duckscript
 DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
@@ -163,8 +160,8 @@ category = "Cleanup"
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
 run_task = [
-    { name = "workspace-delete-lock", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
-    { name = "crate-delete-lock" }
+  { name = "workspace-delete-lock", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+  { name = "crate-delete-lock" },
 ]
 
 [tasks.crate-delete-lock]
@@ -179,7 +176,7 @@ rm ./Cargo.lock
 [tasks.workspace-delete-lock]
 description = "Deletes the Cargo.lock file."
 category = "Cleanup"
-condition = { env_set = [ "CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY" ] }
+condition = { env_set = ["CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY"] }
 private = true
 script = '''
 #!@duckscript
@@ -189,10 +186,7 @@ rm ${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/Cargo.lock
 [tasks.upgrade-dependencies]
 description = "Rebuilds the crate with most updated dependencies."
 category = "Development"
-dependencies = [
-    "delete-lock",
-    "dev-test-flow"
-]
+dependencies = ["delete-lock", "dev-test-flow"]
 
 [tasks.install-rustfmt]
 description = "Installs cargo rustfmt plugin."
@@ -207,7 +201,7 @@ category = "Development"
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."
 category = "Development"
-dependencies = [ "install-rustfmt" ]
+dependencies = ["install-rustfmt"]
 command = "cargo"
 args = ["fmt"]
 
@@ -220,7 +214,7 @@ category = "Test"
 [tasks.check-format]
 description = "Runs cargo fmt to check appropriate code format."
 category = "Test"
-dependencies = [ "install-rustfmt" ]
+dependencies = ["install-rustfmt"]
 command = "cargo"
 args = ["fmt", "--", "--check"]
 
@@ -230,26 +224,18 @@ category = "Test"
 [tasks.check-format-flow]
 description = "Runs cargo fmt check flow."
 category = "Test"
-dependencies = [
-    "pre-check-format",
-    "check-format",
-    "post-check-format"
-]
+dependencies = ["pre-check-format", "check-format", "post-check-format"]
 
 [tasks.check-format-ci-flow]
 description = "Runs cargo fmt --check if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_CHECK_FORMAT" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+condition = { env_set = ["CARGO_MAKE_RUN_CHECK_FORMAT"], channels = ["nightly"], platforms = ["linux"] }
 run_task = "check-format-flow"
 
 [tasks.format-flow]
 description = "Runs the cargo rustfmt plugin as part of a flow."
 category = "Development"
-dependencies = [
-    "pre-format",
-    "format",
-    "post-format"
-]
+dependencies = ["pre-format", "format", "post-format"]
 
 [tasks.pre-docs]
 category = "Documentation"
@@ -268,12 +254,12 @@ category = "Documentation"
 description = "Generate rust documentation."
 category = "Documentation"
 dependencies = [
-    "pre-docs",
-    "docs",
-    "post-docs",
-    "readme-set-crate-version-conditioned",
-    "readme-include-files-conditioned",
-    "copy-apidocs"
+  "pre-docs",
+  "docs",
+  "post-docs",
+  "readme-set-crate-version-conditioned",
+  "readme-include-files-conditioned",
+  "copy-apidocs",
 ]
 
 [tasks.pre-workspace-docs]
@@ -290,11 +276,7 @@ category = "Documentation"
 description = "Generate workspace level rust documentation."
 category = "Documentation"
 workspace = false
-dependencies = [
-    "pre-workspace-docs",
-    "workspace-docs",
-    "post-workspace-docs"
-]
+dependencies = ["pre-workspace-docs", "workspace-docs", "post-workspace-docs"]
 
 [tasks.readme-file-set-env]
 description = "Sets the CARGO_MAKE_DOCS_README_FILE environment variable."
@@ -313,9 +295,7 @@ run_task = "readme-set-crate-version-conditioned"
 description = "Modifies the current README.md file with the current crate version."
 category = "Documentation"
 private = true
-dependencies = [
-    "readme-file-set-env"
-]
+dependencies = ["readme-file-set-env"]
 condition = { env_true = ["CARGO_MAKE_DOCS_README_SET_CRATE_VERSION"] }
 script = '''
 #!@duckscript
@@ -370,9 +350,7 @@ description = "Modifies the current README.md by including external files."
 category = "Documentation"
 private = true
 condition = { env_true = ["CARGO_MAKE_DOCS_README_INCLUDE_FILES"], files_exist = ["${CARGO_MAKE_DOCS_README_FILE}"] }
-dependencies = [
-    "readme-file-set-env"
-]
+dependencies = ["readme-file-set-env"]
 install_crate = { crate_name = "md-inc", binary = "md-inc", test_arg = "--help" }
 env = { CARGO_MAKE_DOCS_INCLUDE_FILES_MARKDOWN_FILE = "${CARGO_MAKE_DOCS_README_FILE}" }
 run_task = "markdown-include-files"
@@ -393,7 +371,11 @@ description = "Runs the rust compiler."
 category = "Build"
 install_crate = false
 command = "cargo"
-args = ["build", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = [
+  "build",
+  "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)",
+  "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )",
+]
 
 [tasks.build-release]
 description = "Runs release build."
@@ -413,7 +395,11 @@ description = "Runs all available tests."
 category = "Test"
 install_crate = false
 command = "cargo"
-args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = [
+  "test",
+  "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)",
+  "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )",
+]
 
 [tasks.test-thread-safe]
 description = "Runs all available tests without limiting test threads."
@@ -427,7 +413,13 @@ category = "Test"
 install_crate = false
 env = { RUST_TEST_THREADS = 1 }
 command = "cargo"
-args = ["test", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )", "--", "--ignored"]
+args = [
+  "test",
+  "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)",
+  "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )",
+  "--",
+  "--ignored",
+]
 
 [tasks.test-custom]
 description = "Runs custom test command."
@@ -443,18 +435,19 @@ env = { RUST_TEST_THREADS = { unset = true } }
 description = "Runs single/multi and custom test tasks."
 category = "Test"
 run_task = [
-    { name = [ "test-thread-safe", "test-single-threaded", "test-custom", "test-multi-phases-cleanup" ], condition = { env_true = [ "CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES" ] } },
-    { name = "test" }
+  { name = [
+    "test-thread-safe",
+    "test-single-threaded",
+    "test-custom",
+    "test-multi-phases-cleanup",
+  ], condition = { env_true = ["CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES"] } },
+  { name = "test" },
 ]
 
 [tasks.test-flow]
 description = "Runs pre/post hooks and cargo test."
 category = "Test"
-dependencies = [
-    "pre-test",
-    "test-multi-phases-flow",
-    "post-test"
-]
+dependencies = ["pre-test", "test-multi-phases-flow", "post-test"]
 
 [tasks.test-with-args]
 description = "Runs cargo test with command line arguments."
@@ -482,16 +475,12 @@ category = "Test"
 [tasks.bench-flow]
 description = "Runs a bench flow."
 category = "Test"
-dependencies = [
-    "pre-bench",
-    "bench",
-    "post-bench"
-]
+dependencies = ["pre-bench", "bench", "post-bench"]
 
 [tasks.bench-conditioned-flow]
 description = "Runs the bench flow if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_RUN_BENCH" ], channels = [ "nightly" ] }
+condition = { env_set = ["CARGO_MAKE_RUN_BENCH"], channels = ["nightly"] }
 run_task = "bench-flow"
 
 [tasks.bench-compile]
@@ -504,16 +493,13 @@ args = ["build", "--benches", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 [tasks.bench-conditioned-compile]
 description = "Compiles all available bench files if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_BUILD_BENCH" ], channels = [ "nightly" ] }
+condition = { env_set = ["CARGO_MAKE_BUILD_BENCH"], channels = ["nightly"] }
 run_task = "bench-compile"
 
 [tasks.bench-ci-flow]
 description = "Runs/Compiles the benches if conditions are met."
 category = "CI"
-dependencies = [
-    "bench-conditioned-compile",
-    "bench-conditioned-flow"
-]
+dependencies = ["bench-conditioned-compile", "bench-conditioned-flow"]
 
 [tasks.pre-check]
 category = "Test"
@@ -531,11 +517,7 @@ category = "Test"
 [tasks.check-flow]
 description = "Runs cargo check flow."
 category = "Test"
-dependencies = [
-    "pre-check",
-    "check",
-    "post-check"
-]
+dependencies = ["pre-check", "check", "post-check"]
 
 [tasks.check-tests]
 description = "Runs cargo check for project tests."
@@ -561,15 +543,13 @@ args = ["build", "--examples"]
 [tasks.examples-conditioned-compile]
 description = "Runs cargo build for project examples if conditions are met."
 category = "Test"
-condition = { env_set = [ "CARGO_MAKE_BUILD_EXAMPLES" ] }
+condition = { env_set = ["CARGO_MAKE_BUILD_EXAMPLES"] }
 run_task = "examples-compile"
 
 [tasks.examples-ci-flow]
 description = "Compiles the examples if conditions are met."
 category = "CI"
-dependencies = [
-    "examples-conditioned-compile"
-]
+dependencies = ["examples-conditioned-compile"]
 
 [tasks.pre-verify-project]
 category = "CI"
@@ -589,7 +569,10 @@ category = "CI"
 [tasks.audit]
 description = "Runs audit cargo plugin."
 category = "CI"
-condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES", "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS" ] }
+condition = { env_true = [
+  "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
+  "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS",
+] }
 command = "cargo"
 args = ["audit"]
 
@@ -602,7 +585,7 @@ category = "CI"
 [tasks.outdated]
 description = "Runs cargo-outdated cargo plugin."
 category = "CI"
-condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
+condition = { env_true = ["CARGO_MAKE_CRATE_HAS_DEPENDENCIES"] }
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
@@ -612,26 +595,26 @@ category = "CI"
 [tasks.outdated-flow]
 description = "Runs outdated cargo flow."
 category = "CI"
-dependencies = [
-    "pre-outdated",
-    "outdated",
-    "post-outdated"
-]
+dependencies = ["pre-outdated", "outdated", "post-outdated"]
 
 [tasks.outdated-ci-flow]
 description = "Runs outdated cargo conditioned CI flow."
 category = "CI"
-condition = { env_set = [ "CARGO_MAKE_CHECK_OUTDATED" ], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ], env_false = [ "CARGO_MAKE_PR" ], env = { "CARGO_MAKE_CI_BRANCH_NAME" = "master" }, channels = [ "nightly" ], platforms = [ "linux" ] }
+condition = { env_set = ["CARGO_MAKE_CHECK_OUTDATED"], env_true = ["CARGO_MAKE_CRATE_HAS_DEPENDENCIES"], env_false = ["CARGO_MAKE_PR"], env = { "CARGO_MAKE_CI_BRANCH_NAME" = "master" }, channels = [
+  "nightly",
+], platforms = [
+  "linux",
+] }
 run_task = "outdated-flow"
 
 [tasks.unused-dependencies-flow]
 description = "Checks for unused dependencies."
 category = "CI"
-condition = { env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
+condition = { env_true = ["CARGO_MAKE_CRATE_HAS_DEPENDENCIES"] }
 dependencies = [
-    "pre-unused-dependencies",
-    "unused-dependencies",
-    "post-unused-dependencies"
+  "pre-unused-dependencies",
+  "unused-dependencies",
+  "post-unused-dependencies",
 ]
 
 [tasks.pre-unused-dependencies]
@@ -640,7 +623,7 @@ category = "CI"
 [tasks.unused-dependencies]
 description = "Checks for unused dependencies."
 category = "CI"
-condition = { channels = ["nightly"], env_true = [ "CARGO_MAKE_CRATE_HAS_DEPENDENCIES" ] }
+condition = { channels = ["nightly"], env_true = ["CARGO_MAKE_CRATE_HAS_DEPENDENCIES"] }
 command = "cargo"
 args = ["udeps"]
 
@@ -653,8 +636,12 @@ category = "Test"
 condition = { channels = ["nightly"] }
 ignore_errors = true
 install_crate = { crate_name = "clippy", rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
-install_crate_args = ["--git", "https://github.com/rust-lang/rust-clippy/", "clippy"]
-args = [ "clippy", "--help" ]
+install_crate_args = [
+  "--git",
+  "https://github.com/rust-lang/rust-clippy/",
+  "clippy",
+]
+args = ["clippy", "--help"]
 
 [tasks.install-clippy-rustup]
 description = "Installs the clippy code linter via rustup."
@@ -665,9 +652,7 @@ install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", tes
 [tasks.install-clippy]
 description = "Installs the clippy code linter."
 category = "Test"
-run_task = [
-    { name = ["install-clippy-any", "install-clippy-rustup"] }
-]
+run_task = [{ name = ["install-clippy-any", "install-clippy-rustup"] }]
 
 [tasks.pre-clippy]
 category = "Test"
@@ -675,9 +660,7 @@ category = "Test"
 [tasks.clippy]
 description = "Runs clippy code linter."
 category = "Test"
-dependencies = [
-    "install-clippy"
-]
+dependencies = ["install-clippy"]
 command = "cargo"
 args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 
@@ -692,23 +675,19 @@ ignore_errors = true
 description = "Selects clippy task based on current environment."
 category = "Test"
 run_task = [
-    { name = "clippy-allow-fail", condition = { env_true = [ "CARGO_MAKE_CLIPPY_ALLOW_FAIL" ] } },
-    { name = "clippy" }
+  { name = "clippy-allow-fail", condition = { env_true = ["CARGO_MAKE_CLIPPY_ALLOW_FAIL"] } },
+  { name = "clippy" },
 ]
 
 [tasks.clippy-flow]
 description = "Runs clippy flow."
 category = "Test"
-dependencies = [
-    "pre-clippy",
-    "clippy-router",
-    "post-clippy"
-]
+dependencies = ["pre-clippy", "clippy-router", "post-clippy"]
 
 [tasks.clippy-ci-flow]
 description = "Runs clippy code linter if conditions are met."
 category = "CI"
-condition = { env_set = [ "CARGO_MAKE_RUN_CLIPPY" ], channels = [ "nightly" ], platforms = [ "linux" ] }
+condition = { env_set = ["CARGO_MAKE_RUN_CLIPPY"], channels = ["nightly"], platforms = ["linux"] }
 run_task = "clippy-flow"
 
 [tasks.copy-apidocs]
@@ -716,8 +695,8 @@ description = "Copies the generated documentation to the docs/api directory."
 category = "Documentation"
 workspace = false
 run_task = [
-    { name = "workspace-copy-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
-    { name = "crate-copy-apidocs" }
+  { name = "workspace-copy-apidocs", condition = { env_set = ["CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER"] } },
+  { name = "crate-copy-apidocs" },
 ]
 
 [tasks.crate-copy-apidocs]
@@ -809,7 +788,7 @@ category = "CI"
 description = "Runs the requested task for every workspace member."
 category = "Tools"
 env = { CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY = "${CARGO_MAKE_WORKING_DIRECTORY}/target" }
-condition = { env_set = [ "CARGO_MAKE_MEMBER_TASK" ] }
+condition = { env_set = ["CARGO_MAKE_MEMBER_TASK"] }
 script = '''
 #prevent codecov publish in member builds
 export CARGO_MAKE_SKIP_CODECOV="true"
@@ -853,7 +832,13 @@ description = "Uploads the binary artifact from the cargo package/publish output
 category = "Publish"
 
 [tasks.bintray-upload.linux]
-condition = { env_set = [ "BINTRAY_API_KEY", "BINTRAY_OWNER_NAME", "BINTRAY_PACKAGE_NAME", "CARGO_MAKE_CRATE_NAME", "CARGO_MAKE_CRATE_VERSION" ] }
+condition = { env_set = [
+  "BINTRAY_API_KEY",
+  "BINTRAY_OWNER_NAME",
+  "BINTRAY_PACKAGE_NAME",
+  "CARGO_MAKE_CRATE_NAME",
+  "CARGO_MAKE_CRATE_VERSION",
+] }
 script = '''
 curl -T "./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H "X-Bintray-Package:${BINTRAY_PACKAGE_NAME}" -H "X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1
 curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish
@@ -863,54 +848,51 @@ curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/
 description = "Runs full sanity, generates github release and publishes the crate."
 category = "Publish"
 workspace = false
-condition = { env_set = [ "COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME" ], env = { "CARGO_MAKE_GIT_BRANCH" = "master" } }
+condition = { env_set = ["COMMIT_MSG", "GITHUB_API_TOKEN", "GITHUB_REPO_NAME"], env = { "CARGO_MAKE_GIT_BRANCH" = "master" } }
 env = { "CARGO_MAKE_SKIP_PREPUBLISH_CLEAN" = true, "CARGO_MAKE_GIT_PUSH_ARGS" = "--no-verify" }
 run_task = [
-    { name = "workspace-build-publish-flow", condition = { env_true = ["CARGO_MAKE_CRATE_IS_WORKSPACE"] } },
-    { name = "crate-build-publish-flow" }
+  { name = "workspace-build-publish-flow", condition = { env_true = ["CARGO_MAKE_CRATE_IS_WORKSPACE"] } },
+  { name = "crate-build-publish-flow" },
 ]
 
 [tasks.crate-build-publish-flow]
 private = true
 dependencies = [
-    "delete-lock",
-    "build-flow",
-    "build-file-increment-flow",
-    "git-add",
-    "git-status",
-    "git-commit-message",
-    "git-push",
-    "git-delete-merged-branches",
-    "github-publish-custom-name",
-    "publish-flow",
-    "upload-artifacts",
-    "git-pull"
+  "delete-lock",
+  "build-flow",
+  "build-file-increment-flow",
+  "git-add",
+  "git-status",
+  "git-commit-message",
+  "git-push",
+  "git-delete-merged-branches",
+  "github-publish-custom-name",
+  "publish-flow",
+  "upload-artifacts",
+  "git-pull",
 ]
 
 [tasks.workspace-build-publish-flow]
 private = true
 dependencies = [
-    "delete-lock",
-    "workspace-build-flow",
-    "build-file-increment-flow",
-    "git-add",
-    "git-status",
-    "git-commit-message",
-    "git-push",
-    "git-delete-merged-branches",
-    "github-publish-custom-name",
-    "workspace-publish-flow",
-    "git-pull"
+  "delete-lock",
+  "workspace-build-flow",
+  "build-file-increment-flow",
+  "git-add",
+  "git-status",
+  "git-commit-message",
+  "git-push",
+  "git-delete-merged-branches",
+  "github-publish-custom-name",
+  "workspace-publish-flow",
+  "git-pull",
 ]
 
 [tasks.workspace-build-flow]
 description = "Full sanity testing flow."
 category = "Build"
 workspace = false
-dependencies = [
-    "workspace-member-build-flow",
-    "workspace-docs-flow",
-]
+dependencies = ["workspace-member-build-flow", "workspace-docs-flow"]
 
 [tasks.workspace-member-build-flow]
 category = "Build"
@@ -938,12 +920,12 @@ install_crate = { rustup_component_name = "rls-preview", binary = "rls", test_ar
 [tasks.zip-release-ci-flow]
 description = "Compiles the binary in release mode and zips it up"
 category = "CI"
-condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = [ "CARGO_MAKE_CI" ] }
+condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = ["CARGO_MAKE_CI"] }
 dependencies = [
   "clean",
   "setup-release-build-env",
   "build-release-for-target",
-  "zip-release-binary-for-target"
+  "zip-release-binary-for-target",
 ]
 
 [tasks.setup-release-build-env]
@@ -954,7 +936,11 @@ linux_alias = "setup-musl"
 [tasks.setup-musl]
 description = "Sets up a musl build environment"
 category = "CI"
-condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_OPENSSL_VERSION", "CARGO_MAKE_OPENSSL_DOWNLOAD_URL" ], env_true = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
+condition = { env_set = [
+  "CARGO_MAKE_RELEASE_FLOW_TARGET",
+  "CARGO_MAKE_OPENSSL_VERSION",
+  "CARGO_MAKE_OPENSSL_DOWNLOAD_URL",
+], env_true = ["CARGO_MAKE_CI"], platforms = ["linux"] }
 env = { "OPENSSL_DIR" = "${HOME}/openssl-musl" }
 script = '''
 rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
@@ -967,7 +953,8 @@ make install
 
 [tasks.build-release-for-target]
 description = "Makes a release build for a given target"
-condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET" ], env_true = [ "CARGO_MAKE_CI" ] }
+category = "Build"
+condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = ["CARGO_MAKE_CI"] }
 install_crate = false
 command = "cargo"
 args = [
@@ -975,14 +962,19 @@ args = [
   "--release",
   "--all-features",
   "--target",
-  "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
+  "${CARGO_MAKE_RELEASE_FLOW_TARGET}",
 ]
 
 [tasks.zip-release-binary-for-target]
 description = "Zips up the release binary, README, and license(s)"
 category = "Publish"
-condition = { env_set = [ "CARGO_MAKE_RELEASE_FLOW_TARGET", "CARGO_MAKE_PROJECT_NAME", "CARGO_MAKE_PROJECT_VERSION", "CARGO_MAKE_BINARY_EXECUTABLE_NAME" ], env_true = [ "CARGO_MAKE_CI" ] }
-env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"}
+condition = { env_set = [
+  "CARGO_MAKE_RELEASE_FLOW_TARGET",
+  "CARGO_MAKE_PROJECT_NAME",
+  "CARGO_MAKE_PROJECT_VERSION",
+  "CARGO_MAKE_BINARY_EXECUTABLE_NAME",
+], env_true = ["CARGO_MAKE_CI"] }
+env = { "OUTPUT_NAME" = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}" }
 script_runner = "@shell"
 script = '''
 mkdir ${OUTPUT_NAME}

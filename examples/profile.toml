@@ -36,11 +36,11 @@ echo CARGO_MAKE_RUN_CODECOV: ${CARGO_MAKE_RUN_CODECOV}
 '''
 
 [tasks.echo-development]
-condition = { profiles = [ "development" ] }
+condition = { profiles = ["development"] }
 command = "echo"
-args = [ "running in development profile" ]
+args = ["running in development profile"]
 
 [tasks.echo-production]
-condition = { profiles = [ "production" ] }
+condition = { profiles = ["production"] }
 command = "echo"
-args = [ "running in production profile" ]
+args = ["running in production profile"]

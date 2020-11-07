@@ -2202,6 +2202,7 @@ cargo-make comes with few built in profiles to quickly enable additional conditi
 * **multi-phase-tests** - Enable to split the tests to multiple phases (thread safe, multi threaded, custom)
 * **ci-static-code-analysis-tasks** - Will enable all static code analysis tasks such as format checking and clippy as part of the CI flow (see special note about backward compatibility below).
 * **ci-all-build-tasks** - Will enable all extra compilation tasks (i.e. bench and example code) as part of the CI flow (see special note about backward compatibility below).
+* **all-default-tasks** - Will enable extra tasks invoked while running the default task (such as toml formatting).
 
 *Some of these profiles may change in the future to enable more tasks which may break your build and by definition will never be backward compatible.*<br>
 *Use them with care.*

@@ -19,23 +19,19 @@ script = { file = "${CARGO_MAKE_WORKING_DIRECTORY}/script.sh", absolute_path = t
 dependencies = ["hello-world"]
 
 [tasks.read-input]
-script = [
-'''
+script = ['''
     echo Enter Input
     read
     echo Input: ${REPLY}
-'''
-]
+''']
 
 [tasks.force-pipe-stdin]
 env = { CARGO_MAKE_SCRIPT_FORCE_PIPE_STDIN = true }
-script = [
-'''
+script = ['''
     echo start
     sleep 20
     echo end
-'''
-]
+''']
 
 [tasks.base-script]
 script.pre = "echo start"

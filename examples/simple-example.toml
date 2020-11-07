@@ -18,8 +18,4 @@ args = ["test"]
 dependencies = ["clean"]
 
 [tasks.my-flow]
-dependencies = [
-    "format",
-    "build",
-    "test"
-]
+dependencies = ["format", "build", "test"]

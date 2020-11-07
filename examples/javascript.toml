@@ -4,4 +4,3 @@ script_extension = "js"
 script = '''
 console.log('Hello, World!');
 '''
-

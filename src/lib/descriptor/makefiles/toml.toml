@@ -1,0 +1,25 @@
+
+[tasks.pre-format-toml]
+category = "Development"
+
+[tasks.format-toml]
+description = "Formats all toml files defined in the CARGO_MAKE_FORMAT_TOML_FILES environment variable."
+category = "Development"
+condition = { env_set = ["CARGO_MAKE_FORMAT_TOML_FILES"] }
+install_crate = { crate_name = "taplo-cli", binary = "taplo", test_arg = ["--help"] }
+command = "taplo"
+args = ["format", "${CARGO_MAKE_FORMAT_TOML_FILES}"]
+
+[tasks.post-format-toml]
+category = "Development"
+
+[tasks.format-toml-flow]
+description = "Runs the format toml tasks."
+category = "Development"
+dependencies = ["pre-format-toml", "format-toml", "post-format-toml"]
+
+[tasks.format-toml-conditioned-flow]
+description = "Runs the format toml tasks if conditions are met."
+category = "Development"
+condition = { env_set = ["CARGO_MAKE_RUN_TOML_FORMAT"] }
+run_task = "format-toml-flow"

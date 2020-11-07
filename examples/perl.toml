@@ -4,4 +4,3 @@ script_extension = "pl"
 script = '''
 print "Hello, World!\n";
 '''
-

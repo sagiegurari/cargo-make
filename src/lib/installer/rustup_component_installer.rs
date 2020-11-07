@@ -28,11 +28,16 @@ pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: 
         None => Command::new(binary),
     };
 
+    debug!(
+        "Validating installation using command: {} args: {:#?}",
+        binary, &test_args
+    );
     let result = command_struct.args(test_args).output();
 
     match result {
         Ok(output) => {
             let exit_code = command::get_exit_code(Ok(output.status), false);
+            debug!("Installation validation test exit code: {}", exit_code);
 
             if exit_code != 0 {
                 false

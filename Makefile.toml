@@ -1,18 +1,19 @@
 
 [config]
 additional_profiles = [
-    "multi-phase-tests",
-    "ci-coverage-tasks",
-    "ci-static-code-analysis-tasks",
-    "ci-all-build-tasks",
-    "publish-pre-cleanup"
+  "all-default-tasks",
+  "multi-phase-tests",
+  "ci-coverage-tasks",
+  "ci-static-code-analysis-tasks",
+  "ci-all-build-tasks",
+  "publish-pre-cleanup",
 ]
 
 [env]
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_TEMP_UNSTABLE_KEY = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}-${CARGO_MAKE_CI}"
-CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"none" = "true"} }
-CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = {"windows-stable-true" = "true", "windows-beta-true" = "true", "windows-nightly-true" = "true", "linux-nightly-true" = "true"} }
+CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = { "none" = "true" } }
+CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = { "windows-stable-true" = "true", "windows-beta-true" = "true", "windows-nightly-true" = "true", "linux-nightly-true" = "true" } }
 
 [tasks.post-print-env]
 category = "Tools"
@@ -71,11 +72,11 @@ args = [
   "--output-file",
   "${CARGO_MAKE_WORKING_DIRECTORY}/docs/cargo_make_task_list.md",
   "--makefile",
-  "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/makefiles/empty.toml"
+  "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/makefiles/empty.toml",
 ]
 
 [tasks.generate-docs]
-condition = { env_false = [ "CARGO_MAKE_CI" ], platforms = [ "linux" ] }
+condition = { env_false = ["CARGO_MAKE_CI"], platforms = ["linux"] }
 run_task = { name = ["generate-readme", "generate-task-list"] }
 
 [tasks.post-docs]
@@ -83,4 +84,3 @@ linux_alias = "generate-docs"
 
 [tasks.pre-build-file-increment]
 env = { CARGO_MAKE_BUILD_NUMBER_FILE = "${CARGO_MAKE_WORKING_DIRECTORY}/.buildnumber" }
-
