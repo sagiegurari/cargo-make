@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.9
+### v0.32.9 (2020-11-07)
 
 * Add new toml formatting tasks.
 
