@@ -6,7 +6,7 @@ category = "Development"
 description = "Formats all toml files defined in the CARGO_MAKE_FORMAT_TOML_FILES environment variable."
 category = "Development"
 condition = { env_set = ["CARGO_MAKE_FORMAT_TOML_FILES"] }
-install_crate = { crate_name = "taplo-cli", binary = "taplo", test_arg = ["help"] }
+install_crate = { crate_name = "taplo-cli", binary = "taplo", test_arg = ["--help"] }
 command = "taplo"
 args = ["format", "${CARGO_MAKE_FORMAT_TOML_FILES}"]
 
