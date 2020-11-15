@@ -147,7 +147,15 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
-**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'makers' command.**
+**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'makers' command.**<br>
+<br>
+**Important Note: if you are running this example in a cargo workspace, you will need to add the following to the top of the file:**<br>
+
+```toml
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+```
+**More on workspace support in the relevant sections in this document.**
 
 <a name="usage-task-dependencies-alias"></a>
 ### Tasks, Dependencies and Aliases
