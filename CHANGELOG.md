@@ -3,6 +3,7 @@
 ### v0.32.10
 
 * Migrate from dirs to dirs_next #491
+* Upgrade duckscript SDK to 0.6.9
 
 ### v0.32.9 (2020-11-07)
 
