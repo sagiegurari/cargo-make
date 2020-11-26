@@ -10,6 +10,7 @@ use duckscript::types::command::{Command, CommandResult, Commands};
 use duckscript::types::instruction::Instruction;
 use duckscript::types::runtime::StateValue;
 use std::collections::HashMap;
+use std::thread;
 
 #[derive(Clone)]
 pub(crate) struct CommandImpl {}
@@ -40,21 +41,32 @@ impl Command for CommandImpl {
         if arguments.is_empty() {
             CommandResult::Error("No task name provided.".to_string())
         } else {
+            let (task_name, async_run) = if arguments.len() > 0 && arguments[0] == "--async" {
+                (arguments[1].clone(), true)
+            } else {
+                (arguments[0].clone(), false)
+            };
+
             sdk::run_in_flow_context(state, &|flow_info: &FlowInfo| -> CommandResult {
-                match flow_info.config.tasks.get(&arguments[0]) {
+                match flow_info.config.tasks.get(&task_name) {
                     Some(task) => {
                         // we currently do not support sharing same state
                         // as main flow invocation
                         let mut flow_state = FlowState::new();
 
-                        runner::run_task(
-                            flow_info,
-                            &mut flow_state,
-                            &Step {
-                                name: arguments[0].clone(),
-                                config: task.clone(),
-                            },
-                        );
+                        let step = Step {
+                            name: arguments[0].clone(),
+                            config: task.clone(),
+                        };
+
+                        if async_run {
+                            let flow_info_clone = flow_info.clone();
+                            thread::spawn(move || {
+                                runner::run_task(&flow_info_clone, &mut flow_state, &step);
+                            });
+                        } else {
+                            runner::run_task(flow_info, &mut flow_state, &step);
+                        }
 
                         CommandResult::Continue(Some("true".to_string()))
                     }

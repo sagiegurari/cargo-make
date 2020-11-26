@@ -2,8 +2,9 @@
 
 ### v0.32.10
 
+* Adding async support for cm_run_task duckscript task #493
 * Migrate from dirs to dirs_next #491
-* Upgrade duckscript SDK to 0.6.9
+* Upgrade dependencies (duckscript runtime 0.6, duckscript SDK 0.7, ci_info, ...)
 
 ### v0.32.9 (2020-11-07)
 
