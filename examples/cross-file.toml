@@ -1,0 +1,7 @@
+[tasks.cross-file]
+dependencies = [
+    # specific file name
+    { name = "format", path = "simple-example.toml" },
+    # in a folder
+    { name = "echo", path = "workspace2" },
+]
