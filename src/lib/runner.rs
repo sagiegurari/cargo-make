@@ -496,7 +496,11 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config
 }
 
-fn create_proxy_task(task: &str, allow_private: bool, skip_init_end_tasks: bool) -> Task {
+pub(crate) fn create_proxy_task(
+    task: &str,
+    allow_private: bool,
+    skip_init_end_tasks: bool,
+) -> Task {
     //get log level name
     let log_level = logger::get_log_level();
 

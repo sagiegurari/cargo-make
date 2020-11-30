@@ -10,6 +10,7 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::profile;
+use crate::runner::create_proxy_task;
 use crate::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
@@ -329,6 +330,24 @@ fn create_for_step(
     root: bool,
     allow_private: bool,
 ) {
+    if let Some(path) = &task.path {
+        // this is refering to a task in another file
+        // so we create a proxy task to invoke it
+        let proxy_name = format!("{}_proxy", task.name);
+        let mut proxy_task = create_proxy_task(&proxy_name, true, false);
+
+        proxy_task.command = Some("cargo".to_string());
+        proxy_task.args = Some(vec!["make".to_string(), task.name.clone()]);
+        proxy_task.cwd = Some(path.to_owned());
+
+        steps.push(Step {
+            name: task.to_string(),
+            config: proxy_task,
+        });
+        task_names.insert(task.to_string());
+        return;
+    }
+
     let task_config = get_normalized_task(config, &task.name, true);
 
     debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
