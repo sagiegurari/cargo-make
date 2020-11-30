@@ -980,13 +980,19 @@ pub struct Task {
 }
 
 /// A dependency, defined either as a string or as a Dependency object
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum StringTaskIdentifier {
     /// A full dependency definion (potentially in a different file)
     Definition(TaskIdentifier),
     /// A string dependency definition (its name in the current file)
     Name(String),
+}
+
+impl From<&str> for StringTaskIdentifier {
+    fn from(s: &str) -> Self {
+        StringTaskIdentifier::Name(s.to_string())
+    }
 }
 
 impl StringTaskIdentifier {
@@ -1013,7 +1019,7 @@ impl StringTaskIdentifier {
 }
 
 /// An identifier for a task
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct TaskIdentifier {
     /// The task name to execute
     pub name: String,

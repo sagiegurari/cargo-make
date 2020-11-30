@@ -878,7 +878,7 @@ fn create_with_dependencies() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -912,7 +912,7 @@ fn create_with_dependencies_sub_flow() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -945,7 +945,7 @@ fn create_disabled_task_with_dependencies() {
 
     let mut task = Task::new();
     task.disabled = Some(true);
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -977,7 +977,7 @@ fn create_with_dependencies_disabled() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let mut task_dependency = Task::new();
     task_dependency.disabled = Some(true);
