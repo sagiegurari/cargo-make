@@ -334,10 +334,8 @@ fn create_for_step(
         // this is refering to a task in another file
         // so we create a proxy task to invoke it
         let proxy_name = format!("{}_proxy", task.name);
+        
         let mut proxy_task = create_proxy_task(&proxy_name, true, false);
-
-        proxy_task.command = Some("cargo".to_string());
-        proxy_task.args = Some(vec!["make".to_string(), task.name.clone()]);
         proxy_task.cwd = Some(path.to_owned());
 
         steps.push(Step {
