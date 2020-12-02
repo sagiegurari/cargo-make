@@ -10,7 +10,7 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::profile;
-use crate::runner::create_proxy_task;
+use crate::proxy_task::create_proxy_task;
 use crate::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
@@ -334,7 +334,7 @@ fn create_for_step(
         // this is refering to a task in another file
         // so we create a proxy task to invoke it
         let proxy_name = format!("{}_proxy", task.name);
-        
+
         let mut proxy_task = create_proxy_task(&proxy_name, true, false);
         proxy_task.cwd = Some(path.to_owned());
 
