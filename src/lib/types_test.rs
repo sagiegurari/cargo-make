@@ -3597,7 +3597,7 @@ fn task_apply_no_run_task_modify_namespace() {
     assert_eq!(task.mac_alias.unwrap(), "default::mac_alias");
     assert!(task.run_task.is_none());
 
-    let expected: Vec<StringTaskIdentifier> = vec!["default::dep1".into(), "default::dep2".into()];
+    let expected: Vec<DependencyIdentifier> = vec!["default::dep1".into(), "default::dep2".into()];
     assert_eq!(task.dependencies.unwrap(), expected);
 }
 
