@@ -990,8 +990,8 @@ pub enum DependencyIdentifier {
 }
 
 impl From<&str> for DependencyIdentifier {
-    fn from(s: &str) -> Self {
-        DependencyIdentifier::Name(s.to_string())
+    fn from(name: &str) -> Self {
+        DependencyIdentifier::Name(name.to_string())
     }
 }
 
@@ -999,20 +999,20 @@ impl DependencyIdentifier {
     /// Get the name of a dependency
     pub fn name(&self) -> &str {
         match self {
-            DependencyIdentifier::Definition(d) => &d.name,
-            DependencyIdentifier::Name(s) => s,
+            DependencyIdentifier::Definition(identifier) => &identifier.name,
+            DependencyIdentifier::Name(name) => name,
         }
     }
 
     /// Adorn the TaskIdentifier with a namespace
     pub fn with_namespace(self, namespace: &str) -> Self {
         match self {
-            DependencyIdentifier::Definition(mut d) => {
-                d.name = get_namespaced_task_name(namespace, &d.name);
-                DependencyIdentifier::Definition(d)
+            DependencyIdentifier::Definition(mut identifier) => {
+                identifier.name = get_namespaced_task_name(namespace, &identifier.name);
+                DependencyIdentifier::Definition(identifier)
             }
-            DependencyIdentifier::Name(s) => {
-                DependencyIdentifier::Name(get_namespaced_task_name(namespace, &s))
+            DependencyIdentifier::Name(name) => {
+                DependencyIdentifier::Name(get_namespaced_task_name(namespace, &name))
             }
         }
     }
@@ -1028,10 +1028,10 @@ pub struct TaskIdentifier {
 }
 
 impl std::fmt::Display for TaskIdentifier {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.path {
-            Some(p) => write!(f, "{}:{}", p, self.name),
-            None => write!(f, "{}", self.name),
+            Some(path) => write!(formatter, "{}:{}", path, self.name),
+            None => write!(formatter, "{}", self.name),
         }
     }
 }
@@ -1049,11 +1049,8 @@ impl TaskIdentifier {
 impl Into<TaskIdentifier> for DependencyIdentifier {
     fn into(self) -> TaskIdentifier {
         match self {
-            DependencyIdentifier::Definition(d) => d,
-            DependencyIdentifier::Name(s) => TaskIdentifier {
-                name: s,
-                path: None,
-            },
+            DependencyIdentifier::Definition(identifier) => identifier,
+            DependencyIdentifier::Name(name) => TaskIdentifier { name, path: None },
         }
     }
 }
@@ -1174,7 +1171,7 @@ impl Task {
                         self.dependencies = Some(
                             dependencies
                                 .iter()
-                                .map(|d| d.to_owned().with_namespace(namespace))
+                                .map(|identifier| identifier.to_owned().with_namespace(namespace))
                                 .collect(),
                         );
                     }
