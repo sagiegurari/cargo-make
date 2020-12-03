@@ -2,6 +2,10 @@ use std::env;
 
 use crate::{logger, profile, types::Task};
 
+#[cfg(test)]
+#[path = "./proxy_task_test.rs"]
+mod proxy_task_test;
+
 pub(crate) fn create_proxy_task(
     task: &str,
     allow_private: bool,
