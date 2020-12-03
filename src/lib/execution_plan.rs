@@ -10,8 +10,9 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::profile;
+use crate::proxy_task::create_proxy_task;
 use crate::types::{
-    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, Workspace,
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
 use envmnt;
 use glob::Pattern;
@@ -323,13 +324,29 @@ fn is_workspace_flow(
 /// Creates an execution plan for the given step based on existing execution plan data
 fn create_for_step(
     config: &Config,
-    task: &str,
+    task: &TaskIdentifier,
     steps: &mut Vec<Step>,
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
 ) {
-    let task_config = get_normalized_task(config, task, true);
+    if let Some(path) = &task.path {
+        // this is refering to a task in another file
+        // so we create a proxy task to invoke it
+        let proxy_name = format!("{}_proxy", task.name);
+
+        let mut proxy_task = create_proxy_task(&proxy_name, true, false);
+        proxy_task.cwd = Some(path.to_owned());
+
+        steps.push(Step {
+            name: task.to_string(),
+            config: proxy_task,
+        });
+        task_names.insert(task.to_string());
+        return;
+    }
+
+    let task_config = get_normalized_task(config, &task.name, true);
 
     debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
 
@@ -345,13 +362,20 @@ fn create_for_step(
             match task_config.dependencies {
                 Some(ref dependencies) => {
                     for dependency in dependencies {
-                        create_for_step(&config, &dependency, steps, task_names, false, true);
+                        create_for_step(
+                            &config,
+                            &dependency.to_owned().into(),
+                            steps,
+                            task_names,
+                            false,
+                            true,
+                        );
                     }
                 }
                 _ => debug!("No dependencies found for task: {}", &task),
             };
 
-            if !task_names.contains(task) {
+            if !task_names.contains(&task.name) {
                 steps.push(Step {
                     name: task.to_string(),
                     config: task_config,
@@ -411,7 +435,7 @@ pub(crate) fn create(
     } else {
         create_for_step(
             &config,
-            &task,
+            &TaskIdentifier::from_name(task),
             &mut steps,
             &mut task_names,
             true,

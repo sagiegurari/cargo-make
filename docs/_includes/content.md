@@ -265,6 +265,22 @@ hello
 
 Now you can see that 'hello' was printed twice.
 
+Tasks may also depend on tasks in other files. To do this, specify the
+dependency with the object format, providing the path. Cargo make
+will use this path as it would any other supplied on the command line:
+if a filename is supplied, it searches that file. Otherwise it uses
+the default `Makefile.toml`.
+
+```toml
+[tasks.install]
+command = "mv"
+args = ["src/B/out", "src/C/static"]
+dependencies = [
+  { name = "compile", path = "src/B" },
+  { name = "clean", path = "src/C/tasks.toml" },
+]
+```
+
 It is also possible to define platform specific aliases, for example:
 
 ```toml

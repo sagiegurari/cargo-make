@@ -177,6 +177,7 @@ mod io;
 mod legacy;
 mod logger;
 mod profile;
+mod proxy_task;
 mod recursion_level;
 mod runner;
 mod scriptengine;
