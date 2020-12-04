@@ -265,11 +265,11 @@ hello
 
 Now you can see that 'hello' was printed twice.
 
-Tasks may also depend on tasks in other files. To do this, specify the
-dependency with the object format, providing the path. Cargo make
-will use this path as it would any other supplied on the command line:
-if a filename is supplied, it searches that file. Otherwise it uses
-the default `Makefile.toml`.
+Tasks may also depend on tasks in other files.
+To do this, specify the dependency with the object format, providing the path.
+cargo-make will use this path as it would any other supplied on the command line:
+If a filename is supplied, it searches that file.
+Otherwise it search for the default `Makefile.toml` on that path.
 
 ```toml
 [tasks.install]
