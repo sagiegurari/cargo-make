@@ -511,14 +511,11 @@ fn merge_base_config_and_external_config(
             let mut cli_env = IndexMap::new();
 
             for env_pair in &values {
-                let env_part: Vec<&str> = env_pair.split('=').collect();
                 debug!("Checking env pair: {}", &env_pair);
+                let env_parts: Option<(&str, &str)> = split_once(env_pair, '=');
 
-                if env_part.len() == 2 {
-                    cli_env.insert(
-                        env_part[0].to_string(),
-                        EnvValue::Value(env_part[1].to_string()),
-                    );
+                if let Some((key, value)) = env_parts {
+                    cli_env.insert(key.to_string(), EnvValue::Value(value.to_string()));
                 }
             }
 
@@ -539,6 +536,13 @@ fn merge_base_config_and_external_config(
         env_scripts,
         tasks: all_tasks,
     }
+}
+
+fn split_once(value: &str, delimiter: char) -> Option<(&str, &str)> {
+    let mut parts = value.splitn(2, delimiter);
+    let part1 = parts.next()?;
+    let part2 = parts.next()?;
+    Some((part1, part2))
 }
 
 /// Loads the tasks descriptor.<br>
