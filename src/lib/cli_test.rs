@@ -441,7 +441,7 @@ fn run_for_args_set_env_values() {
         "--env",
         "ENV1_TEST=TEST1",
         "--env",
-        "ENV2_TEST=TEST2",
+        "ENV2_TEST=TEST2a=TEST2b",
         "-e",
         "ENV3_TEST=TEST3",
         "--verbose",
@@ -453,7 +453,7 @@ fn run_for_args_set_env_values() {
     run_for_args(matches, &global_config, &"make".to_string(), true);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
-    assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
+    assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2a=TEST2b");
     assert_eq!(envmnt::get_or_panic("ENV3_TEST"), "TEST3");
 }
 
