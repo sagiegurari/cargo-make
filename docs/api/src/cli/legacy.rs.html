@@ -105,14 +105,14 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./legacy_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">legacy_test</span>;
 
-<span class="kw">use</span> <span class="ident">dirs</span>;
+<span class="kw">use</span> <span class="ident">dirs_next</span>;
 <span class="kw">use</span> <span class="ident">fsio</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">copy</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">PathBuf</span>;
 
 <span class="kw">fn</span> <span class="ident">get_legacy_cargo_make_home</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">dirs</span>::<span class="ident">home_dir</span>() {
+    <span class="kw">match</span> <span class="ident">dirs_next</span>::<span class="ident">home_dir</span>() {
         <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">directory</span>.<span class="ident">join</span>(<span class="string">&quot;.cargo-make&quot;</span>)),
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
     }

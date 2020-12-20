@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.10
+### v0.32.10 (2020-12-20)
 
 * Task dependencies can now point to makefiles in other directories #497 (thanks @arlyon)
 * Adding async support for cm_run_task duckscript task #493
