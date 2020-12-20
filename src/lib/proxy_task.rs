@@ -10,6 +10,7 @@ pub(crate) fn create_proxy_task(
     task: &str,
     allow_private: bool,
     skip_init_end_tasks: bool,
+    makefile: Option<String>,
 ) -> Task {
     //get log level name
     let log_level = logger::get_log_level();
@@ -41,14 +42,18 @@ pub(crate) fn create_proxy_task(
     }
 
     //get makefile location
-    match env::var("CARGO_MAKE_MAKEFILE_PATH") {
-        Ok(makefile_path) => {
-            if makefile_path.len() > 0 {
-                args.push("--makefile".to_string());
-                args.push(makefile_path);
-            }
+    let makefile_path_option = match makefile {
+        Some(makefile_path) => Some(makefile_path),
+        None => match env::var("CARGO_MAKE_MAKEFILE_PATH") {
+            Ok(makefile_path) => Some(makefile_path),
+            _ => None,
+        },
+    };
+    if let Some(makefile_path) = makefile_path_option {
+        if makefile_path.len() > 0 {
+            args.push("--makefile".to_string());
+            args.push(makefile_path);
         }
-        _ => (),
     };
 
     args.push(task.to_string());

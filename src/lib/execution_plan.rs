@@ -15,6 +15,7 @@ use crate::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
 use envmnt;
+use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
 use std::collections::HashSet;
@@ -335,13 +336,26 @@ fn create_for_step(
         // so we create a proxy task to invoke it
         let proxy_name = format!("{}_proxy", task.name);
 
-        let mut proxy_task = create_proxy_task(&proxy_name, true, false);
-        proxy_task.cwd = Some(path.to_owned());
+        let path_obj = Path::new(path);
+        let (working_directory, makefile) = if path_obj.is_file() {
+            let filename = get_basename(&path_obj);
+            let working_directory = get_parent_directory(&path_obj);
+            (working_directory, filename)
+        } else {
+            (Some(path.to_string()), Some("Makefile.toml".to_string()))
+        };
 
-        steps.push(Step {
-            name: task.to_string(),
+        let mut proxy_task = create_proxy_task(&task.name, true, false, makefile);
+        proxy_task.cwd = working_directory;
+
+        let step = Step {
+            name: proxy_name,
             config: proxy_task,
-        });
+        };
+
+        debug!("Created external depedency step: {:#?}", &step);
+
+        steps.push(step);
         task_names.insert(task.to_string());
         return;
     }

@@ -109,7 +109,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
-    let fork_task = create_proxy_task(&flow_info.task, true, true);
+    let fork_task = create_proxy_task(&flow_info.task, true, true, None);
 
     Step {
         name: "cargo_make_run_fork".to_string(),
@@ -417,7 +417,7 @@ fn run_task_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, execution_pla
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    let mut task_config = create_proxy_task(&task, true, true);
+    let mut task_config = create_proxy_task(&task, true, true, None);
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
@@ -516,6 +516,7 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: &mut FlowState) {
         &flow_info.task,
         flow_info.allow_private,
         flow_info.skip_init_end_tasks,
+        None,
     );
 
     let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false);
