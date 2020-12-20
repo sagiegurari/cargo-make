@@ -52,3 +52,16 @@ script = '''
 #!@duckscript
 sleep 1000
 '''
+
+[tasks.echo-after-sleep]
+dependencies = ["sleep"]
+run_task = "echo1"
+
+[tasks.run-async-task-from-duckscript]
+script_runner = "@duckscript"
+script = '''
+echo before invocation
+cm_run_task --async echo-after-sleep
+echo after invocation
+sleep 1500
+'''

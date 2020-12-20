@@ -968,7 +968,7 @@ pub struct Task {
     /// The task name to execute
     pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>,
+    pub dependencies: Option<Vec<DependencyIdentifier>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
     pub toolchain: Option<String>,
     /// override task if runtime OS is Linux (takes precedence over alias)
@@ -977,6 +977,82 @@ pub struct Task {
     pub windows: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Mac (takes precedence over alias)
     pub mac: Option<PlatformOverrideTask>,
+}
+
+/// A dependency, defined either as a string or as a Dependency object
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum DependencyIdentifier {
+    /// A full dependency definion (potentially in a different file)
+    Definition(TaskIdentifier),
+    /// A string dependency definition (its name in the current file)
+    Name(String),
+}
+
+impl From<&str> for DependencyIdentifier {
+    fn from(name: &str) -> Self {
+        DependencyIdentifier::Name(name.to_string())
+    }
+}
+
+impl DependencyIdentifier {
+    /// Get the name of a dependency
+    pub fn name(&self) -> &str {
+        match self {
+            DependencyIdentifier::Definition(identifier) => &identifier.name,
+            DependencyIdentifier::Name(name) => name,
+        }
+    }
+
+    /// Adorn the TaskIdentifier with a namespace
+    pub fn with_namespace(self, namespace: &str) -> Self {
+        match self {
+            DependencyIdentifier::Definition(mut identifier) => {
+                identifier.name = get_namespaced_task_name(namespace, &identifier.name);
+                DependencyIdentifier::Definition(identifier)
+            }
+            DependencyIdentifier::Name(name) => {
+                DependencyIdentifier::Name(get_namespaced_task_name(namespace, &name))
+            }
+        }
+    }
+}
+
+/// An identifier for a task
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+pub struct TaskIdentifier {
+    /// The task name to execute
+    pub name: String,
+    /// The path to the makefile the task resides in
+    pub path: Option<String>,
+}
+
+impl std::fmt::Display for TaskIdentifier {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.path {
+            Some(path) => write!(formatter, "{}:{}", path, self.name),
+            None => write!(formatter, "{}", self.name),
+        }
+    }
+}
+
+impl TaskIdentifier {
+    /// Create a new TaskIdentifier referencing a task in the current file
+    pub fn from_name(name: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            path: None,
+        }
+    }
+}
+
+impl Into<TaskIdentifier> for DependencyIdentifier {
+    fn into(self) -> TaskIdentifier {
+        match self {
+            DependencyIdentifier::Definition(identifier) => identifier,
+            DependencyIdentifier::Name(name) => TaskIdentifier { name, path: None },
+        }
+    }
 }
 
 impl Task {
@@ -1091,15 +1167,13 @@ impl Task {
                         self.run_task = Some(run_task);
                     }
 
-                    if self.dependencies.is_some() {
-                        let dependencies = self.dependencies.clone().unwrap();
-                        let mut modified_dependencies = vec![];
-
-                        for task in &dependencies {
-                            modified_dependencies.push(get_namespaced_task_name(namespace, &task));
-                        }
-
-                        self.dependencies = Some(modified_dependencies);
+                    if let Some(dependencies) = &self.dependencies {
+                        self.dependencies = Some(
+                            dependencies
+                                .iter()
+                                .map(|identifier| identifier.to_owned().with_namespace(namespace))
+                                .collect(),
+                        );
                     }
                 }
             }
@@ -1570,7 +1644,7 @@ pub struct PlatformOverrideTask {
     /// The task name to execute
     pub run_task: Option<RunTaskInfo>,
     /// A list of tasks to execute before this task
-    pub dependencies: Option<Vec<String>>,
+    pub dependencies: Option<Vec<DependencyIdentifier>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
     pub toolchain: Option<String>,
 }

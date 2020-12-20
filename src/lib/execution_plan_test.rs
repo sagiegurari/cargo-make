@@ -1,6 +1,7 @@
 use super::*;
 use crate::types::{
-    ConfigSection, CrateInfo, PlatformOverrideTask, Task, TaskWatchOptions, Workspace,
+    ConfigSection, CrateInfo, DependencyIdentifier, PlatformOverrideTask, Task, TaskWatchOptions,
+    Workspace,
 };
 use indexmap::IndexMap;
 use std::env;
@@ -878,7 +879,7 @@ fn create_with_dependencies() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -893,6 +894,132 @@ fn create_with_dependencies() {
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
     assert_eq!(execution_plan.steps[2].name, "test");
     assert_eq!(execution_plan.steps[3].name, "end");
+}
+
+#[test]
+fn create_with_foreign_dependencies_directory() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+        name: "task_dependency".to_string(),
+        path: Some("./examples/workspace".to_string()),
+    })]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency_proxy");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
+
+    let task_config = execution_plan.steps[1].config.clone();
+    assert_eq!(task_config.cwd, Some("./examples/workspace".to_string()));
+    assert_eq!(task_config.args.unwrap()[7], "Makefile.toml");
+}
+
+#[test]
+fn create_with_foreign_dependencies_filename() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+        name: "task_dependency".to_string(),
+        path: Some("Cargo.toml".to_string()),
+    })]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency_proxy");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
+
+    let task_config = execution_plan.steps[1].config.clone();
+    assert_eq!(task_config.cwd, None);
+    assert_eq!(task_config.args.unwrap()[7], "Cargo.toml");
+}
+
+#[test]
+fn create_with_foreign_dependencies_file_and_directory() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+        name: "task_dependency".to_string(),
+        path: Some("./examples/cross-file.toml".to_string()),
+    })]);
+
+    let task_dependency = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let execution_plan = create(&config, "test", false, true, false);
+
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency_proxy");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
+
+    let task_config = execution_plan.steps[1].config.clone();
+    assert_eq!(task_config.cwd, Some("./examples".to_string()));
+    assert_eq!(task_config.args.unwrap()[7], "cross-file.toml");
 }
 
 #[test]
@@ -912,7 +1039,7 @@ fn create_with_dependencies_sub_flow() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -945,7 +1072,7 @@ fn create_disabled_task_with_dependencies() {
 
     let mut task = Task::new();
     task.disabled = Some(true);
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let task_dependency = Task::new();
 
@@ -977,7 +1104,7 @@ fn create_with_dependencies_disabled() {
     config.tasks.insert("end".to_string(), Task::new());
 
     let mut task = Task::new();
-    task.dependencies = Some(vec!["task_dependency".to_string()]);
+    task.dependencies = Some(vec!["task_dependency".into()]);
 
     let mut task_dependency = Task::new();
     task_dependency.disabled = Some(true);

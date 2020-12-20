@@ -10,10 +10,12 @@ mod execution_plan_test;
 use crate::environment;
 use crate::logger;
 use crate::profile;
+use crate::proxy_task::create_proxy_task;
 use crate::types::{
-    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, Workspace,
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
 use envmnt;
+use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
 use std::collections::HashSet;
@@ -323,13 +325,42 @@ fn is_workspace_flow(
 /// Creates an execution plan for the given step based on existing execution plan data
 fn create_for_step(
     config: &Config,
-    task: &str,
+    task: &TaskIdentifier,
     steps: &mut Vec<Step>,
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
 ) {
-    let task_config = get_normalized_task(config, task, true);
+    if let Some(path) = &task.path {
+        // this is refering to a task in another file
+        // so we create a proxy task to invoke it
+        let proxy_name = format!("{}_proxy", task.name);
+
+        let path_obj = Path::new(path);
+        let (working_directory, makefile) = if path_obj.is_file() {
+            let filename = get_basename(&path_obj);
+            let working_directory = get_parent_directory(&path_obj);
+            (working_directory, filename)
+        } else {
+            (Some(path.to_string()), Some("Makefile.toml".to_string()))
+        };
+
+        let mut proxy_task = create_proxy_task(&task.name, true, false, makefile);
+        proxy_task.cwd = working_directory;
+
+        let step = Step {
+            name: proxy_name,
+            config: proxy_task,
+        };
+
+        debug!("Created external depedency step: {:#?}", &step);
+
+        steps.push(step);
+        task_names.insert(task.to_string());
+        return;
+    }
+
+    let task_config = get_normalized_task(config, &task.name, true);
 
     debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
 
@@ -345,13 +376,20 @@ fn create_for_step(
             match task_config.dependencies {
                 Some(ref dependencies) => {
                     for dependency in dependencies {
-                        create_for_step(&config, &dependency, steps, task_names, false, true);
+                        create_for_step(
+                            &config,
+                            &dependency.to_owned().into(),
+                            steps,
+                            task_names,
+                            false,
+                            true,
+                        );
                     }
                 }
                 _ => debug!("No dependencies found for task: {}", &task),
             };
 
-            if !task_names.contains(task) {
+            if !task_names.contains(&task.name) {
                 steps.push(Step {
                     name: task.to_string(),
                     config: task_config,
@@ -411,7 +449,7 @@ pub(crate) fn create(
     } else {
         create_for_step(
             &config,
-            &task,
+            &TaskIdentifier::from_name(task),
             &mut steps,
             &mut task_names,
             true,
