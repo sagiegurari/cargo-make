@@ -4,6 +4,7 @@
 
 * Task dependencies can now point to makefiles in other directories #497 (thanks @arlyon)
 * Adding async support for cm_run_task duckscript task #493
+* Allow "=" in ENV value from cli #502 (thanks @nacardin)
 * Migrate from dirs to dirs_next #491
 * Upgrade dependencies (duckscript runtime 0.6, duckscript SDK 0.7, ci_info, ...)
 
