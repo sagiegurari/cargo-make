@@ -2006,7 +2006,7 @@ You can prevent profiles from being passed down to workspace members by setting 
 CARGO_MAKE_USE_WORKSPACE_PROFILE = false
 ```
 
-See more on profiles in the [profile section](#profiles).
+See more on profiles in the [profile section](#usage-profiles).
 
 <a name="usage-workspace-support-skip-include-members"></a>
 #### Skipping/Including Specific Members
