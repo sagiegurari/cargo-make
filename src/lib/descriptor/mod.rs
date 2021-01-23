@@ -419,14 +419,15 @@ pub(crate) fn load_internal_descriptors(
         makefiles::BASE
     };
 
-    let mut base_config = descriptor_deserializer::load_config(&base_descriptor);
+    let mut base_config = descriptor_deserializer::load_config(&base_descriptor, false);
     debug!("Loaded base config: {:#?}", &base_config);
 
     if experimental {
         debug!("Loading experimental tasks.");
         let experimental_descriptor = makefiles::BETA;
 
-        let experimental_config = descriptor_deserializer::load_config(&experimental_descriptor);
+        let experimental_config =
+            descriptor_deserializer::load_config(&experimental_descriptor, false);
         debug!("Loaded experimental config: {:#?}", &experimental_config);
 
         let mut base_tasks = base_config.tasks;
