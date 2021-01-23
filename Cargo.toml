@@ -63,6 +63,7 @@ rust_info = "^0.3.1"
 semver = "^0.11"
 serde = "^1"
 serde_derive = "^1"
+serde_ignored = "^0.1"
 shell2batch = "^0.4"
 toml = "^0.5"
 

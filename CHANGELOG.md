@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.11
+
+* Validate and warn of unknown keys found in makefiles #506
+
 ### v0.32.10 (2020-12-20)
 
 * Task dependencies can now point to makefiles in other directories #497 (thanks @arlyon)
