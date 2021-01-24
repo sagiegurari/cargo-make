@@ -11,6 +11,7 @@
 mod mod_test;
 
 mod cargo_alias;
+mod descriptor_deserializer;
 mod makefiles;
 
 use crate::io;
@@ -367,19 +368,8 @@ fn load_external_descriptor(
 
         check_makefile_min_version(&external_descriptor)?;
 
-        let mut file_config: ExternalConfig = match toml::from_str(&external_descriptor) {
-            Ok(value) => value,
-            Err(error) => {
-                error!(
-                    "Unable to parse external file: {:#?}, {}",
-                    &file_path, error
-                );
-                panic!(
-                    "Unable to parse external file: {:#?}, {}",
-                    &file_path, error
-                );
-            }
-        };
+        let mut file_config =
+            descriptor_deserializer::load_external_config(&external_descriptor, &file_path_string);
         debug!("Loaded external config: {:#?}", &file_config);
 
         file_config = add_file_location_info(file_config, &absolute_file_path);
@@ -429,20 +419,15 @@ pub(crate) fn load_internal_descriptors(
         makefiles::BASE
     };
 
-    let mut base_config: Config = match toml::from_str(base_descriptor) {
-        Ok(value) => value,
-        Err(error) => panic!("Unable to parse base descriptor, {}", error),
-    };
+    let mut base_config = descriptor_deserializer::load_config(&base_descriptor, false);
     debug!("Loaded base config: {:#?}", &base_config);
 
     if experimental {
         debug!("Loading experimental tasks.");
         let experimental_descriptor = makefiles::BETA;
 
-        let experimental_config: Config = match toml::from_str(experimental_descriptor) {
-            Ok(value) => value,
-            Err(error) => panic!("Unable to parse experimental descriptor, {}", error),
-        };
+        let experimental_config =
+            descriptor_deserializer::load_config(&experimental_descriptor, false);
         debug!("Loaded experimental config: {:#?}", &experimental_config);
 
         let mut base_tasks = base_config.tasks;
