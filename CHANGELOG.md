@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.11
+### v0.32.11 (2021-01-24)
 
 * Validate and warn of unknown keys found in makefiles #506
 

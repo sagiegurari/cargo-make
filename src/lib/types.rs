@@ -199,7 +199,7 @@ impl GlobalConfig {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
-/// Holds crate workspace info, see http://doc.crates.io/manifest.html#the-workspace-section
+/// Holds crate workspace info, see <http://doc.crates.io/manifest.html#the-workspace-section>
 pub struct Workspace {
     /// members paths
     pub members: Option<Vec<String>>,
