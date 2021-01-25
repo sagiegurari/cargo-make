@@ -567,16 +567,13 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
 
     let time_string = match start_time.elapsed() {
         Ok(elapsed) => {
-            let mut string = "in ".to_string();
-            string.push_str(&elapsed.as_secs().to_string());
-            string.push_str(" seconds");
-
-            string
+            let time_millies = elapsed.as_millis() as f64 / 1000.0;
+            format!(" in {:.2} seconds", time_millies)
         }
         _ => "".to_string(),
     };
 
     time_summary::print(&flow_state.time_summary);
 
-    info!("Build Done {}.", &time_string);
+    info!("Build Done{}.", &time_string);
 }
