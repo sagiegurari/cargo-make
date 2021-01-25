@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.12
+
+* Build time to be printed in sub second precision #510
+
 ### v0.32.11 (2021-01-24)
 
 * Validate and warn of unknown keys found in makefiles #506
