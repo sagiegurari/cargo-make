@@ -11,6 +11,7 @@ pub(crate) fn create_proxy_task(
     allow_private: bool,
     skip_init_end_tasks: bool,
     makefile: Option<String>,
+    cli_args: Option<Vec<String>>,
 ) -> Task {
     //get log level name
     let log_level = logger::get_log_level();
@@ -57,6 +58,12 @@ pub(crate) fn create_proxy_task(
     };
 
     args.push(task.to_string());
+
+    if let Some(cli_args_vec) = cli_args {
+        if !cli_args_vec.is_empty() {
+            args.append(&mut cli_args_vec.to_owned());
+        }
+    }
 
     let mut proxy_task = Task::new();
     proxy_task.command = Some("cargo".to_string());

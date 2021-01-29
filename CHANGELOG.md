@@ -2,6 +2,7 @@
 
 ### v0.32.12
 
+* Fix: cli arguments lost when using on_error definition #511
 * Build time to be printed in sub second precision #510
 
 ### v0.32.11 (2021-01-24)
