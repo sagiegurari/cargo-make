@@ -345,7 +345,7 @@ fn create_for_step(
             (Some(path.to_string()), Some("Makefile.toml".to_string()))
         };
 
-        let mut proxy_task = create_proxy_task(&task.name, true, false, makefile);
+        let mut proxy_task = create_proxy_task(&task.name, true, false, makefile, None);
         proxy_task.cwd = working_directory;
 
         let step = Step {

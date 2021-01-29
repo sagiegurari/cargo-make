@@ -1,9 +1,14 @@
 
 [config]
+skip_core_tasks = true
 on_error_task = "catch"
 
 [tasks.default]
-alias = "error"
+dependencies = ["echo", "error"]
+
+[tasks.echo]
+command = "echo"
+args = ["args:", "${@}"]
 
 [tasks.error]
 script = "exit 1"
