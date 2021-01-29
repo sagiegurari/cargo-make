@@ -67,6 +67,13 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 
@@ -81,6 +88,7 @@
     <span class="ident">allow_private</span>: <span class="ident">bool</span>,
     <span class="ident">skip_init_end_tasks</span>: <span class="ident">bool</span>,
     <span class="ident">makefile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">cli_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
     <span class="comment">//get log level name</span>
     <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger</span>::<span class="ident">get_log_level</span>();
@@ -127,6 +135,12 @@
     };
 
     <span class="ident">args</span>.<span class="ident">push</span>(<span class="ident">task</span>.<span class="ident">to_string</span>());
+
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cli_args_vec</span>) <span class="op">=</span> <span class="ident">cli_args</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_args_vec</span>.<span class="ident">is_empty</span>() {
+            <span class="ident">args</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cli_args_vec</span>.<span class="ident">to_owned</span>());
+        }
+    }
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">proxy_task</span> <span class="op">=</span> <span class="ident">Task</span>::<span class="ident">new</span>();
     <span class="ident">proxy_task</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;cargo&quot;</span>.<span class="ident">to_string</span>());
