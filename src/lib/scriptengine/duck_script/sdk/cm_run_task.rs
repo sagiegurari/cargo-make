@@ -5,7 +5,7 @@
 
 use crate::runner;
 use crate::scriptengine::duck_script::sdk;
-use crate::types::{FlowInfo, FlowState, Step};
+use crate::types::{FlowInfo, FlowState};
 use duckscript::types::command::{Command, CommandResult, Commands};
 use duckscript::types::instruction::Instruction;
 use duckscript::types::runtime::StateValue;
@@ -48,31 +48,25 @@ impl Command for CommandImpl {
             };
 
             sdk::run_in_flow_context(state, &|flow_info: &FlowInfo| -> CommandResult {
-                match flow_info.config.tasks.get(&task_name) {
-                    Some(task) => {
-                        // we currently do not support sharing same state
-                        // as main flow invocation
-                        let mut flow_state = FlowState::new();
+                if flow_info.config.tasks.contains_key(&task_name) {
+                    // we currently do not support sharing same state
+                    // as main flow invocation
+                    let mut flow_state = FlowState::new();
 
-                        let step = Step {
-                            name: arguments[0].clone(),
-                            config: task.clone(),
-                        };
+                    let mut sub_flow_info = flow_info.clone();
+                    sub_flow_info.task = task_name.clone();
 
-                        if async_run {
-                            let flow_info_clone = flow_info.clone();
-                            thread::spawn(move || {
-                                runner::run_task(&flow_info_clone, &mut flow_state, &step);
-                            });
-                        } else {
-                            runner::run_task(flow_info, &mut flow_state, &step);
-                        }
-
-                        CommandResult::Continue(Some("true".to_string()))
+                    if async_run {
+                        thread::spawn(move || {
+                            runner::run_flow(&sub_flow_info, &mut flow_state, true);
+                        });
+                    } else {
+                        runner::run_flow(&sub_flow_info, &mut flow_state, true);
                     }
-                    None => CommandResult::Error(
-                        format!("Task: {} not found.", &arguments[0]).to_string(),
-                    ),
+
+                    CommandResult::Continue(Some("true".to_string()))
+                } else {
+                    CommandResult::Error(format!("Task: {} not found.", &arguments[0]).to_string())
                 }
             })
         }

@@ -496,7 +496,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
     task_config
 }
 
-fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flow: bool) {
+pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flow: bool) {
     let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = create_execution_plan(
