@@ -172,7 +172,7 @@ fn unset_env(key: &str) {
 }
 
 /// Updates the env based on the provided data
-fn set_env_for_config(
+pub(crate) fn set_env_for_config(
     env: IndexMap<String, EnvValue>,
     additional_profiles: Option<&Vec<String>>,
     allow_sub_env: bool,

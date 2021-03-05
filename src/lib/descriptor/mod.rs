@@ -504,7 +504,16 @@ fn merge_base_config_and_external_config(
                 }
             }
 
-            merge_env(&mut all_env, &mut cli_env)
+            // cli env should be ordered first and not overwritten
+            // to enable composite/mapped env vars in makefiles to work correctly
+            for (key, value) in all_env.iter() {
+                let key_str = key.to_string();
+
+                if !cli_env.contains_key(&key_str) {
+                    cli_env.insert(key_str, value.clone());
+                }
+            }
+            cli_env
         }
         None => all_env,
     };

@@ -3,6 +3,7 @@
 ### v0.32.13
 
 * Fix: cm_run_task now also invokes dependencies of the target task #519
+* Fix: Env vars provided on cli are not positioned first when evaluated #520
 
 ### v0.32.12 (2021-01-29)
 
