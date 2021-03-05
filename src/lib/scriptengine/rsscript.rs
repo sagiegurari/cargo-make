@@ -15,18 +15,18 @@ use crate::types::{InstallCrateInfo, TestArg};
 
 #[derive(PartialEq, Debug)]
 enum ScriptRunner {
+    RustScript,
     CargoScript,
     CargoPlay,
-    RustScript,
 }
 
 fn get_script_runner() -> ScriptRunner {
-    let provider = envmnt::get_or("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-script");
+    let provider = envmnt::get_or("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "rust-script");
 
     match provider.as_str() {
+        "rust-script" => ScriptRunner::RustScript,
         "cargo-script" => ScriptRunner::CargoScript,
         "cargo-play" => ScriptRunner::CargoPlay,
-        "rust-script" => ScriptRunner::RustScript,
         _ => ScriptRunner::CargoScript,
     }
 }
@@ -34,17 +34,6 @@ fn get_script_runner() -> ScriptRunner {
 fn install_crate(provider: &ScriptRunner) {
     // install dependencies
     match provider {
-        ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
-            &None,
-            "script",
-            "cargo-script",
-            &None,
-            true,
-            &None,
-        ),
-        ScriptRunner::CargoPlay => {
-            cargo_plugin_installer::install_crate(&None, "play", "cargo-play", &None, true, &None)
-        }
         ScriptRunner::RustScript => {
             let info = InstallCrateInfo {
                 crate_name: "rust-script".to_string(),
@@ -58,6 +47,17 @@ fn install_crate(provider: &ScriptRunner) {
 
             crate_installer::install(&None, &info, &None, false);
         }
+        ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
+            &None,
+            "script",
+            "cargo-script",
+            &None,
+            true,
+            &None,
+        ),
+        ScriptRunner::CargoPlay => {
+            cargo_plugin_installer::install_crate(&None, "play", "cargo-play", &None, true, &None)
+        }
     };
 }
 
@@ -67,9 +67,9 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
 
 fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) -> bool {
     let (use_cargo, command) = match provider {
+        ScriptRunner::RustScript => (false, "rust-script"),
         ScriptRunner::CargoScript => (true, "script"),
         ScriptRunner::CargoPlay => (true, "play"),
-        ScriptRunner::RustScript => (false, "rust-script"),
     };
 
     let mut args = vec![];

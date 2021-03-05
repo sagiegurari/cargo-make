@@ -737,15 +737,24 @@ fn main() {
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
 There are several different rust script runners currently available:
 
+* [rust-play](https://crates.io/crates/rust-script)
 * [cargo-script](https://crates.io/crates/cargo-script)
 * [cargo-play](https://crates.io/crates/cargo-play)
-* [rust-play](https://crates.io/crates/rust-script)
 
-By default, cargo-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
+By default, rust-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
 This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
 For example:
 
 ```toml
+[tasks.rust-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "rust-script" }
+script_runner = "@rust"
+script = '''
+fn main() {
+    println!("test");
+}
+'''
+
 [tasks.cargo-script]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-script" }
 script_runner = "@rust"
@@ -757,15 +766,6 @@ fn main() {
 
 [tasks.cargo-play]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
-script_runner = "@rust"
-script = '''
-fn main() {
-    println!("test");
-}
-'''
-
-[tasks.rust-script]
-env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "rust-script" }
 script_runner = "@rust"
 script = '''
 fn main() {
