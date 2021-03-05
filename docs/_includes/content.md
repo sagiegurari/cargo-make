@@ -737,7 +737,7 @@ fn main() {
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
 There are several different rust script runners currently available:
 
-* [rust-play](https://crates.io/crates/rust-script)
+* [rust-script](https://crates.io/crates/rust-script)
 * [cargo-script](https://crates.io/crates/cargo-script)
 * [cargo-play](https://crates.io/crates/cargo-play)
 
