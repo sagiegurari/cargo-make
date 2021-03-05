@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::environment;
 use crate::environment::setup_cwd;
 use crate::types::{ExtendOptions, InstallCrate, ScriptValue};
 
@@ -401,6 +402,62 @@ fn load_descriptors_no_load_workspace_makefile() {
 
     let task = config.tasks.get("workspace-echo");
     assert!(task.is_none());
+}
+
+#[test]
+#[ignore]
+fn load_env_override() {
+    let toml_file = "./src/lib/test/makefiles/env.toml";
+
+    envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
+    let mut config = load(toml_file, true, None, false).unwrap();
+    let mut env = IndexMap::<String, EnvValue>::new();
+    env.insert(
+        "IF_UNDEFINED".to_string(),
+        config.env.get(&"IF_UNDEFINED".to_string()).unwrap().clone(),
+    );
+    env.insert(
+        "COMPOSITE_OF_MAPPED".to_string(),
+        config
+            .env
+            .get(&"COMPOSITE_OF_MAPPED".to_string())
+            .unwrap()
+            .clone(),
+    );
+    environment::set_env_for_config(env, None, false);
+
+    assert!(envmnt::is_equal("IF_UNDEFINED", "defined_in_makefile"));
+    assert!(envmnt::is_equal(
+        "COMPOSITE_OF_MAPPED",
+        "VALUE: defined_in_makefile"
+    ));
+
+    config = load(
+        toml_file,
+        true,
+        Some(vec!["IF_UNDEFINED=test".to_string()]),
+        false,
+    )
+    .unwrap();
+    env = IndexMap::<String, EnvValue>::new();
+    env.insert(
+        "IF_UNDEFINED".to_string(),
+        config.env.get(&"IF_UNDEFINED".to_string()).unwrap().clone(),
+    );
+    env.insert(
+        "COMPOSITE_OF_MAPPED".to_string(),
+        config
+            .env
+            .get(&"COMPOSITE_OF_MAPPED".to_string())
+            .unwrap()
+            .clone(),
+    );
+    environment::set_env_for_config(env, None, false);
+
+    assert!(envmnt::is_equal("IF_UNDEFINED", "test"));
+    assert!(envmnt::is_equal("COMPOSITE_OF_MAPPED", "VALUE: test"));
+
+    envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
 }
 
 #[test]

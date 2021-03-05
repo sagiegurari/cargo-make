@@ -8,20 +8,23 @@
 mod rsscript_test;
 
 use crate::command;
-use crate::installer::cargo_plugin_installer;
+use crate::installer::{cargo_plugin_installer, crate_installer};
 use crate::io::delete_file;
 use crate::scriptengine::script_utils::create_script_file;
+use crate::types::{InstallCrateInfo, TestArg};
 
 #[derive(PartialEq, Debug)]
 enum ScriptRunner {
+    RustScript,
     CargoScript,
     CargoPlay,
 }
 
 fn get_script_runner() -> ScriptRunner {
-    let provider = envmnt::get_or("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-script");
+    let provider = envmnt::get_or("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "rust-script");
 
     match provider.as_str() {
+        "rust-script" => ScriptRunner::RustScript,
         "cargo-script" => ScriptRunner::CargoScript,
         "cargo-play" => ScriptRunner::CargoPlay,
         _ => ScriptRunner::CargoScript,
@@ -31,6 +34,19 @@ fn get_script_runner() -> ScriptRunner {
 fn install_crate(provider: &ScriptRunner) {
     // install dependencies
     match provider {
+        ScriptRunner::RustScript => {
+            let info = InstallCrateInfo {
+                crate_name: "rust-script".to_string(),
+                rustup_component_name: None,
+                binary: "rust-script".to_string(),
+                test_arg: TestArg {
+                    inner: vec!["--version".to_string()],
+                },
+                min_version: None,
+            };
+
+            crate_installer::install(&None, &info, &None, false);
+        }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
             "script",
@@ -50,16 +66,25 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
 }
 
 fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) -> bool {
-    let command = match provider {
-        ScriptRunner::CargoScript => "script",
-        ScriptRunner::CargoPlay => "play",
+    let (use_cargo, command) = match provider {
+        ScriptRunner::RustScript => (false, "rust-script"),
+        ScriptRunner::CargoScript => (true, "script"),
+        ScriptRunner::CargoPlay => (true, "play"),
     };
 
-    let mut args = vec![command.to_string(), file.to_string()];
+    let mut args = vec![];
+    if use_cargo {
+        args.push(command.to_string());
+    }
+    args.push(file.to_string());
     let mut cli_args = cli_arguments.clone();
     args.append(&mut cli_args);
 
-    let exit_code = command::run_command("cargo", &Some(args), false);
+    let exit_code = if use_cargo {
+        command::run_command("cargo", &Some(args), false)
+    } else {
+        command::run_command(command, &Some(args), false)
+    };
     debug!("Executed rust code, exit code: {}", exit_code);
 
     exit_code == 0

@@ -36,7 +36,12 @@ echo running task: echo2:
 cm_run_task echo2
 '''
 
+[tasks.before-echo]
+command = "echo"
+args = ["before echo"]
+
 [tasks.echo1]
+dependencies = ["before-echo"]
 command = "echo"
 args = ["1"]
 

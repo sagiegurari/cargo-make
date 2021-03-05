@@ -7,7 +7,7 @@
 //!
 
 pub(crate) mod cargo_plugin_installer;
-mod crate_installer;
+pub(crate) mod crate_installer;
 pub(crate) mod crate_version_check;
 pub(crate) mod rustup_component_installer;
 
