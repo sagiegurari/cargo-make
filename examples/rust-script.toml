@@ -4,11 +4,11 @@ script_runner = "@rust"
 script = '''
 //! ```cargo
 //! [dependencies]
-//! time = "*"
+//! envmnt = "*"
 //! ```
-extern crate time;
 fn main() {
-    println!("{}", time::now().rfc822z());
+    let value = envmnt::get_or("PATH", "NO PATH VAR DEFINED");
+    println!("Path Value: {}", &value);
 }
 '''
 
@@ -31,6 +31,15 @@ fn main() {
 
 [tasks.cargo-play]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
+script_runner = "@rust"
+script = '''
+fn main() {
+    println!("test");
+}
+'''
+
+[tasks.rust-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "rust-script" }
 script_runner = "@rust"
 script = '''
 fn main() {

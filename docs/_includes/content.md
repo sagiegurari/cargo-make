@@ -726,13 +726,12 @@ script_runner = "@rust"
 script = '''
 //! ```cargo
 //! [dependencies]
-//! time = "*"
+//! envmnt = "*"
 //! ```
-extern crate time;
 fn main() {
-    println!("{}", time::now().rfc822z());
+    let value = envmnt::get_or("PATH", "NO PATH VAR DEFINED");
+    println!("Path Value: {}", &value);
 }
-'''
 ```
 
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
@@ -740,6 +739,7 @@ There are several different rust script runners currently available:
 
 * [cargo-script](https://crates.io/crates/cargo-script)
 * [cargo-play](https://crates.io/crates/cargo-play)
+* [rust-play](https://crates.io/crates/rust-script)
 
 By default, cargo-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
 This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
@@ -757,6 +757,15 @@ fn main() {
 
 [tasks.cargo-play]
 env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "cargo-play" }
+script_runner = "@rust"
+script = '''
+fn main() {
+    println!("test");
+}
+'''
+
+[tasks.rust-script]
+env = { "CARGO_MAKE_RUST_SCRIPT_PROVIDER" = "rust-script" }
 script_runner = "@rust"
 script = '''
 fn main() {
