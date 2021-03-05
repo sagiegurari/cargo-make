@@ -981,7 +981,7 @@
 }
 
 <span class="doccomment">/// Updates the env based on the provided data</span>
-<span class="kw">fn</span> <span class="ident">set_env_for_config</span>(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">set_env_for_config</span>(
     <span class="ident">env</span>: <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>,
     <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">allow_sub_env</span>: <span class="ident">bool</span>,

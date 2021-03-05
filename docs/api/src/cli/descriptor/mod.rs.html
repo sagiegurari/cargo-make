@@ -663,6 +663,15 @@
 <span id="660">660</span>
 <span id="661">661</span>
 <span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # descriptor</span>
 <span class="doccomment">//!</span>
@@ -1170,7 +1179,16 @@
                 }
             }
 
-            <span class="ident">merge_env</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">all_env</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cli_env</span>)
+            <span class="comment">// cli env should be ordered first and not overwritten</span>
+            <span class="comment">// to enable composite/mapped env vars in makefiles to work correctly</span>
+            <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">all_env</span>.<span class="ident">iter</span>() {
+                <span class="kw">let</span> <span class="ident">key_str</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">to_string</span>();
+
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">cli_env</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">key_str</span>) {
+                    <span class="ident">cli_env</span>.<span class="ident">insert</span>(<span class="ident">key_str</span>, <span class="ident">value</span>.<span class="ident">clone</span>());
+                }
+            }
+            <span class="ident">cli_env</span>
         }
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">all_env</span>,
     };

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.13
+### v0.32.13 (2021-03-05)
 
 * Enhancement: Support rust-script as an additional rust runner #516
 * Fix: cm_run_task now also invokes dependencies of the target task #519

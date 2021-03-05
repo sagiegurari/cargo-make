@@ -1080,7 +1080,7 @@
     <span class="ident">task_config</span>
 }
 
-<span class="kw">fn</span> <span class="ident">run_flow</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>, <span class="ident">sub_flow</span>: <span class="ident">bool</span>) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_flow</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>, <span class="ident">sub_flow</span>: <span class="ident">bool</span>) {
     <span class="kw">let</span> <span class="ident">allow_private</span> <span class="op">=</span> <span class="ident">sub_flow</span> <span class="op">|</span><span class="op">|</span> <span class="ident">flow_info</span>.<span class="ident">allow_private</span>;
 
     <span class="kw">let</span> <span class="ident">execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(
