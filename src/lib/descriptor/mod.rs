@@ -48,30 +48,31 @@ fn merge_env(
         if !key_str.starts_with("CARGO_MAKE_CURRENT_TASK_") {
             let value_clone = value.clone();
 
-            if merged.contains_key(&key_str) {
-                let base_value = merged.swap_remove(&key_str).unwrap();
+            match merged.get(&key_str) {
+                Some(base_value) => {
+                    let base_value_clone = base_value.clone();
+                    match (base_value_clone, value_clone.clone()) {
+                        (
+                            EnvValue::Profile(ref base_profile_env),
+                            EnvValue::Profile(ref extended_profile_env),
+                        ) => {
+                            let mut base_profile_env_mut = base_profile_env.clone();
+                            let mut extended_profile_env_mut = extended_profile_env.clone();
 
-                match (base_value, value_clone.clone()) {
-                    (
-                        EnvValue::Profile(ref base_profile_env),
-                        EnvValue::Profile(ref extended_profile_env),
-                    ) => {
-                        let mut base_profile_env_mut = base_profile_env.clone();
-                        let mut extended_profile_env_mut = extended_profile_env.clone();
+                            let merged_sub_env =
+                                merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
 
-                        let merged_sub_env =
-                            merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
-
-                        merged.insert(key_str, EnvValue::Profile(merged_sub_env));
-                    }
-                    _ => {
-                        merged.insert(key_str, value_clone);
-                        ()
-                    }
-                };
-            } else {
-                merged.insert(key_str, value_clone);
-            }
+                            merged.insert(key_str, EnvValue::Profile(merged_sub_env));
+                        }
+                        _ => {
+                            merged.insert(key_str, value_clone);
+                        }
+                    };
+                }
+                None => {
+                    merged.insert(key_str, value_clone);
+                }
+            };
         }
     }
 

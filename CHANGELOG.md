@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.14
+
+* Fix: Keep env order for extended makefiles #523
+
 ### v0.32.13 (2021-03-05)
 
 * Enhancement: Support rust-script as an additional rust runner #516
