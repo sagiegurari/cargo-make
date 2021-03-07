@@ -100,17 +100,13 @@ pub(crate) fn is_newer_found(version_string: &str) -> bool {
 }
 
 fn print_notification(latest_string: &str) {
-    let pad = 48 - VERSION.chars().count() - latest_string.chars().count();
-    let pad_left = " ".repeat(pad / 2);
-    let pad_right = " ".repeat(pad / 2 + (if pad % 2 == 0 { 0 } else { 1 }));
-
     warn!("#####################################################################");
     warn!("#                                                                   #");
     warn!("#                                                                   #");
     warn!("#                  NEW CARGO-MAKE VERSION FOUND!!!                  #");
     warn!(
-        "#{}Current: {}, Latest: {}{}#",
-        pad_left, VERSION, latest_string, pad_right
+        "#{:^67}#",
+        format!("Current: {}, Latest: {}", VERSION, latest_string)
     );
     warn!("#    Run 'cargo install --force cargo-make' to get latest version   #");
     warn!("#                                                                   #");
