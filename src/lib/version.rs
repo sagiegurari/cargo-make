@@ -105,8 +105,8 @@ fn print_notification(latest_string: &str) {
     warn!("#                                                                   #");
     warn!("#                  NEW CARGO-MAKE VERSION FOUND!!!                  #");
     warn!(
-        "#                  Current: {}, Latest: {}\t\t\t#",
-        VERSION, latest_string
+        "#{:^67}#",
+        format!("Current: {}, Latest: {}", VERSION, latest_string)
     );
     warn!("#    Run 'cargo install --force cargo-make' to get latest version   #");
     warn!("#                                                                   #");
