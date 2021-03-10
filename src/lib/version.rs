@@ -32,8 +32,7 @@ fn get_version_from_output(line: &str) -> Option<String> {
 
 fn get_latest_version() -> Option<String> {
     let result = Command::new("cargo")
-        .arg("search")
-        .arg("cargo-make")
+        .args(&["search", "cargo-make"])
         .output();
 
     match result {

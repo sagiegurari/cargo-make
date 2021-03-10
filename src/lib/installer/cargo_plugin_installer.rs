@@ -20,11 +20,7 @@ fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
         Some(ref toolchain_string) => {
             let command_spec = wrap_command(toolchain_string, "cargo", &None);
             let mut cmd = Command::new(command_spec.command);
-
-            let args_vec = command_spec.args.unwrap();
-            for arg in args_vec.iter() {
-                cmd.arg(arg);
-            }
+            cmd.args(command_spec.args.unwrap());
 
             cmd
         }
