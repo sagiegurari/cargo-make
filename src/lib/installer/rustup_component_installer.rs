@@ -17,11 +17,7 @@ pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: 
         Some(ref toolchain_string) => {
             let command_spec = wrap_command(toolchain_string, binary, &None);
             let mut cmd = Command::new(command_spec.command);
-
-            let args_vec = command_spec.args.unwrap();
-            for arg in args_vec.iter() {
-                cmd.arg(arg);
-            }
+            cmd.args(command_spec.args.unwrap());
 
             cmd
         }
