@@ -306,8 +306,8 @@
     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;#                                                                   #&quot;</span>);
     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;#                  NEW CARGO-MAKE VERSION FOUND!!!                  #&quot;</span>);
     <span class="macro">warn</span><span class="macro">!</span>(
-        <span class="string">&quot;#                  Current: {}, Latest: {}\t\t\t#&quot;</span>,
-        <span class="ident">VERSION</span>, <span class="ident">latest_string</span>
+        <span class="string">&quot;#{:^67}#&quot;</span>,
+        <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Current: {}, Latest: {}&quot;</span>, <span class="ident">VERSION</span>, <span class="ident">latest_string</span>)
     );
     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;#    Run &#39;cargo install --force cargo-make&#39; to get latest version   #&quot;</span>);
     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;#                                                                   #&quot;</span>);

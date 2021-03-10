@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.14
+### v0.32.14 (2021-03-10)
 
 * Fix: Keep env order for extended makefiles #523
 * Fix: Align new version notification #524 (thanks @gemmaro)
