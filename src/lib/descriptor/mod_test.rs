@@ -406,6 +406,21 @@ fn load_descriptors_no_load_workspace_makefile() {
 
 #[test]
 #[ignore]
+fn load_env_extended_override() {
+    let toml_file = "./src/lib/test/makefiles/env-extended.toml";
+
+    envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
+    let config = load(toml_file, true, None, false).unwrap();
+    environment::set_env_for_config(config.env, None, false);
+
+    assert!(envmnt::is_equal("IF_UNDEFINED", "EXTENDED"));
+    assert!(envmnt::is_equal("COMPOSITE_OF_MAPPED", "VALUE: EXTENDED"));
+
+    envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
+}
+
+#[test]
+#[ignore]
 fn load_env_override() {
     let toml_file = "./src/lib/test/makefiles/env.toml";
 

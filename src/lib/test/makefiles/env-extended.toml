@@ -1,0 +1,5 @@
+
+extend = "./env.toml"
+
+[env]
+IF_UNDEFINED = "EXTENDED"

@@ -1,0 +1,5 @@
+
+extend = "env.toml"
+
+[env]
+SIMPLE = "EXTENDED VALUE"
