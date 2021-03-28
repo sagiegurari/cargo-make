@@ -195,5 +195,9 @@ mod version;
 
 /// Handles the command line arguments and executes the runner.
 pub fn run_cli(command_name: String, sub_command: bool) {
+    #[cfg(windows)]
+    if let Err(err) = ansi_term::enable_ansi_support() {
+        eprintln!("error enabling ANSI support: {:?}", err);
+    }
     cli::run_cli(command_name, sub_command)
 }
