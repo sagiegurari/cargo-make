@@ -12,7 +12,7 @@ mod shebang_script;
 mod shell_to_batch;
 
 #[cfg(test)]
-#[path = "./mod_test.rs"]
+#[path = "mod_test.rs"]
 mod mod_test;
 
 use crate::environment;

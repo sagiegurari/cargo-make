@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./recursion_level_test.rs"]
+#[path = "recursion_level_test.rs"]
 mod recursion_level_test;
 
 use envmnt;

@@ -6,7 +6,7 @@
 pub(crate) mod crateinfo;
 
 #[cfg(test)]
-#[path = "./mod_test.rs"]
+#[path = "mod_test.rs"]
 mod mod_test;
 
 use crate::command;

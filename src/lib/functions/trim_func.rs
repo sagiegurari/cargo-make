@@ -5,7 +5,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./trim_func_test.rs"]
+#[path = "trim_func_test.rs"]
 mod trim_func_test;
 
 use envmnt;

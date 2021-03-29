@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./remove_empty_func_test.rs"]
+#[path = "remove_empty_func_test.rs"]
 mod remove_empty_func_test;
 
 use envmnt;

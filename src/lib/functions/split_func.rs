@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./split_func_test.rs"]
+#[path = "split_func_test.rs"]
 mod split_func_test;
 
 use envmnt;

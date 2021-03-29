@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./cli_test.rs"]
+#[path = "cli_test.rs"]
 mod cli_test;
 
 use crate::cli_commands;

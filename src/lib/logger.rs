@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./logger_test.rs"]
+#[path = "logger_test.rs"]
 mod logger_test;
 
 use crate::recursion_level;

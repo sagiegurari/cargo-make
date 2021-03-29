@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./execution_plan_test.rs"]
+#[path = "execution_plan_test.rs"]
 mod execution_plan_test;
 
 use crate::environment;

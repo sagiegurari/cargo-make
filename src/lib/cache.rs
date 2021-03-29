@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./cache_test.rs"]
+#[path = "cache_test.rs"]
 mod cache_test;
 
 use crate::storage;

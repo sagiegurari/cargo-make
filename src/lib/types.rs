@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./types_test.rs"]
+#[path = "types_test.rs"]
 mod types_test;
 
 use crate::legacy;

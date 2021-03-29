@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./shell_to_batch_test.rs"]
+#[path = "shell_to_batch_test.rs"]
 mod shell_to_batch_test;
 
 use crate::command;

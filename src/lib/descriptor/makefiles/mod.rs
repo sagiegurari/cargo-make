@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./mod_test.rs"]
+#[path = "mod_test.rs"]
 mod mod_test;
 
 pub(crate) static BASE: &str = include_str!("base.toml");

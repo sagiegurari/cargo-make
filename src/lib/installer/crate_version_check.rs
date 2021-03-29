@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./crate_version_check_test.rs"]
+#[path = "crate_version_check_test.rs"]
 mod crate_version_check_test;
 
 use dirs_next;

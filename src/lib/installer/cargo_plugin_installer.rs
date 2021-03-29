@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./cargo_plugin_installer_test.rs"]
+#[path = "cargo_plugin_installer_test.rs"]
 mod cargo_plugin_installer_test;
 
 use crate::command;

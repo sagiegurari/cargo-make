@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./profile_test.rs"]
+#[path = "profile_test.rs"]
 mod profile_test;
 
 use envmnt;

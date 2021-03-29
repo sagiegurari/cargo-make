@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./diff_steps_test.rs"]
+#[path = "diff_steps_test.rs"]
 mod diff_steps_test;
 
 use crate::command;

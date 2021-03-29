@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./rustup_component_installer_test.rs"]
+#[path = "rustup_component_installer_test.rs"]
 mod rustup_component_installer_test;
 
 use crate::command;

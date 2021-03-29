@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./shebang_script_test.rs"]
+#[path = "shebang_script_test.rs"]
 mod shebang_script_test;
 
 use crate::scriptengine::generic_script;
