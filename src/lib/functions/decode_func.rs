@@ -6,7 +6,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./decode_func_test.rs"]
+#[path = "decode_func_test.rs"]
 mod decode_func_test;
 
 use crate::environment;

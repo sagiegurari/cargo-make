@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./toolchain_test.rs"]
+#[path = "toolchain_test.rs"]
 mod toolchain_test;
 
 use crate::types::CommandSpec;

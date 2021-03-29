@@ -5,7 +5,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./version_test.rs"]
+#[path = "version_test.rs"]
 mod version_test;
 
 use crate::cache;

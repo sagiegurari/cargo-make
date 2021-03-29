@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./legacy_test.rs"]
+#[path = "legacy_test.rs"]
 mod legacy_test;
 
 use dirs_next;

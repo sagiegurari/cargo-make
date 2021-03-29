@@ -12,7 +12,7 @@ pub(crate) mod crate_version_check;
 pub(crate) mod rustup_component_installer;
 
 #[cfg(test)]
-#[path = "./mod_test.rs"]
+#[path = "mod_test.rs"]
 mod mod_test;
 
 use crate::scriptengine;

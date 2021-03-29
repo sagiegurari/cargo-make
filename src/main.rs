@@ -26,7 +26,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./main_test.rs"]
+#[path = "main_test.rs"]
 mod main_test;
 
 fn get_name() -> String {

@@ -158,6 +158,10 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
+// Dependencies used in the binary `makers`:
+#[cfg(windows)]
+use ansi_term as _;
+
 #[macro_use]
 extern crate log;
 #[macro_use]
