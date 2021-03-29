@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.32.15
+
+* Fix: makers color support on windows #535 (thanks @MartinKavik)
+* Enhancement: Allow leading hyphens for task arguments #535 (thanks @MartinKavik)
+
 ### v0.32.14 (2021-03-10)
 
 * Fix: Keep env order for extended makefiles #523
