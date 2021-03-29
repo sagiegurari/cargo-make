@@ -67,6 +67,9 @@ serde_ignored = "^0.1"
 shell2batch = "^0.4.2"
 toml = "^0.5"
 
+[target.'cfg(windows)'.dependencies]
+ansi_term = "0.12.1"
+
 [dev-dependencies]
 rusty-hook = "^0.11"
 

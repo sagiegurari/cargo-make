@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./command_test.rs"]
+#[path = "command_test.rs"]
 mod command_test;
 
 use crate::logger;

@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./crateinfo_test.rs"]
+#[path = "crateinfo_test.rs"]
 mod crateinfo_test;
 
 use crate::command;

@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./list_steps_test.rs"]
+#[path = "list_steps_test.rs"]
 mod list_steps_test;
 
 use crate::execution_plan;

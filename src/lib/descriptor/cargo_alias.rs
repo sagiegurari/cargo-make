@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./cargo_alias_test.rs"]
+#[path = "cargo_alias_test.rs"]
 mod cargo_alias_test;
 
 use crate::io;

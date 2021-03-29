@@ -3,7 +3,7 @@
 //! Deserializes and validates the configs.
 
 #[cfg(test)]
-#[path = "./descriptor_deserializer_test.rs"]
+#[path = "descriptor_deserializer_test.rs"]
 mod descriptor_deserializer_test;
 
 use crate::types::{Config, ExternalConfig};

@@ -22,3 +22,8 @@ cargo make ci-flow
 ````
 
 * There are many automatic unit tests as part of the library which provide full coverage of the functionality.<br>Any fix/enhancement must come with a set of tests to ensure it's working well.
+
+* _For Windows users_: Few windows specific tests run powershell scripts via cargo-make to test powershell support. For those tests to pass, you need to allow to run PowerShell scripts (see [About Execution Policies](https:/go.microsoft.com/fwlink/?LinkID=135170) for more info). Run in PS:
+```ps
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+```

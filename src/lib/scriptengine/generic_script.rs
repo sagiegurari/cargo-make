@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./generic_script_test.rs"]
+#[path = "generic_script_test.rs"]
 mod generic_script_test;
 
 use crate::command;

@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./getat_func_test.rs"]
+#[path = "getat_func_test.rs"]
 mod getat_func_test;
 
 use envmnt;

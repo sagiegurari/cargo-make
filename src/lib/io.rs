@@ -4,7 +4,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./io_test.rs"]
+#[path = "io_test.rs"]
 mod io_test;
 
 use fsio::file::modify_file;

@@ -9,7 +9,7 @@
 //!
 
 #[cfg(test)]
-#[path = "./runner_test.rs"]
+#[path = "runner_test.rs"]
 mod runner_test;
 
 use crate::command;
