@@ -135,10 +135,6 @@
 <span id="132">132</span>
 <span id="133">133</span>
 <span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # rustup_component_installer</span>
 <span class="doccomment">//!</span>
@@ -146,7 +142,7 @@
 <span class="doccomment">//!</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./rustup_component_installer_test.rs&quot;</span>]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;rustup_component_installer_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">rustup_component_installer_test</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
@@ -159,11 +155,7 @@
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain_string</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">command_spec</span> <span class="op">=</span> <span class="ident">wrap_command</span>(<span class="ident">toolchain_string</span>, <span class="ident">binary</span>, <span class="kw-2">&amp;</span><span class="prelude-val">None</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmd</span> <span class="op">=</span> <span class="ident">Command</span>::<span class="ident">new</span>(<span class="ident">command_spec</span>.<span class="ident">command</span>);
-
-            <span class="kw">let</span> <span class="ident">args_vec</span> <span class="op">=</span> <span class="ident">command_spec</span>.<span class="ident">args</span>.<span class="ident">unwrap</span>();
-            <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args_vec</span>.<span class="ident">iter</span>() {
-                <span class="ident">cmd</span>.<span class="ident">arg</span>(<span class="ident">arg</span>);
-            }
+            <span class="ident">cmd</span>.<span class="ident">args</span>(<span class="ident">command_spec</span>.<span class="ident">args</span>.<span class="ident">unwrap</span>());
 
             <span class="ident">cmd</span>
         }

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.15
+### v0.32.15 (2021-03-29)
 
 * Fix: makers color support on windows #535 (thanks @MartinKavik)
 * Enhancement: Allow leading hyphens for task arguments #535 (thanks @MartinKavik)

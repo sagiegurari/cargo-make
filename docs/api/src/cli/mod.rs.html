@@ -200,6 +200,10 @@
 <span id="197">197</span>
 <span id="198">198</span>
 <span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#![<span class="ident">deny</span>(
     <span class="ident">absolute_paths_not_starting_with_crate</span>,
@@ -360,6 +364,10 @@
 <span class="doccomment">//! Developed by Sagie Gur-Ari and licensed under the</span>
 <span class="doccomment">//! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.</span>
 <span class="doccomment">//!</span>
+
+<span class="comment">// Dependencies used in the binary `makers`:</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
+<span class="kw">use</span> <span class="ident">ansi_term</span> <span class="kw">as</span> <span class="kw">_</span>;
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;

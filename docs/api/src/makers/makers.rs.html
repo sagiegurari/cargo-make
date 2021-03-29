@@ -27,6 +27,8 @@
 <span id="24">24</span>
 <span id="25">25</span>
 <span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # makers</span>
 <span class="doccomment">//!</span>
@@ -43,7 +45,7 @@
 <span class="doccomment">//!</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;./makers_test.rs&quot;</span>]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;makers_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">makers_test</span>;
 
 <span class="kw">fn</span> <span class="ident">get_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
@@ -51,6 +53,8 @@
 }
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
+    <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">ansi_term</span>::<span class="ident">enable_ansi_support</span>();
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">get_name</span>();
     <span class="ident">cli</span>::<span class="ident">run_cli</span>(<span class="ident">name</span>, <span class="bool-val">false</span>);
 }
