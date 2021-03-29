@@ -158,6 +158,10 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
+// Dependencies used in the binary `makers`:
+#[cfg(windows)]
+use ansi_term as _;
+
 #[macro_use]
 extern crate log;
 #[macro_use]
@@ -195,9 +199,5 @@ mod version;
 
 /// Handles the command line arguments and executes the runner.
 pub fn run_cli(command_name: String, sub_command: bool) {
-    #[cfg(windows)]
-    if let Err(err) = ansi_term::enable_ansi_support() {
-        eprintln!("error enabling ANSI support: {:?}", err);
-    }
     cli::run_cli(command_name, sub_command)
 }
