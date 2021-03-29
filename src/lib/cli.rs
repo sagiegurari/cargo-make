@@ -18,7 +18,7 @@ use crate::recursion_level;
 use crate::runner;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 static AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
@@ -283,6 +283,7 @@ fn create_cli<'a, 'b>(
         .version(VERSION)
         .author(AUTHOR)
         .about(DESCRIPTION)
+        .setting(AppSettings::AllowLeadingHyphen)
         .arg(
             Arg::with_name("makefile")
                 .long("--makefile")
