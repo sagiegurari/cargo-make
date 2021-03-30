@@ -18,6 +18,7 @@
         * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
+        * [Predefined Makefiles](#usage-predefined-makefiles]
     * [Extending Tasks](#usage-extending-tasks)
         * [Task Override](#usage-task-override)
         * [Platform Override](#usage-platform-override)

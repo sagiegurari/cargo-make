@@ -30,6 +30,7 @@
         * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
+        * [Predefined Makefiles](#usage-predefined-makefiles]
     * [Extending Tasks](#usage-extending-tasks)
         * [Task Override](#usage-task-override)
         * [Platform Override](#usage-platform-override)
@@ -1160,6 +1161,14 @@ load_script = "git clone git@mygitserver:user/project.git /home/myuser/common"
 
 You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
 If needed, you can override the load_script per platform using the **linux_load_script**, **windows_load_script** and **mac_load_script** attributes.
+
+<a name="usage-load-predefined-makefiles"></a>
+#### Predefined Makefiles
+While cargo-make comes with many built in tasks, defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/), they are not always relevant for every project.<br>
+The [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository holds a collection of additional makefiles that can be loaded and provide replacement tasks for the built in cargo-make tasks.<br>
+For example the cmake.toml provides cmake related tasks for projects using cmake.
+
+See the [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository for more information and usage examples.
 
 <a name="usage-extending-tasks"></a>
 ### Extending Tasks
