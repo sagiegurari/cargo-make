@@ -146,8 +146,6 @@ The following binaries are available for each release:
 * x86_64-apple-darwin
 * x86_64-pc-windows-msvc
 
-Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
-
 <a name="usage"></a>
 ## Usage
 When using cargo-make, all tasks are defined and configured via toml files.<br>
