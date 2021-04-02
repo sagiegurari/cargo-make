@@ -22,3 +22,22 @@ run_task = "check-format-ci-flow"
 category = "Deprecated"
 deprecated = "Please use task: clippy-ci-flow"
 run_task = "clippy-ci-flow"
+
+[tasks.bintray-upload]
+description = "Uploads the binary artifact from the cargo package/publish output to bintray."
+category = "Deprecated"
+deprecated = true
+
+[tasks.bintray-upload.linux]
+condition = { env_set = [
+  "BINTRAY_API_KEY",
+  "BINTRAY_OWNER_NAME",
+  "BINTRAY_PACKAGE_NAME",
+  "CARGO_MAKE_CRATE_NAME",
+  "CARGO_MAKE_CRATE_VERSION",
+] }
+script = '''
+curl -T "./target/package/${CARGO_MAKE_CRATE_NAME}-${CARGO_MAKE_CRATE_VERSION}/target/debug/${CARGO_MAKE_CRATE_NAME}" -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} -H "X-Bintray-Package:${BINTRAY_PACKAGE_NAME}" -H "X-Bintray-Version:v${CARGO_MAKE_CRATE_VERSION}" https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${CARGO_MAKE_CRATE_NAME}_v${CARGO_MAKE_CRATE_VERSION}?override=1
+curl -X POST -u${BINTRAY_OWNER_NAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/${BINTRAY_OWNER_NAME}/${CARGO_MAKE_CRATE_NAME}/${BINTRAY_PACKAGE_NAME}/v${CARGO_MAKE_CRATE_VERSION}/publish
+'''
+

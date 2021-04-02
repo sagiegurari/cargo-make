@@ -53,6 +53,7 @@
 
 ## Deprecated
 
+* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray. (deprecated)
 * **build-verbose** - Runs the rust compiler with verbose output. (deprecated - Use build task with CARGO_MAKE_CARGO_VERBOSE_FLAGS set to --verbose instead.)
 * **conditioned-check-format** - No Description. (deprecated - Please use task: check-format-ci-flow)
 * **conditioned-clippy** - No Description. (deprecated - Please use task: clippy-ci-flow)
@@ -116,7 +117,6 @@
 
 ## Publish
 
-* **bintray-upload** - Uploads the binary artifact from the cargo package/publish output to bintray.
 * **build-publish-flow** - Runs full sanity, generates github release and publishes the crate.
 * **github-publish** - Creates a new github release.
 * **github-publish-curl** - Creates a new github release using curl.
@@ -133,7 +133,7 @@
 * **pre-publish-delete-lock** - Deletes lock file before publishing
 * **publish** - Runs the cargo publish command.
 * **publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
-* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output to bintray.
+* **upload-artifacts** - Uploads the binary artifact from the cargo package/publish output (hook only).
 * **workspace-publish-flow** - Publish flow - First clean the target directory of any old leftovers, package and publish
 * **zip-release-binary-for-target** - Zips up the release binary, README, and license(s)
 
