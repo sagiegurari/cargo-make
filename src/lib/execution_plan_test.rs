@@ -775,7 +775,7 @@ fn create_single() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -803,7 +803,7 @@ fn create_single_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -831,7 +831,7 @@ fn create_single_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    create(&config, "test-private", false, false, false);
+    create(&config, "test-private", false, false, false, &None);
 }
 
 #[test]
@@ -855,7 +855,7 @@ fn create_single_allow_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    let execution_plan = create(&config, "test-private", false, true, false);
+    let execution_plan = create(&config, "test-private", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test-private");
@@ -888,7 +888,7 @@ fn create_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -925,7 +925,7 @@ fn create_with_foreign_dependencies_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -967,7 +967,7 @@ fn create_with_foreign_dependencies_filename() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1009,7 +1009,7 @@ fn create_with_foreign_dependencies_file_and_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1048,7 +1048,7 @@ fn create_with_dependencies_sub_flow() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, true);
+    let execution_plan = create(&config, "test", false, true, true, &None);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "task_dependency");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1081,7 +1081,7 @@ fn create_disabled_task_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -1114,7 +1114,7 @@ fn create_with_dependencies_disabled() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1216,8 +1216,45 @@ fn create_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     assert_eq!(execution_plan.steps.len(), 0);
+}
+
+#[test]
+fn create_with_dependencies_and_skip_filter() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let mut task = Task::new();
+    task.dependencies = Some(vec!["task_dependency".into(), "filtered2".into()]);
+
+    let mut task_dependency = Task::new();
+    task_dependency.dependencies = Some(vec!["filtered2".into()]);
+
+    config.tasks.insert("test".to_string(), task);
+    config
+        .tasks
+        .insert("task_dependency".to_string(), task_dependency);
+
+    let skip_filter = Regex::new("filtered.*").unwrap();
+
+    let execution_plan = create(&config, "test", false, true, false, &Some(skip_filter));
+    assert_eq!(execution_plan.steps.len(), 4);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "task_dependency");
+    assert_eq!(execution_plan.steps[2].name, "test");
+    assert_eq!(execution_plan.steps[3].name, "end");
 }
 
 #[test]
@@ -1236,7 +1273,7 @@ fn create_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create(&config, "test", false, true, false);
+    let execution_plan = create(&config, "test", false, true, false, &None);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -1258,7 +1295,7 @@ fn create_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create(&config, "test", true, true, false);
+    let execution_plan = create(&config, "test", true, true, false, &None);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");

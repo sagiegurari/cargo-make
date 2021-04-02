@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.32.16
+
+* Enable to skip tasks via command line regex flag (--skip-tasks flag) #538
+
 ### v0.32.15 (2021-03-29)
 
 * Fix: makers color support on windows #535 (thanks @MartinKavik)

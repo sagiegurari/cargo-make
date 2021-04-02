@@ -28,6 +28,7 @@ use crate::types::{
     RunTaskInfo, RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
+use regex::Regex;
 use std::thread;
 use std::time::SystemTime;
 
@@ -505,6 +506,7 @@ pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flo
         flow_info.disable_workspace,
         allow_private,
         sub_flow,
+        &flow_info.skip_tasks_pattern,
     );
     debug!("Created execution plan: {:#?}", &execution_plan);
 
@@ -548,6 +550,17 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
 
     time_summary::init(&config, &cli_args);
 
+    let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
+        Some(ref pattern) => match Regex::new(pattern) {
+            Ok(reg) => Some(reg),
+            Err(_) => {
+                warn!("Invalid skip tasks pattern provided: {}", pattern);
+                None
+            }
+        },
+        None => None,
+    };
+
     let flow_info = FlowInfo {
         config,
         task: task.to_string(),
@@ -556,6 +569,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         disable_on_error: cli_args.disable_on_error,
         allow_private: cli_args.allow_private,
         skip_init_end_tasks: cli_args.skip_init_end_tasks,
+        skip_tasks_pattern,
         cli_arguments: cli_args.arguments.clone(),
     };
     let mut flow_state = FlowState::new();
