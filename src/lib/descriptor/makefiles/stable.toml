@@ -95,6 +95,7 @@ alias = "dev-test-flow"
 description = "Watches for any file change and if any change is detected, it will invoke the default flow."
 category = "Development"
 watch = true
+run_task = "default"
 
 [tasks.init]
 description = "By default this task is invoked at the start of every cargo-make run."
