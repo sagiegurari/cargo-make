@@ -73,6 +73,20 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # diff_steps</span>
 <span class="doccomment">//!</span>
@@ -87,6 +101,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">execution_plan</span>::<span class="ident">create</span> <span class="kw">as</span> <span class="ident">create_execution_plan</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">io</span>::{<span class="ident">create_file</span>, <span class="ident">delete_file</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{<span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">ExecutionPlan</span>};
+<span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="ident">BufWriter</span>, <span class="ident">Write</span>};
@@ -103,12 +118,24 @@
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>,
 ) {
+    <span class="kw">let</span> <span class="ident">skip_tasks_pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="ident">pattern</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">reg</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">reg</span>),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, <span class="ident">pattern</span>);
+                <span class="prelude-val">None</span>
+            }
+        },
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+    };
+
     <span class="kw">let</span> <span class="ident">internal_execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(
         <span class="ident">internal_config</span>,
         <span class="kw-2">&amp;</span><span class="ident">task</span>,
         <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span>,
         <span class="bool-val">true</span>,
         <span class="bool-val">false</span>,
+        <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
     );
 
     <span class="kw">let</span> <span class="ident">external_execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(
@@ -117,6 +144,7 @@
         <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span>,
         <span class="bool-val">true</span>,
         <span class="bool-val">false</span>,
+        <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
     );
 
     <span class="kw">let</span> <span class="ident">internal_file</span> <span class="op">=</span> <span class="ident">create_file</span>(

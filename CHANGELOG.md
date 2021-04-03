@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.32.16
+### v0.32.16 (2021-04-03)
 
 * Enable to skip tasks via command line regex flag (--skip-tasks flag) #538
 * Deprecate bintray tasks support as bintray is shutting down #539
