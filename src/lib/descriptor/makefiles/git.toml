@@ -68,3 +68,18 @@ condition = { platforms = ["linux", "mac"] }
 script = '''
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 '''
+
+[tasks.git-diff-files]
+description = "Run diff on two provided files."
+category = "Tools"
+ignore_errors = true
+condition = { env_set = ["CARGO_MAKE_DIFF_FILE1", "CARGO_MAKE_DIFF_FILE2"] }
+command = "git"
+args = [
+  "--no-pager",
+  "diff",
+  "--no-index",
+  "${CARGO_MAKE_DIFF_FILE1}",
+  "${CARGO_MAKE_DIFF_FILE2}",
+]
+
