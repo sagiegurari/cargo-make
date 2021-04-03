@@ -18,6 +18,7 @@ use envmnt;
 use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
+use regex::Regex;
 use std::collections::HashSet;
 use std::env;
 use std::path;
@@ -330,7 +331,15 @@ fn create_for_step(
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
+    skip_tasks_pattern: &Option<Regex>,
 ) {
+    if let Some(skip_tasks_pattern_regex) = skip_tasks_pattern {
+        if skip_tasks_pattern_regex.is_match(&task.name) {
+            debug!("Skipping task: {} due to skip pattern.", &task.name);
+            return;
+        }
+    }
+
     if let Some(path) = &task.path {
         // this is refering to a task in another file
         // so we create a proxy task to invoke it
@@ -383,6 +392,7 @@ fn create_for_step(
                             task_names,
                             false,
                             true,
+                            skip_tasks_pattern,
                         );
                     }
                 }
@@ -412,6 +422,7 @@ pub(crate) fn create(
     disable_workspace: bool,
     allow_private: bool,
     sub_flow: bool,
+    skip_tasks_pattern: &Option<Regex>,
 ) -> ExecutionPlan {
     let mut task_names = HashSet::new();
     let mut steps = Vec::new();
@@ -433,28 +444,38 @@ pub(crate) fn create(
         };
     }
 
-    // load crate info and look for workspace info
-    let crate_info = environment::crateinfo::load();
+    let skip = match skip_tasks_pattern {
+        Some(ref pattern) => pattern.is_match(task),
+        None => false,
+    };
 
-    let workspace_flow =
-        is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
+    if !skip {
+        // load crate info and look for workspace info
+        let crate_info = environment::crateinfo::load();
 
-    if workspace_flow {
-        let workspace_task = create_workspace_task(crate_info, task);
+        let workspace_flow =
+            is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
 
-        steps.push(Step {
-            name: "workspace".to_string(),
-            config: workspace_task,
-        });
+        if workspace_flow {
+            let workspace_task = create_workspace_task(crate_info, task);
+
+            steps.push(Step {
+                name: "workspace".to_string(),
+                config: workspace_task,
+            });
+        } else {
+            create_for_step(
+                &config,
+                &TaskIdentifier::from_name(task),
+                &mut steps,
+                &mut task_names,
+                true,
+                allow_private,
+                &skip_tasks_pattern,
+            );
+        }
     } else {
-        create_for_step(
-            &config,
-            &TaskIdentifier::from_name(task),
-            &mut steps,
-            &mut task_names,
-            true,
-            allow_private,
-        );
+        debug!("Skipping task: {} due to skip pattern.", &task);
     }
 
     if !sub_flow {

@@ -41,6 +41,43 @@ fn run_flow_private() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    run_flow(&flow_info, &mut FlowState::new(), false);
+}
+
+#[test]
+#[ignore]
+fn run_flow_private_skipped() {
+    let mut config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    let mut task = Task::new();
+    task.script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    task.private = Some(true);
+    config.tasks.insert("test".to_string(), task);
+
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: Some(Regex::new("test").unwrap()),
         cli_arguments: None,
     };
 
@@ -76,6 +113,7 @@ fn run_flow_private_sub_task() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -111,6 +149,7 @@ fn run_flow_allow_private() {
         disable_on_error: false,
         allow_private: true,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -141,6 +180,7 @@ fn run_task_bad_script() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -179,6 +219,7 @@ fn run_task_script_with_args_error() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: Some(vec!["1".to_string()]),
     };
 
@@ -216,6 +257,7 @@ fn run_task_script_with_args_valid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: Some(vec!["0".to_string()]),
     };
 
@@ -252,6 +294,7 @@ fn run_task_command() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -290,6 +333,7 @@ fn run_task_bad_command_valid_script() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -327,6 +371,7 @@ fn run_task_no_command_valid_script() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -370,6 +415,7 @@ fn run_task_bad_run_task_valid_command() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -414,6 +460,7 @@ fn run_task_valid_run_task() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -451,6 +498,7 @@ fn run_task_invalid_task() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -488,6 +536,7 @@ fn run_task_set_env_file() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -541,6 +590,7 @@ fn run_task_set_env() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -590,6 +640,7 @@ fn run_task_cwd_no_such_dir() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -627,6 +678,7 @@ fn run_task_cwd_dir_exists() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -664,6 +716,7 @@ fn run_task_cwd_env_expansion() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -701,6 +754,7 @@ fn run_task_deprecated_message() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -739,6 +793,7 @@ fn run_task_deprecated_flag() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1151,6 +1206,7 @@ fn run_sub_task_and_report_for_name() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1191,6 +1247,7 @@ fn run_sub_task_and_report_for_name_not_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1228,6 +1285,7 @@ fn run_sub_task_and_report_for_details_single() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1273,6 +1331,7 @@ fn run_sub_task_and_report_for_details_multiple() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1317,6 +1376,7 @@ fn run_sub_task_and_report_routing_empty() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1356,6 +1416,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1402,6 +1463,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1463,6 +1525,7 @@ fn run_sub_task_and_report_routing_not_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1508,6 +1571,7 @@ fn run_sub_task_and_report_with_cleanup_task_but_no_fork() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1543,6 +1607,7 @@ fn get_sub_task_info_for_routing_info_empty() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1577,6 +1642,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1634,6 +1700,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1691,6 +1758,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1748,6 +1816,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1791,6 +1860,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1834,6 +1904,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1901,6 +1972,7 @@ fn get_sub_task_info_for_routing_info_default() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1976,6 +2048,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2059,6 +2132,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2116,6 +2190,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2173,6 +2248,7 @@ fn create_fork_step_valid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 

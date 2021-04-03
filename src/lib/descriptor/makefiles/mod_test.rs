@@ -36,6 +36,7 @@ fn create_flow_info(config: &Config) -> FlowInfo {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     }
 }

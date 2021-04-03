@@ -920,6 +920,7 @@ fn validate_channel_valid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1017,6 +1018,7 @@ fn validate_channel_invalid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1215,6 +1217,7 @@ fn validate_criteria_empty() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1262,6 +1265,7 @@ fn validate_criteria_valid_platform() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1313,6 +1317,7 @@ fn validate_criteria_invalid_platform() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1361,6 +1366,7 @@ fn validate_criteria_valid_profile() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1409,6 +1415,7 @@ fn validate_criteria_invalid_profile() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1456,6 +1463,7 @@ fn validate_criteria_valid_channel() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1560,6 +1568,7 @@ fn validate_criteria_invalid_channel() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1608,6 +1617,7 @@ fn validate_criteria_valid_file_exists() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1657,6 +1667,7 @@ fn validate_criteria_invalid_file_exists() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1706,6 +1717,7 @@ fn validate_criteria_valid_file_not_exists() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1755,6 +1767,7 @@ fn validate_criteria_invalid_file_not_exists() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1809,6 +1822,7 @@ fn validate_condition_for_step_both_valid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1865,6 +1879,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1921,6 +1936,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -1974,6 +1990,7 @@ fn validate_condition_for_step_invalid_env_set() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2027,6 +2044,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2082,6 +2100,7 @@ fn validate_condition_for_step_valid_env() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2142,6 +2161,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2199,6 +2219,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2259,6 +2280,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2319,6 +2341,7 @@ fn validate_condition_for_step_valid_env_contains() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2379,6 +2402,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2436,6 +2460,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2495,6 +2520,7 @@ fn validate_condition_for_step_valid_rust_version() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 
@@ -2553,6 +2579,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
         cli_arguments: None,
     };
 

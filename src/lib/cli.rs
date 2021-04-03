@@ -136,6 +136,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             &task,
             &cli_args.output_format,
             cli_args.disable_workspace,
+            cli_args.skip_tasks_pattern,
         );
     } else {
         runner::run(config, &task, env_info, &cli_args);
@@ -239,6 +240,11 @@ fn run_for_args(
     cli_args.list_all_steps = cmd_matches.is_present("list-steps");
     cli_args.diff_execution_plan = cmd_matches.is_present("diff-steps");
 
+    cli_args.skip_tasks_pattern = match cmd_matches.value_of("skip-tasks-pattern") {
+        Some(value) => Some(value.to_string()),
+        None => None,
+    };
+
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -338,6 +344,12 @@ fn create_cli<'a, 'b>(
             Arg::with_name("skip-init-end-tasks")
                 .long("--skip-init-end-tasks")
                 .help("If set, init and end tasks are skipped"),
+        )
+        .arg(
+            Arg::with_name("skip-tasks-pattern")
+                .long("--skip-tasks")
+                .value_name("SKIP_TASK_PATTERNS")
+                .help("Skip all tasks that match the provided regex (example: pre.*|post.*)"),
         )
         .arg(
             Arg::with_name("envfile")

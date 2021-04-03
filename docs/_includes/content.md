@@ -33,8 +33,6 @@ The following binaries are available for each release:
 * x86_64-apple-darwin
 * x86_64-pc-windows-msvc
 
-Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
-
 <a name="usage"></a>
 ## Usage
 When using cargo-make, all tasks are defined and configured via toml files.<br>
@@ -3094,6 +3092,7 @@ OPTIONS:
         --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section]
         --output-file <OUTPUT_FILE>        The list steps output file name
     -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
+        --skip-tasks <SKIP_TASK_PATTERNS>  Skip all tasks that match the provided regex (example: pre.*|post.*)
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:

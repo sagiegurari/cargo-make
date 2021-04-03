@@ -1,0 +1,22 @@
+# cargo make --skip-tasks part1.*
+
+[config]
+skip_core_tasks = true
+
+[tasks.flow]
+dependencies = ["part1", "part11", "part2"]
+command = "echo"
+args = ["flow"]
+
+[tasks.part2]
+dependencies = ["part4"]
+run_task = "part11"
+
+[tasks.part11]
+dependencies = ["part3"]
+command = "echo"
+args = ["11"]
+
+[tasks.part4]
+command = "echo"
+args = ["4"]

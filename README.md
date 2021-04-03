@@ -6,7 +6,6 @@
 [![license](https://img.shields.io/crates/l/cargo-make.svg)](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE)
 [![Crates.io](https://img.shields.io/crates/d/cargo-make?label=cargo%20installs)](https://crates.io/crates/cargo-make)
 [![GitHub All Releases](https://img.shields.io/github/downloads/sagiegurari/cargo-make/total?label=binary%20downloads)](https://github.com/sagiegurari/cargo-make/releases)
-[![Download](https://api.bintray.com/packages/sagiegurari/cargo-make/linux/images/download.svg)](https://bintray.com/sagiegurari/cargo-make/linux/_latestVersion)
 [![Built with cargo-make](https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg)](https://sagiegurari.github.io/cargo-make)
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
@@ -146,8 +145,6 @@ The following binaries are available for each release:
 * x86_64-unknown-linux-musl
 * x86_64-apple-darwin
 * x86_64-pc-windows-msvc
-
-Linux builds for arm are available on [bintray](https://bintray.com/sagiegurari/cargo-make/linux)
 
 <a name="usage"></a>
 ## Usage
@@ -3208,6 +3205,7 @@ OPTIONS:
         --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section]
         --output-file <OUTPUT_FILE>        The list steps output file name
     -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
+        --skip-tasks <SKIP_TASK_PATTERN>   Skip all tasks that match the provided pattern
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
