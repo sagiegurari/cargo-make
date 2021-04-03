@@ -348,8 +348,8 @@ fn create_cli<'a, 'b>(
         .arg(
             Arg::with_name("skip-tasks-pattern")
                 .long("--skip-tasks")
-                .value_name("SKIP_TASK_PATTERN")
-                .help("Skip all tasks that match the provided pattern"),
+                .value_name("SKIP_TASK_PATTERNS")
+                .help("Skip all tasks that match the provided regex (example: pre.*|post.*)"),
         )
         .arg(
             Arg::with_name("envfile")

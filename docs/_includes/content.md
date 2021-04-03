@@ -3092,7 +3092,7 @@ OPTIONS:
         --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section]
         --output-file <OUTPUT_FILE>        The list steps output file name
     -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
-        --skip-tasks <SKIP_TASK_PATTERN>   Skip all tasks that match the provided pattern
+        --skip-tasks <SKIP_TASK_PATTERNS>  Skip all tasks that match the provided regex (example: pre.*|post.*)
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
