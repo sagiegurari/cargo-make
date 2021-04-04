@@ -796,7 +796,7 @@ export CARGO_MAKE_SKIP_CODECOV="true"
 #output coverage data goes into workspace level
 export CARGO_MAKE_COVERAGE_REPORT_DIRECTORY="${CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY}/coverage"
 
-cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} --profile="${CARGO_MAKE_PROFILE}" ${CARGO_MAKE_MEMBER_TASK}
+cargo make --loglevel=${CARGO_MAKE_LOG_LEVEL} --profile="${CARGO_MAKE_PROFILE}" "${CARGO_MAKE_MEMBER_TASK}"
 
 unset CARGO_MAKE_COVERAGE_REPORT_DIRECTORY
 unset CARGO_MAKE_WORKSPACE_TARGET_DIRECTORY
@@ -913,7 +913,16 @@ dependencies = [
 [tasks.setup-release-build-env]
 description = "Sets up any non-rust dependencies in the build environment"
 category = "CI"
-linux_alias = "setup-musl"
+dependencies = ["install-zip", "setup-musl"]
+
+[tasks.install-zip]
+description = "Installs zip executable"
+category = "Tools"
+condition = { platforms = ["linux"] }
+dependencies = ["setup-sudo-env"]
+install_script = '''
+which zip || (${CARGO_MAKE_SUDO_COMMAND} apt-get update && ${CARGO_MAKE_SUDO_COMMAND} apt-get install -y zip)
+'''
 
 [tasks.setup-musl]
 description = "Sets up a musl build environment"
@@ -923,12 +932,13 @@ condition = { env_set = [
   "CARGO_MAKE_OPENSSL_VERSION",
   "CARGO_MAKE_OPENSSL_DOWNLOAD_URL",
 ], env_true = ["CARGO_MAKE_CI"], platforms = ["linux"] }
-env = { "OPENSSL_DIR" = "${HOME}/openssl-musl" }
+env.OPENSSL_DIR = "${HOME}/openssl-musl"
+env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_RUST_TARGET_ARCH}", default_value = "x86_64", mapping = { "arm" = "armv4" } }
 script = '''
-rustup target add "$CARGO_MAKE_RELEASE_FLOW_TARGET"
+rustup target add "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
 curl ${CARGO_MAKE_OPENSSL_DOWNLOAD_URL} | tar xzf -
 cd openssl-${CARGO_MAKE_OPENSSL_VERSION}
-CC=musl-gcc ./Configure --prefix="$OPENSSL_DIR" no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC
+CC=musl-gcc ./Configure --prefix="${OPENSSL_DIR}" no-dso no-ssl2 no-ssl3 linux-${OPENSSL_PLATFORM} -fPIC
 make -j"$(nproc)"
 make install
 '''

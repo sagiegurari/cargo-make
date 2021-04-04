@@ -82,4 +82,3 @@ args = [
   "${CARGO_MAKE_DIFF_FILE1}",
   "${CARGO_MAKE_DIFF_FILE2}",
 ]
-
