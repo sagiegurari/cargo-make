@@ -1,0 +1,22 @@
+kind: pipeline
+name: release
+
+platform:
+  arch: arm
+
+steps:
+- name: test
+  image: rust
+  commands:
+  - apt-get update
+  - apt-get install -y musl-tools
+  - cargo run --bin cargo-make -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=arm-unknown-linux-gnueabihf
+- name: publish
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_release
+    files: ./*.zip
+  when:
+    event: tag
+
