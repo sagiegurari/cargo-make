@@ -907,7 +907,7 @@ dependencies = [
   "print-env-flow",
   "clean",
   "setup-release-build-env",
-  "build-release-for-target",
+  "build-release-for-binary-upload",
   "zip-release-binary-for-target",
 ]
 
@@ -943,6 +943,14 @@ CC=musl-gcc ./Configure --prefix="${OPENSSL_DIR}" no-dso no-ssl2 no-ssl3 linux-$
 make -j"$(nproc)"
 make install
 '''
+
+[tasks.build-release-for-binary-upload]
+description = "Makes a release build for uploading as part of a CI flow."
+category = "Build"
+run_task = [
+  { name = "build-release", condition = { env = { CARGO_MAKE_RUST_TARGET_ARCH = "arm" } } },
+  { name = "build-release-for-target" },
+]
 
 [tasks.build-release-for-target]
 description = "Makes a release build for a given target"
