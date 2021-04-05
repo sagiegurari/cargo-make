@@ -10,7 +10,7 @@ steps:
   commands:
   - apt-get update
   - apt-get install -y musl-tools
-  - cargo run --bin cargo-make -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=arm-unknown-linux-gnueabihf
+  - cargo run --bin cargo-make -- make zip-release-ci-flow --env CARGO_MAKE_RELEASE_FLOW_TARGET=arm-unknown-linux-gnueabihf --env CARGO_MAKE_SKIP_MUSL_SETUP=true
 - name: publish
   image: plugins/github-release
   settings:
