@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.32.17
+
+* Support arm binary release upload
+* Add drone.io build to generate arm binary and attach to github release #541
+
 ### v0.32.16 (2021-04-03)
 
 * Enable to skip tasks via command line regex flag (--skip-tasks flag) #538
