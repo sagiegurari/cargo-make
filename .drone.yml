@@ -5,7 +5,7 @@ platform:
   arch: arm
 
 steps:
-- name: test
+- name: package
   image: rust
   commands:
   - apt-get update
