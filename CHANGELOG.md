@@ -3,8 +3,7 @@
 ### v0.32.17
 
 * Enhancement: support version specific installation for crates #544
-* Support arm binary release upload
-* Add drone.io build to generate arm binary and attach to github release #541
+* Improve release upload flow to support arm
 
 ### v0.32.16 (2021-04-03)
 
