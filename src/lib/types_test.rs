@@ -300,6 +300,7 @@ fn install_crate_info_eq_same_all() {
         },
         rustup_component_name: Some("component".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -309,6 +310,7 @@ fn install_crate_info_eq_same_all() {
         },
         rustup_component_name: Some("component".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert_eq!(first, second);
@@ -324,6 +326,7 @@ fn install_crate_info_eq_same_no_component() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -333,6 +336,7 @@ fn install_crate_info_eq_same_no_component() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert_eq!(first, second);
@@ -348,6 +352,7 @@ fn install_crate_info_eq_same_no_min_version() {
         },
         rustup_component_name: Some("component".to_string()),
         min_version: None,
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -357,6 +362,33 @@ fn install_crate_info_eq_same_no_min_version() {
         },
         rustup_component_name: Some("component".to_string()),
         min_version: None,
+        version: Some("2.0.0".to_string()),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_crate_info_eq_same_no_version() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: None,
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("component".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: None,
     };
 
     assert_eq!(first, second);
@@ -372,6 +404,7 @@ fn install_crate_info_eq_different_crate_name() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -381,6 +414,7 @@ fn install_crate_info_eq_different_crate_name() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -396,6 +430,7 @@ fn install_crate_info_eq_different_binary() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -405,6 +440,7 @@ fn install_crate_info_eq_different_binary() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -420,6 +456,7 @@ fn install_crate_info_eq_different_test_arg() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -429,6 +466,7 @@ fn install_crate_info_eq_different_test_arg() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -444,6 +482,7 @@ fn install_crate_info_eq_different_component_type() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -453,6 +492,7 @@ fn install_crate_info_eq_different_component_type() {
         },
         rustup_component_name: None,
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -468,6 +508,7 @@ fn install_crate_info_eq_different_component_value() {
         },
         rustup_component_name: Some("value1".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -477,6 +518,7 @@ fn install_crate_info_eq_different_component_value() {
         },
         rustup_component_name: Some("value2".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -492,6 +534,7 @@ fn install_crate_info_eq_different_min_version_type() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -501,6 +544,7 @@ fn install_crate_info_eq_different_min_version_type() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: None,
+        version: Some("2.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -516,6 +560,7 @@ fn install_crate_info_eq_different_min_version_value() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let second = InstallCrateInfo {
         crate_name: "test".to_string(),
@@ -525,6 +570,59 @@ fn install_crate_info_eq_different_min_version_value() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: Some("2.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_version_type() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_crate_info_eq_different_version_value() {
+    let first = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
+    };
+    let second = InstallCrateInfo {
+        crate_name: "test".to_string(),
+        binary: "bin".to_string(),
+        test_arg: TestArg {
+            inner: vec!["--help".to_string()],
+        },
+        rustup_component_name: Some("value".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        version: Some("1.0.0".to_string()),
     };
 
     assert!(first != second);
@@ -730,6 +828,7 @@ fn install_crate_eq_same_crate_info() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: Some("1.0.0".to_string()),
+        version: Some("2.0.0".to_string()),
     };
     let first = InstallCrate::CrateInfo(info.clone());
     let second = InstallCrate::CrateInfo(info.clone());
@@ -792,6 +891,7 @@ fn install_crate_eq_different_crate_info() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: None,
+        version: None,
     });
     let second = InstallCrate::CrateInfo(InstallCrateInfo {
         crate_name: "test2".to_string(),
@@ -801,6 +901,7 @@ fn install_crate_eq_different_crate_info() {
         },
         rustup_component_name: Some("value".to_string()),
         min_version: None,
+        version: None,
     });
 
     assert!(first != second);

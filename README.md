@@ -52,7 +52,7 @@
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
-        * [Defining Minimal Version](#usage-installing-min-version)
+        * [Defining Version](#usage-installing-version)
         * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -1709,7 +1709,7 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
 * [Native Dependencies](#usage-installing-native-dependencies)
-* [Defining Minimal Version](#usage-installing-min-version)
+* [Defining Version](#usage-installing-version)
 * [Global Lock Of Versions](#usage-installing-locked)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -1856,8 +1856,8 @@ fi
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
 
-<a name="usage-installing-min-version"></a>
-#### Defining Minimal Version
+<a name="usage-installing-version"></a>
+#### Defining Version
 
 It is possible to define minimal version of depended crates, for example:
 
@@ -1879,10 +1879,19 @@ Currently there are few limitations when defining min_version:
 * Specifying **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
 * In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
+If you want to ensure a specific version is used, you can define the version attribute instead, for example:
+
+```toml
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
 <a name="usage-installing-locked"></a>
 #### Global Lock Of Versions
 
-In case [minimal version](#usage-installing-min-version) is defined,
+In case [version or min_version](#usage-installing-version) is defined,
 you can have the **--locked** flag automatically added to the crate installation command
 by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 

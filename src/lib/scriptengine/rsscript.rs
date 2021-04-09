@@ -43,6 +43,7 @@ fn install_crate(provider: &ScriptRunner) {
                     inner: vec!["--version".to_string()],
                 },
                 min_version: None,
+                version: None,
             };
 
             crate_installer::install(&None, &info, &None, false);

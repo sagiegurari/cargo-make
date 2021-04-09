@@ -33,11 +33,17 @@ fn invoke_cargo_install(
     args: &Option<Vec<String>>,
     validate: bool,
 ) {
+    let version_option = if info.min_version.is_some() {
+        &info.min_version
+    } else {
+        &info.version
+    };
+
     let install_args = cargo_plugin_installer::get_install_crate_args(
         &info.crate_name,
         true,
         &args,
-        &info.min_version,
+        version_option,
     );
 
     let command_spec = match toolchain {
@@ -74,7 +80,12 @@ pub(crate) fn install(
             Some(ref version) => {
                 !crate_version_check::is_min_version_valid(&info.crate_name, version)
             }
-            None => false,
+            None => match info.version {
+                Some(ref version) => {
+                    !crate_version_check::is_version_valid(&info.crate_name, version)
+                }
+                None => false,
+            },
         }
     } else {
         false

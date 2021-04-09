@@ -566,6 +566,8 @@ pub struct InstallCrateInfo {
     pub test_arg: TestArg,
     /// Minimial version
     pub min_version: Option<String>,
+    /// Exact version
+    pub version: Option<String>,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -582,7 +584,24 @@ impl PartialEq for InstallCrateInfo {
                         if rustup_component_name == other_rustup_component_name {
                             match self.min_version {
                                 Some(ref min_version) => match other.min_version {
-                                    Some(ref other_min_version) => min_version == other_min_version,
+                                    Some(ref other_min_version) => {
+                                        if min_version == other_min_version {
+                                            match self.version {
+                                                Some(ref version) => match other.version {
+                                                    Some(ref other_version) => {
+                                                        version == other_version
+                                                    }
+                                                    None => false,
+                                                },
+                                                None => match other.version {
+                                                    None => true,
+                                                    _ => false,
+                                                },
+                                            }
+                                        } else {
+                                            false
+                                        }
+                                    }
                                     None => false,
                                 },
                                 None => match other.min_version {
