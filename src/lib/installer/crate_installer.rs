@@ -33,11 +33,19 @@ fn invoke_cargo_install(
     args: &Option<Vec<String>>,
     validate: bool,
 ) {
-    let version_option = if info.min_version.is_some() {
-        &info.min_version
+    let (automatic_lock_version, version_option) = if info.min_version.is_some() {
+        (false, &info.min_version)
     } else {
-        &info.version
+        (info.version.is_some(), &info.version)
     };
+
+    let remove_lock =
+        if automatic_lock_version && !envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
+            envmnt::set_bool("CARGO_MAKE_CRATE_INSTALLATION_LOCKED", true);
+            true
+        } else {
+            false
+        };
 
     let install_args = cargo_plugin_installer::get_install_crate_args(
         &info.crate_name,
@@ -55,6 +63,10 @@ fn invoke_cargo_install(
     };
 
     command::run_command(&command_spec.command, &command_spec.args, validate);
+
+    if remove_lock {
+        envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
+    }
 }
 
 fn is_crate_only_info(info: &InstallCrateInfo) -> bool {

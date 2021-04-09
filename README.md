@@ -1891,9 +1891,10 @@ args = ["make", "--version"]
 <a name="usage-installing-locked"></a>
 #### Global Lock Of Versions
 
-In case [version or min_version](#usage-installing-version) is defined,
+In case [min_version](#usage-installing-version) is defined,
 you can have the **--locked** flag automatically added to the crate installation command
 by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
+If version is defined instead of min_version, this will automatically be set as true.
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
