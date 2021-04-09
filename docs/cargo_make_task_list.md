@@ -5,7 +5,7 @@
 * **build** - Runs the rust compiler.
 * **build-flow** - Full sanity testing flow.
 * **build-release** - Runs release build.
-* **build-release-for-binary-upload** - Makes a release build for uploading as part of a CI flow.
+* **build-release-for-binary-upload** - Makes a release build for a given target
 * **build-release-for-target** - Makes a release build for a given target
 * **end-build-flow** - No Description.
 * **init-build-flow** - No Description.

@@ -1257,7 +1257,7 @@ BOOL_VALUE = true
 ```toml
 LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 ```
-* Key and output of a script
+* Key and output of a script **(only simple native shell scripts are supported, special runners such as duckscript, rust and so on, are not supported)**
 ```toml
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 ```
