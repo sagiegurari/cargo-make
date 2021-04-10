@@ -216,6 +216,7 @@ pub(crate) fn crate_target_triple(
                     if let Ok(Value::Table(mut table)) = content.parse() {
                         if let Some(Value::Table(mut table)) = table.remove("build") {
                             if let Some(Value::String(target)) = table.remove("target") {
+                                let target = target.trim_end_matches(".json").to_string();
                                 target_triple = Some(target);
                                 break;
                             }
