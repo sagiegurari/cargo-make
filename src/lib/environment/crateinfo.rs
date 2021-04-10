@@ -230,8 +230,7 @@ pub(crate) fn crate_target_triple(
     get_cargo_config(home)
         .and_then(|config| config.build)
         .and_then(|build| build.target)
-        .map(|target| target.trim_end_matches(".json"))
-        .map(str::to_owned)
+        .map(|target| target.trim_end_matches(".json").to_string())
         .or(default_target_triple)
 }
 
