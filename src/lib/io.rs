@@ -79,10 +79,7 @@ pub(crate) fn get_path_list(
             for entry in paths {
                 match entry {
                     Ok(path) => {
-                        let add =
-                            (include_dirs && path.is_dir()) || (include_files && path.is_file());
-
-                        if add {
+                        if (include_dirs && path.is_dir()) || (include_files && path.is_file()) {
                             let mut value_string: String = FromPath::from_path(&path);
                             value_string = value_string.replace("\\", "/");
                             if !value_string.starts_with("./") {
