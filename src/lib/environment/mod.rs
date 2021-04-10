@@ -443,7 +443,7 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
     );
 
     envmnt::set(
-        "CARGO_MAKE_CRATE_TARGET_DIR",
+        "CARGO_MAKE_CRATE_TARGET_DIRECTORY",
         crateinfo::crate_target_dir(home),
     );
 
