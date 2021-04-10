@@ -15,7 +15,6 @@ use serde_json;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use toml::{self, Value};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {
