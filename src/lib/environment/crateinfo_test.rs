@@ -587,6 +587,7 @@ fn get_crate_target_triple() {
 }
 
 #[test]
+#[ignore]
 fn get_crate_target_dir() {
     let old_cwd = env::current_dir().unwrap();
 
