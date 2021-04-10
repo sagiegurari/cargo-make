@@ -1382,6 +1382,10 @@ LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "
 ```toml
 COMPOSITE = "${TEST1} and ${TEST2}"
 ```
+* Key and a path glob which will populate the env variable with all relevant paths separated by a ';' character
+```toml
+PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
+```
 * Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
 All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running the tasks.<br>
