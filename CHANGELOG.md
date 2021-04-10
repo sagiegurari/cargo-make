@@ -3,6 +3,7 @@
 ### v0.32.17
 
 * Enhancement: support version specific installation for crates #544
+* Support custom crate target triple #547 (thanks @ark0f)
 * Improve release upload flow to support arm
 
 ### v0.32.16 (2021-04-03)
