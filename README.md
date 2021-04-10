@@ -1350,6 +1350,7 @@ TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
 OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
 ENV_FROM_LIST = ["ARG1", "${SIMPLE}", "simple value: ${SIMPLE} script value: ${SCRIPT}"]
+PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
 
 # profile based environment override
 [env.development]
