@@ -80,7 +80,7 @@ pub(crate) fn get_path_list(
                 match entry {
                     Ok(path) => {
                         let add =
-                            (include_dirs && path.is_dir()) || include_files && path.is_file();
+                            (include_dirs && path.is_dir()) || (include_files && path.is_file());
 
                         if add {
                             let mut value_string: String = FromPath::from_path(&path);
