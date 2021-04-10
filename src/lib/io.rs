@@ -79,13 +79,8 @@ pub(crate) fn get_path_list(
             for entry in paths {
                 match entry {
                     Ok(path) => {
-                        let add = if include_dirs && path.is_dir() {
-                            true
-                        } else if include_files && path.is_file() {
-                            true
-                        } else {
-                            false
-                        };
+                        let add =
+                            (include_dirs && path.is_dir()) || include_files && path.is_file();
 
                         if add {
                             let mut value_string: String = FromPath::from_path(&path);
