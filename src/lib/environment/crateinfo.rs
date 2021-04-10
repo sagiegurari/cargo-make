@@ -15,6 +15,7 @@ use serde_json;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use toml::{self, Value};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {
@@ -230,6 +231,8 @@ pub(crate) fn crate_target_triple(
     get_cargo_config(home)
         .and_then(|config| config.build)
         .and_then(|build| build.target)
+        .map(|target| target.trim_end_matches(".json"))
+        .map(str::to_owned)
         .or(default_target_triple)
 }
 

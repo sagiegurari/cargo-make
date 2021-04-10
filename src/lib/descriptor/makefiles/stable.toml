@@ -261,8 +261,22 @@ if equals ${CARGO_MAKE_CI} true
     enable_sudo = set true
 end
 
+fn is_ci_requires_sudo
+    if equals "${CARGO_MAKE_CI_VENDOR}" Drone
+        return false
+    end
+
+    # for all other vendors or in case we are not running inside a CI environment
+    return true
+end
+
 set_env CARGO_MAKE_SUDO_ENABLED ${enable_sudo}
+set_env CARGO_MAKE_SUDO_COMMAND ""
+if equals ${enable_sudo} true
+    if is_ci_requires_sudo
+        set_env CARGO_MAKE_SUDO_COMMAND sudo
+    end
+end
 
 echo sudo enabled: ${enable_sudo}
 '''
-

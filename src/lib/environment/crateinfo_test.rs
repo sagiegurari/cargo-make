@@ -583,6 +583,12 @@ fn get_crate_target_triple() {
         Some("aarch64-linux-android".into())
     );
 
+    env::set_current_dir("../../member4").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        Some("x86_64-pc-windows-msvc".into())
+    );
+
     env::set_current_dir(old_current_dir).unwrap();
 }
 

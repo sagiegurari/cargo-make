@@ -41,7 +41,7 @@
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
-        * [Defining Minimal Version](#usage-installing-min-version)
+        * [Defining Version](#usage-installing-version)
         * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)

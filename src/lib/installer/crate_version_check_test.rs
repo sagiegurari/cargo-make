@@ -239,3 +239,86 @@ fn is_min_version_valid_same_version() {
 
     assert!(valid);
 }
+
+#[test]
+fn is_version_valid_for_versions_equal() {
+    let valid = is_version_valid_for_versions(
+        &Version::parse("1.2.3").unwrap(),
+        &Version::parse("1.2.3").unwrap(),
+    );
+
+    assert!(valid);
+}
+
+#[test]
+fn is_version_valid_for_versions_false_major() {
+    let valid = is_version_valid_for_versions(
+        &Version::parse("2.2.3").unwrap(),
+        &Version::parse("1.2.3").unwrap(),
+    );
+
+    assert!(!valid);
+}
+
+#[test]
+fn is_version_valid_for_versions_false_minor() {
+    let valid = is_version_valid_for_versions(
+        &Version::parse("1.3.3").unwrap(),
+        &Version::parse("1.2.3").unwrap(),
+    );
+
+    assert!(!valid);
+}
+
+#[test]
+fn is_version_valid_for_versions_false_patch() {
+    let valid = is_version_valid_for_versions(
+        &Version::parse("1.2.4").unwrap(),
+        &Version::parse("1.2.3").unwrap(),
+    );
+
+    assert!(!valid);
+}
+
+#[test]
+fn is_version_valid_not_found() {
+    let valid = is_version_valid("bad_crate", "1.2.3");
+
+    assert!(valid);
+}
+
+#[test]
+fn is_version_valid_invalid_version() {
+    let valid = is_version_valid("cargo-make", "bad_version");
+
+    assert!(valid);
+}
+
+#[test]
+fn is_version_valid_old_version() {
+    let valid = is_version_valid("cargo-make", "0.0.1");
+
+    assert!(!valid);
+}
+
+#[test]
+fn is_version_valid_newer_version() {
+    let valid = is_version_valid("cargo-make", "10000.0.0");
+
+    assert!(!valid);
+}
+
+#[test]
+fn is_version_valid_same_version() {
+    let version = get_crate_version("cargo-make").unwrap();
+    let mut version_string = String::new();
+    version_string.push_str(&version.major.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.minor.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.patch.to_string());
+
+    let valid = is_min_version_valid("cargo-make", &version_string);
+
+    assert!(valid);
+}

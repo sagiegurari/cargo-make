@@ -74,7 +74,7 @@ pub(crate) fn get_install_crate_args(
     crate_name: &str,
     force: bool,
     args: &Option<Vec<String>>,
-    min_version: &Option<String>,
+    version_option: &Option<String>,
 ) -> Vec<String> {
     let mut install_args = vec!["install".to_string()];
 
@@ -94,7 +94,7 @@ pub(crate) fn get_install_crate_args(
     let skip_crate_name = should_skip_crate_name(&args);
     if !skip_crate_name {
         // add locked flags
-        if let Some(version) = min_version {
+        if let Some(version) = version_option {
             if envmnt::is("CARGO_MAKE_CRATE_INSTALLATION_LOCKED") {
                 install_args.push("--locked".to_string());
                 install_args.push("--version".to_string());

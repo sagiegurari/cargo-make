@@ -5,6 +5,7 @@
 * **build** - Runs the rust compiler.
 * **build-flow** - Full sanity testing flow.
 * **build-release** - Runs release build.
+* **build-release-for-binary-upload** - Makes a release build for a given target
 * **build-release-for-target** - Makes a release build for a given target
 * **end-build-flow** - No Description.
 * **init-build-flow** - No Description.
@@ -36,7 +37,7 @@
 * **pre-verify-project** - No Description.
 * **pre-workspace-ci-flow** - No Description.
 * **setup-musl** - Sets up a musl build environment
-* **setup-release-build-env** - Sets up a musl build environment
+* **setup-release-build-env** - Sets up any non-rust dependencies in the build environment
 * **unused-dependencies** - Checks for unused dependencies.
 * **unused-dependencies-flow** - Checks for unused dependencies.
 * **verify-project** - Runs verify-project cargo plugin.
@@ -201,6 +202,7 @@
 * **github-hub-find** - Sets the CARGO_MAKE_GITHUB_HUB_CLI_FOUND environment variable with the current hub executable location (if found).
 * **install-rls** - Installs rust Language server rustup component.
 * **install-rust-src** - Installs rust-src rustup component.
+* **install-zip** - Installs zip executable
 * **post-build-file-increment** - No Description.
 * **post-print-env** - No Description.
 * **pre-build-file-increment** - No Description.
