@@ -439,7 +439,12 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
     envmnt::set_optional("CARGO_MAKE_RUST_TARGET_TRIPLE", &rustinfo.target_triple);
     envmnt::set_or_remove(
         "CARGO_MAKE_CRATE_TARGET_TRIPLE",
-        &crateinfo::crate_target_triple(rustinfo.target_triple, home),
+        &crateinfo::crate_target_triple(rustinfo.target_triple, home.clone()),
+    );
+
+    envmnt::set(
+        "CARGO_MAKE_CRATE_TARGET_DIR",
+        crateinfo::crate_target_dir(home),
     );
 
     rust_info_clone
