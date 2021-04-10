@@ -431,12 +431,25 @@ pub struct EnvValueUnset {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Env value provided by decoding other values
+/// Env value set if condition is met
 pub struct EnvValueConditioned {
     /// The value to set (can be an env expression)
     pub value: String,
     /// The condition to validate
     pub condition: Option<TaskCondition>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env value holding a list of paths based on given glob definitions
+pub struct EnvValuePathGlob {
+    /// The glob used to fetch all paths
+    pub glob: String,
+    /// True to include files (default is true if undefined)
+    pub include_files: Option<bool>,
+    /// True to include directories (default is true if undefined)
+    pub include_dirs: Option<bool>,
+    /// Enables to respect ignore files
+    pub ignore_type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -459,6 +472,8 @@ pub enum EnvValue {
     Decode(EnvValueDecode),
     /// Conditional env value
     Conditional(EnvValueConditioned),
+    /// Path glob
+    PathGlob(EnvValuePathGlob),
     /// Profile env
     Profile(IndexMap<String, EnvValue>),
 }
