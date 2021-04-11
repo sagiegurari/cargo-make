@@ -2,10 +2,10 @@
 
 ### v0.32.17
 
-* Enhancement: support version specific installation for crates #544
-* Enhancement: Support custom crate target triple #547 (thanks @ark0f)
-* Enhancement: Add CARGO_MAKE_CRATE_TARGET_DIRECTORY environment variable #548 (thanks @ark0f)
 * Enhancement: Support path glob (with optional gitignore support) environment variables #542
+* Enhancement: Support version specific installation for crates #544
+* Enhancement: Add CARGO_MAKE_CRATE_TARGET_DIRECTORY environment variable #548 (thanks @ark0f)
+* Enhancement: Support custom crate target triple #547 (thanks @ark0f)
 * Enhancement: Improve release upload flow to support arm
 
 ### v0.32.16 (2021-04-03)
