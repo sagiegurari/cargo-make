@@ -914,7 +914,28 @@ dependencies = [
 [tasks.setup-release-build-env]
 description = "Sets up any non-rust dependencies in the build environment"
 category = "CI"
-dependencies = ["install-zip", "setup-musl"]
+private = true
+dependencies = ["setup-release-build-env-vars", "setup-release-build-env-print", "install-zip", "setup-musl"]
+
+[tasks.setup-release-build-env-print]
+category = "CI"
+private = true
+script = '''
+#!@duckscript
+echo "*************************************"
+echo "Release Binary Build Environment:"
+echo "    Target: ${CARGO_MAKE_RELEASE_FLOW_TARGET}"
+echo "    Use Cross: ${CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS}"
+echo "    Musl Installation Skip: ${CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL}"
+echo "*************************************"
+'''
+
+[tasks.setup-release-build-env-vars]
+description = "Sets up environment variables based on target."
+category = "CI"
+private = true
+env.CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS = { source = "${CARGO_MAKE_RUST_TARGET_ARCH}", default_value = "false", mapping = { "arm" = "true" } }
+env.CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL = { value = "true", condition = { env = { CARGO_MAKE_RUST_TARGET_ARCH = "arm" } } }
 
 [tasks.install-zip]
 description = "Installs zip executable"
@@ -932,7 +953,7 @@ condition = { env_set = [
   "CARGO_MAKE_RELEASE_FLOW_TARGET",
   "CARGO_MAKE_OPENSSL_VERSION",
   "CARGO_MAKE_OPENSSL_DOWNLOAD_URL",
-], env_true = ["CARGO_MAKE_CI"], platforms = ["linux"] }
+], env_true = ["CARGO_MAKE_CI"], env_not_set = ["CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL"], platforms = ["linux"] }
 env.OPENSSL_DIR = "${HOME}/openssl-musl"
 env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_RUST_TARGET_ARCH}", default_value = "x86_64", mapping = { "arm" = "armv4" } }
 script = '''
@@ -945,14 +966,16 @@ make install
 '''
 
 [tasks.build-release-for-binary-upload]
-alias = "build-release-for-target"
+run_task = [
+  { name = "cross-build-release-for-target", condition = { env_true = ["CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS"] } },
+  { name = "build-release-for-target" },
+]
 
-[tasks.build-release-for-target]
+[tasks.build-release-for-target-base]
 description = "Makes a release build for a given target"
 category = "Build"
+private = true
 condition = { env_set = ["CARGO_MAKE_RELEASE_FLOW_TARGET"], env_true = ["CARGO_MAKE_CI"] }
-install_crate = false
-command = "cargo"
 args = [
   "build",
   "--release",
@@ -960,6 +983,16 @@ args = [
   "--target",
   "${CARGO_MAKE_RELEASE_FLOW_TARGET}",
 ]
+
+[tasks.cross-build-release-for-target]
+extend = "build-release-for-target-base"
+install_crate = { crate_name = "cross", binary = "cross", test_arg = ["--help"] }
+command = "cross"
+
+[tasks.build-release-for-target]
+extend = "build-release-for-target-base"
+install_crate = false
+command = "cargo"
 
 [tasks.zip-release-binary-for-target]
 description = "Zips up the release binary, README, and license(s)"
