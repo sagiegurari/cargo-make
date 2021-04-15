@@ -927,6 +927,7 @@ echo "Release Binary Build Environment:"
 echo "    Target: ${CARGO_MAKE_RELEASE_FLOW_TARGET}"
 echo "    Use Cross: ${CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS}"
 echo "    Musl Installation Skip: ${CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL}"
+echo "    ARM Linux: ${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"
 echo "*************************************"
 '''
 
@@ -934,8 +935,9 @@ echo "*************************************"
 description = "Sets up environment variables based on target."
 category = "CI"
 private = true
-env.CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS = { source = "${CARGO_MAKE_RUST_TARGET_ARCH}", default_value = "false", mapping = { "arm" = "true" } }
-env.CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL = { value = "true", condition = { env = { CARGO_MAKE_RUST_TARGET_ARCH = "arm" } } }
+env.CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX = { source = "${CARGO_MAKE_RELEASE_FLOW_TARGET}", default_value = "false", mapping = { "arm-unknown-linux-gnueabihf" = "true" } }
+eenv.CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"
+env.CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL = { value = "true", condition = { env_false = ["${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"] } }
 
 [tasks.install-zip]
 description = "Installs zip executable"
@@ -955,7 +957,7 @@ condition = { env_set = [
   "CARGO_MAKE_OPENSSL_DOWNLOAD_URL",
 ], env_true = ["CARGO_MAKE_CI"], env_not_set = ["CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL"], platforms = ["linux"] }
 env.OPENSSL_DIR = "${HOME}/openssl-musl"
-env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_RUST_TARGET_ARCH}", default_value = "x86_64", mapping = { "arm" = "armv4" } }
+env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}", default_value = "x86_64", mapping = { "true" = "armv4" } }
 script = '''
 rustup target add "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
 curl ${CARGO_MAKE_OPENSSL_DOWNLOAD_URL} | tar xzf -
