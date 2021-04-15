@@ -936,8 +936,8 @@ description = "Sets up environment variables based on target."
 category = "CI"
 private = true
 env.CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX = { source = "${CARGO_MAKE_RELEASE_FLOW_TARGET}", default_value = "false", mapping = { "arm-unknown-linux-gnueabihf" = "true" } }
-eenv.CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"
-env.CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL = { value = "true", condition = { env_false = ["${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"] } }
+env.CARGO_MAKE_BINARY_RELEASE_ENV_USE_CROSS = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"
+env.CARGO_MAKE_BINARY_RELEASE_ENV_SKIP_INSTALL_MUSL = { value = "true", condition = { env_true = ["${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}"] } }
 
 [tasks.install-zip]
 description = "Installs zip executable"
