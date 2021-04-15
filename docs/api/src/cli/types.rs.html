@@ -2104,6 +2104,40 @@
 <span id="2101">2101</span>
 <span id="2102">2102</span>
 <span id="2103">2103</span>
+<span id="2104">2104</span>
+<span id="2105">2105</span>
+<span id="2106">2106</span>
+<span id="2107">2107</span>
+<span id="2108">2108</span>
+<span id="2109">2109</span>
+<span id="2110">2110</span>
+<span id="2111">2111</span>
+<span id="2112">2112</span>
+<span id="2113">2113</span>
+<span id="2114">2114</span>
+<span id="2115">2115</span>
+<span id="2116">2116</span>
+<span id="2117">2117</span>
+<span id="2118">2118</span>
+<span id="2119">2119</span>
+<span id="2120">2120</span>
+<span id="2121">2121</span>
+<span id="2122">2122</span>
+<span id="2123">2123</span>
+<span id="2124">2124</span>
+<span id="2125">2125</span>
+<span id="2126">2126</span>
+<span id="2127">2127</span>
+<span id="2128">2128</span>
+<span id="2129">2129</span>
+<span id="2130">2130</span>
+<span id="2131">2131</span>
+<span id="2132">2132</span>
+<span id="2133">2133</span>
+<span id="2134">2134</span>
+<span id="2135">2135</span>
+<span id="2136">2136</span>
+<span id="2137">2137</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2538,12 +2572,25 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="doccomment">/// Env value provided by decoding other values</span>
+<span class="doccomment">/// Env value set if condition is met</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValueConditioned</span> {
     <span class="doccomment">/// The value to set (can be an env expression)</span>
     <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">String</span>,
     <span class="doccomment">/// The condition to validate</span>
     <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Env value holding a list of paths based on given glob definitions</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvValuePathGlob</span> {
+    <span class="doccomment">/// The glob used to fetch all paths</span>
+    <span class="kw">pub</span> <span class="ident">glob</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// True to include files (default is true if undefined)</span>
+    <span class="kw">pub</span> <span class="ident">include_files</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// True to include directories (default is true if undefined)</span>
+    <span class="kw">pub</span> <span class="ident">include_dirs</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Enables to respect ignore files</span>
+    <span class="kw">pub</span> <span class="ident">ignore_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -2566,6 +2613,8 @@
     <span class="ident">Decode</span>(<span class="ident">EnvValueDecode</span>),
     <span class="doccomment">/// Conditional env value</span>
     <span class="ident">Conditional</span>(<span class="ident">EnvValueConditioned</span>),
+    <span class="doccomment">/// Path glob</span>
+    <span class="ident">PathGlob</span>(<span class="ident">EnvValuePathGlob</span>),
     <span class="doccomment">/// Profile env</span>
     <span class="ident">Profile</span>(<span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">EnvValue</span><span class="op">&gt;</span>),
 }
@@ -2673,6 +2722,8 @@
     <span class="kw">pub</span> <span class="ident">test_arg</span>: <span class="ident">TestArg</span>,
     <span class="doccomment">/// Minimial version</span>
     <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Exact version</span>
+    <span class="kw">pub</span> <span class="ident">version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCrateInfo</span> {
@@ -2689,7 +2740,24 @@
                         <span class="kw">if</span> <span class="ident">rustup_component_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_rustup_component_name</span> {
                             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">min_version</span> {
                                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span>,
+                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                        <span class="kw">if</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span> {
+                                            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
+                                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                                                        <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_version</span>
+                                                    }
+                                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                                                },
+                                                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                                                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                                                },
+                                            }
+                                        } <span class="kw">else</span> {
+                                            <span class="bool-val">false</span>
+                                        }
+                                    }
                                     <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                                 },
                                 <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {

@@ -5,8 +5,6 @@
 * **build** - Runs the rust compiler.
 * **build-flow** - Full sanity testing flow.
 * **build-release** - Runs release build.
-* **build-release-for-binary-upload** - Makes a release build for a given target
-* **build-release-for-target** - Makes a release build for a given target
 * **end-build-flow** - No Description.
 * **init-build-flow** - No Description.
 * **post-build** - No Description.
@@ -36,8 +34,6 @@
 * **pre-unused-dependencies** - No Description.
 * **pre-verify-project** - No Description.
 * **pre-workspace-ci-flow** - No Description.
-* **setup-musl** - Sets up a musl build environment
-* **setup-release-build-env** - Sets up any non-rust dependencies in the build environment
 * **unused-dependencies** - Checks for unused dependencies.
 * **unused-dependencies-flow** - Checks for unused dependencies.
 * **verify-project** - Runs verify-project cargo plugin.
@@ -115,6 +111,10 @@
 
 * **end** - By default this task is invoked at the end of every cargo-make run.
 * **init** - By default this task is invoked at the start of every cargo-make run.
+
+## No Category
+
+* **build-release-for-binary-upload** - No Description.
 
 ## Publish
 
