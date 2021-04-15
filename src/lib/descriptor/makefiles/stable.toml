@@ -257,12 +257,19 @@ script = '''
 enable_sudo = not is_defined CARGO_MAKE_SUDO_DISABLE
 
 # always allow sudo in CI
-if equals ${CARGO_MAKE_CI} true
+if equals "${CARGO_MAKE_CI}" true
     enable_sudo = set true
 end
 
-fn is_ci_requires_sudo
-    if equals "${CARGO_MAKE_CI_VENDOR}" Drone
+fn <scope> is_ci_vendor
+    current_vendor = get_env CARGO_MAKE_CI_VENDOR
+    is_vendor = equals "${current_vendor}" "${1}"
+
+    return ${is_vendor}
+end
+
+fn <scope> is_ci_requires_sudo
+    if is_ci_vendor Drone
         return false
     end
 
