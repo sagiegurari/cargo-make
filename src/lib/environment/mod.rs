@@ -11,11 +11,12 @@ mod mod_test;
 
 use crate::command;
 use crate::condition;
+use crate::io;
 use crate::profile;
 use crate::scriptengine;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
-    EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
+    EnvValuePathGlob, EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
 use duckscript;
@@ -142,6 +143,17 @@ fn set_env_for_conditional_value(key: &str, conditional_value: &EnvValueConditio
     }
 }
 
+fn set_env_for_path_glob(key: &str, path_glob: &EnvValuePathGlob) {
+    let path_list = io::get_path_list(
+        &path_glob.glob,
+        path_glob.include_files.unwrap_or(true),
+        path_glob.include_dirs.unwrap_or(true),
+        path_glob.ignore_type.clone(),
+    );
+
+    set_env_for_list(key, &path_list);
+}
+
 fn set_env_for_profile(
     profile_name: &str,
     sub_env: &IndexMap<String, EnvValue>,
@@ -192,6 +204,7 @@ pub(crate) fn set_env_for_config(
             EnvValue::Conditional(ref conditioned_value) => {
                 set_env_for_conditional_value(&key, conditioned_value)
             }
+            EnvValue::PathGlob(ref path_glob_info) => set_env_for_path_glob(&key, path_glob_info),
             EnvValue::Profile(ref sub_env) => {
                 if allow_sub_env {
                     set_env_for_profile(&key, sub_env, additional_profiles)
@@ -439,7 +452,12 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
     envmnt::set_optional("CARGO_MAKE_RUST_TARGET_TRIPLE", &rustinfo.target_triple);
     envmnt::set_or_remove(
         "CARGO_MAKE_CRATE_TARGET_TRIPLE",
-        &crateinfo::crate_target_triple(rustinfo.target_triple, home),
+        &crateinfo::crate_target_triple(rustinfo.target_triple, home.clone()),
+    );
+
+    envmnt::set(
+        "CARGO_MAKE_CRATE_TARGET_DIRECTORY",
+        crateinfo::crate_target_dir(home),
     );
 
     rust_info_clone

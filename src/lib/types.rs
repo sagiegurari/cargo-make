@@ -431,12 +431,25 @@ pub struct EnvValueUnset {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-/// Env value provided by decoding other values
+/// Env value set if condition is met
 pub struct EnvValueConditioned {
     /// The value to set (can be an env expression)
     pub value: String,
     /// The condition to validate
     pub condition: Option<TaskCondition>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+/// Env value holding a list of paths based on given glob definitions
+pub struct EnvValuePathGlob {
+    /// The glob used to fetch all paths
+    pub glob: String,
+    /// True to include files (default is true if undefined)
+    pub include_files: Option<bool>,
+    /// True to include directories (default is true if undefined)
+    pub include_dirs: Option<bool>,
+    /// Enables to respect ignore files
+    pub ignore_type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -459,6 +472,8 @@ pub enum EnvValue {
     Decode(EnvValueDecode),
     /// Conditional env value
     Conditional(EnvValueConditioned),
+    /// Path glob
+    PathGlob(EnvValuePathGlob),
     /// Profile env
     Profile(IndexMap<String, EnvValue>),
 }
@@ -566,6 +581,8 @@ pub struct InstallCrateInfo {
     pub test_arg: TestArg,
     /// Minimial version
     pub min_version: Option<String>,
+    /// Exact version
+    pub version: Option<String>,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -582,7 +599,24 @@ impl PartialEq for InstallCrateInfo {
                         if rustup_component_name == other_rustup_component_name {
                             match self.min_version {
                                 Some(ref min_version) => match other.min_version {
-                                    Some(ref other_min_version) => min_version == other_min_version,
+                                    Some(ref other_min_version) => {
+                                        if min_version == other_min_version {
+                                            match self.version {
+                                                Some(ref version) => match other.version {
+                                                    Some(ref other_version) => {
+                                                        version == other_version
+                                                    }
+                                                    None => false,
+                                                },
+                                                None => match other.version {
+                                                    None => true,
+                                                    _ => false,
+                                                },
+                                            }
+                                        } else {
+                                            false
+                                        }
+                                    }
                                     None => false,
                                 },
                                 None => match other.min_version {

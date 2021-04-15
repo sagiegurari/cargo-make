@@ -132,11 +132,11 @@ pub(crate) fn is_min_version_valid_for_versions(
 }
 
 pub(crate) fn is_min_version_valid(crate_name: &str, min_version: &str) -> bool {
-    let min_semver = Version::parse(min_version);
-    match min_semver {
-        Ok(min_version_values) => match get_crate_version(crate_name) {
+    let semver_value = Version::parse(min_version);
+    match semver_value {
+        Ok(version_values) => match get_crate_version(crate_name) {
             Some(installed_version_values) => {
-                is_min_version_valid_for_versions(&min_version_values, &installed_version_values)
+                is_min_version_valid_for_versions(&version_values, &installed_version_values)
             }
             None => {
                 warn!(
@@ -148,6 +148,37 @@ pub(crate) fn is_min_version_valid(crate_name: &str, min_version: &str) -> bool 
         },
         _ => {
             warn!("Unable to parse min version value: {}", &min_version);
+            true
+        }
+    }
+}
+
+pub(crate) fn is_version_valid_for_versions(
+    version: &Version,
+    installed_version: &Version,
+) -> bool {
+    version.major == installed_version.major
+        && version.minor == installed_version.minor
+        && version.patch == installed_version.patch
+}
+
+pub(crate) fn is_version_valid(crate_name: &str, version: &str) -> bool {
+    let semver_value = Version::parse(version);
+    match semver_value {
+        Ok(version_values) => match get_crate_version(crate_name) {
+            Some(installed_version_values) => {
+                is_version_valid_for_versions(&version_values, &installed_version_values)
+            }
+            None => {
+                warn!(
+                    "Unable to read currently installed version for crate: {}",
+                    &crate_name
+                );
+                true
+            }
+        },
+        _ => {
+            warn!("Unable to parse version value: {}", &version);
             true
         }
     }

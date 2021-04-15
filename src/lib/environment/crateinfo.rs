@@ -15,7 +15,6 @@ use serde_json;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use toml::{self, Value};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {
@@ -187,48 +186,63 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     }
 }
 
-pub(crate) fn crate_target_triple(
-    default_target_triple: Option<String>,
-    home: Option<PathBuf>,
-) -> Option<String> {
-    if let Ok(path) = env::current_dir() {
-        let mut target_triple = None;
+#[derive(Debug, Deserialize)]
+struct CargoConfig {
+    build: Option<CargoConfigBuild>,
+}
 
-        let config_folders = path
-            .ancestors()
-            .map(|ancestor| ancestor.join(".cargo"))
-            .chain(home);
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct CargoConfigBuild {
+    target: Option<String>,
+    target_dir: Option<String>,
+}
 
-        for config_folder in config_folders {
-            let config_file = config_folder.join("config");
+fn get_cargo_config(home: Option<PathBuf>) -> Option<CargoConfig> {
+    let path = env::current_dir().ok()?;
+
+    let config_file = path
+        .ancestors()
+        .map(|ancestor| ancestor.join(".cargo"))
+        .chain(home)
+        .map(|config_file| config_file.join("config"))
+        .filter_map(|config_file| {
             let config_file_with_extension = config_file.with_extension("toml");
 
-            let config_file = if config_file.exists() {
+            if config_file.exists() {
                 Some(config_file)
             } else if config_file_with_extension.exists() {
                 Some(config_file_with_extension)
             } else {
                 None
-            };
-
-            if let Some(path) = config_file {
-                if let Ok(content) = fsio::file::read_text_file(&path) {
-                    if let Ok(Value::Table(mut table)) = content.parse() {
-                        if let Some(Value::Table(mut table)) = table.remove("build") {
-                            if let Some(Value::String(target)) = table.remove("target") {
-                                target_triple = Some(target);
-                                break;
-                            }
-                        }
-                    }
-                }
             }
-        }
+        })
+        .next()?;
 
-        target_triple.or(default_target_triple)
-    } else {
-        default_target_triple
-    }
+    let config_file = fsio::file::read_text_file(&config_file).ok()?;
+    toml::from_str(&config_file).ok()
+}
+
+pub(crate) fn crate_target_triple(
+    default_target_triple: Option<String>,
+    home: Option<PathBuf>,
+) -> Option<String> {
+    get_cargo_config(home)
+        .and_then(|config| config.build)
+        .and_then(|build| build.target)
+        .map(|target| target.trim_end_matches(".json").to_string())
+        .or(default_target_triple)
+}
+
+pub(crate) fn crate_target_dir(home: Option<PathBuf>) -> String {
+    env::var("CARGO_TARGET_DIR")
+        .ok()
+        .or_else(|| {
+            get_cargo_config(home)
+                .and_then(|config| config.build)
+                .and_then(|build| build.target_dir)
+        })
+        .unwrap_or_else(|| "target".to_string())
 }
 
 pub(crate) fn search_workspace_root() -> Option<String> {

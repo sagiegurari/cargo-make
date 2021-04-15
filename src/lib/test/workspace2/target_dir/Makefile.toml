@@ -1,0 +1,3 @@
+
+[tasks.echo]
+script = ["echo hello from target_dir"]

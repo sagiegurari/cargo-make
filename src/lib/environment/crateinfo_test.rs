@@ -583,5 +583,31 @@ fn get_crate_target_triple() {
         Some("aarch64-linux-android".into())
     );
 
+    env::set_current_dir("../../member4").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        Some("x86_64-pc-windows-msvc".into())
+    );
+
     env::set_current_dir(old_current_dir).unwrap();
+}
+
+#[test]
+#[ignore]
+fn get_crate_target_dir() {
+    let old_cwd = env::current_dir().unwrap();
+
+    assert_eq!(crate_target_dir(None), "target");
+
+    env::set_current_dir("src/lib/test/workspace2").unwrap();
+    assert_eq!(crate_target_dir(None), "target");
+
+    env::set_var("CARGO_TARGET_DIR", "my_custom_dir");
+    assert_eq!(crate_target_dir(None), "my_custom_dir");
+    env::remove_var("CARGO_TARGET_DIR");
+
+    env::set_current_dir("target_dir").unwrap();
+    assert_eq!(crate_target_dir(None), "my_custom_dir");
+
+    env::set_current_dir(old_cwd).unwrap();
 }

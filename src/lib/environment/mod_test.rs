@@ -394,6 +394,26 @@ fn set_env_for_conditional_value_condition_false() {
 
 #[test]
 #[ignore]
+fn set_env_for_path_glob_found() {
+    envmnt::remove("ENV_PATH_GLOB_FOUND");
+
+    let info = EnvValuePathGlob {
+        glob: "./src/lib/environment/mod*.rs".to_string(),
+        include_files: Some(true),
+        include_dirs: Some(false),
+        ignore_type: Some("git".to_string()),
+    };
+
+    set_env_for_path_glob("ENV_PATH_GLOB_FOUND", &info);
+
+    assert!(envmnt::is_equal(
+        "ENV_PATH_GLOB_FOUND",
+        "./src/lib/environment/mod.rs;./src/lib/environment/mod_test.rs"
+    ));
+}
+
+#[test]
+#[ignore]
 fn set_env_for_profile_none_not_found() {
     let mut env = IndexMap::new();
     env.insert(
@@ -517,6 +537,31 @@ fn set_env_for_config_conditional() {
     assert!(envmnt::is_equal(
         "set_env_for_config_conditional",
         "test value"
+    ));
+}
+
+#[test]
+#[ignore]
+fn set_env_for_config_path_glob() {
+    envmnt::remove("set_env_for_config_path_glob");
+    assert!(!envmnt::exists("set_env_for_config_path_glob"));
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "set_env_for_config_path_glob".to_string(),
+        EnvValue::PathGlob(EnvValuePathGlob {
+            glob: "./src/lib/environment/mod*.rs".to_string(),
+            include_files: Some(true),
+            include_dirs: Some(false),
+            ignore_type: Some("git".to_string()),
+        }),
+    );
+
+    set_env_for_config(env, None, true);
+
+    assert!(envmnt::is_equal(
+        "set_env_for_config_path_glob",
+        "./src/lib/environment/mod.rs;./src/lib/environment/mod_test.rs"
     ));
 }
 

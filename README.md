@@ -52,7 +52,7 @@
         * [Crates](#usage-installing-crates)
         * [Rustup Components](#usage-installing-rustup-components)
         * [Native Dependencies](#usage-installing-native-dependencies)
-        * [Defining Minimal Version](#usage-installing-min-version)
+        * [Defining Version](#usage-installing-version)
         * [Global Lock Of Versions](#usage-installing-locked)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -145,6 +145,7 @@ The following binaries are available for each release:
 * x86_64-unknown-linux-musl
 * x86_64-apple-darwin
 * x86_64-pc-windows-msvc
+* arm-unknown-linux-gnueabihf
 
 <a name="usage"></a>
 ## Usage
@@ -1349,6 +1350,7 @@ TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
 OVERWRITE_EXISTING = { value = "new", condition = { env_set = ["OVERWRITE_EXISTING"] } }
 ENV_FROM_LIST = ["ARG1", "${SIMPLE}", "simple value: ${SIMPLE} script value: ${SCRIPT}"]
+PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
 
 # profile based environment override
 [env.development]
@@ -1369,7 +1371,7 @@ BOOL_VALUE = true
 ```toml
 LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 ```
-* Key and output of a script
+* Key and output of a script **(only simple native shell scripts are supported, special runners such as duckscript, rust and so on, are not supported)**
 ```toml
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 ```
@@ -1380,6 +1382,10 @@ LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "
 * Key and a value expression built from strings and other env variables using the ${} syntax
 ```toml
 COMPOSITE = "${TEST1} and ${TEST2}"
+```
+* Key and a path glob which will populate the env variable with all relevant paths separated by a ';' character
+```toml
+PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
 ```
 * Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
 
@@ -1544,6 +1550,7 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
 * **CARGO_MAKE_RUST_TARGET_TRIPLE** - x86_64-unknown-linux-gnu, x86_64-apple-darwin, x86_64-pc-windows-msvc, etc ...
+* **CARGO_MAKE_CRATE_TARGET_DIRECTORY** - Gets target directory where cargo stores the output of a build, respects ${CARGO_TARGET_DIR}, .cargo/config.toml's and ${CARGO_HOME}/config.toml, but not `--target-dir` command-line flag.
 * **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
 * **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
@@ -1708,7 +1715,7 @@ cargo-make provides multiple ways to setup those dependencies before running the
 * [Crates](#usage-installing-crates)
 * [Rustup Components](#usage-installing-rustup-components)
 * [Native Dependencies](#usage-installing-native-dependencies)
-* [Defining Minimal Version](#usage-installing-min-version)
+* [Defining Version](#usage-installing-version)
 * [Global Lock Of Versions](#usage-installing-locked)
 * [Installation Priorities](#usage-installing-dependencies-priorities)
 * [Multiple Installations](#usage-installing-dependencies-multiple)
@@ -1855,8 +1862,8 @@ fi
 
 This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
 
-<a name="usage-installing-min-version"></a>
-#### Defining Minimal Version
+<a name="usage-installing-version"></a>
+#### Defining Version
 
 It is possible to define minimal version of depended crates, for example:
 
@@ -1878,12 +1885,22 @@ Currently there are few limitations when defining min_version:
 * Specifying **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
 * In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
+If you want to ensure a specific version is used, you can define the version attribute instead, for example:
+
+```toml
+[tasks.complex-example]
+install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = ["make", "--version"], version = "0.0.1" }
+command = "cargo"
+args = ["make", "--version"]
+```
+
 <a name="usage-installing-locked"></a>
 #### Global Lock Of Versions
 
-In case [minimal version](#usage-installing-min-version) is defined,
+In case [min_version](#usage-installing-version) is defined,
 you can have the **--locked** flag automatically added to the crate installation command
 by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
+If version is defined instead of min_version, this will automatically be set as true.
 
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities

@@ -12,6 +12,7 @@ fn invoke_rustup_install_none() {
         },
         rustup_component_name: None,
         min_version: None,
+        version: None,
     };
 
     let output = invoke_rustup_install(&None, &info);
@@ -28,6 +29,7 @@ fn invoke_rustup_install_fail() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     let output = invoke_rustup_install(&None, &info);
@@ -46,6 +48,7 @@ fn invoke_rustup_install_with_toolchain_none() {
         },
         rustup_component_name: None,
         min_version: None,
+        version: None,
     };
 
     let output = invoke_rustup_install(&Some(toolchain), &info);
@@ -64,6 +67,7 @@ fn invoke_rustup_install_with_toolchain_fail() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     let output = invoke_rustup_install(&Some(toolchain), &info);
@@ -80,6 +84,7 @@ fn invoke_cargo_install_test() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     invoke_cargo_install(&None, &info, &None, false);
@@ -97,6 +102,7 @@ fn invoke_cargo_install_with_toolchain_test() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     invoke_cargo_install(&Some(toolchain), &info, &None, false);
@@ -112,6 +118,7 @@ fn install_test_test() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     install(&None, &info, &None, false);
@@ -129,6 +136,7 @@ fn install_test_with_toolchain_test() {
         },
         rustup_component_name: Some("unknown_rustup_component_test".to_string()),
         min_version: None,
+        version: None,
     };
 
     install(&Some(toolchain), &info, &None, false);
@@ -144,6 +152,7 @@ fn install_already_installed_crate_only() {
         },
         rustup_component_name: None,
         min_version: None,
+        version: None,
     };
 
     install(&None, &info, &None, false);
@@ -167,6 +176,7 @@ fn install_already_installed_crate_only_min_version_equal() {
         },
         rustup_component_name: None,
         min_version: Some(version_string),
+        version: None,
     };
 
     install(&None, &info, &None, false);
@@ -198,6 +208,31 @@ fn install_already_installed_crate_only_min_version_smaller() {
         },
         rustup_component_name: None,
         min_version: Some(version_string),
+        version: None,
+    };
+
+    install(&None, &info, &None, false);
+}
+
+#[test]
+fn install_already_installed_crate_only_version_equal() {
+    let version = crate_version_check::get_crate_version("cargo-make").unwrap();
+    let mut version_string = String::new();
+    version_string.push_str(&version.major.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.minor.to_string());
+    version_string.push_str(".");
+    version_string.push_str(&version.patch.to_string());
+
+    let info = InstallCrateInfo {
+        crate_name: "cargo-make".to_string(),
+        binary: "cargo".to_string(),
+        test_arg: TestArg {
+            inner: vec!["make".to_string(), "--version".to_string()],
+        },
+        rustup_component_name: None,
+        min_version: None,
+        version: Some(version_string),
     };
 
     install(&None, &info, &None, false);
@@ -213,6 +248,7 @@ fn is_crate_only_info_with_rustup_component_name() {
         },
         rustup_component_name: Some("component".to_string()),
         min_version: None,
+        version: None,
     };
 
     let crate_only_info = is_crate_only_info(&info);
@@ -230,6 +266,7 @@ fn is_crate_only_info_without_rustup_component_name() {
         },
         rustup_component_name: None,
         min_version: None,
+        version: None,
     };
 
     let crate_only_info = is_crate_only_info(&info);
