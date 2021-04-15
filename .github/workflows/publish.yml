@@ -12,14 +12,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        build: [linux, linux-arm, windows, macos]
         include:
-          - os: ubuntu-latest
+          - build: linux
+            os: ubuntu-latest
             binary_target: x86_64-unknown-linux-musl
-          - os: ubuntu-latest
+          - build: linux-arm
+            os: ubuntu-latest
             binary_target: arm-unknown-linux-gnueabihf
-          - os: windows-latest
+          - build: windows
+            os: windows-latest
             binary_target: x86_64-pc-windows-msvc
-          - os: macos-latest
+          - build: macos
+            os: macos-latest
             binary_target: x86_64-apple-darwin
     steps:
     - name: Install musl tools
