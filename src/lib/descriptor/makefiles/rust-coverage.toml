@@ -141,7 +141,16 @@ echo "Running tests from directory: ${BINARY_DIRECTORY}"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX="$(sh -c "echo \"${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER}\"")"
 echo "Test binary filter regex: ${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"
 
-TEST_FILES=$(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}") || true
+TEST_FILES=''
+for test_file in $(find "${BINARY_DIRECTORY}" -maxdepth 1 -type f | grep -e "${CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER_REGEX}"); do
+    keep=1
+    for debug_file in $(find "${BINARY_DIRECTORY}/.." -maxdepth 1 -type f); do
+        $(cmp -s "$debug_file" "$test_file") && keep=0 && break
+    done
+    if [ $keep -eq 1 ]; then
+        [ -n "$TEST_FILES" ] && TEST_FILES="$TEST_FILES $test_file" || TEST_FILES="$test_file"
+    fi
+done
 echo "Test Files:"
 echo "${TEST_FILES}"
 
