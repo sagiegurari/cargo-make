@@ -11,6 +11,7 @@ use crate::command;
 use crate::types::{CargoMetadata, CrateDependency, CrateInfo};
 use fsio;
 use glob::glob;
+use serde::{Deserialize, Deserializer};
 use serde_json;
 use std::env;
 use std::path::{Path, PathBuf};
@@ -194,8 +195,18 @@ struct CargoConfig {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct CargoConfigBuild {
+    #[serde(default, deserialize_with = "deserialize_target")]
     target: Option<String>,
-    target_dir: Option<String>,
+    target_dir: Option<PathBuf>,
+}
+
+fn deserialize_target<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<String>, D::Error> {
+    Option::<String>::deserialize(deserializer)?
+        .map(|target| target.trim_end_matches(".json").to_string())
+        .map(Ok)
+        .transpose()
 }
 
 fn get_cargo_config(home: Option<PathBuf>) -> Option<CargoConfig> {
@@ -230,19 +241,26 @@ pub(crate) fn crate_target_triple(
     get_cargo_config(home)
         .and_then(|config| config.build)
         .and_then(|build| build.target)
-        .map(|target| target.trim_end_matches(".json").to_string())
         .or(default_target_triple)
 }
 
 pub(crate) fn crate_target_dir(home: Option<PathBuf>) -> String {
-    env::var("CARGO_TARGET_DIR")
-        .ok()
-        .or_else(|| {
-            get_cargo_config(home)
-                .and_then(|config| config.build)
-                .and_then(|build| build.target_dir)
-        })
-        .unwrap_or_else(|| "target".to_string())
+    env::var("CARGO_TARGET_DIR").ok().unwrap_or_else(|| {
+        let build = get_cargo_config(home).and_then(|config| config.build);
+        let (target_dir, target_triple) = if let Some(build) = build {
+            (build.target_dir, build.target)
+        } else {
+            (None, None)
+        };
+        let target_dir = target_dir.unwrap_or_else(|| "target".into());
+        if let Some(target_triple) = target_triple {
+            target_dir.join(target_triple)
+        } else {
+            target_dir
+        }
+        .display()
+        .to_string()
+    })
 }
 
 pub(crate) fn search_workspace_root() -> Option<String> {

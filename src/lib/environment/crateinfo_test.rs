@@ -609,5 +609,14 @@ fn get_crate_target_dir() {
     env::set_current_dir("target_dir").unwrap();
     assert_eq!(crate_target_dir(None), "my_custom_dir");
 
+    env::set_current_dir("../target_dir_and_triple").unwrap();
+    assert_eq!(
+        crate_target_dir(None),
+        Path::new("my_custom_dir")
+            .join("x86_64-pc-windows-msvc")
+            .display()
+            .to_string(),
+    );
+
     env::set_current_dir(old_cwd).unwrap();
 }
