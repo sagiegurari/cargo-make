@@ -597,25 +597,48 @@ fn get_crate_target_triple() {
 fn get_crate_target_dir() {
     let old_cwd = env::current_dir().unwrap();
 
-    assert_eq!(crate_target_dir(None), "target");
+    macro_rules! dirs {
+        ($host:literal) => {
+            CrateTargetDirs {
+                host: PathBuf::from($host),
+                custom: None,
+            }
+        };
+        ($host:literal, $custom:expr) => {
+            CrateTargetDirs {
+                host: PathBuf::from($host),
+                custom: Some($custom),
+            }
+        };
+    }
+
+    assert_eq!(crate_target_dirs(None), dirs!("target"));
 
     env::set_current_dir("src/lib/test/workspace2").unwrap();
-    assert_eq!(crate_target_dir(None), "target");
+    assert_eq!(crate_target_dirs(None), dirs!("target"));
 
     env::set_var("CARGO_TARGET_DIR", "my_custom_dir");
-    assert_eq!(crate_target_dir(None), "my_custom_dir");
+    assert_eq!(crate_target_dirs(None), dirs!("my_custom_dir"));
+    env::set_current_dir("env_target_dir_and_triple").unwrap();
+    assert_eq!(
+        crate_target_dirs(None),
+        dirs!(
+            "my_custom_dir",
+            Path::new("my_custom_dir").join("x86_64-pc-windows-msvc")
+        )
+    );
     env::remove_var("CARGO_TARGET_DIR");
 
-    env::set_current_dir("target_dir").unwrap();
-    assert_eq!(crate_target_dir(None), "my_custom_dir");
+    env::set_current_dir("../target_dir").unwrap();
+    assert_eq!(crate_target_dirs(None), dirs!("my_custom_dir"));
 
     env::set_current_dir("../target_dir_and_triple").unwrap();
     assert_eq!(
-        crate_target_dir(None),
-        Path::new("my_custom_dir")
-            .join("x86_64-pc-windows-msvc")
-            .display()
-            .to_string(),
+        crate_target_dirs(None),
+        dirs!(
+            "my_custom_dir",
+            Path::new("my_custom_dir").join("x86_64-pc-windows-msvc")
+        ),
     );
 
     env::set_current_dir(old_cwd).unwrap();

@@ -1,0 +1,40 @@
+{
+  "abi-return-struct-as-int": true,
+  "arch": "x86_64",
+  "cpu": "x86-64",
+  "crt-static-allows-dylibs": true,
+  "crt-static-respected": true,
+  "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128",
+  "dll-prefix": "",
+  "dll-suffix": ".dll",
+  "dynamic-linking": true,
+  "emit-debug-gdb-scripts": false,
+  "env": "msvc",
+  "exe-suffix": ".exe",
+  "executables": true,
+  "has-elf-tls": true,
+  "is-builtin": true,
+  "is-like-msvc": true,
+  "is-like-windows": true,
+  "linker-flavor": "msvc",
+  "lld-flavor": "link",
+  "llvm-target": "x86_64-pc-windows-msvc",
+  "max-atomic-width": 64,
+  "no-default-libraries": false,
+  "os": "windows",
+  "pre-link-args": {
+    "lld-link": [
+      "/NOLOGO"
+    ],
+    "msvc": [
+      "/NOLOGO"
+    ]
+  },
+  "requires-uwtable": true,
+  "split-debuginfo": "packed",
+  "staticlib-prefix": "",
+  "staticlib-suffix": ".lib",
+  "target-family": "windows",
+  "target-pointer-width": "64",
+  "vendor": "pc"
+}

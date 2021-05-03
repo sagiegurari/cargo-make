@@ -257,23 +257,25 @@ pub(crate) fn crate_target_triple(
         .or(default_target_triple)
 }
 
-pub(crate) fn crate_target_dir(home: Option<PathBuf>) -> String {
-    env::var("CARGO_TARGET_DIR").ok().unwrap_or_else(|| {
-        let build = get_cargo_config(home).and_then(|config| config.build);
-        let (target_dir, target_triple) = if let Some(build) = build {
-            (build.target_dir, build.target)
-        } else {
-            (None, None)
-        };
-        let target_dir = target_dir.unwrap_or_else(|| "target".into());
-        if let Some(target_triple) = target_triple {
-            target_dir.join(target_triple.name())
-        } else {
-            target_dir
-        }
-        .display()
-        .to_string()
-    })
+#[derive(Debug, PartialEq, Eq)]
+pub(crate) struct CrateTargetDirs {
+    pub(crate) host: PathBuf,
+    pub(crate) custom: Option<PathBuf>,
+}
+
+pub(crate) fn crate_target_dirs(home: Option<PathBuf>) -> CrateTargetDirs {
+    let host = env::var_os("CARGO_TARGET_DIR").map(PathBuf::from);
+
+    let build = get_cargo_config(home).and_then(|config| config.build);
+    let (target_dir, target_triple) = if let Some(build) = build {
+        (build.target_dir, build.target)
+    } else {
+        (None, None)
+    };
+
+    let host = host.or(target_dir).unwrap_or_else(|| "target".into());
+    let custom = target_triple.map(|triple| host.clone().join(triple.name()));
+    CrateTargetDirs { host, custom }
 }
 
 pub(crate) fn search_workspace_root() -> Option<String> {
