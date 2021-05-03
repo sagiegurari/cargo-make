@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.33.0
+
+* Enhancement: Run kcov only on text executables #555 (thanks @elonca)
+
 ### v0.32.17 (2021-04-15)
 
 * Enhancement: Support path glob (with optional gitignore support) environment variables #542
