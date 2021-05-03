@@ -11,9 +11,9 @@ use crate::command;
 use crate::types::{CargoMetadata, CrateDependency, CrateInfo};
 use fsio;
 use glob::glob;
-use serde::{Deserialize, Deserializer};
 use serde_json;
 use std::env;
+use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -195,18 +195,30 @@ struct CargoConfig {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct CargoConfigBuild {
-    #[serde(default, deserialize_with = "deserialize_target")]
-    target: Option<String>,
+    target: Option<RustTarget>,
     target_dir: Option<PathBuf>,
 }
 
-fn deserialize_target<'de, D: Deserializer<'de>>(
-    deserializer: D,
-) -> Result<Option<String>, D::Error> {
-    Option::<String>::deserialize(deserializer)?
-        .map(|target| target.trim_end_matches(".json").to_string())
-        .map(Ok)
-        .transpose()
+#[derive(Debug, Deserialize)]
+#[serde(from = "PathBuf")]
+struct RustTarget(PathBuf);
+
+impl RustTarget {
+    fn name(&self) -> &str {
+        self.0.file_stem().unwrap().to_str().unwrap()
+    }
+}
+
+impl From<PathBuf> for RustTarget {
+    fn from(buf: PathBuf) -> Self {
+        Self(buf)
+    }
+}
+
+impl AsRef<OsStr> for RustTarget {
+    fn as_ref(&self) -> &OsStr {
+        self.0.as_ref()
+    }
 }
 
 fn get_cargo_config(home: Option<PathBuf>) -> Option<CargoConfig> {
@@ -241,6 +253,7 @@ pub(crate) fn crate_target_triple(
     get_cargo_config(home)
         .and_then(|config| config.build)
         .and_then(|build| build.target)
+        .map(|target| target.name().to_string())
         .or(default_target_triple)
 }
 
@@ -254,7 +267,7 @@ pub(crate) fn crate_target_dir(home: Option<PathBuf>) -> String {
         };
         let target_dir = target_dir.unwrap_or_else(|| "target".into());
         if let Some(target_triple) = target_triple {
-            target_dir.join(target_triple)
+            target_dir.join(target_triple.name())
         } else {
             target_dir
         }
