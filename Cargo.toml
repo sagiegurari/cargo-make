@@ -43,6 +43,7 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
+cargo_metadata = "^0.13.1"
 ci_info = "^0.14.1"
 clap = "^2"
 colored = "^2"
@@ -67,7 +68,6 @@ serde_derive = "^1"
 serde_ignored = "^0.1"
 shell2batch = "^0.4.2"
 toml = "^0.5"
-cargo_metadata = "0.13.1"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "0.12.1"
