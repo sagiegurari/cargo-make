@@ -7,15 +7,14 @@
 #[path = "crateinfo_test.rs"]
 mod crateinfo_test;
 
-use crate::command;
-use crate::types::{CargoMetadata, CrateDependency, CrateInfo};
+use crate::types::{CrateDependency, CrateInfo};
+use cargo_metadata::camino::Utf8PathBuf;
+use cargo_metadata::MetadataCommand;
 use fsio;
 use glob::glob;
-use serde_json;
 use std::env;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     match glob(glob_member) {
@@ -259,22 +258,22 @@ pub(crate) fn crate_target_triple(
 
 #[derive(Debug, PartialEq, Eq)]
 pub(crate) struct CrateTargetDirs {
-    pub(crate) host: PathBuf,
-    pub(crate) custom: Option<PathBuf>,
+    pub(crate) host: Utf8PathBuf,
+    pub(crate) custom: Option<Utf8PathBuf>,
 }
 
 pub(crate) fn crate_target_dirs(home: Option<PathBuf>) -> CrateTargetDirs {
-    let host = env::var_os("CARGO_TARGET_DIR").map(PathBuf::from);
-
-    let build = get_cargo_config(home).and_then(|config| config.build);
-    let (target_dir, target_triple) = if let Some(build) = build {
-        (build.target_dir, build.target)
-    } else {
-        (None, None)
-    };
-
-    let host = host.or(target_dir).unwrap_or_else(|| "target".into());
-    let custom = target_triple.map(|triple| host.clone().join(triple.name()));
+    let metadata = MetadataCommand::new()
+        .exec()
+        .map_err(|err| debug!("Unable to extract cargo metadata, error: {}", err))
+        .ok();
+    let host = metadata
+        .map(|metadata| metadata.target_directory)
+        .unwrap_or_else(|| "target".into());
+    let custom = get_cargo_config(home)
+        .and_then(|config| config.build)
+        .and_then(|build| build.target)
+        .map(|target_triple| host.join(target_triple.name()));
     CrateTargetDirs { host, custom }
 }
 
@@ -305,35 +304,9 @@ fn search_workspace_root_for_emulation() -> Option<String> {
 fn search_workspace_root_via_metadata() -> Option<String> {
     debug!("Getting cargo metadata.");
 
-    let mut command_struct = Command::new("cargo");
-    let result = command_struct.arg("metadata").output();
-
-    match result {
-        Ok(output) => {
-            let exit_code = command::get_exit_code(Ok(output.status), false);
-
-            if exit_code == 0 {
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                let metadata: CargoMetadata = match serde_json::from_str(&stdout) {
-                    Ok(metadata) => metadata,
-                    Err(error) => {
-                        debug!("Unable to extract cargo metadata, error: {:#?}", &error);
-                        CargoMetadata::new()
-                    }
-                };
-
-                metadata.workspace_root
-            } else {
-                debug!(
-                    "Unable to extract cargo metadata, error code: {}",
-                    exit_code
-                );
-                None
-            }
-        }
-        Err(error) => {
-            debug!("Unable to extract cargo metadata, error: {:#?}", &error);
-            None
-        }
-    }
+    MetadataCommand::new()
+        .exec()
+        .map(|metadata| metadata.workspace_root.to_string())
+        .map_err(|err| debug!("Unable to extract cargo metadata, error: {:#?}", err))
+        .ok()
 }
