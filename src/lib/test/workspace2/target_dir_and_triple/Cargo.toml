@@ -1,0 +1,5 @@
+[package]
+name = "target_dir_and_triple"
+version = "0.1.0"
+authors = []
+edition = "2018"
