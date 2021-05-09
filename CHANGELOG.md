@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.33.0
+### v0.33.0 (2021-05-09)
 
 * Enhancement: Run kcov only on text executables #555 (thanks @elonca)
 * Enhancement: New CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY environment variable #554 (thanks @ark0f)

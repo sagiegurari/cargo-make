@@ -824,6 +824,8 @@
 <span id="821">821</span>
 <span id="822">822</span>
 <span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -1282,9 +1284,11 @@
         <span class="kw-2">&amp;</span><span class="ident">crateinfo</span>::<span class="ident">crate_target_triple</span>(<span class="ident">rustinfo</span>.<span class="ident">target_triple</span>, <span class="ident">home</span>.<span class="ident">clone</span>()),
     );
 
-    <span class="ident">envmnt</span>::<span class="ident">set</span>(
-        <span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>,
-        <span class="ident">crateinfo</span>::<span class="ident">crate_target_dir</span>(<span class="ident">home</span>),
+    <span class="kw">let</span> <span class="ident">crate_target_dirs</span> <span class="op">=</span> <span class="ident">crateinfo</span>::<span class="ident">crate_target_dirs</span>(<span class="ident">home</span>);
+    <span class="ident">envmnt</span>::<span class="ident">set</span>(<span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>, <span class="ident">crate_target_dirs</span>.<span class="ident">host</span>);
+    <span class="ident">envmnt</span>::<span class="ident">set_optional</span>(
+        <span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>,
+        <span class="kw-2">&amp;</span><span class="ident">crate_target_dirs</span>.<span class="ident">custom</span>,
     );
 
     <span class="ident">rust_info_clone</span>
