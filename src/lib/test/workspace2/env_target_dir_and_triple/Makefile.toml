@@ -1,0 +1,3 @@
+
+[tasks.echo]
+script = ["echo hello from env_target_dir_and_triple"]

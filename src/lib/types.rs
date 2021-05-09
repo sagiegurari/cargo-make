@@ -2121,17 +2121,3 @@ pub struct CommandSpec {
     /// The command args
     pub args: Option<Vec<String>>,
 }
-
-#[derive(Debug, Deserialize, Default)]
-/// The output of cargo metadata command
-pub struct CargoMetadata {
-    /// The workspace root path
-    pub workspace_root: Option<String>,
-}
-
-impl CargoMetadata {
-    /// Creates and returns a new instance.
-    pub fn new() -> CargoMetadata {
-        Default::default()
-    }
-}

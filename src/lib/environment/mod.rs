@@ -455,9 +455,11 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
         &crateinfo::crate_target_triple(rustinfo.target_triple, home.clone()),
     );
 
-    envmnt::set(
-        "CARGO_MAKE_CRATE_TARGET_DIRECTORY",
-        crateinfo::crate_target_dir(home),
+    let crate_target_dirs = crateinfo::crate_target_dirs(home);
+    envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", crate_target_dirs.host);
+    envmnt::set_optional(
+        "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
+        &crate_target_dirs.custom,
     );
 
     rust_info_clone

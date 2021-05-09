@@ -915,7 +915,12 @@ dependencies = [
 description = "Sets up any non-rust dependencies in the build environment"
 category = "CI"
 private = true
-dependencies = ["setup-release-build-env-vars", "setup-release-build-env-print", "install-zip", "setup-musl"]
+dependencies = [
+  "setup-release-build-env-vars",
+  "setup-release-build-env-print",
+  "install-zip",
+  "setup-musl",
+]
 
 [tasks.setup-release-build-env-print]
 category = "CI"
@@ -956,7 +961,10 @@ condition = { env_set = [
   "CARGO_MAKE_RELEASE_FLOW_TARGET",
   "CARGO_MAKE_OPENSSL_VERSION",
   "CARGO_MAKE_OPENSSL_DOWNLOAD_URL",
-], env_true = ["CARGO_MAKE_CI", "CARGO_MAKE_BINARY_RELEASE_ENV_INSTALL_MUSL"], platforms = ["linux"] }
+], env_true = [
+  "CARGO_MAKE_CI",
+  "CARGO_MAKE_BINARY_RELEASE_ENV_INSTALL_MUSL",
+], platforms = ["linux"] }
 env.OPENSSL_DIR = "${HOME}/openssl-musl"
 env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}", default_value = "x86_64", mapping = { "true" = "armv4" } }
 script = '''

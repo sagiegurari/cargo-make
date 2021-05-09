@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### v0.33.0
+
+* Enhancement: Run kcov only on text executables #555 (thanks @elonca)
+* Enhancement: New CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY environment variable #554 (thanks @ark0f)
+* Fix: CARGO_MAKE_CRATE_TARGET_DIRECTORY does not respect workspace #557 (thanks @ark0f)
+
 ### v0.32.17 (2021-04-15)
 
 * Enhancement: Support path glob (with optional gitignore support) environment variables #542
