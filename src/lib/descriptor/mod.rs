@@ -360,7 +360,7 @@ fn load_external_descriptor(
         let file_path_string: String = FromPath::from_path(&file_path);
         let absolute_file_path = match dunce::canonicalize(&file_path) {
             Ok(canonicalized) => canonicalized.to_string_lossy().to_string(),
-            Err(_) => file_path_string.to_owned()
+            Err(_) => file_path_string.to_owned(),
         };
 
         if set_env {
