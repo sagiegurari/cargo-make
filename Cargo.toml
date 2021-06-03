@@ -71,6 +71,7 @@ toml = "^0.5"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "0.12.1"
+dunce = "1.0.1"
 
 [badges.codecov]
 branch = "master"
