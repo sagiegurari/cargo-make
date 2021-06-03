@@ -68,10 +68,10 @@ serde_derive = "^1"
 serde_ignored = "^0.1"
 shell2batch = "^0.4.2"
 toml = "^0.5"
+dunce = "1.0.1"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "0.12.1"
-dunce = "1.0.1"
 
 [badges.codecov]
 branch = "master"
