@@ -8,8 +8,8 @@
 mod io_test;
 
 use fsio::file::modify_file;
+use fsio::path as fsio_path;
 use fsio::path::from_path::FromPath;
-use fsio::path::{canonicalize_or, get_temporary_file_path};
 use glob::glob;
 use ignore::WalkBuilder;
 use std::collections::HashSet;
@@ -18,7 +18,7 @@ use std::io;
 use std::path::PathBuf;
 
 pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
-    let file_path = get_temporary_file_path(extension);
+    let file_path = fsio_path::get_temporary_file_path(extension);
 
     match fsio::file::write_text_file(&file_path, text) {
         Ok(_) => file_path,
@@ -33,7 +33,7 @@ pub(crate) fn create_file(
     write_content: &Fn(&mut File) -> io::Result<()>,
     extension: &str,
 ) -> String {
-    let file_path = get_temporary_file_path(extension);
+    let file_path = fsio_path::get_temporary_file_path(extension);
 
     match modify_file(&file_path, write_content, false) {
         Ok(_) => file_path,
@@ -157,7 +157,7 @@ pub(crate) fn get_path_list(
 pub(crate) fn canonicalize_to_string(path_string: &str) -> String {
     #[cfg(not(windows))]
     {
-        canonicalize_or(path_string, path_string)
+        fsio_path::canonicalize_or(path_string, path_string)
     }
     #[cfg(windows)]
     {
