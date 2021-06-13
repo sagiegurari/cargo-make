@@ -580,18 +580,6 @@ pub(crate) fn setup_env(
     }
 }
 
-fn remove_unc_prefix(directory_path_buf: &PathBuf) -> PathBuf {
-    let mut path_str = directory_path_buf.to_str().unwrap_or(".");
-
-    let prefix = r"\\?\";
-    if path_str.starts_with(prefix) {
-        path_str = &path_str[prefix.len()..];
-        PathBuf::from(path_str)
-    } else {
-        directory_path_buf.clone()
-    }
-}
-
 fn set_workspace_cwd(directory_path: &Path, force: bool) {
     if force || !envmnt::exists("CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY") {
         let directory_path_string: String = FromPath::from_path(directory_path);
@@ -619,15 +607,7 @@ fn get_directory_path(path_option: Option<&str>) -> PathBuf {
     let directory = expand_value(cwd_str);
 
     let mut directory_path_buf = PathBuf::from(&directory);
-    directory_path_buf = directory_path_buf
-        .canonicalize()
-        .unwrap_or(directory_path_buf);
-
-    // remove UNC path for windows
-    if cfg!(windows) {
-        directory_path_buf = remove_unc_prefix(&directory_path_buf);
-    }
-
+    directory_path_buf = dunce::canonicalize(&directory_path_buf).unwrap_or(directory_path_buf);
     directory_path_buf
 }
 
