@@ -9,7 +9,7 @@ mod io_test;
 
 use fsio::file::modify_file;
 use fsio::path::from_path::FromPath;
-use fsio::path::get_temporary_file_path;
+use fsio::path::{canonicalize_or, get_temporary_file_path};
 use glob::glob;
 use ignore::WalkBuilder;
 use std::collections::HashSet;
@@ -137,8 +137,6 @@ pub(crate) fn get_path_list(
                 _ => error!("Unsupported ignore type: {}", &ignore_type_value),
             };
 
-            println!("path_list: {:#?}", &path_list); //todo re
-            println!("included_paths: {:#?}", &included_paths); //todo re
             if included_paths.is_empty() {
                 path_list.clear();
             } else {
@@ -154,4 +152,18 @@ pub(crate) fn get_path_list(
     }
 
     path_list
+}
+
+pub(crate) fn canonicalize_to_string(path_string: &str) -> String {
+    #[cfg(not(windows))]
+    {
+        canonicalize_or(path_string, path_string)
+    }
+    #[cfg(windows)]
+    {
+        match dunce::canonicalize(path_string) {
+            Ok(value) => FromPath::from_path(&value),
+            Err(_) => path_string.to_string(),
+        }
+    }
 }

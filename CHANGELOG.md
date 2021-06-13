@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.34.0
+
+* Fix UNC prefix stripping inconsistency #562 (thanks @WilliamVenner)
+
 ### v0.33.0 (2021-05-09)
 
 * Enhancement: Run kcov only on text executables #555 (thanks @elonca)

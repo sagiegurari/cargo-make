@@ -606,9 +606,8 @@ fn get_directory_path(path_option: Option<&str>) -> PathBuf {
     let cwd_str = path_option.unwrap_or(".");
     let directory = expand_value(cwd_str);
 
-    let mut directory_path_buf = PathBuf::from(&directory);
-    directory_path_buf = dunce::canonicalize(&directory_path_buf).unwrap_or(directory_path_buf);
-    directory_path_buf
+    let directory_path_string = io::canonicalize_to_string(&directory);
+    PathBuf::from(directory_path_string)
 }
 
 pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {

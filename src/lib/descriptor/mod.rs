@@ -358,10 +358,7 @@ fn load_external_descriptor(
 
     if file_path.exists() && file_path.is_file() {
         let file_path_string: String = FromPath::from_path(&file_path);
-        let absolute_file_path = match dunce::canonicalize(&file_path) {
-            Ok(canonicalized) => canonicalized.to_string_lossy().to_string(),
-            Err(_) => file_path_string.to_owned(),
-        };
+        let absolute_file_path = io::canonicalize_to_string(&file_path_string);
 
         if set_env {
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
