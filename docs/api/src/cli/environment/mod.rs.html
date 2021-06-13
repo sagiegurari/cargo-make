@@ -805,27 +805,6 @@
 <span id="802">802</span>
 <span id="803">803</span>
 <span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
-<span id="815">815</span>
-<span id="816">816</span>
-<span id="817">817</span>
-<span id="818">818</span>
-<span id="819">819</span>
-<span id="820">820</span>
-<span id="821">821</span>
-<span id="822">822</span>
-<span id="823">823</span>
-<span id="824">824</span>
-<span id="825">825</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
@@ -1409,18 +1388,6 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">remove_unc_prefix</span>(<span class="ident">directory_path_buf</span>: <span class="kw-2">&amp;</span><span class="ident">PathBuf</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path_str</span> <span class="op">=</span> <span class="ident">directory_path_buf</span>.<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
-
-    <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="string">r&quot;\\?\&quot;</span>;
-    <span class="kw">if</span> <span class="ident">path_str</span>.<span class="ident">starts_with</span>(<span class="ident">prefix</span>) {
-        <span class="ident">path_str</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">path_str</span>[<span class="ident">prefix</span>.<span class="ident">len</span>()..];
-        <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">path_str</span>)
-    } <span class="kw">else</span> {
-        <span class="ident">directory_path_buf</span>.<span class="ident">clone</span>()
-    }
-}
-
 <span class="kw">fn</span> <span class="ident">set_workspace_cwd</span>(<span class="ident">directory_path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">force</span>: <span class="ident">bool</span>) {
     <span class="kw">if</span> <span class="ident">force</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">exists</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY&quot;</span>) {
         <span class="kw">let</span> <span class="ident">directory_path_string</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">FromPath</span>::<span class="ident">from_path</span>(<span class="ident">directory_path</span>);
@@ -1447,17 +1414,8 @@
     <span class="kw">let</span> <span class="ident">cwd_str</span> <span class="op">=</span> <span class="ident">path_option</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
     <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">expand_value</span>(<span class="ident">cwd_str</span>);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">directory_path_buf</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span><span class="ident">directory</span>);
-    <span class="ident">directory_path_buf</span> <span class="op">=</span> <span class="ident">directory_path_buf</span>
-        .<span class="ident">canonicalize</span>()
-        .<span class="ident">unwrap_or</span>(<span class="ident">directory_path_buf</span>);
-
-    <span class="comment">// remove UNC path for windows</span>
-    <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">windows</span>) {
-        <span class="ident">directory_path_buf</span> <span class="op">=</span> <span class="ident">remove_unc_prefix</span>(<span class="kw-2">&amp;</span><span class="ident">directory_path_buf</span>);
-    }
-
-    <span class="ident">directory_path_buf</span>
+    <span class="kw">let</span> <span class="ident">directory_path_string</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">canonicalize_to_string</span>(<span class="kw-2">&amp;</span><span class="ident">directory</span>);
+    <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">directory_path_string</span>)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setup_cwd</span>(<span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {

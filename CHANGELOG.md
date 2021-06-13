@@ -1,12 +1,12 @@
 ## CHANGELOG
 
-### v0.34.0
+### v0.34.0 (2021-06-13)
 
 * Fix UNC prefix stripping inconsistency #562 (thanks @WilliamVenner)
 
 ### v0.33.0 (2021-05-09)
 
-* Enhancement: Run kcov only on text executables #555 (thanks @elonca)
+* Enhancement: Run kcov only on test executables #555 (thanks @elonca)
 * Enhancement: New CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY environment variable #554 (thanks @ark0f)
 * Fix: CARGO_MAKE_CRATE_TARGET_DIRECTORY does not respect workspace #557 (thanks @ark0f)
 

@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.33.0"
+version = "0.34.0"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -70,8 +70,8 @@ shell2batch = "^0.4.2"
 toml = "^0.5"
 
 [target.'cfg(windows)'.dependencies]
-ansi_term = "0.12.1"
-dunce = "1.0.1"
+ansi_term = "^0.12.1"
+dunce = "^1"
 
 [badges.codecov]
 branch = "master"
