@@ -1553,20 +1553,6 @@ fn expand_env_with_env_vars_and_empty_task_args() {
 }
 
 #[test]
-fn remove_unc_prefix_found() {
-    let output = remove_unc_prefix(&PathBuf::from(r"\\?\C:\test"));
-
-    assert_eq!(output, PathBuf::from(r"C:\test"));
-}
-
-#[test]
-fn remove_unc_prefix_not_found() {
-    let output = remove_unc_prefix(&PathBuf::from(r"C:\test"));
-
-    assert_eq!(output, PathBuf::from(r"C:\test"));
-}
-
-#[test]
 #[ignore]
 fn set_current_task_meta_info_env_mixed() {
     let mut env = IndexMap::<String, EnvValue>::new();
