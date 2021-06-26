@@ -34,6 +34,7 @@ pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32)
     let markdown = single_page_markdown
         || output_format == "markdown"
         || output_format == "markdown-sub-section";
+    let just_task_name = output_format == "autocomplete";
 
     let mut categories = BTreeMap::new();
 
@@ -98,21 +99,31 @@ pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32)
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
-        if single_page_markdown {
-            buffer.push_str(&format!("## {}\n\n", category));
-        } else if markdown {
-            buffer.push_str(&format!("#### {}\n\n", category));
-        } else {
-            buffer.push_str(&format!("{}\n----------\n", category));
+        if !just_task_name {
+            if single_page_markdown {
+                buffer.push_str(&format!("## {}\n\n", category));
+            } else if markdown {
+                buffer.push_str(&format!("#### {}\n\n", category));
+            } else {
+                buffer.push_str(&format!("{}\n----------\n", category));
+            }
         }
 
         for (key, description) in tasks {
             if markdown {
                 buffer.push_str(&format!("* **"));
             }
-            buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
+
+            if just_task_name {
+                buffer.push_str(&format!("{} ", &key));
+            } else {
+                buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
+            }
         }
-        buffer.push_str(&format!("\n"));
+
+        if !just_task_name {
+            buffer.push_str(&format!("\n"));
+        }
     }
 
     (buffer, count)

@@ -85,6 +85,7 @@
     * [Minimal Version](#usage-min-version)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
+    * [Auto Completion](#usage-auto-completion)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)

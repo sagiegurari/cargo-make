@@ -400,7 +400,7 @@ fn create_cli<'a, 'b>(
         )
         .arg(
             Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print/list steps format (some operations do not support all formats)'")
-                .possible_values(&["default", "short-description", "markdown", "markdown-single-page", "markdown-sub-section"])
+                .possible_values(&["default", "short-description", "markdown", "markdown-single-page", "markdown-sub-section", "autocomplete"])
                 .default_value(DEFAULT_OUTPUT_FORMAT),
         )
         .arg(

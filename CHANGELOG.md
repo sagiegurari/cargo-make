@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.34.1
+
+* New bash auto completion script for makers #565
+
 ### v0.34.0 (2021-06-13)
 
 * Fix UNC prefix stripping inconsistency #562 (thanks @WilliamVenner)

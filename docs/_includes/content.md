@@ -3107,7 +3107,7 @@ OPTIONS:
         --env-file <FILE>                  Set environment variables from provided file
     -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
         --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
-        --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section]
+        --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete]
         --output-file <OUTPUT_FILE>        The list steps output file name
     -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
         --skip-tasks <SKIP_TASK_PATTERNS>  Skip all tasks that match the provided regex (example: pre.*|post.*)
@@ -3117,6 +3117,17 @@ ARGS:
     <TASK>            The task name to execute
     <TASK_ARGS>...    Task arguments which can be accessed in the task itself.
 ```
+
+<a name="usage-auto-completion"></a>
+### Auto Completion
+
+cargo-make comes with shell auto completion support, however in order to provide the exact task names that are
+available in the current directory, it will run the --list-all-steps command which might take a bit to finish.
+
+<a name="usage-auto-completion-bash"></a>
+#### Bash
+Source the makers-completion.bash file found in extra/shell folder at the start of your shell session.
+It will enable auto completion for the **makers** executable.
 
 <a name="cargo-make-global-config"></a>
 ### Global Configuration
