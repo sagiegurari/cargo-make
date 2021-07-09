@@ -3118,13 +3118,13 @@ ARGS:
     <TASK_ARGS>...    Task arguments which can be accessed in the task itself.
 ```
 
-<a name="usage-auto-completion"></a>
-### Auto Completion
+<a name="usage-shell-completion"></a>
+### Shell Completion
 
 cargo-make comes with shell auto completion support, however in order to provide the exact task names that are
 available in the current directory, it will run the --list-all-steps command which might take a bit to finish.
 
-<a name="usage-auto-completion-bash"></a>
+<a name="usage-shell-completion-bash"></a>
 #### Bash
 Source the makers-completion.bash file found in extra/shell folder at the start of your shell session.
 It will enable auto completion for the **makers** executable.
