@@ -3,7 +3,7 @@
 ### v0.34.1
 
 * Enhancement: New bash auto completion script for makers #565
-* Fix: environment variable typo in CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES #566
+* \[**backward compatibility break**\] Fix: environment variable typo in CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES #566
 
 ### v0.34.0 (2021-06-13)
 

@@ -12,6 +12,7 @@ fn <scope> migrate_env
     old_var = get_env ${2}
 
     if is_defined old_var
+        echo Old environment variable ${2} detected, please use ${1} instead.
         set_env ${1} ${old_var}
     else if is_defined new_var
         set_env ${2} ${new_var}
