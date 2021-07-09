@@ -43,7 +43,7 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
-cargo_metadata = "^0.13.1"
+cargo_metadata = "^0.14.0"
 ci_info = "^0.14.1"
 clap = "^2"
 colored = "^2"
