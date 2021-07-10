@@ -2124,6 +2124,19 @@
 <span id="2121">2121</span>
 <span id="2122">2122</span>
 <span id="2123">2123</span>
+<span id="2124">2124</span>
+<span id="2125">2125</span>
+<span id="2126">2126</span>
+<span id="2127">2127</span>
+<span id="2128">2128</span>
+<span id="2129">2129</span>
+<span id="2130">2130</span>
+<span id="2131">2131</span>
+<span id="2132">2132</span>
+<span id="2133">2133</span>
+<span id="2134">2134</span>
+<span id="2135">2135</span>
+<span id="2136">2136</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -3994,6 +4007,8 @@
     <span class="kw">pub</span> <span class="ident">end_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The name of the task to run in case of any error during the invocation of the flow</span>
     <span class="kw">pub</span> <span class="ident">on_error_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The name of the task which runs legacy migration flows</span>
+    <span class="kw">pub</span> <span class="ident">legacy_migration_task</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Additional profile names to load</span>
     <span class="kw">pub</span> <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Minimum cargo-make/makers version</span>
@@ -4048,6 +4063,13 @@
                         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">on_error_task</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>(),
                     ));
                 }
+
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">legacy_migration_task</span>.<span class="ident">is_some</span>() {
+                    <span class="self">self</span>.<span class="ident">legacy_migration_task</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">get_namespaced_task_name</span>(
+                        <span class="ident">namespace</span>,
+                        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">legacy_migration_task</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>(),
+                    ));
+                }
             }
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
         }
@@ -4077,6 +4099,10 @@
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">on_error_task</span>.<span class="ident">is_some</span>() {
             <span class="self">self</span>.<span class="ident">on_error_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">on_error_task</span>.<span class="ident">clone</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">legacy_migration_task</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">legacy_migration_task</span> <span class="op">=</span> <span class="ident">extended</span>.<span class="ident">legacy_migration_task</span>.<span class="ident">clone</span>();
         }
 
         <span class="kw">if</span> <span class="ident">extended</span>.<span class="ident">additional_profiles</span>.<span class="ident">is_some</span>() {

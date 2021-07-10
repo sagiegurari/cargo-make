@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.34.1
+### v0.35.0 (2021-07-10)
 
 * Enhancement: New bash auto completion script for makers #565
 * \[**backward compatibility break**\] Fix: environment variable typo in CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES #566
