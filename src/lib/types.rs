@@ -1867,6 +1867,8 @@ pub struct ConfigSection {
     pub end_task: Option<String>,
     /// The name of the task to run in case of any error during the invocation of the flow
     pub on_error_task: Option<String>,
+    /// The name of the task which runs legacy migration flows
+    pub legacy_migration_task: Option<String>,
     /// Additional profile names to load
     pub additional_profiles: Option<Vec<String>>,
     /// Minimum cargo-make/makers version
@@ -1921,6 +1923,13 @@ impl ConfigSection {
                         &self.on_error_task.clone().unwrap(),
                     ));
                 }
+
+                if self.legacy_migration_task.is_some() {
+                    self.legacy_migration_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.legacy_migration_task.clone().unwrap(),
+                    ));
+                }
             }
             None => (),
         }
@@ -1950,6 +1959,10 @@ impl ConfigSection {
 
         if extended.on_error_task.is_some() {
             self.on_error_task = extended.on_error_task.clone();
+        }
+
+        if extended.legacy_migration_task.is_some() {
+            self.legacy_migration_task = extended.legacy_migration_task.clone();
         }
 
         if extended.additional_profiles.is_some() {

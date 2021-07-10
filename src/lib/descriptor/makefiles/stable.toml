@@ -5,6 +5,7 @@ env_scripts = []
 [config]
 init_task = "init"
 end_task = "end"
+legacy_migration_task = "legacy-migration"
 skip_core_tasks = false
 default_to_workspace = true
 additional_profiles = []
@@ -13,6 +14,7 @@ load_cargo_aliases = false
 [env]
 RUST_BACKTRACE = "full"
 RUST_RECURSION_COUNT = { unset = true }
+CARGO_MAKE_RUN_DEPRECATED_MIGRATION = { value = "true", condition = { env_not_set = ["CARGO_MAKE_RUN_DEPRECATED_MIGRATION"] } }
 CARGO_MAKE_KCOV_VERSION = 38
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
@@ -45,7 +47,7 @@ CARGO_MAKE_OPENSSL_DOWNLOAD_URL = "${CARGO_MAKE_OPENSSL_DOWNLOAD_URL_PREFIX}/old
 RUST_TEST_THREADS = "1"
 
 [env.multi-phase-tests]
-CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES = true
+CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES = true
 
 [env.docs-all-modification-tasks]
 CARGO_MAKE_DOCS_README_SET_CRATE_VERSION = true

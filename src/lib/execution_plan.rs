@@ -415,6 +415,18 @@ fn create_for_step(
     }
 }
 
+fn add_predefined_step(config: &Config, task: &str, steps: &mut Vec<Step>) {
+    let task_config = get_normalized_task(config, task, false);
+    let add = !task_config.disabled.unwrap_or(false);
+
+    if add {
+        steps.push(Step {
+            name: task.to_string(),
+            config: task_config,
+        });
+    }
+}
+
 /// Creates the full execution plan
 pub(crate) fn create(
     config: &Config,
@@ -428,18 +440,12 @@ pub(crate) fn create(
     let mut steps = Vec::new();
 
     if !sub_flow {
+        match config.config.legacy_migration_task {
+            Some(ref task) => add_predefined_step(config, task, &mut steps),
+            None => debug!("Legacy migration task not defined."),
+        };
         match config.config.init_task {
-            Some(ref task) => {
-                let task_config = get_normalized_task(config, task, false);
-                let add = !task_config.disabled.unwrap_or(false);
-
-                if add {
-                    steps.push(Step {
-                        name: task.to_string(),
-                        config: task_config,
-                    });
-                }
-            }
+            Some(ref task) => add_predefined_step(config, task, &mut steps),
             None => debug!("Init task not defined."),
         };
     }
@@ -481,18 +487,8 @@ pub(crate) fn create(
     if !sub_flow {
         // always add end task even if already executed due to some depedency
         match config.config.end_task {
-            Some(ref task) => {
-                let task_config = get_normalized_task(config, task, false);
-                let add = !task_config.disabled.unwrap_or(false);
-
-                if add {
-                    steps.push(Step {
-                        name: task.to_string(),
-                        config: task_config,
-                    });
-                }
-            }
-            None => debug!("End task not defined."),
+            Some(ref task) => add_predefined_step(config, task, &mut steps),
+            None => debug!("Ent task not defined."),
         };
     }
 

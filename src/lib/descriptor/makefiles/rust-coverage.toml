@@ -155,7 +155,7 @@ echo "Test Files:"
 echo "${TEST_FILES}"
 
 TEST_OPTIONS="--test-threads 1"
-if [ "${CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES}" == "true" ]; then
+if [ "${CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES}" == "true" ]; then
     export RUST_TEST_THREADS="1"
     if [ "${CARGO_MAKE_RUST_CHANNEL}" == "nightly" ]; then
         TEST_OPTIONS="${TEST_OPTIONS} --include-ignored -Zunstable-options"

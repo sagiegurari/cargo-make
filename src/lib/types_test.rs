@@ -3267,6 +3267,7 @@ fn config_section_new() {
     assert!(config.init_task.is_none());
     assert!(config.end_task.is_none());
     assert!(config.on_error_task.is_none());
+    assert!(config.legacy_migration_task.is_none());
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
     assert!(config.default_to_workspace.is_none());
@@ -3293,6 +3294,7 @@ fn config_section_extend_all_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.legacy_migration_task = Some("base_legacy".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
@@ -3321,6 +3323,7 @@ fn config_section_extend_all_values() {
     extended.init_task = Some("extended_init".to_string());
     extended.end_task = Some("extended_end".to_string());
     extended.on_error_task = Some("extended_err".to_string());
+    extended.legacy_migration_task = Some("extended_legacy".to_string());
     extended.additional_profiles = Some(vec!["e1".to_string(), "e2".to_string()]);
     extended.min_version = Some("2.0.0".to_string());
     extended.default_to_workspace = Some(false);
@@ -3344,6 +3347,10 @@ fn config_section_extend_all_values() {
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "extended_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "extended_err".to_string());
+    assert_eq!(
+        base.legacy_migration_task.unwrap(),
+        "extended_legacy".to_string()
+    );
     assert_eq!(
         base.additional_profiles.unwrap(),
         vec!["e1".to_string(), "e2".to_string()]
@@ -3372,6 +3379,7 @@ fn config_section_extend_no_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.legacy_migration_task = Some("base_legacy".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
@@ -3405,6 +3413,10 @@ fn config_section_extend_no_values() {
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
     assert_eq!(
+        base.legacy_migration_task.unwrap(),
+        "base_legacy".to_string()
+    );
+    assert_eq!(
         base.additional_profiles.unwrap(),
         vec!["b1".to_string(), "b2".to_string()]
     );
@@ -3432,6 +3444,7 @@ fn config_section_extend_some_values() {
     base.init_task = Some("base_init".to_string());
     base.end_task = Some("base_end".to_string());
     base.on_error_task = Some("base_err".to_string());
+    base.legacy_migration_task = Some("base_legacy".to_string());
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
@@ -3467,6 +3480,10 @@ fn config_section_extend_some_values() {
     assert_eq!(base.init_task.unwrap(), "extended_init".to_string());
     assert_eq!(base.end_task.unwrap(), "base_end".to_string());
     assert_eq!(base.on_error_task.unwrap(), "base_err".to_string());
+    assert_eq!(
+        base.legacy_migration_task.unwrap(),
+        "base_legacy".to_string()
+    );
     assert_eq!(
         base.additional_profiles.unwrap(),
         vec!["b1".to_string(), "b2".to_string()]
@@ -3882,6 +3899,7 @@ fn config_section_apply_config_empty_modify_empty() {
     assert!(config_section.init_task.is_none());
     assert!(config_section.end_task.is_none());
     assert!(config_section.on_error_task.is_none());
+    assert!(config_section.legacy_migration_task.is_none());
 }
 
 #[test]
@@ -3896,6 +3914,7 @@ fn config_section_apply_config_empty_modify_namespace() {
     assert!(config_section.init_task.is_none());
     assert!(config_section.end_task.is_none());
     assert!(config_section.on_error_task.is_none());
+    assert!(config_section.legacy_migration_task.is_none());
 }
 
 #[test]
@@ -3908,11 +3927,13 @@ fn config_section_apply_config_with_values_modify_empty() {
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
     config_section.on_error_task = Some("error".to_string());
+    config_section.legacy_migration_task = Some("legacy".to_string());
     config_section.apply(&modify_config);
 
     assert_eq!(config_section.init_task.unwrap(), "init");
     assert_eq!(config_section.end_task.unwrap(), "end");
     assert_eq!(config_section.on_error_task.unwrap(), "error");
+    assert_eq!(config_section.legacy_migration_task.unwrap(), "legacy");
 }
 
 #[test]
@@ -3925,11 +3946,16 @@ fn config_section_apply_config_with_values_modify_namespace() {
     config_section.init_task = Some("init".to_string());
     config_section.end_task = Some("end".to_string());
     config_section.on_error_task = Some("error".to_string());
+    config_section.legacy_migration_task = Some("legacy".to_string());
     config_section.apply(&modify_config);
 
     assert_eq!(config_section.init_task.unwrap(), "config_ns::init");
     assert_eq!(config_section.end_task.unwrap(), "config_ns::end");
     assert_eq!(config_section.on_error_task.unwrap(), "config_ns::error");
+    assert_eq!(
+        config_section.legacy_migration_task.unwrap(),
+        "config_ns::legacy"
+    );
 }
 
 #[test]

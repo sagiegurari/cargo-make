@@ -1,4 +1,27 @@
 
+[tasks.legacy-migration]
+description = "Migrates deprecated environment variables."
+category = "Deprecated"
+private = true
+condition = { env_true = ["CARGO_MAKE_RUN_DEPRECATED_MIGRATION"] }
+env = { CARGO_MAKE_RUN_DEPRECATED_MIGRATION = false }
+script = '''
+#!@duckscript
+fn <scope> migrate_env
+    new_var = get_env ${1}
+    old_var = get_env ${2}
+
+    if is_defined old_var
+        echo Old environment variable ${2} detected, please use ${1} instead.
+        set_env ${1} ${old_var}
+    else if is_defined new_var
+        set_env ${2} ${new_var}
+    end
+end
+
+migrate_env CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES
+'''
+
 [tasks.build-verbose]
 description = "Runs the rust compiler with verbose output."
 category = "Deprecated"

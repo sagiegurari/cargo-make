@@ -440,7 +440,7 @@ run_task = [
     "test-single-threaded",
     "test-custom",
     "test-multi-phases-cleanup",
-  ], condition = { env_true = ["CARGO_MAKE_TEST_USE_MUTLI_TEST_PHASES"] } },
+  ], condition = { env_true = ["CARGO_MAKE_TEST_USE_MULTI_TEST_PHASES"] } },
   { name = "test" },
 ]
 
