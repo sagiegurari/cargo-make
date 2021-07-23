@@ -14,7 +14,9 @@ load_cargo_aliases = false
 [env]
 RUST_BACKTRACE = "full"
 RUST_RECURSION_COUNT = { unset = true }
-CARGO_MAKE_RUN_DEPRECATED_MIGRATION = { value = "true", condition = { env_not_set = ["CARGO_MAKE_RUN_DEPRECATED_MIGRATION"] } }
+CARGO_MAKE_RUN_DEPRECATED_MIGRATION = { value = "true", condition = { env_not_set = [
+  "CARGO_MAKE_RUN_DEPRECATED_MIGRATION",
+] } }
 CARGO_MAKE_KCOV_VERSION = 38
 CARGO_MAKE_KCOV_EXCLUDE_LINE = "kcov-ignore"
 CARGO_MAKE_KCOV_EXCLUDE_REGION = "kcov-ignore-start:kcov-ignore-end"
