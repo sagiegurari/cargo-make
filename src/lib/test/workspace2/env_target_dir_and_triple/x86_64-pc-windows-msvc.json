@@ -13,7 +13,7 @@
   "exe-suffix": ".exe",
   "executables": true,
   "has-elf-tls": true,
-  "is-builtin": true,
+  "is-builtin": false,
   "is-like-msvc": true,
   "is-like-windows": true,
   "linker-flavor": "msvc",
