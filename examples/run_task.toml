@@ -34,4 +34,8 @@ args = ["cleanup"]
 run_task = { name = ["echo1", "echo2"], fork = true, cleanup_task = "cleanup" }
 
 [tasks.cleanup-example-with-error]
-run_task = { name = ["echo1", "echo2", "fail"], fork = true, cleanup_task = "cleanup" }
+run_task = { name = [
+  "echo1",
+  "echo2",
+  "fail",
+], fork = true, cleanup_task = "cleanup" }

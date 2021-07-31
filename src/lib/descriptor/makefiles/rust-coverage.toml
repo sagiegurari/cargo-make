@@ -24,15 +24,24 @@ description = "Runs coverage (by default using kcov)."
 category = "Test"
 env = { "RUSTFLAGS" = "-C link-dead-code" }
 run_task = [
-  { name = "coverage-tarpaulin", condition = { platforms = ["linux"], env = { "CARGO_MAKE_COVERAGE_PROVIDER" = "tarpaulin" } } },
-  { name = "coverage-kcov", condition = { platforms = ["linux"] } },
+  { name = "coverage-tarpaulin", condition = { platforms = [
+    "linux",
+  ], env = { "CARGO_MAKE_COVERAGE_PROVIDER" = "tarpaulin" } } },
+  { name = "coverage-kcov", condition = { platforms = [
+    "linux",
+  ] } },
 ]
 
 [tasks.coverage-kcov]
 description = "Installs (if missing) and runs coverage using kcov (not supported on windows)"
 category = "Test"
 dependencies = ["setup-sudo-env"]
-condition = { env_set = ["CARGO_MAKE_KCOV_VERSION"], platforms = ["linux", "mac"] }
+condition = { env_set = [
+  "CARGO_MAKE_KCOV_VERSION",
+], platforms = [
+  "linux",
+  "mac",
+] }
 script_runner = "bash"
 env = { "CARGO_MAKE_KCOV_INCLUDE_PATTERN" = "${CARGO_MAKE_WORKING_DIRECTORY}/src/" }
 install_script = '''
@@ -198,7 +207,12 @@ dependencies = ["pre-coverage", "coverage", "post-coverage"]
 [tasks.codecov]
 description = "Runs codecov script to upload coverage results to codecov."
 category = "Test"
-condition = { env_not_set = ["CARGO_MAKE_SKIP_CODECOV"], platforms = ["linux", "mac"] }
+condition = { env_not_set = [
+  "CARGO_MAKE_SKIP_CODECOV",
+], platforms = [
+  "linux",
+  "mac",
+] }
 script_runner = "bash"
 script = '''
 #!/usr/bin/env bash
@@ -214,5 +228,10 @@ dependencies = ["coverage-flow", "codecov"]
 [tasks.ci-coverage-flow]
 description = "Runs the coverage flow and uploads the results to codecov."
 category = "CI"
-condition = { platforms = ["linux"], env_true = ["CARGO_MAKE_CI", "CARGO_MAKE_RUN_CODECOV"] }
+condition = { platforms = [
+  "linux",
+], env_true = [
+  "CARGO_MAKE_CI",
+  "CARGO_MAKE_RUN_CODECOV",
+] }
 run_task = "codecov-flow"

@@ -16,4 +16,6 @@ watch = true
 [tasks.watch-args-example]
 command = "echo"
 args = ["Triggered by watch"]
-watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
+watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = [
+  "./docs/",
+] }

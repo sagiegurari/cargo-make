@@ -33,9 +33,19 @@ args = ["running test-default"]
 
 [tasks.test-routing]
 run_task = [
-  { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
-  { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
-  { name = "test3", condition_script = ["somecommand"] },
+  { name = "test1", condition = { platforms = [
+    "windows",
+    "linux",
+  ], channels = [
+    "beta",
+    "stable",
+  ] } },
+  { name = "test2", condition = { platforms = [
+    "mac",
+  ], rust_version = { min = "1.20.0", max = "1.30.0" } } },
+  { name = "test3", condition_script = [
+    "somecommand",
+  ] },
   { name = "test-default" },
 ]
 
@@ -58,7 +68,9 @@ echo "condition was met"
 '''
 
 [tasks.test-file-not-exists-condition]
-condition = { files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml2"] }
+condition = { files_not_exist = [
+  "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml2",
+] }
 script = '''
 echo "condition was met"
 '''
