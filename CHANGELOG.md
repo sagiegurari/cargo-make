@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.1
+
+* Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
+
 ### v0.35.0 (2021-07-10)
 
 * Enhancement: New bash auto completion script for makers #565
