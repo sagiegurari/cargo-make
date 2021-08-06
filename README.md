@@ -1515,15 +1515,16 @@ These scripts use that value to create a new environment variable **COMPOSITE_2*
 cargo-make will load the environment variables in the following order
 
 * Load environment file provided on the command line
-* Setup internal environment variables (see [Global](#usage-env-global) section)
+* Setup internal environment variables (see [Global](#usage-env-global) section). **Not including per task variables.**
 * Load global environment files defined in the **env_files** attribute.
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
 * Load global environment setup scripts defines in the **env_scripts** attribute.
 * Per Task
-  *  Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
-  *  Load environment variables defined in the **env** block (same behaviour as global env block).
+  * Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
+  * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
+  * Load environment variables defined in the **env** block (same behaviour as global env block).
 
 <a name="usage-env-global"></a>
 #### Global
