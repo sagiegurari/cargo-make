@@ -34,6 +34,7 @@ fn get_latest_version() -> Option<String> {
     let result = Command::new("cargo")
         .arg("search")
         .arg("cargo-make")
+        .arg("--limit=1")
         .output();
 
     match result {
