@@ -2,6 +2,7 @@
 
 ### v0.35.1
 
+* Fix: extend attribute didn't extend env variables #579
 * Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
 
 ### v0.35.0 (2021-07-10)

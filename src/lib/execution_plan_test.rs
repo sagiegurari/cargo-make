@@ -1,4 +1,5 @@
 use super::*;
+use crate::descriptor;
 use crate::types::{
     ConfigSection, CrateInfo, DependencyIdentifier, PlatformOverrideTask, Task, TaskWatchOptions,
     Workspace,
@@ -1299,6 +1300,31 @@ fn create_noworkspace() {
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
+}
+
+#[test]
+#[ignore]
+fn create_task_extends_empty_env_bug_verification() {
+    let config = descriptor::load(
+        "./src/lib/test/makefiles/task_extend.toml",
+        true,
+        None,
+        false,
+    )
+    .unwrap();
+
+    let execution_plan = create(&config, "task2", true, false, false, &None);
+
+    assert_eq!(execution_plan.steps.len(), 3);
+
+    let step = execution_plan.steps[1].clone();
+    assert_eq!(step.name, "task2");
+
+    let env = step.config.env.unwrap();
+    match env.get("Foo").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "foo"),
+        _ => panic!("Invalid env type"),
+    }
 }
 
 #[test]

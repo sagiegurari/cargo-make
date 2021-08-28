@@ -2110,7 +2110,7 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name

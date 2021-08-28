@@ -82,6 +82,16 @@ fn get_optional_normalized_task(config: &Config, name: &str, support_alias: bool
                         let mut extended_task =
                             get_normalized_task(config, extended_task_name, support_alias);
 
+                        if let Some(ref env) = normalized_task.env {
+                            if env.len() == 2
+                                && env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
+                                && env.contains_key(
+                                    "CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY",
+                                )
+                            {
+                                normalized_task.env = None;
+                            }
+                        }
                         extended_task.extend(&normalized_task);
 
                         extended_task
