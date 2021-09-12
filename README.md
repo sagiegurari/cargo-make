@@ -1656,6 +1656,13 @@ command = "echo"
 args = ["condition was met"]
 ```
 
+Fail messages are only printed if log level is verbose or reduce output flag is set to false in the config as follows:
+
+```toml
+[config]
+reduce_output = false
+```
+
 <a name="usage-conditions-script"></a>
 #### Scripts
 These script are invoked before the task is running its installation and/or commands and if the exit code of the condition script is non zero, the task will not be invoked.
