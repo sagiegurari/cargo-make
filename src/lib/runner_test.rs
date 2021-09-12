@@ -1,4 +1,5 @@
 use super::*;
+use crate::test;
 use crate::types::{
     ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue, FlowInfo,
     RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
@@ -919,7 +920,10 @@ fn create_watch_task_name_valid() {
 fn create_watch_task_with_makefile() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
-    let task = create_watch_task("some_task", None);
+
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task("some_task", None, &flow_info);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "true"),
@@ -953,7 +957,10 @@ fn create_watch_task_with_makefile_with_spaces_in_path() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     let test_makefile = "/path with spaces/mymakefile.toml";
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &test_makefile);
-    let task = create_watch_task("some_task", None);
+
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task("some_task", None, &flow_info);
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
@@ -987,7 +994,14 @@ fn create_watch_task_with_makefile_with_spaces_in_path() {
 fn create_watch_task_with_makefile_and_bool_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
-    let task = create_watch_task("some_task", Some(TaskWatchOptions::Boolean(true)));
+
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task(
+        "some_task",
+        Some(TaskWatchOptions::Boolean(true)),
+        &flow_info,
+    );
 
     match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
         EnvValue::Value(value) => assert_eq!(value, "true"),
@@ -1029,7 +1043,13 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
         watch: None,
     };
 
-    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task(
+        "some_task",
+        Some(TaskWatchOptions::Options(watch_options)),
+        &flow_info,
+    );
 
     assert!(task.install_crate_args.is_some());
     assert_eq!(task.install_crate_args.unwrap().len(), 2);
@@ -1062,6 +1082,68 @@ fn create_watch_task_with_makefile_and_empty_object_options() {
 #[test]
 #[ignore]
 #[cfg(target_os = "linux")]
+fn create_watch_task_with_makefile_and_all_object_options_and_cli_args() {
+    let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
+    envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
+
+    let watch_options = WatchOptions {
+        version: Some("100.200.300.400".to_string()),
+        postpone: Some(true),
+        ignore_pattern: Some("tools/*".to_string()),
+        no_git_ignore: Some(true),
+        watch: Some(vec!["dir1".to_string(), "dir2".to_string()]),
+    };
+
+    let mut flow_info = test::create_empty_flow_info();
+    flow_info.cli_arguments = Some(vec!["1".to_string(), "2".to_string(), "3 4".to_string()]);
+
+    let task = create_watch_task(
+        "some_task",
+        Some(TaskWatchOptions::Options(watch_options)),
+        &flow_info,
+    );
+
+    assert!(task.install_crate_args.is_some());
+    let install_crate_args = task.install_crate_args.unwrap();
+    assert_eq!(install_crate_args[0], "--version");
+    assert_eq!(install_crate_args[1], "100.200.300.400");
+
+    match task.env.unwrap().get("CARGO_MAKE_DISABLE_WATCH").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "true"),
+        _ => panic!("CARGO_MAKE_DISABLE_WATCH not defined."),
+    };
+
+    assert_eq!(task.command.unwrap(), "cargo".to_string());
+
+    let log_level = logger::get_log_level();
+    let mut make_command_line =
+        "make --disable-check-for-updates --no-on-error --loglevel=".to_string();
+    make_command_line.push_str(&log_level);
+    make_command_line.push_str(" --profile=");
+    make_command_line.push_str(&profile::get());
+    make_command_line.push_str(" --allow-private --skip-init-end-tasks --makefile ");
+    make_command_line.push_str(&makefile.clone());
+    make_command_line.push_str(" some_task 1 2 \"3 4\"");
+
+    let args = task.args.unwrap();
+    assert_eq!(args.len(), 12);
+    assert_eq!(args[0], "watch".to_string());
+    assert_eq!(args[1], "-q".to_string());
+    assert_eq!(args[2], "--postpone".to_string());
+    assert_eq!(args[3], "-i".to_string());
+    assert_eq!(args[4], "tools/*".to_string());
+    assert_eq!(args[5], "--no-gitignore".to_string());
+    assert_eq!(args[6], "-w".to_string());
+    assert_eq!(args[7], "dir1".to_string());
+    assert_eq!(args[8], "-w".to_string());
+    assert_eq!(args[9], "dir2".to_string());
+    assert_eq!(args[10], "-x".to_string());
+    assert_eq!(args[11], make_command_line.to_string());
+}
+
+#[test]
+#[ignore]
+#[cfg(target_os = "linux")]
 fn create_watch_task_with_makefile_and_all_object_options() {
     let makefile = envmnt::get_or("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &makefile);
@@ -1074,7 +1156,13 @@ fn create_watch_task_with_makefile_and_all_object_options() {
         watch: Some(vec!["dir1".to_string(), "dir2".to_string()]),
     };
 
-    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task(
+        "some_task",
+        Some(TaskWatchOptions::Options(watch_options)),
+        &flow_info,
+    );
 
     assert!(task.install_crate_args.is_some());
     let install_crate_args = task.install_crate_args.unwrap();
@@ -1129,7 +1217,13 @@ fn create_watch_task_with_makefile_and_false_object_options() {
         watch: None,
     };
 
-    let task = create_watch_task("some_task", Some(TaskWatchOptions::Options(watch_options)));
+    let flow_info = test::create_empty_flow_info();
+
+    let task = create_watch_task(
+        "some_task",
+        Some(TaskWatchOptions::Options(watch_options)),
+        &flow_info,
+    );
 
     assert!(task.install_crate_args.is_some());
     assert_eq!(task.install_crate_args.unwrap().len(), 2);
@@ -1161,7 +1255,9 @@ fn create_watch_task_with_makefile_and_false_object_options() {
 
 #[test]
 fn create_watch_step_valid() {
-    let step = create_watch_step("test_watch_step", None);
+    let flow_info = test::create_empty_flow_info();
+
+    let step = create_watch_step("test_watch_step", None, &flow_info);
     let task = step.config;
 
     assert_eq!(&step.name, "test_watch_step-watch");

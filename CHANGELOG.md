@@ -4,6 +4,7 @@
 
 * Fix: extend attribute didn't extend env variables #579
 * Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
+* Fix: CARGO_MAKE_TASK_ARGS not set when using watch mode #586
 
 ### v0.35.0 (2021-07-10)
 

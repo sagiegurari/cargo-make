@@ -110,7 +110,13 @@ pub(crate) fn get_sub_task_info_for_routing_info(
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
-    let fork_task = create_proxy_task(&flow_info.task, true, true, None, None);
+    let fork_task = create_proxy_task(
+        &flow_info.task,
+        true,
+        true,
+        None,
+        flow_info.cli_arguments.clone(),
+    );
 
     Step {
         name: "cargo_make_run_fork".to_string(),
@@ -250,8 +256,8 @@ fn create_watch_task_name(task: &str) -> String {
     watch_task_name
 }
 
-fn create_watch_step(task: &str, options: Option<TaskWatchOptions>) -> Step {
-    let watch_task = create_watch_task(&task, options);
+fn create_watch_step(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Step {
+    let watch_task = create_watch_task(&task, options, flow_info);
 
     let watch_task_name = create_watch_task_name(&task);
 
@@ -267,7 +273,7 @@ fn watch_task(
     task: &str,
     options: Option<TaskWatchOptions>,
 ) {
-    let step = create_watch_step(&task, options);
+    let step = create_watch_step(&task, options, flow_info);
 
     run_task(&flow_info, flow_state, &step);
 }
@@ -417,8 +423,9 @@ fn run_task_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, execution_pla
     }
 }
 
-fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    let mut task_config = create_proxy_task(&task, true, true, None, None);
+fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Task {
+    let mut task_config =
+        create_proxy_task(&task, true, true, None, flow_info.cli_arguments.clone());
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
