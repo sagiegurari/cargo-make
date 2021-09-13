@@ -195,7 +195,6 @@ struct CargoConfig {
 #[serde(rename_all = "kebab-case")]
 struct CargoConfigBuild {
     target: Option<RustTarget>,
-    target_dir: Option<PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]
