@@ -155,15 +155,5 @@ pub(crate) fn get_path_list(
 }
 
 pub(crate) fn canonicalize_to_string(path_string: &str) -> String {
-    #[cfg(not(windows))]
-    {
-        fsio_path::canonicalize_or(path_string, path_string)
-    }
-    #[cfg(windows)]
-    {
-        match dunce::canonicalize(path_string) {
-            Ok(value) => FromPath::from_path(&value),
-            Err(_) => path_string.to_string(),
-        }
-    }
+    fsio_path::canonicalize_or(path_string, path_string)
 }

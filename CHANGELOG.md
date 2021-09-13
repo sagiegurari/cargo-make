@@ -6,6 +6,7 @@
 * Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
 * Fix: CARGO_MAKE_TASK_ARGS not set when using watch mode #586
 * Documentation: improve condition fail message documentation #583
+* Upgrade run_script #581
 
 ### v0.35.0 (2021-07-10)
 
