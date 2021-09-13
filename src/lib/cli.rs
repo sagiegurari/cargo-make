@@ -16,9 +16,11 @@ use crate::logger::LoggerOptions;
 use crate::profile;
 use crate::recursion_level;
 use crate::runner;
+use crate::time_summary;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
 use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
+use std::time::SystemTime;
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 static AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
@@ -29,6 +31,8 @@ static DEFAULT_TASK_NAME: &str = "default";
 static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
+    let start_time = SystemTime::now();
+
     recursion_level::increment();
 
     logger::init(&LoggerOptions {
@@ -106,6 +110,13 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             );
         }
     };
+    let mut time_summary_vec = vec![];
+    time_summary::add(
+        &mut time_summary_vec,
+        "[Load Makefiles]",
+        start_time.clone(),
+    );
+    let step_time = SystemTime::now();
 
     match config.config.additional_profiles {
         Some(ref profiles) => profile::set_additional(profiles),
@@ -113,6 +124,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     };
 
     let env_info = environment::setup_env(&cli_args, &config, &task, home);
+    time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
     if crate_name.len() > 0 {
@@ -139,7 +151,14 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             cli_args.skip_tasks_pattern,
         );
     } else {
-        runner::run(config, &task, env_info, &cli_args);
+        runner::run(
+            config,
+            &task,
+            env_info,
+            &cli_args,
+            start_time,
+            time_summary_vec,
+        );
     }
 }
 

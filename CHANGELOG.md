@@ -7,6 +7,7 @@
 * Fix: CARGO_MAKE_TASK_ARGS not set when using watch mode #586
 * Documentation: improve condition fail message documentation #583
 * Upgrade run_script #581
+* Add internal steps to time summary
 
 ### v0.35.0 (2021-07-10)
 

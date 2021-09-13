@@ -552,9 +552,14 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: &mut FlowState) {
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliArgs) {
-    let start_time = SystemTime::now();
-
+pub(crate) fn run(
+    config: Config,
+    task: &str,
+    env_info: EnvInfo,
+    cli_args: &CliArgs,
+    start_time: SystemTime,
+    time_summary_vec: Vec<(String, u128)>,
+) {
     time_summary::init(&config, &cli_args);
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
@@ -580,6 +585,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         cli_arguments: cli_args.arguments.clone(),
     };
     let mut flow_state = FlowState::new();
+    flow_state.time_summary = time_summary_vec;
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
         run_flow(&flow_info, &mut flow_state, false);
