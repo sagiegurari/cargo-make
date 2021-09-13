@@ -94,6 +94,7 @@
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)
+    * [Performance Tuning](#usage-performance-tuning)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Shell Completion](#usage-shell-completion)
@@ -3163,6 +3164,27 @@ In order to specify the minimal version, use the **min_version** in the config s
 [config]
 min_version = "0.35.0"
 ```
+
+<a name="usage-performance-tuning"></a>
+### Performance Tuning
+Some features of cargo-make can be disabled which can improve the startup time.<br>
+Below is a list of all current features:
+
+```toml
+[config]
+# Skip loading of all core tasks which saves up a bit on toml parsing and task creation
+skip_core_tasks = true
+# Skips loading Git related environment variables
+skip_git_env_info = true
+# Skips loading rust related environment variables
+skip_rust_env_info = true
+# Skips loading the current crate related environment variables
+skip_crate_env_info = true
+```
+
+When running in a rust workspace, you can disable some of the features in the member makefiles.<br>
+For example, if the members are in the same git repo as the entire project, you can add **skip_git_env_info** in the members
+makefiles and they will still have the environment variables setup from the parent process.
 
 <a name="usage-diff-changes"></a>
 ### Diff Changes

@@ -83,6 +83,7 @@
         * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
         * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)
+    * [Performance Tuning](#usage-performance-tuning)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Shell Completion](#usage-shell-completion)

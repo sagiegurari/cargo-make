@@ -8,6 +8,7 @@
 * Documentation: improve condition fail message documentation #583
 * Upgrade run_script #581
 * Add internal steps to time summary
+* Adding ability to disable git, rust and crate environment variables to speed up startup time
 
 ### v0.35.0 (2021-07-10)
 

@@ -36,7 +36,7 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
             let percentage = (entry.1 as f64 / total_time as f64) * 100.0;
             let seconds = entry.1 as f64 / 1000.0;
 
-            let percentage_size = if percentage == 100.0 {
+            let percentage_size = if percentage >= 100.0 {
                 3
             } else if percentage >= 10.0 {
                 2

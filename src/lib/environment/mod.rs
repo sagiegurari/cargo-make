@@ -555,13 +555,25 @@ pub(crate) fn setup_env(
     setup_env_for_duckscript();
 
     // load crate info
-    let crate_info = setup_env_for_crate();
+    let crate_info = if config.config.skip_crate_env_info.unwrap_or(false) {
+        CrateInfo::new()
+    } else {
+        setup_env_for_crate()
+    };
 
     // load git info
-    let gitinfo = setup_env_for_git_repo();
+    let gitinfo = if config.config.skip_git_env_info.unwrap_or(false) {
+        GitInfo::new()
+    } else {
+        setup_env_for_git_repo()
+    };
 
     // load rust info
-    let rustinfo = setup_env_for_rust(home);
+    let rustinfo = if config.config.skip_rust_env_info.unwrap_or(false) {
+        RustInfo::new()
+    } else {
+        setup_env_for_rust(home)
+    };
 
     // load CI info
     let ci_info_struct = setup_env_for_ci();
