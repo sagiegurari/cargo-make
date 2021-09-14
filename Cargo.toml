@@ -52,7 +52,7 @@ duckscript = "^0.7"
 duckscriptsdk = "^0.8.4"
 envmnt = "^0.9"
 fern = "^0.6"
-fsio = { version = "^0.2", features = ["temp-path"] }
+fsio = { version = "^0.3", features = ["temp-path"] }
 git_info = "^0.1.2"
 glob = "^0.3"
 home = "^0.5"
