@@ -21,7 +21,6 @@ use indexmap::IndexMap;
 use regex::Regex;
 use std::collections::HashSet;
 use std::env;
-use std::path;
 use std::path::Path;
 use std::vec::Vec;
 
@@ -157,16 +156,6 @@ fn should_include_workspace_member(member: &str, include_members: &HashSet<Strin
     }
 }
 
-fn update_member_path(member: &str) -> String {
-    let os_separator = path::MAIN_SEPARATOR.to_string();
-
-    //convert to OS path separators
-    let mut member_path = str::replace(&member, "\\", &os_separator);
-    member_path = str::replace(&member_path, "/", &os_separator);
-
-    member_path
-}
-
 fn filter_workspace_members(members: &Vec<String>) -> Vec<String> {
     let skip_members_config = envmnt::get_or("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS", "");
     let skip_members = get_workspace_members_config(skip_members_config);
@@ -224,20 +213,17 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
         script_lines.push("workspace_directory = pwd".to_string());
         for member in &filtered_members {
-            //convert to OS path separators
-            let member_path = update_member_path(&member);
-
             let mut cd_line = "cd ./".to_string();
-            cd_line.push_str(&member_path);
+            cd_line.push_str(&member.replace("\\", "/"));
             script_lines.push(cd_line);
 
             //get member name
-            let member_name = match Path::new(&member_path).file_name() {
+            let member_name = match Path::new(&member).file_name() {
                 Some(name) => String::from(name.to_string_lossy()),
-                None => member_path.clone(),
+                None => member.clone(),
             };
 
-            debug!("Adding Member: {} Path: {}", &member_name, &member_path);
+            debug!("Adding Member: {} Path: {}", &member_name, &member);
 
             let mut make_line = "exec --fail-on-error ".to_string();
             make_line.push_str(&cargo_make_command);
