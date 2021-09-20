@@ -5,6 +5,7 @@
 * Fix: extend attribute didn't extend env variables #579
 * Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
 * Fix: CARGO_MAKE_TASK_ARGS not set when using watch mode #586
+* Fix: Workspace members glob detection didn't validate Cargo.toml exists #591
 * Documentation: improve condition fail message documentation #583
 * Upgrade run_script #581
 * Add internal steps to time summary
