@@ -88,6 +88,7 @@
     * [Cli Options](#usage-cli)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
+        * [zsh](#usage-shell-completion-zsh)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)

@@ -3158,6 +3158,20 @@ available in the current directory, it will run the --list-all-steps command whi
 Source the makers-completion.bash file found in extra/shell folder at the start of your shell session.
 It will enable auto completion for the **makers** executable.
 
+<a name="usage-shell-completion-zsh"></a>
+#### zsh
+zsh supports bash auto completion, therefore the existing bash autocomplete can be used by running the following script:
+
+```
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# make sure to update the path based on your file system location
+source ./extra/shell/makers-completion.bash
+```
+
+It will enable auto completion for the **makers** executable.
+
 <a name="cargo-make-global-config"></a>
 ### Global Configuration
 Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file config.toml located in the cargo-make directory.

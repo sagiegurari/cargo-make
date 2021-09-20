@@ -10,6 +10,7 @@
 * Upgrade run_script #581
 * Add internal steps to time summary
 * Adding ability to disable git, rust and crate environment variables to speed up startup time
+* Documentation: zsh auto completion instructions for makers #590
 
 ### v0.35.0 (2021-07-10)
 
