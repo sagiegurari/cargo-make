@@ -221,15 +221,12 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     let cargo_make_command = "cargo make";
 
     let mut script_lines = vec![];
+    script_lines.push("workspace_directory = pwd".to_string());
     for member in &filtered_members {
         //convert to OS path separators
         let member_path = update_member_path(&member);
 
-        let mut cd_line = if cfg!(windows) {
-            "PUSHD ".to_string()
-        } else {
-            "cd ./".to_string()
-        };
+        let mut cd_line = "cd ./".to_string();
         cd_line.push_str(&member_path);
         script_lines.push(cd_line);
 
@@ -241,7 +238,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
         debug!("Adding Member: {} Path: {}", &member_name, &member_path);
 
-        let mut make_line = cargo_make_command.to_string();
+        let mut make_line = "exec --fail-on-error ".to_string();
+        make_line.push_str(&cargo_make_command);
         make_line
             .push_str(" --disable-check-for-updates --allow-private --no-on-error --loglevel=");
         make_line.push_str(&log_level);
@@ -261,12 +259,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
 
         script_lines.push(make_line);
 
-        if cfg!(windows) {
-            script_lines.push("if %errorlevel% neq 0 exit /b %errorlevel%".to_string());
-            script_lines.push("POPD".to_string());
-        } else {
-            script_lines.push("cd -".to_string());
-        };
+        script_lines.push("cd ${workspace_directory}".to_string());
     }
 
     //only if environment variable is set
@@ -290,6 +283,7 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     debug!("Workspace Task Script: {:#?}", &script_lines);
 
     let mut workspace_task = Task::new();
+    workspace_task.script_runner = Some("@duckscript".to_string());
     workspace_task.script = Some(ScriptValue::Text(script_lines));
     workspace_task.env = task_env;
 
