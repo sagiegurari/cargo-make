@@ -217,49 +217,51 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     };
 
     let filtered_members = filter_workspace_members(&members);
-
-    let cargo_make_command = "cargo make";
-
     let mut script_lines = vec![];
-    script_lines.push("workspace_directory = pwd".to_string());
-    for member in &filtered_members {
-        //convert to OS path separators
-        let member_path = update_member_path(&member);
 
-        let mut cd_line = "cd ./".to_string();
-        cd_line.push_str(&member_path);
-        script_lines.push(cd_line);
+    if !filtered_members.is_empty() {
+        let cargo_make_command = "cargo make";
 
-        //get member name
-        let member_name = match Path::new(&member_path).file_name() {
-            Some(name) => String::from(name.to_string_lossy()),
-            None => member_path.clone(),
-        };
+        script_lines.push("workspace_directory = pwd".to_string());
+        for member in &filtered_members {
+            //convert to OS path separators
+            let member_path = update_member_path(&member);
 
-        debug!("Adding Member: {} Path: {}", &member_name, &member_path);
+            let mut cd_line = "cd ./".to_string();
+            cd_line.push_str(&member_path);
+            script_lines.push(cd_line);
 
-        let mut make_line = "exec --fail-on-error ".to_string();
-        make_line.push_str(&cargo_make_command);
-        make_line
-            .push_str(" --disable-check-for-updates --allow-private --no-on-error --loglevel=");
-        make_line.push_str(&log_level);
-        make_line.push_str(" --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=");
-        make_line.push_str(&member_name);
-        make_line.push_str(" --profile ");
-        make_line.push_str(&profile_name);
-        make_line.push_str(" -- ");
-        make_line.push_str(&task);
+            //get member name
+            let member_name = match Path::new(&member_path).file_name() {
+                Some(name) => String::from(name.to_string_lossy()),
+                None => member_path.clone(),
+            };
 
-        if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
-            for arg in args {
-                make_line.push_str(" ");
-                make_line.push_str(&arg);
+            debug!("Adding Member: {} Path: {}", &member_name, &member_path);
+
+            let mut make_line = "exec --fail-on-error ".to_string();
+            make_line.push_str(&cargo_make_command);
+            make_line
+                .push_str(" --disable-check-for-updates --allow-private --no-on-error --loglevel=");
+            make_line.push_str(&log_level);
+            make_line.push_str(" --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=");
+            make_line.push_str(&member_name);
+            make_line.push_str(" --profile ");
+            make_line.push_str(&profile_name);
+            make_line.push_str(" -- ");
+            make_line.push_str(&task);
+
+            if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
+                for arg in args {
+                    make_line.push_str(" ");
+                    make_line.push_str(&arg);
+                }
             }
+
+            script_lines.push(make_line);
+
+            script_lines.push("cd ${workspace_directory}".to_string());
         }
-
-        script_lines.push(make_line);
-
-        script_lines.push("cd ${workspace_directory}".to_string());
     }
 
     //only if environment variable is set
