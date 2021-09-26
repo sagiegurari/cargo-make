@@ -237,13 +237,7 @@ dependencies = ["pre-check-format", "check-format", "post-check-format"]
 [tasks.check-format-ci-flow]
 description = "Runs cargo fmt --check if conditions are met."
 category = "Test"
-condition = { env_set = [
-  "CARGO_MAKE_RUN_CHECK_FORMAT",
-], channels = [
-  "nightly",
-], platforms = [
-  "linux",
-] }
+condition = { env_set = ["CARGO_MAKE_RUN_CHECK_FORMAT"], platforms = ["linux"] }
 run_task = "check-format-flow"
 
 [tasks.format-flow]
@@ -663,7 +657,6 @@ category = "CI"
 [tasks.install-clippy-any]
 description = "Installs the latest clippy code linter via cargo install via rustup or directly from github."
 category = "Test"
-condition = { channels = ["nightly"] }
 ignore_errors = true
 install_crate = { crate_name = "clippy", rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
 install_crate_args = [
@@ -719,13 +712,7 @@ dependencies = ["pre-clippy", "clippy-router", "post-clippy"]
 [tasks.clippy-ci-flow]
 description = "Runs clippy code linter if conditions are met."
 category = "CI"
-condition = { env_set = [
-  "CARGO_MAKE_RUN_CLIPPY",
-], channels = [
-  "nightly",
-], platforms = [
-  "linux",
-] }
+condition = { env_set = ["CARGO_MAKE_RUN_CLIPPY"], platforms = ["linux"] }
 run_task = "clippy-flow"
 
 [tasks.copy-apidocs]
