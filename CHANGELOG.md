@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.1
+### v0.35.1 (2021-10-02)
 
 * Fix: extend attribute didn't extend env variables #579
 * Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)

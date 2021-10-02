@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["run_cli","Handles the command line arguments and executes the runner."]],"mod":[["types","typesDefines the various types and aliases used by cargo-make."]]});
+initSidebarItems({"fn":[["run_cli","Handles the command line arguments and executes the runner."]],"mod":[["types","types"]]});

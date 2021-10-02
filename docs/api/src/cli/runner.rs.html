@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/runner.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>runner.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;runner.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>runner.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -595,7 +592,20 @@
 <span id="592">592</span>
 <span id="593">593</span>
 <span id="594">594</span>
-</pre><div class="example-wrap"><pre class="rust ">
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+</pre><pre class="rust">
 <span class="doccomment">//! # runner</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Runs the requested tasks.&lt;br&gt;</span>
@@ -610,25 +620,25 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;runner_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">runner_test</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">command</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">condition</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">environment</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">execution_plan</span>::<span class="ident">create</span> <span class="kw">as</span> <span class="ident">create_execution_plan</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">functions</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">installer</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logger</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">profile</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">proxy_task</span>::<span class="ident">create_proxy_task</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">scriptengine</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">time_summary</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">types</span>::{
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::command</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::condition</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::environment</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::execution_plan::create</span> <span class="kw">as</span> <span class="ident">create_execution_plan</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::functions</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::installer</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::logger</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::profile</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::proxy_task::create_proxy_task</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::scriptengine</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::time_summary</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::types</span>::{
     <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">DeprecationInfo</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">FlowInfo</span>, <span class="ident">FlowState</span>,
     <span class="ident">RunTaskInfo</span>, <span class="ident">RunTaskName</span>, <span class="ident">RunTaskRoutingInfo</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">TaskWatchOptions</span>,
 };
-<span class="kw">use</span> <span class="ident">indexmap</span>::<span class="ident">IndexMap</span>;
-<span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">SystemTime</span>;
+<span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
+<span class="kw">use</span> <span class="ident">regex::Regex</span>;
+<span class="kw">use</span> <span class="ident">std::thread</span>;
+<span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
 
 <span class="kw">fn</span> <span class="ident">do_in_task_working_directory</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>, <span class="kw-2">mut</span> <span class="ident">action</span>: <span class="ident">F</span>)
 <span class="kw">where</span>
@@ -636,12 +646,12 @@
 {
     <span class="kw">let</span> <span class="ident">revert_directory</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">cwd</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cwd</span>) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="ident">expanded_cwd</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">expand_value</span>(<span class="ident">cwd</span>);
+            <span class="kw">let</span> <span class="ident">expanded_cwd</span> <span class="op">=</span> <span class="ident">environment::expand_value</span>(<span class="ident">cwd</span>);
 
             <span class="kw">if</span> <span class="ident">expanded_cwd</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">envmnt</span>::<span class="ident">get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
+                <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
 
-                <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">expanded_cwd</span>));
+                <span class="ident">environment::setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">expanded_cwd</span>));
 
                 <span class="ident">directory</span>
             } <span class="kw">else</span> {
@@ -656,7 +666,7 @@
     <span class="comment">// revert to original cwd</span>
     <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">cwd</span> {
         <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">environment</span>::<span class="ident">setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">revert_directory</span>));
+            <span class="ident">environment::setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">revert_directory</span>));
         }
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
     };
@@ -666,7 +676,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
     <span class="kw">let</span> <span class="ident">do_validate</span> <span class="op">=</span> <span class="op">|</span><span class="op">|</span> {
-        <span class="ident">valid</span> <span class="op">=</span> <span class="ident">condition</span>::<span class="ident">validate_condition_for_step</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
+        <span class="ident">valid</span> <span class="op">=</span> <span class="ident">condition::validate_condition_for_step</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
     };
 
     <span class="ident">do_in_task_working_directory</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>, <span class="ident">do_validate</span>);
@@ -684,7 +694,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parallel</span> <span class="op">=</span> <span class="bool-val">false</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cleanup_task</span> <span class="op">=</span> <span class="prelude-val">None</span>;
     <span class="kw">for</span> <span class="ident">routing_step</span> <span class="kw">in</span> <span class="ident">routing_info</span> {
-        <span class="kw">let</span> <span class="ident">invoke</span> <span class="op">=</span> <span class="ident">condition</span>::<span class="ident">validate_conditions</span>(
+        <span class="kw">let</span> <span class="ident">invoke</span> <span class="op">=</span> <span class="ident">condition::validate_conditions</span>(
             <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
             <span class="kw-2">&amp;</span><span class="ident">routing_step</span>.<span class="ident">condition</span>,
             <span class="kw-2">&amp;</span><span class="ident">routing_step</span>.<span class="ident">condition_script</span>,
@@ -693,8 +703,8 @@
 
         <span class="kw">if</span> <span class="ident">invoke</span> {
             <span class="kw">let</span> <span class="ident">task_name_values</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">routing_step</span>.<span class="ident">name</span>.<span class="ident">clone</span>() {
-                <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>],
-                <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">names</span>,
+                <span class="ident">RunTaskName::Single</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec!</span>[<span class="ident">name</span>],
+                <span class="ident">RunTaskName::Multiple</span>(<span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">names</span>,
             };
             <span class="ident">task_name</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">task_name_values</span>);
             <span class="ident">fork</span> <span class="op">=</span> <span class="ident">routing_step</span>.<span class="ident">fork</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
@@ -708,7 +718,13 @@
 }
 
 <span class="kw">fn</span> <span class="ident">create_fork_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Step</span> {
-    <span class="kw">let</span> <span class="ident">fork_task</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">task</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>);
+    <span class="kw">let</span> <span class="ident">fork_task</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(
+        <span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">task</span>,
+        <span class="bool-val">true</span>,
+        <span class="bool-val">true</span>,
+        <span class="prelude-val">None</span>,
+        <span class="ident">flow_info</span>.<span class="ident">cli_arguments</span>.<span class="ident">clone</span>(),
+    );
 
     <span class="ident">Step</span> {
         <span class="ident">name</span>: <span class="string">&quot;cargo_make_run_fork&quot;</span>.<span class="ident">to_string</span>(),
@@ -726,7 +742,7 @@
                 <span class="ident">config</span>: <span class="ident">cleanup_task_info</span>.<span class="ident">clone</span>(),
             },
         ),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">error!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
     }
 }
 
@@ -742,11 +758,11 @@
         <span class="prelude-val">Some</span>(<span class="ident">cleanup_task_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="comment">// run the forked task (forked tasks only run a command + args)</span>
             <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
-                <span class="ident">command</span>::<span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
+                <span class="ident">command::run_command</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
 
             <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="ident">run_cleanup_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">cleanup_task_name</span>);
-                <span class="ident">command</span>::<span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
+                <span class="ident">command::validate_exit_code</span>(<span class="ident">exit_code</span>);
             }
         }
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>),
@@ -760,11 +776,11 @@
     <span class="ident">sub_task</span>: <span class="kw-2">&amp;</span><span class="ident">RunTaskInfo</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">let</span> (<span class="ident">task_names</span>, <span class="ident">fork</span>, <span class="ident">parallel</span>, <span class="ident">cleanup_task</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">sub_task</span> {
-        <span class="ident">RunTaskInfo</span>::<span class="ident">Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>.<span class="ident">to_string</span>()]), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>),
-        <span class="ident">RunTaskInfo</span>::<span class="ident">Details</span>(<span class="kw-2">ref</span> <span class="ident">details</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">RunTaskInfo::Name</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="ident">name</span>.<span class="ident">to_string</span>()]), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>),
+        <span class="ident">RunTaskInfo::Details</span>(<span class="kw-2">ref</span> <span class="ident">details</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">task_name_values</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">details</span>.<span class="ident">name</span>.<span class="ident">clone</span>() {
-                <span class="ident">RunTaskName</span>::<span class="ident">Single</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">name</span>],
-                <span class="ident">RunTaskName</span>::<span class="ident">Multiple</span>(<span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">names</span>,
+                <span class="ident">RunTaskName::Single</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec!</span>[<span class="ident">name</span>],
+                <span class="ident">RunTaskName::Multiple</span>(<span class="ident">names</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">names</span>,
             };
             (
                 <span class="prelude-val">Some</span>(<span class="ident">task_name_values</span>),
@@ -773,18 +789,18 @@
                 <span class="ident">details</span>.<span class="ident">cleanup_task</span>.<span class="ident">clone</span>(),
             )
         }
-        <span class="ident">RunTaskInfo</span>::<span class="ident">Routing</span>(<span class="kw-2">ref</span> <span class="ident">routing_info</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">RunTaskInfo::Routing</span>(<span class="kw-2">ref</span> <span class="ident">routing_info</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="ident">get_sub_task_info_for_routing_info</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">routing_info</span>)
         }
     };
 
     <span class="kw">if</span> <span class="ident">task_names</span>.<span class="ident">is_some</span>() {
         <span class="kw">let</span> <span class="ident">names</span> <span class="op">=</span> <span class="ident">task_names</span>.<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">threads</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">threads</span> <span class="op">=</span> <span class="macro">vec!</span>[];
 
         <span class="comment">// clean up task only supported for forked tasks</span>
         <span class="kw">if</span> <span class="op">!</span><span class="ident">fork</span> <span class="op">&amp;&amp;</span> <span class="ident">cleanup_task</span>.<span class="ident">is_some</span>() {
-            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Invalid task, cannot use cleanup_task without fork.&quot;</span>);
+            <span class="macro">error!</span>(<span class="string">&quot;Invalid task, cannot use cleanup_task without fork.&quot;</span>);
         }
 
         <span class="kw">for</span> <span class="ident">name</span> <span class="kw">in</span> <span class="ident">names</span> {
@@ -807,7 +823,7 @@
                 <span class="comment">// we do not support merging changes back to parent</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cloned_flow_state</span> <span class="op">=</span> <span class="ident">flow_state</span>.<span class="ident">clone</span>();
                 <span class="kw">let</span> <span class="ident">cloned_cleanup_task</span> <span class="op">=</span> <span class="ident">cleanup_task</span>.<span class="ident">clone</span>();
-                <span class="ident">threads</span>.<span class="ident">push</span>(<span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
+                <span class="ident">threads</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
                     <span class="ident">task_run_fn</span>(
                         <span class="kw-2">&amp;</span><span class="ident">run_flow_info</span>,
                         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cloned_flow_state</span>,
@@ -848,8 +864,8 @@
     <span class="ident">watch_task_name</span>
 }
 
-<span class="kw">fn</span> <span class="ident">create_watch_step</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Step</span> {
-    <span class="kw">let</span> <span class="ident">watch_task</span> <span class="op">=</span> <span class="ident">create_watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>);
+<span class="kw">fn</span> <span class="ident">create_watch_step</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>, <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Step</span> {
+    <span class="kw">let</span> <span class="ident">watch_task</span> <span class="op">=</span> <span class="ident">create_watch_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>, <span class="ident">flow_info</span>);
 
     <span class="kw">let</span> <span class="ident">watch_task_name</span> <span class="op">=</span> <span class="ident">create_watch_task_name</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
 
@@ -865,49 +881,49 @@
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>,
 ) {
-    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_watch_step</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>);
+    <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">create_watch_step</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">options</span>, <span class="ident">flow_info</span>);
 
     <span class="ident">run_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
 }
 
 <span class="kw">fn</span> <span class="ident">is_watch_enabled</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-    <span class="op">!</span><span class="ident">envmnt</span>::<span class="ident">is_or</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="bool-val">false</span>)
+    <span class="op">!</span><span class="ident">envmnt::is_or</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="bool-val">false</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">should_watch</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">watch</span> {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">watch_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">watch_value</span> {
-            <span class="ident">TaskWatchOptions</span>::<span class="ident">Boolean</span>(<span class="ident">watch_bool</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">TaskWatchOptions::Boolean</span>(<span class="ident">watch_bool</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">watch_bool</span> {
                     <span class="ident">is_watch_enabled</span>()
                 } <span class="kw">else</span> {
                     <span class="bool-val">false</span>
                 }
             }
-            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">is_watch_enabled</span>(),
+            <span class="ident">TaskWatchOptions::Options</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">is_watch_enabled</span>(),
         },
         <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
     }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_task</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FlowState</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) {
-    <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
+    <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">SystemTime::now</span>();
 
     <span class="kw">if</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">is_actionable</span>() {
         <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">env</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment</span>::<span class="ident">set_current_task_meta_info_env</span>(<span class="ident">env</span>.<span class="ident">clone</span>()),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment::set_current_task_meta_info_env</span>(<span class="ident">env</span>.<span class="ident">clone</span>()),
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
         };
 
         <span class="kw">if</span> <span class="ident">validate_condition</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>) {
-            <span class="kw">if</span> <span class="ident">logger</span>::<span class="ident">should_reduce_output</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>) <span class="op">&amp;&amp;</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+            <span class="kw">if</span> <span class="ident">logger::should_reduce_output</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>) <span class="op">&amp;&amp;</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() {
+                <span class="macro">debug!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
             } <span class="kw">else</span> {
-                <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+                <span class="macro">info!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
             }
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">is_valid</span>() {
-                <span class="macro">error</span><span class="macro">!</span>(
+                <span class="macro">error!</span>(
                     <span class="string">&quot;Invalid task: {}, contains multiple actions.\n{:#?}&quot;</span>,
                     <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>
                 );
@@ -916,15 +932,15 @@
             <span class="kw">let</span> <span class="ident">deprecated_info</span> <span class="op">=</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">deprecated</span>.<span class="ident">clone</span>();
             <span class="kw">match</span> <span class="ident">deprecated_info</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">deprecated</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">deprecated</span> {
-                    <span class="ident">DeprecationInfo</span>::<span class="ident">Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">DeprecationInfo::Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
                         <span class="kw">if</span> <span class="ident">value</span> {
-                            <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Task: {} is deprecated.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+                            <span class="macro">warn!</span>(<span class="string">&quot;Task: {} is deprecated.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
                         }
 
                         ()
                     }
-                    <span class="ident">DeprecationInfo</span>::<span class="ident">Message</span>(<span class="kw-2">ref</span> <span class="ident">message</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Task: {} is deprecated - {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">message</span>);
+                    <span class="ident">DeprecationInfo::Message</span>(<span class="kw-2">ref</span> <span class="ident">message</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="macro">warn!</span>(<span class="string">&quot;Task: {} is deprecated - {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">message</span>);
 
                         ()
                     }
@@ -933,25 +949,25 @@
             };
 
             <span class="comment">//get profile</span>
-            <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile</span>::<span class="ident">get</span>();
+            <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile::get</span>();
 
             <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">env_files</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment</span>::<span class="ident">set_env_files</span>(<span class="ident">env_files</span>.<span class="ident">clone</span>()),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env_files</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment::set_env_files</span>(<span class="ident">env_files</span>.<span class="ident">clone</span>()),
                 <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
             };
             <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">env</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment</span>::<span class="ident">set_env</span>(<span class="ident">env</span>.<span class="ident">clone</span>()),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">environment::set_env</span>(<span class="ident">env</span>.<span class="ident">clone</span>()),
                 <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
             };
 
-            <span class="ident">envmnt</span>::<span class="ident">set</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_NAME&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+            <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_NAME&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
 
             <span class="comment">//make sure profile env is not overwritten</span>
-            <span class="ident">profile</span>::<span class="ident">set</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
+            <span class="ident">profile::set</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
 
             <span class="comment">// modify step using env and functions</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_step</span> <span class="op">=</span> <span class="ident">functions</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>);
-            <span class="ident">updated_step</span> <span class="op">=</span> <span class="ident">environment</span>::<span class="ident">expand_env</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">updated_step</span> <span class="op">=</span> <span class="ident">functions::run</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>);
+            <span class="ident">updated_step</span> <span class="op">=</span> <span class="ident">environment::expand_env</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>);
 
             <span class="kw">let</span> <span class="ident">watch</span> <span class="op">=</span> <span class="ident">should_watch</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>);
 
@@ -964,12 +980,12 @@
                 );
             } <span class="kw">else</span> {
                 <span class="ident">do_in_task_working_directory</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>, <span class="op">|</span><span class="op">|</span> {
-                    <span class="ident">installer</span>::<span class="ident">install</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>.<span class="ident">config</span>, <span class="ident">flow_info</span>);
+                    <span class="ident">installer::install</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>.<span class="ident">config</span>, <span class="ident">flow_info</span>);
                 });
 
                 <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">run_task</span> {
                     <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">sub_task</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="ident">time_summary</span>::<span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flow_state</span>.<span class="ident">time_summary</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">start_time</span>);
+                        <span class="ident">time_summary::add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flow_state</span>.<span class="ident">time_summary</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">start_time</span>);
 
                         <span class="ident">run_sub_task</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">sub_task</span>);
                     }
@@ -977,15 +993,15 @@
                         <span class="ident">do_in_task_working_directory</span>(<span class="kw-2">&amp;</span><span class="ident">step</span>, <span class="op">|</span><span class="op">|</span> {
                             <span class="comment">// run script</span>
                             <span class="kw">let</span> <span class="ident">script_runner_done</span> <span class="op">=</span>
-                                <span class="ident">scriptengine</span>::<span class="ident">invoke</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>.<span class="ident">config</span>, <span class="ident">flow_info</span>);
+                                <span class="ident">scriptengine::invoke</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>.<span class="ident">config</span>, <span class="ident">flow_info</span>);
 
                             <span class="comment">// run command</span>
                             <span class="kw">if</span> <span class="op">!</span><span class="ident">script_runner_done</span> {
-                                <span class="ident">command</span>::<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>);
+                                <span class="ident">command::run</span>(<span class="kw-2">&amp;</span><span class="ident">updated_step</span>);
                             };
                         });
 
-                        <span class="ident">time_summary</span>::<span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flow_state</span>.<span class="ident">time_summary</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">start_time</span>);
+                        <span class="ident">time_summary::add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flow_state</span>.<span class="ident">time_summary</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">start_time</span>);
                     }
                 };
             }
@@ -998,14 +1014,14 @@
                 <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
             };
 
-            <span class="kw">if</span> <span class="ident">logger</span>::<span class="ident">should_reduce_output</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>) <span class="op">&amp;&amp;</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">fail_message</span>);
+            <span class="kw">if</span> <span class="ident">logger::should_reduce_output</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>) <span class="op">&amp;&amp;</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script</span>.<span class="ident">is_none</span>() {
+                <span class="macro">debug!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">fail_message</span>);
             } <span class="kw">else</span> {
-                <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">fail_message</span>);
+                <span class="macro">info!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">fail_message</span>);
             }
         }
     } <span class="kw">else</span> {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Ignoring Empty Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
+        <span class="macro">debug!</span>(<span class="string">&quot;Ignoring Empty Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>);
     }
 }
 
@@ -1015,18 +1031,19 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">create_watch_task</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_config</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>);
+<span class="kw">fn</span> <span class="ident">create_watch_task</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">options</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskWatchOptions</span><span class="op">&gt;</span>, <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_config</span> <span class="op">=</span>
+        <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>, <span class="prelude-val">None</span>, <span class="ident">flow_info</span>.<span class="ident">cli_arguments</span>.<span class="ident">clone</span>());
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">env</span>.<span class="ident">unwrap_or</span>(<span class="ident">IndexMap</span>::<span class="ident">new</span>());
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">env</span>.<span class="ident">unwrap_or</span>(<span class="ident">IndexMap::new</span>());
     <span class="ident">env_map</span>.<span class="ident">insert</span>(
         <span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">EnvValue</span>::<span class="ident">Value</span>(<span class="string">&quot;true&quot;</span>.<span class="ident">to_string</span>()),
+        <span class="ident">EnvValue::Value</span>(<span class="string">&quot;true&quot;</span>.<span class="ident">to_string</span>()),
     );
     <span class="ident">task_config</span>.<span class="ident">env</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">env_map</span>);
 
     <span class="kw">let</span> <span class="ident">make_args</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">args</span>.<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_command</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_command</span> <span class="op">=</span> <span class="ident">String::new</span>();
     <span class="kw">for</span> <span class="ident">make_arg</span> <span class="kw">in</span> <span class="ident">make_args</span> {
         <span class="kw">if</span> <span class="ident">make_arg</span>.<span class="ident">contains</span>(<span class="string">&quot; &quot;</span>) {
             <span class="ident">make_command</span>.<span class="ident">push_str</span>(<span class="string">&quot;\&quot;&quot;</span>);
@@ -1040,16 +1057,16 @@
     }
     <span class="ident">make_command</span> <span class="op">=</span> <span class="ident">make_command</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">watch_args</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;watch&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-q&quot;</span>.<span class="ident">to_string</span>()];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">watch_args</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="string">&quot;watch&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-q&quot;</span>.<span class="ident">to_string</span>()];
 
     <span class="kw">match</span> <span class="ident">options</span> {
         <span class="prelude-val">Some</span>(<span class="ident">task_watch_options</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">task_watch_options</span> {
-            <span class="ident">TaskWatchOptions</span>::<span class="ident">Options</span>(<span class="ident">watch_options</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">TaskWatchOptions::Options</span>(<span class="ident">watch_options</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">watch_version</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">version</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;7.4.1&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// current version</span>
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;8.1.0&quot;</span>.<span class="ident">to_string</span>(), <span class="comment">// current version</span>
                 };
-                <span class="ident">task_config</span>.<span class="ident">install_crate_args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;--version&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">watch_version</span>]);
+                <span class="ident">task_config</span>.<span class="ident">install_crate_args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">watch_version</span>]);
 
                 <span class="kw">match</span> <span class="ident">watch_options</span>.<span class="ident">postpone</span> {
                     <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
@@ -1106,7 +1123,7 @@
         <span class="ident">sub_flow</span>,
         <span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">skip_tasks_pattern</span>,
     );
-    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Created execution plan: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>);
+    <span class="macro">debug!</span>(<span class="string">&quot;Created execution plan: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>);
 
     <span class="ident">run_task_flow</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>);
 }
@@ -1120,7 +1137,7 @@
         <span class="ident">flow_info</span>.<span class="ident">cli_arguments</span>.<span class="ident">clone</span>(),
     );
 
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">command</span>::<span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">proxy_task</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">proxy_task</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
+    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">command::run_command</span>(<span class="kw-2">&amp;</span><span class="ident">proxy_task</span>.<span class="ident">command</span>.<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="ident">proxy_task</span>.<span class="ident">args</span>, <span class="bool-val">false</span>);
 
     <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
         <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">on_error_task</span> {
@@ -1134,7 +1151,7 @@
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
         };
 
-        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Task error detected, exit code: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">exit_code</span>);
+        <span class="macro">error!</span>(<span class="string">&quot;Task error detected, exit code: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">exit_code</span>);
     }
 }
 
@@ -1143,16 +1160,21 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// * Create an execution plan based on the requested task and its dependencies</span>
 <span class="doccomment">/// * Run all tasks defined in the execution plan</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">config</span>: <span class="ident">Config</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env_info</span>: <span class="ident">EnvInfo</span>, <span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>) {
-    <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>();
-
-    <span class="ident">time_summary</span>::<span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(
+    <span class="ident">config</span>: <span class="ident">Config</span>,
+    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">env_info</span>: <span class="ident">EnvInfo</span>,
+    <span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>,
+    <span class="ident">start_time</span>: <span class="ident">SystemTime</span>,
+    <span class="ident">time_summary_vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">u128</span>)<span class="op">&gt;</span>,
+) {
+    <span class="ident">time_summary::init</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
 
     <span class="kw">let</span> <span class="ident">skip_tasks_pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="ident">pattern</span>) {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">Regex::new</span>(<span class="ident">pattern</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">reg</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">reg</span>),
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, <span class="ident">pattern</span>);
+                <span class="macro">warn!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, <span class="ident">pattern</span>);
                 <span class="prelude-val">None</span>
             }
         },
@@ -1170,7 +1192,8 @@
         <span class="ident">skip_tasks_pattern</span>,
         <span class="ident">cli_arguments</span>: <span class="ident">cli_args</span>.<span class="ident">arguments</span>.<span class="ident">clone</span>(),
     };
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flow_state</span> <span class="op">=</span> <span class="ident">FlowState</span>::<span class="ident">new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flow_state</span> <span class="op">=</span> <span class="ident">FlowState::new</span>();
+    <span class="ident">flow_state</span>.<span class="ident">time_summary</span> <span class="op">=</span> <span class="ident">time_summary_vec</span>;
 
     <span class="kw">if</span> <span class="ident">flow_info</span>.<span class="ident">disable_on_error</span> <span class="op">|</span><span class="op">|</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">on_error_task</span>.<span class="ident">is_none</span>() {
         <span class="ident">run_flow</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flow_state</span>, <span class="bool-val">false</span>);
@@ -1181,14 +1204,16 @@
     <span class="kw">let</span> <span class="ident">time_string</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">start_time</span>.<span class="ident">elapsed</span>() {
         <span class="prelude-val">Ok</span>(<span class="ident">elapsed</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">time_millies</span> <span class="op">=</span> <span class="ident">elapsed</span>.<span class="ident">as_millis</span>() <span class="kw">as</span> <span class="ident">f64</span> <span class="op">/</span> <span class="number">1000.0</span>;
-            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot; in {:.2} seconds&quot;</span>, <span class="ident">time_millies</span>)
+            <span class="macro">format!</span>(<span class="string">&quot; in {:.2} seconds&quot;</span>, <span class="ident">time_millies</span>)
         }
         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
     };
 
-    <span class="ident">time_summary</span>::<span class="ident">print</span>(<span class="kw-2">&amp;</span><span class="ident">flow_state</span>.<span class="ident">time_summary</span>);
+    <span class="ident">time_summary::print</span>(<span class="kw-2">&amp;</span><span class="ident">flow_state</span>.<span class="ident">time_summary</span>);
 
-    <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Build Done{}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">time_string</span>);
+    <span class="macro">info!</span>(<span class="string">&quot;Build Done{}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">time_string</span>);
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cli";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</body></html>

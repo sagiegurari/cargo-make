@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["cli"] = [{"text":"impl Display for TaskIdentifier","synthetic":false,"types":[]}];
+implementors["cli"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"struct\" href=\"cli/types/struct.TaskIdentifier.html\" title=\"struct cli::types::TaskIdentifier\">TaskIdentifier</a>","synthetic":false,"types":["cli::types::TaskIdentifier"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

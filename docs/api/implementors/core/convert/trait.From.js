@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["cli"] = [{"text":"impl From&lt;&amp;'_ str&gt; for DependencyIdentifier","synthetic":false,"types":[]}];
+implementors["cli"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'_ <a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.str.html\">str</a>&gt; for <a class=\"enum\" href=\"cli/types/enum.DependencyIdentifier.html\" title=\"enum cli::types::DependencyIdentifier\">DependencyIdentifier</a>","synthetic":false,"types":["cli::types::DependencyIdentifier"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
