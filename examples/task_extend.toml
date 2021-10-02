@@ -16,3 +16,14 @@ args = ["2"]
 [tasks.3]
 extend = "2"
 args = ["3"]
+
+[tasks.task1]
+env = { Foo = "foo" }
+command = "echo"
+args = ["${Foo}"]
+
+[tasks.task1.linux]
+env = { Foo = "foo-linux" }
+
+[tasks.task2]
+extend = "task1"

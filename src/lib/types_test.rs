@@ -3271,6 +3271,9 @@ fn config_section_new() {
     assert!(config.additional_profiles.is_none());
     assert!(config.min_version.is_none());
     assert!(config.default_to_workspace.is_none());
+    assert!(config.skip_git_env_info.is_none());
+    assert!(config.skip_rust_env_info.is_none());
+    assert!(config.skip_crate_env_info.is_none());
     assert!(config.reduce_output.is_none());
     assert!(config.time_summary.is_none());
     assert!(config.load_cargo_aliases.is_none());
@@ -3298,6 +3301,9 @@ fn config_section_extend_all_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.skip_git_env_info = Some(true);
+    base.skip_rust_env_info = Some(true);
+    base.skip_crate_env_info = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
@@ -3327,6 +3333,10 @@ fn config_section_extend_all_values() {
     extended.additional_profiles = Some(vec!["e1".to_string(), "e2".to_string()]);
     extended.min_version = Some("2.0.0".to_string());
     extended.default_to_workspace = Some(false);
+    extended.skip_core_tasks = Some(false);
+    extended.skip_git_env_info = Some(false);
+    extended.skip_rust_env_info = Some(false);
+    extended.skip_crate_env_info = Some(false);
     extended.reduce_output = Some(false);
     extended.time_summary = Some(false);
     extended.load_cargo_aliases = Some(false);
@@ -3357,6 +3367,9 @@ fn config_section_extend_all_values() {
     );
     assert_eq!(base.min_version.unwrap(), "2.0.0".to_string());
     assert!(!base.default_to_workspace.unwrap());
+    assert!(!base.skip_git_env_info.unwrap());
+    assert!(!base.skip_rust_env_info.unwrap());
+    assert!(!base.skip_crate_env_info.unwrap());
     assert!(!base.reduce_output.unwrap());
     assert!(!base.time_summary.unwrap());
     assert!(!base.load_cargo_aliases.unwrap());
@@ -3383,6 +3396,9 @@ fn config_section_extend_no_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.skip_git_env_info = Some(true);
+    base.skip_rust_env_info = Some(true);
+    base.skip_crate_env_info = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
@@ -3422,6 +3438,9 @@ fn config_section_extend_no_values() {
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert!(base.default_to_workspace.unwrap());
+    assert!(base.skip_git_env_info.unwrap());
+    assert!(base.skip_rust_env_info.unwrap());
+    assert!(base.skip_crate_env_info.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert!(base.load_cargo_aliases.unwrap());
@@ -3448,6 +3467,9 @@ fn config_section_extend_some_values() {
     base.additional_profiles = Some(vec!["b1".to_string(), "b2".to_string()]);
     base.min_version = Some("1.0.0".to_string());
     base.default_to_workspace = Some(true);
+    base.skip_git_env_info = Some(true);
+    base.skip_rust_env_info = Some(true);
+    base.skip_crate_env_info = Some(true);
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
@@ -3490,6 +3512,9 @@ fn config_section_extend_some_values() {
     );
     assert_eq!(base.min_version.unwrap(), "1.0.0".to_string());
     assert!(base.default_to_workspace.unwrap());
+    assert!(base.skip_git_env_info.unwrap());
+    assert!(base.skip_rust_env_info.unwrap());
+    assert!(base.skip_crate_env_info.unwrap());
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert!(base.load_cargo_aliases.unwrap());

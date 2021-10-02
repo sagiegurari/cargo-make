@@ -1875,6 +1875,12 @@ pub struct ConfigSection {
     pub min_version: Option<String>,
     /// The task.workspace default value
     pub default_to_workspace: Option<bool>,
+    /// do not load git env info (save on perf)
+    pub skip_git_env_info: Option<bool>,
+    /// do not load rust env info (save on perf)
+    pub skip_rust_env_info: Option<bool>,
+    /// do not load current crate env info (save on perf)
+    pub skip_crate_env_info: Option<bool>,
     /// True to reduce console output for non CI execution
     pub reduce_output: Option<bool>,
     /// True to print time summary at the end of the flow
@@ -1975,6 +1981,18 @@ impl ConfigSection {
 
         if extended.default_to_workspace.is_some() {
             self.default_to_workspace = extended.default_to_workspace.clone();
+        }
+
+        if extended.skip_git_env_info.is_some() {
+            self.skip_git_env_info = extended.skip_git_env_info.clone();
+        }
+
+        if extended.skip_rust_env_info.is_some() {
+            self.skip_rust_env_info = extended.skip_rust_env_info.clone();
+        }
+
+        if extended.skip_crate_env_info.is_some() {
+            self.skip_crate_env_info = extended.skip_crate_env_info.clone();
         }
 
         if extended.reduce_output.is_some() {
@@ -2110,7 +2128,7 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name

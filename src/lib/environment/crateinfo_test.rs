@@ -337,20 +337,20 @@ fn expand_glob_members_empty() {
 
 #[test]
 fn expand_glob_members_found() {
-    let mut members = expand_glob_members("examples/*.toml");
+    let mut members = expand_glob_members("examples/workspace/*");
 
     assert!(members.len() > 0);
     assert!(members
         .iter()
-        .position(|member| member == "examples/env.toml")
+        .position(|member| member == "examples/workspace/member1")
         .is_some());
 
-    members = expand_glob_members("examples/*/*.toml");
+    members = expand_glob_members("examples/workspace2/mem*");
 
     assert!(members.len() > 0);
     assert!(members
         .iter()
-        .position(|member| member == "examples/workspace2/Makefile.toml")
+        .position(|member| member == "examples/workspace2/member2")
         .is_some());
 
     members = expand_glob_members("examples/workspace/member*");

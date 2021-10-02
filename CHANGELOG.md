@@ -1,5 +1,18 @@
 ## CHANGELOG
 
+### v0.35.1
+
+* Fix: extend attribute didn't extend env variables #579
+* Enhancement: Limit search to one result when searching for updates #574 (thanks @jayvdb)
+* Fix: CARGO_MAKE_TASK_ARGS not set when using watch mode #586
+* Fix: Workspace members glob detection didn't validate Cargo.toml exists #591
+* Documentation: improve condition fail message documentation #583
+* Upgrade run_script #581
+* Add internal steps to time summary
+* Adding ability to disable git, rust and crate environment variables to speed up startup time
+* Documentation: zsh auto completion instructions for makers #590
+* Upgrade cargo-watch to 8.1.0
+
 ### v0.35.0 (2021-07-10)
 
 * Enhancement: New bash auto completion script for makers #565

@@ -110,7 +110,13 @@ pub(crate) fn get_sub_task_info_for_routing_info(
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
-    let fork_task = create_proxy_task(&flow_info.task, true, true, None, None);
+    let fork_task = create_proxy_task(
+        &flow_info.task,
+        true,
+        true,
+        None,
+        flow_info.cli_arguments.clone(),
+    );
 
     Step {
         name: "cargo_make_run_fork".to_string(),
@@ -250,8 +256,8 @@ fn create_watch_task_name(task: &str) -> String {
     watch_task_name
 }
 
-fn create_watch_step(task: &str, options: Option<TaskWatchOptions>) -> Step {
-    let watch_task = create_watch_task(&task, options);
+fn create_watch_step(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Step {
+    let watch_task = create_watch_task(&task, options, flow_info);
 
     let watch_task_name = create_watch_task_name(&task);
 
@@ -267,7 +273,7 @@ fn watch_task(
     task: &str,
     options: Option<TaskWatchOptions>,
 ) {
-    let step = create_watch_step(&task, options);
+    let step = create_watch_step(&task, options, flow_info);
 
     run_task(&flow_info, flow_state, &step);
 }
@@ -417,8 +423,9 @@ fn run_task_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, execution_pla
     }
 }
 
-fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
-    let mut task_config = create_proxy_task(&task, true, true, None, None);
+fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Task {
+    let mut task_config =
+        create_proxy_task(&task, true, true, None, flow_info.cli_arguments.clone());
 
     let mut env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
@@ -449,7 +456,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>) -> Task {
             TaskWatchOptions::Options(watch_options) => {
                 let watch_version = match watch_options.version {
                     Some(value) => value.to_string(),
-                    _ => "7.4.1".to_string(), // current version
+                    _ => "8.1.0".to_string(), // current version
                 };
                 task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
 
@@ -545,9 +552,14 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: &mut FlowState) {
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliArgs) {
-    let start_time = SystemTime::now();
-
+pub(crate) fn run(
+    config: Config,
+    task: &str,
+    env_info: EnvInfo,
+    cli_args: &CliArgs,
+    start_time: SystemTime,
+    time_summary_vec: Vec<(String, u128)>,
+) {
     time_summary::init(&config, &cli_args);
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
@@ -573,6 +585,7 @@ pub(crate) fn run(config: Config, task: &str, env_info: EnvInfo, cli_args: &CliA
         cli_arguments: cli_args.arguments.clone(),
     };
     let mut flow_state = FlowState::new();
+    flow_state.time_summary = time_summary_vec;
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
         run_flow(&flow_info, &mut flow_state, false);

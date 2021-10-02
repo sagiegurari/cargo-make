@@ -31,19 +31,31 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
             }
         }
 
-        info!("================Time Summary================");
+        info!("==================Time Summary==================");
         for entry in &time_summary_sorted {
             let percentage = (entry.1 as f64 / total_time as f64) * 100.0;
             let seconds = entry.1 as f64 / 1000.0;
+
+            let percentage_size = if percentage >= 100.0 {
+                3
+            } else if percentage >= 10.0 {
+                2
+            } else {
+                1
+            };
+            let mut gap_size = 4 - percentage_size;
+            let value_gap = format!("{: <1$}", "", gap_size);
+
             let name_size = entry.0.len();
-            let gap_size = max_name_size - name_size + 3;
-            let gap = format!("{: <1$}", "", gap_size);
+            gap_size = max_name_size - name_size + 3;
+            let name_gap = format!("{: <1$}", "", gap_size);
+
             info!(
-                "{}:{}{:.2}%\t   {:.2} seconds",
-                entry.0, gap, percentage, seconds
+                "{}:{}{:.2}%{}   {:.2} seconds",
+                entry.0, name_gap, percentage, value_gap, seconds
             );
         }
-        info!("============================================");
+        info!("================================================");
     }
 }
 

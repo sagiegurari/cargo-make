@@ -1,4 +1,5 @@
 use super::*;
+use crate::descriptor;
 use crate::types::{
     ConfigSection, CrateInfo, DependencyIdentifier, PlatformOverrideTask, Task, TaskWatchOptions,
     Workspace,
@@ -153,26 +154,6 @@ fn get_workspace_members_config_multiple() {
     assert!(members.contains(&"test3".to_string()));
 }
 
-fn update_member_path_get_expected() -> String {
-    if cfg!(windows) {
-        ".\\member\\".to_string()
-    } else {
-        "./member/".to_string()
-    }
-}
-
-#[test]
-fn update_member_path_unix() {
-    let output = update_member_path("./member/");
-    assert_eq!(output, update_member_path_get_expected());
-}
-
-#[test]
-fn update_member_path_windows() {
-    let output = update_member_path(".\\member\\");
-    assert_eq!(output, update_member_path_get_expected());
-}
-
 #[test]
 fn create_workspace_task_no_members() {
     let mut crate_info = CrateInfo::new();
@@ -195,7 +176,6 @@ fn create_workspace_task_no_members() {
 
 #[test]
 #[ignore]
-#[cfg(target_os = "linux")]
 fn create_workspace_task_with_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -212,15 +192,16 @@ fn create_workspace_task_with_members() {
 
     let task = create_workspace_task(crate_info, "some_task");
 
-    let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME -- some_task
-cd -
+    let mut expected_script = r#"workspace_directory = pwd
+cd ./member1
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME -- some_task
+cd ${workspace_directory}
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME -- some_task
-cd -
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME -- some_task
+cd ${workspace_directory}
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME -- some_task
-cd -"#
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME -- some_task
+cd ${workspace_directory}"#
         .to_string();
 
     let log_level = logger::get_log_level();
@@ -240,7 +221,6 @@ cd -"#
 
 #[test]
 #[ignore]
-#[cfg(target_os = "linux")]
 fn create_workspace_task_with_members_no_workspace_profile() {
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -257,15 +237,16 @@ fn create_workspace_task_with_members_no_workspace_profile() {
 
     let task = create_workspace_task(crate_info, "some_task");
 
-    let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
-cd -
+    let mut expected_script = r#"workspace_directory = pwd
+cd ./member1
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
+cd ${workspace_directory}
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development -- some_task
-cd -
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development -- some_task
+cd ${workspace_directory}
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development -- some_task
-cd -"#
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development -- some_task
+cd ${workspace_directory}"#
         .to_string();
 
     let log_level = logger::get_log_level();
@@ -282,7 +263,6 @@ cd -"#
 
 #[test]
 #[ignore]
-#[cfg(target_os = "linux")]
 fn create_workspace_task_with_members_and_arguments() {
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -306,15 +286,16 @@ fn create_workspace_task_with_members_and_arguments() {
 
     envmnt::remove("CARGO_MAKE_TASK_ARGS");
 
-    let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME -- some_task arg1 arg2
-cd -
+    let mut expected_script = r#"workspace_directory = pwd
+cd ./member1
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile PROFILE_NAME -- some_task arg1 arg2
+cd ${workspace_directory}
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME -- some_task arg1 arg2
-cd -
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile PROFILE_NAME -- some_task arg1 arg2
+cd ${workspace_directory}
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME -- some_task arg1 arg2
-cd -"#
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile PROFILE_NAME -- some_task arg1 arg2
+cd ${workspace_directory}"#
         .to_string();
 
     let log_level = logger::get_log_level();
@@ -362,30 +343,16 @@ fn create_workspace_task_with_included_members() {
 
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
 
-    let mut expected_script = if cfg!(windows) {
-        r#"PUSHD member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
-if %errorlevel% neq 0 exit /b %errorlevel%
-POPD
-PUSHD member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development -- some_task
-if %errorlevel% neq 0 exit /b %errorlevel%
-POPD
-PUSHD dir1\member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development -- some_task
-if %errorlevel% neq 0 exit /b %errorlevel%
-POPD"#.to_string()
-    } else {
-        r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
-cd -
+    let mut expected_script = r#"workspace_directory = pwd
+cd ./member1
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
+cd ${workspace_directory}
 cd ./member2
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development -- some_task
-cd -
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member2 --profile development -- some_task
+cd ${workspace_directory}
 cd ./dir1/member3
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development -- some_task
-cd -"#.to_string()
-    };
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member3 --profile development -- some_task
+cd ${workspace_directory}"#.to_string();
 
     let log_level = logger::get_log_level();
     expected_script = str::replace(&expected_script, "LEVEL_NAME", &log_level);
@@ -401,7 +368,6 @@ cd -"#.to_string()
 
 #[test]
 #[ignore]
-#[cfg(target_os = "linux")]
 fn create_workspace_task_with_included_and_skipped_members() {
     let mut crate_info = CrateInfo::new();
     let members = vec![
@@ -431,9 +397,10 @@ fn create_workspace_task_with_included_and_skipped_members() {
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
     envmnt::remove("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS");
 
-    let mut expected_script = r#"cd ./member1
-cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
-cd -"#
+    let mut expected_script = r#"workspace_directory = pwd
+cd ./member1
+exec --fail-on-error cargo make --disable-check-for-updates --allow-private --no-on-error --loglevel=LEVEL_NAME --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=member1 --profile development -- some_task
+cd ${workspace_directory}"#
         .to_string();
 
     let log_level = logger::get_log_level();
@@ -1299,6 +1266,31 @@ fn create_noworkspace() {
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
+}
+
+#[test]
+#[ignore]
+fn create_task_extends_empty_env_bug_verification() {
+    let config = descriptor::load(
+        "./src/lib/test/makefiles/task_extend.toml",
+        true,
+        None,
+        false,
+    )
+    .unwrap();
+
+    let execution_plan = create(&config, "task2", true, false, false, &None);
+
+    assert_eq!(execution_plan.steps.len(), 3);
+
+    let step = execution_plan.steps[1].clone();
+    assert_eq!(step.name, "task2");
+
+    let env = step.config.env.unwrap();
+    match env.get("Foo").unwrap() {
+        EnvValue::Value(value) => assert_eq!(value, "foo"),
+        _ => panic!("Invalid env type"),
+    }
 }
 
 #[test]

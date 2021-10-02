@@ -19,3 +19,8 @@ args = ["Triggered by watch"]
 watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = [
   "./docs/",
 ] }
+
+[tasks.watch-task-args-example]
+command = "echo"
+args = ["@@split(CARGO_MAKE_TASK_ARGS, ;)"]
+watch = true

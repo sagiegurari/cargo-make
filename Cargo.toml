@@ -44,15 +44,15 @@ path = "src/makers.rs"
 
 [dependencies]
 cargo_metadata = "^0.14.0"
-ci_info = "^0.14.1"
+ci_info = "^0.14.3"
 clap = "^2"
 colored = "^2"
 dirs-next = "^2"
-duckscript = "^0.7"
-duckscriptsdk = "^0.8.4"
-envmnt = "^0.9"
+duckscript = "^0.7.1"
+duckscriptsdk = "^0.8.7"
+envmnt = "^0.9.1"
 fern = "^0.6"
-fsio = { version = "^0.2", features = ["temp-path"] }
+fsio = { version = "^0.3", features = ["temp-path"] }
 git_info = "^0.1.2"
 glob = "^0.3"
 home = "^0.5"
@@ -60,7 +60,7 @@ indexmap = { version = "^1", features = ["serde-1"] }
 ignore = "^0.4"
 log = "^0.4"
 regex = "^1"
-run_script = "^0.8"
+run_script = "^0.9"
 rust_info = "^0.3.1"
 semver = "^1.0"
 serde = "^1"
@@ -71,7 +71,6 @@ toml = "^0.5"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "^0.12.1"
-dunce = "^1"
 
 [badges.codecov]
 branch = "master"

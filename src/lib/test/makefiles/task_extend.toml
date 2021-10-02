@@ -1,0 +1,11 @@
+
+[config]
+skip_core_tasks = true
+
+[tasks.task1]
+env = { Foo = "foo" }
+command = "echo"
+args = ["${Foo}"]
+
+[tasks.task2]
+extend = "task1"

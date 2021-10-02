@@ -867,6 +867,66 @@ fn setup_env_empty() {
 
 #[test]
 #[ignore]
+fn setup_env_skip_git() {
+    let cli_args = CliArgs::new();
+
+    let mut config_section = ConfigSection::new();
+    config_section.skip_git_env_info = Some(true);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
+    assert!(env_info.git_info.user_name.is_none());
+}
+
+#[test]
+#[ignore]
+fn setup_env_skip_rust() {
+    let cli_args = CliArgs::new();
+
+    let mut config_section = ConfigSection::new();
+    config_section.skip_rust_env_info = Some(true);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
+    assert!(env_info.rust_info.channel.is_none());
+}
+
+#[test]
+#[ignore]
+fn setup_env_skip_crate() {
+    let cli_args = CliArgs::new();
+
+    let mut config_section = ConfigSection::new();
+    config_section.skip_crate_env_info = Some(true);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+    };
+
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
+    assert!(env_info.crate_info.dependencies.is_none());
+}
+
+#[test]
+#[ignore]
 fn setup_cargo_home() {
     setup_cwd(None);
 

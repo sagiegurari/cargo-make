@@ -17,6 +17,8 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
+    let emulation = envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION");
+
     match glob(glob_member) {
         Ok(entries) => {
             let mut members = vec![];
@@ -24,9 +26,24 @@ fn expand_glob_members(glob_member: &str) -> Vec<String> {
             for entry in entries {
                 match entry {
                     Ok(path) => {
-                        let mut updated_path = path.to_str().unwrap().to_string();
-                        updated_path = updated_path.replace("\\", "/");
-                        members.push(updated_path);
+                        let should_add = if emulation {
+                            // emulation may be used for non rust projects
+                            // so no extra validations
+                            true
+                        } else {
+                            // ensure Cargo.toml is found
+                            let mut cargo_path = path.clone();
+                            cargo_path.push("Cargo.toml");
+                            let exists = cargo_path.exists();
+
+                            exists
+                        };
+
+                        if should_add {
+                            let mut updated_path = path.to_str().unwrap().to_string();
+                            updated_path = updated_path.replace("\\", "/");
+                            members.push(updated_path);
+                        }
                     }
                     _ => (),
                 };
@@ -195,7 +212,6 @@ struct CargoConfig {
 #[serde(rename_all = "kebab-case")]
 struct CargoConfigBuild {
     target: Option<RustTarget>,
-    target_dir: Option<PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]

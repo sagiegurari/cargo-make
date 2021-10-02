@@ -1400,15 +1400,16 @@ These scripts use that value to create a new environment variable **COMPOSITE_2*
 cargo-make will load the environment variables in the following order
 
 * Load environment file provided on the command line
-* Setup internal environment variables (see [Global](#usage-env-global) section)
+* Setup internal environment variables (see [Global](#usage-env-global) section). **Not including per task variables.**
 * Load global environment files defined in the **env_files** attribute.
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
 * Load global environment setup scripts defines in the **env_scripts** attribute.
 * Per Task
-  *  Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
-  *  Load environment variables defined in the **env** block (same behaviour as global env block).
+  * Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
+  * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
+  * Load environment variables defined in the **env** block (same behaviour as global env block).
 
 <a name="usage-env-global"></a>
 #### Global
@@ -1538,6 +1539,13 @@ To setup a custom failure message, use the **fail_message** inside the condition
 condition = { platforms = ["windows"], fail_message = "Condition Failed." }
 command = "echo"
 args = ["condition was met"]
+```
+
+Fail messages are only printed if log level is verbose or reduce output flag is set to false in the config as follows:
+
+```toml
+[config]
+reduce_output = false
 ```
 
 <a name="usage-conditions-script"></a>
@@ -3041,6 +3049,27 @@ In order to specify the minimal version, use the **min_version** in the config s
 min_version = "{{ site.version }}"
 ```
 
+<a name="usage-performance-tuning"></a>
+### Performance Tuning
+Some features of cargo-make can be disabled which can improve the startup time.<br>
+Below is a list of all current features:
+
+```toml
+[config]
+# Skip loading of all core tasks which saves up a bit on toml parsing and task creation
+skip_core_tasks = true
+# Skips loading Git related environment variables
+skip_git_env_info = true
+# Skips loading rust related environment variables
+skip_rust_env_info = true
+# Skips loading the current crate related environment variables
+skip_crate_env_info = true
+```
+
+When running in a rust workspace, you can disable some of the features in the member makefiles.<br>
+For example, if the members are in the same git repo as the entire project, you can add **skip_git_env_info** in the members
+makefiles and they will still have the environment variables setup from the parent process.
+
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
@@ -3127,6 +3156,20 @@ available in the current directory, it will run the --list-all-steps command whi
 <a name="usage-shell-completion-bash"></a>
 #### Bash
 Source the makers-completion.bash file found in extra/shell folder at the start of your shell session.
+It will enable auto completion for the **makers** executable.
+
+<a name="usage-shell-completion-zsh"></a>
+#### zsh
+zsh supports bash auto completion, therefore the existing bash autocomplete can be used by running the following script:
+
+```
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# make sure to update the path based on your file system location
+source ./extra/shell/makers-completion.bash
+```
+
 It will enable auto completion for the **makers** executable.
 
 <a name="cargo-make-global-config"></a>
