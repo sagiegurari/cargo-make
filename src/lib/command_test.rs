@@ -110,7 +110,7 @@ fn run_command_for_toolchain() {
         let mut task = Task::new();
         task.command = Some("echo".to_string());
         task.args = Some(vec!["test".to_string()]);
-        task.toolchain = Some(toolchain.to_string());
+        task.toolchain = Some(toolchain.into());
 
         let step = Step {
             name: "test".to_string(),

@@ -1010,13 +1010,77 @@ pub struct Task {
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<DependencyIdentifier>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
-    pub toolchain: Option<String>,
+    pub toolchain: Option<ToolchainSpecifier>,
     /// override task if runtime OS is Linux (takes precedence over alias)
     pub linux: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Windows (takes precedence over alias)
     pub windows: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Mac (takes precedence over alias)
     pub mac: Option<PlatformOverrideTask>,
+}
+
+/// A dependency, defined either as a string or as a Dependency object
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum ToolchainSpecifier {
+    /// A string specifying the channel name of the toolchain
+    Name(String),
+    /// A toolchain with a minimum version bound
+    Bounded(ToolchainBoundedSpecifier),
+}
+
+impl From<String> for ToolchainSpecifier {
+    fn from(s: String) -> Self {
+        Self::Name(s)
+    }
+}
+
+impl From<&str> for ToolchainSpecifier {
+    fn from(s: &str) -> Self {
+        s.to_string().into()
+    }
+}
+
+impl std::fmt::Display for ToolchainSpecifier {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Name(ref channel) => write!(formatter, "{}", channel),
+            Self::Bounded(ref spec) => write!(formatter, "{}", spec),
+        }
+    }
+}
+
+impl ToolchainSpecifier {
+    /// Return the channel of the toolchain to look for
+    pub fn channel(&self) -> &str {
+        match self {
+            Self::Name(ref channel) => &channel,
+            Self::Bounded(ToolchainBoundedSpecifier { channel, .. }) => &channel,
+        }
+    }
+
+    /// Return the minimal version, if any, to look for
+    pub fn min_version(&self) -> Option<&str> {
+        match self {
+            Self::Name(_) => None,
+            Self::Bounded(ToolchainBoundedSpecifier { min_version, .. }) => Some(&min_version),
+        }
+    }
+}
+
+/// A toolchain vwith a minumum version bound
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+pub struct ToolchainBoundedSpecifier {
+    /// The channel of the toolchain to use
+    pub channel: String,
+    /// The minimum version to match
+    pub min_version: String,
+}
+
+impl std::fmt::Display for ToolchainBoundedSpecifier {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(formatter, "{} >= {}", self.channel, self.min_version)
+    }
 }
 
 /// A dependency, defined either as a string or as a Dependency object
@@ -1686,7 +1750,7 @@ pub struct PlatformOverrideTask {
     /// A list of tasks to execute before this task
     pub dependencies: Option<Vec<DependencyIdentifier>>,
     /// The rust toolchain used to invoke the command or install the needed crates/components
-    pub toolchain: Option<String>,
+    pub toolchain: Option<ToolchainSpecifier>,
 }
 
 impl PlatformOverrideTask {

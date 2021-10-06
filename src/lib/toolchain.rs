@@ -7,7 +7,9 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
-use crate::types::CommandSpec;
+use cargo_metadata::Version;
+
+use crate::types::{CommandSpec, ToolchainSpecifier};
 use std::process::{Command, Stdio};
 
 #[cfg(test)]
@@ -23,7 +25,7 @@ fn should_validate_installed_toolchain() -> bool {
 }
 
 pub(crate) fn wrap_command(
-    toolchain: &str,
+    toolchain: &ToolchainSpecifier,
     command: &str,
     args: &Option<Vec<String>>,
 ) -> CommandSpec {
@@ -57,12 +59,33 @@ pub(crate) fn wrap_command(
     }
 }
 
-fn has_toolchain(toolchain: &str) -> bool {
-    Command::new("rustup")
-        .args(&["run", toolchain, "rustc"])
+fn has_toolchain(toolchain: &ToolchainSpecifier) -> bool {
+    let output = Command::new("rustup")
+        .args(&["run", toolchain.channel(), "rustc", "--version"])
         .stderr(Stdio::null())
-        .stdout(Stdio::null())
-        .status()
-        .expect("Failed to check rustup toolchain")
-        .success()
+        .stdout(Stdio::piped())
+        .output()
+        .expect("Failed to check rustup toolchain");
+    if !output.status.success() {
+        return false;
+    }
+
+    let spec_min_version = toolchain.min_version().and_then(|v| {
+        let parsed = v.parse::<Version>();
+        if !parsed.is_ok() {
+            warn!("Unable to parse min version value: {}", &v);
+        }
+        parsed.ok()
+    });
+    if let Some(ref spec_min_version) = spec_min_version {
+        let version = String::from_utf8_lossy(&output.stdout);
+        let version = version
+            .split(" ")
+            .next()
+            .and_then(|v| v.parse::<Version>().ok())
+            .expect("unexpected version format");
+        spec_min_version <= &version
+    } else {
+        true
+    }
 }

@@ -47,10 +47,7 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
 pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
     let validate = !task_config.should_ignore_errors();
 
-    let toolchain = match task_config.toolchain {
-        Some(ref value) => Some(value.to_string()),
-        None => None,
-    };
+    let toolchain = task_config.toolchain.clone();
 
     let mut install_crate = task_config.install_crate.clone();
     if let Some(ref install_crate_value) = install_crate {

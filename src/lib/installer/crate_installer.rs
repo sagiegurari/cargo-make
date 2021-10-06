@@ -11,9 +11,9 @@ use crate::command;
 use crate::installer::crate_version_check;
 use crate::installer::{cargo_plugin_installer, rustup_component_installer};
 use crate::toolchain::wrap_command;
-use crate::types::{CommandSpec, InstallCrateInfo, InstallRustupComponentInfo};
+use crate::types::{CommandSpec, InstallCrateInfo, InstallRustupComponentInfo, ToolchainSpecifier};
 
-fn invoke_rustup_install(toolchain: &Option<String>, info: &InstallCrateInfo) -> bool {
+fn invoke_rustup_install(toolchain: &Option<ToolchainSpecifier>, info: &InstallCrateInfo) -> bool {
     match info.rustup_component_name {
         Some(ref component) => {
             let rustup_component_info = InstallRustupComponentInfo {
@@ -28,7 +28,7 @@ fn invoke_rustup_install(toolchain: &Option<String>, info: &InstallCrateInfo) ->
 }
 
 fn invoke_cargo_install(
-    toolchain: &Option<String>,
+    toolchain: &Option<ToolchainSpecifier>,
     info: &InstallCrateInfo,
     args: &Option<Vec<String>>,
     validate: bool,
@@ -77,7 +77,7 @@ fn is_crate_only_info(info: &InstallCrateInfo) -> bool {
 }
 
 pub(crate) fn install(
-    toolchain: &Option<String>,
+    toolchain: &Option<ToolchainSpecifier>,
     info: &InstallCrateInfo,
     args: &Option<Vec<String>>,
     validate: bool,

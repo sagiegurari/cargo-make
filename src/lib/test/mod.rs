@@ -1,6 +1,6 @@
 use crate::logger;
 use crate::logger::LoggerOptions;
-use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo};
+use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, ToolchainSpecifier};
 use ci_info;
 use ci_info::types::CiInfo;
 use fsio;
@@ -99,7 +99,7 @@ pub(crate) fn is_not_rust_stable() -> bool {
     }
 }
 
-pub(crate) fn get_toolchain() -> String {
+pub(crate) fn get_toolchain() -> ToolchainSpecifier {
     on_test_startup();
 
     let rustinfo = rust_info::get();
@@ -110,7 +110,7 @@ pub(crate) fn get_toolchain() -> String {
         RustChannel::Nightly => "nightly",
     };
 
-    toolchain.to_string()
+    toolchain.into()
 }
 
 pub(crate) fn create_empty_flow_info() -> FlowInfo {
