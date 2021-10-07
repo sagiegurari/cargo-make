@@ -4,10 +4,19 @@ toolchain = "stable"
 command = "rustc"
 args = ["--version"]
 
+[tasks.rustc-version-stable-edition-2021]
+toolchain = { channel = "stable", min_version = "1.56" }
+command = "rustc"
+args = ["--version"]
+
 [tasks.rustc-version-nightly]
 toolchain = "nightly"
 command = "rustc"
 args = ["--version"]
 
 [tasks.rustc-version-flow]
-dependencies = ["rustc-version-stable", "rustc-version-nightly"]
+dependencies = [
+    "rustc-version-stable",
+    "rustc-version-stable-edition-2021",
+    "rustc-version-nightly"
+]

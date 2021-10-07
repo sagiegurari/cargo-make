@@ -2039,6 +2039,16 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Build Done  in 2 seconds.
 ```
 
+It's also possible to assert a minimum required version of rustc with a channel. This can help
+to document required compiler features and to remind developers to upgrade their installation.
+
+```toml
+[tasks.requires-stable-edition-2021]
+toolchain = { channel = "stable", min_version = "1.56" }
+command = "rustc"
+args = ["--version"]
+```
+
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
