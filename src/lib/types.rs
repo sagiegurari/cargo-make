@@ -1024,14 +1024,14 @@ pub struct Task {
 #[serde(untagged)]
 pub enum ToolchainSpecifier {
     /// A string specifying the channel name of the toolchain
-    Name(String),
+    Simple(String),
     /// A toolchain with a minimum version bound
     Bounded(ToolchainBoundedSpecifier),
 }
 
 impl From<String> for ToolchainSpecifier {
     fn from(s: String) -> Self {
-        Self::Name(s)
+        Self::Simple(s)
     }
 }
 
@@ -1044,7 +1044,7 @@ impl From<&str> for ToolchainSpecifier {
 impl std::fmt::Display for ToolchainSpecifier {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Name(ref channel) => write!(formatter, "{}", channel),
+            Self::Simple(ref channel) => write!(formatter, "{}", channel),
             Self::Bounded(ref spec) => write!(formatter, "{}", spec),
         }
     }
@@ -1054,7 +1054,7 @@ impl ToolchainSpecifier {
     /// Return the channel of the toolchain to look for
     pub fn channel(&self) -> &str {
         match self {
-            Self::Name(ref channel) => &channel,
+            Self::Simple(ref channel) => &channel,
             Self::Bounded(ToolchainBoundedSpecifier { channel, .. }) => &channel,
         }
     }
@@ -1062,7 +1062,7 @@ impl ToolchainSpecifier {
     /// Return the minimal version, if any, to look for
     pub fn min_version(&self) -> Option<&str> {
         match self {
-            Self::Name(_) => None,
+            Self::Simple(_) => None,
             Self::Bounded(ToolchainBoundedSpecifier { min_version, .. }) => Some(&min_version),
         }
     }
