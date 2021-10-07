@@ -8,7 +8,7 @@ fn get_test_env_toolchain() -> ToolchainSpecifier {
 
     ToolchainSpecifier::Bounded(ToolchainBoundedSpecifier {
         channel,
-        min_version: version
+        min_version: version,
     })
 }
 

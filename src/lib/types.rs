@@ -1055,7 +1055,7 @@ impl ToolchainSpecifier {
     pub fn channel(&self) -> &str {
         match self {
             Self::Simple(ref channel) => &channel,
-            Self::Bounded(ToolchainBoundedSpecifier { channel, .. }) => &channel,
+            Self::Bounded(ToolchainBoundedSpecifier { ref channel, .. }) => channel,
         }
     }
 
@@ -1063,7 +1063,9 @@ impl ToolchainSpecifier {
     pub fn min_version(&self) -> Option<&str> {
         match self {
             Self::Simple(_) => None,
-            Self::Bounded(ToolchainBoundedSpecifier { min_version, .. }) => Some(&min_version),
+            Self::Bounded(ToolchainBoundedSpecifier {
+                ref min_version, ..
+            }) => Some(min_version),
         }
     }
 }
