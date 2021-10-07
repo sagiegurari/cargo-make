@@ -1,5 +1,5 @@
 use super::*;
-use crate::{test, types::ToolchainBoundedSpecifier};
+use crate::types::ToolchainBoundedSpecifier;
 use envmnt;
 
 fn get_test_env_toolchain() -> ToolchainSpecifier {
@@ -15,11 +15,7 @@ fn get_test_env_toolchain() -> ToolchainSpecifier {
 #[test]
 #[should_panic]
 fn wrap_command_invalid_toolchain() {
-    if test::is_not_rust_stable() {
-        wrap_command(&"invalid-chain".into(), "true", &None);
-    } else {
-        panic!("test");
-    }
+    wrap_command(&"invalid-chain".into(), "true", &None);
 }
 
 #[test]

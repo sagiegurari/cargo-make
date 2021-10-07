@@ -12,26 +12,12 @@ use cargo_metadata::Version;
 use crate::types::{CommandSpec, ToolchainSpecifier};
 use std::process::{Command, Stdio};
 
-#[cfg(test)]
-fn should_validate_installed_toolchain(toolchain: &ToolchainSpecifier) -> bool {
-    use crate::test;
-
-    return toolchain.min_version().is_some() || test::is_not_rust_stable();
-}
-
-#[cfg(not(test))]
-fn should_validate_installed_toolchain(_: &ToolchainSpecifier) -> bool {
-    return true;
-}
-
 pub(crate) fn wrap_command(
     toolchain: &ToolchainSpecifier,
     command: &str,
     args: &Option<Vec<String>>,
 ) -> CommandSpec {
-    let validate = should_validate_installed_toolchain(toolchain);
-
-    if validate && !has_toolchain(toolchain) {
+    if !has_toolchain(toolchain) {
         error!(
             "Missing toolchain {}! Please install it using rustup.",
             &toolchain
