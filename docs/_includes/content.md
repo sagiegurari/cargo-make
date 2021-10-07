@@ -2049,6 +2049,9 @@ command = "rustc"
 args = ["--version"]
 ```
 
+The task will fail when the toolchain is either not install or the existing version is smaller
+than the specified **min_version**.
+
 <a name="usage-init-end-tasks"></a>
 ### Init and End tasks
 Every task or flow that is executed by the cargo-make has additional 2 tasks.<br>
