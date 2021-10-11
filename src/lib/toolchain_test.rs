@@ -5,10 +5,15 @@ use envmnt;
 fn get_test_env_toolchain() -> ToolchainSpecifier {
     let channel = envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL");
     let version = envmnt::get_or_panic("CARGO_MAKE_RUST_VERSION");
+    let min_version = if channel == "stable" {
+        version
+    } else {
+        format!("{}-{}", version, channel)
+    };
 
     ToolchainSpecifier::Bounded(ToolchainBoundedSpecifier {
         channel,
-        min_version: version,
+        min_version,
     })
 }
 

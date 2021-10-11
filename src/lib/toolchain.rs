@@ -17,12 +17,7 @@ pub(crate) fn wrap_command(
     command: &str,
     args: &Option<Vec<String>>,
 ) -> CommandSpec {
-    if !has_toolchain(toolchain) {
-        error!(
-            "Missing toolchain {}! Please install it using rustup.",
-            &toolchain
-        );
-    }
+    check_toolchain(toolchain);
 
     let mut rustup_args = vec![
         "run".to_string(),
@@ -45,7 +40,7 @@ pub(crate) fn wrap_command(
     }
 }
 
-fn has_toolchain(toolchain: &ToolchainSpecifier) -> bool {
+fn check_toolchain(toolchain: &ToolchainSpecifier) {
     let output = Command::new("rustup")
         .args(&["run", toolchain.channel(), "rustc", "--version"])
         .stderr(Stdio::null())
@@ -53,7 +48,11 @@ fn has_toolchain(toolchain: &ToolchainSpecifier) -> bool {
         .output()
         .expect("Failed to check rustup toolchain");
     if !output.status.success() {
-        return false;
+        error!(
+            "Missing toolchain {}! Please install it using rustup.",
+            &toolchain
+        );
+        return;
     }
 
     let spec_min_version = toolchain.min_version().and_then(|min_version| {
@@ -72,8 +71,13 @@ fn has_toolchain(toolchain: &ToolchainSpecifier) -> bool {
         let version = version
             .parse::<Version>()
             .expect("unexpected version format");
-        spec_min_version <= &version
-    } else {
-        true
+        if &version < spec_min_version {
+            error!(
+                "Installed toolchain {} is required to satisfy version {}, found {}! Please upgrade it using rustup.",
+                toolchain.channel(),
+                &spec_min_version,
+                version,
+            );
+        }
     }
 }
