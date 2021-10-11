@@ -56,10 +56,10 @@ fn has_toolchain(toolchain: &ToolchainSpecifier) -> bool {
         return false;
     }
 
-    let spec_min_version = toolchain.min_version().and_then(|v| {
-        let parsed = v.parse::<Version>();
+    let spec_min_version = toolchain.min_version().and_then(|min_version| {
+        let parsed = min_version.parse::<Version>();
         if !parsed.is_ok() {
-            warn!("Unable to parse min version value: {}", &v);
+            warn!("Unable to parse min version value: {}", &min_version);
         }
         parsed.ok()
     });

@@ -1030,14 +1030,14 @@ pub enum ToolchainSpecifier {
 }
 
 impl From<String> for ToolchainSpecifier {
-    fn from(s: String) -> Self {
-        Self::Simple(s)
+    fn from(channel: String) -> Self {
+        Self::Simple(channel)
     }
 }
 
 impl From<&str> for ToolchainSpecifier {
-    fn from(s: &str) -> Self {
-        s.to_string().into()
+    fn from(channel: &str) -> Self {
+        channel.to_string().into()
     }
 }
 

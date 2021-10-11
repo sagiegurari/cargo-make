@@ -147,7 +147,7 @@ pub(crate) fn init(options: &LoggerOptions) {
 
             if cfg!(test) {
                 if record_level == LevelFilter::Error {
-                    panic!("test error flow");
+                    panic!("test error flow: {}", message);
                 }
             }
 
