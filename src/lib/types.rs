@@ -1059,6 +1059,15 @@ impl ToolchainSpecifier {
         }
     }
 
+    /// Check if the selected toolchain is from a pre-release channel
+    /// 
+    /// The names follow the <channel>[-<date>][-<host>] syntax, where
+    /// the beta and nightly channels are considered pre-release.
+    pub fn is_prerelease(&self) -> bool {
+        let channel = self.channel();
+        channel.starts_with("beta") || channel.starts_with("nightly")
+    }
+
     /// Return the minimal version, if any, to look for
     pub fn min_version(&self) -> Option<&str> {
         match self {
