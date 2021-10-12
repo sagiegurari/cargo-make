@@ -1019,7 +1019,8 @@ pub struct Task {
     pub mac: Option<PlatformOverrideTask>,
 }
 
-/// A dependency, defined either as a string or as a Dependency object
+/// A toolchain, defined either as a string (following the rustup syntax)
+/// or a ToolchainBoundedSpecifier.
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum ToolchainSpecifier {
