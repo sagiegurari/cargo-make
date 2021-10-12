@@ -1061,7 +1061,7 @@ impl ToolchainSpecifier {
     }
 
     /// Check if the selected toolchain is from a pre-release channel
-    /// 
+    ///
     /// The names follow the <channel>[-<date>][-<host>] syntax, where
     /// the beta and nightly channels are considered pre-release.
     pub fn is_prerelease(&self) -> bool {

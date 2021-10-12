@@ -11,7 +11,10 @@ use cargo_metadata::Version;
 use semver::Prerelease;
 
 use crate::types::{CommandSpec, ToolchainSpecifier};
-use std::{process::{Command, Stdio}, str::FromStr};
+use std::{
+    process::{Command, Stdio},
+    str::FromStr,
+};
 
 pub(crate) fn wrap_command(
     toolchain: &ToolchainSpecifier,
@@ -53,8 +56,11 @@ fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> 
             // so we have 1.56-beta < 1.56.0-beta.4 < 1.56 according to semver
             match Prerelease::from_str(toolchain.channel()) {
                 Err(_) => {
-                    warn!("Unable to parse channel pre-release identifier: {}", &toolchain.channel());
-                },
+                    warn!(
+                        "Unable to parse channel pre-release identifier: {}",
+                        &toolchain.channel()
+                    );
+                }
                 Ok(contrived_pre) => min_version.pre = contrived_pre,
             }
         }
