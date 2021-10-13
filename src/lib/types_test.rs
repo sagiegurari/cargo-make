@@ -1239,6 +1239,47 @@ fn env_value_deserialize_unset() {
 }
 
 #[test]
+fn toolchain_specifier_deserialize_string() {
+    #[derive(Deserialize)]
+    struct Value {
+        toolchain: ToolchainSpecifier,
+    }
+
+    let v: Value = toml::from_str(
+        r#"
+        toolchain = "stable"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(
+        v.toolchain,
+        ToolchainSpecifier::Simple("stable".to_string())
+    );
+}
+
+#[test]
+fn toolchain_specifier_deserialize_min_version() {
+    #[derive(Deserialize)]
+    struct Value {
+        toolchain: ToolchainSpecifier,
+    }
+
+    let v: Value = toml::from_str(
+        r#"
+        toolchain = { channel = "beta", min_version = "1.56" }
+        "#,
+    )
+    .unwrap();
+    assert_eq!(
+        v.toolchain,
+        ToolchainSpecifier::Bounded(ToolchainBoundedSpecifier {
+            channel: "beta".to_string(),
+            min_version: "1.56".to_string(),
+        })
+    );
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 

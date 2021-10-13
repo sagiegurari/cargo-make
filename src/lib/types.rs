@@ -1071,7 +1071,7 @@ impl ToolchainSpecifier {
     }
 }
 
-/// A toolchain vwith a minumum version bound
+/// A toolchain with a minumum version bound
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ToolchainBoundedSpecifier {
     /// The channel of the toolchain to use
