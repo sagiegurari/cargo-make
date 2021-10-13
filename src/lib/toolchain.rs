@@ -11,10 +11,7 @@ use cargo_metadata::Version;
 use semver::Prerelease;
 
 use crate::types::{CommandSpec, ToolchainSpecifier};
-use std::{
-    process::{Command, Stdio},
-    str::FromStr,
-};
+use std::process::{Command, Stdio};
 
 pub(crate) fn wrap_command(
     toolchain: &ToolchainSpecifier,
@@ -46,29 +43,11 @@ pub(crate) fn wrap_command(
 
 fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> {
     let min_version = toolchain.min_version()?;
-    if let Some(mut min_version) = min_version.parse::<Version>().ok() {
-        if min_version.pre.is_empty() && toolchain.is_prerelease() {
-            // If no explicit prerelease identifier has been specified, but a prerelease
-            // version has been selected, add it to the parsed version.
-            // Comparison with rustc output would otherwise produce unintended results:
-            // `{ channel = "beta", min_version = "1.56" }` is expected to work with
-            // `rustup run beta rustc --version` ==> "rustc 1.56.0-beta.4 (e6e620e1c 2021-10-04)"
-            // so we have 1.56-beta < 1.56.0-beta.4 < 1.56 according to semver
-            match Prerelease::from_str(toolchain.channel()) {
-                Err(_) => {
-                    warn!(
-                        "Unable to parse channel pre-release identifier: {}",
-                        &toolchain.channel()
-                    );
-                }
-                Ok(contrived_pre) => min_version.pre = contrived_pre,
-            }
-        }
-        Some(min_version)
-    } else {
+    let spec_min_version = min_version.parse::<Version>();
+    if let Err(_) = spec_min_version {
         warn!("Unable to parse min version value: {}", &min_version);
-        None
     }
+    spec_min_version.ok()
 }
 
 fn check_toolchain(toolchain: &ToolchainSpecifier) {
@@ -88,20 +67,29 @@ fn check_toolchain(toolchain: &ToolchainSpecifier) {
 
     let spec_min_version = get_specified_min_version(toolchain);
     if let Some(ref spec_min_version) = spec_min_version {
-        let version = String::from_utf8_lossy(&output.stdout);
-        let version = version
+        let rustc_version = String::from_utf8_lossy(&output.stdout);
+        let rustc_version = rustc_version
             .split(" ")
             .nth(1)
             .expect("expected a version in rustc output");
-        let version = version
+        let mut rustc_version = rustc_version
             .parse::<Version>()
             .expect("unexpected version format");
-        if &version < spec_min_version {
+        // Remove prerelease identifiers from the output of rustc. Specifying a toolchain
+        // channel means the user actively chooses beta or nightly (or a custom one).
+        //
+        // Direct comparison with rustc output would otherwise produce unintended results:
+        // `{ channel = "beta", min_version = "1.56" }` is expected to work with
+        // `rustup run beta rustc --version` ==> "rustc 1.56.0-beta.4 (e6e620e1c 2021-10-04)"
+        // so we would have 1.56.0-beta.4 < 1.56 according to semver
+        rustc_version.pre = Prerelease::EMPTY;
+
+        if &rustc_version < spec_min_version {
             error!(
                 "Installed toolchain {} is required to satisfy version {}, found {}! Please upgrade it using rustup.",
                 toolchain.channel(),
                 &spec_min_version,
-                version,
+                rustc_version,
             );
         }
     }
