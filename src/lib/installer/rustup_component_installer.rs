@@ -9,10 +9,14 @@ mod rustup_component_installer_test;
 
 use crate::command;
 use crate::toolchain::wrap_command;
-use crate::types::InstallRustupComponentInfo;
+use crate::types::{InstallRustupComponentInfo, ToolchainSpecifier};
 use std::process::Command;
 
-pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: &[String]) -> bool {
+pub(crate) fn is_installed(
+    toolchain: &Option<ToolchainSpecifier>,
+    binary: &str,
+    test_args: &[String],
+) -> bool {
     let mut command_struct = match toolchain {
         Some(ref toolchain_string) => {
             let command_spec = wrap_command(toolchain_string, binary, &None);
@@ -52,7 +56,7 @@ pub(crate) fn is_installed(toolchain: &Option<String>, binary: &str, test_args: 
 }
 
 pub(crate) fn invoke_rustup_install(
-    toolchain: &Option<String>,
+    toolchain: &Option<ToolchainSpecifier>,
     info: &InstallRustupComponentInfo,
 ) -> bool {
     let mut command_spec = Command::new("rustup");
@@ -60,9 +64,9 @@ pub(crate) fn invoke_rustup_install(
     command_spec.arg("add");
 
     match toolchain {
-        Some(ref toolchain_string) => {
+        Some(ref toolchain) => {
             command_spec.arg("--toolchain");
-            command_spec.arg(toolchain_string);
+            command_spec.arg(toolchain.channel());
         }
         None => {}
     };
@@ -100,7 +104,7 @@ pub(crate) fn invoke_rustup_install(
 }
 
 pub(crate) fn install(
-    toolchain: &Option<String>,
+    toolchain: &Option<ToolchainSpecifier>,
     info: &InstallRustupComponentInfo,
     validate: bool,
 ) -> bool {

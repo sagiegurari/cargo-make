@@ -7,38 +7,22 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
-use crate::types::CommandSpec;
+use cargo_metadata::Version;
+use semver::Prerelease;
+
+use crate::types::{CommandSpec, ToolchainSpecifier};
 use std::process::{Command, Stdio};
 
-#[cfg(test)]
-fn should_validate_installed_toolchain() -> bool {
-    use crate::test;
-
-    return test::is_not_rust_stable();
-}
-
-#[cfg(not(test))]
-fn should_validate_installed_toolchain() -> bool {
-    return true;
-}
-
 pub(crate) fn wrap_command(
-    toolchain: &str,
+    toolchain: &ToolchainSpecifier,
     command: &str,
     args: &Option<Vec<String>>,
 ) -> CommandSpec {
-    let validate = should_validate_installed_toolchain();
-
-    if validate && !has_toolchain(toolchain) {
-        error!(
-            "Missing toolchain {}! Please install it using rustup.",
-            &toolchain
-        );
-    }
+    check_toolchain(toolchain);
 
     let mut rustup_args = vec![
         "run".to_string(),
-        toolchain.to_string(),
+        toolchain.channel().to_string(),
         command.to_string(),
     ];
 
@@ -57,12 +41,56 @@ pub(crate) fn wrap_command(
     }
 }
 
-fn has_toolchain(toolchain: &str) -> bool {
-    Command::new("rustup")
-        .args(&["run", toolchain, "rustc"])
+fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> {
+    let min_version = toolchain.min_version()?;
+    let spec_min_version = min_version.parse::<Version>();
+    if let Err(_) = spec_min_version {
+        warn!("Unable to parse min version value: {}", &min_version);
+    }
+    spec_min_version.ok()
+}
+
+fn check_toolchain(toolchain: &ToolchainSpecifier) {
+    let output = Command::new("rustup")
+        .args(&["run", toolchain.channel(), "rustc", "--version"])
         .stderr(Stdio::null())
-        .stdout(Stdio::null())
-        .status()
-        .expect("Failed to check rustup toolchain")
-        .success()
+        .stdout(Stdio::piped())
+        .output()
+        .expect("Failed to check rustup toolchain");
+    if !output.status.success() {
+        error!(
+            "Missing toolchain {}! Please install it using rustup.",
+            &toolchain
+        );
+        return;
+    }
+
+    let spec_min_version = get_specified_min_version(toolchain);
+    if let Some(ref spec_min_version) = spec_min_version {
+        let rustc_version = String::from_utf8_lossy(&output.stdout);
+        let rustc_version = rustc_version
+            .split(" ")
+            .nth(1)
+            .expect("expected a version in rustc output");
+        let mut rustc_version = rustc_version
+            .parse::<Version>()
+            .expect("unexpected version format");
+        // Remove prerelease identifiers from the output of rustc. Specifying a toolchain
+        // channel means the user actively chooses beta or nightly (or a custom one).
+        //
+        // Direct comparison with rustc output would otherwise produce unintended results:
+        // `{ channel = "beta", min_version = "1.56" }` is expected to work with
+        // `rustup run beta rustc --version` ==> "rustc 1.56.0-beta.4 (e6e620e1c 2021-10-04)"
+        // so we would have 1.56.0-beta.4 < 1.56 according to semver
+        rustc_version.pre = Prerelease::EMPTY;
+
+        if &rustc_version < spec_min_version {
+            error!(
+                "Installed toolchain {} is required to satisfy version {}, found {}! Please upgrade it using rustup.",
+                toolchain.channel(),
+                &spec_min_version,
+                rustc_version,
+            );
+        }
+    }
 }

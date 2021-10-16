@@ -1239,6 +1239,47 @@ fn env_value_deserialize_unset() {
 }
 
 #[test]
+fn toolchain_specifier_deserialize_string() {
+    #[derive(Deserialize)]
+    struct Value {
+        toolchain: ToolchainSpecifier,
+    }
+
+    let v: Value = toml::from_str(
+        r#"
+        toolchain = "stable"
+        "#,
+    )
+    .unwrap();
+    assert_eq!(
+        v.toolchain,
+        ToolchainSpecifier::Simple("stable".to_string())
+    );
+}
+
+#[test]
+fn toolchain_specifier_deserialize_min_version() {
+    #[derive(Deserialize)]
+    struct Value {
+        toolchain: ToolchainSpecifier,
+    }
+
+    let v: Value = toml::from_str(
+        r#"
+        toolchain = { channel = "beta", min_version = "1.56" }
+        "#,
+    )
+    .unwrap();
+    assert_eq!(
+        v.toolchain,
+        ToolchainSpecifier::Bounded(ToolchainBoundedSpecifier {
+            channel: "beta".to_string(),
+            min_version: "1.56".to_string(),
+        })
+    );
+}
+
+#[test]
 fn task_new() {
     let task = Task::new();
 
@@ -1532,7 +1573,7 @@ fn task_extend_extended_have_all_fields() {
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".into()]),
-        toolchain: Some("toolchain".to_string()),
+        toolchain: Some("toolchain".into()),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some(InstallCrate::Value("my crate2".to_string())),
@@ -1576,7 +1617,7 @@ fn task_extend_extended_have_all_fields() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -1621,7 +1662,7 @@ fn task_extend_extended_have_all_fields() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
@@ -1666,7 +1707,7 @@ fn task_extend_extended_have_all_fields() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
     };
 
@@ -1744,7 +1785,7 @@ fn task_extend_extended_have_all_fields() {
     };
     assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(base.dependencies.unwrap().len(), 1);
-    assert_eq!(base.toolchain.unwrap(), "toolchain");
+    assert_eq!(base.toolchain.unwrap(), "toolchain".into());
     assert!(base.linux.unwrap().clear.unwrap());
     assert!(!base.windows.unwrap().clear.unwrap());
     assert!(base.mac.unwrap().clear.is_none());
@@ -1807,7 +1848,7 @@ fn task_extend_clear_with_no_data() {
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".into()]),
-        toolchain: Some("toolchain".to_string()),
+        toolchain: Some("toolchain".into()),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some(InstallCrate::Value("my crate2".to_string())),
@@ -1851,7 +1892,7 @@ fn task_extend_clear_with_no_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -1896,7 +1937,7 @@ fn task_extend_clear_with_no_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
@@ -1941,7 +1982,7 @@ fn task_extend_clear_with_no_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
     };
 
@@ -2042,7 +2083,7 @@ fn task_extend_clear_with_all_data() {
         script_extension: Some("ext2".to_string()),
         run_task: Some(RunTaskInfo::Name("task2".to_string())),
         dependencies: Some(vec!["A".into()]),
-        toolchain: Some("toolchain".to_string()),
+        toolchain: Some("toolchain".into()),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some(InstallCrate::Value("my crate2".to_string())),
@@ -2086,7 +2127,7 @@ fn task_extend_clear_with_all_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         windows: Some(PlatformOverrideTask {
             clear: Some(false),
@@ -2131,7 +2172,7 @@ fn task_extend_clear_with_all_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
         mac: Some(PlatformOverrideTask {
             clear: None,
@@ -2176,7 +2217,7 @@ fn task_extend_clear_with_all_data() {
             script_extension: Some("ext3".to_string()),
             run_task: Some(RunTaskInfo::Name("task3".to_string())),
             dependencies: Some(vec!["A".into()]),
-            toolchain: Some("toolchain".to_string()),
+            toolchain: Some("toolchain".into()),
         }),
     };
 
@@ -2289,7 +2330,7 @@ fn task_get_normalized_task_undefined() {
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".into()]),
-        toolchain: Some("toolchain2".to_string()),
+        toolchain: Some("toolchain2".into()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(false),
@@ -2369,7 +2410,7 @@ fn task_get_normalized_task_undefined() {
     };
     assert_eq!(run_task_name, "task1".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
-    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
+    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2".into());
 }
 
 #[test]
@@ -2428,7 +2469,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".into()]),
-        toolchain: Some("toolchain1".to_string()),
+        toolchain: Some("toolchain1".into()),
         linux: Some(PlatformOverrideTask {
             clear: None,
             install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
@@ -2481,7 +2522,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             script_extension: Some("ext2".to_string()),
             run_task: Some(RunTaskInfo::Name("task2".to_string())),
             dependencies: Some(vec!["1".into(), "2".into()]),
-            toolchain: Some("toolchain2".to_string()),
+            toolchain: Some("toolchain2".into()),
         }),
         windows: None,
         mac: None,
@@ -2563,7 +2604,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     };
     assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
-    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
+    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2".into());
 
     let condition = normalized_task.condition.unwrap();
     assert_eq!(condition.platforms.unwrap().len(), 2);
@@ -2626,7 +2667,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".into()]),
-        toolchain: Some("toolchain1".to_string()),
+        toolchain: Some("toolchain1".into()),
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
             install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
@@ -2683,7 +2724,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             script_extension: Some("ext2".to_string()),
             run_task: Some(RunTaskInfo::Name("task2".to_string())),
             dependencies: Some(vec!["1".into(), "2".into()]),
-            toolchain: Some("toolchain2".to_string()),
+            toolchain: Some("toolchain2".into()),
         }),
         windows: None,
         mac: None,
@@ -2765,7 +2806,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     };
     assert_eq!(run_task_name, "task2".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 2);
-    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2");
+    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2".into());
 
     let condition = normalized_task.condition.unwrap();
     assert_eq!(condition.platforms.unwrap().len(), 1);
@@ -2822,7 +2863,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".into()]),
-        toolchain: Some("toolchain1".to_string()),
+        toolchain: Some("toolchain1".into()),
         description: None,
         category: None,
         workspace: None,
@@ -2929,7 +2970,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     };
     assert_eq!(run_task_name, "task1".to_string());
     assert_eq!(normalized_task.dependencies.unwrap().len(), 1);
-    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain1");
+    assert_eq!(normalized_task.toolchain.unwrap(), "toolchain1".into());
 }
 
 #[test]
@@ -2982,7 +3023,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         script_extension: Some("ext1".to_string()),
         run_task: Some(RunTaskInfo::Name("task1".to_string())),
         dependencies: Some(vec!["1".into()]),
-        toolchain: Some("toolchain1".to_string()),
+        toolchain: Some("toolchain1".into()),
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(false),

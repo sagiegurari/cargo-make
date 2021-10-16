@@ -415,9 +415,7 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
 
     envmnt::set_optional("CARGO_MAKE_RUST_VERSION", &rustinfo.version);
 
-    if rustinfo.channel.is_some() {
-        let channel_option = rustinfo.channel.unwrap();
-
+    if let Some(channel_option) = rustinfo.channel {
         let channel = match channel_option {
             RustChannel::Stable => "stable",
             RustChannel::Beta => "beta",

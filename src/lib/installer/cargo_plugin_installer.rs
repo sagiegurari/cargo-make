@@ -10,10 +10,11 @@ mod cargo_plugin_installer_test;
 use crate::command;
 use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
+use crate::types::ToolchainSpecifier;
 use envmnt;
 use std::process::Command;
 
-fn is_crate_installed(toolchain: &Option<String>, crate_name: &str) -> bool {
+fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) -> bool {
     debug!("Getting list of installed cargo commands.");
 
     let mut command_struct = match toolchain {
@@ -109,7 +110,7 @@ pub(crate) fn get_install_crate_args(
 }
 
 pub(crate) fn install_crate(
-    toolchain: &Option<String>,
+    toolchain: &Option<ToolchainSpecifier>,
     cargo_command: &str,
     crate_name: &str,
     args: &Option<Vec<String>>,
