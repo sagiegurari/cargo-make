@@ -324,7 +324,7 @@
 
             <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">test</span>) {
                 <span class="kw">if</span> <span class="ident">record_level</span> <span class="op">=</span><span class="op">=</span> <span class="ident">LevelFilter::Error</span> {
-                    <span class="macro">panic!</span>(<span class="string">&quot;test error flow&quot;</span>);
+                    <span class="macro">panic!</span>(<span class="string">&quot;test error flow: {}&quot;</span>, <span class="ident">message</span>);
                 }
             }
 

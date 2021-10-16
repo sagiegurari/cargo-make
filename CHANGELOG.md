@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.2 (2021-10-16)
+
+* Enhancement: Ability to specify min rust version in tasks via toolchain attribute #594 (thanks @WorldSEnder)
+
 ### v0.35.1 (2021-10-02)
 
 * Fix: extend attribute didn't extend env variables #579

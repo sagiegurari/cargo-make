@@ -2152,6 +2152,73 @@
 <span id="2152">2152</span>
 <span id="2153">2153</span>
 <span id="2154">2154</span>
+<span id="2155">2155</span>
+<span id="2156">2156</span>
+<span id="2157">2157</span>
+<span id="2158">2158</span>
+<span id="2159">2159</span>
+<span id="2160">2160</span>
+<span id="2161">2161</span>
+<span id="2162">2162</span>
+<span id="2163">2163</span>
+<span id="2164">2164</span>
+<span id="2165">2165</span>
+<span id="2166">2166</span>
+<span id="2167">2167</span>
+<span id="2168">2168</span>
+<span id="2169">2169</span>
+<span id="2170">2170</span>
+<span id="2171">2171</span>
+<span id="2172">2172</span>
+<span id="2173">2173</span>
+<span id="2174">2174</span>
+<span id="2175">2175</span>
+<span id="2176">2176</span>
+<span id="2177">2177</span>
+<span id="2178">2178</span>
+<span id="2179">2179</span>
+<span id="2180">2180</span>
+<span id="2181">2181</span>
+<span id="2182">2182</span>
+<span id="2183">2183</span>
+<span id="2184">2184</span>
+<span id="2185">2185</span>
+<span id="2186">2186</span>
+<span id="2187">2187</span>
+<span id="2188">2188</span>
+<span id="2189">2189</span>
+<span id="2190">2190</span>
+<span id="2191">2191</span>
+<span id="2192">2192</span>
+<span id="2193">2193</span>
+<span id="2194">2194</span>
+<span id="2195">2195</span>
+<span id="2196">2196</span>
+<span id="2197">2197</span>
+<span id="2198">2198</span>
+<span id="2199">2199</span>
+<span id="2200">2200</span>
+<span id="2201">2201</span>
+<span id="2202">2202</span>
+<span id="2203">2203</span>
+<span id="2204">2204</span>
+<span id="2205">2205</span>
+<span id="2206">2206</span>
+<span id="2207">2207</span>
+<span id="2208">2208</span>
+<span id="2209">2209</span>
+<span id="2210">2210</span>
+<span id="2211">2211</span>
+<span id="2212">2212</span>
+<span id="2213">2213</span>
+<span id="2214">2214</span>
+<span id="2215">2215</span>
+<span id="2216">2216</span>
+<span id="2217">2217</span>
+<span id="2218">2218</span>
+<span id="2219">2219</span>
+<span id="2220">2220</span>
+<span id="2221">2221</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -3165,13 +3232,80 @@
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DependencyIdentifier</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
-    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ToolchainSpecifier</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Linux (takes precedence over alias)</span>
     <span class="kw">pub</span> <span class="ident">linux</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Windows (takes precedence over alias)</span>
     <span class="kw">pub</span> <span class="ident">windows</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span>,
     <span class="doccomment">/// override task if runtime OS is Mac (takes precedence over alias)</span>
     <span class="kw">pub</span> <span class="ident">mac</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PlatformOverrideTask</span><span class="op">&gt;</span>,
+}
+
+<span class="doccomment">/// A toolchain, defined either as a string (following the rustup syntax)</span>
+<span class="doccomment">/// or a ToolchainBoundedSpecifier.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ToolchainSpecifier</span> {
+    <span class="doccomment">/// A string specifying the channel name of the toolchain</span>
+    <span class="ident">Simple</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// A toolchain with a minimum version bound</span>
+    <span class="ident">Bounded</span>(<span class="ident">ToolchainBoundedSpecifier</span>),
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ToolchainSpecifier</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">channel</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span><span class="ident">::Simple</span>(<span class="ident">channel</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ToolchainSpecifier</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">channel</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="ident">channel</span>.<span class="ident">to_string</span>().<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">ToolchainSpecifier</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::fmt::Result</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="self">Self</span><span class="ident">::Simple</span>(<span class="kw-2">ref</span> <span class="ident">channel</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">formatter</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">channel</span>),
+            <span class="self">Self</span><span class="ident">::Bounded</span>(<span class="kw-2">ref</span> <span class="ident">spec</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">formatter</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">spec</span>),
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ToolchainSpecifier</span> {
+    <span class="doccomment">/// Return the channel of the toolchain to look for</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="self">Self</span><span class="ident">::Simple</span>(<span class="kw-2">ref</span> <span class="ident">channel</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">channel</span>,
+            <span class="self">Self</span><span class="ident">::Bounded</span>(<span class="ident">ToolchainBoundedSpecifier</span> { <span class="kw-2">ref</span> <span class="ident">channel</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">channel</span>,
+        }
+    }
+
+    <span class="doccomment">/// Return the minimal version, if any, to look for</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">min_version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="self">Self</span><span class="ident">::Simple</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="self">Self</span><span class="ident">::Bounded</span>(<span class="ident">ToolchainBoundedSpecifier</span> {
+                <span class="kw-2">ref</span> <span class="ident">min_version</span>, ..
+            }) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">min_version</span>),
+        }
+    }
+}
+
+<span class="doccomment">/// A toolchain with a minumum version bound</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ToolchainBoundedSpecifier</span> {
+    <span class="doccomment">/// The channel of the toolchain to use</span>
+    <span class="kw">pub</span> <span class="ident">channel</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The minimum version to match</span>
+    <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="ident">String</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">ToolchainBoundedSpecifier</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::fmt::Result</span> {
+        <span class="macro">write!</span>(<span class="ident">formatter</span>, <span class="string">&quot;{} &gt;= {}&quot;</span>, <span class="self">self</span>.<span class="ident">channel</span>, <span class="self">self</span>.<span class="ident">min_version</span>)
+    }
 }
 
 <span class="doccomment">/// A dependency, defined either as a string or as a Dependency object</span>
@@ -3841,7 +3975,7 @@
     <span class="doccomment">/// A list of tasks to execute before this task</span>
     <span class="kw">pub</span> <span class="ident">dependencies</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DependencyIdentifier</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The rust toolchain used to invoke the command or install the needed crates/components</span>
-    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">toolchain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ToolchainSpecifier</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PlatformOverrideTask</span> {
