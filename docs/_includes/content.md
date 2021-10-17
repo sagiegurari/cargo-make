@@ -3123,9 +3123,9 @@ These are the following options available while running cargo-make:
 
 ```console
 USAGE:
-    cargo make [FLAGS] [OPTIONS] [--] [ARGS]
+    cargo make [FLAGS] [OPTIONS] [--] [TASK_CMD]...
     OR
-    makers [FLAGS] [OPTIONS] [--] [ARGS]
+    makers [FLAGS] [OPTIONS] [--] [TASK_CMD]...
 
 FLAGS:
         --allow-private                Allow invocation of private tasks
@@ -3156,8 +3156,7 @@ OPTIONS:
     -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
 
 ARGS:
-    <TASK>            The task name to execute
-    <TASK_ARGS>...    Task arguments which can be accessed in the task itself.
+    <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed in the task itself.
 ```
 
 <a name="usage-shell-completion"></a>
