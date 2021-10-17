@@ -643,3 +643,23 @@ fn run_for_args_set_task_args() {
         "arg1;arg2;arg3"
     );
 }
+
+#[test]
+fn run_for_args_set_task_var_args() {
+    // See also issue #585
+    let global_config = GlobalConfig::new();
+    let app = create_cli(&global_config, &"make".to_string(), true);
+
+    envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
+
+    let matches = app.get_matches_from(vec![
+        "cargo", "make", "empty", "abc", "-p", "foo/bar/", "def",
+    ]);
+
+    run_for_args(matches, &global_config, &"make".to_string(), true);
+
+    assert_eq!(
+        envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
+        "abc;-p;foo/bar/;def"
+    );
+}
