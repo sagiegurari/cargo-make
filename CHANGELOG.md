@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.3
+
+* Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character #585 (thanks @WorldSEnder)
+
 ### v0.35.2 (2021-10-16)
 
 * Enhancement: Ability to specify min rust version in tasks via toolchain attribute #594 (thanks @WorldSEnder)
