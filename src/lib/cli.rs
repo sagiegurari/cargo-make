@@ -269,16 +269,19 @@ fn run_for_args(
         None => &DEFAULT_TASK_NAME,
     };
     let task = cmd_matches.value_of("task").unwrap_or(default_task_name);
-    cli_args.task = cmd_matches.value_of("TASK").unwrap_or(task).to_string();
-
-    cli_args.arguments = match cmd_matches.values_of("TASK_ARGS") {
-        Some(values) => {
-            let args_str: Vec<&str> = values.collect();
-            let args_strings = args_str.iter().map(|item| item.to_string()).collect();
-            Some(args_strings)
+    let task_cmd = cmd_matches
+        .values_of("TASK_CMD")
+        .unwrap_or_default()
+        .collect::<Vec<_>>();
+    let (task, arguments) = match task_cmd.as_slice() {
+        &[] => (task, None),
+        &[task_name, ref task_args @ ..] => {
+            let args_strings = task_args.iter().map(|item| item.to_string()).collect();
+            (task_name, Some(args_strings))
         }
-        None => None,
     };
+    cli_args.task = task.to_string();
+    cli_args.arguments = arguments;
 
     run(cli_args, global_config);
 }
@@ -309,6 +312,7 @@ fn create_cli<'a, 'b>(
         .author(AUTHOR)
         .about(DESCRIPTION)
         .setting(AppSettings::AllowLeadingHyphen)
+        .setting(AppSettings::TrailingVarArg)
         .arg(
             Arg::with_name("makefile")
                 .long("--makefile")
@@ -442,11 +446,9 @@ fn create_cli<'a, 'b>(
                 .long("--diff-steps")
                 .help("Runs diff between custom flow and prebuilt flow (requires git)"),
         )
-        .arg(Arg::with_name("TASK").help("The task name to execute"))
-        .arg(
-            Arg::with_name("TASK_ARGS")
+        .arg(Arg::with_name("TASK_CMD")
                 .multiple(true)
-                .help("Task arguments which can be accessed in the task itself."),
+                .help("The task to execute, potentially including arguments which can be accessed in the task itself.")
         );
 
     if sub_command {
