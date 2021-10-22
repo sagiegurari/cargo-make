@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.3
+### v0.35.3 (2021-10-22)
 
 * Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character #585 (thanks @WorldSEnder)
 
