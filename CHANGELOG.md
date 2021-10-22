@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.4 (2021-10-22)
+
+* Fix: github publish flow broken
+
 ### v0.35.3 (2021-10-22)
 
 * Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character #585 (thanks @WorldSEnder)
