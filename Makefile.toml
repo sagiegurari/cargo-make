@@ -10,6 +10,7 @@ additional_profiles = [
 ]
 
 [env]
+CARGO_MAKE_ADDITIONAL_BINARY_EXECUTABLE_NAME = "makers"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "cli-[a-z0-9]*$\\|makers-[a-z0-9]*$\\|${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 CARGO_MAKE_TEMP_UNSTABLE_KEY = "${CARGO_MAKE_RUST_TARGET_OS}-${CARGO_MAKE_RUST_CHANNEL}-${CARGO_MAKE_CI}"
 CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV = { source = "${CARGO_MAKE_TEMP_UNSTABLE_KEY}", default_value = "false", mapping = { "none" = "true" } }
@@ -84,3 +85,4 @@ linux_alias = "generate-docs"
 
 [tasks.pre-build-file-increment]
 env = { CARGO_MAKE_BUILD_NUMBER_FILE = "${CARGO_MAKE_WORKING_DIRECTORY}/.buildnumber" }
+

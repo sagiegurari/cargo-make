@@ -1078,21 +1078,31 @@ condition = { env_set = [
 ] }
 env.OUTPUT_NAME = "${CARGO_MAKE_PROJECT_NAME}-v${CARGO_MAKE_PROJECT_VERSION}-${CARGO_MAKE_RELEASE_FLOW_TARGET}"
 env.TARGET_RELEASE_DIRECTORY = "target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release"
-script_runner = "@shell"
 script = '''
+#!@duckscript
+executable_file = set ${CARGO_MAKE_BINARY_EXECUTABLE_NAME}
+additional_executable_file = set ${CARGO_MAKE_ADDITIONAL_BINARY_EXECUTABLE_NAME}
+if is_windows
+    executable_file = set "${executable_file}.exe"
+    additional_executable_file = set "${additional_executable_file}.exe"
+end
+
 mkdir ${OUTPUT_NAME}
-cp ${TARGET_RELEASE_DIRECTORY}/${CARGO_MAKE_BINARY_EXECUTABLE_NAME} ${OUTPUT_NAME}/
-cp README.md LICENSE* ${OUTPUT_NAME}/
-zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}
+
+cp ${TARGET_RELEASE_DIRECTORY}/${executable_file} ${OUTPUT_NAME}/${executable_file}
+additional_executable_exists = is_path_exists ${TARGET_RELEASE_DIRECTORY}/${additional_executable_file}
+if ${additional_executable_exists}
+    cp ${TARGET_RELEASE_DIRECTORY}/${additional_executable_file} ${OUTPUT_NAME}/${additional_executable_file}
+end
+cp ./README.md ${OUTPUT_NAME}/README.md
+glob_cp ./LICENSE* ${OUTPUT_NAME}/
+
+ls -l ${OUTPUT_NAME}/
+
+if is_windows
+    exec --fail-on-error powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip
+else
+    exec --fail-on-error zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}
+end
 '''
 
-[tasks.zip-release-binary-for-target.windows]
-script = '''
-mkdir ${OUTPUT_NAME}
-dir target
-powershell copy-item -path target/${CARGO_MAKE_RELEASE_FLOW_TARGET}/release/${CARGO_MAKE_BINARY_EXECUTABLE_NAME}.exe -destination ${OUTPUT_NAME}
-powershell copy-item -path README.md -destination ${OUTPUT_NAME}
-powershell copy-item -path LICENSE -destination ${OUTPUT_NAME}
-dir ${OUTPUT_NAME}
-powershell Compress-Archive -Path ${OUTPUT_NAME}/* -DestinationPath ${OUTPUT_NAME}.zip
-'''
