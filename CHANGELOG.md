@@ -10,7 +10,7 @@
 
 ### v0.35.3 (2021-10-22)
 
-* Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character #585 (thanks @WorldSEnder)
+* Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character. Arguments for cargo-make itself **must** now be passed in before the task name. #585 (thanks @WorldSEnder)
 
 ### v0.35.2 (2021-10-16)
 
