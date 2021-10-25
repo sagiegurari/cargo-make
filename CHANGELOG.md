@@ -3,6 +3,7 @@
 ### v0.35.5 (2021-10-22)
 
 * Enhancement: Add makers executable to prebuilt binary release #600
+* Fix: Arguments passed in after the task name are now passed to the task #597
 
 ### v0.35.4 (2021-10-22)
 
