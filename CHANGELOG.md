@@ -3,7 +3,6 @@
 ### v0.35.5 (2021-10-22)
 
 * Enhancement: Add makers executable to prebuilt binary release #600
-* Fix: Arguments passed in after the task name are now passed to the task #597
 
 ### v0.35.4 (2021-10-22)
 
@@ -11,7 +10,7 @@
 
 ### v0.35.3 (2021-10-22)
 
-* Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character #585 (thanks @WorldSEnder)
+* Enhancement: Task cli arguments matching cargo-make cli args can now be passed without -- character. Arguments for cargo-make itself **must** now be passed in before the task name. #585 (thanks @WorldSEnder)
 
 ### v0.35.2 (2021-10-16)
 
