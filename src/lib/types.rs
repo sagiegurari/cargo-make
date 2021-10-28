@@ -110,6 +110,8 @@ pub struct CliArgs {
     pub print_only: bool,
     /// List all known steps
     pub list_all_steps: bool,
+    /// List steps for a given category
+    pub list_category_steps: String,
     /// Diff flows
     pub diff_execution_plan: bool,
     /// Disables the update check during startup
@@ -146,6 +148,7 @@ impl CliArgs {
             skip_tasks_pattern: None,
             print_only: false,
             list_all_steps: false,
+            list_category_steps: "default".to_string(),
             diff_execution_plan: false,
             disable_check_for_updates: false,
             experimental: false,
