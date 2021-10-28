@@ -13,8 +13,12 @@ use crate::io;
 use crate::types::{Config, DeprecationInfo};
 use std::collections::BTreeMap;
 
-pub(crate) fn run(config: &Config, output_format: &str, output_file: &Option<String>,
-    category: &str) -> u32 {
+pub(crate) fn run(
+    config: &Config,
+    output_format: &str,
+    output_file: &Option<String>,
+    category: &str,
+) -> u32 {
     let (output, count) = create_list(&config, output_format, category);
 
     match output_file {
@@ -28,7 +32,11 @@ pub(crate) fn run(config: &Config, output_format: &str, output_file: &Option<Str
     count
 }
 
-pub(crate) fn create_list(config: &Config, output_format: &str, category_filter: &str) -> (String, u32) {
+pub(crate) fn create_list(
+    config: &Config,
+    output_format: &str,
+    category_filter: &str,
+) -> (String, u32) {
     let mut count = 0;
     let mut buffer = String::new();
 
@@ -53,12 +61,16 @@ pub(crate) fn create_list(config: &Config, output_format: &str, category_filter:
         };
 
         if !is_private {
-            count = count + 1;
-
             let category = match task.category {
                 Some(value) => value,
                 None => "No Category".to_string(),
             };
+
+            if category_filter != "default" && category != category_filter {
+                continue;
+            }
+
+            count = count + 1;
 
             let description = match task.description {
                 Some(value) => value,
@@ -101,34 +113,34 @@ pub(crate) fn create_list(config: &Config, output_format: &str, category_filter:
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
+        if category_filter != "default" && category != category_filter {
+            continue;
+        }
 
-        if category_filter == "default" || category == category_filter {
+        if !just_task_name {
+            if single_page_markdown {
+                buffer.push_str(&format!("## {}\n\n", category));
+            } else if markdown {
+                buffer.push_str(&format!("#### {}\n\n", category));
+            } else {
+                buffer.push_str(&format!("{}\n----------\n", category));
+            }
+        }
 
-            if !just_task_name {
-                if single_page_markdown {
-                    buffer.push_str(&format!("## {}\n\n", category));
-                } else if markdown {
-                    buffer.push_str(&format!("#### {}\n\n", category));
-                } else {
-                    buffer.push_str(&format!("{}\n----------\n", category));
-                }
+        for (key, description) in tasks {
+            if markdown {
+                buffer.push_str(&format!("* **"));
             }
-    
-            for (key, description) in tasks {
-                if markdown {
-                    buffer.push_str(&format!("* **"));
-                }
-    
-                if just_task_name {
-                    buffer.push_str(&format!("{} ", &key));
-                } else {
-                    buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
-                }
+
+            if just_task_name {
+                buffer.push_str(&format!("{} ", &key));
+            } else {
+                buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
             }
-    
-            if !just_task_name {
-                buffer.push_str(&format!("\n"));
-            }
+        }
+
+        if !just_task_name {
+            buffer.push_str(&format!("\n"));
         }
     }
 
