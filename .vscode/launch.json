@@ -12,11 +12,15 @@
             "windows": {
                 "program": "${workspaceRoot}/target/debug/makers.exe"
             },
-            "args": ["--list-all-steps"],
+            "args": [
+                "--list-all-steps"
+            ],
             "cwd": "${workspaceRoot}",
             "environment": [],
             "stopOnEntry": false,
-            "sourceLanguages": ["rust"],
+            "sourceLanguages": [
+                "rust"
+            ],
             "preLaunchTask": "build debug"
         },
     ]
