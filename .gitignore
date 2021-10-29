@@ -9,3 +9,4 @@ dump.rdb
 /rs*.sh
 /docs/_site
 /core
+/.vscode
