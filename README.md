@@ -3485,9 +3485,18 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example) directory
 
+You may also need:
+
+  * A local install of LLVM (For the LLDB Debugger) installed and reachable on the path
+  * VSCode Extension - CodeLLDB
+  * VSCode Extension - "rust-analyser" (not the "rust" one)
+  * VSCode Extension - "Task Explorer"
+  * VSCode Extension - "crates"
+
+
 ### Rust Format
 
-After making changes to the code rustfmt can be used to automatically reformat the code within the repository
+After making changes to the code, rustfmt can be used to automatically reformat the code within the repository
 ```
 # To install
 rustup component add rustfmt
