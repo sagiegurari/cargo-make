@@ -113,6 +113,7 @@
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
 * [Contributing](.github/CONTRIBUTING.md)
+* [Development](#development)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
 
@@ -3476,6 +3477,23 @@ You can view the future development items list in the [github project issues](ht
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)
+
+<a name="development"></a>
+## Development
+
+### VSCode
+
+For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example) directory
+
+### Rust Format
+
+After making changes to the code rustfmt can be used to automatically reformat the code within the repository
+```
+# To install
+rustup component add rustfmt
+# To run on the cargo project
+cargo fmt
+```
 
 <a name="history"></a>
 ## Release History
