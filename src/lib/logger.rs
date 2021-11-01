@@ -9,7 +9,7 @@ mod logger_test;
 
 use crate::recursion_level;
 use crate::types::FlowInfo;
-use colored::*;
+use colored::{ColoredString, Colorize};
 use envmnt;
 use fern;
 use log::{Level, LevelFilter};

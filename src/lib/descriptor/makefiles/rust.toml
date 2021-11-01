@@ -1105,4 +1105,3 @@ else
     exec --fail-on-error zip -r ${OUTPUT_NAME}.zip ${OUTPUT_NAME}
 end
 '''
-

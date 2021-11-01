@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.6
+
+* Duckscript upgrade
+
 ### v0.35.5 (2021-10-22)
 
 * Enhancement: Add makers executable to prebuilt binary release #600
