@@ -2,6 +2,7 @@
 
 ### v0.35.6
 
+* Fix prebuilt binary release task
 * Duckscript upgrade
 
 ### v0.35.5 (2021-10-22)
