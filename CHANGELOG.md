@@ -1,9 +1,9 @@
 ## CHANGELOG
 
-### v0.35.6
+### v0.35.6 (2021-11-01)
 
-* Fix prebuilt binary release task
-* Duckscript upgrade
+* Fix: prebuilt binary release task
+* Enhancement: Duckscript upgrade
 
 ### v0.35.5 (2021-10-22)
 
