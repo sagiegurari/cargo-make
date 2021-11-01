@@ -85,4 +85,3 @@ linux_alias = "generate-docs"
 
 [tasks.pre-build-file-increment]
 env = { CARGO_MAKE_BUILD_NUMBER_FILE = "${CARGO_MAKE_WORKING_DIRECTORY}/.buildnumber" }
-
