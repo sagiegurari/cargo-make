@@ -1924,7 +1924,6 @@ For example, if you want to use instead of **install** a plugin such as **local-
 For example:
 
 ```toml
-
 [tasks.alt-command-example1]
 install_crate = { install_command = "custom-install" }
 command = "cargo"
