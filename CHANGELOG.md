@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.7
+
+* Support alternate cargo install commands #608
+
 ### v0.35.6 (2021-11-01)
 
 * Fix: prebuilt binary release task

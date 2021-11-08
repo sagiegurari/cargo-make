@@ -1798,6 +1798,24 @@ you can have the **--locked** flag automatically added to the crate installation
 by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 If version is defined instead of min_version, this will automatically be set as true.
 
+<a name="usage-installing-alternate-cargo-install-commands"></a>
+#### Alternate Cargo Install Commands
+
+You can specify a different cargo install command in order to make the crate installation to use some custom cargo installer plugin.
+For example, if you want to use instead of **install** a plugin such as **local-install** simply add the **install_command** attribute with the relevant value.<br>
+For example:
+
+```toml
+
+[tasks.alt-command-example1]
+install_crate = { install_command = "custom-install" }
+command = "cargo"
+args = ["somecrate"]
+
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install" }
+```
+
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
 

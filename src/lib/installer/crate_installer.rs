@@ -52,6 +52,7 @@ fn invoke_cargo_install(
         true,
         &args,
         version_option,
+        &info.install_command,
     );
 
     let command_spec = match toolchain {

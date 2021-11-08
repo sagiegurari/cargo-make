@@ -35,7 +35,7 @@ fn is_crate_installed_with_toolchain_false() {
 
 #[test]
 fn get_install_crate_args_no_args() {
-    let all_args = get_install_crate_args("test123", false, &None, &None);
+    let all_args = get_install_crate_args("test123", false, &None, &None, &None);
 
     assert_eq!(all_args.len(), 2);
     assert_eq!(all_args[0], "install");
@@ -44,7 +44,7 @@ fn get_install_crate_args_no_args() {
 
 #[test]
 fn get_install_crate_args_no_args_force() {
-    let all_args = get_install_crate_args("test123", true, &None, &None);
+    let all_args = get_install_crate_args("test123", true, &None, &None, &None);
 
     assert_eq!(all_args.len(), 3);
     assert_eq!(all_args[0], "install");
@@ -54,7 +54,7 @@ fn get_install_crate_args_no_args_force() {
 
 #[test]
 fn get_install_crate_args_empty_args() {
-    let all_args = get_install_crate_args("test123", false, &Some(vec![]), &None);
+    let all_args = get_install_crate_args("test123", false, &Some(vec![]), &None, &None);
 
     assert_eq!(all_args.len(), 2);
     assert_eq!(all_args[0], "install");
@@ -63,7 +63,7 @@ fn get_install_crate_args_empty_args() {
 
 #[test]
 fn get_install_crate_args_empty_args_force() {
-    let all_args = get_install_crate_args("test123", true, &Some(vec![]), &None);
+    let all_args = get_install_crate_args("test123", true, &Some(vec![]), &None, &None);
 
     assert_eq!(all_args.len(), 3);
     assert_eq!(all_args[0], "install");
@@ -77,6 +77,7 @@ fn get_install_crate_args_with_args() {
         "test123",
         false,
         &Some(vec!["arg1".to_string(), "arg2".to_string()]),
+        &None,
         &None,
     );
 
@@ -93,6 +94,7 @@ fn get_install_crate_args_with_args_force() {
         "test123",
         true,
         &Some(vec!["arg1".to_string(), "arg2".to_string()]),
+        &None,
         &None,
     );
 
@@ -111,6 +113,7 @@ fn get_install_crate_args_without_crate_name() {
         false,
         &Some(vec!["--git".to_string(), "arg2".to_string()]),
         &None,
+        &None,
     );
 
     assert_eq!(all_args.len(), 3);
@@ -128,6 +131,7 @@ fn get_install_crate_args_locked() {
         false,
         &Some(vec!["arg1".to_string(), "arg2".to_string()]),
         &Some("1.2.3".to_string()),
+        &None,
     );
     envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
 
@@ -150,6 +154,7 @@ fn get_install_crate_args_no_version_locked() {
         false,
         &Some(vec!["arg1".to_string(), "arg2".to_string()]),
         &None,
+        &None,
     );
     envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
 
@@ -169,6 +174,7 @@ fn get_install_crate_args_without_crate_name_locked() {
         false,
         &Some(vec!["--git".to_string(), "arg2".to_string()]),
         &Some("1.2.3".to_string()),
+        &None,
     );
     envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
 
@@ -176,6 +182,21 @@ fn get_install_crate_args_without_crate_name_locked() {
     assert_eq!(all_args[0], "install");
     assert_eq!(all_args[1], "--git");
     assert_eq!(all_args[2], "arg2");
+}
+
+#[test]
+fn get_install_crate_args_with_install_command() {
+    let all_args = get_install_crate_args(
+        "test123",
+        false,
+        &None,
+        &None,
+        &Some("myinstall".to_string()),
+    );
+
+    assert_eq!(all_args.len(), 2);
+    assert_eq!(all_args[0], "myinstall");
+    assert_eq!(all_args[1], "test123");
 }
 
 #[test]
@@ -208,12 +229,12 @@ fn should_skip_crate_name_git() {
 
 #[test]
 fn install_crate_already_installed_test() {
-    install_crate(&None, "test", "bad", &None, true, &None);
+    install_crate(&None, "test", "bad", &None, true, &None, &None);
 }
 
 #[test]
 fn install_crate_already_installed_cargo_make() {
-    install_crate(&None, "make", "cargo-make", &None, true, &None);
+    install_crate(&None, "make", "cargo-make", &None, true, &None, &None);
 }
 
 #[test]
@@ -234,6 +255,7 @@ fn install_crate_already_installed_min_version_equal() {
         &None,
         true,
         &Some(version_string),
+        &None,
     );
 }
 
@@ -263,5 +285,6 @@ fn install_crate_already_installed_min_version_smaller() {
         &None,
         true,
         &Some(version_string),
+        &None,
     );
 }

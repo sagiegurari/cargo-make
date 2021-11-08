@@ -43,6 +43,7 @@
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Defining Version](#usage-installing-version)
         * [Global Lock Of Versions](#usage-installing-locked)
+        * [Alternate Cargo Install Commands](#usage-installing-alternate-cargo-install-commands)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)

@@ -546,24 +546,50 @@ pub struct InstallCargoPluginInfo {
     /// The provided crate to install
     pub crate_name: Option<String>,
     /// Minimial version
-    pub min_version: String,
+    pub min_version: Option<String>,
+    /// Optional alternate 'install' command
+    pub install_command: Option<String>,
 }
 
 impl PartialEq for InstallCargoPluginInfo {
     fn eq(&self, other: &InstallCargoPluginInfo) -> bool {
-        if self.min_version != other.min_version {
-            false
-        } else {
-            match self.crate_name {
-                Some(ref crate_name) => match other.crate_name {
-                    Some(ref other_crate_name) => crate_name == other_crate_name,
-                    None => false,
-                },
-                None => match other.crate_name {
-                    None => true,
-                    _ => false,
-                },
-            }
+        let mut same = match self.crate_name {
+            Some(ref crate_name) => match other.crate_name {
+                Some(ref other_crate_name) => crate_name == other_crate_name,
+                None => false,
+            },
+            None => match other.crate_name {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        same = match self.min_version {
+            Some(ref min_version) => match other.min_version {
+                Some(ref other_min_version) => min_version == other_min_version,
+                None => false,
+            },
+            None => match other.min_version {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        match self.install_command {
+            Some(ref install_command) => match other.install_command {
+                Some(ref other_install_command) => install_command == other_install_command,
+                None => false,
+            },
+            None => match other.install_command {
+                None => true,
+                _ => false,
+            },
         }
     }
 }
@@ -583,6 +609,8 @@ pub struct InstallCrateInfo {
     pub min_version: Option<String>,
     /// Exact version
     pub version: Option<String>,
+    /// Optional alternate 'install' command
+    pub install_command: Option<String>,
 }
 
 impl PartialEq for InstallCrateInfo {
@@ -591,50 +619,66 @@ impl PartialEq for InstallCrateInfo {
             || self.binary != other.binary
             || self.test_arg != other.test_arg
         {
-            false
-        } else {
-            match self.rustup_component_name {
-                Some(ref rustup_component_name) => match other.rustup_component_name {
-                    Some(ref other_rustup_component_name) => {
-                        if rustup_component_name == other_rustup_component_name {
-                            match self.min_version {
-                                Some(ref min_version) => match other.min_version {
-                                    Some(ref other_min_version) => {
-                                        if min_version == other_min_version {
-                                            match self.version {
-                                                Some(ref version) => match other.version {
-                                                    Some(ref other_version) => {
-                                                        version == other_version
-                                                    }
-                                                    None => false,
-                                                },
-                                                None => match other.version {
-                                                    None => true,
-                                                    _ => false,
-                                                },
-                                            }
-                                        } else {
-                                            false
-                                        }
-                                    }
-                                    None => false,
-                                },
-                                None => match other.min_version {
-                                    None => true,
-                                    _ => false,
-                                },
-                            }
-                        } else {
-                            false
-                        }
+            return false;
+        }
+
+        let mut same = match self.rustup_component_name {
+            Some(ref rustup_component_name) => match other.rustup_component_name {
+                Some(ref other_rustup_component_name) => {
+                    if rustup_component_name == other_rustup_component_name {
+                        true
+                    } else {
+                        false
                     }
-                    None => false,
-                },
-                None => match other.rustup_component_name {
-                    None => true,
-                    _ => false,
-                },
-            }
+                }
+                None => false,
+            },
+            None => match other.rustup_component_name {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        same = match self.min_version {
+            Some(ref min_version) => match other.min_version {
+                Some(ref other_min_version) => min_version == other_min_version,
+                None => false,
+            },
+            None => match other.min_version {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        same = match self.version {
+            Some(ref version) => match other.version {
+                Some(ref other_version) => version == other_version,
+                None => false,
+            },
+            None => match other.version {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        match self.install_command {
+            Some(ref install_command) => match other.install_command {
+                Some(ref other_install_command) => install_command == other_install_command,
+                None => false,
+            },
+            None => match other.install_command {
+                None => true,
+                _ => false,
+            },
         }
     }
 }

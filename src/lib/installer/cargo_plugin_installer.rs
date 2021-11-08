@@ -76,8 +76,13 @@ pub(crate) fn get_install_crate_args(
     force: bool,
     args: &Option<Vec<String>>,
     version_option: &Option<String>,
+    install_command: &Option<String>,
 ) -> Vec<String> {
-    let mut install_args = vec!["install".to_string()];
+    let install_command_str = match install_command {
+        Some(value) => value.clone(),
+        None => "install".to_string(),
+    };
+    let mut install_args = vec![install_command_str.to_string()];
 
     if force {
         install_args.push("--force".to_string());
@@ -116,6 +121,7 @@ pub(crate) fn install_crate(
     args: &Option<Vec<String>>,
     validate: bool,
     min_version: &Option<String>,
+    install_command: &Option<String>,
 ) {
     let installed = is_crate_installed(&toolchain, cargo_command);
     let mut force = false;
@@ -138,7 +144,8 @@ pub(crate) fn install_crate(
     };
 
     if run_installation {
-        let install_args = get_install_crate_args(crate_name, force, args, &min_version);
+        let install_args =
+            get_install_crate_args(crate_name, force, args, &min_version, install_command);
 
         match toolchain {
             Some(ref toolchain_string) => {

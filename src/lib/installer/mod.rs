@@ -78,6 +78,7 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                     &task_config.install_crate_args,
                     validate,
                     &None,
+                    &None,
                 );
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
@@ -94,10 +95,15 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                                     panic!("Missing crate name to invoke.");
                                 }
                             },
-                            None => {
-                                error!("Missing cargo command to invoke.");
-                                panic!("Missing cargo command to invoke.");
-                            }
+                            None => match install_info.crate_name {
+                                Some(ref crate_name) => {
+                                    (crate_name.to_string(), crate_name.to_string())
+                                }
+                                None => {
+                                    error!("Missing cargo command to invoke.");
+                                    panic!("Missing crate command to invoke.");
+                                }
+                            },
                         },
                     };
 
@@ -107,7 +113,8 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                     &crate_name,
                     &task_config.install_crate_args,
                     validate,
-                    &Some(install_info.min_version.clone()),
+                    &install_info.min_version,
+                    &install_info.install_command,
                 );
             }
             InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
@@ -140,6 +147,7 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                         &crate_name,
                         &task_config.install_crate_args,
                         validate,
+                        &None,
                         &None,
                     );
                 }
