@@ -66,7 +66,7 @@ semver = "^1.0"
 serde = "^1"
 serde_derive = "^1"
 serde_ignored = "^0.1"
-shell2batch = "^0.4.2"
+shell2batch = "^0.4.3"
 toml = "^0.5"
 
 [target.'cfg(windows)'.dependencies]
