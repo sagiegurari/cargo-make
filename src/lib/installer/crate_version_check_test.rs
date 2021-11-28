@@ -1,4 +1,5 @@
 use super::*;
+use crate::test;
 use envmnt;
 
 #[test]
@@ -128,12 +129,15 @@ fn get_crate_version_from_info_valid() {
 }
 
 #[test]
+#[cfg(target_os = "linux")]
 fn get_crate_version_for_rustup_component() {
-    let mut version = get_crate_version("rustfmt", None);
-    assert!(version.is_none());
+    if test::should_test(false) {
+        let mut version = get_crate_version("rustfmt", None);
+        assert!(version.is_none());
 
-    version = get_crate_version("rustfmt", Some("rustfmt"));
-    assert!(version.is_some());
+        version = get_crate_version("rustfmt", Some("rustfmt"));
+        assert!(version.is_some());
+    }
 }
 
 #[test]
