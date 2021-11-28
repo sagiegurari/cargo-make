@@ -1,6 +1,7 @@
 use super::*;
 use crate::test;
 use envmnt;
+use rust_info::types::RustChannel;
 
 #[test]
 #[ignore]
