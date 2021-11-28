@@ -2,7 +2,8 @@
 
 ### v0.35.7
 
-* Support alternate cargo install commands #608
+* Fix: crate installation version check now also supports running the binary with --version arg #612
+* Enhancement: support alternate cargo install commands #608
 
 ### v0.35.6 (2021-11-01)
 

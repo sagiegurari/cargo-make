@@ -169,7 +169,7 @@ fn install_already_installed_crate_only() {
 
 #[test]
 fn install_already_installed_crate_only_min_version_equal() {
-    let version = crate_version_check::get_crate_version("cargo-make").unwrap();
+    let version = crate_version_check::get_crate_version("cargo-make", None).unwrap();
     let mut version_string = String::new();
     version_string.push_str(&version.major.to_string());
     version_string.push_str(".");
@@ -194,7 +194,7 @@ fn install_already_installed_crate_only_min_version_equal() {
 
 #[test]
 fn install_already_installed_crate_only_min_version_smaller() {
-    let mut version = crate_version_check::get_crate_version("cargo-make").unwrap();
+    let mut version = crate_version_check::get_crate_version("cargo-make", None).unwrap();
     if version.patch > 0 {
         version.patch = version.patch - 1;
     } else if version.minor > 0 {
@@ -227,7 +227,7 @@ fn install_already_installed_crate_only_min_version_smaller() {
 
 #[test]
 fn install_already_installed_crate_only_version_equal() {
-    let version = crate_version_check::get_crate_version("cargo-make").unwrap();
+    let version = crate_version_check::get_crate_version("cargo-make", None).unwrap();
     let mut version_string = String::new();
     version_string.push_str(&version.major.to_string());
     version_string.push_str(".");

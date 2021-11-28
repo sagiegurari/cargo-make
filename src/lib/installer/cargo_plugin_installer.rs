@@ -130,7 +130,7 @@ pub(crate) fn install_crate(
     } else if toolchain.is_none() {
         match *min_version {
             Some(ref version) => {
-                if crate_version_check::is_min_version_valid(&crate_name, version) {
+                if crate_version_check::is_min_version_valid(&crate_name, version, None) {
                     false
                 } else {
                     force = true;

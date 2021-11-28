@@ -90,13 +90,17 @@ pub(crate) fn install(
         true
     } else if crate_only_info && toolchain.is_none() {
         match info.min_version {
-            Some(ref version) => {
-                !crate_version_check::is_min_version_valid(&info.crate_name, version)
-            }
+            Some(ref version) => !crate_version_check::is_min_version_valid(
+                &info.crate_name,
+                version,
+                Some(&info.binary),
+            ),
             None => match info.version {
-                Some(ref version) => {
-                    !crate_version_check::is_version_valid(&info.crate_name, version)
-                }
+                Some(ref version) => !crate_version_check::is_version_valid(
+                    &info.crate_name,
+                    version,
+                    Some(&info.binary),
+                ),
                 None => false,
             },
         }
