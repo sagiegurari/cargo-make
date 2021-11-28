@@ -131,7 +131,7 @@ fn get_crate_version_from_info_valid() {
 #[test]
 #[cfg(target_os = "linux")]
 fn get_crate_version_for_rustup_component() {
-    if test::should_test(false) {
+    if test::is_rust_channel(RustChannel::Stable) {
         let mut version = get_crate_version("rustfmt", None);
         assert!(version.is_none());
 
