@@ -18,7 +18,7 @@ fn run_empty() {
         tasks,
     };
 
-    let count = run(&config, "default", &None, "default");
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 0);
 }
@@ -44,7 +44,7 @@ fn run_all_public() {
         tasks,
     };
 
-    let count = run(&config, "default", &None, "default");
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -70,7 +70,7 @@ fn run_all_public_markdown() {
         tasks,
     };
 
-    let count = run(&config, "markdown", &None, "default");
+    let count = run(&config, "markdown", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -96,7 +96,7 @@ fn run_all_public_markdown_sub_section() {
         tasks,
     };
 
-    let count = run(&config, "markdown-sub-section", &None, "default");
+    let count = run(&config, "markdown-sub-section", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -122,7 +122,7 @@ fn run_all_public_markdown_single_page() {
         tasks,
     };
 
-    let count = run(&config, "markdown-single-page", &None, "default");
+    let count = run(&config, "markdown-single-page", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -150,7 +150,7 @@ fn run_all_private() {
         tasks,
     };
 
-    let count = run(&config, "default", &None, "default");
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 0);
 }
@@ -185,7 +185,7 @@ fn run_mixed() {
         tasks,
     };
 
-    let count = run(&config, "default", &None, "default");
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 3);
 }
@@ -216,7 +216,7 @@ fn run_write_to_file() {
         &config,
         "markdown-single-page",
         &Some(file.to_string()),
-        "default",
+        None,
     );
 
     assert_eq!(count, 2);
@@ -257,7 +257,7 @@ fn run_category_public() {
         tasks,
     };
 
-    let count = run(&config, "default", &None, "TestCategory1");
+    let count = run(&config, "default", &None, Some("TestCategory1".to_owned()));
 
     assert_eq!(count, 2);
 }

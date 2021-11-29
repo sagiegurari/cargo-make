@@ -137,12 +137,12 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     // ensure profile env was not overridden
     profile::set(&normalized_profile_name);
 
-    if cli_args.list_all_steps || cli_args.list_category_steps != "default" {
+    if cli_args.list_all_steps || cli_args.list_category_steps != None {
         cli_commands::list_steps::run(
             &config,
             &cli_args.output_format,
             &cli_args.output_file,
-            &cli_args.list_category_steps,
+            cli_args.list_category_steps,
         );
     //    cli_commands::list_steps::run(&config, &cli_args.output_format, &cli_args.output_file);
     } else if cli_args.diff_execution_plan {
@@ -245,10 +245,10 @@ fn run_for_args(
         .unwrap_or(DEFAULT_OUTPUT_FORMAT)
         .to_string();
 
-    cli_args.list_category_steps = cmd_matches
-        .value_of("list-category-steps")
-        .unwrap_or(DEFAULT_OUTPUT_FORMAT)
-        .to_string();
+    cli_args.list_category_steps = match cmd_matches.value_of("list-category-steps") {
+        Some(value) => Some(value.to_string()),
+        None => None,
+    };
 
     cli_args.output_file = match cmd_matches.value_of("output_file") {
         Some(value) => Some(value.to_string()),

@@ -17,7 +17,7 @@ pub(crate) fn run(
     config: &Config,
     output_format: &str,
     output_file: &Option<String>,
-    category: &str,
+    category: Option<String>,
 ) -> u32 {
     let (output, count) = create_list(&config, output_format, category);
 
@@ -35,7 +35,7 @@ pub(crate) fn run(
 pub(crate) fn create_list(
     config: &Config,
     output_format: &str,
-    category_filter: &str,
+    category_filter: Option<String>,
 ) -> (String, u32) {
     let mut count = 0;
     let mut buffer = String::new();
@@ -66,7 +66,7 @@ pub(crate) fn create_list(
                 None => "No Category".to_string(),
             };
 
-            if category_filter != "default" && category != category_filter {
+            if category_filter != None && category_filter != Some(category.to_string()) {
                 continue;
             }
 
@@ -113,7 +113,7 @@ pub(crate) fn create_list(
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
-        if category_filter != "default" && category != category_filter {
+        if category_filter != None && category_filter != Some(category.to_string()) {
             continue;
         }
 
