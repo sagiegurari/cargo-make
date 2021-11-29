@@ -1,5 +1,6 @@
 use super::*;
 use crate::test;
+#[cfg(target_os = "linux")]
 use ci_info;
 use envmnt;
 #[cfg(target_os = "linux")]
