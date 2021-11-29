@@ -3355,13 +3355,10 @@ You can view the future development items list in the [github project issues](ht
 
 <a name="editor-support"></a>
 ## Editor Support
+
+### Vim
+
 * Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
-
-## Contributing
-See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
-
-<a name="development"></a>
-## Development
 
 ### VSCode
 
@@ -3384,6 +3381,9 @@ rustup component add rustfmt
 # To run on the cargo project
 cargo fmt
 ```
+
+## Contributing
+See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 
 <a name="history"></a>
 ## Release History

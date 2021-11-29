@@ -102,6 +102,5 @@
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
-* [Development](#development)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
