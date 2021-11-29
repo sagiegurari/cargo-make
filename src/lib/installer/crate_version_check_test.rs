@@ -1,9 +1,7 @@
 use super::*;
 use crate::test;
-#[cfg(target_os = "linux")]
 use ci_info;
 use envmnt;
-#[cfg(target_os = "linux")]
 use rust_info::types::RustChannel;
 
 #[test]
@@ -133,9 +131,8 @@ fn get_crate_version_from_info_valid() {
 }
 
 #[test]
-#[cfg(target_os = "linux")]
 fn get_crate_version_for_rustup_component() {
-    if test::is_rust_channel(RustChannel::Stable) || !ci_info::is_ci() {
+    if (test::is_linux() && test::is_rust_channel(RustChannel::Stable)) || !ci_info::is_ci() {
         let mut version = get_crate_version("rustfmt", None);
         assert!(version.is_none());
 
