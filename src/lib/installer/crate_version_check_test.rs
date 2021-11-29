@@ -2,6 +2,7 @@ use super::*;
 use crate::test;
 use ci_info;
 use envmnt;
+#[cfg(target_os = "linux")]
 use rust_info::types::RustChannel;
 
 #[test]
