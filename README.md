@@ -113,7 +113,6 @@
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
 * [Contributing](.github/CONTRIBUTING.md)
-* [Development](#development)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
 
@@ -3473,13 +3472,10 @@ You can view the future development items list in the [github project issues](ht
 
 <a name="editor-support"></a>
 ## Editor Support
+
+### Vim
+
 * Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
-
-## Contributing
-See [contributing guide](.github/CONTRIBUTING.md)
-
-<a name="development"></a>
-## Development
 
 ### VSCode
 
@@ -3493,7 +3489,6 @@ You may also need:
   * VSCode Extension - "Task Explorer"
   * VSCode Extension - "crates"
 
-
 ### Rust Format
 
 After making changes to the code, rustfmt can be used to automatically reformat the code within the repository
@@ -3503,6 +3498,9 @@ rustup component add rustfmt
 # To run on the cargo project
 cargo fmt
 ```
+
+## Contributing
+See [contributing guide](.github/CONTRIBUTING.md)
 
 <a name="history"></a>
 ## Release History
