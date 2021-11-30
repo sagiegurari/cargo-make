@@ -102,6 +102,8 @@
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
+    * [vim](#editor-support-vim)
+    * [vs-code](#editor-support-vs-code)
 * [Contributing](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)

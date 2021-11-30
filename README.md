@@ -113,6 +113,8 @@
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
+    * [vim](#editor-support-vim)
+    * [vs-code](#editor-support-vs-code)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
@@ -3491,13 +3493,16 @@ You can view the future development items list in the [github project issues](ht
 <a name="editor-support"></a>
 ## Editor Support
 
+<a name="editor-support-vim"></a>
 ### Vim
 
-* Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
+* [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
+* [vim-duckscript](https://github.com/nastevens/vim-duckscript)
 
+<a name="editor-support-vim"></a>
 ### VSCode
 
-For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example) directory
+For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example/) directory
 
 You may also need:
 
@@ -3506,16 +3511,6 @@ You may also need:
   * VSCode Extension - "rust-analyser" (not the "rust" one)
   * VSCode Extension - "Task Explorer"
   * VSCode Extension - "crates"
-
-### Rust Format
-
-After making changes to the code, rustfmt can be used to automatically reformat the code within the repository
-```
-# To install
-rustup component add rustfmt
-# To run on the cargo project
-cargo fmt
-```
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)

@@ -2,8 +2,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build debug",
-            "detail": "Build in debug mode",
+            "label": "Build",
+            "detail": "Build the rust project",
             "type": "process",
             "group": "build",
             "command": "cargo",
@@ -13,18 +13,7 @@
             ]
         },
         {
-            "label": "build release",
-            "detail": "Build in release mode",
-            "type": "process",
-            "group": "build",
-            "command": "cargo",
-            "args": [
-                "make",
-                "build-release"
-            ]
-        },
-        {
-            "label": "clean",
+            "label": "Clean",
             "detail": "Clean the target build directory",
             "type": "process",
             "group": "build",
@@ -35,23 +24,25 @@
             ]
         },
         {
-            "label": "rust format",
+            "label": "Format",
             "detail": "Auto format the code",
             "type": "process",
             "group": "build",
             "command": "cargo",
             "args": [
-                "fmt"
+                "make",
+                "format-flow"
             ]
         },
         {
-            "label": "run the tests",
+            "label": "Test",
             "detail": "Run the tests",
             "type": "process",
             "group": "build",
             "command": "cargo",
             "args": [
-                "test"
+                "make",
+                "test-flow"
             ]
         },
     ],
