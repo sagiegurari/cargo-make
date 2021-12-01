@@ -1,0 +1,10 @@
+# This is the top level cargo make file
+
+extend = [
+
+  # Include the usage toml file
+  # This is an example of using colored text via rust-script
+  # to show a list of available commands
+  { path = "./usage.toml" },
+
+]

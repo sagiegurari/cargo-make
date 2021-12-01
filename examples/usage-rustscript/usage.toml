@@ -1,0 +1,31 @@
+# This is an example of displaying a usage list for available commands.
+# This uses cargo make's rust-script support with colored text as an example.
+
+# Note rust script has some advantages / disadvantages vs duckscript
+# For general colored text usage duckscript is currently the better option.
+
+# Advantages include:
+# 1. The ability to run scripts with rust libraries such as - https://github.com/fdehau/tui-rs
+
+# Disadvantages Include:
+# 1. The rust script has to be compiled which is slower to run
+# 2. Additional disk space is taken up in the rust-script cache
+# 2. Currently rust-script picks up cargo config information / target overrides such as .cargo/config.toml
+#    If the script is located within a project directory.
+#    If the project targets a different arch than the host or has special compile options this can also cause issues
+#    https://github.com/fornwall/rust-script/issues/31
+
+# This is an example of overriding the default output if "caro make" is run with no parameters
+[tasks.default]
+alias = "list"
+
+# Alias the "usage" task to "list"
+[tasks.usage]
+alias = "list"
+
+# Call usage.ers
+[tasks.list]
+command = "rust-script"
+cwd = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}"
+args = ["./usage.ers"]
+category = "Common"

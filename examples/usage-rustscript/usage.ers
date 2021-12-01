@@ -1,0 +1,59 @@
+#!/usr/bin/env rust-script
+// cargo-deps: colored
+
+use colored::*;
+
+fn main() {
+    let mut s = String::new();
+
+    append(&mut s, "\n");
+    append(&mut s, "Build Tasks\n".bold().yellow());
+    append(&mut s, "===============\n");
+    append(&mut s, "cargo make [-p prod] build".bold());
+    append(&mut s, "\t\t Build the source\n".cyan());
+    append(&mut s, "cargo make [-p prod] elf2image".bold());
+    append(&mut s, "\t\t Convert the built elf file into a flashable .bin file\n".cyan());
+    append(&mut s, "cargo make [-p prod] imageinfo".bold());
+    append(&mut s, "\t\t Show information about the flash bin image\n".cyan());
+    append(&mut s, "cargo make [-p prod] flash".bold());
+    append(&mut s, "\t\t Build and Upload the flash image to the board\n".cyan());
+    append(&mut s, "cargo make [-p prod] verifyflash".bold());
+    append(&mut s, "\t Verify the uploaded flash image\n".cyan());
+
+    append(&mut s, "\n");
+    append(&mut s, "Util Tasks\n".bold().yellow());
+    append(&mut s, "===============\n");
+    append(&mut s, "cargo make list".bold());
+    append(&mut s, "\t\t\t\t List the available tasks\n".cyan());
+    append(&mut s, "cargo make fmt".bold());
+    append(&mut s, "\t\t\t\t Reformat the source\n".cyan());
+    append(&mut s, "cargo make clean".bold());
+    append(&mut s, "\t\t\t Clean the target directory\n".cyan());
+
+    append(&mut s, "\n");
+    append(&mut s, "Flash Util Tasks\n".bold().yellow());
+    append(&mut s, "===============\n");
+    append(&mut s, "cargo make flashid".bold());
+    append(&mut s, "\t\t\t Display flash information about the attached board\n".cyan());
+    append(&mut s, "cargo make chipid".bold());
+    append(&mut s, "\t\t\t Display chip id information about the attached board\n".cyan());
+    append(&mut s, "cargo make flashstatus".bold());
+    append(&mut s, "\t\t\t Display flash status information about the attached board\n".cyan());
+    append(&mut s, "cargo make eraseflash".bold());
+    append(&mut s, "\t\t\t Erase the flash on the attached board\n".cyan());
+    append(&mut s, "cargo make readmac".bold());
+    append(&mut s, "\t\t\t Read the network mac address of the board\n".cyan());
+    append(&mut s, "cargo make run".bold());
+    append(&mut s, "\t\t\t\t Run the app code in flash\n".cyan());
+
+    append(&mut s, "\n");
+    append(&mut s, "The default is to build a development / debug image\n".yellow());
+    append(&mut s, "use \"-p prod\" to build a smaller release image with no debugging info\n".yellow());
+
+    println!("{}", s);
+}
+
+// Append String or ColoredString to source string
+fn append<I>(source: &mut String, val: I) where I: ToString {
+    let _ = &source.push_str(&val.to_string());
+}

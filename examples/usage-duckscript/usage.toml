@@ -1,0 +1,61 @@
+# This is an example of displaying a usage list for available commands.
+# This uses cargo make's inbuild duckscript with colored text as an example.
+
+# This is an example of overriding the default output if "caro make" is run with no parameters
+[tasks.default]
+alias = "list"
+
+# Alias the "usage" task to "list"
+[tasks.usage]
+alias = "list"
+
+# List the available tasks
+[tasks.list]
+script_runner = "@duckscript"
+script = '''
+
+# In order to make handling colors easy
+# Use functions to show the output
+
+fn title
+    println --style bold --color yellow ${1}
+    println "==============="
+end
+
+fn taskitem
+    print --style bold ${1}
+    print --color cyan ${2}
+end
+
+fn footer
+    print --color yellow ${1}
+end
+
+print \n
+title    "Build Tasks"
+taskitem "cargo make [-p prod] build"         "\t\t Build the source\n"
+taskitem "cargo make [-p prod] elf2image"     "\t\t Convert the built elf file into a flashable .bin file\n"
+taskitem "cargo make [-p prod] imageinfo"     "\t\t Show information about the flash bin image\n"
+taskitem "cargo make [-p prod] flash"         "\t\t Build and Upload the flash image to the board\n"
+taskitem "cargo make [-p prod] verifyflash"   "\t Verify the uploaded flash image\n"
+
+print \n
+title    "Util Tasks"
+taskitem "cargo make list"         "\t\t\t\t List the available tasks\n"
+taskitem "cargo make fmt"          "\t\t\t\t Reformat the source\n"
+taskitem "cargo make clean"        "\t\t\t Clean the target directory\n"
+
+print \n
+title    "Flash Util Tasks"
+taskitem "cargo make flashid"      "\t\t\t Display flash information about the attached board\n"
+taskitem "cargo make chipid"       "\t\t\t Display chip id information about the attached board\n"
+taskitem "cargo make flashstatus"  "\t\t\t Display flash status information about the attached board\n"
+taskitem "cargo make eraseflash"   "\t\t\t Erase the flash on the attached board\n"
+taskitem "cargo make readmac"      "\t\t\t Read the network mac address of the board\n"
+taskitem "cargo make run"          "\t\t\t\t Run the app\n"
+
+print \n
+footer "The default is to build a development / debug image\n"
+footer "use \"-p prod\" to build a smaller release image with no debugging info\n"
+print \n
+'''
