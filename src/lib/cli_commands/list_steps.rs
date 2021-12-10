@@ -66,7 +66,10 @@ pub(crate) fn create_list(
                 None => "No Category".to_string(),
             };
 
-            if category_filter != None && category_filter != Some(category.to_string()) {
+            if category_filter
+                .as_ref()
+                .map_or(false, |value| value != &category)
+            {
                 continue;
             }
 
@@ -113,7 +116,10 @@ pub(crate) fn create_list(
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
-        if category_filter != None && category_filter != Some(category.to_string()) {
+        if category_filter
+            .as_ref()
+            .map_or(false, |value| value != category)
+        {
             continue;
         }
 

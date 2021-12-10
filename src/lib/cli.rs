@@ -137,14 +137,13 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     // ensure profile env was not overridden
     profile::set(&normalized_profile_name);
 
-    if cli_args.list_all_steps || cli_args.list_category_steps != None {
+    if cli_args.list_all_steps || cli_args.list_category_steps.is_some() {
         cli_commands::list_steps::run(
             &config,
             &cli_args.output_format,
             &cli_args.output_file,
             cli_args.list_category_steps,
         );
-    //    cli_commands::list_steps::run(&config, &cli_args.output_format, &cli_args.output_file);
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental, None);
         cli_commands::diff_steps::run(&default_config, &config, &task, &cli_args);

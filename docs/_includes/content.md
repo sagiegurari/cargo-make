@@ -3141,8 +3141,8 @@ These are the following options available while running cargo-make:
 ```console
 USAGE:
     cargo make [FLAGS] [OPTIONS] [--] [TASK_CMD]...
-    OR
-    makers [FLAGS] [OPTIONS] [--] [TASK_CMD]...
+    or
+    makers  [FLAGS] [OPTIONS] [--] [TASK_CMD]...
 
 FLAGS:
         --allow-private                Allow invocation of private tasks
@@ -3154,23 +3154,30 @@ FLAGS:
         --no-color                     Disables colorful output
         --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
+        --print-steps                  Only prints the steps of the build in the order they will be invoked but without
+                                       invoking them
         --skip-init-end-tasks          If set, init and end tasks are skipped
         --time-summary                 Print task level time summary at end of flow
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be from this directory if defined.
-    -e, --env <ENV>...                     Set environment variables
-        --env-file <FILE>                  Set environment variables from provided file
-    -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
-        --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
-        --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete]
-        --output-file <OUTPUT_FILE>        The list steps output file name
-    -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
-        --skip-tasks <SKIP_TASK_PATTERNS>  Skip all tasks that match the provided regex (example: pre.*|post.*)
-    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+        --cwd <DIRECTORY>                    Will set the current working directory. The search for the makefile will be
+                                             from this directory if defined.
+    -e, --env <ENV>...                       Set environment variables
+        --env-file <FILE>                    Set environment variables from provided file
+        --list-category-steps <CATEGORY>     List steps for a given category
+    -l, --loglevel <LOG LEVEL>               The log level [default: info]  [possible values: verbose, info, error]
+        --makefile <FILE>                    The optional toml file containing the tasks definitions [default:
+                                             Makefile.toml]
+        --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats)
+                                             [default: default]  [possible values: default, short-description, markdown,
+                                             markdown-single-page, markdown-sub-section, autocomplete]
+        --output-file <OUTPUT_FILE>          The list steps output file name
+    -p, --profile <PROFILE>                  The profile name (will be converted to lower case) [default: development]
+        --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
+    -t, --task <TASK>                        The task name to execute (can omit the flag if the task name is the last
+                                             argument) [default: default]
 
 ARGS:
     <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed in the task itself.
