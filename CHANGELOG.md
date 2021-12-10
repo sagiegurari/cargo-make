@@ -5,6 +5,7 @@
 * Fix: crate installation version check now also supports running the binary with --version arg #612
 * Enhancement: support alternate cargo install commands #608
 * Documentation: VS code editor integration #604 (thanks @grbd)
+* Fix: Panic during crate installation in case args are empty #615
 
 ### v0.35.6 (2021-11-01)
 
