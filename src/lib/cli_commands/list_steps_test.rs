@@ -18,7 +18,7 @@ fn run_empty() {
         tasks,
     };
 
-    let count = run(&config, "default", &None);
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 0);
 }
@@ -44,7 +44,7 @@ fn run_all_public() {
         tasks,
     };
 
-    let count = run(&config, "default", &None);
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -70,7 +70,7 @@ fn run_all_public_markdown() {
         tasks,
     };
 
-    let count = run(&config, "markdown", &None);
+    let count = run(&config, "markdown", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -96,7 +96,7 @@ fn run_all_public_markdown_sub_section() {
         tasks,
     };
 
-    let count = run(&config, "markdown-sub-section", &None);
+    let count = run(&config, "markdown-sub-section", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -122,7 +122,7 @@ fn run_all_public_markdown_single_page() {
         tasks,
     };
 
-    let count = run(&config, "markdown-single-page", &None);
+    let count = run(&config, "markdown-single-page", &None, None);
 
     assert_eq!(count, 2);
 }
@@ -150,7 +150,7 @@ fn run_all_private() {
         tasks,
     };
 
-    let count = run(&config, "default", &None);
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 0);
 }
@@ -185,7 +185,7 @@ fn run_mixed() {
         tasks,
     };
 
-    let count = run(&config, "default", &None);
+    let count = run(&config, "default", &None, None);
 
     assert_eq!(count, 3);
 }
@@ -212,7 +212,12 @@ fn run_write_to_file() {
     };
 
     let file = "./target/_temp/tasklist.md";
-    let count = run(&config, "markdown-single-page", &Some(file.to_string()));
+    let count = run(
+        &config,
+        "markdown-single-page",
+        &Some(file.to_string()),
+        None,
+    );
 
     assert_eq!(count, 2);
 
@@ -223,4 +228,36 @@ fn run_write_to_file() {
     io::delete_file(&file);
 
     assert!(text.contains("# Task List"));
+}
+
+#[test]
+fn run_category_public() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    task1.category = Some("TestCategory1".to_string());
+    tasks.insert("1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    task2.category = Some("TestCategory1".to_string());
+    tasks.insert("2".to_string(), task2);
+    let mut task3 = Task::new();
+    task3.description = Some("3".to_string());
+    task3.category = Some("TestCategory2".to_string());
+    tasks.insert("3".to_string(), task3);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env,
+        env_scripts: vec![],
+        tasks,
+    };
+
+    let count = run(&config, "default", &None, Some("TestCategory1".to_owned()));
+
+    assert_eq!(count, 2);
 }
