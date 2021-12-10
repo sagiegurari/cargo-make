@@ -144,6 +144,12 @@ You will have two executables available: *cargo-make* and *makers*<br>
 
 See [Cli Options](#usage-cli) section for full CLI instructions.
 
+In order to install with minimal features (for example, no TLS support), run the following:
+
+```sh
+cargo install --no-default-features --force cargo-make
+```
+
 <a name="installation-binary-release"></a>
 ### Binary Release
 Binary releases are available in the [github releases page](https://github.com/sagiegurari/cargo-make/releases).<br>

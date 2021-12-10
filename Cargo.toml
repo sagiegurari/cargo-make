@@ -49,7 +49,7 @@ clap = "^2"
 colored = "^2"
 dirs-next = "^2"
 duckscript = "^0.7.1"
-duckscriptsdk = "^0.8.8"
+duckscriptsdk = { version = "^0.8.10", default-features = false }
 envmnt = "^0.9.1"
 fern = "^0.6"
 fsio = { version = "^0.3", features = ["temp-path"] }
@@ -71,6 +71,10 @@ toml = "^0.5"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "^0.12.1"
+
+[features]
+tls = ["duckscriptsdk/tls"]
+default = ["tls"]
 
 [badges.codecov]
 branch = "master"
