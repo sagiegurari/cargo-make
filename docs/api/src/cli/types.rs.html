@@ -2219,6 +2219,53 @@
 <span id="2219">2219</span>
 <span id="2220">2220</span>
 <span id="2221">2221</span>
+<span id="2222">2222</span>
+<span id="2223">2223</span>
+<span id="2224">2224</span>
+<span id="2225">2225</span>
+<span id="2226">2226</span>
+<span id="2227">2227</span>
+<span id="2228">2228</span>
+<span id="2229">2229</span>
+<span id="2230">2230</span>
+<span id="2231">2231</span>
+<span id="2232">2232</span>
+<span id="2233">2233</span>
+<span id="2234">2234</span>
+<span id="2235">2235</span>
+<span id="2236">2236</span>
+<span id="2237">2237</span>
+<span id="2238">2238</span>
+<span id="2239">2239</span>
+<span id="2240">2240</span>
+<span id="2241">2241</span>
+<span id="2242">2242</span>
+<span id="2243">2243</span>
+<span id="2244">2244</span>
+<span id="2245">2245</span>
+<span id="2246">2246</span>
+<span id="2247">2247</span>
+<span id="2248">2248</span>
+<span id="2249">2249</span>
+<span id="2250">2250</span>
+<span id="2251">2251</span>
+<span id="2252">2252</span>
+<span id="2253">2253</span>
+<span id="2254">2254</span>
+<span id="2255">2255</span>
+<span id="2256">2256</span>
+<span id="2257">2257</span>
+<span id="2258">2258</span>
+<span id="2259">2259</span>
+<span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
+<span id="2263">2263</span>
+<span id="2264">2264</span>
+<span id="2265">2265</span>
+<span id="2266">2266</span>
+<span id="2267">2267</span>
+<span id="2268">2268</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
@@ -2332,6 +2379,8 @@
     <span class="kw">pub</span> <span class="ident">print_only</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// List all known steps</span>
     <span class="kw">pub</span> <span class="ident">list_all_steps</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// List steps for a given category</span>
+    <span class="kw">pub</span> <span class="ident">list_category_steps</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Diff flows</span>
     <span class="kw">pub</span> <span class="ident">diff_execution_plan</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Disables the update check during startup</span>
@@ -2368,6 +2417,7 @@
             <span class="ident">skip_tasks_pattern</span>: <span class="prelude-val">None</span>,
             <span class="ident">print_only</span>: <span class="bool-val">false</span>,
             <span class="ident">list_all_steps</span>: <span class="bool-val">false</span>,
+            <span class="ident">list_category_steps</span>: <span class="prelude-val">None</span>,
             <span class="ident">diff_execution_plan</span>: <span class="bool-val">false</span>,
             <span class="ident">disable_check_for_updates</span>: <span class="bool-val">false</span>,
             <span class="ident">experimental</span>: <span class="bool-val">false</span>,
@@ -2768,24 +2818,50 @@
     <span class="doccomment">/// The provided crate to install</span>
     <span class="kw">pub</span> <span class="ident">crate_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Minimial version</span>
-    <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Optional alternate &#39;install&#39; command</span>
+    <span class="kw">pub</span> <span class="ident">install_command</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCargoPluginInfo</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">InstallCargoPluginInfo</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">min_version</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-            <span class="bool-val">false</span>
-        } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">crate_name</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">crate_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_crate_name</span>,
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                },
-            }
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">crate_name</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_crate_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">crate_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_crate_name</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">crate_name</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+        };
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">same</span> {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">min_version</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+        };
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">same</span> {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">install_command</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">install_command</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">install_command</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_install_command</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">install_command</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_install_command</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">install_command</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
         }
     }
 }
@@ -2805,6 +2881,8 @@
     <span class="kw">pub</span> <span class="ident">min_version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Exact version</span>
     <span class="kw">pub</span> <span class="ident">version</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Optional alternate &#39;install&#39; command</span>
+    <span class="kw">pub</span> <span class="ident">install_command</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">InstallCrateInfo</span> {
@@ -2813,50 +2891,66 @@
             <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">binary</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">binary</span>
             <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">test_arg</span> <span class="op">!</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">test_arg</span>
         {
-            <span class="bool-val">false</span>
-        } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="kw">if</span> <span class="ident">rustup_component_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_rustup_component_name</span> {
-                            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">min_version</span> {
-                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                                        <span class="kw">if</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span> {
-                                            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
-                                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
-                                                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                                                        <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_version</span>
-                                                    }
-                                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                                                },
-                                                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
-                                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                                                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                                                },
-                                            }
-                                        } <span class="kw">else</span> {
-                                            <span class="bool-val">false</span>
-                                        }
-                                    }
-                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                                },
-                                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
-                                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                                },
-                            }
-                        } <span class="kw">else</span> {
-                            <span class="bool-val">false</span>
-                        }
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">rustup_component_name</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_rustup_component_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="kw">if</span> <span class="ident">rustup_component_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_rustup_component_name</span> {
+                        <span class="bool-val">true</span>
+                    } <span class="kw">else</span> {
+                        <span class="bool-val">false</span>
                     }
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                },
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                },
-            }
+                }
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">rustup_component_name</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+        };
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">same</span> {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">min_version</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_min_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">min_version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_min_version</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">min_version</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+        };
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">same</span> {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="ident">same</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">version</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_version</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">version</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_version</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">version</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+        };
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">same</span> {
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">install_command</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">install_command</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">install_command</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">other_install_command</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">install_command</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other_install_command</span>,
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">install_command</span> {
+                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+            },
         }
     }
 }

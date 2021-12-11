@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.7
+### v0.35.7 (2021-12-11)
 
 * Fix: crate installation version check now also supports running the binary with --version arg #612
 * Enhancement: support alternate cargo install commands #608

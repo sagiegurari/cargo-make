@@ -468,6 +468,22 @@
 <span id="468">468</span>
 <span id="469">469</span>
 <span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
@@ -608,8 +624,13 @@
     <span class="comment">// ensure profile env was not overridden</span>
     <span class="ident">profile::set</span>(<span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
 
-    <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> {
-        <span class="ident">cli_commands::list_steps::run</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_format</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_file</span>);
+    <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> <span class="op">|</span><span class="op">|</span> <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span>.<span class="ident">is_some</span>() {
+        <span class="ident">cli_commands::list_steps::run</span>(
+            <span class="kw-2">&amp;</span><span class="ident">config</span>,
+            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_format</span>,
+            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_file</span>,
+            <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span>,
+        );
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> {
         <span class="kw">let</span> <span class="ident">default_config</span> <span class="op">=</span> <span class="ident">descriptor::load_internal_descriptors</span>(<span class="bool-val">true</span>, <span class="ident">experimental</span>, <span class="prelude-val">None</span>);
         <span class="ident">cli_commands::diff_steps::run</span>(<span class="kw-2">&amp;</span><span class="ident">default_config</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
@@ -709,6 +730,11 @@
         .<span class="ident">value_of</span>(<span class="string">&quot;output-format&quot;</span>)
         .<span class="ident">unwrap_or</span>(<span class="ident">DEFAULT_OUTPUT_FORMAT</span>)
         .<span class="ident">to_string</span>();
+
+    <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;list-category-steps&quot;</span>) {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+    };
 
     <span class="ident">cli_args</span>.<span class="ident">output_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;output_file&quot;</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
@@ -911,6 +937,12 @@
             <span class="ident">Arg::with_name</span>(<span class="string">&quot;list-steps&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--list-all-steps&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Lists all known steps&quot;</span>),
+        )
+        .<span class="ident">arg</span>(
+            <span class="ident">Arg::with_name</span>(<span class="string">&quot;list-category-steps&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--list-category-steps&quot;</span>)
+                .<span class="ident">value_name</span>(<span class="string">&quot;CATEGORY&quot;</span>)
+                .<span class="ident">help</span>(<span class="string">&quot;List steps for a given category&quot;</span>),
         )
         .<span class="ident">arg</span>(
             <span class="ident">Arg::with_name</span>(<span class="string">&quot;diff-steps&quot;</span>)

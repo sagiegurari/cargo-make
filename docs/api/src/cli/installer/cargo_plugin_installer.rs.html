@@ -149,6 +149,13 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # cargo_plugin_installer</span>
 <span class="doccomment">//!</span>
@@ -228,8 +235,13 @@
     <span class="ident">force</span>: <span class="ident">bool</span>,
     <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">version_option</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">install_command</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">install_args</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="string">&quot;install&quot;</span>.<span class="ident">to_string</span>()];
+    <span class="kw">let</span> <span class="ident">install_command_str</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">install_command</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">clone</span>(),
+        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;install&quot;</span>.<span class="ident">to_string</span>(),
+    };
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">install_args</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">install_command_str</span>.<span class="ident">to_string</span>()];
 
     <span class="kw">if</span> <span class="ident">force</span> {
         <span class="ident">install_args</span>.<span class="ident">push</span>(<span class="string">&quot;--force&quot;</span>.<span class="ident">to_string</span>());
@@ -268,6 +280,7 @@
     <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">validate</span>: <span class="ident">bool</span>,
     <span class="ident">min_version</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">install_command</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 ) {
     <span class="kw">let</span> <span class="ident">installed</span> <span class="op">=</span> <span class="ident">is_crate_installed</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="ident">cargo_command</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">force</span> <span class="op">=</span> <span class="bool-val">false</span>;
@@ -276,7 +289,7 @@
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">toolchain</span>.<span class="ident">is_none</span>() {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">min_version</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">version</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">crate_version_check::is_min_version_valid</span>(<span class="kw-2">&amp;</span><span class="ident">crate_name</span>, <span class="ident">version</span>) {
+                <span class="kw">if</span> <span class="ident">crate_version_check::is_min_version_valid</span>(<span class="kw-2">&amp;</span><span class="ident">crate_name</span>, <span class="ident">version</span>, <span class="prelude-val">None</span>) {
                     <span class="bool-val">false</span>
                 } <span class="kw">else</span> {
                     <span class="ident">force</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -290,7 +303,8 @@
     };
 
     <span class="kw">if</span> <span class="ident">run_installation</span> {
-        <span class="kw">let</span> <span class="ident">install_args</span> <span class="op">=</span> <span class="ident">get_install_crate_args</span>(<span class="ident">crate_name</span>, <span class="ident">force</span>, <span class="ident">args</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>);
+        <span class="kw">let</span> <span class="ident">install_args</span> <span class="op">=</span>
+            <span class="ident">get_install_crate_args</span>(<span class="ident">crate_name</span>, <span class="ident">force</span>, <span class="ident">args</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>, <span class="ident">install_command</span>);
 
         <span class="kw">match</span> <span class="ident">toolchain</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain_string</span>) <span class="op">=</span><span class="op">&gt;</span> {
