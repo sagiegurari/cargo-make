@@ -1,5 +1,8 @@
 use super::*;
+use crate::test;
+use ci_info;
 use envmnt;
+use rust_info::types::RustChannel;
 
 #[test]
 #[ignore]
@@ -128,6 +131,17 @@ fn get_crate_version_from_info_valid() {
 }
 
 #[test]
+fn get_crate_version_for_rustup_component() {
+    if (test::is_linux() && test::is_rust_channel(RustChannel::Stable)) || !ci_info::is_ci() {
+        let mut version = get_crate_version("rustfmt", None);
+        assert!(version.is_none());
+
+        version = get_crate_version("rustfmt", Some("rustfmt"));
+        assert!(version.is_some());
+    }
+}
+
+#[test]
 fn is_min_version_valid_for_versions_equal() {
     let valid = is_min_version_valid_for_versions(
         &Version::parse("1.2.3").unwrap(),
@@ -199,35 +213,35 @@ fn is_min_version_valid_for_versions_true_patch() {
 
 #[test]
 fn is_min_version_valid_not_found() {
-    let valid = is_min_version_valid("bad_crate", "1.2.3");
+    let valid = is_min_version_valid("bad_crate", "1.2.3", None);
 
     assert!(valid);
 }
 
 #[test]
 fn is_min_version_valid_invalid_version() {
-    let valid = is_min_version_valid("cargo-make", "bad_version");
+    let valid = is_min_version_valid("cargo-make", "bad_version", None);
 
     assert!(valid);
 }
 
 #[test]
 fn is_min_version_valid_old_version() {
-    let valid = is_min_version_valid("cargo-make", "0.0.1");
+    let valid = is_min_version_valid("cargo-make", "0.0.1", None);
 
     assert!(valid);
 }
 
 #[test]
 fn is_min_version_valid_newer_version() {
-    let valid = is_min_version_valid("cargo-make", "10000.0.0");
+    let valid = is_min_version_valid("cargo-make", "10000.0.0", None);
 
     assert!(!valid);
 }
 
 #[test]
 fn is_min_version_valid_same_version() {
-    let version = get_crate_version("cargo-make").unwrap();
+    let version = get_crate_version("cargo-make", None).unwrap();
     let mut version_string = String::new();
     version_string.push_str(&version.major.to_string());
     version_string.push_str(".");
@@ -235,7 +249,7 @@ fn is_min_version_valid_same_version() {
     version_string.push_str(".");
     version_string.push_str(&version.patch.to_string());
 
-    let valid = is_min_version_valid("cargo-make", &version_string);
+    let valid = is_min_version_valid("cargo-make", &version_string, None);
 
     assert!(valid);
 }
@@ -282,35 +296,35 @@ fn is_version_valid_for_versions_false_patch() {
 
 #[test]
 fn is_version_valid_not_found() {
-    let valid = is_version_valid("bad_crate", "1.2.3");
+    let valid = is_version_valid("bad_crate", "1.2.3", None);
 
     assert!(valid);
 }
 
 #[test]
 fn is_version_valid_invalid_version() {
-    let valid = is_version_valid("cargo-make", "bad_version");
+    let valid = is_version_valid("cargo-make", "bad_version", None);
 
     assert!(valid);
 }
 
 #[test]
 fn is_version_valid_old_version() {
-    let valid = is_version_valid("cargo-make", "0.0.1");
+    let valid = is_version_valid("cargo-make", "0.0.1", None);
 
     assert!(!valid);
 }
 
 #[test]
 fn is_version_valid_newer_version() {
-    let valid = is_version_valid("cargo-make", "10000.0.0");
+    let valid = is_version_valid("cargo-make", "10000.0.0", None);
 
     assert!(!valid);
 }
 
 #[test]
 fn is_version_valid_same_version() {
-    let version = get_crate_version("cargo-make").unwrap();
+    let version = get_crate_version("cargo-make", None).unwrap();
     let mut version_string = String::new();
     version_string.push_str(&version.major.to_string());
     version_string.push_str(".");
@@ -318,7 +332,7 @@ fn is_version_valid_same_version() {
     version_string.push_str(".");
     version_string.push_str(&version.patch.to_string());
 
-    let valid = is_min_version_valid("cargo-make", &version_string);
+    let valid = is_min_version_valid("cargo-make", &version_string, None);
 
     assert!(valid);
 }

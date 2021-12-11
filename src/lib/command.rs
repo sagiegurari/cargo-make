@@ -191,6 +191,28 @@ pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, vali
     exit_code
 }
 
+/// Runs the requested command and returns the stdout if exit code is valid.
+pub(crate) fn run_command_get_output_string(
+    command_string: &str,
+    args: &Option<Vec<String>>,
+) -> Option<String> {
+    let output = run_command_get_output(&command_string, &args, true);
+
+    let exit_code = get_exit_code_from_output(&output, true);
+
+    if exit_code == 0 {
+        match output {
+            Ok(output_struct) => {
+                let stdout = String::from_utf8_lossy(&output_struct.stdout).into_owned();
+                Some(stdout)
+            }
+            Err(_) => None,
+        }
+    } else {
+        None
+    }
+}
+
 /// Runs the given task command.
 pub(crate) fn run(step: &Step) {
     let validate = !step.config.should_ignore_errors();

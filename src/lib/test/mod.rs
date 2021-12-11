@@ -38,13 +38,17 @@ pub(crate) fn is_windows() -> bool {
     }
 }
 
+pub(crate) fn is_rust_channel(rust_channel: RustChannel) -> bool {
+    let rustinfo = rust_info::get();
+    let current_rust_channel = rustinfo.channel.unwrap();
+
+    current_rust_channel == rust_channel
+}
+
 pub(crate) fn should_test(panic_if_false: bool) -> bool {
     on_test_startup();
 
-    let rustinfo = rust_info::get();
-    let rust_channel = rustinfo.channel.unwrap();
-
-    if (is_linux() && rust_channel == RustChannel::Nightly) || !ci_info::is_ci() {
+    if (is_linux() && is_rust_channel(RustChannel::Nightly)) || !ci_info::is_ci() {
         true
     } else if panic_if_false {
         panic!("Skipped");

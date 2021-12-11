@@ -14,3 +14,16 @@ install_crate = { crate_name = "cargo-make", binary = "cargo", test_arg = [
 ], min_version = "0.0.1" }
 command = "cargo"
 args = ["make", "--version"]
+
+[tasks.alt-command-example1]
+install_crate = { install_command = "custom-install" }
+command = "cargo"
+args = ["somecrate"]
+
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install" }
+
+[tasks.fmt]
+install_crate = { crate_name = "rustfmt", binary = "rustfmt", version = "1.4.37", test_arg = "--help" }
+command = "cargo"
+args = ["fmt", "badarg"]

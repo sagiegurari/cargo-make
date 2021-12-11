@@ -44,9 +44,13 @@ fn install_crate(provider: &ScriptRunner) {
                 },
                 min_version: None,
                 version: None,
+                install_command: None,
             };
 
-            crate_installer::install(&None, &info, &None, false);
+            // due to fornwall/rust-script/issues/42
+            let rust_script_install_args = vec!["--version".to_string(), "0.7.0".to_string()];
+
+            crate_installer::install(&None, &info, &Some(rust_script_install_args), false);
         }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
@@ -55,10 +59,17 @@ fn install_crate(provider: &ScriptRunner) {
             &None,
             true,
             &None,
+            &None,
         ),
-        ScriptRunner::CargoPlay => {
-            cargo_plugin_installer::install_crate(&None, "play", "cargo-play", &None, true, &None)
-        }
+        ScriptRunner::CargoPlay => cargo_plugin_installer::install_crate(
+            &None,
+            "play",
+            "cargo-play",
+            &None,
+            true,
+            &None,
+            &None,
+        ),
     };
 }
 

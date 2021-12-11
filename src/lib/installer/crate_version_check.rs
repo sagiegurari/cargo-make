@@ -7,6 +7,7 @@
 #[path = "crate_version_check_test.rs"]
 mod crate_version_check_test;
 
+use crate::command;
 use dirs_next;
 use fsio;
 use semver::Version;
@@ -18,6 +19,12 @@ use toml;
 #[derive(Deserialize, Debug)]
 struct CratesRegistryInfo {
     v1: Option<HashMap<String, Vec<String>>>,
+}
+
+enum VersionParseOutput {
+    Version(Version),
+    InvalidVersion,
+    WrongCrate,
 }
 
 fn get_cargo_home() -> Option<String> {
@@ -67,33 +74,41 @@ fn load_crates_toml(cargo_home: &str) -> Option<CratesRegistryInfo> {
     }
 }
 
+fn parse_version_from_string(version_line: &str, crate_name: &str) -> VersionParseOutput {
+    let parts: Vec<&str> = version_line.split(' ').collect();
+
+    if parts.len() >= 2 && parts[0] == crate_name {
+        match Version::parse(parts[1]) {
+            Ok(version) => VersionParseOutput::Version(version),
+            _ => VersionParseOutput::InvalidVersion,
+        }
+    } else {
+        VersionParseOutput::WrongCrate
+    }
+}
+
 fn get_crate_version_from_info(crate_name: &str, info: &CratesRegistryInfo) -> Option<Version> {
     match info.v1 {
         Some(ref keys) => {
-            let mut output = None;
-
             for key in keys.keys() {
-                let parts: Vec<&str> = key.split(' ').collect();
+                let output = parse_version_from_string(&key, crate_name);
 
-                if parts.len() >= 2 && parts[0] == crate_name {
-                    output = match Version::parse(parts[1]) {
-                        Ok(version) => Some(version),
-                        _ => None,
-                    };
-
-                    break;
-                }
+                match output {
+                    VersionParseOutput::Version(version) => return Some(version),
+                    VersionParseOutput::InvalidVersion => return None,
+                    VersionParseOutput::WrongCrate => (),
+                };
             }
 
-            output
+            None
         }
         None => None,
     }
 }
 
-pub(crate) fn get_crate_version(crate_name: &str) -> Option<Version> {
+pub(crate) fn get_crate_version(crate_name: &str, binary: Option<&str>) -> Option<Version> {
     let cargo_home = get_cargo_home();
-    match cargo_home {
+    let version = match cargo_home {
         Some(directory) => match load_crates_toml(&directory) {
             Some(info) => get_crate_version_from_info(&crate_name, &info),
             None => {
@@ -111,6 +126,32 @@ pub(crate) fn get_crate_version(crate_name: &str) -> Option<Version> {
             );
             None
         }
+    };
+
+    match version {
+        Some(value) => Some(value),
+        None => match binary {
+            Some(value) => {
+                let result = command::run_command_get_output_string(
+                    &value,
+                    &Some(vec!["--version".to_string()]),
+                );
+
+                match result {
+                    Some(ref output) => {
+                        debug!("Version CLI output: {}", output);
+
+                        match parse_version_from_string(output, crate_name) {
+                            VersionParseOutput::Version(version) => Some(version),
+                            VersionParseOutput::InvalidVersion => None,
+                            VersionParseOutput::WrongCrate => None,
+                        }
+                    }
+                    None => None,
+                }
+            }
+            None => None,
+        },
     }
 }
 
@@ -131,10 +172,14 @@ pub(crate) fn is_min_version_valid_for_versions(
     }
 }
 
-pub(crate) fn is_min_version_valid(crate_name: &str, min_version: &str) -> bool {
+pub(crate) fn is_min_version_valid(
+    crate_name: &str,
+    min_version: &str,
+    binary: Option<&str>,
+) -> bool {
     let semver_value = Version::parse(min_version);
     match semver_value {
-        Ok(version_values) => match get_crate_version(crate_name) {
+        Ok(version_values) => match get_crate_version(crate_name, binary) {
             Some(installed_version_values) => {
                 is_min_version_valid_for_versions(&version_values, &installed_version_values)
             }
@@ -153,19 +198,16 @@ pub(crate) fn is_min_version_valid(crate_name: &str, min_version: &str) -> bool 
     }
 }
 
-pub(crate) fn is_version_valid_for_versions(
-    version: &Version,
-    installed_version: &Version,
-) -> bool {
+fn is_version_valid_for_versions(version: &Version, installed_version: &Version) -> bool {
     version.major == installed_version.major
         && version.minor == installed_version.minor
         && version.patch == installed_version.patch
 }
 
-pub(crate) fn is_version_valid(crate_name: &str, version: &str) -> bool {
+pub(crate) fn is_version_valid(crate_name: &str, version: &str, binary: Option<&str>) -> bool {
     let semver_value = Version::parse(version);
     match semver_value {
-        Ok(version_values) => match get_crate_version(crate_name) {
+        Ok(version_values) => match get_crate_version(crate_name, binary) {
             Some(installed_version_values) => {
                 is_version_valid_for_versions(&version_values, &installed_version_values)
             }

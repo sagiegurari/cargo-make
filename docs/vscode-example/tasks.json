@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "detail": "Build the rust project",
+            "type": "process",
+            "group": "build",
+            "command": "cargo",
+            "args": [
+                "make",
+                "build"
+            ]
+        },
+        {
+            "label": "Clean",
+            "detail": "Clean the target build directory",
+            "type": "process",
+            "group": "build",
+            "command": "cargo",
+            "args": [
+                "make",
+                "clean"
+            ]
+        },
+        {
+            "label": "Format",
+            "detail": "Auto format the code",
+            "type": "process",
+            "group": "build",
+            "command": "cargo",
+            "args": [
+                "make",
+                "format-flow"
+            ]
+        },
+        {
+            "label": "Test",
+            "detail": "Run the tests",
+            "type": "process",
+            "group": "build",
+            "command": "cargo",
+            "args": [
+                "make",
+                "test-flow"
+            ]
+        },
+    ],
+}

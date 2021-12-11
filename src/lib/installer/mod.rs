@@ -44,6 +44,19 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
     }
 }
 
+fn get_first_command_arg(task_config: &Task) -> Option<String> {
+    match task_config.args {
+        Some(ref args) => {
+            if args.is_empty() {
+                None
+            } else {
+                Some(args[0].to_string())
+            }
+        }
+        None => None,
+    }
+}
+
 pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
     let validate = !task_config.should_ignore_errors();
 
@@ -63,8 +76,9 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
         Some(ref install_crate_info) => match install_crate_info {
             InstallCrate::Enabled(_) => (),
             InstallCrate::Value(ref crate_name) => {
-                let cargo_command = match task_config.args {
-                    Some(ref args) => &args[0],
+                let first_arg = get_first_command_arg(task_config);
+                let cargo_command = match first_arg {
+                    Some(ref arg) => arg,
                     None => {
                         error!("Missing cargo command to invoke.");
                         panic!("Missing cargo command to invoke.");
@@ -78,26 +92,30 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                     &task_config.install_crate_args,
                     validate,
                     &None,
+                    &None,
                 );
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
                 let (cargo_command, crate_name) =
                     match get_cargo_plugin_info_from_command(&task_config) {
                         Some(cargo_plugin_info) => cargo_plugin_info,
-                        None => match task_config.args {
-                            Some(ref args) => match install_info.crate_name {
-                                Some(ref crate_name) => {
-                                    (args[0].to_string(), crate_name.to_string())
-                                }
+                        None => match get_first_command_arg(task_config) {
+                            Some(arg) => match install_info.crate_name {
+                                Some(ref crate_name) => (arg, crate_name.to_string()),
                                 None => {
                                     error!("Missing crate name to invoke.");
                                     panic!("Missing crate name to invoke.");
                                 }
                             },
-                            None => {
-                                error!("Missing cargo command to invoke.");
-                                panic!("Missing cargo command to invoke.");
-                            }
+                            None => match install_info.crate_name {
+                                Some(ref crate_name) => {
+                                    (crate_name.to_string(), crate_name.to_string())
+                                }
+                                None => {
+                                    error!("Missing cargo command to invoke.");
+                                    panic!("Missing crate command to invoke.");
+                                }
+                            },
                         },
                     };
 
@@ -107,7 +125,8 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                     &crate_name,
                     &task_config.install_crate_args,
                     validate,
-                    &Some(install_info.min_version.clone()),
+                    &install_info.min_version,
+                    &install_info.install_command,
                 );
             }
             InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
@@ -140,6 +159,7 @@ pub(crate) fn install(task_config: &Task, flow_info: &FlowInfo) {
                         &crate_name,
                         &task_config.install_crate_args,
                         validate,
+                        &None,
                         &None,
                     );
                 }

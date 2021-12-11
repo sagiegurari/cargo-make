@@ -54,6 +54,7 @@
         * [Native Dependencies](#usage-installing-native-dependencies)
         * [Defining Version](#usage-installing-version)
         * [Global Lock Of Versions](#usage-installing-locked)
+        * [Alternate Cargo Install Commands](#usage-installing-alternate-cargo-install-commands)
         * [Installation Priorities](#usage-installing-dependencies-priorities)
         * [Multiple Installations](#usage-installing-dependencies-multiple)
     * [Workspace Support](#usage-workspace-support)
@@ -112,6 +113,8 @@
 * [Badge](#badge)
 * [Roadmap](#roadmap)
 * [Editor Support](#editor-support)
+    * [vim](#editor-support-vim)
+    * [vs-code](#editor-support-vs-code)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
 * [License](#license)
@@ -140,6 +143,12 @@ You will have two executables available: *cargo-make* and *makers*<br>
 * **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
 
 See [Cli Options](#usage-cli) section for full CLI instructions.
+
+In order to install with minimal features (for example, no TLS support), run the following:
+
+```sh
+cargo install --no-default-features --force cargo-make
+```
 
 <a name="installation-binary-release"></a>
 ### Binary Release
@@ -1915,6 +1924,23 @@ you can have the **--locked** flag automatically added to the crate installation
 by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
 If version is defined instead of min_version, this will automatically be set as true.
 
+<a name="usage-installing-alternate-cargo-install-commands"></a>
+#### Alternate Cargo Install Commands
+
+You can specify a different cargo install command in order to make the crate installation to use some custom cargo installer plugin.
+For example, if you want to use instead of **install** a plugin such as **local-install** simply add the **install_command** attribute with the relevant value.<br>
+For example:
+
+```toml
+[tasks.alt-command-example1]
+install_crate = { install_command = "custom-install" }
+command = "cargo"
+args = ["somecrate"]
+
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install" }
+```
+
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
 
@@ -3241,8 +3267,8 @@ These are the following options available while running cargo-make:
 ```console
 USAGE:
     cargo make [FLAGS] [OPTIONS] [--] [TASK_CMD]...
-    OR
-    makers [FLAGS] [OPTIONS] [--] [TASK_CMD]...
+    or
+    makers  [FLAGS] [OPTIONS] [--] [TASK_CMD]...
 
 FLAGS:
         --allow-private                Allow invocation of private tasks
@@ -3254,23 +3280,30 @@ FLAGS:
         --no-color                     Disables colorful output
         --no-on-error                  Disable on error flow even if defined in config sections
         --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps                  Only prints the steps of the build in the order they will be invoked but without invoking them
+        --print-steps                  Only prints the steps of the build in the order they will be invoked but without
+                                       invoking them
         --skip-init-end-tasks          If set, init and end tasks are skipped
         --time-summary                 Print task level time summary at end of flow
     -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
     -V, --version                      Prints version information
 
 OPTIONS:
-        --cwd <DIRECTORY>                  Will set the current working directory. The search for the makefile will be from this directory if defined.
-    -e, --env <ENV>...                     Set environment variables
-        --env-file <FILE>                  Set environment variables from provided file
-    -l, --loglevel <LOG LEVEL>             The log level [default: info]  [possible values: verbose, info, error]
-        --makefile <FILE>                  The optional toml file containing the tasks definitions [default: Makefile.toml]
-        --output-format <OUTPUT FORMAT>    The print/list steps format (some operations do not support all formats) [default: default]  [possible values: default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete]
-        --output-file <OUTPUT_FILE>        The list steps output file name
-    -p, --profile <PROFILE>                The profile name (will be converted to lower case) [default: development]
-        --skip-tasks <SKIP_TASK_PATTERNS>  Skip all tasks that match the provided regex (example: pre.*|post.*)
-    -t, --task <TASK>                      The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+        --cwd <DIRECTORY>                    Will set the current working directory. The search for the makefile will be
+                                             from this directory if defined.
+    -e, --env <ENV>...                       Set environment variables
+        --env-file <FILE>                    Set environment variables from provided file
+        --list-category-steps <CATEGORY>     List steps for a given category
+    -l, --loglevel <LOG LEVEL>               The log level [default: info]  [possible values: verbose, info, error]
+        --makefile <FILE>                    The optional toml file containing the tasks definitions [default:
+                                             Makefile.toml]
+        --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats)
+                                             [default: default]  [possible values: default, short-description, markdown,
+                                             markdown-single-page, markdown-sub-section, autocomplete]
+        --output-file <OUTPUT_FILE>          The list steps output file name
+    -p, --profile <PROFILE>                  The profile name (will be converted to lower case) [default: development]
+        --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
+    -t, --task <TASK>                        The task name to execute (can omit the flag if the task name is the last
+                                             argument) [default: default]
 
 ARGS:
     <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed in the task itself.
@@ -3472,7 +3505,25 @@ You can view the future development items list in the [github project issues](ht
 
 <a name="editor-support"></a>
 ## Editor Support
-* Vim: [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
+
+<a name="editor-support-vim"></a>
+### Vim
+
+* [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
+* [vim-duckscript](https://github.com/nastevens/vim-duckscript)
+
+<a name="editor-support-vim"></a>
+### VSCode
+
+For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example/) directory
+
+You may also need:
+
+  * A local install of LLVM (For the LLDB Debugger) installed and reachable on the path
+  * VSCode Extension - CodeLLDB
+  * VSCode Extension - "rust-analyser" (not the "rust" one)
+  * VSCode Extension - "Task Explorer"
+  * VSCode Extension - "crates"
 
 ## Contributing
 See [contributing guide](.github/CONTRIBUTING.md)

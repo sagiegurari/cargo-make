@@ -1,6 +1,7 @@
 //! # list_steps
 //!
 //! Lists all known tasks in multiple formats.
+//! Or can list tasks based on a category
 //!
 
 #[cfg(test)]
@@ -12,8 +13,13 @@ use crate::io;
 use crate::types::{Config, DeprecationInfo};
 use std::collections::BTreeMap;
 
-pub(crate) fn run(config: &Config, output_format: &str, output_file: &Option<String>) -> u32 {
-    let (output, count) = create_list(&config, output_format);
+pub(crate) fn run(
+    config: &Config,
+    output_format: &str,
+    output_file: &Option<String>,
+    category: Option<String>,
+) -> u32 {
+    let (output, count) = create_list(&config, output_format, category);
 
     match output_file {
         Some(file) => {
@@ -26,7 +32,11 @@ pub(crate) fn run(config: &Config, output_format: &str, output_file: &Option<Str
     count
 }
 
-pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32) {
+pub(crate) fn create_list(
+    config: &Config,
+    output_format: &str,
+    category_filter: Option<String>,
+) -> (String, u32) {
     let mut count = 0;
     let mut buffer = String::new();
 
@@ -51,12 +61,19 @@ pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32)
         };
 
         if !is_private {
-            count = count + 1;
-
             let category = match task.category {
                 Some(value) => value,
                 None => "No Category".to_string(),
             };
+
+            if category_filter
+                .as_ref()
+                .map_or(false, |value| value != &category)
+            {
+                continue;
+            }
+
+            count = count + 1;
 
             let description = match task.description {
                 Some(value) => value,
@@ -99,6 +116,13 @@ pub(crate) fn create_list(config: &Config, output_format: &str) -> (String, u32)
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
+        if category_filter
+            .as_ref()
+            .map_or(false, |value| value != category)
+        {
+            continue;
+        }
+
         if !just_task_name {
             if single_page_markdown {
                 buffer.push_str(&format!("## {}\n\n", category));

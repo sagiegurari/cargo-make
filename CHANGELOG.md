@@ -1,5 +1,15 @@
 ## CHANGELOG
 
+### v0.35.7
+
+* Fix: crate installation version check now also supports running the binary with --version arg #612
+* Enhancement: support alternate cargo install commands #608
+* Documentation: VS code editor integration #604 (thanks @grbd)
+* Fix: Panic during crate installation in case args are empty #615
+* Enhancement: New list-category-steps command #603 (thanks @grbd)
+* Enhancement: New tls feature so tls can be disabled (by default enabled) #614
+* Fix: If rust-script is used and requires installation, install old 0.7.0 version due to rust-script bug
+
 ### v0.35.6 (2021-11-01)
 
 * Fix: prebuilt binary release task
