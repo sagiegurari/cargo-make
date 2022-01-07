@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.8
+
+* Maintenance: upgrade to clap 3
+
 ### v0.35.7 (2021-12-11)
 
 * Fix: crate installation version check now also supports running the binary with --version arg #612
