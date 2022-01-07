@@ -815,6 +815,7 @@ fn initialize_env_all() {
         env,
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     initialize_env(&config, &vec![]);
@@ -849,6 +850,7 @@ fn setup_env_empty() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     setup_env(&cli_args, &config, "setup_env_empty1", None);
@@ -879,6 +881,7 @@ fn setup_env_skip_git() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
@@ -899,6 +902,7 @@ fn setup_env_skip_rust() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
@@ -919,6 +923,7 @@ fn setup_env_skip_crate() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None);
@@ -966,6 +971,7 @@ fn setup_env_cli_arguments() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
@@ -987,6 +993,7 @@ fn setup_env_values() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.env.insert(
         "MY_ENV_KEY".to_string(),
@@ -1017,6 +1024,7 @@ fn setup_env_script() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.env.insert(
         "MY_ENV_SCRIPT_KEY".to_string(),
@@ -1663,6 +1671,7 @@ fn setup_env_for_project_crate() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let crate_info = crateinfo::load();
@@ -1691,6 +1700,7 @@ fn setup_env_for_project_workspace_with_main_crate() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     envmnt::remove("CARGO_MAKE_PROJECT_NAME");
@@ -1714,6 +1724,7 @@ fn setup_env_for_project_workspace_no_main_crate() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     envmnt::remove("CARGO_MAKE_PROJECT_NAME");

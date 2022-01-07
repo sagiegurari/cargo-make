@@ -28,6 +28,7 @@ fn print_default_format() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -46,6 +47,7 @@ fn print_task_not_found() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -62,6 +64,7 @@ fn print_task_not_found_but_skipped() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());

@@ -125,6 +125,7 @@ pub(crate) fn create_empty_flow_info() -> FlowInfo {
             env: IndexMap::new(),
             env_scripts: vec![],
             tasks: IndexMap::new(),
+            plugins: None,
         },
         task: "test".to_string(),
         env_info: EnvInfo {

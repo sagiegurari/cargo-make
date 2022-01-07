@@ -9,6 +9,7 @@ fn execute_duckscript() {
         &vec!["echo test".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -19,6 +20,7 @@ fn execute_duckscript_error_no_validate() {
         &vec!["badcommand".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         false,
     );
 }
@@ -30,6 +32,7 @@ fn execute_duckscript_error_with_validate() {
         &vec!["badcommand".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -40,6 +43,7 @@ fn execute_duckscript_cli_arguments() {
         &vec!["assert ${1}".to_string()],
         &vec!["true".to_string()],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -51,6 +55,7 @@ fn execute_duckscript_cli_arguments2() {
         &vec!["assert ${1}".to_string()],
         &vec!["false".to_string()],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -62,6 +67,7 @@ fn execute_duckscript_crash() {
         &vec!["function test".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -73,6 +79,7 @@ fn execute_duckscript_crash2() {
         &vec!["assert false".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }
@@ -104,6 +111,7 @@ fn cm_run_task_valid() {
         .to_string()],
         &vec![],
         Some(&flow_info),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 
@@ -124,6 +132,7 @@ fn cm_run_task_error() {
         .to_string()],
         &vec![],
         Some(&flow_info),
+        Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
 }

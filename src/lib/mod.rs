@@ -193,6 +193,7 @@ mod installer;
 mod io;
 mod legacy;
 mod logger;
+mod plugin;
 mod profile;
 mod proxy_task;
 mod recursion_level;

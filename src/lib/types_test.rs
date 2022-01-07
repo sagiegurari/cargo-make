@@ -1526,6 +1526,7 @@ fn task_new() {
     assert!(task.description.is_none());
     assert!(task.category.is_none());
     assert!(task.workspace.is_none());
+    assert!(task.plugin.is_none());
     assert!(task.ignore_errors.is_none());
     assert!(task.force.is_none());
     assert!(task.env_files.is_none());
@@ -1559,6 +1560,7 @@ fn external_config_new() {
     assert!(config.env.is_none());
     assert!(config.env_scripts.is_none());
     assert!(config.tasks.is_none());
+    assert!(config.plugins.is_none());
 }
 
 #[test]
@@ -1621,6 +1623,7 @@ fn task_extend_both_have_misc_data() {
         description: None,
         category: None,
         workspace: None,
+        plugin: None,
         disabled: Some(true),
         private: Some(true),
         deprecated: Some(DeprecationInfo::Message("extended".to_string())),
@@ -1660,6 +1663,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.description.is_none());
     assert!(base.category.is_none());
     assert!(base.workspace.is_none());
+    assert!(base.plugin.is_none());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.deprecated.is_some());
@@ -1719,6 +1723,7 @@ fn task_extend_extended_have_all_fields() {
         description: None,
         category: None,
         workspace: None,
+        plugin: None,
         disabled: Some(false),
         private: Some(true),
         deprecated: Some(DeprecationInfo::Boolean(true)),
@@ -1760,6 +1765,7 @@ fn task_extend_extended_have_all_fields() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(true),
+        plugin: Some("plugin".to_string()),
         disabled: Some(true),
         private: Some(false),
         deprecated: Some(DeprecationInfo::Boolean(false)),
@@ -1812,6 +1818,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -1857,6 +1864,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -1902,6 +1910,7 @@ fn task_extend_extended_have_all_fields() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(false)),
             extend: Some("extended".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -1949,6 +1958,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.description.is_some());
     assert!(base.category.is_some());
     assert!(base.workspace.is_some());
+    assert!(base.plugin.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.deprecated.is_some());
@@ -1988,6 +1998,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.description.unwrap(), "description");
     assert_eq!(base.category.unwrap(), "category");
     assert!(base.workspace.unwrap());
+    assert_eq!(base.plugin.unwrap(), "plugin");
     assert!(base.disabled.unwrap());
     assert!(!base.private.unwrap());
     assert_eq!(base.deprecated.unwrap(), DeprecationInfo::Boolean(false));
@@ -2035,6 +2046,7 @@ fn task_extend_clear_with_no_data() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(false),
+        plugin: Some("base".to_string()),
         disabled: Some(true),
         private: Some(false),
         deprecated: Some(DeprecationInfo::Boolean(true)),
@@ -2087,6 +2099,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2132,6 +2145,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2177,6 +2191,7 @@ fn task_extend_clear_with_no_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2226,6 +2241,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.description.is_none());
     assert!(base.category.is_none());
     assert!(base.workspace.is_none());
+    assert!(base.plugin.is_none());
     assert!(base.disabled.is_none());
     assert!(base.private.is_none());
     assert!(base.deprecated.is_none());
@@ -2270,6 +2286,7 @@ fn task_extend_clear_with_all_data() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(true),
+        plugin: Some("plugin".to_string()),
         disabled: Some(true),
         private: Some(false),
         deprecated: Some(DeprecationInfo::Boolean(true)),
@@ -2322,6 +2339,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2367,6 +2385,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2412,6 +2431,7 @@ fn task_extend_clear_with_all_data() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("base".to_string()),
+            plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2458,6 +2478,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.description.is_some());
     assert!(base.category.is_some());
     assert!(base.workspace.is_some());
+    assert!(base.plugin.is_some());
     assert!(base.disabled.is_some());
     assert!(base.private.is_some());
     assert!(base.deprecated.is_some());
@@ -2563,6 +2584,7 @@ fn task_get_normalized_task_undefined() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(false),
+        plugin: Some("bplugin".to_string()),
         linux: None,
         windows: None,
         mac: None,
@@ -2602,6 +2624,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
     assert!(normalized_task.workspace.is_some());
+    assert!(normalized_task.plugin.is_some());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -2615,6 +2638,7 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
     assert!(!normalized_task.workspace.unwrap());
+    assert_eq!(normalized_task.plugin.unwrap(), "bplugin");
     assert!(!normalized_task.disabled.unwrap());
     assert!(normalized_task.private.unwrap());
     assert_eq!(normalized_task.extend.unwrap(), "base");
@@ -2660,6 +2684,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(true),
+        plugin: Some("plugin".to_string()),
         disabled: Some(false),
         private: Some(true),
         deprecated: None,
@@ -2708,6 +2733,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
+            plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2766,6 +2792,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
     assert!(normalized_task.workspace.is_some());
+    assert!(normalized_task.plugin.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
     assert!(normalized_task.deprecated.is_some());
@@ -2805,6 +2832,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
     assert!(normalized_task.workspace.unwrap());
+    assert_eq!(normalized_task.plugin.unwrap(), "linux_plugin");
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
     assert_eq!(
@@ -2858,6 +2886,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(true),
+        plugin: Some("plugin".to_string()),
         disabled: Some(false),
         private: Some(true),
         deprecated: Some(DeprecationInfo::Boolean(false)),
@@ -2905,6 +2934,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             private: Some(false),
             deprecated: Some(DeprecationInfo::Boolean(true)),
             extend: Some("linux".to_string()),
+            plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
                 fail_message: None,
@@ -2967,6 +2997,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
     assert!(normalized_task.workspace.is_some());
+    assert!(normalized_task.plugin.is_some());
     assert!(normalized_task.disabled.is_some());
     assert!(normalized_task.private.is_some());
     assert!(normalized_task.deprecated.is_some());
@@ -3006,6 +3037,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.description.unwrap(), "description");
     assert_eq!(normalized_task.category.unwrap(), "category");
     assert!(normalized_task.workspace.unwrap());
+    assert_eq!(normalized_task.plugin.unwrap(), "linux_plugin");
     assert!(normalized_task.disabled.unwrap());
     assert!(!normalized_task.private.unwrap());
     assert_eq!(
@@ -3096,6 +3128,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         description: None,
         category: None,
         workspace: None,
+        plugin: None,
         linux: Some(PlatformOverrideTask {
             clear: Some(false),
             install_crate: None,
@@ -3105,6 +3138,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             private: None,
             deprecated: None,
             extend: None,
+            plugin: None,
             watch: None,
             condition: None,
             condition_script: None,
@@ -3161,6 +3195,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.description.is_none());
     assert!(normalized_task.category.is_none());
     assert!(normalized_task.workspace.is_none());
+    assert!(normalized_task.plugin.is_none());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -3256,6 +3291,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         description: Some("description".to_string()),
         category: Some("category".to_string()),
         workspace: Some(false),
+        plugin: Some("plugin".to_string()),
         linux: Some(PlatformOverrideTask {
             clear: Some(true),
             install_crate: Some(InstallCrate::Value("linux_crate".to_string())),
@@ -3265,6 +3301,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             private: None,
             deprecated: None,
             extend: None,
+            plugin: None,
             watch: None,
             condition: None,
             condition_script: None,
@@ -3297,6 +3334,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.private.is_none());
     assert!(normalized_task.deprecated.is_none());
     assert!(normalized_task.extend.is_none());
+    assert!(normalized_task.plugin.is_none());
     assert!(normalized_task.watch.is_none());
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
@@ -3321,6 +3359,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.description.is_some());
     assert!(normalized_task.category.is_some());
     assert!(normalized_task.workspace.is_some());
+    assert!(normalized_task.plugin.is_none());
     assert!(normalized_task.linux.is_none());
     assert!(normalized_task.windows.is_none());
     assert!(normalized_task.mac.is_none());
@@ -4271,6 +4310,7 @@ fn config_apply_modify_empty() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
     config.apply(&modify_config);
 
@@ -4298,6 +4338,7 @@ fn config_apply_modify_all() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
     config.apply(&modify_config);
 

@@ -15,6 +15,7 @@ fn get_task_name_not_found() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let name = get_task_name(&config, "test");
@@ -30,6 +31,7 @@ fn get_task_name_no_alias() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("test".to_string(), Task::new());
@@ -47,6 +49,7 @@ fn get_task_name_alias() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -69,6 +72,7 @@ fn get_task_name_alias_self_referential() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -87,6 +91,7 @@ fn get_task_name_alias_circular() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task_a = Task::new();
@@ -109,6 +114,7 @@ fn get_task_name_platform_alias() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -460,6 +466,7 @@ fn is_workspace_flow_true_default() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -488,6 +495,7 @@ fn is_workspace_flow_false_in_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -516,6 +524,7 @@ fn is_workspace_flow_true_in_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -542,6 +551,7 @@ fn is_workspace_flow_true_in_task() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -567,6 +577,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -593,6 +604,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -619,6 +631,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -642,6 +655,7 @@ fn is_workspace_flow_task_not_defined() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false);
@@ -662,6 +676,7 @@ fn is_workspace_flow_no_workspace() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -688,6 +703,7 @@ fn is_workspace_flow_disabled_via_cli() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -714,6 +730,7 @@ fn is_workspace_flow_disabled_via_task() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("test".to_string(), task);
 
@@ -733,6 +750,7 @@ fn create_single() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -760,6 +778,7 @@ fn create_single_disabled() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -788,6 +807,7 @@ fn create_single_private() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -812,6 +832,7 @@ fn create_single_allow_private() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -840,6 +861,7 @@ fn create_with_dependencies() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -874,6 +896,7 @@ fn create_with_foreign_dependencies_directory() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -916,6 +939,7 @@ fn create_with_foreign_dependencies_filename() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -958,6 +982,7 @@ fn create_with_foreign_dependencies_file_and_directory() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -1000,6 +1025,7 @@ fn create_with_dependencies_sub_flow() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -1032,6 +1058,7 @@ fn create_disabled_task_with_dependencies() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -1065,6 +1092,7 @@ fn create_with_dependencies_disabled() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -1096,6 +1124,7 @@ fn create_platform_disabled() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -1105,6 +1134,7 @@ fn create_platform_disabled() {
         private: Some(false),
         deprecated: None,
         extend: None,
+        plugin: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -1132,6 +1162,7 @@ fn create_platform_disabled() {
         private: Some(false),
         deprecated: None,
         extend: None,
+        plugin: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -1159,6 +1190,7 @@ fn create_platform_disabled() {
         private: Some(false),
         deprecated: None,
         extend: None,
+        plugin: None,
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: None,
         condition_script: None,
@@ -1198,6 +1230,7 @@ fn create_with_dependencies_and_skip_filter() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config.tasks.insert("init".to_string(), Task::new());
@@ -1233,6 +1266,7 @@ fn create_workspace() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let task = Task::new();
@@ -1255,6 +1289,7 @@ fn create_noworkspace() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let task = Task::new();
@@ -1367,6 +1402,7 @@ fn get_normalized_task_multi_extend() {
         private: None,
         deprecated: None,
         extend: None,
+        plugin: None,
         watch: None,
         condition: None,
         condition_script: None,
@@ -1407,6 +1443,7 @@ fn get_normalized_task_multi_extend() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("1".to_string(), task1);
     config.tasks.insert("2".to_string(), task2);
@@ -1436,6 +1473,7 @@ fn get_normalized_task_simple() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     config.tasks.insert("1".to_string(), task1);
 

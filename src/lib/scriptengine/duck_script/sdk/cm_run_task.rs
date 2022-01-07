@@ -4,16 +4,17 @@
 //!
 
 use crate::runner;
-use crate::scriptengine::duck_script::sdk;
 use crate::types::{FlowInfo, FlowState};
-use duckscript::types::command::{Command, CommandResult, Commands};
-use duckscript::types::instruction::Instruction;
-use duckscript::types::runtime::StateValue;
-use std::collections::HashMap;
+use duckscript::types::command::{Command, CommandResult};
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::thread;
 
 #[derive(Clone)]
-pub(crate) struct CommandImpl {}
+pub(crate) struct CommandImpl {
+    flow_info: FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+}
 
 impl Command for CommandImpl {
     fn name(&self) -> String {
@@ -24,20 +25,7 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn requires_context(&self) -> bool {
-        true
-    }
-
-    fn run_with_context(
-        &self,
-        arguments: Vec<String>,
-        state: &mut HashMap<String, StateValue>,
-        _variables: &mut HashMap<String, String>,
-        _output_variable: Option<String>,
-        _instructions: &Vec<Instruction>,
-        _commands: &mut Commands,
-        _line: usize,
-    ) -> CommandResult {
+    fn run(&self, arguments: Vec<String>) -> CommandResult {
         if arguments.is_empty() {
             CommandResult::Error("No task name provided.".to_string())
         } else {
@@ -47,32 +35,35 @@ impl Command for CommandImpl {
                 (arguments[0].clone(), false)
             };
 
-            sdk::run_in_flow_context(state, &|flow_info: &FlowInfo| -> CommandResult {
-                if flow_info.config.tasks.contains_key(&task_name) {
-                    // we currently do not support sharing same state
-                    // as main flow invocation
-                    let mut flow_state = FlowState::new();
+            if self.flow_info.config.tasks.contains_key(&task_name) {
+                let mut sub_flow_info = self.flow_info.clone();
+                sub_flow_info.task = task_name.clone();
 
-                    let mut sub_flow_info = flow_info.clone();
-                    sub_flow_info.task = task_name.clone();
+                if async_run {
+                    let cloned_flow_state = self.flow_state.borrow().clone();
 
-                    if async_run {
-                        thread::spawn(move || {
-                            runner::run_flow(&sub_flow_info, &mut flow_state, true);
-                        });
-                    } else {
-                        runner::run_flow(&sub_flow_info, &mut flow_state, true);
-                    }
-
-                    CommandResult::Continue(Some("true".to_string()))
+                    thread::spawn(move || {
+                        runner::run_flow(
+                            &sub_flow_info,
+                            Rc::new(RefCell::new(cloned_flow_state)),
+                            true,
+                        );
+                    });
                 } else {
-                    CommandResult::Error(format!("Task: {} not found.", &arguments[0]).to_string())
+                    runner::run_flow(&sub_flow_info, self.flow_state.clone(), true);
                 }
-            })
+
+                CommandResult::Continue(Some("true".to_string()))
+            } else {
+                CommandResult::Error(format!("Task: {} not found.", &arguments[0]).to_string())
+            }
         }
     }
 }
 
-pub(crate) fn create() -> Box<dyn Command> {
-    Box::new(CommandImpl {})
+pub(crate) fn create(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) -> Box<dyn Command> {
+    Box::new(CommandImpl {
+        flow_info: flow_info.clone(),
+        flow_state,
+    })
 }

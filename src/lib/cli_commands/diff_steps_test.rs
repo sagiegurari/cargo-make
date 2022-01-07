@@ -10,6 +10,7 @@ fn run_same() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config1.tasks.insert("init".to_string(), Task::new());
@@ -29,6 +30,7 @@ fn run_different() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -44,6 +46,7 @@ fn run_different() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config2.tasks.insert("init".to_string(), Task::new());
@@ -61,6 +64,7 @@ fn run_different_with_skip() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     let mut task = Task::new();
@@ -76,6 +80,7 @@ fn run_different_with_skip() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config2.tasks.insert("init".to_string(), Task::new());
@@ -97,6 +102,7 @@ fn run_missing_task_in_first_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config1.tasks.insert("init".to_string(), Task::new());
@@ -108,6 +114,7 @@ fn run_missing_task_in_first_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config2.tasks.insert("init".to_string(), Task::new());
@@ -126,6 +133,7 @@ fn run_missing_task_in_second_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config1.tasks.insert("init".to_string(), Task::new());
@@ -138,6 +146,7 @@ fn run_missing_task_in_second_config() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
 
     config2.tasks.insert("init".to_string(), Task::new());
