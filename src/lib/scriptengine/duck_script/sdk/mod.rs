@@ -21,7 +21,7 @@ pub(crate) fn load(commands: &mut Commands) -> Result<(), ScriptError> {
 
 pub(crate) fn run_in_flow_context(
     state: &mut HashMap<String, StateValue>,
-    func: &Fn(&FlowInfo) -> CommandResult,
+    func: &dyn Fn(&FlowInfo) -> CommandResult,
 ) -> CommandResult {
     match state.get(duck_script::FLOW_INFO_KEY) {
         Some(state_value) => match state_value {

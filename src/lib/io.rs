@@ -30,7 +30,7 @@ pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
 }
 
 pub(crate) fn create_file(
-    write_content: &Fn(&mut File) -> io::Result<()>,
+    write_content: &dyn Fn(&mut File) -> io::Result<()>,
     extension: &str,
 ) -> String {
     let file_path = fsio_path::get_temporary_file_path(extension);
