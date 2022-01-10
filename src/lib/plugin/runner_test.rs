@@ -552,3 +552,53 @@ fn run_task_invoked_valid() {
     assert!(done);
     assert!(envmnt::is_equal("PLUGIN_RUNNER_RUN_TASK_INVOKED2", "done"));
 }
+
+#[test]
+fn run_task_invoked_with_forced_plugin() {
+    let mut plugins = IndexMap::new();
+    plugins.insert(
+        "forced".to_string(),
+        Plugin {
+            script: r#"
+                 set_env RUN_TASK_INVOKED_WITH_FORCED_PLUGIN done
+            "#
+            .to_string(),
+        },
+    );
+
+    let mut task = Task::new();
+    task.plugin = Some("bad".to_string());
+
+    let mut flow_info = create_empty_flow_info();
+    flow_info
+        .config
+        .tasks
+        .insert("test".to_string(), task.clone());
+    flow_info.config.plugins = Some(Plugins {
+        aliases: None,
+        plugins,
+    });
+
+    let mut flow_state = FlowState::new();
+    flow_state.forced_plugin = Some("forced".to_string());
+
+    assert!(!envmnt::exists("RUN_TASK_INVOKED_WITH_FORCED_PLUGIN",));
+
+    let done = run_task(
+        &flow_info,
+        Rc::new(RefCell::new(flow_state)),
+        &Step {
+            name: "test".to_string(),
+            config: task,
+        },
+        &RunTaskOptions {
+            plugins_enabled: true,
+        },
+    );
+
+    assert!(done);
+    assert!(envmnt::is_equal(
+        "RUN_TASK_INVOKED_WITH_FORCED_PLUGIN",
+        "done"
+    ));
+}
