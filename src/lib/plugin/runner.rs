@@ -17,6 +17,7 @@ use duckscript::types::command::Commands;
 use duckscript::types::error::ScriptError;
 use duckscript::types::runtime::Context;
 use indexmap::IndexMap;
+use serde_json::json;
 use std::cell::RefCell;
 use std::env;
 use std::rc::Rc;
@@ -78,8 +79,7 @@ fn run_plugin(
 
     let mut context = duck_script::create_common_context(&cli_arguments);
 
-    let mut script_text = plugin.script.clone();
-    script_text.push_str("exit_on_error true\n");
+    let mut script_text = "exit_on_error true\n".to_string();
     setup_script_globals(
         &mut context,
         flow_info,
@@ -122,7 +122,7 @@ fn setup_script_globals(
     if let Some(ref cli_arguments) = flow_info.cli_arguments {
         for arg in cli_arguments {
             script.push_str("array_push ${flow.cli.args} \"");
-            script.push_str(arg);
+            script.push_str(&arg.replace("$", "\\$"));
             script.push_str("\"\n");
         }
     }
@@ -134,8 +134,14 @@ fn setup_script_globals(
 }
 
 fn setup_script_globals_for_task(context: &mut Context, step: &Step, script: &mut String) {
-    // meta info
+    // all task data as json
     let task = step.config.clone();
+    let json_string = json!(task);
+    context
+        .variables
+        .insert("task.as_json".to_string(), json_string.to_string());
+
+    // meta info
     context.variables.insert(
         "task.has_condition".to_string(),
         (task.condition.is_some() || task.condition_script.is_some()).to_string(),
@@ -229,7 +235,7 @@ fn setup_script_globals_for_task(context: &mut Context, step: &Step, script: &mu
     if let Some(args) = task.args {
         for arg in &args {
             script.push_str("array_push ${task.args} \"");
-            script.push_str(arg);
+            script.push_str(&arg.replace("$", "\\$"));
             script.push_str("\"\n");
         }
     }
@@ -272,7 +278,15 @@ pub(crate) fn run_task(
     if !options.plugins_enabled {
         false
     } else {
-        match step.config.plugin {
+        let plugin_name_option = match flow_state.borrow().forced_plugin {
+            Some(ref value) => Some(value.clone()),
+            None => match step.config.plugin {
+                Some(ref value) => Some(value.clone()),
+                None => None,
+            },
+        };
+
+        match plugin_name_option {
             Some(ref plugin_name) => match get_plugin(&flow_info.config, plugin_name) {
                 Some((normalized_plugin_name, plugin)) => {
                     debug!(

@@ -67,7 +67,7 @@ where
     };
 }
 
-fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
+pub(crate) fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     let mut valid = true;
 
     let do_validate = || {

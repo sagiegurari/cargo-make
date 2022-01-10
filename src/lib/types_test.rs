@@ -198,6 +198,7 @@ fn flow_state_new() {
     let flow_state = FlowState::new();
 
     assert!(flow_state.time_summary.is_empty());
+    assert!(flow_state.forced_plugin.is_none());
 }
 
 #[test]

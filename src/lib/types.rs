@@ -329,6 +329,8 @@ pub struct FlowInfo {
 pub struct FlowState {
     /// timing info for summary
     pub time_summary: Vec<(String, u128)>,
+    /// forced plugin name
+    pub forced_plugin: Option<String>,
 }
 
 impl FlowState {
