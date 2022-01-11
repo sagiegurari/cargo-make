@@ -11,19 +11,19 @@ use indexmap::IndexMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds a plugin implementation
-pub struct Plugin {
+pub(crate) struct Plugin {
     /// The plugin script content
-    pub script: String,
+    pub(crate) script: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the entire plugin config and implementation structure
 pub struct Plugins {
     /// The plugin name aliases
-    pub aliases: Option<IndexMap<String, String>>,
+    pub(crate) aliases: Option<IndexMap<String, String>>,
     /// All plugin definitions
     #[serde(rename = "impl")]
-    pub plugins: IndexMap<String, Plugin>,
+    pub(crate) plugins: IndexMap<String, Plugin>,
 }
 
 impl Plugins {
