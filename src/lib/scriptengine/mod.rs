@@ -3,7 +3,7 @@
 //! Facade for all different non OS scripts.
 //!
 
-mod duck_script;
+pub(crate) mod duck_script;
 pub(crate) mod generic_script;
 mod os_script;
 mod rsscript;
@@ -17,8 +17,10 @@ mod mod_test;
 
 use crate::environment;
 use crate::io;
-use crate::types::{FlowInfo, ScriptValue, Task};
+use crate::types::{FlowInfo, FlowState, ScriptValue, Task};
+use std::cell::RefCell;
 use std::path::PathBuf;
+use std::rc::Rc;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types
@@ -153,7 +155,11 @@ pub(crate) fn get_engine_type(
     }
 }
 
-pub(crate) fn invoke(task: &Task, flow_info: &FlowInfo) -> bool {
+pub(crate) fn invoke(
+    task: &Task,
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+) -> bool {
     match task.script {
         Some(ref script) => {
             let validate = !task.should_ignore_errors();
@@ -165,6 +171,7 @@ pub(crate) fn invoke(task: &Task, flow_info: &FlowInfo) -> bool {
                 task.script_extension.clone(),
                 validate,
                 Some(flow_info),
+                Some(flow_state),
             )
         }
         None => false,
@@ -178,6 +185,7 @@ pub(crate) fn invoke_script_in_flow_context(
     script_extension: Option<String>,
     validate: bool,
     flow_info: Option<&FlowInfo>,
+    flow_state: Option<Rc<RefCell<FlowState>>>,
 ) -> bool {
     let cli_arguments = match flow_info {
         Some(info) => match info.cli_arguments {
@@ -194,6 +202,7 @@ pub(crate) fn invoke_script_in_flow_context(
         script_extension,
         validate,
         flow_info,
+        flow_state,
         &cli_arguments,
     )
 }
@@ -213,6 +222,7 @@ pub(crate) fn invoke_script_pre_flow(
         script_extension,
         validate,
         None,
+        None,
         cli_arguments,
     )
 }
@@ -224,6 +234,7 @@ fn invoke_script(
     script_extension: Option<String>,
     validate: bool,
     flow_info: Option<&FlowInfo>,
+    flow_state: Option<Rc<RefCell<FlowState>>>,
     cli_arguments: &Vec<String>,
 ) -> bool {
     let engine_type = get_engine_type(script, &script_runner, &script_extension);
@@ -237,7 +248,7 @@ fn invoke_script(
         }
         EngineType::Duckscript => {
             let script_text = get_script_text(script);
-            duck_script::execute(&script_text, cli_arguments, flow_info, validate);
+            duck_script::execute(&script_text, cli_arguments, flow_info, flow_state, validate);
 
             true
         }

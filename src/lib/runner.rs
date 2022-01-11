@@ -19,16 +19,19 @@ use crate::execution_plan::create as create_execution_plan;
 use crate::functions;
 use crate::installer;
 use crate::logger;
+use crate::plugin::runner::run_task as run_task_plugin;
 use crate::profile;
 use crate::proxy_task::create_proxy_task;
 use crate::scriptengine;
 use crate::time_summary;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
-    RunTaskInfo, RunTaskName, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
+    RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use regex::Regex;
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::thread;
 use std::time::SystemTime;
 
@@ -64,7 +67,7 @@ where
     };
 }
 
-fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
+pub(crate) fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
     let mut valid = true;
 
     let do_validate = || {
@@ -124,7 +127,7 @@ fn create_fork_step(flow_info: &FlowInfo) -> Step {
     }
 }
 
-fn run_cleanup_task(flow_info: &FlowInfo, flow_state: &mut FlowState, task: &str) {
+fn run_cleanup_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, task: &str) {
     match flow_info.config.tasks.get(task) {
         Some(cleanup_task_info) => run_task(
             &flow_info,
@@ -140,7 +143,7 @@ fn run_cleanup_task(flow_info: &FlowInfo, flow_state: &mut FlowState, task: &str
 
 fn run_forked_task(
     flow_info: &FlowInfo,
-    flow_state: &mut FlowState,
+    flow_state: Rc<RefCell<FlowState>>,
     cleanup_task: &Option<String>,
 ) {
     // run task as a sub process
@@ -164,7 +167,7 @@ fn run_forked_task(
 /// runs a sub task and returns true/false based if a sub task was actually invoked
 fn run_sub_task_and_report(
     flow_info: &FlowInfo,
-    flow_state: &mut FlowState,
+    flow_state: Rc<RefCell<FlowState>>,
     sub_task: &RunTaskInfo,
 ) -> bool {
     let (task_names, fork, parallel, cleanup_task) = match sub_task {
@@ -197,7 +200,7 @@ fn run_sub_task_and_report(
 
         for name in names {
             let task_run_fn = move |flow_info: &FlowInfo,
-                                    flow_state: &mut FlowState,
+                                    flow_state: Rc<RefCell<FlowState>>,
                                     fork: bool,
                                     cleanup_task: &Option<String>| {
                 let mut sub_flow_info = flow_info.clone();
@@ -213,18 +216,18 @@ fn run_sub_task_and_report(
             if parallel {
                 let run_flow_info = flow_info.clone();
                 // we do not support merging changes back to parent
-                let mut cloned_flow_state = flow_state.clone();
+                let cloned_flow_state = flow_state.borrow().clone();
                 let cloned_cleanup_task = cleanup_task.clone();
                 threads.push(thread::spawn(move || {
                     task_run_fn(
                         &run_flow_info,
-                        &mut cloned_flow_state,
+                        Rc::new(RefCell::new(cloned_flow_state)),
                         fork,
                         &cloned_cleanup_task,
                     );
                 }));
             } else {
-                task_run_fn(&flow_info, flow_state, fork, &cleanup_task);
+                task_run_fn(&flow_info, flow_state.clone(), fork, &cleanup_task);
             }
         }
 
@@ -244,7 +247,7 @@ fn run_sub_task_and_report(
     }
 }
 
-fn run_sub_task(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_task: &RunTaskInfo) {
+fn run_sub_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, sub_task: &RunTaskInfo) {
     run_sub_task_and_report(&flow_info, flow_state, &sub_task);
 }
 
@@ -269,7 +272,7 @@ fn create_watch_step(task: &str, options: Option<TaskWatchOptions>, flow_info: &
 
 fn watch_task(
     flow_info: &FlowInfo,
-    flow_state: &mut FlowState,
+    flow_state: Rc<RefCell<FlowState>>,
     task: &str,
     options: Option<TaskWatchOptions>,
 ) {
@@ -298,8 +301,31 @@ fn should_watch(task: &Task) -> bool {
     }
 }
 
-pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &Step) {
+pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, step: &Step) {
+    let options = RunTaskOptions {
+        plugins_enabled: true,
+    };
+
+    run_task_with_options(flow_info, flow_state, step, &options);
+}
+
+pub(crate) fn run_task_with_options(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    step: &Step,
+    options: &RunTaskOptions,
+) {
     let start_time = SystemTime::now();
+
+    // if a plugin is handling the task execution flow
+    if run_task_plugin(flow_info, flow_state.clone(), step, options) {
+        time_summary::add(
+            &mut flow_state.borrow_mut().time_summary,
+            &step.name,
+            start_time,
+        );
+        return;
+    }
 
     if step.config.is_actionable() {
         match step.config.env {
@@ -372,20 +398,27 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
                 );
             } else {
                 do_in_task_working_directory(&step, || {
-                    installer::install(&updated_step.config, flow_info);
+                    installer::install(&updated_step.config, flow_info, flow_state.clone());
                 });
 
                 match step.config.run_task {
                     Some(ref sub_task) => {
-                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
+                        time_summary::add(
+                            &mut flow_state.borrow_mut().time_summary,
+                            &step.name,
+                            start_time,
+                        );
 
                         run_sub_task(&flow_info, flow_state, sub_task);
                     }
                     None => {
                         do_in_task_working_directory(&step, || {
                             // run script
-                            let script_runner_done =
-                                scriptengine::invoke(&updated_step.config, flow_info);
+                            let script_runner_done = scriptengine::invoke(
+                                &updated_step.config,
+                                flow_info,
+                                flow_state.clone(),
+                            );
 
                             // run command
                             if !script_runner_done {
@@ -393,7 +426,11 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
                             };
                         });
 
-                        time_summary::add(&mut flow_state.time_summary, &step.name, start_time);
+                        time_summary::add(
+                            &mut flow_state.borrow_mut().time_summary,
+                            &step.name,
+                            start_time,
+                        );
                     }
                 };
             }
@@ -417,9 +454,13 @@ pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: &mut FlowState, step: &
     }
 }
 
-fn run_task_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, execution_plan: &ExecutionPlan) {
+fn run_task_flow(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    execution_plan: &ExecutionPlan,
+) {
     for step in &execution_plan.steps {
-        run_task(&flow_info, flow_state, &step);
+        run_task(&flow_info, flow_state.clone(), &step);
     }
 }
 
@@ -504,7 +545,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     task_config
 }
 
-pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flow: bool) {
+pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, sub_flow: bool) {
     let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = create_execution_plan(
@@ -520,7 +561,7 @@ pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: &mut FlowState, sub_flo
     run_task_flow(&flow_info, flow_state, &execution_plan);
 }
 
-fn run_protected_flow(flow_info: &FlowInfo, flow_state: &mut FlowState) {
+fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) {
     let proxy_task = create_proxy_task(
         &flow_info.task,
         flow_info.allow_private,
@@ -587,10 +628,12 @@ pub(crate) fn run(
     let mut flow_state = FlowState::new();
     flow_state.time_summary = time_summary_vec;
 
+    let flow_state_rc = Rc::new(RefCell::new(flow_state));
+
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(&flow_info, &mut flow_state, false);
+        run_flow(&flow_info, flow_state_rc.clone(), false);
     } else {
-        run_protected_flow(&flow_info, &mut flow_state);
+        run_protected_flow(&flow_info, flow_state_rc.clone());
     }
 
     let time_string = match start_time.elapsed() {
@@ -601,7 +644,7 @@ pub(crate) fn run(
         _ => "".to_string(),
     };
 
-    time_summary::print(&flow_state.time_summary);
+    time_summary::print(&flow_state_rc.borrow().time_summary);
 
     info!("Build Done{}.", &time_string);
 }

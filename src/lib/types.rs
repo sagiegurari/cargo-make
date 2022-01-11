@@ -8,6 +8,7 @@
 mod types_test;
 
 use crate::legacy;
+use crate::plugin::types::Plugins;
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::IndexMap;
@@ -158,6 +159,11 @@ impl CliArgs {
             print_time_summary: false,
         }
     }
+}
+
+#[derive(Debug)]
+pub(crate) struct RunTaskOptions {
+    pub(crate) plugins_enabled: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -323,6 +329,8 @@ pub struct FlowInfo {
 pub struct FlowState {
     /// timing info for summary
     pub time_summary: Vec<(String, u128)>,
+    /// forced plugin name
+    pub forced_plugin: Option<String>,
 }
 
 impl FlowState {
@@ -1010,6 +1018,8 @@ pub struct Task {
     pub extend: Option<String>,
     /// set to false to notify cargo-make that this is not a workspace and should not call task for every member (same as --no-workspace CLI flag)
     pub workspace: Option<bool>,
+    /// Optional plugin used to execute the task
+    pub plugin: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
     pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
@@ -1392,6 +1402,12 @@ impl Task {
             self.workspace = None;
         }
 
+        if task.plugin.is_some() {
+            self.plugin = task.plugin.clone();
+        } else if override_values {
+            self.plugin = None;
+        }
+
         if task.watch.is_some() {
             self.watch = task.watch.clone();
         } else if override_values {
@@ -1607,6 +1623,7 @@ impl Task {
                     deprecated: override_task.deprecated.clone(),
                     extend: override_task.extend.clone(),
                     workspace: self.workspace.clone(),
+                    plugin: override_task.plugin.clone(),
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
@@ -1761,6 +1778,8 @@ pub struct PlatformOverrideTask {
     pub deprecated: Option<DeprecationInfo>,
     /// Extend any task based on the defined name
     pub extend: Option<String>,
+    /// Optional plugin used to execute the task
+    pub plugin: Option<String>,
     /// set to true to watch for file changes and invoke the task operation
     pub watch: Option<TaskWatchOptions>,
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
@@ -1830,6 +1849,10 @@ impl PlatformOverrideTask {
 
             if self.extend.is_none() && task.extend.is_some() {
                 self.extend = task.extend.clone();
+            }
+
+            if self.plugin.is_none() && task.plugin.is_some() {
+                self.plugin = task.plugin.clone();
             }
 
             if self.watch.is_none() && task.watch.is_some() {
@@ -2191,6 +2214,8 @@ pub struct Config {
     pub env_scripts: Vec<String>,
     /// All task definitions
     pub tasks: IndexMap<String, Task>,
+    /// All plugin definitions
+    pub plugins: Option<Plugins>,
 }
 
 impl Config {
@@ -2233,6 +2258,8 @@ pub struct ExternalConfig {
     pub env_scripts: Option<Vec<String>>,
     /// All task definitions
     pub tasks: Option<IndexMap<String, Task>>,
+    /// All plugin definitions
+    pub plugins: Option<Plugins>,
 }
 
 impl ExternalConfig {

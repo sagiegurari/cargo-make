@@ -11,10 +11,11 @@
 mod mod_test;
 
 mod cargo_alias;
-mod descriptor_deserializer;
+pub(crate) mod descriptor_deserializer;
 mod makefiles;
 
 use crate::io;
+use crate::plugin::descriptor::merge_plugins_config;
 use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
@@ -280,6 +281,8 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         config_section.extend(&mut config_section_data);
     }
 
+    let plugins = merge_plugins_config(parent_config.plugins, config.plugins);
+
     ExternalConfig {
         extend: None,
         config: Some(config_section),
@@ -287,6 +290,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         env: Some(all_env),
         env_scripts: Some(all_env_scripts),
         tasks: Some(all_tasks),
+        plugins,
     }
 }
 
@@ -523,12 +527,15 @@ fn merge_base_config_and_external_config(
     let mut config_section = base_config.config.clone();
     config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
 
+    let plugins = merge_plugins_config(base_config.plugins, external_config.plugins);
+
     Config {
         config: config_section,
         env_files,
         env: all_env,
         env_scripts,
         tasks: all_tasks,
+        plugins,
     }
 }
 
@@ -653,6 +660,7 @@ pub(crate) fn load(
                     env: Some(config.env),
                     env_scripts: Some(config.env_scripts),
                     tasks: Some(config.tasks),
+                    plugins: config.plugins,
                 };
 
                 config = merge_base_config_and_external_config(

@@ -3,3 +3,13 @@ extend = "./env.toml"
 
 [env]
 IF_UNDEFINED = "EXTENDED"
+
+[plugins.aliases]
+new = "newer2"
+extended = "test"
+
+[plugins.impl.base1]
+script = "extended1 test"
+
+[plugins.impl.extended]
+script = "extended test"

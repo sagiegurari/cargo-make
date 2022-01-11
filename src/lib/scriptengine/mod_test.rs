@@ -183,7 +183,11 @@ fn invoke_no_runner() {
     let mut task = Task::new();
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }
@@ -192,7 +196,11 @@ fn invoke_no_runner() {
 fn invoke_no_script_no_runner() {
     let task = Task::new();
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(!output);
 }
@@ -202,7 +210,11 @@ fn invoke_no_script() {
     let mut task = Task::new();
     task.script_runner = Some("@rust".to_string());
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(!output);
 }
@@ -213,7 +225,11 @@ fn invoke_os_runner() {
     task.script_runner = Some(test::get_os_runner());
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }
@@ -225,7 +241,11 @@ fn invoke_duckscript_runner() {
         task.script_runner = Some("@duckscript".to_string());
         task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
-        let output = invoke(&task, &test::create_empty_flow_info());
+        let output = invoke(
+            &task,
+            &test::create_empty_flow_info(),
+            Rc::new(RefCell::new(FlowState::new())),
+        );
 
         assert!(output);
     }
@@ -239,7 +259,11 @@ fn invoke_duckscript_runner_error() {
         task.script_runner = Some("@duckscript".to_string());
         task.script = Some(ScriptValue::Text(vec!["function test".to_string()]));
 
-        let output = invoke(&task, &test::create_empty_flow_info());
+        let output = invoke(
+            &task,
+            &test::create_empty_flow_info(),
+            Rc::new(RefCell::new(FlowState::new())),
+        );
 
         assert!(output);
     }
@@ -254,7 +278,11 @@ fn invoke_rust_runner() {
             "fn main() {println!(\"test\");}".to_string()
         ]));
 
-        let output = invoke(&task, &test::create_empty_flow_info());
+        let output = invoke(
+            &task,
+            &test::create_empty_flow_info(),
+            Rc::new(RefCell::new(FlowState::new())),
+        );
 
         assert!(output);
     }
@@ -270,7 +298,11 @@ fn invoke_rust_runner_error() {
             "fn main() {bad!(\"test\");}".to_string()
         ]));
 
-        let output = invoke(&task, &test::create_empty_flow_info());
+        let output = invoke(
+            &task,
+            &test::create_empty_flow_info(),
+            Rc::new(RefCell::new(FlowState::new())),
+        );
 
         assert!(output);
     }
@@ -282,7 +314,11 @@ fn invoke_shell_to_batch_runner() {
     task.script_runner = Some("@shell".to_string());
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }
@@ -294,7 +330,11 @@ fn invoke_shell_to_batch_runner_error() {
     task.script_runner = Some("@shell".to_string());
     task.script = Some(ScriptValue::Text(vec!["exit 1".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }
@@ -306,7 +346,11 @@ fn invoke_generic_runner() {
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }
@@ -319,7 +363,11 @@ fn invoke_generic_runner_error() {
     task.script_extension = Some(test::get_os_extension());
     task.script = Some(ScriptValue::Text(vec!["exit 1".to_string()]));
 
-    let output = invoke(&task, &test::create_empty_flow_info());
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(output);
 }

@@ -10,54 +10,29 @@ mod mod_test;
 mod sdk;
 
 use crate::environment;
-use crate::types::FlowInfo;
+use crate::types::{FlowInfo, FlowState};
 use duckscript::runner;
 use duckscript::types::command::Commands;
 use duckscript::types::error::ScriptError;
-use duckscript::types::runtime::{Context, StateValue};
+use duckscript::types::runtime::Context;
 use duckscriptsdk;
 use envmnt;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub(crate) static FLOW_INFO_KEY: &str = "cargo_make::flow_info";
-
 pub(crate) fn execute(
     script: &Vec<String>,
     cli_arguments: &Vec<String>,
     flow_info: Option<&FlowInfo>,
+    flow_state: Option<Rc<RefCell<FlowState>>>,
     validate: bool,
 ) {
     let mut script_text = script.join("\n");
     script_text.insert_str(0, "exit_on_error true\n");
 
-    let mut context = Context::new();
-    let mut index = 0;
-    for argument in cli_arguments {
-        index = index + 1;
+    let mut context = create_common_context(cli_arguments);
 
-        context
-            .variables
-            .insert(index.to_string(), argument.to_string());
-    }
-
-    let all_vars = envmnt::vars();
-
-    for (key, value) in all_vars {
-        context.variables.insert(key, value);
-    }
-
-    match flow_info {
-        Some(info) => {
-            context.state.insert(
-                FLOW_INFO_KEY.to_string(),
-                StateValue::Any(Rc::new(RefCell::new(info.clone()))),
-            );
-        }
-        None => (),
-    }
-
-    match load_sdk(&mut context.commands) {
+    match load_sdk(&mut context.commands, flow_info, flow_state) {
         Ok(_) => {
             let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
@@ -83,9 +58,33 @@ pub(crate) fn execute(
     };
 }
 
-fn load_sdk(commands: &mut Commands) -> Result<(), ScriptError> {
+pub(crate) fn create_common_context(cli_arguments: &Vec<String>) -> Context {
+    let mut context = Context::new();
+    let mut index = 0;
+    for argument in cli_arguments {
+        index = index + 1;
+
+        context
+            .variables
+            .insert(index.to_string(), argument.to_string());
+    }
+
+    let all_vars = envmnt::vars();
+
+    for (key, value) in all_vars {
+        context.variables.insert(key, value);
+    }
+
+    context
+}
+
+pub(crate) fn load_sdk(
+    commands: &mut Commands,
+    flow_info: Option<&FlowInfo>,
+    flow_state: Option<Rc<RefCell<FlowState>>>,
+) -> Result<(), ScriptError> {
     duckscriptsdk::load(commands)?;
-    sdk::load(commands)?;
+    sdk::load(commands, flow_info, flow_state)?;
 
     Ok(())
 }

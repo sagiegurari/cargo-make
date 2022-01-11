@@ -406,7 +406,7 @@ fn load_descriptors_no_load_workspace_makefile() {
 
 #[test]
 #[ignore]
-fn load_env_extended_override() {
+fn load_env_and_plugins_extended_override() {
     let toml_file = "./src/lib/test/makefiles/env-extended.toml";
 
     envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
@@ -417,11 +417,31 @@ fn load_env_extended_override() {
     assert!(envmnt::is_equal("COMPOSITE_OF_MAPPED", "VALUE: EXTENDED"));
 
     envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
+
+    let plugins_wrapper = config.plugins.unwrap();
+    let aliases = plugins_wrapper.aliases.unwrap();
+    assert_eq!(aliases.len(), 3);
+    assert_eq!(aliases.get("old").unwrap(), "new");
+    assert_eq!(aliases.get("new").unwrap(), "newer2");
+    assert_eq!(aliases.get("extended").unwrap(), "test");
+    assert_eq!(plugins_wrapper.plugins.len(), 3);
+    assert_eq!(
+        plugins_wrapper.plugins.get("base1").unwrap().script,
+        "extended1 test"
+    );
+    assert_eq!(
+        plugins_wrapper.plugins.get("base2").unwrap().script,
+        "base2 test"
+    );
+    assert_eq!(
+        plugins_wrapper.plugins.get("extended").unwrap().script,
+        "extended test"
+    );
 }
 
 #[test]
 #[ignore]
-fn load_env_override() {
+fn load_env_override_and_plugins() {
     let toml_file = "./src/lib/test/makefiles/env.toml";
 
     envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
@@ -473,6 +493,21 @@ fn load_env_override() {
     assert!(envmnt::is_equal("COMPOSITE_OF_MAPPED", "VALUE: test"));
 
     envmnt::remove_all(&vec!["IF_UNDEFINED", "COMPOSITE_OF_MAPPED"]);
+
+    let plugins_wrapper = config.plugins.unwrap();
+    let aliases = plugins_wrapper.aliases.unwrap();
+    assert_eq!(aliases.len(), 2);
+    assert_eq!(aliases.get("old").unwrap(), "new");
+    assert_eq!(aliases.get("new").unwrap(), "newer");
+    assert_eq!(plugins_wrapper.plugins.len(), 2);
+    assert_eq!(
+        plugins_wrapper.plugins.get("base1").unwrap().script,
+        "base1 test"
+    );
+    assert_eq!(
+        plugins_wrapper.plugins.get("base2").unwrap().script,
+        "base2 test"
+    );
 }
 
 #[test]
@@ -521,6 +556,7 @@ fn load_with_stable() {
     assert!(task.is_some());
     assert_eq!(config.config.init_task.unwrap(), "init");
     assert_eq!(config.config.end_task.unwrap(), "end");
+    assert!(config.plugins.is_none());
 }
 
 #[test]
