@@ -3233,7 +3233,8 @@ OPTIONS:
             Sets the log level to verbose (shorthand for --loglevel verbose)
 
     -V, --version
-            Print version information```
+            Print version information
+```
 
 <a name="usage-plugins"></a>
 ### Plugins
