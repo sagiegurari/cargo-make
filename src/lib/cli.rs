@@ -19,7 +19,7 @@ use crate::runner;
 use crate::time_summary;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
+use clap::{App, AppSettings, Arg, ArgMatches};
 use std::time::SystemTime;
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -296,11 +296,11 @@ fn run_for_args(
     run(cli_args, global_config);
 }
 
-fn create_cli<'a, 'b>(
+fn create_cli<'a>(
     global_config: &'a GlobalConfig,
     command_name: &String,
     sub_command: bool,
-) -> App<'a, 'b> {
+) -> App<'a> {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -311,7 +311,7 @@ fn create_cli<'a, 'b>(
     };
 
     let mut cli_app = if sub_command {
-        SubCommand::with_name(&command_name)
+        App::new(command_name)
     } else {
         let name = command_name.as_str();
         App::new(name).bin_name(name)
@@ -321,18 +321,19 @@ fn create_cli<'a, 'b>(
         .version(VERSION)
         .author(AUTHOR)
         .about(DESCRIPTION)
-        .setting(AppSettings::AllowLeadingHyphen)
+        .setting(AppSettings::AllowHyphenValues)
         .setting(AppSettings::TrailingVarArg)
+        .setting(AppSettings::HelpExpected)
         .arg(
-            Arg::with_name("makefile")
+            Arg::new("makefile")
                 .long("--makefile")
                 .value_name("FILE")
                 .help("The optional toml file containing the tasks definitions")
                 .default_value(&DEFAULT_TOML),
         )
         .arg(
-            Arg::with_name("task")
-                .short("-t")
+            Arg::new("task")
+                .short('t')
                 .long("--task")
                 .value_name("TASK")
                 .help(
@@ -342,8 +343,8 @@ fn create_cli<'a, 'b>(
                 .default_value(default_task_name),
         )
         .arg(
-            Arg::with_name("profile")
-                .short("-p")
+            Arg::new("profile")
+                .short('p')
                 .long("--profile")
                 .value_name("PROFILE")
                 .help(
@@ -352,7 +353,7 @@ fn create_cli<'a, 'b>(
                 .default_value(&profile::DEFAULT_PROFILE),
         )
         .arg(
-            Arg::with_name("cwd")
+            Arg::new("cwd")
                 .long("--cwd")
                 .value_name("DIRECTORY")
                 .help(
@@ -360,110 +361,118 @@ fn create_cli<'a, 'b>(
                      The search for the makefile will be from this directory if defined.",
                 ),
         )
-        .arg(Arg::with_name("no-workspace").long("--no-workspace").help(
+        .arg(Arg::new("no-workspace").long("--no-workspace").help(
             "Disable workspace support (tasks are triggered on workspace and not on members)",
         ))
         .arg(
-            Arg::with_name("no-on-error")
+            Arg::new("no-on-error")
                 .long("--no-on-error")
                 .help("Disable on error flow even if defined in config sections"),
         )
         .arg(
-            Arg::with_name("allow-private")
+            Arg::new("allow-private")
                 .long("--allow-private")
                 .help("Allow invocation of private tasks"),
         )
         .arg(
-            Arg::with_name("skip-init-end-tasks")
+            Arg::new("skip-init-end-tasks")
                 .long("--skip-init-end-tasks")
                 .help("If set, init and end tasks are skipped"),
         )
         .arg(
-            Arg::with_name("skip-tasks-pattern")
+            Arg::new("skip-tasks-pattern")
                 .long("--skip-tasks")
                 .value_name("SKIP_TASK_PATTERNS")
                 .help("Skip all tasks that match the provided regex (example: pre.*|post.*)"),
         )
         .arg(
-            Arg::with_name("envfile")
+            Arg::new("envfile")
                 .long("--env-file")
                 .value_name("FILE")
                 .help("Set environment variables from provided file"),
         )
         .arg(
-            Arg::with_name("env")
+            Arg::new("env")
                 .long("--env")
-                .short("-e")
+                .short('e')
                 .value_name("ENV")
-                .multiple(true)
+                .multiple_occurrences(true)
                 .takes_value(true)
                 .number_of_values(1)
+                .allow_invalid_utf8(true)
                 .help("Set environment variables"),
         )
         .arg(
-            Arg::from_usage("-l, --loglevel=[LOG LEVEL] 'The log level'")
+            Arg::new("loglevel")
+                .long("--loglevel")
+                .short('l')
+                .value_name("LOG LEVEL")
                 .possible_values(&["verbose", "info", "error"])
-                .default_value(default_log_level),
+                .default_value(default_log_level)
+                .help("The log level"),
         )
         .arg(
-            Arg::with_name("v")
-                .short("-v")
+            Arg::new("v")
+                .short('v')
                 .long("--verbose")
                 .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
         )
         .arg(
-            Arg::with_name("no-color")
+            Arg::new("no-color")
                 .long("--no-color")
                 .help("Disables colorful output"),
         )
         .arg(
-            Arg::with_name("time-summary")
+            Arg::new("time-summary")
                 .long("--time-summary")
                 .help("Print task level time summary at end of flow"),
         )
         .arg(
-            Arg::with_name("experimental")
+            Arg::new("experimental")
                 .long("--experimental")
                 .help("Allows access unsupported experimental predefined tasks."),
         )
         .arg(
-            Arg::with_name("disable-check-for-updates")
+            Arg::new("disable-check-for-updates")
                 .long("--disable-check-for-updates")
                 .help("Disables the update check during startup"),
         )
         .arg(
-            Arg::from_usage("--output-format=[OUTPUT FORMAT] 'The print/list steps format (some operations do not support all formats)'")
+            Arg::new("output-format")
+                .long("--output-format")
+                .value_name("OUTPUT FORMAT")
                 .possible_values(&["default", "short-description", "markdown", "markdown-single-page", "markdown-sub-section", "autocomplete"])
-                .default_value(DEFAULT_OUTPUT_FORMAT),
+                .default_value(DEFAULT_OUTPUT_FORMAT)
+                .help("The print/list steps format (some operations do not support all formats)"),
         )
         .arg(
-            Arg::with_name("output_file")
+            Arg::new("output_file")
                 .long("--output-file")
                 .value_name("OUTPUT_FILE")
                 .help("The list steps output file name"),
         )
-        .arg(Arg::with_name("print-steps").long("--print-steps").help(
+        .arg(Arg::new("print-steps").long("--print-steps").help(
             "Only prints the steps of the build in the order they will \
              be invoked but without invoking them",
         ))
         .arg(
-            Arg::with_name("list-steps")
+            Arg::new("list-steps")
                 .long("--list-all-steps")
                 .help("Lists all known steps"),
         )
         .arg(
-            Arg::with_name("list-category-steps")
+            Arg::new("list-category-steps")
                 .long("--list-category-steps")
                 .value_name("CATEGORY")
                 .help("List steps for a given category"),
         )
         .arg(
-            Arg::with_name("diff-steps")
+            Arg::new("diff-steps")
                 .long("--diff-steps")
                 .help("Runs diff between custom flow and prebuilt flow (requires git)"),
         )
-        .arg(Arg::with_name("TASK_CMD")
-                .multiple(true)
+        .arg(Arg::new("TASK_CMD")
+                .multiple_occurrences(true)
                 .help("The task to execute, potentially including arguments which can be accessed in the task itself.")
         );
 

@@ -1,0 +1,64 @@
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[plugins.impl.dockerize]
+script = '''
+plugin_force_set = get_env PLUGIN_FORCE_SET
+plugin_force_set = eq "${plugin_force_set}" 1
+
+if not ${plugin_force_set}
+    cm_plugin_force_plugin_set
+    set_env PLUGIN_FORCE_SET 1
+
+    dockerfile = set ""
+    fn add_docker
+        dockerfile = set "${dockerfile}${1}\n"
+    end
+
+    taskjson = json_parse ${task.as_json}
+    makefile = basename ${taskjson.env.CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}
+
+    add_docker "FROM debian:stable"
+    add_docker "RUN mkdir /workdir/"
+    add_docker "RUN mkdir /workdir/project/"
+    add_docker "RUN apt-get update"
+    add_docker "RUN apt-get install -y curl build-essential libssl-dev pkg-config"
+    add_docker "ENV PATH=\"$PATH:$HOME/.cargo/bin\""
+    add_docker "RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+    add_docker "RUN $HOME/.cargo/bin/cargo install cargo-make"
+    add_docker "RUN $HOME/.cargo/bin/cargo make --version"
+    add_docker "RUN echo \"cd ./workdir/project/ && ls -lsa && $HOME/.cargo/bin/cargo make --makefile ${makefile} --profile ${CARGO_MAKE_PROFILE} ${CARGO_MAKE_TASK}\" > ./run.sh"
+    add_docker "RUN chmod 777 ./run.sh"
+    add_docker "ADD . /workdir/project/"
+    add_docker "CMD [\"sh\", \"./run.sh\"]"
+
+    writefile ./Dockerfile ${dockerfile}
+    exec --fail-on-error docker build --tag cmimg:build ./
+
+    exec --fail-on-error docker run cmimg:build
+end
+'''
+
+[tasks.default]
+alias = "docker_flow"
+
+[tasks.docker_flow]
+dependencies = ["part1", "part2", "part3"]
+
+[tasks.base-task]
+command = "echo"
+args = ["task", "${CARGO_MAKE_CURRENT_TASK_NAME}"]
+
+[tasks.part1]
+plugin = "dockerize"
+extend = "base-task"
+
+[tasks.part2]
+extend = "base-task"
+
+[tasks.part3]
+extend = "base-task"

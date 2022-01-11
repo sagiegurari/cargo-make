@@ -63,7 +63,11 @@ fn get_cargo_plugin_info_from_command_valid() {
 fn install_empty() {
     let task = Task::new();
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -73,7 +77,11 @@ fn install_disabled_bad_crate() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["badbadbad".to_string()]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -84,7 +92,11 @@ fn install_empty_args() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec![]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -94,7 +106,11 @@ fn install_enabled_crate_already_installed() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -104,7 +120,11 @@ fn install_crate_already_installed() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -114,7 +134,11 @@ fn install_crate_missing_cargo_command() {
     task.install_crate = Some(InstallCrate::Value("test".to_string()));
     task.command = Some("cargo".to_string());
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -123,7 +147,11 @@ fn install_crate_auto_detect_already_installed() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["test".to_string()]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -133,7 +161,11 @@ fn install_crate_auto_detect_unable_to_install() {
     task.command = Some("cargo".to_string());
     task.args = Some(vec!["badbadbad".to_string()]);
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -154,7 +186,11 @@ fn install_rustup_via_crate_info() {
     task.command = Some("test".to_string());
     task.install_crate = Some(InstallCrate::CrateInfo(info));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -171,7 +207,11 @@ fn install_rustup_via_rustup_info() {
     task.command = Some("test".to_string());
     task.install_crate = Some(InstallCrate::RustupComponentInfo(info));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -179,7 +219,11 @@ fn install_script_ok() {
     let mut task = Task::new();
     task.install_script = Some(ScriptValue::SingleLine("exit 0".to_string()));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -188,7 +232,11 @@ fn install_script_error() {
     let mut task = Task::new();
     task.install_script = Some(ScriptValue::SingleLine("exit 1".to_string()));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }
 
 #[test]
@@ -204,7 +252,11 @@ fn install_script_duckscript() {
         .to_string(),
     ));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 
     assert!(envmnt::exists("install_script_duckscript"));
     assert!(envmnt::is_or("install_script_duckscript", false));
@@ -216,5 +268,9 @@ fn install_script_error_ignore_errors() {
     task.ignore_errors = Some(true);
     task.install_script = Some(ScriptValue::SingleLine("exit 1".to_string()));
 
-    install(&task, &test::create_empty_flow_info());
+    install(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    );
 }

@@ -98,6 +98,10 @@
     * [Performance Tuning](#usage-performance-tuning)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
+    * [Plugins](#usage-plugins)
+        * [Defining Plugins](#usage-plugins-defining-plugins)
+        * [Plugin SDK](#usage-plugins-plugin-sdk)
+        * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -3266,48 +3270,262 @@ These are the following options available while running cargo-make:
 
 ```console
 USAGE:
-    cargo make [FLAGS] [OPTIONS] [--] [TASK_CMD]...
+    cargo make [OPTIONS] [--] [TASK_CMD]...
     or
-    makers  [FLAGS] [OPTIONS] [--] [TASK_CMD]...
-
-FLAGS:
-        --allow-private                Allow invocation of private tasks
-        --diff-steps                   Runs diff between custom flow and prebuilt flow (requires git)
-        --disable-check-for-updates    Disables the update check during startup
-        --experimental                 Allows access unsupported experimental predefined tasks.
-    -h, --help                         Prints help information
-        --list-all-steps               Lists all known steps
-        --no-color                     Disables colorful output
-        --no-on-error                  Disable on error flow even if defined in config sections
-        --no-workspace                 Disable workspace support (tasks are triggered on workspace and not on members)
-        --print-steps                  Only prints the steps of the build in the order they will be invoked but without
-                                       invoking them
-        --skip-init-end-tasks          If set, init and end tasks are skipped
-        --time-summary                 Print task level time summary at end of flow
-    -v, --verbose                      Sets the log level to verbose (shorthand for --loglevel verbose)
-    -V, --version                      Prints version information
-
-OPTIONS:
-        --cwd <DIRECTORY>                    Will set the current working directory. The search for the makefile will be
-                                             from this directory if defined.
-    -e, --env <ENV>...                       Set environment variables
-        --env-file <FILE>                    Set environment variables from provided file
-        --list-category-steps <CATEGORY>     List steps for a given category
-    -l, --loglevel <LOG LEVEL>               The log level [default: info]  [possible values: verbose, info, error]
-        --makefile <FILE>                    The optional toml file containing the tasks definitions [default:
-                                             Makefile.toml]
-        --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats)
-                                             [default: default]  [possible values: default, short-description, markdown,
-                                             markdown-single-page, markdown-sub-section, autocomplete]
-        --output-file <OUTPUT_FILE>          The list steps output file name
-    -p, --profile <PROFILE>                  The profile name (will be converted to lower case) [default: development]
-        --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
-    -t, --task <TASK>                        The task name to execute (can omit the flag if the task name is the last
-                                             argument) [default: default]
+    makers [OPTIONS] [--] [TASK_CMD]...
 
 ARGS:
-    <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed in the task itself.
+    <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed
+                     in the task itself.
+
+OPTIONS:
+        --allow-private
+            Allow invocation of private tasks
+
+        --cwd <DIRECTORY>
+            Will set the current working directory. The search for the makefile will be from this
+            directory if defined.
+
+        --diff-steps
+            Runs diff between custom flow and prebuilt flow (requires git)
+
+        --disable-check-for-updates
+            Disables the update check during startup
+
+    -e, --env <ENV>
+            Set environment variables
+
+        --env-file <FILE>
+            Set environment variables from provided file
+
+        --experimental
+            Allows access unsupported experimental predefined tasks.
+
+    -h, --help
+            Print help information
+
+    -l, --loglevel <LOG LEVEL>
+            The log level [default: info] [possible values: verbose, info, error]
+
+        --list-all-steps
+            Lists all known steps
+
+        --list-category-steps <CATEGORY>
+            List steps for a given category
+
+        --makefile <FILE>
+            The optional toml file containing the tasks definitions [default: Makefile.toml]
+
+        --no-color
+            Disables colorful output
+
+        --no-on-error
+            Disable on error flow even if defined in config sections
+
+        --no-workspace
+            Disable workspace support (tasks are triggered on workspace and not on members)
+
+        --output-file <OUTPUT_FILE>
+            The list steps output file name
+
+        --output-format <OUTPUT FORMAT>
+            The print/list steps format (some operations do not support all formats) [default:
+            default] [possible values: default, short-description, markdown, markdown-single-page,
+            markdown-sub-section, autocomplete]
+
+    -p, --profile <PROFILE>
+            The profile name (will be converted to lower case) [default: development]
+
+        --print-steps
+            Only prints the steps of the build in the order they will be invoked but without
+            invoking them
+
+        --skip-init-end-tasks
+            If set, init and end tasks are skipped
+
+        --skip-tasks <SKIP_TASK_PATTERNS>
+            Skip all tasks that match the provided regex (example: pre.*|post.*)
+
+    -t, --task <TASK>
+            The task name to execute (can omit the flag if the task name is the last argument)
+            [default: default]
+
+        --time-summary
+            Print task level time summary at end of flow
+
+    -v, --verbose
+            Sets the log level to verbose (shorthand for --loglevel verbose)
+
+    -V, --version
+            Print version information
 ```
+
+<a name="usage-plugins"></a>
+### Plugins
+
+Plugins enable users to take full control of the task execution.<br>
+cargo-make would still create the execution plan based on the tasks and their dependencies, but would leave the individual task execution to the plugin code.<br>
+<br>
+Plugins are basically a single duckscript code block with access to the task and flow meta data and can invoke cargo-make specific commands or general duckscript commands.<br>
+For example, if a task defined a command and arguments to execute and the plugin simply needs to invoke them, you can implement a simple plugin as follows:
+
+```sh
+args_string = array_join ${task.args} " " # simple example which doesn't support args that contain spaces in them
+exec --fail-on-error ${task.command} %{args_string}
+```
+
+<a name="usage-plugins-defining-plugins"></a>
+### Defining Plugins
+
+Plugins are defined under the plugin.impl prefix, for example:
+
+```toml
+[plugins.impl.command-runner]
+script = '''
+echo task: ${task.name}
+
+args_string = array_join ${task.args} " " # simple example which doesn't support args that contain spaces in them
+exec --fail-on-error ${task.command} %{args_string}
+'''
+```
+
+You can defining as many plugins as needed.<br>
+It is also possible to provide them aliases to map new names to existing plugins.<br>
+For example:
+
+```toml
+[plugins.aliases]
+original = "new"
+this = "that"
+```
+
+For a task to pass the execution control to the plugin, simply put the plugin name in the **plugin** attribute.<br>
+For example:
+
+```toml
+[tasks.my-task]
+plugin = "my-plugin"
+# other attributes as needed...
+```
+
+**You can create reusable plugins and load them using the [load scripts](#usage-load-scripts) built in capability.**
+
+<a name="usage-plugins-plugin-sdk"></a>
+### Plugin SDK
+
+The plugin SDK contains the following:
+
+* [Common Duckscript SDK](https://github.com/sagiegurari/duckscript/blob/master/docs/sdk.md)
+* Meta data variables
+    * flow.task.name - Holds the flow task (not current task) which triggered this task
+    * flow.cli.args - Array holding all the task arguments provided to cargo-make on the command line
+    * plugin.impl.name - The current plugin name (after aliases modifications)
+    * task.as_json - The entire task config as json string (can use json_parse to convert to duckscript variables).
+    * task.has_condition - true if the task has any condition definition (including empty one)
+    * task.has_env  - true if the task has any env definition (including empty one)
+    * task.has_install_instructions - true of the task has installation definition.
+    * task.has_command - true if the task has a command definition
+    * task.has_script - true if the task has a script definition
+    * task.has_run_task - true if the task has a run_task definition
+    * task.has_dependencies - true if the task has dependencies
+    * task.has_toolchain_specifier - true if the task has toolchain definition
+    * task.name - The task name
+    * task.description - The description
+    * task.category - The category
+    * task.disabled - true/false based on the disabled attributes
+    * task.private - true/false based on the private attributes
+    * task.deprecated - true/false based on the deprecated attributes
+    * task.workspace - true/false based on the workspace attributes
+    * task.plugin.name - The plugin name defined in the task (before aliases)
+    * task.watch - true/false based on the watch attributes
+    * task.ignore_errors - true/false based on the ignore_errors attributes
+    * task.cwd - The task current working directory value
+    * task.command - The command
+    * task.args - Array of all the command arguments
+    * task.script_runner - The script runner value
+    * task.script_runner_args = Array of all the script runner arguments
+    * task.script_extension - The script file extension value
+* cargo-make task script specific commands
+    * ```cm_run_task [--async] takename``` - Runs a task and dependencies. Supports async execution (via --async flag). Must get the task name to invoke.
+* cargo-make plugin specific commands
+    * ```cm_plugin_run_task``` - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
+    * ```cm_plugin_check_task_condition``` - Returns true/false if the current task conditions are met
+    * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
+    * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
+
+<a name="usage-plugins-plugin-example"></a>
+### Plugin Example (Docker Integration)
+
+Below is a simple example which runs a task (and the rest of the flow from that point) in a docker container.
+
+```toml
+[plugins.impl.dockerize]
+script = '''
+plugin_force_set = get_env PLUGIN_FORCE_SET
+plugin_force_set = eq "${plugin_force_set}" 1
+
+if not ${plugin_force_set}
+    cm_plugin_force_plugin_set
+    set_env PLUGIN_FORCE_SET 1
+
+    dockerfile = set ""
+    fn add_docker
+        dockerfile = set "${dockerfile}${1}\n"
+    end
+
+    taskjson = json_parse ${task.as_json}
+    makefile = basename ${taskjson.env.CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}
+
+    add_docker "FROM debian:stable"
+    add_docker "RUN mkdir /workdir/"
+    add_docker "RUN mkdir /workdir/project/"
+    add_docker "RUN apt-get update"
+    add_docker "RUN apt-get install -y curl build-essential libssl-dev pkg-config"
+    add_docker "ENV PATH=\"$PATH:$HOME/.cargo/bin\""
+    add_docker "RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+    add_docker "RUN $HOME/.cargo/bin/cargo install cargo-make"
+    add_docker "RUN $HOME/.cargo/bin/cargo make --version"
+    add_docker "RUN echo \"cd ./workdir/project/ && ls -lsa && $HOME/.cargo/bin/cargo make --makefile ${makefile} --profile ${CARGO_MAKE_PROFILE} ${CARGO_MAKE_TASK}\" > ./run.sh"
+    add_docker "RUN chmod 777 ./run.sh"
+    add_docker "ADD . /workdir/project/"
+    add_docker "CMD [\"sh\", \"./run.sh\"]"
+
+    writefile ./Dockerfile ${dockerfile}
+    exec --fail-on-error docker build --tag cmimg:build ./
+
+    exec --fail-on-error docker run cmimg:build
+end
+'''
+
+[tasks.default]
+alias = "docker_flow"
+
+[tasks.docker_flow]
+dependencies = ["part1", "part2", "part3"]
+
+[tasks.base-task]
+command = "echo"
+args = ["task", "${CARGO_MAKE_CURRENT_TASK_NAME}"]
+
+[tasks.part1]
+plugin = "dockerize"
+extend = "base-task"
+
+[tasks.part2]
+extend = "base-task"
+
+[tasks.part3]
+extend = "base-task"
+```
+
+Running:
+
+```sh
+cargo make docker_flow
+```
+
+Will result in creation of a new docker container that will run parts 1-3 inside it.<br>
+**The example works, however it does not support several features like passing cli args and so on...**
 
 <a name="usage-shell-completion"></a>
 ### Shell Completion

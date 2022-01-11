@@ -10,7 +10,8 @@ use envmnt;
 use fsio;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
-
+use std::cell::RefCell;
+use std::rc::Rc;
 fn load_descriptor() -> Config {
     descriptor::load_internal_descriptors(true, false, None)
 }
@@ -177,7 +178,7 @@ fn makefile_build_file_increment_no_file_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &mut FlowState::new(), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -209,9 +210,9 @@ fn makefile_build_file_increment_file_exists_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &mut FlowState::new(), &step);
-    runner::run_task(&flow_info, &mut FlowState::new(), &step);
-    runner::run_task(&flow_info, &mut FlowState::new(), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -245,5 +246,5 @@ fn makefile_build_file_increment_panic_invalid_data_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, &mut FlowState::new(), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
 }

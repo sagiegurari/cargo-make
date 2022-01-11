@@ -906,6 +906,7 @@ fn validate_channel_valid() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let mut flow_info = FlowInfo {
         config,
@@ -1004,6 +1005,7 @@ fn validate_channel_invalid() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let mut flow_info = FlowInfo {
         config,
@@ -1203,6 +1205,7 @@ fn validate_criteria_empty() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1251,6 +1254,7 @@ fn validate_criteria_valid_platform() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1303,6 +1307,7 @@ fn validate_criteria_invalid_platform() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1352,6 +1357,7 @@ fn validate_criteria_valid_profile() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1401,6 +1407,7 @@ fn validate_criteria_invalid_profile() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1449,6 +1456,7 @@ fn validate_criteria_valid_channel() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let mut flow_info = FlowInfo {
         config,
@@ -1554,6 +1562,7 @@ fn validate_criteria_invalid_channel() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let mut flow_info = FlowInfo {
         config,
@@ -1603,6 +1612,7 @@ fn validate_criteria_valid_file_exists() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1653,6 +1663,7 @@ fn validate_criteria_invalid_file_exists() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1703,6 +1714,7 @@ fn validate_criteria_valid_file_not_exists() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1753,6 +1765,7 @@ fn validate_criteria_invalid_file_not_exists() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1808,6 +1821,7 @@ fn validate_condition_for_step_both_valid() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1865,6 +1879,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1922,6 +1937,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -1976,6 +1992,7 @@ fn validate_condition_for_step_invalid_env_set() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2030,6 +2047,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2086,6 +2104,7 @@ fn validate_condition_for_step_valid_env() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2147,6 +2166,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2205,6 +2225,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2266,6 +2287,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2327,6 +2349,7 @@ fn validate_condition_for_step_valid_env_contains() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2388,6 +2411,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2446,6 +2470,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2506,6 +2531,7 @@ fn validate_condition_for_step_valid_rust_version() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,
@@ -2565,6 +2591,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         env: IndexMap::new(),
         env_scripts: vec![],
         tasks: IndexMap::new(),
+        plugins: None,
     };
     let flow_info = FlowInfo {
         config,

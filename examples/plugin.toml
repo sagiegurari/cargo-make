@@ -1,0 +1,72 @@
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[plugins.impl.simple-plugin]
+script = '''
+echo task: ${task.name}
+echo ${task.as_json}
+
+taskvars = json_parse ${task.as_json}
+echo MY_ENV -> ${taskvars.env.MY_ENV}
+
+args_string = array_join ${task.args} " "
+exec --fail-on-error ${task.command} %{args_string}
+'''
+
+[plugins.aliases]
+simple = "simple-plugin"
+
+[plugins.impl.force]
+script = '''
+plugin_force_set = get_env PLUGIN_FORCE_SET
+plugin_force_set = eq "${plugin_force_set}" 1
+
+if eq ${task.name} last_for_plugin
+    echo clearing the forced plugin
+    cm_plugin_force_plugin_clear
+elif ${plugin_force_set}
+    echo already set forced plugin
+else
+    echo setting forced plugin
+    cm_plugin_force_plugin_set
+    set_env PLUGIN_FORCE_SET 1
+end
+
+echo running plugin instead of task: ${task.name}
+'''
+
+[tasks.default]
+alias = "simple"
+
+[tasks.simple]
+plugin = "simple"
+category = "plugin"
+description = "simple task"
+env = { "MY_ENV" = "Some Value" }
+condition = { env_not_set = ["BAD"] }
+command = "echo"
+args = ["simple", "task", "${MY_ENV}", "done"]
+
+[tasks.force_flow]
+dependencies = ["force_first", "force_second", "last_for_plugin", "post_force"]
+
+[tasks.force_first]
+plugin = "force"
+command = "exit"
+args = ["1"]
+
+[tasks.force_second]
+command = "exit"
+args = ["1"]
+
+[tasks.last_for_plugin]
+command = "exit"
+args = ["1"]
+
+[tasks.post_force]
+command = "echo"
+args = ["post force"]

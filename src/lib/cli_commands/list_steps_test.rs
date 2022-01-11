@@ -16,6 +16,7 @@ fn run_empty() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "default", &None, None);
@@ -42,6 +43,7 @@ fn run_all_public() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "default", &None, None);
@@ -68,6 +70,7 @@ fn run_all_public_markdown() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "markdown", &None, None);
@@ -94,6 +97,7 @@ fn run_all_public_markdown_sub_section() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "markdown-sub-section", &None, None);
@@ -120,6 +124,7 @@ fn run_all_public_markdown_single_page() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "markdown-single-page", &None, None);
@@ -148,6 +153,7 @@ fn run_all_private() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "default", &None, None);
@@ -183,6 +189,7 @@ fn run_mixed() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "default", &None, None);
@@ -209,6 +216,7 @@ fn run_write_to_file() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let file = "./target/_temp/tasklist.md";
@@ -255,6 +263,7 @@ fn run_category_public() {
         env,
         env_scripts: vec![],
         tasks,
+        plugins: None,
     };
 
     let count = run(&config, "default", &None, Some("TestCategory1".to_owned()));
