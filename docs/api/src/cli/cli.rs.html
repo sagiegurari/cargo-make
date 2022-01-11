@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div>
+                                <input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -484,8 +487,16 @@
 <span id="484">484</span>
 <span id="485">485</span>
 <span id="486">486</span>
-</pre><pre class="rust">
-<span class="doccomment">//! # cli</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # cli</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The cargo-make cli</span>
 <span class="doccomment">//!</span>
@@ -494,19 +505,19 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;cli_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">cli_test</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::cli_commands</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::config</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::descriptor</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::environment</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::logger</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::logger::LoggerOptions</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::profile</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::recursion_level</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::runner</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::time_summary</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::types</span>::{<span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::version</span>;
-<span class="kw">use</span> <span class="ident">clap</span>::{<span class="ident">App</span>, <span class="ident">AppSettings</span>, <span class="ident">Arg</span>, <span class="ident">ArgMatches</span>, <span class="ident">SubCommand</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli_commands</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::config</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::descriptor</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger::LoggerOptions</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::recursion_level</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::runner</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::time_summary</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version</span>;
+<span class="kw">use</span> <span class="ident">clap</span>::{<span class="ident">App</span>, <span class="ident">AppSettings</span>, <span class="ident">Arg</span>, <span class="ident">ArgMatches</span>};
 <span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
 
 <span class="kw">static</span> <span class="ident">VERSION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
@@ -544,24 +555,24 @@
     }
 
     <span class="kw">let</span> <span class="ident">cwd_string_option</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">cwd</span>.<span class="ident">clone</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">search</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>),
+        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">search</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">search</span> {
                     <span class="kw">match</span> <span class="ident">environment::get_project_root</span>() {
-                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
+                        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
                     }
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
         },
     };
     <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_string_option</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
     <span class="kw">let</span> <span class="ident">home</span> <span class="op">=</span> <span class="ident">environment::setup_cwd</span>(<span class="ident">cwd</span>);
 
@@ -585,8 +596,8 @@
     <span class="kw">let</span> <span class="ident">descriptor_load_result</span> <span class="op">=</span> <span class="ident">descriptor::load</span>(<span class="kw-2">&amp;</span><span class="ident">build_file</span>, <span class="ident">force_makefile</span>, <span class="ident">env</span>, <span class="ident">experimental</span>);
 
     <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">descriptor_load_result</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">config</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">config</span>,
-        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">config</span>) =&gt; <span class="ident">config</span>,
+        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) =&gt; {
             <span class="macro">error!</span>(
                 <span class="string">&quot;{} version: {} does not meet minimum required version: {}&quot;</span>,
                 <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>
@@ -599,19 +610,19 @@
     };
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">time_summary_vec</span> <span class="op">=</span> <span class="macro">vec!</span>[];
     <span class="ident">time_summary::add</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">time_summary_vec</span>,
+        <span class="kw-2">&amp;mut</span> <span class="ident">time_summary_vec</span>,
         <span class="string">&quot;[Load Makefiles]&quot;</span>,
         <span class="ident">start_time</span>.<span class="ident">clone</span>(),
     );
     <span class="kw">let</span> <span class="ident">step_time</span> <span class="op">=</span> <span class="ident">SystemTime::now</span>();
 
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">additional_profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profile::set_additional</span>(<span class="ident">profiles</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profile::set_additional</span>(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]),
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) =&gt; <span class="ident">profile::set_additional</span>(<span class="ident">profiles</span>),
+        <span class="prelude-val">None</span> =&gt; <span class="ident">profile::set_additional</span>(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]),
     };
 
     <span class="kw">let</span> <span class="ident">env_info</span> <span class="op">=</span> <span class="ident">environment::setup_env</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">home</span>);
-    <span class="ident">time_summary::add</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">time_summary_vec</span>, <span class="string">&quot;[Setup Env]&quot;</span>, <span class="ident">step_time</span>);
+    <span class="ident">time_summary::add</span>(<span class="kw-2">&amp;mut</span> <span class="ident">time_summary_vec</span>, <span class="string">&quot;[Setup Env]&quot;</span>, <span class="ident">step_time</span>);
 
     <span class="kw">let</span> <span class="ident">crate_name</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_CRATE_NAME&quot;</span>, <span class="string">&quot;&quot;</span>);
     <span class="kw">if</span> <span class="ident">crate_name</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
@@ -663,8 +674,8 @@
 ) {
     <span class="kw">let</span> <span class="ident">cmd_matches</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sub_command</span> {
         <span class="kw">match</span> <span class="ident">matches</span>.<span class="ident">subcommand_matches</span>(<span class="ident">command_name</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;cargo-{} not invoked via cargo command.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;cargo-{} not invoked via cargo command.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>),
         }
     } <span class="kw">else</span> {
         <span class="kw-2">&amp;</span><span class="ident">matches</span>
@@ -682,7 +693,7 @@
 
     <span class="ident">cli_args</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">values_of_lossy</span>(<span class="string">&quot;env&quot;</span>);
 
-    <span class="ident">cli_args</span>.<span class="ident">build_file</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">occurrences_of</span>(<span class="string">&quot;makefile&quot;</span>) <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+    <span class="ident">cli_args</span>.<span class="ident">build_file</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">occurrences_of</span>(<span class="string">&quot;makefile&quot;</span>) <span class="op">==</span> <span class="number">0</span> {
         <span class="prelude-val">None</span>
     } <span class="kw">else</span> {
         <span class="kw">let</span> <span class="ident">makefile</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -693,13 +704,13 @@
     };
 
     <span class="ident">cli_args</span>.<span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;cwd&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
     };
     <span class="ident">cli_args</span>.<span class="ident">log_level</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;v&quot;</span>) {
         <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>()
@@ -711,8 +722,8 @@
     };
 
     <span class="kw">let</span> <span class="ident">default_disable_color</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">disable_color</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
     };
     <span class="ident">cli_args</span>.<span class="ident">disable_color</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;no-color&quot;</span>)
         <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>)
@@ -722,8 +733,8 @@
         <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;time-summary&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_PRINT_TIME_SUMMARY&quot;</span>);
 
     <span class="ident">cli_args</span>.<span class="ident">env_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;envfile&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="ident">cli_args</span>.<span class="ident">output_format</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -732,13 +743,13 @@
         .<span class="ident">to_string</span>();
 
     <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;list-category-steps&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="ident">cli_args</span>.<span class="ident">output_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;output_file&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -757,13 +768,13 @@
     <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">is_present</span>(<span class="string">&quot;diff-steps&quot;</span>);
 
     <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;skip-tasks-pattern&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
     };
     <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">cmd_matches</span>.<span class="ident">value_of</span>(<span class="string">&quot;task&quot;</span>).<span class="ident">unwrap_or</span>(<span class="ident">default_task_name</span>);
     <span class="kw">let</span> <span class="ident">task_cmd</span> <span class="op">=</span> <span class="ident">cmd_matches</span>
@@ -771,8 +782,8 @@
         .<span class="ident">unwrap_or_default</span>()
         .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
     <span class="kw">let</span> (<span class="ident">task</span>, <span class="ident">arguments</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">task_cmd</span>.<span class="ident">as_slice</span>() {
-        <span class="kw-2">&amp;</span>[] <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">task</span>, <span class="prelude-val">None</span>),
-        <span class="kw-2">&amp;</span>[<span class="ident">task_name</span>, <span class="kw-2">ref</span> <span class="ident">task_args</span> @ ..] <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw-2">&amp;</span>[] =&gt; (<span class="ident">task</span>, <span class="prelude-val">None</span>),
+        <span class="kw-2">&amp;</span>[<span class="ident">task_name</span>, <span class="kw-2">ref</span> <span class="ident">task_args</span> @ ..] =&gt; {
             <span class="kw">let</span> <span class="ident">args_strings</span> <span class="op">=</span> <span class="ident">task_args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">to_string</span>()).<span class="ident">collect</span>();
             (<span class="ident">task_name</span>, <span class="prelude-val">Some</span>(<span class="ident">args_strings</span>))
         }
@@ -783,22 +794,22 @@
     <span class="ident">run</span>(<span class="ident">cli_args</span>, <span class="ident">global_config</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">create_cli</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(
+<span class="kw">fn</span> <span class="ident">create_cli</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
     <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">GlobalConfig</span>,
     <span class="ident">command_name</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>,
     <span class="ident">sub_command</span>: <span class="ident">bool</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
+) -&gt; <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
     };
     <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
     };
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_app</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sub_command</span> {
-        <span class="ident">SubCommand::with_name</span>(<span class="kw-2">&amp;</span><span class="ident">command_name</span>)
+        <span class="ident">App::new</span>(<span class="ident">command_name</span>)
     } <span class="kw">else</span> {
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">command_name</span>.<span class="ident">as_str</span>();
         <span class="ident">App::new</span>(<span class="ident">name</span>).<span class="ident">bin_name</span>(<span class="ident">name</span>)
@@ -808,18 +819,19 @@
         .<span class="ident">version</span>(<span class="ident">VERSION</span>)
         .<span class="ident">author</span>(<span class="ident">AUTHOR</span>)
         .<span class="ident">about</span>(<span class="ident">DESCRIPTION</span>)
-        .<span class="ident">setting</span>(<span class="ident">AppSettings::AllowLeadingHyphen</span>)
+        .<span class="ident">setting</span>(<span class="ident">AppSettings::AllowHyphenValues</span>)
         .<span class="ident">setting</span>(<span class="ident">AppSettings::TrailingVarArg</span>)
+        .<span class="ident">setting</span>(<span class="ident">AppSettings::HelpExpected</span>)
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;makefile&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;makefile&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--makefile&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>)
                 .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">DEFAULT_TOML</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;task&quot;</span>)
-                .<span class="ident">short</span>(<span class="string">&quot;-t&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;task&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&#39;t&#39;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--task&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;TASK&quot;</span>)
                 .<span class="ident">help</span>(
@@ -829,8 +841,8 @@
                 .<span class="ident">default_value</span>(<span class="ident">default_task_name</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;profile&quot;</span>)
-                .<span class="ident">short</span>(<span class="string">&quot;-p&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;profile&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&#39;p&#39;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--profile&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;PROFILE&quot;</span>)
                 .<span class="ident">help</span>(
@@ -839,7 +851,7 @@
                 .<span class="ident">default_value</span>(<span class="kw-2">&amp;</span><span class="ident">profile::DEFAULT_PROFILE</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;cwd&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;cwd&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--cwd&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;DIRECTORY&quot;</span>)
                 .<span class="ident">help</span>(
@@ -847,110 +859,118 @@
                      The search for the makefile will be from this directory if defined.&quot;</span>,
                 ),
         )
-        .<span class="ident">arg</span>(<span class="ident">Arg::with_name</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
+        .<span class="ident">arg</span>(<span class="ident">Arg::new</span>(<span class="string">&quot;no-workspace&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--no-workspace&quot;</span>).<span class="ident">help</span>(
             <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>,
         ))
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;no-on-error&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;no-on-error&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--no-on-error&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Disable on error flow even if defined in config sections&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;allow-private&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;allow-private&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--allow-private&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Allow invocation of private tasks&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;skip-init-end-tasks&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;skip-init-end-tasks&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--skip-init-end-tasks&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;If set, init and end tasks are skipped&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;skip-tasks-pattern&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;skip-tasks-pattern&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--skip-tasks&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;SKIP_TASK_PATTERNS&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Skip all tasks that match the provided regex (example: pre.*|post.*)&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;envfile&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;envfile&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--env-file&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;FILE&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Set environment variables from provided file&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;env&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;env&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--env&quot;</span>)
-                .<span class="ident">short</span>(<span class="string">&quot;-e&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&#39;e&#39;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;ENV&quot;</span>)
-                .<span class="ident">multiple</span>(<span class="bool-val">true</span>)
+                .<span class="ident">multiple_occurrences</span>(<span class="bool-val">true</span>)
                 .<span class="ident">takes_value</span>(<span class="bool-val">true</span>)
                 .<span class="ident">number_of_values</span>(<span class="number">1</span>)
+                .<span class="ident">allow_invalid_utf8</span>(<span class="bool-val">true</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Set environment variables&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::from_usage</span>(<span class="string">&quot;-l, --loglevel=[LOG LEVEL] &#39;The log level&#39;&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;loglevel&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--loglevel&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&#39;l&#39;</span>)
+                .<span class="ident">value_name</span>(<span class="string">&quot;LOG LEVEL&quot;</span>)
                 .<span class="ident">possible_values</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;verbose&quot;</span>, <span class="string">&quot;info&quot;</span>, <span class="string">&quot;error&quot;</span>])
-                .<span class="ident">default_value</span>(<span class="ident">default_log_level</span>),
+                .<span class="ident">default_value</span>(<span class="ident">default_log_level</span>)
+                .<span class="ident">help</span>(<span class="string">&quot;The log level&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;v&quot;</span>)
-                .<span class="ident">short</span>(<span class="string">&quot;-v&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;v&quot;</span>)
+                .<span class="ident">short</span>(<span class="string">&#39;v&#39;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--verbose&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;no-color&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;no-color&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--no-color&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Disables colorful output&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;time-summary&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;time-summary&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--time-summary&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Print task level time summary at end of flow&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;experimental&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;experimental&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--experimental&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--disable-check-for-updates&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Disables the update check during startup&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::from_usage</span>(<span class="string">&quot;--output-format=[OUTPUT FORMAT] &#39;The print/list steps format (some operations do not support all formats)&#39;&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;output-format&quot;</span>)
+                .<span class="ident">long</span>(<span class="string">&quot;--output-format&quot;</span>)
+                .<span class="ident">value_name</span>(<span class="string">&quot;OUTPUT FORMAT&quot;</span>)
                 .<span class="ident">possible_values</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;default&quot;</span>, <span class="string">&quot;short-description&quot;</span>, <span class="string">&quot;markdown&quot;</span>, <span class="string">&quot;markdown-single-page&quot;</span>, <span class="string">&quot;markdown-sub-section&quot;</span>, <span class="string">&quot;autocomplete&quot;</span>])
-                .<span class="ident">default_value</span>(<span class="ident">DEFAULT_OUTPUT_FORMAT</span>),
+                .<span class="ident">default_value</span>(<span class="ident">DEFAULT_OUTPUT_FORMAT</span>)
+                .<span class="ident">help</span>(<span class="string">&quot;The print/list steps format (some operations do not support all formats)&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;output_file&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;output_file&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--output-file&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;OUTPUT_FILE&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;The list steps output file name&quot;</span>),
         )
-        .<span class="ident">arg</span>(<span class="ident">Arg::with_name</span>(<span class="string">&quot;print-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--print-steps&quot;</span>).<span class="ident">help</span>(
+        .<span class="ident">arg</span>(<span class="ident">Arg::new</span>(<span class="string">&quot;print-steps&quot;</span>).<span class="ident">long</span>(<span class="string">&quot;--print-steps&quot;</span>).<span class="ident">help</span>(
             <span class="string">&quot;Only prints the steps of the build in the order they will \
              be invoked but without invoking them&quot;</span>,
         ))
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;list-steps&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;list-steps&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--list-all-steps&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Lists all known steps&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;list-category-steps&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;list-category-steps&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--list-category-steps&quot;</span>)
                 .<span class="ident">value_name</span>(<span class="string">&quot;CATEGORY&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;List steps for a given category&quot;</span>),
         )
         .<span class="ident">arg</span>(
-            <span class="ident">Arg::with_name</span>(<span class="string">&quot;diff-steps&quot;</span>)
+            <span class="ident">Arg::new</span>(<span class="string">&quot;diff-steps&quot;</span>)
                 .<span class="ident">long</span>(<span class="string">&quot;--diff-steps&quot;</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;Runs diff between custom flow and prebuilt flow (requires git)&quot;</span>),
         )
-        .<span class="ident">arg</span>(<span class="ident">Arg::with_name</span>(<span class="string">&quot;TASK_CMD&quot;</span>)
-                .<span class="ident">multiple</span>(<span class="bool-val">true</span>)
+        .<span class="ident">arg</span>(<span class="ident">Arg::new</span>(<span class="string">&quot;TASK_CMD&quot;</span>)
+                .<span class="ident">multiple_occurrences</span>(<span class="bool-val">true</span>)
                 .<span class="ident">help</span>(<span class="string">&quot;The task to execute, potentially including arguments which can be accessed in the task itself.&quot;</span>)
         );
 
@@ -971,7 +991,6 @@
 
     <span class="ident">run_for_args</span>(<span class="ident">matches</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>, <span class="ident">sub_command</span>);
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (89b9f7b28 2022-01-10)" ></div>
 </body></html>

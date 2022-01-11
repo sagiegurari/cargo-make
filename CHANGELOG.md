@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.8
+### v0.35.8 (2022-01-11)
 
 * Enhancement: New plugin system to enable custom task execution logic #620
 * Maintenance: upgrade to clap 3

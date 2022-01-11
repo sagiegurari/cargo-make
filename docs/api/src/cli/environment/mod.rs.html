@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;environment&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../cli/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;environment&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div>
+                                <input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -812,8 +815,7 @@
 <span id="812">812</span>
 <span id="813">813</span>
 <span id="814">814</span>
-</pre><pre class="rust">
-<span class="doccomment">//! # env</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # env</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Sets up the env vars before running the tasks.</span>
 <span class="doccomment">//!</span>
@@ -824,12 +826,12 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">mod_test</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::command</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::condition</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::io</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::profile</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::scriptengine</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::types</span>::{
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::command</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::condition</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::io</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scriptengine</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{
     <span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvFile</span>, <span class="ident">EnvInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">EnvValueConditioned</span>, <span class="ident">EnvValueDecode</span>,
     <span class="ident">EnvValuePathGlob</span>, <span class="ident">EnvValueScript</span>, <span class="ident">PackageInfo</span>, <span class="ident">ScriptValue</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">Workspace</span>,
 };
@@ -847,9 +849,9 @@
 <span class="kw">use</span> <span class="ident">std::env</span>;
 <span class="kw">use</span> <span class="ident">std::path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 
-<span class="kw">fn</span> <span class="ident">evaluate_env_value</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env_value</span>: <span class="kw-2">&amp;</span><span class="ident">EnvValueScript</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">fn</span> <span class="ident">evaluate_env_value</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">env_value</span>: <span class="kw-2">&amp;</span><span class="ident">EnvValueScript</span>) -&gt; <span class="ident">String</span> {
     <span class="kw">match</span> <span class="ident">command::run_script_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">env_value</span>.<span class="ident">script</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[], <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="bool-val">false</span>)) {
-        <span class="prelude-val">Ok</span>(<span class="ident">output</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">output</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">output</span>.<span class="number">0</span>;
             <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">output</span>.<span class="number">1</span>;
             <span class="kw">let</span> <span class="ident">stderr</span> <span class="op">=</span> <span class="ident">output</span>.<span class="number">2</span>;
@@ -869,8 +871,8 @@
             <span class="macro">debug!</span>(<span class="string">&quot;Env script stdout:\n{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">stdout</span>);
 
             <span class="kw">let</span> <span class="ident">multi_line</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env_value</span>.<span class="ident">multi_line</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">bool_value</span>,
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) =&gt; <span class="ident">bool_value</span>,
+                <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
             };
 
             <span class="kw">if</span> <span class="ident">multi_line</span> {
@@ -890,11 +892,11 @@
                 }
             }
         }
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">_</span> =&gt; <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">expand_value</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">expand_value</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">ExpandOptions::new</span>();
     <span class="ident">options</span>.<span class="ident">expansion_type</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ExpansionType::UnixBrackets</span>);
     <span class="ident">options</span>.<span class="ident">default_to_empty</span> <span class="op">=</span> <span class="bool-val">false</span>;
@@ -935,10 +937,10 @@
     <span class="kw">let</span> <span class="ident">source_value</span> <span class="op">=</span> <span class="ident">expand_value</span>(<span class="kw-2">&amp;</span><span class="ident">decode_info</span>.<span class="ident">source</span>);
 
     <span class="kw">let</span> <span class="ident">mapped_value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">decode_info</span>.<span class="ident">mapping</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">source_value</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">to_string</span>(),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">decode_info</span>.<span class="ident">default_value</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>.<span class="ident">clone</span>().<span class="ident">to_string</span>(),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">source_value</span>.<span class="ident">clone</span>(),
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">to_string</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">decode_info</span>.<span class="ident">default_value</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">clone</span>().<span class="ident">to_string</span>(),
+            <span class="prelude-val">None</span> =&gt; <span class="ident">source_value</span>.<span class="ident">clone</span>(),
         },
     };
 
@@ -947,8 +949,8 @@
 
 <span class="kw">fn</span> <span class="ident">set_env_for_conditional_value</span>(<span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">conditional_value</span>: <span class="kw-2">&amp;</span><span class="ident">EnvValueConditioned</span>) {
     <span class="kw">let</span> <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">conditional_value</span>.<span class="ident">condition</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">condition::validate_conditions_without_context</span>(<span class="ident">condition</span>.<span class="ident">clone</span>()),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition</span>) =&gt; <span class="ident">condition::validate_conditions_without_context</span>(<span class="ident">condition</span>.<span class="ident">clone</span>()),
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
     };
 
     <span class="kw">if</span> <span class="ident">valid</span> {
@@ -978,11 +980,11 @@
     <span class="kw">let</span> <span class="ident">profile_name_string</span> <span class="op">=</span> <span class="ident">profile_name</span>.<span class="ident">to_string</span>();
 
     <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">additional_profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">profiles</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profiles</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name_string</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">profiles</span>) =&gt; <span class="ident">profiles</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name_string</span>),
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
     };
 
-    <span class="kw">if</span> <span class="ident">current_profile_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">profile_name_string</span> <span class="op">|</span><span class="op">|</span> <span class="ident">found</span> {
+    <span class="kw">if</span> <span class="ident">current_profile_name</span> <span class="op">==</span> <span class="ident">profile_name_string</span> <span class="op">|</span><span class="op">|</span> <span class="ident">found</span> {
         <span class="macro">debug!</span>(<span class="string">&quot;Setting Up Profile: {} Env.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
 
         <span class="ident">set_env_for_config</span>(<span class="ident">sub_env</span>.<span class="ident">clone</span>(), <span class="prelude-val">None</span>, <span class="bool-val">false</span>);
@@ -1010,22 +1012,22 @@
         <span class="macro">debug!</span>(<span class="string">&quot;Setting env: {} = {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">env_value</span>);
 
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">env_value</span> {
-            <span class="ident">EnvValue::Value</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
-            <span class="ident">EnvValue::Boolean</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">set_env_for_bool</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
-            <span class="ident">EnvValue::Number</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>.<span class="ident">to_string</span>()),
-            <span class="ident">EnvValue::List</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">set_env_for_list</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
-            <span class="ident">EnvValue::Script</span>(<span class="kw-2">ref</span> <span class="ident">script_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">set_env_for_script</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">script_info</span>),
-            <span class="ident">EnvValue::Decode</span>(<span class="kw-2">ref</span> <span class="ident">decode_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">set_env_for_decode_info</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">decode_info</span>),
-            <span class="ident">EnvValue::Conditional</span>(<span class="kw-2">ref</span> <span class="ident">conditioned_value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">EnvValue::Value</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
+            <span class="ident">EnvValue::Boolean</span>(<span class="ident">value</span>) =&gt; <span class="ident">set_env_for_bool</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
+            <span class="ident">EnvValue::Number</span>(<span class="ident">value</span>) =&gt; <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>.<span class="ident">to_string</span>()),
+            <span class="ident">EnvValue::List</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">set_env_for_list</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
+            <span class="ident">EnvValue::Script</span>(<span class="kw-2">ref</span> <span class="ident">script_info</span>) =&gt; <span class="ident">set_env_for_script</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">script_info</span>),
+            <span class="ident">EnvValue::Decode</span>(<span class="kw-2">ref</span> <span class="ident">decode_info</span>) =&gt; <span class="ident">set_env_for_decode_info</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">decode_info</span>),
+            <span class="ident">EnvValue::Conditional</span>(<span class="kw-2">ref</span> <span class="ident">conditioned_value</span>) =&gt; {
                 <span class="ident">set_env_for_conditional_value</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">conditioned_value</span>)
             }
-            <span class="ident">EnvValue::PathGlob</span>(<span class="kw-2">ref</span> <span class="ident">path_glob_info</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">set_env_for_path_glob</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">path_glob_info</span>),
-            <span class="ident">EnvValue::Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">EnvValue::PathGlob</span>(<span class="kw-2">ref</span> <span class="ident">path_glob_info</span>) =&gt; <span class="ident">set_env_for_path_glob</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">path_glob_info</span>),
+            <span class="ident">EnvValue::Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">allow_sub_env</span> {
                     <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">sub_env</span>, <span class="ident">additional_profiles</span>)
                 }
             }
-            <span class="ident">EnvValue::Unset</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">EnvValue::Unset</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">unset</span> {
                     <span class="ident">unset_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>);
                 }
@@ -1038,15 +1040,15 @@
 
         <span class="kw">if</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>) {
             <span class="kw">match</span> <span class="ident">env</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>) {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env_value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env_value</span>) =&gt; {
                     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">env_value</span> {
-                        <span class="ident">EnvValue::Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="ident">EnvValue::Profile</span>(<span class="kw-2">ref</span> <span class="ident">sub_env</span>) =&gt; {
                             <span class="ident">set_env_for_profile</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>, <span class="ident">sub_env</span>, <span class="prelude-val">None</span>)
                         }
-                        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
+                        <span class="kw">_</span> =&gt; (),
                     };
                 }
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
+                <span class="prelude-val">None</span> =&gt; (),
             };
         }
     }
@@ -1059,24 +1061,24 @@
 <span class="kw">fn</span> <span class="ident">set_env_files_for_config</span>(
     <span class="ident">env_files</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EnvFile</span><span class="op">&gt;</span>,
     <span class="ident">additional_profiles</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+) -&gt; <span class="ident">bool</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_loaded</span> <span class="op">=</span> <span class="bool-val">true</span>;
     <span class="kw">for</span> <span class="ident">env_file</span> <span class="kw">in</span> <span class="ident">env_files</span> {
         <span class="kw">let</span> <span class="ident">loaded</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env_file</span> {
-            <span class="ident">EnvFile::Path</span>(<span class="ident">file</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">load_env_file</span>(<span class="prelude-val">Some</span>(<span class="ident">file</span>)),
-            <span class="ident">EnvFile::Info</span>(<span class="ident">info</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">EnvFile::Path</span>(<span class="ident">file</span>) =&gt; <span class="ident">load_env_file</span>(<span class="prelude-val">Some</span>(<span class="ident">file</span>)),
+            <span class="ident">EnvFile::Info</span>(<span class="ident">info</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">is_valid_profile</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">info</span>.<span class="ident">profile</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">profile_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">profile_name</span>) =&gt; {
                         <span class="kw">let</span> <span class="ident">current_profile_name</span> <span class="op">=</span> <span class="ident">profile::get</span>();
 
                         <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">additional_profiles</span> {
-                            <span class="prelude-val">Some</span>(<span class="ident">profiles</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">profiles</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>),
-                            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                            <span class="prelude-val">Some</span>(<span class="ident">profiles</span>) =&gt; <span class="ident">profiles</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>),
+                            <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
                         };
 
-                        <span class="ident">current_profile_name</span> <span class="op">=</span><span class="op">=</span> <span class="ident">profile_name</span> <span class="op">|</span><span class="op">|</span> <span class="ident">found</span>
+                        <span class="ident">current_profile_name</span> <span class="op">==</span> <span class="ident">profile_name</span> <span class="op">|</span><span class="op">|</span> <span class="ident">found</span>
                     }
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
+                    <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
                 };
 
                 <span class="kw">if</span> <span class="ident">is_valid_profile</span> {
@@ -1116,8 +1118,8 @@
             <span class="macro">debug!</span>(<span class="string">&quot;Setting env: {} = {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">env_value</span>);
 
             <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">env_value</span> {
-                <span class="ident">EnvValue::Value</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
+                <span class="ident">EnvValue::Value</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">evaluate_and_set_env</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="ident">value</span>),
+                <span class="kw">_</span> =&gt; (),
             };
         }
     }
@@ -1128,8 +1130,8 @@
     <span class="macro">debug!</span>(<span class="string">&quot;Initializing Env.&quot;</span>);
 
     <span class="kw">let</span> <span class="ident">additional_profiles</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">additional_profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">profiles</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">profiles</span>),
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="ident">set_env_files_for_config</span>(<span class="ident">config</span>.<span class="ident">env_files</span>.<span class="ident">clone</span>(), <span class="ident">additional_profiles</span>);
@@ -1147,7 +1149,7 @@
     <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_DUCKSCRIPT_SDK_VERSION&quot;</span>, <span class="ident">version</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">setup_env_for_crate</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CrateInfo</span> {
+<span class="kw">fn</span> <span class="ident">setup_env_for_crate</span>() -&gt; <span class="ident">CrateInfo</span> {
     <span class="kw">let</span> <span class="ident">crate_info</span> <span class="op">=</span> <span class="ident">crateinfo::load</span>();
     <span class="kw">let</span> <span class="ident">crate_info_clone</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">clone</span>();
 
@@ -1172,8 +1174,8 @@
     <span class="ident">envmnt::set_optional</span>(<span class="string">&quot;CARGO_MAKE_CRATE_REPOSITORY&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">package_info</span>.<span class="ident">repository</span>);
 
     <span class="kw">let</span> <span class="ident">has_dependencies</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">crate_info</span>.<span class="ident">dependencies</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dependencies</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">dependencies</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>(),
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dependencies</span>) =&gt; <span class="ident">dependencies</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>(),
     };
 
     <span class="ident">envmnt::set_bool</span>(<span class="string">&quot;CARGO_MAKE_CRATE_HAS_DEPENDENCIES&quot;</span>, <span class="ident">has_dependencies</span>);
@@ -1205,7 +1207,7 @@
     <span class="ident">crate_info_clone</span>
 }
 
-<span class="kw">fn</span> <span class="ident">setup_env_for_git_repo</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">GitInfo</span> {
+<span class="kw">fn</span> <span class="ident">setup_env_for_git_repo</span>() -&gt; <span class="ident">GitInfo</span> {
     <span class="kw">let</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">git_info::get</span>();
     <span class="kw">let</span> <span class="ident">git_info_clone</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">clone</span>();
 
@@ -1224,7 +1226,7 @@
     <span class="ident">git_info_clone</span>
 }
 
-<span class="kw">fn</span> <span class="ident">setup_env_for_rust</span>(<span class="ident">home</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RustInfo</span> {
+<span class="kw">fn</span> <span class="ident">setup_env_for_rust</span>(<span class="ident">home</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>) -&gt; <span class="ident">RustInfo</span> {
     <span class="kw">let</span> <span class="ident">rustinfo</span> <span class="op">=</span> <span class="ident">rust_info::get</span>();
     <span class="kw">let</span> <span class="ident">rust_info_clone</span> <span class="op">=</span> <span class="ident">rustinfo</span>.<span class="ident">clone</span>();
 
@@ -1232,9 +1234,9 @@
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">channel_option</span>) <span class="op">=</span> <span class="ident">rustinfo</span>.<span class="ident">channel</span> {
         <span class="kw">let</span> <span class="ident">channel</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">channel_option</span> {
-            <span class="ident">RustChannel::Stable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;stable&quot;</span>,
-            <span class="ident">RustChannel::Beta</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;beta&quot;</span>,
-            <span class="ident">RustChannel::Nightly</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;nightly&quot;</span>,
+            <span class="ident">RustChannel::Stable</span> =&gt; <span class="string">&quot;stable&quot;</span>,
+            <span class="ident">RustChannel::Beta</span> =&gt; <span class="string">&quot;beta&quot;</span>,
+            <span class="ident">RustChannel::Nightly</span> =&gt; <span class="string">&quot;nightly&quot;</span>,
         };
 
         <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_RUST_CHANNEL&quot;</span>, <span class="ident">channel</span>);
@@ -1278,7 +1280,7 @@
     <span class="ident">rust_info_clone</span>
 }
 
-<span class="kw">fn</span> <span class="ident">setup_env_for_ci</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CiInfo</span> {
+<span class="kw">fn</span> <span class="ident">setup_env_for_ci</span>() -&gt; <span class="ident">CiInfo</span> {
     <span class="kw">let</span> <span class="ident">ci_info_struct</span> <span class="op">=</span> <span class="ident">ci_info::get</span>();
 
     <span class="ident">envmnt::set_bool</span>(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>, <span class="ident">ci_info_struct</span>.<span class="ident">ci</span>);
@@ -1289,57 +1291,57 @@
     <span class="ident">ci_info_struct</span>
 }
 
-<span class="kw">fn</span> <span class="ident">get_base_directory_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_base_directory_name</span>() -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">env::current_dir</span>() {
-        <span class="prelude-val">Ok</span>(<span class="ident">path</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">file_name</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>()),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">path</span>) =&gt; <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">file_name</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">name</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>()),
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
         },
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
     }
 }
 
 <span class="kw">fn</span> <span class="ident">setup_env_for_project</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">crate_info</span>: <span class="kw-2">&amp;</span><span class="ident">CrateInfo</span>) {
     <span class="kw">let</span> <span class="ident">project_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">crate_info</span>.<span class="ident">package</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">package</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">package</span>.<span class="ident">name</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_base_directory_name</span>(),
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">package</span>) =&gt; <span class="kw">match</span> <span class="ident">package</span>.<span class="ident">name</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
+            <span class="prelude-val">None</span> =&gt; <span class="ident">get_base_directory_name</span>(),
         },
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_base_directory_name</span>(),
+        <span class="prelude-val">None</span> =&gt; <span class="ident">get_base_directory_name</span>(),
     };
 
     <span class="ident">envmnt::set_or_remove</span>(<span class="string">&quot;CARGO_MAKE_PROJECT_NAME&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">project_name</span>);
 
     <span class="kw">let</span> <span class="ident">project_version</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span> {
-        <span class="prelude-val">Some</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">main_member</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">main_project_member</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">project_name</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>),
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
+                <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">project_name</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">name</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>),
+                    <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
                 },
             };
 
             <span class="ident">envmnt::set_or_remove</span>(<span class="string">&quot;CARGO_MAKE_PROJECT_VERSION_MEMBER&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">main_member</span>);
 
             <span class="kw">match</span> <span class="ident">main_member</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">member</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">member</span>) =&gt; {
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">PathBuf::new</span>();
                     <span class="ident">path</span>.<span class="ident">push</span>(<span class="ident">member</span>);
                     <span class="ident">path</span>.<span class="ident">push</span>(<span class="string">&quot;Cargo.toml&quot;</span>);
                     <span class="kw">let</span> <span class="ident">member_crate_info</span> <span class="op">=</span> <span class="ident">crateinfo::load_from</span>(<span class="ident">path</span>);
 
                     <span class="kw">match</span> <span class="ident">member_crate_info</span>.<span class="ident">package</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">package</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">package</span>.<span class="ident">version</span>,
-                        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="ident">package</span>) =&gt; <span class="ident">package</span>.<span class="ident">version</span>,
+                        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
                     }
                 }
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">crate_info</span>.<span class="ident">package</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">package</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">package</span>.<span class="ident">version</span>.<span class="ident">clone</span>(),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">crate_info</span>.<span class="ident">package</span> {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">package</span>) =&gt; <span class="ident">package</span>.<span class="ident">version</span>.<span class="ident">clone</span>(),
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
         },
     };
 
@@ -1352,15 +1354,15 @@
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">home</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EnvInfo</span> {
+) -&gt; <span class="ident">EnvInfo</span> {
     <span class="ident">envmnt::set_bool</span>(<span class="string">&quot;CARGO_MAKE&quot;</span>, <span class="bool-val">true</span>);
     <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_TASK&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
 
     <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_COMMAND&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>);
 
     <span class="kw">let</span> <span class="ident">task_arguments</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">arguments</span>.<span class="ident">clone</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">args</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec!</span>[],
+        <span class="prelude-val">Some</span>(<span class="ident">args</span>) =&gt; <span class="ident">args</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[],
     };
     <span class="ident">envmnt::set_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task_arguments</span>);
 
@@ -1418,16 +1420,16 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">search_and_set_workspace_cwd</span>() {
     <span class="kw">match</span> <span class="ident">crateinfo::search_workspace_root</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">root_directory</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">root_directory</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">root_directory_path_buf</span> <span class="op">=</span> <span class="ident">get_directory_path</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory</span>));
             <span class="kw">let</span> <span class="ident">root_directory_path</span> <span class="op">=</span> <span class="ident">root_directory_path_buf</span>.<span class="ident">as_path</span>();
             <span class="ident">set_workspace_cwd</span>(<span class="kw-2">&amp;</span><span class="ident">root_directory_path</span>, <span class="bool-val">true</span>);
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (),
+        <span class="prelude-val">None</span> =&gt; (),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_directory_path</span>(<span class="ident">path_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PathBuf</span> {
+<span class="kw">fn</span> <span class="ident">get_directory_path</span>(<span class="ident">path_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="ident">PathBuf</span> {
     <span class="kw">let</span> <span class="ident">cwd_str</span> <span class="op">=</span> <span class="ident">path_option</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;.&quot;</span>);
     <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">expand_value</span>(<span class="ident">cwd_str</span>);
 
@@ -1435,7 +1437,7 @@
     <span class="ident">PathBuf::from</span>(<span class="ident">directory_path_string</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setup_cwd</span>(<span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">setup_cwd</span>(<span class="ident">cwd</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">directory_path_buf</span> <span class="op">=</span> <span class="ident">get_directory_path</span>(<span class="ident">cwd</span>);
     <span class="kw">let</span> <span class="ident">directory_path</span> <span class="op">=</span> <span class="ident">directory_path_buf</span>.<span class="ident">as_path</span>();
 
@@ -1445,7 +1447,7 @@
     );
 
     <span class="kw">match</span> <span class="ident">env::set_current_dir</span>(<span class="kw-2">&amp;</span><span class="ident">directory_path</span>) {
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; {
             <span class="macro">error!</span>(
                 <span class="string">&quot;Unable to set current working directory to: {} {:#?}&quot;</span>,
                 <span class="ident">directory_path</span>.<span class="ident">display</span>(),
@@ -1453,7 +1455,7 @@
             );
             <span class="prelude-val">None</span>
         }
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw">_</span> =&gt; {
             <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">directory_path</span>);
 
             <span class="ident">set_workspace_cwd</span>(<span class="kw-2">&amp;</span><span class="ident">directory_path</span>, <span class="bool-val">false</span>);
@@ -1468,20 +1470,20 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load_env_file</span>(<span class="ident">env_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load_env_file</span>(<span class="ident">env_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
     <span class="ident">load_env_file_with_base_directory</span>(<span class="ident">env_file</span>, <span class="prelude-val">None</span>)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load_env_file_with_base_directory</span>(
     <span class="ident">env_file</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">base_directory</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+) -&gt; <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">env_file</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">file_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">file_name</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">file_name</span>.<span class="ident">starts_with</span>(<span class="string">&quot;.&quot;</span>) {
                 <span class="kw">let</span> (<span class="ident">base_path</span>, <span class="ident">check_relative_path</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">base_directory</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">file</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">file</span>, <span class="bool-val">true</span>),
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;.&quot;</span>), <span class="bool-val">false</span>),
+                    <span class="prelude-val">Some</span>(<span class="ident">file</span>) =&gt; (<span class="ident">file</span>, <span class="bool-val">true</span>),
+                    <span class="prelude-val">None</span> =&gt; (<span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;.&quot;</span>), <span class="bool-val">false</span>),
                 };
 
                 <span class="kw">if</span> <span class="ident">check_relative_path</span> <span class="op">&amp;&amp;</span> <span class="ident">base_path</span>.<span class="ident">starts_with</span>(<span class="string">&quot;.&quot;</span>) {
@@ -1496,59 +1498,59 @@
             };
 
             <span class="kw">match</span> <span class="ident">file_path</span>.<span class="ident">to_str</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">file_path_str</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">file_path_str</span>) =&gt; {
                     <span class="kw">let</span> <span class="ident">evaluate_env_var</span> <span class="op">=</span> <span class="op">|</span><span class="ident">value</span>: <span class="ident">String</span><span class="op">|</span> <span class="ident">expand_value</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>);
 
                     <span class="kw">match</span> <span class="ident">envmnt::evaluate_and_load_file</span>(<span class="ident">file_path_str</span>, <span class="ident">evaluate_env_var</span>) {
-                        <span class="prelude-val">Err</span>(<span class="ident">error</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; {
                             <span class="macro">error!</span>(
                                 <span class="string">&quot;Unable to load env file: {} Error: {:#?}&quot;</span>,
                                 <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>, <span class="ident">error</span>
                             );
                             <span class="bool-val">false</span>
                         }
-                        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="kw">_</span> =&gt; {
                             <span class="macro">debug!</span>(<span class="string">&quot;Loaded env file: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file_path_str</span>);
                             <span class="bool-val">true</span>
                         }
                     }
                 }
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_project_root_for_path</span>(<span class="ident">directory</span>: <span class="kw-2">&amp;</span><span class="ident">PathBuf</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_project_root_for_path</span>(<span class="ident">directory</span>: <span class="kw-2">&amp;</span><span class="ident">PathBuf</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">Path::new</span>(<span class="ident">directory</span>).<span class="ident">join</span>(<span class="string">&quot;Cargo.toml&quot;</span>);
 
     <span class="kw">if</span> <span class="ident">file_path</span>.<span class="ident">exists</span>() {
         <span class="kw">match</span> <span class="ident">directory</span>.<span class="ident">to_str</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>.<span class="ident">to_string</span>()),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">directory_string</span>.<span class="ident">to_string</span>()),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     } <span class="kw">else</span> {
         <span class="kw">match</span> <span class="ident">directory</span>.<span class="ident">parent</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">parent_directory</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">parent_directory</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">parent_directory_path</span> <span class="op">=</span> <span class="ident">parent_directory</span>.<span class="ident">to_path_buf</span>();
                 <span class="ident">get_project_root_for_path</span>(<span class="kw-2">&amp;</span><span class="ident">parent_directory_path</span>)
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_project_root</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_project_root</span>() -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">env::current_dir</span>() {
-        <span class="prelude-val">Ok</span>(<span class="ident">directory</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_project_root_for_path</span>(<span class="kw-2">&amp;</span><span class="ident">directory</span>),
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">directory</span>) =&gt; <span class="ident">get_project_root_for_path</span>(<span class="kw-2">&amp;</span><span class="ident">directory</span>),
+        <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">expand_env_for_script_runner_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) {
+<span class="kw">fn</span> <span class="ident">expand_env_for_script_runner_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Task</span>) {
     <span class="kw">let</span> <span class="ident">updated_args</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script_runner_args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expanded_args</span> <span class="op">=</span> <span class="macro">vec!</span>[];
 
             <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">args</span>.<span class="ident">len</span>() {
@@ -1557,27 +1559,27 @@
 
             <span class="prelude-val">Some</span>(<span class="ident">expanded_args</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="ident">task</span>.<span class="ident">script_runner_args</span> <span class="op">=</span> <span class="ident">updated_args</span>;
 }
 
-<span class="kw">fn</span> <span class="ident">expand_env_for_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Task</span>) {
+<span class="kw">fn</span> <span class="ident">expand_env_for_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Task</span>) {
     <span class="comment">//update args by replacing any env vars</span>
     <span class="kw">let</span> <span class="ident">updated_args</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expanded_args</span> <span class="op">=</span> <span class="macro">vec!</span>[];
 
             <span class="kw">let</span> <span class="ident">task_args</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">envmnt::get_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">list</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">list</span>,
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec!</span>[],
+                <span class="prelude-val">Some</span>(<span class="ident">list</span>) =&gt; <span class="ident">list</span>,
+                <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[],
             };
 
             <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">args</span>.<span class="ident">len</span>() {
                 <span class="kw">if</span> <span class="ident">args</span>[<span class="ident">index</span>].<span class="ident">contains</span>(<span class="string">&quot;${@}&quot;</span>) {
                     <span class="kw">if</span> <span class="ident">task_args</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                        <span class="kw">if</span> <span class="ident">args</span>[<span class="ident">index</span>] <span class="op">=</span><span class="op">=</span> <span class="string">&quot;${@}&quot;</span> {
+                        <span class="kw">if</span> <span class="ident">args</span>[<span class="ident">index</span>] <span class="op">==</span> <span class="string">&quot;${@}&quot;</span> {
                             <span class="kw">for</span> <span class="ident">arg_index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">task_args</span>.<span class="ident">len</span>() {
                                 <span class="ident">expanded_args</span>.<span class="ident">push</span>(<span class="ident">task_args</span>[<span class="ident">arg_index</span>].<span class="ident">clone</span>());
                             }
@@ -1600,34 +1602,33 @@
 
             <span class="prelude-val">Some</span>(<span class="ident">expanded_args</span>)
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     };
 
     <span class="ident">task</span>.<span class="ident">args</span> <span class="op">=</span> <span class="ident">updated_args</span>;
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">expand_env</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Step</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">expand_env</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) -&gt; <span class="ident">Step</span> {
     <span class="comment">//clone data before modify</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">clone</span>();
 
     <span class="comment">//update command by replacing any env vars</span>
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">command</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; {
             <span class="ident">config</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">expand_value</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>));
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        <span class="prelude-val">None</span> =&gt; {}
     };
 
     <span class="comment">//update args by replacing any env vars</span>
-    <span class="ident">expand_env_for_arguments</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">config</span>);
-    <span class="ident">expand_env_for_script_runner_arguments</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">config</span>);
+    <span class="ident">expand_env_for_arguments</span>(<span class="kw-2">&amp;mut</span> <span class="ident">config</span>);
+    <span class="ident">expand_env_for_script_runner_arguments</span>(<span class="kw-2">&amp;mut</span> <span class="ident">config</span>);
 
     <span class="ident">Step</span> {
         <span class="ident">name</span>: <span class="ident">step</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
         <span class="ident">config</span>,
     }
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (89b9f7b28 2022-01-10)" ></div>
 </body></html>

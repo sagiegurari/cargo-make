@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;execution_plan.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>execution_plan.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../cli/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;lib&#x2F;execution_plan.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>execution_plan.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div>
+                                <input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -486,8 +489,7 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
-</pre><pre class="rust">
-<span class="doccomment">//! # execution_plan</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # execution_plan</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Creates execution plan for a given task and makefile.</span>
 <span class="doccomment">//!</span>
@@ -496,11 +498,11 @@
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;execution_plan_test.rs&quot;</span>]</span>
 <span class="kw">mod</span> <span class="ident">execution_plan_test</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::environment</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::logger</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::profile</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::proxy_task::create_proxy_task</span>;
-<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::types</span>::{
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::proxy_task::create_proxy_task</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{
     <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">ScriptValue</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">TaskIdentifier</span>, <span class="ident">Workspace</span>,
 };
 <span class="kw">use</span> <span class="ident">envmnt</span>;
@@ -514,45 +516,45 @@
 <span class="kw">use</span> <span class="ident">std::vec::Vec</span>;
 
 <span class="doccomment">/// Resolve aliases to different tasks, checking for cycles</span>
-<span class="kw">fn</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">seen</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">seen</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="ident">seen</span>.<span class="ident">push</span>(<span class="ident">name</span>.<span class="ident">to_string</span>());
 
     <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">name</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">alias</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">get_alias</span>();
 
             <span class="kw">match</span> <span class="ident">alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">contains</span>(<span class="ident">alias</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">contains</span>(<span class="ident">alias</span>) =&gt; {
                     <span class="kw">let</span> <span class="ident">chain</span> <span class="op">=</span> <span class="ident">seen</span>.<span class="ident">join</span>(<span class="string">&quot; -&gt; &quot;</span>);
                     <span class="macro">error!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
                     <span class="macro">panic!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
                 }
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">alias</span>, <span class="ident">seen</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) =&gt; <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">alias</span>, <span class="ident">seen</span>),
+                <span class="kw">_</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
             }
         }
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     }
 }
 
 <span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases</span>
-<span class="kw">fn</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
-    <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">seen</span>)
+    <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="kw-2">&amp;mut</span> <span class="ident">seen</span>)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Task</span> {
     <span class="kw">match</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="ident">support_alias</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">task</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">task</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">task</span>) =&gt; <span class="ident">task</span>,
+        <span class="prelude-val">None</span> =&gt; {
             <span class="macro">error!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
             <span class="macro">panic!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Task</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Task</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">actual_task_name_option</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">support_alias</span> {
         <span class="ident">get_task_name</span>(<span class="ident">config</span>, <span class="ident">name</span>)
     } <span class="kw">else</span> {
@@ -560,18 +562,18 @@
     };
 
     <span class="kw">match</span> <span class="ident">actual_task_name_option</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">actual_task_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">actual_task_name</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="ident">actual_task_name</span>) =&gt; <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">actual_task_name</span>) {
+            <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) =&gt; {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">clone_task</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">clone</span>();
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">normalized_task</span> <span class="op">=</span> <span class="ident">clone_task</span>.<span class="ident">get_normalized_task</span>();
 
                 <span class="ident">normalized_task</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">normalized_task</span>.<span class="ident">extend</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extended_task_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extended_task_name</span>) =&gt; {
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_task</span> <span class="op">=</span>
                             <span class="ident">get_normalized_task</span>(<span class="ident">config</span>, <span class="ident">extended_task_name</span>, <span class="ident">support_alias</span>);
 
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span> <span class="ident">normalized_task</span>.<span class="ident">env</span> {
-                            <span class="kw">if</span> <span class="ident">env</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">2</span>
+                            <span class="kw">if</span> <span class="ident">env</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">2</span>
                                 <span class="op">&amp;&amp;</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
                                 <span class="op">&amp;&amp;</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(
                                     <span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>,
@@ -584,18 +586,18 @@
 
                         <span class="ident">extended_task</span>
                     }
-                    <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">normalized_task</span>,
+                    <span class="prelude-val">None</span> =&gt; <span class="ident">normalized_task</span>,
                 };
 
                 <span class="prelude-val">Some</span>(<span class="ident">normalized_task</span>)
             }
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
         },
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">members_config</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">members_config</span>: <span class="ident">String</span>) -&gt; <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">members</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
 
     <span class="kw">let</span> <span class="ident">members_list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">members_config</span>.<span class="ident">split</span>(<span class="string">&#39;;&#39;</span>).<span class="ident">collect</span>();
@@ -609,7 +611,7 @@
     <span class="ident">members</span>
 }
 
-<span class="kw">fn</span> <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">members_map</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">members_map</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
     <span class="kw">if</span> <span class="ident">members_map</span>.<span class="ident">contains</span>(<span class="ident">member</span>) {
         <span class="bool-val">true</span>
     } <span class="kw">else</span> {
@@ -619,8 +621,8 @@
         <span class="kw">for</span> <span class="ident">member_iter</span> <span class="kw">in</span> <span class="ident">members_map</span> {
             <span class="kw">if</span> <span class="ident">member_iter</span>.<span class="ident">contains</span>(<span class="string">&quot;*&quot;</span>) {
                 <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Pattern::new</span>(<span class="ident">member_iter</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pattern</span>.<span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>),
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                    <span class="prelude-val">Ok</span>(<span class="ident">pattern</span>) =&gt; <span class="ident">pattern</span>.<span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>),
+                    <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
                 };
 
                 <span class="kw">if</span> <span class="ident">found</span> {
@@ -633,11 +635,11 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_skip_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">skipped_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">should_skip_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">skipped_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
     <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>, <span class="ident">skipped_members</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">should_include_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">include_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">should_include_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">include_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
     <span class="kw">if</span> <span class="ident">include_members</span>.<span class="ident">is_empty</span>() {
         <span class="bool-val">true</span>
     } <span class="kw">else</span> {
@@ -645,7 +647,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">filter_workspace_members</span>(<span class="ident">members</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">filter_workspace_members</span>(<span class="ident">members</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
     <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">skip_members_config</span>);
 
@@ -666,7 +668,7 @@
     <span class="ident">filtered_members</span>
 }
 
-<span class="kw">fn</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>: <span class="ident">CrateInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Task</span> {
+<span class="kw">fn</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>: <span class="ident">CrateInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Task</span> {
     <span class="kw">let</span> <span class="ident">set_workspace_emulation</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_none</span>()
         <span class="op">&amp;&amp;</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>)
         <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::exists</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>);
@@ -708,8 +710,8 @@
 
             <span class="comment">//get member name</span>
             <span class="kw">let</span> <span class="ident">member_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Path::new</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>).<span class="ident">file_name</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">String::from</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>()),
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">member</span>.<span class="ident">clone</span>(),
+                <span class="prelude-val">Some</span>(<span class="ident">name</span>) =&gt; <span class="ident">String::from</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>()),
+                <span class="prelude-val">None</span> =&gt; <span class="ident">member</span>.<span class="ident">clone</span>(),
             };
 
             <span class="macro">debug!</span>(<span class="string">&quot;Adding Member: {} Path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member_name</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
@@ -742,7 +744,7 @@
     <span class="comment">//only if environment variable is set</span>
     <span class="kw">let</span> <span class="ident">task_env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">envmnt::is_or</span>(<span class="string">&quot;CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE&quot;</span>, <span class="bool-val">false</span>) {
         <span class="kw">match</span> <span class="ident">env::var</span>(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">makefile</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">makefile</span>) =&gt; {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">IndexMap::new</span>();
                 <span class="ident">env_map</span>.<span class="ident">insert</span>(
                     <span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>.<span class="ident">to_string</span>(),
@@ -751,7 +753,7 @@
 
                 <span class="prelude-val">Some</span>(<span class="ident">env_map</span>)
             }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     } <span class="kw">else</span> {
         <span class="prelude-val">None</span>
@@ -773,15 +775,15 @@
     <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
     <span class="ident">crate_info</span>: <span class="kw-2">&amp;</span><span class="ident">CrateInfo</span>,
     <span class="ident">sub_flow</span>: <span class="ident">bool</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+) -&gt; <span class="ident">bool</span> {
     <span class="comment">// determine if workspace flow is explicitly set and enabled in the requested task</span>
     <span class="kw">let</span> (<span class="ident">task_set_workspace</span>, <span class="ident">task_enable_workspace</span>) <span class="op">=</span>
         <span class="kw">match</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="bool-val">true</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">normalized_task</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">normalized_task</span>.<span class="ident">workspace</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">enable_workspace</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="bool-val">true</span>, <span class="ident">enable_workspace</span>),
-                <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">normalized_task</span>) =&gt; <span class="kw">match</span> <span class="ident">normalized_task</span>.<span class="ident">workspace</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">enable_workspace</span>) =&gt; (<span class="bool-val">true</span>, <span class="ident">enable_workspace</span>),
+                <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
             },
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
         };
 
     <span class="comment">// if project is not a workspace or if workspace is disabled via cli, return no workspace flow</span>
@@ -808,8 +810,8 @@
 <span class="kw">fn</span> <span class="ident">create_for_step</span>(
     <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
     <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">TaskIdentifier</span>,
-    <span class="ident">steps</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>,
-    <span class="ident">task_names</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">steps</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>,
+    <span class="ident">task_names</span>: <span class="kw-2">&amp;mut</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="ident">root</span>: <span class="ident">bool</span>,
     <span class="ident">allow_private</span>: <span class="ident">bool</span>,
     <span class="ident">skip_tasks_pattern</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Regex</span><span class="op">&gt;</span>,
@@ -855,8 +857,8 @@
     <span class="macro">debug!</span>(<span class="string">&quot;Normalized Task: {} config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="ident">task_config</span>);
 
     <span class="kw">let</span> <span class="ident">is_private</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">private</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">value</span>,
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
     };
 
     <span class="kw">if</span> <span class="ident">allow_private</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">is_private</span> {
@@ -864,7 +866,7 @@
 
         <span class="kw">if</span> <span class="ident">add</span> {
             <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">dependencies</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dependencies</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dependencies</span>) =&gt; {
                     <span class="kw">for</span> <span class="ident">dependency</span> <span class="kw">in</span> <span class="ident">dependencies</span> {
                         <span class="ident">create_for_step</span>(
                             <span class="kw-2">&amp;</span><span class="ident">config</span>,
@@ -877,7 +879,7 @@
                         );
                     }
                 }
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug!</span>(<span class="string">&quot;No dependencies found for task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
+                <span class="kw">_</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;No dependencies found for task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
             };
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">task_names</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>) {
@@ -896,7 +898,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">steps</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">steps</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> <span class="ident">task_config</span> <span class="op">=</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="bool-val">false</span>);
     <span class="kw">let</span> <span class="ident">add</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task_config</span>.<span class="ident">disabled</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
 
@@ -916,24 +918,24 @@
     <span class="ident">allow_private</span>: <span class="ident">bool</span>,
     <span class="ident">sub_flow</span>: <span class="ident">bool</span>,
     <span class="ident">skip_tasks_pattern</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Regex</span><span class="op">&gt;</span>,
-) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ExecutionPlan</span> {
+) -&gt; <span class="ident">ExecutionPlan</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_names</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">steps</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">sub_flow</span> {
         <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">legacy_migration_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug!</span>(<span class="string">&quot;Legacy migration task not defined.&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Legacy migration task not defined.&quot;</span>),
         };
         <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">init_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug!</span>(<span class="string">&quot;Init task not defined.&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Init task not defined.&quot;</span>),
         };
     }
 
     <span class="kw">let</span> <span class="ident">skip</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">skip_tasks_pattern</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pattern</span>.<span class="ident">is_match</span>(<span class="ident">task</span>),
-        <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) =&gt; <span class="ident">pattern</span>.<span class="ident">is_match</span>(<span class="ident">task</span>),
+        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
     };
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">skip</span> {
@@ -954,8 +956,8 @@
             <span class="ident">create_for_step</span>(
                 <span class="kw-2">&amp;</span><span class="ident">config</span>,
                 <span class="kw-2">&amp;</span><span class="ident">TaskIdentifier::from_name</span>(<span class="ident">task</span>),
-                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>,
-                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">task_names</span>,
+                <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>,
+                <span class="kw-2">&amp;mut</span> <span class="ident">task_names</span>,
                 <span class="bool-val">true</span>,
                 <span class="ident">allow_private</span>,
                 <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
@@ -968,14 +970,13 @@
     <span class="kw">if</span> <span class="op">!</span><span class="ident">sub_flow</span> {
         <span class="comment">// always add end task even if already executed due to some depedency</span>
         <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">end_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">debug!</span>(<span class="string">&quot;Ent task not defined.&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
+            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Ent task not defined.&quot;</span>),
         };
     }
 
     <span class="ident">ExecutionPlan</span> { <span class="ident">steps</span> }
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (89b9f7b28 2022-01-10)" ></div>
 </body></html>
