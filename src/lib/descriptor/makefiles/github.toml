@@ -96,5 +96,5 @@ condition = { platforms = [
 ] }
 script = '''
 API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s v%s","body": "release","draft": false,"prerelease": false}' ${CARGO_MAKE_PROJECT_VERSION} ${CARGO_MAKE_PROJECT_NAME} ${CARGO_MAKE_PROJECT_VERSION})
-curl --data "$API_JSON" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases?access_token=${GITHUB_API_TOKEN}
+curl --data "$API_JSON" -H "Authorization: token ${GITHUB_API_TOKEN}" https://api.github.com/repos/${GITHUB_REPO_NAME}/releases
 '''

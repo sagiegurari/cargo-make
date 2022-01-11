@@ -4,6 +4,7 @@
 
 * Enhancement: New plugin system to enable custom task execution logic #620
 * Maintenance: upgrade to clap 3
+* Enhancement: Support new github auth token for github release task
 
 ### v0.35.7 (2021-12-11)
 
