@@ -3,6 +3,10 @@
 //! Enables to run cargo-make tasks from within duckscript.
 //!
 
+#[cfg(test)]
+#[path = "cm_plugin_force_plugin_set_test.rs"]
+mod cm_plugin_force_plugin_set_test;
+
 use crate::types::{FlowState, Step};
 use duckscript::types::command::{Command, CommandResult};
 use std::cell::RefCell;

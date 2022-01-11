@@ -11,7 +11,7 @@
 mod mod_test;
 
 mod cargo_alias;
-mod descriptor_deserializer;
+pub(crate) mod descriptor_deserializer;
 mod makefiles;
 
 use crate::io;

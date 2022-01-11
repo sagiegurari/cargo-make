@@ -5,7 +5,7 @@ skip_git_env_info = true
 skip_rust_env_info = true
 skip_crate_env_info = true
 
-[plugins.impl.simple]
+[plugins.impl.simple-plugin]
 script = '''
 echo task: ${task.name}
 echo ${task.as_json}
@@ -16,6 +16,9 @@ echo MY_ENV -> ${taskvars.env.MY_ENV}
 args_string = array_join ${task.args} " "
 exec --fail-on-error ${task.command} %{args_string}
 '''
+
+[plugins.aliases]
+simple = "simple-plugin"
 
 [plugins.impl.force]
 script = '''
