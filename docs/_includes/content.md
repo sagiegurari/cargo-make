@@ -3242,8 +3242,8 @@ OPTIONS:
 Plugins enable users to take full control of the task execution.<br>
 cargo-make would still create the execution plan based on the tasks and their dependencies, but would leave the individual task execution to the plugin code.<br>
 <br>
-Plugins are basically a single duckscript code block with has access to the task and flow meta data and can invoke cargo-make specific commands or general duckscript commands.<br>
-For example, if a task defined a command and arguments, and the plugin simply needs to invoke them, you can do the following:
+Plugins are basically a single duckscript code block with access to the task and flow meta data and can invoke cargo-make specific commands or general duckscript commands.<br>
+For example, if a task defined a command and arguments to execute and the plugin simply needs to invoke them, you can implement a simple plugin as follows:
 
 ```sh
 args_string = array_join ${task.args} " " # simple example which doesn't support args that contain spaces in them
@@ -3253,7 +3253,7 @@ exec --fail-on-error ${task.command} %{args_string}
 <a name="usage-plugins-defining-plugins"></a>
 ### Defining Plugins
 
-Plugins are defined under the plugin.impl namespace, for example:
+Plugins are defined under the plugin.impl prefix, for example:
 
 ```toml
 [plugins.impl.command-runner]
@@ -3266,7 +3266,8 @@ exec --fail-on-error ${task.command} %{args_string}
 ```
 
 You can defining as many plugins as needed.<br>
-It is also possible to provide them aliases to map new names to existing plugins, as follows:
+It is also possible to provide them aliases to map new names to existing plugins.<br>
+For example:
 
 ```toml
 [plugins.aliases]
@@ -3274,13 +3275,16 @@ original = "new"
 this = "that"
 ```
 
-For a task to pass the execution control to the plugin, simply put the plugin name in the plugin attribute as follows:
+For a task to pass the execution control to the plugin, simply put the plugin name in the **plugin** attribute.<br>
+For example:
 
 ```toml
 [tasks.my-task]
 plugin = "my-plugin"
 # other attributes as needed...
 ```
+
+**You can create reusable plugins and load them using the [load scripts](#usage-load-scripts) built in capability.**
 
 <a name="usage-plugins-plugin-sdk"></a>
 ### Plugin SDK
@@ -3320,13 +3324,13 @@ The plugin SDK contains the following:
 * cargo-make task script specific commands
     * ```cm_run_task [--async] takename``` - Runs a task and dependencies. Supports async execution (via --async flag). Must get the task name to invoke.
 * cargo-make plugin specific commands
-    * cm_plugin_run_task - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
-    * cm_plugin_check_task_condition - Returns true/false if the current task conditions are met
-    * cm_plugin_force_plugin_set - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
-    * cm_plugin_force_plugin_clear - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
+    * ```cm_plugin_run_task``` - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
+    * ```cm_plugin_check_task_condition``` - Returns true/false if the current task conditions are met
+    * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
+    * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
 
 <a name="usage-plugins-plugin-example"></a>
-### Plugin Example
+### Plugin Example (Docker Integration)
 
 Below is a simple example which runs a task (and the rest of the flow from that point) in a docker container.
 
@@ -3396,7 +3400,7 @@ Running:
 cargo make docker_flow
 ```
 
-Will result in creation of a new docker container that will run parts 1-3 inside it.
+Will result in creation of a new docker container that will run parts 1-3 inside it.<br>
 **The example works, however it does not support several features like passing cli args and so on...**
 
 <a name="usage-shell-completion"></a>

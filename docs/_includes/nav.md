@@ -90,7 +90,7 @@
     * [Plugins](#usage-plugins)
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
-        * [Plugin Example](#usage-plugins-plugin-example)
+        * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)

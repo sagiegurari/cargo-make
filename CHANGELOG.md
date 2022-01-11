@@ -2,6 +2,7 @@
 
 ### v0.35.8
 
+* Enhancement: New plugin system to enable custom task execution logic #620
 * Maintenance: upgrade to clap 3
 
 ### v0.35.7 (2021-12-11)
