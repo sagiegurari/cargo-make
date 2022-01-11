@@ -101,6 +101,7 @@
     * [Plugins](#usage-plugins)
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
+        * [Plugin Example](#usage-plugins-plugin-example)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -3446,6 +3447,80 @@ The plugin SDK contains the following:
     * cm_plugin_check_task_condition - Returns true/false if the current task conditions are met
     * cm_plugin_force_plugin_set - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
     * cm_plugin_force_plugin_clear - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
+
+<a name="usage-plugins-plugin-example"></a>
+### Plugin Example
+
+Below is a simple example which runs a task (and the rest of the flow from that point) in a docker container.
+
+```toml
+[plugins.impl.dockerize]
+script = '''
+plugin_force_set = get_env PLUGIN_FORCE_SET
+plugin_force_set = eq "${plugin_force_set}" 1
+
+if not ${plugin_force_set}
+    cm_plugin_force_plugin_set
+    set_env PLUGIN_FORCE_SET 1
+
+    dockerfile = set ""
+    fn add_docker
+        dockerfile = set "${dockerfile}${1}\n"
+    end
+
+    taskjson = json_parse ${task.as_json}
+    makefile = basename ${taskjson.env.CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}
+
+    add_docker "FROM debian:stable"
+    add_docker "RUN mkdir /workdir/"
+    add_docker "RUN mkdir /workdir/project/"
+    add_docker "RUN apt-get update"
+    add_docker "RUN apt-get install -y curl build-essential libssl-dev pkg-config"
+    add_docker "ENV PATH=\"$PATH:$HOME/.cargo/bin\""
+    add_docker "RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+    add_docker "RUN $HOME/.cargo/bin/cargo install cargo-make"
+    add_docker "RUN $HOME/.cargo/bin/cargo make --version"
+    add_docker "RUN echo \"cd ./workdir/project/ && ls -lsa && $HOME/.cargo/bin/cargo make --makefile ${makefile} --profile ${CARGO_MAKE_PROFILE} ${CARGO_MAKE_TASK}\" > ./run.sh"
+    add_docker "RUN chmod 777 ./run.sh"
+    add_docker "ADD . /workdir/project/"
+    add_docker "CMD [\"sh\", \"./run.sh\"]"
+
+    writefile ./Dockerfile ${dockerfile}
+    exec --fail-on-error docker build --tag cmimg:build ./
+
+    exec --fail-on-error docker run cmimg:build
+end
+'''
+
+[tasks.default]
+alias = "docker_flow"
+
+[tasks.docker_flow]
+dependencies = ["part1", "part2", "part3"]
+
+[tasks.base-task]
+command = "echo"
+args = ["task", "${CARGO_MAKE_CURRENT_TASK_NAME}"]
+
+[tasks.part1]
+plugin = "dockerize"
+extend = "base-task"
+
+[tasks.part2]
+extend = "base-task"
+
+[tasks.part3]
+extend = "base-task"
+```
+
+Running:
+
+```sh
+cargo make docker_flow
+```
+
+Will result in creation of a new docker container that will run parts 1-3 inside it.
+**The example works, however it does not support several features like passing cli args and so on...**
 
 <a name="usage-shell-completion"></a>
 ### Shell Completion
