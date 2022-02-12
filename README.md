@@ -101,7 +101,8 @@
     * [Plugins](#usage-plugins)
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
-        * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example)
+        * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
+        * [Plugin Example (Load env from rust script)](#usage-plugins-plugin-example-rustenv)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -3453,7 +3454,7 @@ The plugin SDK contains the following:
     * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
     * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
 
-<a name="usage-plugins-plugin-example"></a>
+<a name="usage-plugins-plugin-example-dockerize"></a>
 ### Plugin Example (Docker Integration)
 
 Below is a simple example which runs a task (and the rest of the flow from that point) in a docker container.
@@ -3526,6 +3527,53 @@ cargo make docker_flow
 
 Will result in creation of a new docker container that will run parts 1-3 inside it.<br>
 **The example works, however it does not support several features like passing cli args and so on...**
+
+<a name="usage-plugins-plugin-example-rustenv"></a>
+### Plugin Example (Load env from rust script)
+
+The following example shows how to enable rust scripts invoked from cargo-make to update the main cargo-make process env.<br>
+It assumes the task has a script line and that the script is rust. It will execute it (ignoring any rust script provider config for sake of simplicity) and load each output line as an env key/value pair.
+
+```toml
+[plugins.impl.rust-env]
+script = '''
+# make sure the task has a script
+assert ${task.has_script}
+
+taskjson = json_parse ${task.as_json}
+script = set ${taskjson.script}
+writefile ./target/_tempplugin/main.rs ${script}
+
+out = exec --fail-on-error rust-script ./target/_tempplugin/main.rs
+
+output = trim ${out.stdout}
+lines = split ${output} \n
+for line in ${lines}
+    parts = split ${line} =
+    key = array_get ${parts} 0
+    value = array_get ${parts} 1
+    set_env ${key} ${value}
+end
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+dependencies = ["dorust"]
+command = "echo"
+args = ["${ENV_FROM_RUST1}", "${ENV_FROM_RUST2}"]
+
+[tasks.dorust]
+private = true
+plugin = "rust-env"
+script = '''
+fn main() {
+    println!("ENV_FROM_RUST1=hello");
+    println!("ENV_FROM_RUST2=world");
+}
+'''
+```
 
 <a name="usage-shell-completion"></a>
 ### Shell Completion

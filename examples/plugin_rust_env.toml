@@ -1,0 +1,46 @@
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[plugins.impl.rust-env]
+script = '''
+# make sure the task has a script
+assert ${task.has_script}
+
+taskjson = json_parse ${task.as_json}
+script = set ${taskjson.script}
+writefile ./target/_tempplugin/main.rs ${script}
+
+out = exec --fail-on-error rust-script ./target/_tempplugin/main.rs
+
+output = trim ${out.stdout}
+lines = split ${output} \n
+for line in ${lines}
+    parts = split ${line} =
+    key = array_get ${parts} 0
+    value = array_get ${parts} 1
+    set_env ${key} ${value}
+end
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+dependencies = ["dorust"]
+command = "echo"
+args = ["${ENV_FROM_RUST1}", "${ENV_FROM_RUST2}"]
+
+[tasks.dorust]
+private = true
+plugin = "rust-env"
+script = '''
+fn main() {
+    println!("ENV_FROM_RUST1=hello");
+    println!("ENV_FROM_RUST2=world");
+}
+'''
+
