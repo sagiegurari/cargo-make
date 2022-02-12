@@ -91,7 +91,7 @@
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
         * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
-        * [Plugin Example (Load env from rust script)](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example (load env from rust script)](#usage-plugins-plugin-example-rustenv)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
