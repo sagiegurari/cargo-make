@@ -102,7 +102,7 @@
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
         * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
-        * [Plugin Example (Load env from rust script)](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example (load env from rust script)](#usage-plugins-plugin-example-rustenv)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -3529,7 +3529,7 @@ Will result in creation of a new docker container that will run parts 1-3 inside
 **The example works, however it does not support several features like passing cli args and so on...**
 
 <a name="usage-plugins-plugin-example-rustenv"></a>
-### Plugin Example (Load env from rust script)
+### Plugin Example (load env from rust script)
 
 The following example shows how to enable rust scripts invoked from cargo-make to update the main cargo-make process env.<br>
 It assumes the task has a script line and that the script is rust. It will execute it (ignoring any rust script provider config for sake of simplicity) and load each output line as an env key/value pair.
