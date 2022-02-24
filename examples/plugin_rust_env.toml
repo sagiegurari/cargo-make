@@ -43,4 +43,3 @@ fn main() {
     println!("ENV_FROM_RUST2=world");
 }
 '''
-

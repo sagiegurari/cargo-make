@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.9
+### v0.35.9 (2022-02-24)
 
 * Fix: clap 3.1 is not backward compatible
 

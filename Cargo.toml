@@ -45,7 +45,7 @@ path = "src/makers.rs"
 [dependencies]
 cargo_metadata = "^0.14.0"
 ci_info = "^0.14.3"
-clap = "^3"
+clap = "^3.1"
 colored = "^2"
 dirs-next = "^2"
 duckscript = "^0.7.1"
