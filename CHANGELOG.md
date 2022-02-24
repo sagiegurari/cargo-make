@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.9
+
+* Fix: clap 3.1 is not backward compatible
+
 ### v0.35.8 (2022-01-11)
 
 * Enhancement: New plugin system to enable custom task execution logic #620
