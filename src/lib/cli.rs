@@ -19,7 +19,7 @@ use crate::runner;
 use crate::time_summary;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use clap::{Command, Arg, ArgMatches};
+use clap::{Arg, ArgMatches, Command};
 use std::time::SystemTime;
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
