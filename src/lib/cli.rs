@@ -19,7 +19,7 @@ use crate::runner;
 use crate::time_summary;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use clap::{App, AppSettings, Arg, ArgMatches};
+use clap::{Command, Arg, ArgMatches};
 use std::time::SystemTime;
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -300,7 +300,7 @@ fn create_cli<'a>(
     global_config: &'a GlobalConfig,
     command_name: &String,
     sub_command: bool,
-) -> App<'a> {
+) -> Command<'a> {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -311,19 +311,19 @@ fn create_cli<'a>(
     };
 
     let mut cli_app = if sub_command {
-        App::new(command_name)
+        Command::new(command_name)
     } else {
         let name = command_name.as_str();
-        App::new(name).bin_name(name)
+        Command::new(name).bin_name(name)
     };
 
     cli_app = cli_app
         .version(VERSION)
         .author(AUTHOR)
         .about(DESCRIPTION)
-        .setting(AppSettings::AllowHyphenValues)
-        .setting(AppSettings::TrailingVarArg)
-        .setting(AppSettings::HelpExpected)
+        .allow_hyphen_values(true)
+        .trailing_var_arg(true)
+        .help_expected(true)
         .arg(
             Arg::new("makefile")
                 .long("--makefile")
@@ -477,7 +477,7 @@ fn create_cli<'a>(
         );
 
     if sub_command {
-        App::new("cargo").bin_name("cargo").subcommand(cli_app)
+        Command::new("cargo").bin_name("cargo").subcommand(cli_app)
     } else {
         cli_app
     }
