@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::{CrateDependencyInfo, Workspace};
+use crate::types::{CrateDependencyInfo, PackageInfo, Workspace};
 use cargo_metadata::camino::Utf8Path;
 use indexmap::IndexMap;
 
@@ -383,6 +383,21 @@ fn normalize_members_no_members() {
     assert!(crate_info.workspace.is_some());
     let workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_none());
+}
+
+#[test]
+fn normalize_members_no_members_with_package() {
+    let mut crate_info = CrateInfo::new();
+    crate_info.workspace = Some(Workspace::new());
+    crate_info.package = Some(PackageInfo::new());
+    normalize_members(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    let workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    let members = workspace.members.unwrap();
+    assert_eq!(members.len(), 1);
+    assert_eq!(members, vec![".".to_string()]);
 }
 
 #[test]

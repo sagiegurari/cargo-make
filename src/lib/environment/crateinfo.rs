@@ -75,7 +75,12 @@ fn normalize_members(crate_info: &mut CrateInfo) {
                         }
                     }
                 }
-                None => (),
+                None => {
+                    if crate_info.package.is_some() {
+                        let members_vec = vec![".".to_string()];
+                        workspace.members = Some(members_vec);
+                    }
+                }
             };
         }
         None => (), //not a workspace
