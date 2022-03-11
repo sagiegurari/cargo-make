@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.10
+### v0.35.10 (2022-03-11)
 
 * Fix: detect workspace member for non virtual workspaces #636
 * Documentation: added docs for grcov usage #375

@@ -329,6 +329,11 @@
 <span id="326">326</span>
 <span id="327">327</span>
 <span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # crateinfo</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Loads crate information.</span>
@@ -406,7 +411,12 @@
                         }
                     }
                 }
-                <span class="prelude-val">None</span> =&gt; (),
+                <span class="prelude-val">None</span> =&gt; {
+                    <span class="kw">if</span> <span class="ident">crate_info</span>.<span class="ident">package</span>.<span class="ident">is_some</span>() {
+                        <span class="kw">let</span> <span class="ident">members_vec</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="string">&quot;.&quot;</span>.<span class="ident">to_string</span>()];
+                        <span class="ident">workspace</span>.<span class="ident">members</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">members_vec</span>);
+                    }
+                }
             };
         }
         <span class="prelude-val">None</span> =&gt; (), <span class="comment">//not a workspace</span>
