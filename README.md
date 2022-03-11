@@ -3170,6 +3170,9 @@ By default, the binaries executed to collect coverage are filtered by a regular 
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$"
 ```
 
+*For grcov support, checkout the following repo for instructions:*<br>
+*https://github.com/kazuk/cargo-make-coverage-grcov*
+
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 

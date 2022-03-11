@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.35.10
+
+* Fix: detect workspace member for non virtual workspaces #636
+* Documentation: added docs for grcov usage #375
+
 ### v0.35.9 (2022-02-24)
 
 * Fix: clap 3.1 is not backward compatible
