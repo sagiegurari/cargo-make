@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.11
+
+* Fix: add workspace root member when both workspace members and package are defined #644
+
 ### v0.35.10 (2022-03-11)
 
 * Fix: detect workspace member for non virtual workspaces #636

@@ -58,30 +58,22 @@ fn expand_glob_members(glob_member: &str) -> Vec<String> {
 fn normalize_members(crate_info: &mut CrateInfo) {
     match crate_info.workspace {
         Some(ref mut workspace) => {
-            match workspace.members {
-                Some(ref mut members) => {
-                    let existing_members = members.clone();
+            if let Some(ref mut members) = workspace.members {
+                let existing_members = members.clone();
 
-                    let mut index = 0;
-                    for member in existing_members.iter() {
-                        // glob
-                        if member.contains("*") {
-                            let mut expanded_members = expand_glob_members(&member);
+                let mut index = 0;
+                for member in existing_members.iter() {
+                    // glob
+                    if member.contains("*") {
+                        let mut expanded_members = expand_glob_members(&member);
 
-                            members.remove(index);
-                            members.append(&mut expanded_members);
-                        } else {
-                            index = index + 1;
-                        }
+                        members.remove(index);
+                        members.append(&mut expanded_members);
+                    } else {
+                        index = index + 1;
                     }
                 }
-                None => {
-                    if crate_info.package.is_some() {
-                        let members_vec = vec![".".to_string()];
-                        workspace.members = Some(members_vec);
-                    }
-                }
-            };
+            }
         }
         None => (), //not a workspace
     }
@@ -173,8 +165,12 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
         normalize_members(crate_info);
 
         let dependencies = get_members_from_dependencies(&crate_info);
-
         add_members(crate_info, dependencies);
+
+        if crate_info.package.is_some() {
+            let members_vec = vec![".".to_string()];
+            add_members(crate_info, members_vec);
+        }
 
         remove_excludes(crate_info);
     }

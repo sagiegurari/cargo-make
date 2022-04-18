@@ -386,21 +386,6 @@ fn normalize_members_no_members() {
 }
 
 #[test]
-fn normalize_members_no_members_with_package() {
-    let mut crate_info = CrateInfo::new();
-    crate_info.workspace = Some(Workspace::new());
-    crate_info.package = Some(PackageInfo::new());
-    normalize_members(&mut crate_info);
-
-    assert!(crate_info.workspace.is_some());
-    let workspace = crate_info.workspace.unwrap();
-    assert!(workspace.members.is_some());
-    let members = workspace.members.unwrap();
-    assert_eq!(members.len(), 1);
-    assert_eq!(members, vec![".".to_string()]);
-}
-
-#[test]
 fn normalize_members_empty_members() {
     let mut crate_info = CrateInfo::new();
     let mut workspace = Workspace::new();
@@ -484,6 +469,21 @@ fn load_workspace_members_no_workspace() {
 }
 
 #[test]
+fn load_workspace_members_no_members_with_package() {
+    let mut crate_info = CrateInfo::new();
+    crate_info.workspace = Some(Workspace::new());
+    crate_info.package = Some(PackageInfo::new());
+    load_workspace_members(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    let workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    let members = workspace.members.unwrap();
+    assert_eq!(members.len(), 1);
+    assert_eq!(members, vec![".".to_string()]);
+}
+
+#[test]
 fn load_workspace_members_mixed() {
     let mut crate_info = CrateInfo::new();
 
@@ -538,6 +538,7 @@ fn load_workspace_members_mixed() {
     ]);
 
     crate_info.workspace = Some(workspace);
+    crate_info.package = Some(PackageInfo::new());
     load_workspace_members(&mut crate_info);
 
     assert!(crate_info.workspace.is_some());
@@ -568,7 +569,8 @@ fn load_workspace_members_mixed() {
         .iter()
         .position(|member| member == "examples/workspace/member1")
         .is_some());
-    assert_eq!(members.len(), 7);
+    assert!(members.iter().position(|member| member == ".").is_some());
+    assert_eq!(members.len(), 8);
 }
 
 #[test]
