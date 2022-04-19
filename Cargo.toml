@@ -60,7 +60,7 @@ indexmap = { version = "^1", features = ["serde-1"] }
 ignore = "^0.4"
 lenient_semver = "^0.4.2"
 log = "^0.4"
-regex = "^1"
+regex = "1.5.5"
 run_script = "^0.9"
 rust_info = "^0.3.1"
 semver = "^1"
