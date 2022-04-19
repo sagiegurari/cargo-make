@@ -11,6 +11,7 @@ mod version_test;
 use crate::cache;
 use crate::command;
 use crate::types::{Cache, GlobalConfig};
+use lenient_semver;
 use semver::Version;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -66,11 +67,56 @@ fn get_latest_version() -> Option<String> {
     }
 }
 
-pub(crate) fn is_newer(old_string: &str, new_string: &str, default_result: bool) -> bool {
-    let old_version = Version::parse(old_string);
+fn parse(version_string: &str, allow_partial_version_string: bool) -> Result<Version, ()> {
+    match Version::parse(version_string) {
+        Ok(version) => Ok(version),
+        Err(_) => {
+            if allow_partial_version_string {
+                match lenient_semver::parse(version_string) {
+                    Ok(version) => Ok(version),
+                    Err(_) => Err(()),
+                }
+            } else {
+                Err(())
+            }
+        }
+    }
+}
+
+pub(crate) fn is_same(
+    version_string1: &str,
+    version_string2: &str,
+    allow_partial_version_string: bool,
+    default_result: bool,
+) -> bool {
+    let version1 = parse(version_string1, allow_partial_version_string);
+    match version1 {
+        Ok(values1) => {
+            let version2 = parse(version_string2, allow_partial_version_string);
+
+            match version2 {
+                Ok(values2) => {
+                    values1.major == values2.major
+                        && values1.minor == values2.minor
+                        && values1.patch == values2.patch
+                }
+                _ => default_result,
+            }
+        }
+        _ => default_result,
+    }
+}
+
+pub(crate) fn is_newer(
+    old_string: &str,
+    new_string: &str,
+    allow_partial_version_string: bool,
+    default_result: bool,
+) -> bool {
+    let old_version = parse(old_string, allow_partial_version_string);
     match old_version {
         Ok(old_values) => {
-            let new_version = Version::parse(new_string);
+            let new_version = parse(new_string, allow_partial_version_string);
 
             match new_version {
                 Ok(new_values) => {
@@ -97,7 +143,7 @@ pub(crate) fn is_newer(old_string: &str, new_string: &str, default_result: bool)
 pub(crate) fn is_newer_found(version_string: &str) -> bool {
     debug!("Checking Version: {}", &version_string);
 
-    is_newer(&VERSION, &version_string, false)
+    is_newer(&VERSION, &version_string, false, false)
 }
 
 fn print_notification(latest_string: &str) {
