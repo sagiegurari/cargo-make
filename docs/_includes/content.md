@@ -1345,6 +1345,15 @@ env_files = [
 ```
 
 In this example, the env files will be loaded in the order in which they were defined.<br>
+To load only environment variables from the file that are not yet defined in the current environment, add the **defaults_only** flag as true, for example:
+
+```toml
+env_files = [
+    { path = "./load_only_undefined.env", defaults_only = true },
+    { path = "./load_all.env" }
+]
+```
+
 To enable profile based filtering, you can use the object form as follows:
 
 ```toml

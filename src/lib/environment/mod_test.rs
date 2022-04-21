@@ -40,6 +40,40 @@ fn load_env_file_exists() {
 
 #[test]
 #[ignore]
+fn load_env_file_with_base_directory_not_defaults_and_exists() {
+    envmnt::set("ENV1_TEST", "existing");
+    envmnt::set("ENV2_TEST", "existing");
+    envmnt::set("ENV3_TEST", "existing");
+
+    let output =
+        load_env_file_with_base_directory(Some("./examples/test.env".to_string()), None, false);
+
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "TEST1"));
+    assert!(envmnt::is_equal("ENV2_TEST", "TEST2"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: TEST2"));
+}
+
+#[test]
+#[ignore]
+fn load_env_file_with_base_directory_defaults_only_and_exists() {
+    envmnt::set("ENV1_TEST", "existing");
+    envmnt::set("ENV2_TEST", "existing");
+    envmnt::remove("ENV3_TEST");
+
+    let output =
+        load_env_file_with_base_directory(Some("./examples/test.env".to_string()), None, true);
+
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "existing"));
+    assert!(envmnt::is_equal("ENV2_TEST", "existing"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: existing"));
+}
+
+#[test]
+#[ignore]
 fn evaluate_and_set_env_simple() {
     envmnt::remove("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
@@ -717,6 +751,7 @@ fn set_env_files_for_config_base_directory() {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: None,
+                defaults_only: None,
             }),
             EnvFile::Path("./src/lib/test/test_files/profile.env".to_string()),
         ],
@@ -752,11 +787,13 @@ fn set_env_files_for_config_profile() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         None,
@@ -791,11 +828,13 @@ fn set_env_files_for_config_profile_inverse() {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
         ],
         None,
@@ -830,11 +869,13 @@ fn set_env_files_for_config_additional_profiles() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         Some(&vec!["env_test2".to_string()]),
@@ -881,11 +922,13 @@ fn initialize_env_all() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         env,
