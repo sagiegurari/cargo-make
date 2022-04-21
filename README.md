@@ -1363,6 +1363,7 @@ DEV = false
 PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
+CONDITIONAL_SCRIPT = { script = ["echo conditional_script"], condition = { env_not_set = ["CONDITIONAL_SCRIPT"] } }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
 TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }

@@ -173,6 +173,7 @@ fn set_env_multi_types() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         }),
     );
     env.insert(
@@ -227,6 +228,7 @@ fn set_env_multi_line_script() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1\necho script2".to_string()],
             multi_line: Some(true),
+            condition: None,
         }),
     );
 
@@ -234,6 +236,80 @@ fn set_env_multi_line_script() {
 
     assert!(envmnt::is_equal("script", "script1\nscript2\n"));
     envmnt::remove("SET_ENV_MULTI_LINE_SCRIPT");
+}
+
+#[test]
+fn set_env_script_with_condition_true() {
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script_condition".to_string()],
+            multi_line: None,
+            condition: Some(condition),
+        }),
+    );
+
+    set_env(env);
+
+    assert!(envmnt::is_equal(
+        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE",
+        "script_condition"
+    ));
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
+}
+
+#[test]
+fn set_env_script_with_condition_false() {
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_FALSE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_FALSE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "SET_ENV_SCRIPT_WITH_CONDITION_FALSE".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script_condition".to_string()],
+            multi_line: None,
+            condition: Some(condition),
+        }),
+    );
+
+    set_env(env);
+
+    assert!(!envmnt::exists("SET_ENV_SCRIPT_WITH_CONDITION_FALSE",));
 }
 
 #[test]
@@ -1035,6 +1111,7 @@ fn setup_env_script() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         }),
     );
 
@@ -1060,6 +1137,7 @@ fn evaluate_env_value_valid() {
         &EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 
@@ -1074,6 +1152,7 @@ fn evaluate_env_value_empty() {
         &EnvValueScript {
             script: vec!["".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 
@@ -1088,6 +1167,7 @@ fn evaluate_env_error() {
         &EnvValueScript {
             script: vec!["exit 1".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 }
@@ -1099,6 +1179,7 @@ fn evaluate_env_value_single_line() {
         &EnvValueScript {
             script: vec!["echo test".to_string()],
             multi_line: Some(false),
+            condition: None,
         },
     );
 
@@ -1112,6 +1193,7 @@ fn evaluate_env_value_multi_line() {
         &EnvValueScript {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
+            condition: None,
         },
     );
 
@@ -1127,6 +1209,7 @@ fn evaluate_env_value_multi_line_linux() {
         &EnvValueScript {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
+            condition: None,
         },
     );
 

@@ -5,6 +5,7 @@
 * Fix: add workspace root member when both workspace members and package are defined #644
 * Fix: support partial semver values in rust version conditions #643
 * Enhancement: upgrade regex as per security advisory #638 (thanks @Dylan-DPC)
+* Enhancement: support condition in script based env value #648
 
 ### v0.35.10 (2022-03-11)
 

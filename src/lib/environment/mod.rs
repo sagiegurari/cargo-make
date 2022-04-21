@@ -111,9 +111,16 @@ fn set_env_for_list(key: &str, list: &Vec<String>) {
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
-    let value = evaluate_env_value(&key, &env_value);
+    let valid = match env_value.condition {
+        Some(ref condition) => condition::validate_conditions_without_context(condition.clone()),
+        None => true,
+    };
 
-    evaluate_and_set_env(&key, &value);
+    if valid {
+        let value = evaluate_env_value(&key, &env_value);
+
+        evaluate_and_set_env(&key, &value);
+    }
 }
 
 fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {

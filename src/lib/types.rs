@@ -421,6 +421,8 @@ pub struct EnvValueScript {
     pub script: Vec<String>,
     /// True/False to enable multi line env values
     pub multi_line: Option<bool>,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
