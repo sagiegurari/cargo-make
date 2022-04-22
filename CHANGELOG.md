@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.11
+### v0.35.11 (2022-04-22)
 
 * Fix: add workspace root member when both workspace members and package are defined #644
 * Fix: support partial semver values in rust version conditions #643

@@ -338,6 +338,8 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # condition</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Evaluates conditions based on task configuration and current env.</span>
@@ -352,7 +354,7 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">RustVersionCondition</span>, <span class="ident">Step</span>, <span class="ident">TaskCondition</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version::is_newer</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version</span>::{<span class="ident">is_newer</span>, <span class="ident">is_same</span>};
 <span class="kw">use</span> <span class="ident">envmnt</span>;
 <span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
 <span class="kw">use</span> <span class="ident">rust_info</span>;
@@ -545,7 +547,8 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">min</span> {
             <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; {
-                <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>)
+                <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+                    <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
             }
             <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
         };
@@ -553,7 +556,8 @@
         <span class="kw">if</span> <span class="ident">valid</span> {
             <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">max</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; {
-                    <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="bool-val">true</span>)
+                    <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+                        <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
                 }
                 <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
             };
@@ -561,7 +565,7 @@
 
         <span class="kw">if</span> <span class="ident">valid</span> {
             <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">equal</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; <span class="ident">version</span> <span class="op">==</span> <span class="ident">current_version</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
                 <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
             };
         }

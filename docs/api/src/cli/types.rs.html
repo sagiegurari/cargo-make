@@ -2296,6 +2296,11 @@
 <span id="2293">2293</span>
 <span id="2294">2294</span>
 <span id="2295">2295</span>
+<span id="2296">2296</span>
+<span id="2297">2297</span>
+<span id="2298">2298</span>
+<span id="2299">2299</span>
+<span id="2300">2300</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # types</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Defines the various types and aliases used by cargo-make.</span>
@@ -2689,6 +2694,8 @@
     <span class="kw">pub</span> <span class="ident">base_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The profile name this file is relevant to</span>
     <span class="kw">pub</span> <span class="ident">profile</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// If true, only set the env vars if not already defined</span>
+    <span class="kw">pub</span> <span class="ident">defaults_only</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">EnvFileInfo</span> {
@@ -2698,6 +2705,7 @@
             <span class="ident">path</span>,
             <span class="ident">base_path</span>: <span class="prelude-val">None</span>,
             <span class="ident">profile</span>: <span class="prelude-val">None</span>,
+            <span class="ident">defaults_only</span>: <span class="prelude-val">None</span>,
         }
     }
 }
@@ -2719,6 +2727,8 @@
     <span class="kw">pub</span> <span class="ident">script</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// True/False to enable multi line env values</span>
     <span class="kw">pub</span> <span class="ident">multi_line</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The condition to validate</span>
+    <span class="kw">pub</span> <span class="ident">condition</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
