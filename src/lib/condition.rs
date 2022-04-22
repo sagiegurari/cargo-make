@@ -12,7 +12,7 @@ use crate::environment;
 use crate::profile;
 use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
-use crate::version::is_newer;
+use crate::version::{is_newer, is_same};
 use envmnt;
 use indexmap::IndexMap;
 use rust_info;
@@ -205,7 +205,8 @@ fn validate_rust_version_condition(rustinfo: RustInfo, condition: RustVersionCon
 
         let mut valid = match condition.min {
             Some(version) => {
-                version == current_version || is_newer(&version, &current_version, true)
+                is_same(&version, &current_version, true, true)
+                    || is_newer(&version, &current_version, true, true)
             }
             None => true,
         };
@@ -213,7 +214,8 @@ fn validate_rust_version_condition(rustinfo: RustInfo, condition: RustVersionCon
         if valid {
             valid = match condition.max {
                 Some(version) => {
-                    version == current_version || is_newer(&current_version, &version, true)
+                    is_same(&version, &current_version, true, true)
+                        || is_newer(&current_version, &version, true, true)
                 }
                 None => true,
             };
@@ -221,7 +223,7 @@ fn validate_rust_version_condition(rustinfo: RustInfo, condition: RustVersionCon
 
         if valid {
             valid = match condition.equal {
-                Some(version) => version == current_version,
+                Some(version) => is_same(&version, &current_version, true, true),
                 None => true,
             };
         }

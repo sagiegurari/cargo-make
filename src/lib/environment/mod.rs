@@ -111,9 +111,16 @@ fn set_env_for_list(key: &str, list: &Vec<String>) {
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
-    let value = evaluate_env_value(&key, &env_value);
+    let valid = match env_value.condition {
+        Some(ref condition) => condition::validate_conditions_without_context(condition.clone()),
+        None => true,
+    };
 
-    evaluate_and_set_env(&key, &value);
+    if valid {
+        let value = evaluate_env_value(&key, &env_value);
+
+        evaluate_and_set_env(&key, &value);
+    }
 }
 
 fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
@@ -265,7 +272,11 @@ fn set_env_files_for_config(
                 };
 
                 if is_valid_profile {
-                    load_env_file_with_base_directory(Some(info.path), info.base_path)
+                    load_env_file_with_base_directory(
+                        Some(info.path),
+                        info.base_path,
+                        info.defaults_only.unwrap_or(false),
+                    )
                 } else {
                     false
                 }
@@ -654,12 +665,13 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
 }
 
 pub(crate) fn load_env_file(env_file: Option<String>) -> bool {
-    load_env_file_with_base_directory(env_file, None)
+    load_env_file_with_base_directory(env_file, None, false)
 }
 
-pub(crate) fn load_env_file_with_base_directory(
+fn load_env_file_with_base_directory(
     env_file: Option<String>,
     base_directory: Option<String>,
+    defaults_only: bool,
 ) -> bool {
     match env_file {
         Some(file_name) => {
@@ -682,7 +694,19 @@ pub(crate) fn load_env_file_with_base_directory(
 
             match file_path.to_str() {
                 Some(file_path_str) => {
-                    let evaluate_env_var = |value: String| expand_value(&value);
+                    let evaluate_env_var = |key: String, value: String| {
+                        let skip = if defaults_only {
+                            envmnt::exists(&key)
+                        } else {
+                            false
+                        };
+
+                        if skip {
+                            None
+                        } else {
+                            Some((key, expand_value(&value)))
+                        }
+                    };
 
                     match envmnt::evaluate_and_load_file(file_path_str, evaluate_env_var) {
                         Err(error) => {

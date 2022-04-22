@@ -28,6 +28,60 @@ fn get_version_from_output_found() {
 }
 
 #[test]
+fn is_newer_same_full_no_partial() {
+    let newer = is_newer("1.60.0", "1.60.0", false, true);
+    assert!(!newer);
+}
+
+#[test]
+fn is_newer_same_no_partial_no_patch() {
+    let newer = is_newer("1.60", "1.60", false, true);
+    assert!(newer);
+}
+
+#[test]
+fn is_newer_same_no_partial_no_patch_for_newer() {
+    let newer = is_newer("1.60.0", "1.60", false, true);
+    assert!(newer);
+}
+
+#[test]
+fn is_newer_same_no_partial_no_patch_for_older() {
+    let newer = is_newer("1.60", "1.60.0", false, true);
+    assert!(newer);
+}
+
+#[test]
+fn is_newer_same_full_allow_partial() {
+    let newer = is_newer("1.60.0", "1.60.0", true, true);
+    assert!(!newer);
+}
+
+#[test]
+fn is_newer_same_allow_partial_no_patch() {
+    let newer = is_newer("1.60", "1.60", true, true);
+    assert!(!newer);
+}
+
+#[test]
+fn is_newer_same_allow_partial_no_patch_for_newer() {
+    let newer = is_newer("1.60.0", "1.60", true, true);
+    assert!(!newer);
+}
+
+#[test]
+fn is_newer_same_allow_partial_no_patch_for_older() {
+    let newer = is_newer("1.60", "1.60.0", true, true);
+    assert!(!newer);
+}
+
+#[test]
+fn is_same_equal_allow_partial_no_patch_for_older() {
+    let newer = is_same("1.60", "1.60.0", true, false);
+    assert!(newer);
+}
+
+#[test]
 fn is_newer_found_same() {
     let current = env!("CARGO_PKG_VERSION");
     let newer = is_newer_found(current);

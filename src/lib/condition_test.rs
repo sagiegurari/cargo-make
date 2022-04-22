@@ -2690,6 +2690,23 @@ fn validate_rust_version_condition_min_enabled() {
 }
 
 #[test]
+fn validate_rust_version_condition_min_disabled_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("3".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
 fn validate_rust_version_condition_min_same() {
     let mut rustinfo = RustInfo::new();
     rustinfo.version = Some("2.0.0".to_string());
@@ -2707,6 +2724,23 @@ fn validate_rust_version_condition_min_same() {
 }
 
 #[test]
+fn validate_rust_version_condition_min_same_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("2".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_rust_version_condition_min_disabled_major() {
     let mut rustinfo = RustInfo::new();
     rustinfo.version = Some("2.0.0".to_string());
@@ -2715,6 +2749,23 @@ fn validate_rust_version_condition_min_disabled_major() {
         rustinfo,
         RustVersionCondition {
             min: Some("3.0.0".to_string()),
+            max: None,
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_min_disabled_major_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: Some("3".to_string()),
             max: None,
             equal: None,
         },
@@ -2775,6 +2826,23 @@ fn validate_rust_version_condition_max_enabled() {
 }
 
 #[test]
+fn validate_rust_version_condition_max_enabled_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("1.9.9".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_rust_version_condition_max_same() {
     let mut rustinfo = RustInfo::new();
     rustinfo.version = Some("2.0.0".to_string());
@@ -2792,6 +2860,23 @@ fn validate_rust_version_condition_max_same() {
 }
 
 #[test]
+fn validate_rust_version_condition_max_same_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_rust_version_condition_max_disabled_major() {
     let mut rustinfo = RustInfo::new();
     rustinfo.version = Some("3.0.0".to_string());
@@ -2801,6 +2886,23 @@ fn validate_rust_version_condition_max_disabled_major() {
         RustVersionCondition {
             min: None,
             max: Some("2.0.0".to_string()),
+            equal: None,
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_max_disabled_major_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("3.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: Some("2".to_string()),
             equal: None,
         },
     );
@@ -2860,6 +2962,23 @@ fn validate_rust_version_condition_equal_same() {
 }
 
 #[test]
+fn validate_rust_version_condition_equal_same_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some("2".to_string()),
+        },
+    );
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_rust_version_condition_equal_not_same() {
     let mut rustinfo = RustInfo::new();
     rustinfo.version = Some("2.0.0".to_string());
@@ -2870,6 +2989,23 @@ fn validate_rust_version_condition_equal_not_same() {
             min: None,
             max: None,
             equal: Some("3.0.0".to_string()),
+        },
+    );
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_rust_version_condition_equal_not_same_and_partial() {
+    let mut rustinfo = RustInfo::new();
+    rustinfo.version = Some("2.0.0".to_string());
+
+    let enabled = validate_rust_version_condition(
+        rustinfo,
+        RustVersionCondition {
+            min: None,
+            max: None,
+            equal: Some("3".to_string()),
         },
     );
 

@@ -40,6 +40,40 @@ fn load_env_file_exists() {
 
 #[test]
 #[ignore]
+fn load_env_file_with_base_directory_not_defaults_and_exists() {
+    envmnt::set("ENV1_TEST", "existing");
+    envmnt::set("ENV2_TEST", "existing");
+    envmnt::set("ENV3_TEST", "existing");
+
+    let output =
+        load_env_file_with_base_directory(Some("./examples/test.env".to_string()), None, false);
+
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "TEST1"));
+    assert!(envmnt::is_equal("ENV2_TEST", "TEST2"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: TEST2"));
+}
+
+#[test]
+#[ignore]
+fn load_env_file_with_base_directory_defaults_only_and_exists() {
+    envmnt::set("ENV1_TEST", "existing");
+    envmnt::set("ENV2_TEST", "existing");
+    envmnt::remove("ENV3_TEST");
+
+    let output =
+        load_env_file_with_base_directory(Some("./examples/test.env".to_string()), None, true);
+
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "existing"));
+    assert!(envmnt::is_equal("ENV2_TEST", "existing"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: existing"));
+}
+
+#[test]
+#[ignore]
 fn evaluate_and_set_env_simple() {
     envmnt::remove("EVAL_SET_SIMPLE");
     evaluate_and_set_env("EVAL_SET_SIMPLE", "SIMPLE");
@@ -173,6 +207,7 @@ fn set_env_multi_types() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         }),
     );
     env.insert(
@@ -227,6 +262,7 @@ fn set_env_multi_line_script() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1\necho script2".to_string()],
             multi_line: Some(true),
+            condition: None,
         }),
     );
 
@@ -234,6 +270,80 @@ fn set_env_multi_line_script() {
 
     assert!(envmnt::is_equal("script", "script1\nscript2\n"));
     envmnt::remove("SET_ENV_MULTI_LINE_SCRIPT");
+}
+
+#[test]
+fn set_env_script_with_condition_true() {
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script_condition".to_string()],
+            multi_line: None,
+            condition: Some(condition),
+        }),
+    );
+
+    set_env(env);
+
+    assert!(envmnt::is_equal(
+        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE",
+        "script_condition"
+    ));
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
+}
+
+#[test]
+fn set_env_script_with_condition_false() {
+    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_FALSE");
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_FALSE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+    };
+
+    let mut env = IndexMap::new();
+    env.insert(
+        "SET_ENV_SCRIPT_WITH_CONDITION_FALSE".to_string(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo script_condition".to_string()],
+            multi_line: None,
+            condition: Some(condition),
+        }),
+    );
+
+    set_env(env);
+
+    assert!(!envmnt::exists("SET_ENV_SCRIPT_WITH_CONDITION_FALSE",));
 }
 
 #[test]
@@ -641,6 +751,7 @@ fn set_env_files_for_config_base_directory() {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: None,
+                defaults_only: None,
             }),
             EnvFile::Path("./src/lib/test/test_files/profile.env".to_string()),
         ],
@@ -676,11 +787,13 @@ fn set_env_files_for_config_profile() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         None,
@@ -715,11 +828,13 @@ fn set_env_files_for_config_profile_inverse() {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
         ],
         None,
@@ -754,11 +869,13 @@ fn set_env_files_for_config_additional_profiles() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         Some(&vec!["env_test2".to_string()]),
@@ -805,11 +922,13 @@ fn initialize_env_all() {
                 path: "./test/test_files/profile.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test1".to_string()),
+                defaults_only: None,
             }),
             EnvFile::Info(EnvFileInfo {
                 path: "./test/test_files/env.env".to_string(),
                 base_path: Some("./src/lib".to_string()),
                 profile: Some("env_test2".to_string()),
+                defaults_only: None,
             }),
         ],
         env,
@@ -1035,6 +1154,7 @@ fn setup_env_script() {
         EnvValue::Script(EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         }),
     );
 
@@ -1060,6 +1180,7 @@ fn evaluate_env_value_valid() {
         &EnvValueScript {
             script: vec!["echo script1".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 
@@ -1074,6 +1195,7 @@ fn evaluate_env_value_empty() {
         &EnvValueScript {
             script: vec!["".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 
@@ -1088,6 +1210,7 @@ fn evaluate_env_error() {
         &EnvValueScript {
             script: vec!["exit 1".to_string()],
             multi_line: None,
+            condition: None,
         },
     );
 }
@@ -1099,6 +1222,7 @@ fn evaluate_env_value_single_line() {
         &EnvValueScript {
             script: vec!["echo test".to_string()],
             multi_line: Some(false),
+            condition: None,
         },
     );
 
@@ -1112,6 +1236,7 @@ fn evaluate_env_value_multi_line() {
         &EnvValueScript {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
+            condition: None,
         },
     );
 
@@ -1127,6 +1252,7 @@ fn evaluate_env_value_multi_line_linux() {
         &EnvValueScript {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
+            condition: None,
         },
     );
 

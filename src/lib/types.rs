@@ -391,6 +391,8 @@ pub struct EnvFileInfo {
     pub base_path: Option<String>,
     /// The profile name this file is relevant to
     pub profile: Option<String>,
+    /// If true, only set the env vars if not already defined
+    pub defaults_only: Option<bool>,
 }
 
 impl EnvFileInfo {
@@ -400,6 +402,7 @@ impl EnvFileInfo {
             path,
             base_path: None,
             profile: None,
+            defaults_only: None,
         }
     }
 }
@@ -421,6 +424,8 @@ pub struct EnvValueScript {
     pub script: Vec<String>,
     /// True/False to enable multi line env values
     pub multi_line: Option<bool>,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

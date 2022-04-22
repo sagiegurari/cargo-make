@@ -1238,6 +1238,7 @@ DEV = false
 PROD = false
 COMPOSITE = "${TEST1} ${TEST2}"
 MULTI_LINE_SCRIPT = { script = ["echo 1\necho 2"], multi_line = true }
+CONDITIONAL_SCRIPT = { script = ["echo conditional_script"], condition = { env_not_set = ["CONDITIONAL_SCRIPT"] } }
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
 TO_UNSET = { unset = true }
 PREFER_EXISTING = { value = "new", condition = { env_not_set = ["PREFER_EXISTING"] } }
@@ -1344,6 +1345,15 @@ env_files = [
 ```
 
 In this example, the env files will be loaded in the order in which they were defined.<br>
+To load only environment variables from the file that are not yet defined in the current environment, add the **defaults_only** flag as true, for example:
+
+```toml
+env_files = [
+    { path = "./load_only_undefined.env", defaults_only = true },
+    { path = "./load_all.env" }
+]
+```
+
 To enable profile based filtering, you can use the object form as follows:
 
 ```toml
