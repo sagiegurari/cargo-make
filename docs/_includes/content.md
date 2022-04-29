@@ -3119,6 +3119,62 @@ When running in a rust workspace, you can disable some of the features in the me
 For example, if the members are in the same git repo as the entire project, you can add **skip_git_env_info** in the members
 makefiles and they will still have the environment variables setup from the parent process.
 
+<a name="usage-command-groups"></a>
+### Command Groups
+
+You can expose the tasks as *groups* by creating a top level task which will call other internal private tasks (private is not mandatory).<br>
+For example, if you want to have server start/stop and client start/stop commands and execute them as follows:
+
+```sh
+cargo make server start
+cargo make server stop
+cargo make client start
+cargo make client stop
+```
+
+You can define two top level tasks (server and client) that will invoke the internal ones.<br>
+Example implementation:
+
+```toml
+[tasks.server]
+private = false
+extend = "subcommand"
+env = { "SUBCOMMAND_PREFIX" = "server" }
+
+[tasks.client]
+private = false
+extend = "subcommand"
+env = { "SUBCOMMAND_PREFIX" = "client" }
+
+[tasks.subcommand]
+private = true
+script = '''
+#!@duckscript
+
+cm_run_task ${SUBCOMMAND_PREFIX}_${1}
+'''
+
+[tasks.server_start]
+private = true
+command = "echo"
+args = ["starting server..."]
+
+[tasks.server_stop]
+private = true
+command = "echo"
+args = ["stopping server..."]
+
+[tasks.client_start]
+private = true
+command = "echo"
+args = ["starting client..."]
+
+[tasks.client_stop]
+private = true
+command = "echo"
+args = ["stopping client..."]
+```
+
 <a name="usage-diff-changes"></a>
 ### Diff Changes
 Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.

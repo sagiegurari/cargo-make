@@ -85,6 +85,7 @@
         * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)
     * [Performance Tuning](#usage-performance-tuning)
+    * [Command Groups](#usage-command-groups)
     * [Diff Changes](#usage-diff-changes)
     * [Cli Options](#usage-cli)
     * [Plugins](#usage-plugins)

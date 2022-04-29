@@ -1,0 +1,44 @@
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[tasks.server]
+private = false
+extend = "subcommand"
+env = { "SUBCOMMAND_PREFIX" = "server" }
+
+[tasks.client]
+private = false
+extend = "subcommand"
+env = { "SUBCOMMAND_PREFIX" = "client" }
+
+[tasks.subcommand]
+private = true
+script = '''
+#!@duckscript
+
+cm_run_task ${SUBCOMMAND_PREFIX}_${1}
+'''
+
+[tasks.server_start]
+private = true
+command = "echo"
+args = ["starting server..."]
+
+[tasks.server_stop]
+private = true
+command = "echo"
+args = ["stopping server..."]
+
+[tasks.client_start]
+private = true
+command = "echo"
+args = ["starting client..."]
+
+[tasks.client_stop]
+private = true
+command = "echo"
+args = ["stopping client..."]
+
