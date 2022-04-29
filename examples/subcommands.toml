@@ -41,4 +41,3 @@ args = ["starting client..."]
 private = true
 command = "echo"
 args = ["stopping client..."]
-
