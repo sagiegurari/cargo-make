@@ -497,7 +497,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
             TaskWatchOptions::Options(watch_options) => {
                 let watch_version = match watch_options.version {
                     Some(value) => value.to_string(),
-                    _ => "8.1.0".to_string(), // current version
+                    _ => "8.1.1".to_string(), // current version
                 };
                 task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
 

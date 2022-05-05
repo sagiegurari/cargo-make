@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.12 (2022-05-05)
+
+* Fix: upgrade to cargo-watch 8.1.1 due to 8.1.0 being yanked #652
+
 ### v0.35.11 (2022-04-22)
 
 * Fix: add workspace root member when both workspace members and package are defined #644
