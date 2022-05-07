@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.35.13
+
+* Enhancement: New CARGO_MAKE_DISABLE_UPDATE_CHECK environment variable to disable update checks #653
+* Fix: wrong update check days counting
+
 ### v0.35.12 (2022-05-05)
 
 * Fix: upgrade to cargo-watch 8.1.1 due to 8.1.0 being yanked #652
