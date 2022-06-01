@@ -169,8 +169,8 @@ pub(crate) fn run_command_get_output(
     };
 
     command.stdin(Stdio::inherit());
-    if !capture_output {
-        command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+    if capture_output {
+        command.stdout(Stdio::piped()).stderr(Stdio::piped());
     }
     info!("Execute Command: {:#?}", &command);
 
