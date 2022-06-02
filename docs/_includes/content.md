@@ -2072,6 +2072,39 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Build Done  in 2 seconds.
 ```
 
+When defined with scripts (as opposed to commands), the **CARGO** environment variable will be defined for the requested toolchain.<br>
+The following example shows how to print both stable and nightly CARGO binary paths:
+
+```toml
+[tasks.echo-cargo-stable]
+toolchain = "stable"
+script = '''
+echo ${CARGO}
+'''
+
+[tasks.echo-cargo-nightly]
+toolchain = "nightly"
+script = '''
+echo ${CARGO}
+'''
+
+[tasks.echo-cargo-all]
+dependencies = ["echo-cargo-stable", "echo-cargo-nightly"]
+```
+
+An example output of the above **echo-cargo-all** is:
+
+```console
+[cargo-make] INFO - Task: echo-cargo-all
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: legacy-migration
+[cargo-make] INFO - Running Task: echo-cargo-stable
+/home/someuser/.rustup/toolchains/stable-armv7-unknown-linux-gnueabihf/bin/cargo
+[cargo-make] INFO - Running Task: echo-cargo-nightly
+/home/someuser/.rustup/toolchains/nightly-armv7-unknown-linux-gnueabihf/bin/cargo
+[cargo-make] INFO - Build Done in 4.44 seconds.
+```
+
 It's also possible to assert a minimum required version of rustc with a channel. This can help
 to document required compiler features and to remind developers to upgrade their installation.
 

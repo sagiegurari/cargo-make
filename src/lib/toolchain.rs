@@ -94,3 +94,38 @@ fn check_toolchain(toolchain: &ToolchainSpecifier) {
         }
     }
 }
+
+pub(crate) fn get_cargo_binary_path(toolchain: &ToolchainSpecifier) -> Option<String> {
+    let command_spec = wrap_command(
+        toolchain,
+        "rustup",
+        &Some(vec!["which".to_string(), "cargo".to_string()]),
+    );
+    let mut command = Command::new(&command_spec.command);
+    match command_spec.args {
+        Some(ref args_vec) => {
+            command.args(args_vec);
+        }
+        None => debug!("No command args defined."),
+    };
+
+    let output = command
+        .stderr(Stdio::null())
+        .stdout(Stdio::piped())
+        .output()
+        .expect("Failed to check rustup toolchain");
+    if !output.status.success() {
+        error!(
+            "Missing toolchain {}! Please install it using rustup.",
+            &toolchain
+        );
+        return None;
+    }
+
+    let binary_path = String::from_utf8_lossy(&output.stdout);
+    if binary_path.is_empty() {
+        None
+    } else {
+        Some(binary_path.to_string())
+    }
+}

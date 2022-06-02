@@ -20,3 +20,18 @@ dependencies = [
   "rustc-version-stable-edition-2021",
   "rustc-version-nightly",
 ]
+
+[tasks.echo-cargo-stable]
+toolchain = "stable"
+script = '''
+echo ${CARGO}
+'''
+
+[tasks.echo-cargo-nightly]
+toolchain = "nightly"
+script = '''
+echo ${CARGO}
+'''
+
+[tasks.echo-cargo-all]
+dependencies = ["echo-cargo-stable", "echo-cargo-nightly"]

@@ -2,6 +2,7 @@
 
 ### v0.35.13
 
+* Enhancement: Define CARGO environment variable for tasks with toolchain and script #658
 * Enhancement: New CARGO_MAKE_DISABLE_UPDATE_CHECK environment variable to disable update checks #653
 * Fix: wrong update check days counting
 
