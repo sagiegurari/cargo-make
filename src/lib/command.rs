@@ -9,7 +9,7 @@ mod command_test;
 
 use crate::logger;
 use crate::toolchain;
-use crate::types::{CommandSpec, Step};
+use crate::types::{CommandSpec, Step, UnstableFeature};
 use envmnt;
 use run_script;
 use run_script::{IoOptions, ScriptError, ScriptOptions};
@@ -158,6 +158,8 @@ pub(crate) fn run_command_get_output(
     args: &Option<Vec<String>>,
     capture_output: bool,
 ) -> io::Result<Output> {
+    let ctrl_c_handling = UnstableFeature::CtrlCHandling.is_env_set();
+
     debug!("Execute Command: {}", &command_string);
     let mut command = Command::new(&command_string);
 
@@ -169,12 +171,24 @@ pub(crate) fn run_command_get_output(
     };
 
     command.stdin(Stdio::inherit());
-    if capture_output {
-        command.stdout(Stdio::piped()).stderr(Stdio::piped());
+
+    if ctrl_c_handling {
+        if capture_output {
+            command.stdout(Stdio::piped()).stderr(Stdio::piped());
+        }
+    } else {
+        if !capture_output {
+            command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+        }
     }
+
     info!("Execute Command: {:#?}", &command);
 
-    let output = spawn_command(command);
+    let output = if ctrl_c_handling {
+        spawn_command(command)
+    } else {
+        command.output()
+    };
 
     debug!("Output: {:#?}", &output);
 
