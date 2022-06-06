@@ -561,7 +561,7 @@ impl<'de> serde::de::Deserialize<'de> for TestArg {
 pub struct InstallCargoPluginInfo {
     /// The provided crate to install
     pub crate_name: Option<String>,
-    /// Minimial version
+    /// Minimal version
     pub min_version: Option<String>,
     /// Optional alternate 'install' command
     pub install_command: Option<String>,
@@ -621,7 +621,7 @@ pub struct InstallCrateInfo {
     pub binary: String,
     /// Test arguments that will be used to check that the crate is installed.
     pub test_arg: TestArg,
-    /// Minimial version
+    /// Minimal version
     pub min_version: Option<String>,
     /// Exact version
     pub version: Option<String>,
@@ -1133,7 +1133,7 @@ impl ToolchainSpecifier {
     }
 }
 
-/// A toolchain with a minumum version bound
+/// A toolchain with a minimum version bound
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ToolchainBoundedSpecifier {
     /// The channel of the toolchain to use

@@ -3358,7 +3358,7 @@ index 5152290..ba0ef1d 100644
              clear: None,
 -            description: None,
 +            description: Some(
-+                "Overide description"
++                "Override description"
 +            ),
              category: Some(
                  "Build"

@@ -1,6 +1,6 @@
 //! # cache
 //!
-//! Manages internal cargo-make persistant cache.
+//! Manages internal cargo-make persistent cache.
 //!
 
 #[cfg(test)]
