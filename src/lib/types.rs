@@ -2009,7 +2009,7 @@ impl UnstableFeature {
     pub fn to_env_name(&self) -> String {
         let mut feature = serde_json::to_string(&self).unwrap();
         feature = feature.replace("\"", "");
-        format!("CARGO_MAKE_UNSTABLE_FEATURE_{feature}")
+        format!("CARGO_MAKE_UNSTABLE_FEATURE_{feature}", feature = feature)
     }
 
     /// Is the corresponding env. variable set?
