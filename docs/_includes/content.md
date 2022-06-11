@@ -3256,7 +3256,7 @@ unstable_features = ["CTRL_C_HANDLING"]
 
 Below is a list of currently existing unstable features
 
-* CTRL_C_HANDLING - Adds ctrl-c handler which will stop any currently running command invoked by the current task and exist cargo-make
+* CTRL_C_HANDLING - Adds ctrl-c handler which will stop any currently running command invoked by the current task and exit cargo-make
 
 <a name="usage-cli"></a>
 ### Cli Options
