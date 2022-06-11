@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.13
+### v0.35.13 (2022-06-11)
 
 * Enhancement: Define CARGO environment variable for tasks with toolchain and script #658
 * Enhancement: New CARGO_MAKE_DISABLE_UPDATE_CHECK environment variable to disable update checks #653
