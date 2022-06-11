@@ -17,6 +17,7 @@ mod mod_test;
 
 use crate::environment;
 use crate::io;
+use crate::toolchain;
 use crate::types::{FlowInfo, FlowState, ScriptValue, Task};
 use std::cell::RefCell;
 use std::path::PathBuf;
@@ -164,7 +165,16 @@ pub(crate) fn invoke(
         Some(ref script) => {
             let validate = !task.should_ignore_errors();
 
-            invoke_script_in_flow_context(
+            // setup toolchain environment
+            let (reset_env, original_cargo) = match task.toolchain {
+                Some(ref toolchain) => match toolchain::get_cargo_binary_path(toolchain) {
+                    Some(cargo_binary) => (true, envmnt::get_set("CARGO", cargo_binary)),
+                    None => (false, None),
+                },
+                None => (false, None),
+            };
+
+            let output = invoke_script_in_flow_context(
                 script,
                 task.script_runner.clone(),
                 task.script_runner_args.clone(),
@@ -172,7 +182,16 @@ pub(crate) fn invoke(
                 validate,
                 Some(flow_info),
                 Some(flow_state),
-            )
+            );
+
+            // reset toolchain environment
+            if reset_env {
+                if let Some(value) = original_cargo {
+                    envmnt::set("CARGO", value)
+                }
+            }
+
+            output
         }
         None => false,
     }

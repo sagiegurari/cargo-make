@@ -333,7 +333,7 @@ fn create_for_step(
     }
 
     if let Some(path) = &task.path {
-        // this is refering to a task in another file
+        // this is referring to a task in another file
         // so we create a proxy task to invoke it
         let proxy_name = format!("{}_proxy", task.name);
 
@@ -354,7 +354,7 @@ fn create_for_step(
             config: proxy_task,
         };
 
-        debug!("Created external depedency step: {:#?}", &step);
+        debug!("Created external dependency step: {:#?}", &step);
 
         steps.push(step);
         task_names.insert(task.to_string());
@@ -477,7 +477,7 @@ pub(crate) fn create(
     }
 
     if !sub_flow {
-        // always add end task even if already executed due to some depedency
+        // always add end task even if already executed due to some dependency
         match config.config.end_task {
             Some(ref task) => add_predefined_step(config, task, &mut steps),
             None => debug!("Ent task not defined."),

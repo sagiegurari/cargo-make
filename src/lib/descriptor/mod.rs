@@ -3,7 +3,7 @@
 //! Loads the tasks descriptor.<br>
 //! It will first load the default descriptor which is defined in cargo-make internally and
 //! afterwards tries to find the external descriptor and load it as well.<br>
-//! If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+//! If an external descriptor exists, it will be loaded and extend the default descriptor.
 //!
 
 #[cfg(test)]
@@ -549,7 +549,7 @@ fn split_once(value: &str, delimiter: char) -> Option<(&str, &str)> {
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
-/// If an extenal descriptor exists, it will be loaded and extend the default descriptor.
+/// If an external descriptor exists, it will be loaded and extend the default descriptor.
 /// If one of the descriptor requires a newer version of cargo-make, returns an error with the
 /// minimum version required by the descriptor.
 fn load_descriptors(
@@ -621,7 +621,7 @@ fn load_cargo_aliases(config: &mut Config) {
 /// Loads the tasks descriptor.<br>
 /// It will first load the default descriptor which is defined in cargo-make internally and
 /// afterwards tries to find the external descriptor and load it as well.<br>
-/// If an extenal descriptor exists, it will be loaded and extend the default descriptor. <br>
+/// If an external descriptor exists, it will be loaded and extend the default descriptor. <br>
 /// If one of the descriptor requires a newer version of cargo-make, returns an error with the
 /// minimum version required by the descriptor.
 pub(crate) fn load(
@@ -674,6 +674,14 @@ pub(crate) fn load(
     }
 
     load_cargo_aliases(&mut config);
+
+    if let Some(unstable_features) = &config.config.unstable_features {
+        for feature in unstable_features {
+            config
+                .env
+                .insert(feature.to_env_name(), EnvValue::Boolean(true));
+        }
+    }
 
     Ok(config)
 }

@@ -75,3 +75,14 @@ fn wrap_command_with_args() {
     assert_eq!(args[3], "echo".to_string());
     assert_eq!(args[4], "test".to_string());
 }
+
+#[test]
+fn get_cargo_binary_path_valid() {
+    let toolchain = get_test_env_toolchain();
+    let binary_path = get_cargo_binary_path(&toolchain);
+
+    assert!(binary_path.is_some());
+    let binary_path_value = binary_path.unwrap();
+    assert!(binary_path_value.find("bin").is_some());
+    assert!(binary_path_value.find("cargo").is_some());
+}

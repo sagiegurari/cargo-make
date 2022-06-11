@@ -4396,3 +4396,39 @@ fn deprecation_info_partial_eq_diff_type() {
 
     assert!(value1 != value2);
 }
+
+#[test]
+fn unstable_feature_to_env_name() {
+    let output = UnstableFeature::CtrlCHandling.to_env_name();
+
+    assert_eq!(output, "CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING");
+}
+
+#[test]
+#[ignore]
+fn unstable_feature_is_env_set_true() {
+    envmnt::set_bool("CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING", true);
+    let output = UnstableFeature::CtrlCHandling.is_env_set();
+    envmnt::remove("CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING");
+
+    assert!(output);
+}
+
+#[test]
+#[ignore]
+fn unstable_feature_is_env_set_false() {
+    envmnt::set_bool("CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING", false);
+    let output = UnstableFeature::CtrlCHandling.is_env_set();
+    envmnt::remove("CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING");
+
+    assert!(!output);
+}
+
+#[test]
+#[ignore]
+fn unstable_feature_is_env_set_none() {
+    envmnt::remove("CARGO_MAKE_UNSTABLE_FEATURE_CTRL_C_HANDLING");
+    let output = UnstableFeature::CtrlCHandling.is_env_set();
+
+    assert!(!output);
+}

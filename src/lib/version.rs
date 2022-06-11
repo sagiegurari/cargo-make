@@ -10,7 +10,7 @@ mod version_test;
 
 use crate::cache;
 use crate::command;
-use crate::types::{Cache, GlobalConfig};
+use crate::types::{Cache, CliArgs, GlobalConfig};
 use lenient_semver;
 use semver::Version;
 use std::process::Command;
@@ -212,15 +212,28 @@ fn get_days(global_config: &GlobalConfig) -> u64 {
     }
 }
 
-pub(crate) fn should_check(global_config: &GlobalConfig) -> bool {
+fn should_check_overdue(global_config: &GlobalConfig) -> bool {
     let days = get_days(global_config);
 
     if days > 0 {
         let cache_data = cache::load();
-        has_amount_of_days_passed(1, &cache_data)
+        has_amount_of_days_passed(days, &cache_data)
     } else {
         true
     }
+}
+
+fn should_check_for_args(cli_args: &CliArgs, global_config: &GlobalConfig, is_ci: bool) -> bool {
+    // only run check for updates if we are not in a CI env and user didn't ask to skip the check
+    !cli_args.disable_check_for_updates
+        && !is_ci
+        && !envmnt::is_or("CARGO_MAKE_DISABLE_UPDATE_CHECK", false)
+        && should_check_overdue(&global_config)
+}
+
+pub(crate) fn should_check(cli_args: &CliArgs, global_config: &GlobalConfig) -> bool {
+    // only run check for updates if we are not in a CI env and user didn't ask to skip the check
+    should_check_for_args(cli_args, global_config, ci_info::is_ci())
 }
 
 pub(crate) fn check() {

@@ -48,11 +48,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     debug!("Cli Args {:#?}", &cli_args);
     debug!("Global Configuration {:#?}", &global_config);
 
-    // only run check for updates if we are not in a CI env and user didn't ask to skip the check
-    if !cli_args.disable_check_for_updates
-        && !ci_info::is_ci()
-        && version::should_check(&global_config)
-    {
+    if version::should_check(&cli_args, &global_config) {
         version::check();
     }
 

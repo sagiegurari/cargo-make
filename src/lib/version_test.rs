@@ -324,22 +324,118 @@ fn get_days_unknown() {
 }
 
 #[test]
-fn should_check_none() {
+#[ignore]
+fn should_check_overdue_none() {
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds();
+    cache_data.last_update_check = Some(now);
+    cache::store(&cache_data);
+
     let global_config = GlobalConfig::new();
-    should_check(&global_config);
+    let check = should_check_overdue(&global_config);
+    assert!(!check);
 }
 
 #[test]
-fn should_check_always() {
+#[ignore]
+fn should_check_overdue_always() {
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds();
+    cache_data.last_update_check = Some(now);
+    cache::store(&cache_data);
+
     let mut global_config = GlobalConfig::new();
     global_config.update_check_minimum_interval = Some("always".to_string());
-    let check = should_check(&global_config);
+    let check = should_check_overdue(&global_config);
     assert!(check);
 }
 
 #[test]
-fn should_check_other() {
+#[ignore]
+fn should_check_overdue_weekly_last_now() {
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds();
+    cache_data.last_update_check = Some(now);
+    cache::store(&cache_data);
+
     let mut global_config = GlobalConfig::new();
     global_config.update_check_minimum_interval = Some("weekly".to_string());
-    should_check(&global_config);
+    let check = should_check_overdue(&global_config);
+    assert!(!check);
+}
+
+#[test]
+#[ignore]
+fn should_check_overdue_weekly_last_8_days() {
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds() - 8 * 24 * 60 * 60;
+    cache_data.last_update_check = Some(now);
+    cache::store(&cache_data);
+
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("weekly".to_string());
+    let check = should_check_overdue(&global_config);
+    assert!(check);
+}
+
+#[test]
+#[ignore]
+fn should_check_overdue_weekly_last_6_days() {
+    let mut cache_data = cache::load();
+    let now = get_now_as_seconds() - 6 * 24 * 60 * 60;
+    cache_data.last_update_check = Some(now);
+    cache::store(&cache_data);
+
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("weekly".to_string());
+    let check = should_check_overdue(&global_config);
+    assert!(!check);
+}
+
+#[test]
+fn should_check_for_args_true() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let cli_args = CliArgs::new();
+
+    let check = should_check_for_args(&cli_args, &global_config, false);
+    assert!(check);
+}
+
+#[test]
+fn should_check_for_args_cli_disabled() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let mut cli_args = CliArgs::new();
+    cli_args.disable_check_for_updates = true;
+
+    let check = should_check_for_args(&cli_args, &global_config, false);
+    assert!(!check);
+}
+
+#[test]
+#[ignore]
+fn should_check_for_args_disabled_via_env() {
+    let env_value = envmnt::is_or("CARGO_MAKE_DISABLE_UPDATE_CHECK", false);
+    envmnt::set_bool("CARGO_MAKE_DISABLE_UPDATE_CHECK", true);
+
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let cli_args = CliArgs::new();
+
+    let check = should_check_for_args(&cli_args, &global_config, false);
+
+    envmnt::set_bool("CARGO_MAKE_DISABLE_UPDATE_CHECK", env_value);
+
+    assert!(!check);
+}
+
+#[test]
+fn should_check_for_args_in_ci() {
+    let mut global_config = GlobalConfig::new();
+    global_config.update_check_minimum_interval = Some("always".to_string());
+    let cli_args = CliArgs::new();
+
+    let check = should_check_for_args(&cli_args, &global_config, true);
+    assert!(!check);
 }

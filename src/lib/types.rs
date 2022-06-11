@@ -11,7 +11,7 @@ use crate::legacy;
 use crate::plugin::types::Plugins;
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
-use indexmap::IndexMap;
+use indexmap::{IndexMap, IndexSet};
 use regex::Regex;
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
@@ -561,7 +561,7 @@ impl<'de> serde::de::Deserialize<'de> for TestArg {
 pub struct InstallCargoPluginInfo {
     /// The provided crate to install
     pub crate_name: Option<String>,
-    /// Minimial version
+    /// Minimal version
     pub min_version: Option<String>,
     /// Optional alternate 'install' command
     pub install_command: Option<String>,
@@ -621,7 +621,7 @@ pub struct InstallCrateInfo {
     pub binary: String,
     /// Test arguments that will be used to check that the crate is installed.
     pub test_arg: TestArg,
-    /// Minimial version
+    /// Minimal version
     pub min_version: Option<String>,
     /// Exact version
     pub version: Option<String>,
@@ -1133,7 +1133,7 @@ impl ToolchainSpecifier {
     }
 }
 
-/// A toolchain with a minumum version bound
+/// A toolchain with a minimum version bound
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ToolchainBoundedSpecifier {
     /// The channel of the toolchain to use
@@ -1996,6 +1996,28 @@ impl ModifyConfig {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+/// Unstable cargo-make feature
+pub enum UnstableFeature {
+    /// Gracefully shutdown and then kill the running command on Ctrl+C signal
+    CtrlCHandling,
+}
+
+impl UnstableFeature {
+    /// Creates the env. variable name associated to the feature
+    pub fn to_env_name(&self) -> String {
+        let mut feature = serde_json::to_string(&self).unwrap();
+        feature = feature.replace("\"", "");
+        format!("CARGO_MAKE_UNSTABLE_FEATURE_{feature}", feature = feature)
+    }
+
+    /// Is the corresponding env. variable set?
+    pub fn is_env_set(&self) -> bool {
+        envmnt::is(self.to_env_name())
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
@@ -2039,6 +2061,8 @@ pub struct ConfigSection {
     pub windows_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
     pub mac_load_script: Option<ScriptValue>,
+    /// Enables unstable cargo-make features
+    pub unstable_features: Option<IndexSet<UnstableFeature>>,
 }
 
 impl ConfigSection {
@@ -2177,6 +2201,14 @@ impl ConfigSection {
                 self.mac_load_script.clone(),
                 extended.mac_load_script.clone(),
             );
+        }
+
+        if let Some(extended_unstable_features) = extended.unstable_features.clone() {
+            if let Some(unstable_features) = &mut self.unstable_features {
+                unstable_features.extend(extended_unstable_features);
+            } else {
+                self.unstable_features = Some(extended_unstable_features);
+            }
         }
     }
 
