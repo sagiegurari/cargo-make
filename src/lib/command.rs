@@ -176,10 +176,8 @@ pub(crate) fn run_command_get_output(
         if capture_output {
             command.stdout(Stdio::piped()).stderr(Stdio::piped());
         }
-    } else {
-        if !capture_output {
-            command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
-        }
+    } else if !capture_output {
+        command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
     }
 
     info!("Execute Command: {:#?}", &command);

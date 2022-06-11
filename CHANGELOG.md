@@ -5,6 +5,7 @@
 * Enhancement: Define CARGO environment variable for tasks with toolchain and script #658
 * Enhancement: New CARGO_MAKE_DISABLE_UPDATE_CHECK environment variable to disable update checks #653
 * Fix: wrong update check days counting
+* Fix: New unstable feature CTRL_C_HANDLING to prevent zombie processes after cargo-make exists #374 (thanks @MartinKavik)
 
 ### v0.35.12 (2022-05-05)
 

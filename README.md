@@ -98,6 +98,7 @@
     * [Performance Tuning](#usage-performance-tuning)
     * [Command Groups](#usage-command-groups)
     * [Diff Changes](#usage-diff-changes)
+    * [Unstable Features](#usage-unstable-features)
     * [Cli Options](#usage-cli)
     * [Plugins](#usage-plugins)
         * [Defining Plugins](#usage-plugins-defining-plugins)
@@ -3367,6 +3368,22 @@ index 5152290..ba0ef1d 100644
 ```
 
 *Git is required to be available as it is used to diff the structures and output it to the console using standard git coloring scheme.*
+
+<a name="usage-unstable-features"></a>
+### Unstable Features
+Some cargo-make capabilities, while working well, are not yet set as default behaviour.<br>
+Therefore they are gated using the unstable features attribute.<br>
+In order to enable such a feature, you need to define its name.<br>
+For example for the xxx feature would be defined as follows:<br>
+
+```toml
+[config]
+unstable_features = ["CTRL_C_HANDLING"]
+```
+
+Below is a list of currently existing unstable features
+
+* CTRL_C_HANDLING - Adds ctrl-c handler which will stop any currently running command invoked by the current task and exist cargo-make
 
 <a name="usage-cli"></a>
 ### Cli Options

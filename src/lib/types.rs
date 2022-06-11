@@ -2007,7 +2007,8 @@ pub enum UnstableFeature {
 impl UnstableFeature {
     /// Creates the env. variable name associated to the feature
     pub fn to_env_name(&self) -> String {
-        let feature = serde_json::to_string(&self).unwrap();
+        let mut feature = serde_json::to_string(&self).unwrap();
+        feature = feature.replace("\"", "");
         format!("CARGO_MAKE_UNSTABLE_FEATURE_{feature}")
     }
 
