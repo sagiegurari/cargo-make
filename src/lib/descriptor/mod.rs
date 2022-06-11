@@ -675,5 +675,13 @@ pub(crate) fn load(
 
     load_cargo_aliases(&mut config);
 
+    if let Some(unstable_features) = &config.config.unstable_features {
+        for feature in unstable_features {
+            config
+                .env
+                .insert(feature.to_env_name(), EnvValue::Boolean(true));
+        }
+    }
+
     Ok(config)
 }

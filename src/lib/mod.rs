@@ -110,7 +110,6 @@
     unstable_features,
     unstable_name_collisions,
     unsupported_calling_conventions,
-    unsupported_naked_functions,
     unused_allocation,
     unused_assignments,
     unused_assignments,

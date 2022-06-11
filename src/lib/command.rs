@@ -9,13 +9,15 @@ mod command_test;
 
 use crate::logger;
 use crate::toolchain;
-use crate::types::{CommandSpec, Step};
+use crate::types::{CommandSpec, Step, UnstableFeature};
 use envmnt;
 use run_script;
 use run_script::{IoOptions, ScriptError, ScriptOptions};
 use std::io;
-use std::io::Error;
+use std::io::{Error, ErrorKind, Read};
 use std::process::{Command, ExitStatus, Output, Stdio};
+use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Once;
 
 /// Returns the exit code (-1 if no exit code found)
 pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool) -> i32 {
@@ -156,6 +158,8 @@ pub(crate) fn run_command_get_output(
     args: &Option<Vec<String>>,
     capture_output: bool,
 ) -> io::Result<Output> {
+    let ctrl_c_handling = UnstableFeature::CtrlCHandling.is_env_set();
+
     debug!("Execute Command: {}", &command_string);
     let mut command = Command::new(&command_string);
 
@@ -167,15 +171,80 @@ pub(crate) fn run_command_get_output(
     };
 
     command.stdin(Stdio::inherit());
-    if !capture_output {
-        command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+
+    if ctrl_c_handling {
+        if capture_output {
+            command.stdout(Stdio::piped()).stderr(Stdio::piped());
+        }
+    } else {
+        if !capture_output {
+            command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+        }
     }
+
     info!("Execute Command: {:#?}", &command);
 
-    let output = command.output();
+    let output = if ctrl_c_handling {
+        spawn_command(command)
+    } else {
+        command.output()
+    };
+
     debug!("Output: {:#?}", &output);
 
     output
+}
+
+fn spawn_command(mut command: Command) -> io::Result<Output> {
+    static CTRL_C_COUNT: AtomicU32 = AtomicU32::new(0);
+    static SET_CTRL_C_HANDLER_ONCE: Once = Once::new();
+
+    SET_CTRL_C_HANDLER_ONCE.call_once(|| {
+        ctrlc::set_handler(|| {
+            if CTRL_C_COUNT.fetch_add(1, Ordering::SeqCst) == 0 {
+                info!("Shutting down...");
+            }
+        })
+        .expect("Failed to set Ctrl+C handler.");
+    });
+
+    if CTRL_C_COUNT.load(Ordering::Relaxed) != 0 {
+        Err(Error::new(
+            ErrorKind::Other,
+            "Shutting down - cannot run the command.",
+        ))?;
+    }
+
+    let mut process = command.spawn()?;
+    let process_stdout = process.stdout.take();
+    let process_stderr = process.stderr.take();
+
+    let mut killing_process = false;
+
+    Ok(loop {
+        if !killing_process && CTRL_C_COUNT.load(Ordering::Relaxed) >= 2 {
+            process.kill()?;
+            killing_process = true;
+        }
+
+        if let Some(status) = process.try_wait()? {
+            let mut stdout = Vec::new();
+            if let Some(mut process_stdout) = process_stdout {
+                process_stdout.read_to_end(&mut stdout)?;
+            }
+
+            let mut stderr = Vec::new();
+            if let Some(mut process_stderr) = process_stderr {
+                process_stderr.read_to_end(&mut stderr)?;
+            }
+
+            break Output {
+                status,
+                stdout,
+                stderr,
+            };
+        }
+    })
 }
 
 /// Runs the requested command and panics in case of any error.
