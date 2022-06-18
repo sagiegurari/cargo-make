@@ -379,98 +379,109 @@ fn run_cwd_task_not_found() {
 
 #[test]
 #[should_panic]
-fn run_for_args_bad_subcommand() {
+fn run_bad_subcommand() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args =
+        cli_parser::parse_args(&global_config, &"make".to_string(), true, Some(vec!["bad"]));
 
-    let matches = app.get_matches_from(vec!["bad"]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_valid() {
+fn run_valid() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--makefile",
+            "./examples/dependencies.toml",
+            "-l",
+            "error",
+            "A",
+            "arg1",
+            "arg2",
+            "arg3",
+        ]),
+    );
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--makefile",
-        "./examples/dependencies.toml",
-        "-l",
-        "error",
-        "A",
-        "arg1",
-        "arg2",
-        "arg3",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_with_global_config() {
+fn run_with_global_config() {
     let mut global_config = GlobalConfig::new();
     global_config.log_level = Some("info".to_string());
     global_config.default_task_name = Some("empty".to_string());
     global_config.disable_color = Some(true);
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec!["cargo", "make"]),
+    );
 
-    let matches = app.get_matches_from(vec!["cargo", "make"]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_log_level_override() {
+fn run_log_level_override() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--makefile",
+            "./examples/dependencies.toml",
+            "-t",
+            "A",
+            "-l",
+            "error",
+            "-v",
+        ]),
+    );
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--makefile",
-        "./examples/dependencies.toml",
-        "-t",
-        "A",
-        "-l",
-        "error",
-        "-v",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_set_env_values() {
+fn run_set_env_values() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--env",
+            "ENV1_TEST=TEST1",
+            "--env",
+            "ENV2_TEST=TEST2a=TEST2b",
+            "-e",
+            "ENV3_TEST=TEST3",
+            "--verbose",
+            "--disable-check-for-updates",
+            "-t",
+            "empty",
+        ]),
+    );
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--env",
-        "ENV1_TEST=TEST1",
-        "--env",
-        "ENV2_TEST=TEST2a=TEST2b",
-        "-e",
-        "ENV3_TEST=TEST3",
-        "--verbose",
-        "--disable-check-for-updates",
-        "-t",
-        "empty",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2a=TEST2b");
@@ -479,25 +490,28 @@ fn run_for_args_set_env_values() {
 
 #[test]
 #[ignore]
-fn run_for_args_set_env_via_file() {
+fn run_set_env_via_file() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--env-file=./examples/test.env",
+            "--verbose",
+            "--disable-check-for-updates",
+            "-t",
+            "empty",
+        ]),
+    );
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--env-file=./examples/test.env",
-        "--verbose",
-        "--disable-check-for-updates",
-        "-t",
-        "empty",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -506,9 +520,28 @@ fn run_for_args_set_env_via_file() {
 
 #[test]
 #[ignore]
-fn run_for_args_set_env_both() {
+fn run_set_env_both() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--env-file=./examples/test.env",
+            "--env",
+            "ENV4_TEST=TEST4",
+            "--env",
+            "ENV5_TEST=TEST5",
+            "-e",
+            "ENV6_TEST=TEST6",
+            "--loglevel=error",
+            "--disable-check-for-updates",
+            "-t",
+            "empty",
+        ]),
+    );
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");
@@ -517,23 +550,7 @@ fn run_for_args_set_env_both() {
     envmnt::set("ENV5_TEST", "EMPTY");
     envmnt::set("ENV6_TEST", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--env-file=./examples/test.env",
-        "--env",
-        "ENV4_TEST=TEST4",
-        "--env",
-        "ENV5_TEST=TEST5",
-        "-e",
-        "ENV6_TEST=TEST6",
-        "--loglevel=error",
-        "--disable-check-for-updates",
-        "-t",
-        "empty",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -545,50 +562,56 @@ fn run_for_args_set_env_both() {
 
 #[test]
 #[ignore]
-fn run_for_args_print_only() {
+fn run_print_only() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--makefile",
+            "./examples/dependencies.toml",
+            "--skip-tasks",
+            "ABCtest.*",
+            "-t",
+            "A",
+            "-l",
+            "error",
+            "--no-workspace",
+            "--no-on-error",
+            "--print-steps",
+            "--experimental",
+        ]),
+    );
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--makefile",
-        "./examples/dependencies.toml",
-        "--skip-tasks",
-        "ABCtest.*",
-        "-t",
-        "A",
-        "-l",
-        "error",
-        "--no-workspace",
-        "--no-on-error",
-        "--print-steps",
-        "--experimental",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_diff_steps() {
+fn run_diff_steps() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--makefile",
+            "./examples/dependencies.toml",
+            "-t",
+            "empty",
+            "-l",
+            "error",
+            "--no-workspace",
+            "--diff-steps",
+        ]),
+    );
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--makefile",
-        "./examples/dependencies.toml",
-        "-t",
-        "empty",
-        "-l",
-        "error",
-        "--no-workspace",
-        "--diff-steps",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
@@ -596,57 +619,66 @@ fn run_for_args_diff_steps() {
 #[should_panic]
 fn run_protected_flow_example() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--makefile",
+            "./examples/on_error.toml",
+        ]),
+    );
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--makefile",
-        "./examples/on_error.toml",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 }
 
 #[test]
 #[ignore]
-fn run_for_args_no_task_args() {
+fn run_no_task_args() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--disable-check-for-updates",
+            "empty",
+        ]),
+    );
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--disable-check-for-updates",
-        "empty",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"), "");
 }
 
 #[test]
 #[ignore]
-fn run_for_args_set_task_args() {
+fn run_set_task_args() {
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo",
+            "make",
+            "--disable-check-for-updates",
+            "empty",
+            "arg1",
+            "arg2",
+            "arg3",
+        ]),
+    );
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo",
-        "make",
-        "--disable-check-for-updates",
-        "empty",
-        "arg1",
-        "arg2",
-        "arg3",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
@@ -655,18 +687,21 @@ fn run_for_args_set_task_args() {
 }
 
 #[test]
-fn run_for_args_set_task_var_args() {
+fn run_set_task_var_args() {
     // See also issue #585
     let global_config = GlobalConfig::new();
-    let app = create_cli(&global_config, &"make".to_string(), true);
+    let cli_args = cli_parser::parse_args(
+        &global_config,
+        &"make".to_string(),
+        true,
+        Some(vec![
+            "cargo", "make", "empty", "abc", "-p", "foo/bar/", "def",
+        ]),
+    );
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    let matches = app.get_matches_from(vec![
-        "cargo", "make", "empty", "abc", "-p", "foo/bar/", "def",
-    ]);
-
-    run_for_args(matches, &global_config, &"make".to_string(), true);
+    run(cli_args, &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),

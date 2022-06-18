@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.14
+
+* Enhancement: CLI parsing changes due to clap changes
+
 ### v0.35.13 (2022-06-11)
 
 * Enhancement: Define CARGO environment variable for tasks with toolchain and script #658
