@@ -13,6 +13,10 @@ fn default_parsed_cli_args() -> CliArgs {
     cli_args.task = "default".to_string();
     cli_args.profile = Some("development".to_string());
 
+    if ci_info::is_ci() {
+        cli_args.time_summary = Some(true);
+    }
+
     cli_args
 }
 
