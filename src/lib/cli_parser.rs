@@ -13,7 +13,7 @@ use crate::cli::{
 };
 use crate::profile;
 use crate::types::{CliArgs, GlobalConfig};
-use clap::{value_parser, Arg, ArgMatches, Command};
+use clap::{value_parser, Arg, ArgAction, ArgMatches, Command};
 
 fn get_args(
     matches: ArgMatches,
@@ -250,7 +250,7 @@ fn create_cli<'a>(
                 .short('e')
                 .value_name("ENV")
                 .value_parser(value_parser!(String))
-                .multiple_occurrences(true)
+                .action(ArgAction::Append)
                 .takes_value(true)
                 .number_of_values(1)
                 .help("Set environment variables"),
