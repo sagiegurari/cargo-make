@@ -3,6 +3,7 @@
 ### v0.35.14
 
 * Enhancement: CLI parsing changes due to clap changes
+* Maintenance: Add scheduled CI github workflow
 
 ### v0.35.13 (2022-06-11)
 
