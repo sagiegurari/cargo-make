@@ -8,8 +8,7 @@
 mod cli_parser_test;
 
 use crate::cli::{
-    AUTHOR, DEFAULT_LOG_LEVEL, DEFAULT_OUTPUT_FORMAT, DEFAULT_TASK_NAME, DEFAULT_TOML, DESCRIPTION,
-    VERSION,
+    AUTHOR, DEFAULT_LOG_LEVEL, DEFAULT_OUTPUT_FORMAT, DEFAULT_TASK_NAME, DESCRIPTION, VERSION,
 };
 use crate::profile;
 use crate::types::{CliArgs, GlobalConfig};
@@ -42,14 +41,9 @@ fn get_args(
 
     cli_args.env = get_string_vec(cmd_matches, "env");
 
-    cli_args.build_file = if cmd_matches.occurrences_of("makefile") == 0 {
-        None
-    } else {
-        let makefile = cmd_matches
-            .get_one::<String>("makefile")
-            .unwrap_or(&DEFAULT_TOML.to_string())
-            .to_string();
-        Some(makefile)
+    cli_args.build_file = match cmd_matches.get_one::<String>("makefile") {
+        Some(value) => Some(value.to_string()),
+        None => None,
     };
 
     cli_args.cwd = match cmd_matches.get_one::<String>("cwd") {
@@ -176,8 +170,7 @@ fn create_cli<'a>(
                 .long("--makefile")
                 .value_name("FILE")
                 .value_parser(value_parser!(String))
-                .help("The optional toml file containing the tasks definitions")
-                .default_value(&DEFAULT_TOML),
+                .help("The optional toml file containing the tasks definitions"),
         )
         .arg(
             Arg::new("task")
@@ -328,7 +321,8 @@ fn create_cli<'a>(
         )
         .arg(Arg::new("TASK_CMD")
                 .value_parser(value_parser!(String))
-                .multiple_occurrences(true)
+                .takes_value(true)
+                .multiple_values(true)
                 .help("The task to execute, potentially including arguments which can be accessed in the task itself.")
         );
 
