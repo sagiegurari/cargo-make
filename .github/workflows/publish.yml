@@ -1,9 +1,8 @@
 name: Publish
-on: push
-# TODO: reverse the trigget to pushing tags
-#   push:
-#     tags:
-#       - '*'
+on:
+  push:
+    tags:
+      - '*'
 env:
   CLICOLOR_FORCE: 1
 jobs:
@@ -52,25 +51,4 @@ jobs:
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
-  deb_packages:
-    name: Publish deb packages
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-    - name: Install musl tools
-      run: sudo apt-get install musl-tools -y
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Install cargo-deb
-      run: cargo install cargo-deb
-    - name: Create a deb package
-      run: cargo deb
-    - name: Upload Binaries
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/x86_64-unknown-linux-musl/debian/cargo-make_0.35.13_amd64.deb
-        tag: ${{ github.ref }}
-        overwrite: true
-        file_glob: true
+ 
