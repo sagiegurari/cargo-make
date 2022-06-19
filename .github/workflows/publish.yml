@@ -70,7 +70,7 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/x86_64-unknown-linux-musl/debian/*
+        file: target/x86_64-unknown-linux-musl/debian/cargo-make_0.35.13_amd64.deb
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
