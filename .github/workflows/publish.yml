@@ -51,3 +51,19 @@ jobs:
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
+  deb_packages:
+    name: Publish deb packages
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Install musl tools
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install musl-tools -y
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Rust Cargo Deb Package Build (amd64, Ubuntu)
+      uses: ebbflow-io/cargo-deb-amd64-ubuntu@1.0
+    - name: Deb Build
+      uses: ebbflow-io/cargo-deb-armv7-debian@1.47.0-1
+      
