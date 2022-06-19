@@ -1,8 +1,9 @@
 name: Publish
-on:
-  push:
-    tags:
-      - '*'
+on: push
+# TODO: reverse the trigget to pushing tags
+#   push:
+#     tags:
+#       - '*'
 env:
   CLICOLOR_FORCE: 1
 jobs:
