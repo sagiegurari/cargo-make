@@ -62,8 +62,15 @@ jobs:
       run: sudo apt-get install musl-tools -y
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Install cargo dev
+    - name: Install cargo-deb
       run: cargo install cargo-deb
     - name: Create a deb package
       run: cargo deb
-      
+    - name: Upload Binaries
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/x86_64-unknown-linux-musl/debian/*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
