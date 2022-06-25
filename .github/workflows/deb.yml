@@ -1,29 +1,32 @@
-
-
-name: deb
-on: [push, pull_request]
+name: Release deb package
+on:
+  push:
+    tags:
+      - '*'
 env:
   CLICOLOR_FORCE: 1
 jobs:
-  deb:
-    name: Build deb package
+  release-deb:
+    name: Build and release a .deb package
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
-    - name: Install musl tools
-      run: sudo apt-get install musl-tools -y
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Install rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
     - name: Install cargo-deb
       run: cargo install cargo-deb
-    - name: Create a deb package
+    - name: Build .deb package
       run: cargo deb
-    - name: Upload Binaries
+    - name: Upload .deb package
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/x86_64-unknown-linux-musl/debian/cargo-make_0.35.13_amd64.deb
+        file: 'target/debian/*'
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
