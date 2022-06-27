@@ -12,10 +12,10 @@ use crate::cli::{
 };
 use crate::profile;
 use crate::types::{CliArgs, GlobalConfig};
-use clap::{value_parser, Arg, ArgAction, ArgMatches, Command};
+use cliparser::{Argument, ArgumentHelp, ArgumentOccurrence, ArgumentValueType, CliSpec};
 
 fn get_args(
-    matches: ArgMatches,
+    cli_parsed: &CliParsed,
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
@@ -138,11 +138,7 @@ fn get_args(
     cli_args
 }
 
-fn create_cli<'a>(
-    global_config: &'a GlobalConfig,
-    command_name: &str,
-    sub_command: bool,
-) -> Command<'a> {
+fn create_cli(global_config: &GlobalConfig, command_name: &str, sub_command: bool) -> CliSpec {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -152,19 +148,27 @@ fn create_cli<'a>(
         None => &DEFAULT_LOG_LEVEL,
     };
 
-    let mut cli_app = if sub_command {
-        Command::new(command_name)
-    } else {
-        Command::new(command_name).bin_name(command_name)
-    };
+    let mut spec = CliSpec::new();
+
+    spec.meta_info = Some(CliSpecMetaInfo {
+        author: Some(AUTHOR),
+        version: Some(VERSION),
+        description: Some(DESCRIPTION),
+        project: Some("cargo-make".to_string()),
+        help_post_text: Some(
+            "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
+        ),
+    });
+
+    cli_spec
+        .command
+        .push(Command::Command("makers".to_string()));
+    cli_spec.command.push(Command::SubCommand(vec![
+        "cargo".to_string(),
+        "make".to_string(),
+    ]));
 
     cli_app = cli_app
-        .version(VERSION)
-        .author(AUTHOR)
-        .about(DESCRIPTION)
-        .allow_hyphen_values(true)
-        .trailing_var_arg(true)
-        .help_expected(true)
         .arg(
             Arg::new("makefile")
                 .long("--makefile")
@@ -326,11 +330,7 @@ fn create_cli<'a>(
                 .help("The task to execute, potentially including arguments which can be accessed in the task itself.")
         );
 
-    if sub_command {
-        Command::new("cargo").bin_name("cargo").subcommand(cli_app)
-    } else {
-        cli_app
-    }
+    spec
 }
 
 pub(crate) fn parse_args(
@@ -339,14 +339,16 @@ pub(crate) fn parse_args(
     sub_command: bool,
     args: Option<Vec<&str>>,
 ) -> CliArgs {
-    let app = create_cli(&global_config, command_name, sub_command);
+    let spec = create_cli(&global_config, command_name, sub_command);
 
-    let matches = match args {
-        Some(args_vec) => app.get_matches_from(args_vec),
-        None => app.get_matches(),
+    let cli_parsed = match args {
+        Some(args_vec) => parse(args_vec, &spec),
+        None => parse_process(&spec),
     };
 
-    get_args(matches, &global_config, command_name, sub_command)
+    // TODO HANDLE HELP/VERSION COMMANDS HERE!!!
+
+    get_args(&cli_parsed, &global_config, command_name, sub_command)
 }
 
 pub(crate) fn parse(
@@ -355,30 +357,4 @@ pub(crate) fn parse(
     sub_command: bool,
 ) -> CliArgs {
     parse_args(global_config, command_name, sub_command, None)
-}
-
-fn get_string_vec(matches: &ArgMatches, name: &str) -> Option<Vec<String>> {
-    let values_ref_option = matches.get_many::<String>(name);
-    if values_ref_option.is_none() {
-        None
-    } else {
-        let vec = values_ref_option
-            .map(|values| values.collect::<Vec<_>>())
-            .unwrap()
-            .iter()
-            .map(|value| value.to_string())
-            .collect();
-
-        Some(vec)
-    }
-    /*
-    match matches.get_many::<&OsStr>(name) {
-        Some(values) => {
-            let vec = values
-                .map(|value| value.to_str().unwrap().to_string())
-                .collect();
-            Some(vec)
-        }
-        None => None,
-    }*/
 }
