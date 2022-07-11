@@ -737,6 +737,7 @@ fn main() {
     let value = envmnt::get_or("PATH", "NO PATH VAR DEFINED");
     println!("Path Value: {}", &value);
 }
+'''
 ```
 
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
