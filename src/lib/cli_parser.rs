@@ -183,75 +183,105 @@ fn create_cli(global_config: &GlobalConfig, command_name: &str, sub_command: boo
                 "The optional toml file containing the tasks definitions".to_string(),
                 "FILE".to_string(),
             )),
+        })
+        .add_argument(Argument {
+            name: "task".to_string(),
+            key: vec!["--task".to_string(), "-t".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: Some(default_task_name),
+            help: Some(ArgumentHelp::TextAndParam(
+                "The task name to execute (can omit the flag if the task name is the last argument)".to_string(),
+                "TASK".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "profile".to_string(),
+            key: vec!["--profile".to_string(), "-p".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: Some(&profile::DEFAULT_PROFILE),
+            help: Some(ArgumentHelp::TextAndParam(
+                "The profile name (will be converted to lower case)".to_string(),
+                "PROFILE".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "cwd".to_string(),
+            key: vec!["--cwd".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: None,
+            help: Some(ArgumentHelp::TextAndParam(
+                "Will set the current working directory. The search for the makefile will be from this directory if defined.".to_string(),
+                "DIRECTORY".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "no-workspace".to_string(),
+            key: vec!["--no-workspace".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Disable workspace support (tasks are triggered on workspace and not on members)".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "no-on-error".to_string(),
+            key: vec!["--no-on-error".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Disable on error flow even if defined in config sections".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "allow-private".to_string(),
+            key: vec!["--allow-private".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Allow invocation of private tasks".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "skip-init-end-tasks".to_string(),
+            key: vec!["--skip-init-end-tasks".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "If set, init and end tasks are skipped".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "skip-tasks-pattern".to_string(),
+            key: vec!["--skip-tasks".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: None,
+            help: Some(ArgumentHelp::TextAndParam(
+                "Skip all tasks that match the provided regex (example: pre.*|post.*)".to_string(),
+                "SKIP_TASK_PATTERNS".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "envfile".to_string(),
+            key: vec!["--env-file".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: None,
+            help: Some(ArgumentHelp::TextAndParam(
+                "Set environment variables from provided file".to_string(),
+                "FILE".to_string(),
+            )),
         });
 
     cli_app = cli_app
-          .arg(
-            Arg::new("task")
-                .short('t')
-                .long("--task")
-                .value_name("TASK")
-                .value_parser(value_parser!(String))
-                .help(
-                    "The task name to execute \
-                     (can omit the flag if the task name is the last argument)",
-                )
-                .default_value(default_task_name),
-        )
-        .arg(
-            Arg::new("profile")
-                .short('p')
-                .long("--profile")
-                .value_name("PROFILE")
-                .value_parser(value_parser!(String))
-                .help(
-                    "The profile name (will be converted to lower case)",
-                )
-                .default_value(&profile::DEFAULT_PROFILE),
-        )
-        .arg(
-            Arg::new("cwd")
-                .long("--cwd")
-                .value_name("DIRECTORY")
-                .value_parser(value_parser!(String))
-                .help(
-                    "Will set the current working directory. \
-                     The search for the makefile will be from this directory if defined.",
-                ),
-        )
-        .arg(Arg::new("no-workspace").long("--no-workspace").help(
-            "Disable workspace support (tasks are triggered on workspace and not on members)",
-        ))
-        .arg(
-            Arg::new("no-on-error")
-                .long("--no-on-error")
-                .help("Disable on error flow even if defined in config sections"),
-        )
-        .arg(
-            Arg::new("allow-private")
-                .long("--allow-private")
-                .help("Allow invocation of private tasks"),
-        )
-        .arg(
-            Arg::new("skip-init-end-tasks")
-                .long("--skip-init-end-tasks")
-                .help("If set, init and end tasks are skipped"),
-        )
-        .arg(
-            Arg::new("skip-tasks-pattern")
-                .long("--skip-tasks")
-                .value_parser(value_parser!(String))
-                .value_name("SKIP_TASK_PATTERNS")
-                .help("Skip all tasks that match the provided regex (example: pre.*|post.*)"),
-        )
-        .arg(
-            Arg::new("envfile")
-                .long("--env-file")
-                .value_name("FILE")
-                .value_parser(value_parser!(String))
-                .help("Set environment variables from provided file"),
-        )
-        .arg(
+         .arg(
             Arg::new("env")
                 .long("--env")
                 .short('e')
