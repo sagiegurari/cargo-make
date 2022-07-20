@@ -20,15 +20,6 @@ fn get_args(
     command_name: &str,
     sub_command: bool,
 ) -> CliArgs {
-    let cmd_matches = if sub_command {
-        match matches.subcommand_matches(command_name) {
-            Some(value) => value,
-            None => panic!("cargo-{} not invoked via cargo command.", &command_name),
-        }
-    } else {
-        &matches
-    };
-
     let mut cli_args = CliArgs::new();
 
     cli_args.command = if sub_command {
@@ -50,20 +41,17 @@ fn get_args(
         None => None,
     };
 
-    cli_args.cwd = match cmd_matches.get_one::<String>("cwd") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.cwd = cli_parsed.get_first_value("cwd");
 
     let default_log_level = match global_config.log_level {
         Some(ref value) => value.to_string(),
         None => DEFAULT_LOG_LEVEL.to_string(),
     };
-    cli_args.log_level = if cmd_matches.contains_id("v") {
+    cli_args.log_level = if cli_parsed.arguments.contains("verbose") {
         "verbose".to_string()
     } else {
-        cmd_matches
-            .get_one::<String>("loglevel")
+        cli_parsed
+            .get_first_value("loglevel")
             .unwrap_or(&default_log_level)
             .to_string()
     };
@@ -72,50 +60,50 @@ fn get_args(
         Some(value) => value,
         None => false,
     };
-    cli_args.disable_color = cmd_matches.contains_id("no-color")
+    cli_args.disable_color = cli_parsed.arguments.contains("no-color")
         || envmnt::is("CARGO_MAKE_DISABLE_COLOR")
         || default_disable_color;
 
-    cli_args.print_time_summary =
-        cmd_matches.contains_id("time-summary") || envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY");
+    cli_args.print_time_summary = cli_parsed.arguments.contains("time-summary")
+        || envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY");
 
-    cli_args.env_file = match cmd_matches.get_one::<String>("envfile") {
+    cli_args.env_file = match cli_parsed.get_first_value("envfile") {
         Some(value) => Some(value.to_string()),
         None => None,
     };
 
-    cli_args.output_format = cmd_matches
-        .get_one::<String>("output-format")
+    cli_args.output_format = cli_parsed
+        .get_first_value("output-format")
         .unwrap_or(&DEFAULT_OUTPUT_FORMAT.to_string())
         .to_string();
 
-    cli_args.list_category_steps = match cmd_matches.get_one::<String>("list-category-steps") {
+    cli_args.list_category_steps = match cli_parsed.get_first_value("list-category-steps") {
         Some(value) => Some(value.to_string()),
         None => None,
     };
 
-    cli_args.output_file = match cmd_matches.get_one::<String>("output_file") {
+    cli_args.output_file = match cli_parsed.get_first_value("output_file") {
         Some(value) => Some(value.to_string()),
         None => None,
     };
 
     let default_profile = profile::DEFAULT_PROFILE.to_string();
-    let profile_name = cmd_matches
-        .get_one::<String>("profile")
+    let profile_name = cli_parsed
+        .get_first_value("profile")
         .unwrap_or(&default_profile);
     cli_args.profile = Some(profile_name.to_string());
 
-    cli_args.disable_check_for_updates = cmd_matches.contains_id("disable-check-for-updates");
-    cli_args.experimental = cmd_matches.contains_id("experimental");
-    cli_args.print_only = cmd_matches.contains_id("print-steps");
-    cli_args.disable_workspace = cmd_matches.contains_id("no-workspace");
-    cli_args.disable_on_error = cmd_matches.contains_id("no-on-error");
-    cli_args.allow_private = cmd_matches.contains_id("allow-private");
-    cli_args.skip_init_end_tasks = cmd_matches.contains_id("skip-init-end-tasks");
-    cli_args.list_all_steps = cmd_matches.contains_id("list-steps");
-    cli_args.diff_execution_plan = cmd_matches.contains_id("diff-steps");
+    cli_args.disable_check_for_updates = cli_parsed.arguments.contains("disable-check-for-updates");
+    cli_args.experimental = cli_parsed.arguments.contains("experimental");
+    cli_args.print_only = cli_parsed.arguments.contains("print-steps");
+    cli_args.disable_workspace = cli_parsed.arguments.contains("no-workspace");
+    cli_args.disable_on_error = cli_parsed.arguments.contains("no-on-error");
+    cli_args.allow_private = cli_parsed.arguments.contains("allow-private");
+    cli_args.skip_init_end_tasks = cli_parsed.arguments.contains("skip-init-end-tasks");
+    cli_args.list_all_steps = cli_parsed.arguments.contains("list-steps");
+    cli_args.diff_execution_plan = cli_parsed.arguments.contains("diff-steps");
 
-    cli_args.skip_tasks_pattern = match cmd_matches.get_one::<String>("skip-tasks-pattern") {
+    cli_args.skip_tasks_pattern = match cli_parsed.get_first_value("skip-tasks-pattern") {
         Some(value) => Some(value.to_string()),
         None => None,
     };
@@ -124,10 +112,13 @@ fn get_args(
         Some(ref value) => value.to_string(),
         None => DEFAULT_TASK_NAME.to_string(),
     };
-    let task = cmd_matches
-        .get_one::<String>("task")
+    let task = cli_parsed
+        .get_first_value("task")
         .unwrap_or(&default_task_name);
-    let task_cmd = get_string_vec(cmd_matches, "TASK_CMD").unwrap_or_default();
+    let task_cmd = cli_parsed
+        .argument_values
+        .get("TASK_CMD")
+        .unwrap_or_default();
     let task_cmd_slice = task_cmd.as_slice();
     let (task, arguments) = match task_cmd_slice {
         &[] => (task, None),
@@ -165,17 +156,37 @@ fn create_cli(global_config: &GlobalConfig, command_name: &str, sub_command: boo
             ),
         }))
         .add_command("makers")
-        .add_subcommand(vec!["cargo".to_string(), "make".to_string()]);
+        .add_subcommand(vec!["cargo".to_string(), "make".to_string()])
+        .add_argument(Argument {
+            name: "help".to_string(),
+            key: vec!["--help".to_string(), "-h".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text("Print help information".to_string())),
+        })
+        .add_argument(Argument {
+            name: "version".to_string(),
+            key: vec!["--version".to_string(), "-V".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text("Print version information".to_string())),
+        })
+        .add_argument(Argument {
+            name: "makefile".to_string(),
+            key: vec!["--makefile".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: None,
+            help: Some(ArgumentHelp::TextAndParam(
+                "The optional toml file containing the tasks definitions".to_string(),
+                "FILE".to_string(),
+            )),
+        });
 
     cli_app = cli_app
-        .arg(
-            Arg::new("makefile")
-                .long("--makefile")
-                .value_name("FILE")
-                .value_parser(value_parser!(String))
-                .help("The optional toml file containing the tasks definitions"),
-        )
-        .arg(
+          .arg(
             Arg::new("task")
                 .short('t')
                 .long("--task")
@@ -261,7 +272,7 @@ fn create_cli(global_config: &GlobalConfig, command_name: &str, sub_command: boo
                 .help("The log level"),
         )
         .arg(
-            Arg::new("v")
+            Arg::new("verbose")
                 .short('v')
                 .long("--verbose")
                 .help("Sets the log level to verbose (shorthand for --loglevel verbose)"),
@@ -345,7 +356,17 @@ pub(crate) fn parse_args(
         None => parse_process(&spec),
     };
 
-    // TODO HANDLE HELP/VERSION COMMANDS HERE!!!
+    if cli_parsed.arguments.contains("help") {
+        // generate help text
+        let help_text = help(&cli_spec);
+        println!("{}", help_text);
+        process.exit(0);
+    } else if cli_parsed.arguments.contains("version") {
+        // generate version text
+        let version_text = version(&cli_spec);
+        println!("{}", version_text);
+        process.exit(0);
+    }
 
     get_args(&cli_parsed, &global_config, command_name, sub_command)
 }
