@@ -39,9 +39,13 @@ fn get_args(
         command_name.to_string()
     };
 
-    cli_args.env = get_string_vec(cmd_matches, "env");
+    cli_args.env = cli_parsed
+        .argument_values
+        .get("env")
+        .unwrap_or(vec![])
+        .clone();
 
-    cli_args.build_file = match cmd_matches.get_one::<String>("makefile") {
+    cli_args.build_file = match cli_parsed.argument_values.get("makefile") {
         Some(value) => Some(value.to_string()),
         None => None,
     };
@@ -150,23 +154,18 @@ fn create_cli(global_config: &GlobalConfig, command_name: &str, sub_command: boo
 
     let mut spec = CliSpec::new();
 
-    spec.meta_info = Some(CliSpecMetaInfo {
-        author: Some(AUTHOR),
-        version: Some(VERSION),
-        description: Some(DESCRIPTION),
-        project: Some("cargo-make".to_string()),
-        help_post_text: Some(
-            "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
-        ),
-    });
-
-    cli_spec
-        .command
-        .push(Command::Command("makers".to_string()));
-    cli_spec.command.push(Command::SubCommand(vec![
-        "cargo".to_string(),
-        "make".to_string(),
-    ]));
+    spec = spec
+        .set_meta_info(Some(CliSpecMetaInfo {
+            author: Some(AUTHOR),
+            version: Some(VERSION),
+            description: Some(DESCRIPTION),
+            project: Some("cargo-make".to_string()),
+            help_post_text: Some(
+                "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
+            ),
+        }))
+        .add_command("makers")
+        .add_subcommand(vec!["cargo".to_string(), "make".to_string()]);
 
     cli_app = cli_app
         .arg(
