@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.35.14"
+version = "0.35.15"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -45,7 +45,7 @@ path = "src/makers.rs"
 [dependencies]
 cargo_metadata = "^0.15"
 ci_info = "^0.14.5"
-cliparser = "^0.1.1"
+cliparser = "^0.1.2"
 colored = "^2"
 ctrlc = "^3.2.2"
 dirs-next = "^2"

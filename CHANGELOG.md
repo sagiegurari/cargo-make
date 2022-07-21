@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.15 (2022-07-21)
+
+* Fix: upgrade cliparser to support windows paths
+
 ### v0.35.14 (2022-07-21)
 
 * Enhancement: CLI parsing now done by the cliparser crate instead of clap due to clap continued backward compatibility issues
