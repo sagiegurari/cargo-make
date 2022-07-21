@@ -74,6 +74,30 @@ fn parse_args_cargo_make() {
 }
 
 #[test]
+#[should_panic]
+fn parse_args_help_long() {
+    default_parse_cli_args(vec!["--help"]);
+}
+
+#[test]
+#[should_panic]
+fn parse_args_help_short() {
+    default_parse_cli_args(vec!["-h"]);
+}
+
+#[test]
+#[should_panic]
+fn parse_args_version_long() {
+    default_parse_cli_args(vec!["--version"]);
+}
+
+#[test]
+#[should_panic]
+fn parse_args_version_short() {
+    default_parse_cli_args(vec!["-V"]);
+}
+
+#[test]
 fn parse_args_makefile() {
     let mut cli_args = default_parse_cli_args(vec!["--makefile", "./mymakefile.toml"]);
 
@@ -187,9 +211,15 @@ fn parse_args_env_file() {
 
     assert_cli_args(&cli_args, &expected);
 
+    cli_args = default_parse_cli_args(vec!["--env-file=./.env"]);
+    assert_cli_args(&cli_args, &expected);
+
     cli_args = default_parse_cli_args(vec!["--env-file", "./.env", "taskname"]);
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
+    assert_cli_args(&cli_args, &expected);
+
+    cli_args = default_parse_cli_args(vec!["--env-file=./.env", "taskname"]);
     assert_cli_args(&cli_args, &expected);
 }
 

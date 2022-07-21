@@ -45,12 +45,12 @@ path = "src/makers.rs"
 [dependencies]
 cargo_metadata = "^0.14"
 ci_info = "^0.14.5"
-clap = { version = "^3.2", features = ["deprecated"] }
+cliparser = "^0.1"
 colored = "^2"
 ctrlc = "^3.2.2"
 dirs-next = "^2"
-duckscript = "^0.7.2"
-duckscriptsdk = { version = "^0.8.12", default-features = false }
+duckscript = "^0.7.3"
+duckscriptsdk = { version = "^0.8.13", default-features = false }
 envmnt = "^0.10.0"
 fern = "^0.6"
 fsio = { version = "^0.3.1", features = ["temp-path"] }

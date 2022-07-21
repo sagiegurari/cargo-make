@@ -1,0 +1,12 @@
+
+[config]
+skip_core_tasks = true
+
+[tasks.echo]
+script_runner = "@shell"
+script = '''
+echo ENV1_TEST: ${ENV1_TEST}
+echo ENV2_TEST: ${ENV2_TEST}
+echo ENV3_TEST: ${ENV3_TEST}
+echo PROFILE_ENV_VALUE: ${PROFILE_ENV_VALUE}
+'''
