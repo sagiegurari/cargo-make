@@ -4,6 +4,7 @@
 
 * Enhancement: CLI parsing now done by the cliparser crate instead of clap due to clap continued backward compatibility issues
 * Enhancement: Check in Cargo.lock file to support linux package managers #670
+* Enhancement: Added new --quiet cli flag #668
 * Maintenance: Add scheduled CI github workflow
 
 ### v0.35.13 (2022-06-11)

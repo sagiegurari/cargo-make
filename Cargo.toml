@@ -78,7 +78,7 @@ ansi_term = "^0.12.1"
 [features]
 tls-rustls = ["duckscriptsdk/tls-rustls"]
 tls-native = ["duckscriptsdk/tls-native"]
-tls = ["tls-rustls"]  # alias for backward compatibility
+tls = ["tls-rustls"]                      # alias for backward compatibility
 default = ["tls-rustls"]
 
 [badges.codecov]

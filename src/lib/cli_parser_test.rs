@@ -283,6 +283,16 @@ fn parse_args_verbose() {
 }
 
 #[test]
+fn parse_args_quiet() {
+    let cli_args = default_parse_cli_args(vec!["--quiet"]);
+
+    let mut expected = default_parsed_cli_args();
+    expected.log_level = "error".to_string();
+
+    assert_cli_args(&cli_args, &expected);
+}
+
+#[test]
 fn parse_args_no_color() {
     let cli_args = default_parse_cli_args(vec!["--no-color"]);
 
