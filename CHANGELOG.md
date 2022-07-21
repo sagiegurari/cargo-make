@@ -3,6 +3,7 @@
 ### v0.35.14
 
 * Enhancement: CLI parsing now done by the cliparser crate instead of clap due to clap continued backward compatibility issues
+* Enhancement: Added support ${@} in Duckscript tasks #667
 * Enhancement: Check in Cargo.lock file to support linux package managers #670
 * Enhancement: Added new --quiet cli flag #668
 * Maintenance: Add scheduled CI github workflow
