@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.35.14
+### v0.35.14 (2022-07-21)
 
 * Enhancement: CLI parsing now done by the cliparser crate instead of clap due to clap continued backward compatibility issues
 * Enhancement: Added support ${@} in Duckscript tasks #667

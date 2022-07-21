@@ -7,8 +7,7 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
-use cargo_metadata::Version;
-use semver::Prerelease;
+use semver::{Prerelease, Version};
 
 use crate::types::{CommandSpec, ToolchainSpecifier};
 use std::process::{Command, Stdio};
