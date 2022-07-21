@@ -2,7 +2,8 @@
 
 ### v0.35.14
 
-* Enhancement: CLI parsing changes due to clap changes
+* Enhancement: CLI parsing now done by the cliparser crate instead of clap due to clap continued backward compatibility issues
+* Enhancement: Check in Cargo.lock file to support linux package managers #670
 * Maintenance: Add scheduled CI github workflow
 
 ### v0.35.13 (2022-06-11)
