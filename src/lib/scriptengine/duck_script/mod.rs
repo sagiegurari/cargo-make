@@ -27,8 +27,17 @@ pub(crate) fn execute(
     flow_state: Option<Rc<RefCell<FlowState>>>,
     validate: bool,
 ) {
+    let mut array_command = "@ = array".to_string();
+    let mut index = 0;
+    for _ in cli_arguments {
+        index = index + 1;
+        array_command.push_str(format!(" ${{{}}}", index).as_str());
+    }
     let mut script_text = script.join("\n");
-    script_text.insert_str(0, "exit_on_error true\n");
+    script_text.insert_str(
+        0,
+        format!("exit_on_error true\n{}\n", &array_command).as_str(),
+    );
 
     let mut context = create_common_context(cli_arguments);
 

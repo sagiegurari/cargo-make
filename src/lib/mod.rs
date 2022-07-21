@@ -196,6 +196,7 @@ pub mod types;
 mod cache;
 mod cli;
 mod cli_commands;
+mod cli_parser;
 mod command;
 mod condition;
 mod config;

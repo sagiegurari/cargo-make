@@ -737,6 +737,7 @@ fn main() {
     let value = envmnt::get_or("PATH", "NO PATH VAR DEFINED");
     println!("Path Value: {}", &value);
 }
+'''
 ```
 
 Same as OS scripts, the @rust runner also supports the cargo-make CLI arguments access.<br>
@@ -3264,94 +3265,38 @@ These are the following options available while running cargo-make:
 
 ```console
 USAGE:
-    cargo make [OPTIONS] [--] [TASK_CMD]...
-    or
-    makers [OPTIONS] [--] [TASK_CMD]...
+    [makers | cargo make | cargo-make make] [OPTIONS] [--] [<TASK_CMD>...]
 
 ARGS:
-    <TASK_CMD>...    The task to execute, potentially including arguments which can be accessed
-                     in the task itself.
+    <TASK_CMD>    The task to execute, potentially including arguments which can be accessed in the task itself.
 
 OPTIONS:
-        --allow-private
-            Allow invocation of private tasks
-
-        --cwd <DIRECTORY>
-            Will set the current working directory. The search for the makefile will be from this
-            directory if defined.
-
-        --diff-steps
-            Runs diff between custom flow and prebuilt flow (requires git)
-
-        --disable-check-for-updates
-            Disables the update check during startup
-
-    -e, --env <ENV>
-            Set environment variables
-
-        --env-file <FILE>
-            Set environment variables from provided file
-
-        --experimental
-            Allows access unsupported experimental predefined tasks.
-
-    -h, --help
-            Print help information
-
-    -l, --loglevel <LOG LEVEL>
-            The log level [default: info] [possible values: verbose, info, error]
-
-        --list-all-steps
-            Lists all known steps
-
-        --list-category-steps <CATEGORY>
-            List steps for a given category
-
-        --makefile <FILE>
-            The optional toml file containing the tasks definitions [default: Makefile.toml]
-
-        --no-color
-            Disables colorful output
-
-        --no-on-error
-            Disable on error flow even if defined in config sections
-
-        --no-workspace
-            Disable workspace support (tasks are triggered on workspace and not on members)
-
-        --output-file <OUTPUT_FILE>
-            The list steps output file name
-
-        --output-format <OUTPUT FORMAT>
-            The print/list steps format (some operations do not support all formats) [default:
-            default] [possible values: default, short-description, markdown, markdown-single-page,
-            markdown-sub-section, autocomplete]
-
-    -p, --profile <PROFILE>
-            The profile name (will be converted to lower case) [default: development]
-
-        --print-steps
-            Only prints the steps of the build in the order they will be invoked but without
-            invoking them
-
-        --skip-init-end-tasks
-            If set, init and end tasks are skipped
-
-        --skip-tasks <SKIP_TASK_PATTERNS>
-            Skip all tasks that match the provided regex (example: pre.*|post.*)
-
-    -t, --task <TASK>
-            The task name to execute (can omit the flag if the task name is the last argument)
-            [default: default]
-
-        --time-summary
-            Print task level time summary at end of flow
-
-    -v, --verbose
-            Sets the log level to verbose (shorthand for --loglevel verbose)
-
-    -V, --version
-            Print version information
+    --help, -h                           Print help information
+    --version, -V                        Print version information
+    --makefile <FILE>                    The optional toml file containing the tasks definitions
+    --task, -t <TASK>                    The task name to execute (can omit the flag if the task name is the last argument) [default: default]
+    --profile, -p <PROFILE>              The profile name (will be converted to lower case) [default: development]
+    --cwd <DIRECTORY>                    Will set the current working directory. The search for the makefile will be from this directory if defined.
+    --no-workspace                       Disable workspace support (tasks are triggered on workspace and not on members)
+    --no-on-error                        Disable on error flow even if defined in config sections
+    --allow-private                      Allow invocation of private tasks
+    --skip-init-end-tasks                If set, init and end tasks are skipped
+    --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
+    --env-file <FILE>                    Set environment variables from provided file
+    --env, -e <ENV>                      Set environment variables
+    --loglevel, -l <LOG LEVEL>           The log level (verbose, info, error) [default: info]
+    --verbose, -v                        Sets the log level to verbose (shorthand for --loglevel verbose)
+    --quiet                              Sets the log level to error (shorthand for --loglevel error)
+    --no-color                           Disables colorful output
+    --time-summary                       Print task level time summary at end of flow
+    --experimental                       Allows access unsupported experimental predefined tasks.
+    --disable-check-for-updates          Disables the update check during startup
+    --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats) (default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete)
+    --output-file <OUTPUT_FILE>          The list steps output file name
+    --print-steps                        Only prints the steps of the build in the order they will be invoked but without invoking them
+    --list-all-steps                     Lists all known steps
+    --list-category-steps <CATEGORY>     List steps for a given category
+    --diff-steps                         Runs diff between custom flow and prebuilt flow (requires git)
 ```
 
 <a name="usage-plugins"></a>

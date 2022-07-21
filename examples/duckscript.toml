@@ -70,3 +70,17 @@ cm_run_task --async echo-after-sleep
 echo after invocation
 sleep 1500
 '''
+
+[tasks.cli_args]
+script = '''
+#!@duckscript
+all_values = array_join ${@} ", "
+echo all args: ${all_values}
+
+echo some fielded values:
+echo 1: ${1}
+echo 2: ${2}
+echo 3: ${3}
+'''
+
+
