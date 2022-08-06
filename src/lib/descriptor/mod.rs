@@ -20,6 +20,8 @@ use std::path::{Path, PathBuf};
 use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use {envmnt, toml};
 
 use crate::plugin::descriptor::merge_plugins_config;
@@ -29,12 +31,31 @@ use crate::types::{
 };
 use crate::{io, scriptengine, version};
 
+static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*}").unwrap());
+
+fn depends_on(val: &EnvValue) -> Vec<&str> {
+    match val {
+        EnvValue::Value(value) => {
+            let mut depends_on = vec![];
+
+            for matched in RE_VARIABLE.find_iter(value) {
+                depends_on.push(matched.as_str());
+            }
+
+            depends_on
+        }
+        _ => vec![],
+    }
+}
+
 fn merge_env(
     base: &mut IndexMap<String, EnvValue>,
     extended: &mut IndexMap<String, EnvValue>,
 ) -> IndexMap<String, EnvValue> {
     // TODO: here we would need to actually either just use a list instead and then
     //  reorder or do this internally and then return (after reordering)
+    // TODO: somehow profiles need to be properly reconciled ~> just append instead
+    //  of extra value?
     let mut merged = IndexMap::<String, EnvValue>::new();
 
     for (key, value) in base.iter() {
