@@ -27,6 +27,22 @@ fn merge_env_reorder() {
 }
 
 #[test]
+fn merge_env_reorder_internal() {
+    let mut map1 = IndexMap::new();
+    map1.insert("env3".to_owned(), EnvValue::Value("${env2}".to_owned()));
+    map1.insert("env2".to_owned(), EnvValue::Value("${env1}".to_owned()));
+
+    let mut map2 = IndexMap::new();
+    map2.insert("env1".to_owned(), EnvValue::Value("x".to_owned()));
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 3);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env2");
+    assert_eq!(output.get_index(2).unwrap().0.as_str(), "env3");
+}
+
+#[test]
 fn merge_env_cycle() {
     let mut map1 = IndexMap::new();
     map1.insert("env2".to_owned(), EnvValue::Value("${env1}".to_owned()));
