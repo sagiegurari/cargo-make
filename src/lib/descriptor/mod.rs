@@ -125,6 +125,16 @@ fn merge_env(
     for var in variables.into_iter().rev() {
         let name = *nodes.get_by_left(&var).unwrap();
 
+        if name.starts_with("CARGO_MAKE_CURRENT_TASK_") {
+            // CARGO_MAKE_CURRENT_TASK are handled differently and **always**
+            // retain their old value
+            if let Some(value) = base.get(name) {
+                merge.insert(name.to_owned(), value.clone());
+            }
+
+            continue;
+        }
+
         if let Some((key, val)) = combined
             .iter()
             .filter(|(key, _)| key.as_str() == name)
