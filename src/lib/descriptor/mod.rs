@@ -37,43 +37,38 @@ use crate::{io, scriptengine, version};
 
 static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*}").unwrap());
 
-fn merge_env_depends_on(val: &EnvValue) -> Vec<String> {
+fn merge_env_depends_on_extract(val: &str) -> Vec<&str> {
+    let mut depends_on = vec![];
+
+    for matched in RE_VARIABLE.find_iter(val) {
+        let matched = matched.as_str();
+        // remove the first two characters (`${`)
+        let (_, matched) = matched.split_at(2);
+        // remove the last character (`}`)
+        let (matched, _) = matched.split_at(matched.len() - 1);
+
+        depends_on.push(matched);
+    }
+
+    depends_on
+}
+
+fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
     match val {
-        EnvValue::Value(value) => {
-            let mut depends_on = vec![];
-
-            for matched in RE_VARIABLE.find_iter(value) {
-                depends_on.push(
-                    matched
-                        .as_str()
-                        .strip_prefix("${")
-                        .unwrap()
-                        .strip_suffix("}")
-                        .unwrap()
-                        .to_owned(),
-                );
-            }
-
-            depends_on
-        }
-        EnvValue::Decode(EnvValueDecode { source, .. }) => {
-            merge_env_depends_on(&EnvValue::Value(source.clone()))
-        }
+        EnvValue::Value(value) => merge_env_depends_on_extract(value),
+        EnvValue::Decode(EnvValueDecode { source, .. }) => merge_env_depends_on_extract(source),
         EnvValue::List(values) => values
             .iter()
-            .map(|value| EnvValue::Value(value.to_owned()))
-            .map(|value| merge_env_depends_on(&value))
+            .map(|value| merge_env_depends_on_extract(value))
             .reduce(|mut acc, mut other| {
                 acc.append(&mut other);
                 acc
             })
             .unwrap_or_default(),
         EnvValue::Conditional(EnvValueConditioned { value, .. }) => {
-            merge_env_depends_on(&EnvValue::Value(value.to_string()))
+            merge_env_depends_on_extract(value)
         }
-        EnvValue::PathGlob(EnvValuePathGlob { glob, .. }) => {
-            merge_env_depends_on(&EnvValue::Value(glob.to_string()))
-        }
+        EnvValue::PathGlob(EnvValuePathGlob { glob, .. }) => merge_env_depends_on_extract(glob),
         _ => vec![],
     }
 }
