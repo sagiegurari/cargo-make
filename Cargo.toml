@@ -73,6 +73,7 @@ shell2batch = "^0.4.4"
 toml = "^0.5"
 petgraph = "0.6.2"
 once_cell = "1.13.0"
+bimap = "0.6.2"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "^0.12.1"

@@ -17,10 +17,15 @@ mod makefiles;
 use std::env;
 use std::path::{Path, PathBuf};
 
+use bimap::BiMap;
 use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
+use petgraph::algo::{kosaraju_scc, toposort, Cycle};
+use petgraph::graph::NodeIndex;
+use petgraph::visit::IntoNodeReferences;
+use petgraph::Graph;
 use regex::Regex;
 use {envmnt, toml};
 
@@ -33,7 +38,7 @@ use crate::{io, scriptengine, version};
 
 static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*}").unwrap());
 
-fn depends_on(val: &EnvValue) -> Vec<&str> {
+fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
     match val {
         EnvValue::Value(value) => {
             let mut depends_on = vec![];
@@ -46,6 +51,102 @@ fn depends_on(val: &EnvValue) -> Vec<&str> {
         }
         _ => vec![],
     }
+}
+
+fn merge_env2(
+    base: &IndexMap<String, EnvValue>,
+    ext: &IndexMap<String, EnvValue>,
+) -> Result<IndexMap<String, EnvValue>, String> {
+    let combined: Vec<_> = base.iter().chain(ext.iter()).collect();
+
+    let mut graph: Graph<(&str, &EnvValue), (), _, _> = Graph::new();
+    let mut nodes = BiMap::new();
+
+    for (key, val) in &combined {
+        if graph
+            .node_references()
+            .all(|(_, (other, _))| *other != key.as_str())
+        {
+            let idx = graph.add_node((key, val));
+            nodes.insert(idx, key.as_str());
+        }
+    }
+
+    debug!("found: {nodes:?}");
+
+    for (key, val) in &combined {
+        let idx = *nodes.get_by_right(key.as_str()).unwrap();
+
+        // remove all currently outbound edges, which clears the dependencies we
+        // calculated before.
+        graph.retain_edges(|graph, edge| {
+            if let Some((source, _)) = graph.edge_endpoints(edge) {
+                source == idx
+            } else {
+                true
+            }
+        });
+
+        for used in merge_env_depends_on(val) {
+            // if the env variable is in the current scope add add an edge,
+            // otherwise it is referencing and external variable.
+            if let Some(&other) = nodes.get_by_right(used) {
+                graph.add_edge(idx, other, ());
+            }
+        }
+    }
+
+    let variables = match toposort(&graph, None) {
+        Ok(iter) => iter,
+        Err(_) => {
+            // cycle has been detected, for better performance we now only
+            // execute scc.
+            // In strongly-connected-components every vertex
+            // (node) is reachable from every other node.
+            // This means that there **must** be a cycle.
+            // This isn't strictly necessary, but aids when debugging.
+            let mut err = "A cycle between different env variables has been detected.".to_owned();
+            for scc in kosaraju_scc(&graph) {
+                let render = scc
+                    .into_iter()
+                    .filter_map(|idx| nodes.get_by_left(&idx))
+                    .map(ToString::to_string)
+                    .reduce(|acc, name| format!("{acc} -> {name}"));
+
+                if let Some(render) = render {
+                    err.push_str(&format!(" Cycle: {}.", render));
+                }
+            }
+
+            return Err(err);
+        }
+    };
+
+    let mut merge = IndexMap::new();
+    for var in variables.into_iter().rev() {
+        let name = *nodes.get_by_left(&var).unwrap();
+
+        if let Some((key, val)) = combined
+            .iter()
+            .filter(|(key, _)| key.as_str() == name)
+            .last()
+            .cloned()
+        {
+            // we need to check if the base and ext both are a profile,
+            // in that case we need to do some special handling,
+            // by merging them as well.
+            match (base.get(key), ext.get(key)) {
+                (Some(EnvValue::Profile(base)), Some(EnvValue::Profile(ext))) => {
+                    merge.insert(key.clone(), EnvValue::Profile(merge_env2(base, ext)?));
+                }
+                _ => {
+                    merge.insert(key.clone(), val.clone());
+                }
+            }
+        }
+    }
+
+    Ok(merge)
 }
 
 fn merge_env(
