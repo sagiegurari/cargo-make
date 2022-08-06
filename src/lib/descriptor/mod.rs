@@ -1,10 +1,10 @@
 //! # descriptor
 //!
 //! Loads the tasks descriptor.<br>
-//! It will first load the default descriptor which is defined in cargo-make internally and
-//! afterwards tries to find the external descriptor and load it as well.<br>
-//! If an external descriptor exists, it will be loaded and extend the default descriptor.
-//!
+//! It will first load the default descriptor which is defined in cargo-make
+//! internally and afterwards tries to find the external descriptor and load it
+//! as well.<br> If an external descriptor exists, it will be loaded and extend
+//! the default descriptor.
 
 #[cfg(test)]
 #[path = "mod_test.rs"]
@@ -14,26 +14,27 @@ mod cargo_alias;
 pub(crate) mod descriptor_deserializer;
 mod makefiles;
 
-use crate::io;
+use std::env;
+use std::path::{Path, PathBuf};
+
+use fsio::path::as_path::AsPath;
+use fsio::path::from_path::FromPath;
+use indexmap::IndexMap;
+use {envmnt, toml};
+
 use crate::plugin::descriptor::merge_plugins_config;
-use crate::scriptengine;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
     Task,
 };
-use crate::version;
-use envmnt;
-use fsio::path::as_path::AsPath;
-use fsio::path::from_path::FromPath;
-use indexmap::IndexMap;
-use std::env;
-use std::path::{Path, PathBuf};
-use toml;
+use crate::{io, scriptengine, version};
 
 fn merge_env(
     base: &mut IndexMap<String, EnvValue>,
     extended: &mut IndexMap<String, EnvValue>,
 ) -> IndexMap<String, EnvValue> {
+    // TODO: here we would need to actually either just use a list instead and then
+    //  reorder or do this internally and then return (after reordering)
     let mut merged = IndexMap::<String, EnvValue>::new();
 
     for (key, value) in base.iter() {
@@ -547,11 +548,12 @@ fn split_once(value: &str, delimiter: char) -> Option<(&str, &str)> {
 }
 
 /// Loads the tasks descriptor.<br>
-/// It will first load the default descriptor which is defined in cargo-make internally and
-/// afterwards tries to find the external descriptor and load it as well.<br>
-/// If an external descriptor exists, it will be loaded and extend the default descriptor.
-/// If one of the descriptor requires a newer version of cargo-make, returns an error with the
-/// minimum version required by the descriptor.
+/// It will first load the default descriptor which is defined in cargo-make
+/// internally and afterwards tries to find the external descriptor and load it
+/// as well.<br> If an external descriptor exists, it will be loaded and extend
+/// the default descriptor. If one of the descriptor requires a newer version of
+/// cargo-make, returns an error with the minimum version required by the
+/// descriptor.
 fn load_descriptors(
     file_name: &str,
     force: bool,
@@ -619,11 +621,12 @@ fn load_cargo_aliases(config: &mut Config) {
 }
 
 /// Loads the tasks descriptor.<br>
-/// It will first load the default descriptor which is defined in cargo-make internally and
-/// afterwards tries to find the external descriptor and load it as well.<br>
-/// If an external descriptor exists, it will be loaded and extend the default descriptor. <br>
-/// If one of the descriptor requires a newer version of cargo-make, returns an error with the
-/// minimum version required by the descriptor.
+/// It will first load the default descriptor which is defined in cargo-make
+/// internally and afterwards tries to find the external descriptor and load it
+/// as well.<br> If an external descriptor exists, it will be loaded and extend
+/// the default descriptor. <br> If one of the descriptor requires a newer
+/// version of cargo-make, returns an error with the minimum version required by
+/// the descriptor.
 pub(crate) fn load(
     file_name: &str,
     force: bool,
