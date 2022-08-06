@@ -42,7 +42,9 @@ fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
         EnvValue::Value(value) => {
             let mut depends_on = vec![];
 
+            println!("HI! {value}");
             for matched in RE_VARIABLE.find_iter(value) {
+                println!("MATCH");
                 depends_on.push(matched.as_str());
             }
 
@@ -58,15 +60,15 @@ fn merge_env(
 ) -> Result<IndexMap<String, EnvValue>, String> {
     let combined: Vec<_> = base.iter().chain(ext.iter()).collect();
 
-    let mut graph: Graph<(&str, &EnvValue), (), _, _> = Graph::new();
+    let mut graph: Graph<&str, (), _, _> = Graph::new();
     let mut nodes = BiMap::new();
 
-    for (key, val) in &combined {
+    for (key, _) in &combined {
         if graph
             .node_references()
-            .all(|(_, (other, _))| *other != key.as_str())
+            .all(|(_, other)| *other != key.as_str())
         {
-            let idx = graph.add_node((key, val));
+            let idx = graph.add_node(key.as_str());
             nodes.insert(idx, key.as_str());
         }
     }
@@ -122,7 +124,7 @@ fn merge_env(
     };
 
     let mut merge = IndexMap::new();
-    for var in variables.into_iter().rev() {
+    for var in variables {
         let name = *nodes.get_by_left(&var).unwrap();
 
         if name.starts_with("CARGO_MAKE_CURRENT_TASK_") {
