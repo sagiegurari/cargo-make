@@ -14,17 +14,17 @@ mod cargo_alias;
 pub(crate) mod descriptor_deserializer;
 mod makefiles;
 
+use std::collections::HashSet;
 use std::env;
 use std::path::{Path, PathBuf};
 
-use bimap::BiMap;
 use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 use petgraph::algo::{kosaraju_scc, toposort};
-use petgraph::visit::IntoNodeReferences;
-use petgraph::Graph;
+use petgraph::graphmap::DiGraphMap;
+use petgraph::prelude::GraphMap;
 use regex::Regex;
 use {envmnt, toml};
 
@@ -53,6 +53,28 @@ fn merge_env_depends_on_extract(val: &str) -> Vec<&str> {
     depends_on
 }
 
+fn merge_env_unique<'a>(
+    vals: &'a [&'a IndexMap<String, EnvValue>],
+) -> Vec<(&'a str, &'a EnvValue)> {
+    let mut visited = HashSet::new();
+    let mut unique = vec![];
+
+    // iterate through the list in reverse, only taking the first value, then
+    // reversing again to make sure that we still adhere to the order.
+    // This way we will only ever take the latest value.
+    for (key, val) in vals.iter().map(|map| map.iter()).flatten().rev() {
+        if visited.contains(&key.as_str()) {
+            continue;
+        }
+
+        visited.insert(key.as_str());
+        unique.push((key.as_str(), val))
+    }
+
+    unique.reverse();
+    unique
+}
+
 fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
     match val {
         EnvValue::Value(value) => merge_env_depends_on_extract(value),
@@ -77,41 +99,27 @@ fn merge_env(
     base: &IndexMap<String, EnvValue>,
     ext: &IndexMap<String, EnvValue>,
 ) -> Result<IndexMap<String, EnvValue>, String> {
-    let combined: Vec<_> = base.iter().chain(ext.iter()).collect();
+    let combined = [base, ext];
+    let combined: Vec<_> = merge_env_unique(&combined);
 
-    let mut graph: Graph<&str, (), _, _> = Graph::new();
-    let mut nodes = BiMap::new();
+    let mut graph: GraphMap<&str, (), _> = DiGraphMap::new();
 
-    for (key, _) in &combined {
-        if graph
-            .node_references()
-            .all(|(_, other)| *other != key.as_str())
-        {
-            let idx = graph.add_node(key.as_str());
-            nodes.insert(idx, key.as_str());
-        }
+    let keys: HashSet<_> = combined.iter().map(|(key, _)| *key).collect();
+    for key in keys {
+        graph.add_node(key);
     }
 
-    debug!("found: {nodes:?}");
+    debug!("initial graph: {graph:?}");
 
     for (key, val) in &combined {
-        let idx = *nodes.get_by_right(key.as_str()).unwrap();
+        // combined is unique (only latest value),
+        // which is why we do not need to delete any previously declared outbound edges.
 
-        // remove all currently outbound edges, which clears the dependencies we
-        // calculated before.
-        graph.retain_edges(|graph, edge| {
-            if let Some((source, _)) = graph.edge_endpoints(edge) {
-                source != idx
-            } else {
-                true
-            }
-        });
-
-        for used in merge_env_depends_on(val) {
-            // if the env variable is in the current scope add add an edge,
-            // otherwise it is referencing and external variable.
-            if let Some(&other) = nodes.get_by_right(used.as_str()) {
-                graph.add_edge(idx, other, ());
+        // if the env variable is in the current scope add add an edge,
+        // otherwise it is referencing and external variable.
+        for used in merge_env_depends_on(val).into_iter() {
+            if graph.contains_node(used) {
+                graph.add_edge(*key, used, ());
             }
         }
     }
@@ -129,13 +137,12 @@ fn merge_env(
             for scc in kosaraju_scc(&graph) {
                 let render = scc
                     .iter()
-                    .filter_map(|idx| nodes.get_by_left(idx))
+                    .chain(scc.first())
                     .map(ToString::to_string)
                     .reduce(|acc, name| format!("{acc} -> {name}"));
 
                 if let Some(render) = render {
-                    let first = nodes.get_by_left(scc.first().unwrap()).unwrap();
-                    err.push_str(&format!(" Cycle: {} -> {}.", render, first));
+                    err.push_str(&format!(" Cycle: {}.", render));
                 }
             }
 
@@ -144,9 +151,7 @@ fn merge_env(
     };
 
     let mut merge = IndexMap::new();
-    for var in variables.into_iter().rev() {
-        let name = *nodes.get_by_left(&var).unwrap();
-
+    for name in variables.into_iter().rev() {
         if name.starts_with("CARGO_MAKE_CURRENT_TASK_") {
             // CARGO_MAKE_CURRENT_TASK are handled differently and **always**
             // retain their old value
@@ -159,7 +164,7 @@ fn merge_env(
 
         if let Some((key, val)) = combined
             .iter()
-            .filter(|(key, _)| key.as_str() == name)
+            .filter(|(key, _)| *key == name)
             .last()
             .cloned()
         {
@@ -168,10 +173,10 @@ fn merge_env(
             // by merging them as well.
             match (base.get(key), ext.get(key)) {
                 (Some(EnvValue::Profile(base)), Some(EnvValue::Profile(ext))) => {
-                    merge.insert(key.clone(), EnvValue::Profile(merge_env(base, ext)?));
+                    merge.insert(key.to_owned(), EnvValue::Profile(merge_env(base, ext)?));
                 }
                 _ => {
-                    merge.insert(key.clone(), val.clone());
+                    merge.insert(key.to_owned(), val.clone());
                 }
             }
         }
