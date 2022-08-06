@@ -22,8 +22,7 @@ use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
-use petgraph::algo::{kosaraju_scc, toposort, Cycle};
-use petgraph::graph::NodeIndex;
+use petgraph::algo::{kosaraju_scc, toposort};
 use petgraph::visit::IntoNodeReferences;
 use petgraph::Graph;
 use regex::Regex;
@@ -53,7 +52,7 @@ fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
     }
 }
 
-fn merge_env2(
+fn merge_env(
     base: &IndexMap<String, EnvValue>,
     ext: &IndexMap<String, EnvValue>,
 ) -> Result<IndexMap<String, EnvValue>, String> {
@@ -137,7 +136,7 @@ fn merge_env2(
             // by merging them as well.
             match (base.get(key), ext.get(key)) {
                 (Some(EnvValue::Profile(base)), Some(EnvValue::Profile(ext))) => {
-                    merge.insert(key.clone(), EnvValue::Profile(merge_env2(base, ext)?));
+                    merge.insert(key.clone(), EnvValue::Profile(merge_env(base, ext)?));
                 }
                 _ => {
                     merge.insert(key.clone(), val.clone());
@@ -147,59 +146,6 @@ fn merge_env2(
     }
 
     Ok(merge)
-}
-
-fn merge_env(
-    base: &mut IndexMap<String, EnvValue>,
-    extended: &mut IndexMap<String, EnvValue>,
-) -> IndexMap<String, EnvValue> {
-    // TODO: here we would need to actually either just use a list instead and then
-    //  reorder or do this internally and then return (after reordering)
-    // TODO: somehow profiles need to be properly reconciled ~> just append instead
-    //  of extra value?
-    let mut merged = IndexMap::<String, EnvValue>::new();
-
-    for (key, value) in base.iter() {
-        let key_str = key.to_string();
-        let value_clone = value.clone();
-        merged.insert(key_str, value_clone);
-    }
-
-    for (key, value) in extended.iter() {
-        let key_str = key.to_string();
-
-        if !key_str.starts_with("CARGO_MAKE_CURRENT_TASK_") {
-            let value_clone = value.clone();
-
-            match merged.get(&key_str) {
-                Some(base_value) => {
-                    let base_value_clone = base_value.clone();
-                    match (base_value_clone, value_clone.clone()) {
-                        (
-                            EnvValue::Profile(ref base_profile_env),
-                            EnvValue::Profile(ref extended_profile_env),
-                        ) => {
-                            let mut base_profile_env_mut = base_profile_env.clone();
-                            let mut extended_profile_env_mut = extended_profile_env.clone();
-
-                            let merged_sub_env =
-                                merge_env(&mut base_profile_env_mut, &mut extended_profile_env_mut);
-
-                            merged.insert(key_str, EnvValue::Profile(merged_sub_env));
-                        }
-                        _ => {
-                            merged.insert(key_str, value_clone);
-                        }
-                    };
-                }
-                None => {
-                    merged.insert(key_str, value_clone);
-                }
-            };
-        }
-    }
-
-    merged
 }
 
 fn merge_env_files(base: &mut Vec<EnvFile>, extended: &mut Vec<EnvFile>) -> Vec<EnvFile> {
@@ -347,7 +293,10 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
     }
 }
 
-fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig) -> ExternalConfig {
+fn merge_external_configs(
+    config: ExternalConfig,
+    parent_config: ExternalConfig,
+) -> Result<ExternalConfig, String> {
     // merge env files
     let mut parent_env_files = match parent_config.env_files {
         Some(env_files) => env_files,
@@ -368,7 +317,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         Some(env) => env,
         None => IndexMap::new(),
     };
-    let all_env = merge_env(&mut parent_env, &mut extended_env);
+    let all_env = merge_env(&mut parent_env, &mut extended_env)?;
 
     // merge env scripts
     let mut parent_env_scripts = match parent_config.env_scripts {
@@ -406,7 +355,7 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
 
     let plugins = merge_plugins_config(parent_config.plugins, config.plugins);
 
-    ExternalConfig {
+    let config = ExternalConfig {
         extend: None,
         config: Some(config_section),
         env_files: Some(all_env_files),
@@ -414,7 +363,9 @@ fn merge_external_configs(config: ExternalConfig, parent_config: ExternalConfig)
         env_scripts: Some(all_env_scripts),
         tasks: Some(all_tasks),
         plugins,
-    }
+    };
+
+    Ok(config)
 }
 
 fn load_descriptor_extended_makefiles(
@@ -438,7 +389,7 @@ fn load_descriptor_extended_makefiles(
                 )?;
 
                 // merge configs
-                ordered_list_config = merge_external_configs(entry_config, ordered_list_config);
+                ordered_list_config = merge_external_configs(entry_config, ordered_list_config)?;
             }
 
             Ok(ordered_list_config)
@@ -516,10 +467,7 @@ fn load_external_descriptor(
                 let base_file_config =
                     load_descriptor_extended_makefiles(&parent_path, extend_struct)?;
 
-                Ok(merge_external_configs(
-                    file_config.clone(),
-                    base_file_config,
-                ))
+                merge_external_configs(file_config.clone(), base_file_config)
             }
             None => Ok(file_config),
         }
@@ -593,7 +541,7 @@ fn merge_base_config_and_external_config(
     external_config: ExternalConfig,
     env_map: Option<Vec<String>>,
     late_merge: bool,
-) -> Config {
+) -> Result<Config, String> {
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
         None => IndexMap::new(),
@@ -617,7 +565,7 @@ fn merge_base_config_and_external_config(
     let mut base_env = base_config.env;
 
     // merge env
-    let mut all_env = merge_env(&mut base_env, &mut external_env);
+    let mut all_env = merge_env(&mut base_env, &mut external_env)?;
     all_env = match env_map {
         Some(values) => {
             let mut cli_env = IndexMap::new();
@@ -652,14 +600,16 @@ fn merge_base_config_and_external_config(
 
     let plugins = merge_plugins_config(base_config.plugins, external_config.plugins);
 
-    Config {
+    let config = Config {
         config: config_section,
         env_files,
         env: all_env,
         env_scripts,
         tasks: all_tasks,
         plugins,
-    }
+    };
+
+    Ok(config)
 }
 
 fn split_once(value: &str, delimiter: char) -> Option<(&str, &str)> {
@@ -704,7 +654,7 @@ fn load_descriptors(
                                     false,
                                     false,
                                 )?;
-                                merge_external_configs(external_config, workspace_config)
+                                merge_external_configs(external_config, workspace_config)?
                             }
                             _ => external_config,
                         }
@@ -718,7 +668,7 @@ fn load_descriptors(
     };
 
     let config =
-        merge_base_config_and_external_config(default_config, external_config, env_map, false);
+        merge_base_config_and_external_config(default_config, external_config, env_map, false)?;
 
     debug!("Loaded merged config: {:#?}", &config);
 
@@ -793,7 +743,7 @@ pub(crate) fn load(
                     external_config,
                     env_map.clone(),
                     true,
-                );
+                )?;
             }
         };
     }
