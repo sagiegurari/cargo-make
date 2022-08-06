@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.35.16
+
+* Maintenance: Update dependencies #676
+
 ### v0.35.15 (2022-07-21)
 
 * Fix: upgrade cliparser to support windows paths
