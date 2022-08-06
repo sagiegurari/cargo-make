@@ -30,14 +30,14 @@ use {envmnt, toml};
 
 use crate::plugin::descriptor::merge_plugins_config;
 use crate::types::{
-    Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
-    Task,
+    Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
+    EnvValuePathGlob, Extend, ExternalConfig, ModifyConfig, Task,
 };
 use crate::{io, scriptengine, version};
 
 static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*}").unwrap());
 
-fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
+fn merge_env_depends_on(val: &EnvValue) -> Vec<String> {
     match val {
         EnvValue::Value(value) => {
             let mut depends_on = vec![];
@@ -49,11 +49,30 @@ fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
                         .strip_prefix("${")
                         .unwrap()
                         .strip_suffix("}")
-                        .unwrap(),
+                        .unwrap()
+                        .to_owned(),
                 );
             }
 
             depends_on
+        }
+        EnvValue::Decode(EnvValueDecode { source, .. }) => {
+            merge_env_depends_on(&EnvValue::Value(source.clone()))
+        }
+        EnvValue::List(values) => values
+            .iter()
+            .map(|value| EnvValue::Value(value.to_owned()))
+            .map(|value| merge_env_depends_on(&value))
+            .reduce(|mut acc, mut other| {
+                acc.append(&mut other);
+                acc
+            })
+            .unwrap_or_default(),
+        EnvValue::Conditional(EnvValueConditioned { value, .. }) => {
+            merge_env_depends_on(&EnvValue::Value(value.to_string()))
+        }
+        EnvValue::PathGlob(EnvValuePathGlob { glob, .. }) => {
+            merge_env_depends_on(&EnvValue::Value(glob.to_string()))
         }
         _ => vec![],
     }
@@ -96,7 +115,7 @@ fn merge_env(
         for used in merge_env_depends_on(val) {
             // if the env variable is in the current scope add add an edge,
             // otherwise it is referencing and external variable.
-            if let Some(&other) = nodes.get_by_right(&used) {
+            if let Some(&other) = nodes.get_by_right(used.as_str()) {
                 graph.add_edge(idx, other, ());
             }
         }
