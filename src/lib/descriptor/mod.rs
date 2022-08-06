@@ -42,10 +42,15 @@ fn merge_env_depends_on(val: &EnvValue) -> Vec<&str> {
         EnvValue::Value(value) => {
             let mut depends_on = vec![];
 
-            println!("HI! {value}");
             for matched in RE_VARIABLE.find_iter(value) {
-                println!("MATCH");
-                depends_on.push(matched.as_str());
+                depends_on.push(
+                    matched
+                        .as_str()
+                        .strip_prefix("${")
+                        .unwrap()
+                        .strip_suffix("}")
+                        .unwrap(),
+                );
             }
 
             depends_on
@@ -82,7 +87,7 @@ fn merge_env(
         // calculated before.
         graph.retain_edges(|graph, edge| {
             if let Some((source, _)) = graph.edge_endpoints(edge) {
-                source == idx
+                source != idx
             } else {
                 true
             }
@@ -91,7 +96,7 @@ fn merge_env(
         for used in merge_env_depends_on(val) {
             // if the env variable is in the current scope add add an edge,
             // otherwise it is referencing and external variable.
-            if let Some(&other) = nodes.get_by_right(used) {
+            if let Some(&other) = nodes.get_by_right(&used) {
                 graph.add_edge(idx, other, ());
             }
         }
@@ -109,13 +114,14 @@ fn merge_env(
             let mut err = "A cycle between different env variables has been detected.".to_owned();
             for scc in kosaraju_scc(&graph) {
                 let render = scc
-                    .into_iter()
-                    .filter_map(|idx| nodes.get_by_left(&idx))
+                    .iter()
+                    .filter_map(|idx| nodes.get_by_left(idx))
                     .map(ToString::to_string)
                     .reduce(|acc, name| format!("{acc} -> {name}"));
 
                 if let Some(render) = render {
-                    err.push_str(&format!(" Cycle: {}.", render));
+                    let first = nodes.get_by_left(scc.first().unwrap()).unwrap();
+                    err.push_str(&format!(" Cycle: {} -> {}.", render, first));
                 }
             }
 
@@ -124,7 +130,7 @@ fn merge_env(
     };
 
     let mut merge = IndexMap::new();
-    for var in variables {
+    for var in variables.into_iter().rev() {
         let name = *nodes.get_by_left(&var).unwrap();
 
         if name.starts_with("CARGO_MAKE_CURRENT_TASK_") {
