@@ -1,5 +1,4 @@
 use super::*;
-
 use crate::environment;
 use crate::environment::setup_cwd;
 use crate::types::{ExtendOptions, InstallCrate, ScriptValue};
@@ -9,7 +8,7 @@ fn merge_env_both_empty() {
     let mut map1 = IndexMap::<String, EnvValue>::new();
     let mut map2 = IndexMap::<String, EnvValue>::new();
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 0);
 }
 
@@ -20,7 +19,7 @@ fn merge_env_first_empty() {
 
     map2.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 1);
     let value = output.get("test").unwrap();
     match value {
@@ -36,7 +35,7 @@ fn merge_env_second_empty() {
 
     map1.insert("test".to_string(), EnvValue::Value("value".to_string()));
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 1);
     let value = output.get("test").unwrap();
     match value {
@@ -55,7 +54,7 @@ fn merge_env_both_with_values() {
     map2.insert("test21".to_string(), EnvValue::Value("value21".to_string()));
     map2.insert("test22".to_string(), EnvValue::Value("value22".to_string()));
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 3);
     let mut value = output.get("test1").unwrap();
     match value {
@@ -108,7 +107,7 @@ fn merge_env_both_with_sub_envs() {
         EnvValue::Profile(extended_profile2),
     );
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 5);
     let mut value = output.get("test1").unwrap();
     match value {
@@ -185,7 +184,7 @@ fn merge_env_both_skip_current_task_env() {
         EnvValue::Value("test2".to_string()),
     );
 
-    let output = merge_env(&mut map1, &mut map2);
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
     assert_eq!(output.len(), 2);
     let mut value = output.get("test1").unwrap();
     match value {
@@ -862,10 +861,12 @@ fn run_load_script_valid_load_script_duckscript() {
     ));
 
     let mut config = ConfigSection::new();
-    config.load_script = Some(ScriptValue::Text(vec![r#"#!@duckscript
+    config.load_script = Some(ScriptValue::Text(vec![
+        r#"#!@duckscript
     set_env run_load_script_valid_load_script_duckscript true
     "#
-    .to_string()]));
+        .to_string(),
+    ]));
 
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
