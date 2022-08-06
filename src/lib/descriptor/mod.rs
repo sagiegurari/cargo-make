@@ -41,7 +41,7 @@ fn merge_env_depends_on_extract(val: &str) -> Vec<&str> {
     let mut depends_on = vec![];
 
     for matched in RE_VARIABLE.find_iter(val) {
-        let matched = matched.as_str();
+        let matched = matched.as_str().trim();
         // remove the first two characters (`${`)
         let (_, matched) = matched.split_at(2);
         // remove the last character (`}`)
