@@ -133,6 +133,7 @@ pub(crate) fn install(
                     validate,
                     &install_info.min_version,
                     &install_info.install_command,
+                    &install_info.force,
                 );
             }
             InstallCrate::CrateInfo(ref install_info) => crate_installer::install(

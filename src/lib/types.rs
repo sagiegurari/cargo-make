@@ -565,9 +565,7 @@ pub struct InstallCargoPluginInfo {
     pub min_version: Option<String>,
     /// Optional alternate 'install' command
     pub install_command: Option<String>,
-    /// Optional add force flag
-    /// If undefined and install_command is defined -> false
-    /// If undefined and install_command is also undefined -> true
+    /// Optional add force flag (if needed), default is true
     pub force: Option<bool>,
 }
 
