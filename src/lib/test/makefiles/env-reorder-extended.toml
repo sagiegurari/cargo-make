@@ -1,6 +1,6 @@
-extend = "./env-reorder-toml"
+extend = "./env-reorder.toml"
 
 [env]
 ENV4 = "${ENV5} ${ENV6}"
-ENV5 = "${ENV6}"
+ENV5 = "${ENV6} --health"
 ENV6 = "--verbose"

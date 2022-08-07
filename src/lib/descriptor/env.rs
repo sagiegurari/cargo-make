@@ -10,19 +10,19 @@ use std::collections::HashSet;
 #[path = "env_test.rs"]
 mod env_test;
 
-static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*}").unwrap());
+static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*?}").unwrap());
 
 pub(crate) fn merge_env_depends_on_extract(val: &str) -> Vec<&str> {
     let mut depends_on = vec![];
 
     for matched in RE_VARIABLE.find_iter(val) {
-        let matched = matched.as_str().trim();
+        let matched = matched.as_str();
         // remove the first two characters (`${`)
         let (_, matched) = matched.split_at(2);
         // remove the last character (`}`)
         let (matched, _) = matched.split_at(matched.len() - 1);
 
-        depends_on.push(matched);
+        depends_on.push(matched.trim());
     }
 
     depends_on
@@ -157,6 +157,7 @@ pub(crate) fn merge_env(
         }
     }
 
+    println!("{:#?}", merge);
     Ok(merge)
 }
 

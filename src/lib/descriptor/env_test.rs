@@ -1,4 +1,6 @@
 use crate::descriptor::env::merge_env;
+use crate::descriptor::load;
+use crate::environment;
 use crate::types::EnvValue;
 use indexmap::IndexMap;
 
@@ -237,4 +239,49 @@ fn merge_env_both_skip_current_task_env() {
         &EnvValue::Value(ref value_string) => assert_eq!(value_string, &"test1".to_string()),
         _ => panic!("wrong value type"),
     };
+}
+
+#[test]
+#[ignore]
+fn load_env_reorder() {
+    let toml_file = "./src/lib/test/makefiles/env-reorder.toml";
+
+    envmnt::remove_all(&vec!["ENV1", "ENV2", "ENV3", "ENV4"]);
+    let config = load(toml_file, true, None, false).unwrap();
+    environment::set_env_for_config(config.env, None, false);
+
+    assert!(envmnt::is_equal("ENV4", "--defined yes"));
+    assert!(envmnt::is_equal("ENV3", "--amount 1 -HrA --defined yes"));
+    assert!(envmnt::is_equal("ENV2", "--amount 1 -HrA --defined yes"));
+    assert!(envmnt::is_equal("ENV1", "--amount 1 -HrA --defined yes"));
+
+    envmnt::remove_all(&vec!["ENV1", "ENV2", "ENV3", "ENV4"]);
+}
+
+#[test]
+#[ignore]
+fn load_env_reorder_extend() {
+    let toml_file = "./src/lib/test/makefiles/env-reorder-extended.toml";
+
+    envmnt::remove_all(&vec!["ENV1", "ENV2", "ENV3", "ENV4", "ENV5", "ENV6"]);
+    let config = load(toml_file, true, None, false).unwrap();
+    environment::set_env_for_config(config.env, None, false);
+
+    assert!(envmnt::is_equal("ENV6", "--verbose"));
+    assert!(envmnt::is_equal("ENV5", "--verbose --health"));
+    assert!(envmnt::is_equal("ENV4", "--verbose --health --verbose"));
+    assert!(envmnt::is_equal(
+        "ENV3",
+        "--amount 1 -HrA --verbose --health --verbose"
+    ));
+    assert!(envmnt::is_equal(
+        "ENV2",
+        "--amount 1 -HrA --verbose --health --verbose"
+    ));
+    assert!(envmnt::is_equal(
+        "ENV1",
+        "--amount 1 -HrA --verbose --health --verbose"
+    ));
+
+    envmnt::remove_all(&vec!["ENV1", "ENV2", "ENV3", "ENV4", "ENV5", "ENV6"]);
 }
