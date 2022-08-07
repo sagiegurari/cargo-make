@@ -6,4 +6,4 @@ ENV4 = "--defined yes"
 
 [tasks.echo]
 command = "echo"
-args = ["@@split($ENV3)"]
+args = ["@@split(${ENV3})"]
