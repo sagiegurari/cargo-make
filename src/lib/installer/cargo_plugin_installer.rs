@@ -133,7 +133,8 @@ pub(crate) fn install_crate(
                 if crate_version_check::is_min_version_valid(&crate_name, version, None) {
                     false
                 } else {
-                    force = true;
+                    // if we have custom install command, we can't just add force flag
+                    force = install_command.is_none();
                     true
                 }
             }

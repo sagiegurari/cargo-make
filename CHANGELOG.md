@@ -2,6 +2,7 @@
 
 ### v0.35.16
 
+* Enhancement: Remove force flag for custom install commands #674
 * Maintenance: Update dependencies #676
 
 ### v0.35.15 (2022-07-21)

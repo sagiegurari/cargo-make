@@ -565,6 +565,10 @@ pub struct InstallCargoPluginInfo {
     pub min_version: Option<String>,
     /// Optional alternate 'install' command
     pub install_command: Option<String>,
+    /// Optional add force flag
+    /// If undefined and install_command is defined -> false
+    /// If undefined and install_command is also undefined -> true
+    pub force: Option<bool>,
 }
 
 impl PartialEq for InstallCargoPluginInfo {
@@ -597,12 +601,26 @@ impl PartialEq for InstallCargoPluginInfo {
             return false;
         }
 
-        match self.install_command {
+        same = match self.install_command {
             Some(ref install_command) => match other.install_command {
                 Some(ref other_install_command) => install_command == other_install_command,
                 None => false,
             },
             None => match other.install_command {
+                None => true,
+                _ => false,
+            },
+        };
+        if !same {
+            return false;
+        }
+
+        match self.force {
+            Some(ref force) => match other.force {
+                Some(ref other_force) => force == other_force,
+                None => false,
+            },
+            None => match other.force {
                 None => true,
                 _ => false,
             },

@@ -227,11 +227,13 @@ fn install_cargo_plugin_info_eq_same_all() {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: Some(true),
     };
     let second = InstallCargoPluginInfo {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: Some(true),
     };
 
     assert_eq!(first, second);
@@ -243,11 +245,13 @@ fn install_cargo_plugin_info_eq_same_no_crate_name() {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: Some(true),
     };
     let second = InstallCargoPluginInfo {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: Some(true),
     };
 
     assert_eq!(first, second);
@@ -259,11 +263,31 @@ fn install_cargo_plugin_info_eq_same_no_install_command() {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: Some(true),
     };
     let second = InstallCargoPluginInfo {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: Some(true),
+    };
+
+    assert_eq!(first, second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_same_no_force() {
+    let first = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        install_command: Some("install".to_string()),
+        force: None,
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: Some("test".to_string()),
+        min_version: Some("1.0.0".to_string()),
+        install_command: Some("install".to_string()),
+        force: None,
     };
 
     assert_eq!(first, second);
@@ -275,11 +299,13 @@ fn install_cargo_plugin_info_eq_different_crate_name_type() {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
     let second = InstallCargoPluginInfo {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
 
     assert!(first != second);
@@ -291,11 +317,13 @@ fn install_cargo_plugin_info_eq_different_crate_name_value() {
         crate_name: Some("test1".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
     let second = InstallCargoPluginInfo {
         crate_name: Some("test2".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
 
     assert!(first != second);
@@ -307,11 +335,13 @@ fn install_cargo_plugin_info_eq_different_install_command_type() {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: Some("test".to_string()),
+        force: None,
     };
     let second = InstallCargoPluginInfo {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
 
     assert!(first != second);
@@ -323,11 +353,13 @@ fn install_cargo_plugin_info_eq_different_install_command_value() {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: Some("test1".to_string()),
+        force: None,
     };
     let second = InstallCargoPluginInfo {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: Some("test2".to_string()),
+        force: None,
     };
 
     assert!(first != second);
@@ -339,11 +371,31 @@ fn install_cargo_plugin_info_eq_different_min_version_value() {
         crate_name: None,
         min_version: Some("1.0.0".to_string()),
         install_command: None,
+        force: None,
     };
     let second = InstallCargoPluginInfo {
         crate_name: None,
         min_version: Some("2.0.0".to_string()),
         install_command: None,
+        force: None,
+    };
+
+    assert!(first != second);
+}
+
+#[test]
+fn install_cargo_plugin_info_eq_different_force_value() {
+    let first = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: Some("1.0.0".to_string()),
+        install_command: None,
+        force: Some(true),
+    };
+    let second = InstallCargoPluginInfo {
+        crate_name: None,
+        min_version: Some("1.0.0".to_string()),
+        install_command: None,
+        force: Some(false),
     };
 
     assert!(first != second);
@@ -981,6 +1033,7 @@ fn install_crate_eq_same_cargo_plugin_info() {
         crate_name: Some("test".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: Some(true),
     };
     let first = InstallCrate::CargoPluginInfo(info.clone());
     let second = InstallCrate::CargoPluginInfo(info.clone());
@@ -1044,11 +1097,13 @@ fn install_crate_eq_different_cargo_plugin_info() {
         crate_name: Some("test1".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: None,
     });
     let second = InstallCrate::CargoPluginInfo(InstallCargoPluginInfo {
         crate_name: Some("test2".to_string()),
         min_version: Some("1.0.0".to_string()),
         install_command: Some("install".to_string()),
+        force: None,
     });
 
     assert!(first != second);
