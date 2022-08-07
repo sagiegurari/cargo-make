@@ -6,6 +6,7 @@
 mod cm_plugin_check_task_condition;
 mod cm_plugin_force_plugin_clear;
 mod cm_plugin_force_plugin_set;
+mod cm_plugin_run_custom_task;
 mod cm_plugin_run_task;
 
 use crate::types::{FlowInfo, FlowState, Step};
@@ -24,6 +25,11 @@ pub(crate) fn load(
     commands.set(cm_plugin_check_task_condition::create(flow_info, step))?;
     commands.set(cm_plugin_force_plugin_clear::create(flow_state.clone()))?;
     commands.set(cm_plugin_force_plugin_set::create(flow_state.clone(), step))?;
+    commands.set(cm_plugin_run_custom_task::create(
+        flow_info,
+        flow_state.clone(),
+        step,
+    ))?;
     commands.set(cm_plugin_run_task::create(
         flow_info,
         flow_state.clone(),

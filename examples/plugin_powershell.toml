@@ -1,0 +1,43 @@
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[plugins.impl.powershell]
+script = '''
+# replaces cmd with powershell on windows
+
+# make sure we are on windows
+windows = is_windows
+assert ${windows}
+
+# make sure the task has args
+args_empty = array_is_empty ${task.args}
+assert_false ${args_empty}
+
+task_definition = json_parse --collection ${task.as_json}
+
+# prepend powershell args to task args
+powershell_args = array -C
+all_args = array_concat ${powershell_args} ${task.args}
+args = map_get ${task_definition} args
+release ${args}
+map_put ${task_definition} args ${all_args}
+
+# set powershell command
+map_put ${task_definition} command pwsh.exe
+
+powershell_task_json = json_encode --collection ${task_definition}
+
+echo Custom Task:\n${powershell_task_json}
+cm_plugin_run_custom_task ${powershell_task_json}
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+plugin = "powershell"
+args = ["echo hello from windows powershell"]

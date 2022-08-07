@@ -3388,6 +3388,7 @@ The plugin SDK contains the following:
     * ```cm_run_task [--async] takename``` - Runs a task and dependencies. Supports async execution (via --async flag). Must get the task name to invoke.
 * cargo-make plugin specific commands
     * ```cm_plugin_run_task``` - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
+    * ```cm_plugin_run_custom_task``` - Accepts a task json string and runs the task definition (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
     * ```cm_plugin_check_task_condition``` - Returns true/false if the current task conditions are met
     * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
     * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
@@ -3511,6 +3512,51 @@ fn main() {
     println!("ENV_FROM_RUST2=world");
 }
 '''
+```
+
+<a name="usage-plugins-plugin-example-powershell"></a>
+### Plugin Example (Replace Windows cmd with powershell)
+
+In the below example, we add the powershell command and modify the task args to include the **-C** argument.<br>
+This example also shows how to create new tasks in runtime and invoke them.
+
+```toml
+[plugins.impl.powershell]
+script = '''
+# replaces cmd with powershell on windows
+
+# make sure we are on windows
+windows = is_windows
+assert ${windows}
+
+# make sure the task has args
+args_empty = array_is_empty ${task.args}
+assert_false ${args_empty}
+
+task_definition = json_parse --collection ${task.as_json}
+
+# prepend powershell args to task args
+powershell_args = array -C
+all_args = array_concat ${powershell_args} ${task.args}
+args = map_get ${task_definition} args
+release ${args}
+map_put ${task_definition} args ${all_args}
+
+# set powershell command
+map_put ${task_definition} command pwsh.exe
+
+powershell_task_json = json_encode --collection ${task_definition}
+
+echo Custom Task:\n${powershell_task_json}
+cm_plugin_run_custom_task ${powershell_task_json}
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+plugin = "powershell"
+args = ["echo hello from windows powershell"]
 ```
 
 <a name="usage-shell-completion"></a>
