@@ -50,7 +50,7 @@ fn merge_env_cycle() {
     map2.insert("env1".to_owned(), EnvValue::Value("${env2}".to_owned()));
 
     let output = merge_env(&map1, &map2).expect_err("should have cycle");
-    assert!(output.ends_with("env2 -> env1 -> env2."));
+    assert!(output.ends_with("env2 -> env1 -> env2.") || output.ends_with("env1 -> env2 -> env1."));
 }
 
 #[test]

@@ -1,0 +1,9 @@
+[env]
+ENV1 = "${ENV2}"
+ENV3 = {source = "--ammount 1 -HrA ${ENV4}"}
+ENV2 = "${ENV3}"
+ENV4 = "--defined yes"
+
+[tasks.echo]
+command = "echo"
+args = ["@@split($ENV3)"]
