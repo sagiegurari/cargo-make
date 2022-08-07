@@ -229,12 +229,21 @@ fn should_skip_crate_name_git() {
 
 #[test]
 fn install_crate_already_installed_test() {
-    install_crate(&None, "test", "bad", &None, true, &None, &None);
+    install_crate(&None, "test", "bad", &None, true, &None, &None, &None);
 }
 
 #[test]
 fn install_crate_already_installed_cargo_make() {
-    install_crate(&None, "make", "cargo-make", &None, true, &None, &None);
+    install_crate(
+        &None,
+        "make",
+        "cargo-make",
+        &None,
+        true,
+        &None,
+        &None,
+        &None,
+    );
 }
 
 #[test]
@@ -255,6 +264,7 @@ fn install_crate_already_installed_min_version_equal() {
         &None,
         true,
         &Some(version_string),
+        &None,
         &None,
     );
 }
@@ -285,6 +295,7 @@ fn install_crate_already_installed_min_version_smaller() {
         &None,
         true,
         &Some(version_string),
+        &None,
         &None,
     );
 }

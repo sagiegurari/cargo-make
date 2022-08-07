@@ -122,7 +122,7 @@ pub(crate) fn install_crate(
     validate: bool,
     min_version: &Option<String>,
     install_command: &Option<String>,
-    allow_force: Option<bool>,
+    allow_force: &Option<bool>,
 ) {
     let installed = is_crate_installed(&toolchain, cargo_command);
     let mut force = false;
