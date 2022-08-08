@@ -426,6 +426,8 @@ pub struct EnvValueScript {
     pub multi_line: Option<bool>,
     /// The condition to validate
     pub condition: Option<TaskCondition>,
+    /// The explicit environment variables this script depends on
+    pub depends_on: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
