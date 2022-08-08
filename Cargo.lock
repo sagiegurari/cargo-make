@@ -136,7 +136,7 @@ dependencies = [
  "duckscriptsdk",
  "envmnt",
  "fern",
- "fsio",
+ "fsio 0.3.1",
  "git_info",
  "glob",
  "home",
@@ -327,7 +327,7 @@ version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8799f52fc0ec9204bafb992b194cea54abd97371375a7de9df4375dbf1b73875"
 dependencies = [
- "fsio",
+ "fsio 0.3.1",
 ]
 
 [[package]]
@@ -342,7 +342,7 @@ dependencies = [
  "colored",
  "duckscript",
  "fs_extra",
- "fsio",
+ "fsio 0.3.1",
  "ftp",
  "glob",
  "heck",
@@ -443,7 +443,7 @@ version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fbb2fcaad9e6c9e3388dfcc1b44ae5508ae864b7af36f163a8a7c1a48796eee"
 dependencies = [
- "fsio",
+ "fsio 0.3.1",
  "indexmap",
 ]
 
@@ -517,6 +517,16 @@ name = "fsio"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de6fce87c901c64837f745e7fffddeca1de8e054b544ba82c419905d40a0e1be"
+dependencies = [
+ "dunce",
+ "rand",
+]
+
+[[package]]
+name = "fsio"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dad0ce30be0cc441b325c5d705c8b613a0ca0d92b6a8953d41bd236dc09a36d0"
 dependencies = [
  "dunce",
  "rand",
@@ -1086,11 +1096,11 @@ dependencies = [
 
 [[package]]
 name = "run_script"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5dd85213e37f76b40186ee781cf3a689b05c518c3102c987acf679c573d8e4ef"
+checksum = "7fdc55b3a7ad58e02de47eaf7a854c6791c8421da48ff296c152317d3beaf230"
 dependencies = [
- "fsio",
+ "fsio 0.4.0",
 ]
 
 [[package]]
