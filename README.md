@@ -105,6 +105,7 @@
         * [Plugin SDK](#usage-plugins-plugin-sdk)
         * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
         * [Plugin Example (load env from rust script)](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example (Adding Simpler Windows Powershell Support)](#usage-plugins-plugin-example-powershell)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -1959,6 +1960,13 @@ args = ["somecrate"]
 install_crate = { crate_name = "somecrate", install_command = "custom-install" }
 ```
 
+By default, the **--force** flag is added. In order to remove it, add the force=false to the install_crate definition as follows:
+
+```toml
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install", force = false }
+```
+
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
 
@@ -3515,6 +3523,7 @@ The plugin SDK contains the following:
     * ```cm_run_task [--async] takename``` - Runs a task and dependencies. Supports async execution (via --async flag). Must get the task name to invoke.
 * cargo-make plugin specific commands
     * ```cm_plugin_run_task``` - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
+    * ```cm_plugin_run_custom_task``` - Accepts a task json string and runs the task definition (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
     * ```cm_plugin_check_task_condition``` - Returns true/false if the current task conditions are met
     * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
     * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
@@ -3638,6 +3647,52 @@ fn main() {
     println!("ENV_FROM_RUST2=world");
 }
 '''
+```
+
+<a name="usage-plugins-plugin-example-powershell"></a>
+### Plugin Example (Adding Simpler Windows Powershell Support)
+
+In the below example, we add the a simple powershell command support.<br>
+This plugin will take an existing task, set its command to powershell and prepend the **-C** argument.<br>
+This example also shows how to create new tasks in runtime and invoke them.
+
+```toml
+[plugins.impl.powershell]
+script = '''
+# Adds simpler powershell integration
+
+# make sure we are on windows
+windows = is_windows
+assert ${windows}
+
+# make sure the task has args
+args_empty = array_is_empty ${task.args}
+assert_false ${args_empty}
+
+task_definition = json_parse --collection ${task.as_json}
+
+# prepend powershell args to task args
+powershell_args = array -C
+all_args = array_concat ${powershell_args} ${task.args}
+args = map_get ${task_definition} args
+release ${args}
+map_put ${task_definition} args ${all_args}
+
+# set powershell command
+map_put ${task_definition} command pwsh.exe
+
+powershell_task_json = json_encode --collection ${task_definition}
+
+echo Custom Task:\n${powershell_task_json}
+cm_plugin_run_custom_task ${powershell_task_json}
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+plugin = "powershell"
+args = ["echo hello from windows powershell"]
 ```
 
 <a name="usage-shell-completion"></a>

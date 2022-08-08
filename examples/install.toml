@@ -23,6 +23,14 @@ args = ["somecrate"]
 [tasks.alt-command-example2]
 install_crate = { crate_name = "somecrate", install_command = "custom-install" }
 
+[tasks.alt-command-example3.install_crate]
+crate_name = "cargo-make"
+binary = "cargo"
+test_arg = ["make", "--help"]
+version = "9999.0.0"
+install_command = "custom-install"
+force = false
+
 [tasks.fmt]
 install_crate = { crate_name = "rustfmt", binary = "rustfmt", version = "1.4.37", test_arg = "--help" }
 command = "cargo"

@@ -49,7 +49,7 @@ fn invoke_cargo_install(
 
     let install_args = cargo_plugin_installer::get_install_crate_args(
         &info.crate_name,
-        true,
+        info.force.unwrap_or(true),
         &args,
         version_option,
         &info.install_command,

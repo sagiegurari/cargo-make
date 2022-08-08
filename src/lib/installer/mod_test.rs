@@ -180,6 +180,7 @@ fn install_rustup_via_crate_info() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let mut task = Task::new();
