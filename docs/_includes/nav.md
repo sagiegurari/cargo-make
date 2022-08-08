@@ -94,6 +94,7 @@
         * [Plugin SDK](#usage-plugins-plugin-sdk)
         * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
         * [Plugin Example (load env from rust script)](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example (Adding Simpler Windows Powershell Support)](#usage-plugins-plugin-example-powershell)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)

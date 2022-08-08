@@ -99,6 +99,7 @@ pub(crate) fn install(
                     validate,
                     &None,
                     &None,
+                    &None,
                 );
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
@@ -133,6 +134,7 @@ pub(crate) fn install(
                     validate,
                     &install_info.min_version,
                     &install_info.install_command,
+                    &install_info.force,
                 );
             }
             InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
@@ -166,6 +168,7 @@ pub(crate) fn install(
                         &crate_name,
                         &task_config.install_crate_args,
                         validate,
+                        &None,
                         &None,
                         &None,
                     );

@@ -14,6 +14,7 @@ fn invoke_rustup_install_none() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let output = invoke_rustup_install(&None, &info);
@@ -32,6 +33,7 @@ fn invoke_rustup_install_fail() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let output = invoke_rustup_install(&None, &info);
@@ -52,6 +54,7 @@ fn invoke_rustup_install_with_toolchain_none() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let output = invoke_rustup_install(&Some(toolchain), &info);
@@ -72,6 +75,7 @@ fn invoke_rustup_install_with_toolchain_fail() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let output = invoke_rustup_install(&Some(toolchain), &info);
@@ -90,6 +94,7 @@ fn invoke_cargo_install_test() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     invoke_cargo_install(&None, &info, &None, false);
@@ -109,6 +114,7 @@ fn invoke_cargo_install_with_toolchain_test() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     invoke_cargo_install(&Some(toolchain), &info, &None, false);
@@ -126,6 +132,7 @@ fn install_test_test() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     install(&None, &info, &None, false);
@@ -145,6 +152,7 @@ fn install_test_with_toolchain_test() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     install(&Some(toolchain), &info, &None, false);
@@ -162,6 +170,7 @@ fn install_already_installed_crate_only() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     install(&None, &info, &None, false);
@@ -187,6 +196,7 @@ fn install_already_installed_crate_only_min_version_equal() {
         min_version: Some(version_string),
         version: None,
         install_command: None,
+        force: None,
     };
 
     install(&None, &info, &None, false);
@@ -220,6 +230,7 @@ fn install_already_installed_crate_only_min_version_smaller() {
         min_version: Some(version_string),
         version: None,
         install_command: None,
+        force: None,
     };
 
     install(&None, &info, &None, false);
@@ -245,6 +256,7 @@ fn install_already_installed_crate_only_version_equal() {
         min_version: None,
         version: Some(version_string),
         install_command: None,
+        force: None,
     };
 
     install(&None, &info, &None, false);
@@ -262,6 +274,7 @@ fn is_crate_only_info_with_rustup_component_name() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let crate_only_info = is_crate_only_info(&info);
@@ -281,6 +294,7 @@ fn is_crate_only_info_without_rustup_component_name() {
         min_version: None,
         version: None,
         install_command: None,
+        force: None,
     };
 
     let crate_only_info = is_crate_only_info(&info);

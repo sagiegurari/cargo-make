@@ -105,6 +105,7 @@
         * [Plugin SDK](#usage-plugins-plugin-sdk)
         * [Plugin Example (Docker Integration)](#usage-plugins-plugin-example-dockerize)
         * [Plugin Example (load env from rust script)](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example (Adding Simpler Windows Powershell Support)](#usage-plugins-plugin-example-powershell)
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
@@ -222,7 +223,7 @@ cargo make --makefile simple-example.toml my-flow
 The output would look something like this:
 
 ```console
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: simple-example.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
@@ -634,7 +635,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -651,7 +652,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -678,7 +679,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -729,7 +730,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -746,7 +747,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -1008,7 +1009,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -1035,7 +1036,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -1329,7 +1330,7 @@ args = ["3"]
 We run task **3** the output would be:
 
 ```console
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: task_extend.toml
 [cargo-make] INFO - Task: 3
 [cargo-make] INFO - Profile: development
@@ -2048,6 +2049,13 @@ args = ["somecrate"]
 install_crate = { crate_name = "somecrate", install_command = "custom-install" }
 ```
 
+By default, the **--force** flag is added. In order to remove it, add the force=false to the install_crate definition as follows:
+
+```toml
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install", force = false }
+```
+
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
 
@@ -2483,7 +2491,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -2603,7 +2611,7 @@ deprecated = true
 When invoking **legacy** task for example, the output is:
 
 ```console
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: deprecated.toml
 [cargo-make] INFO - Task: legacy
 [cargo-make] INFO - Profile: development
@@ -2644,7 +2652,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2652,7 +2660,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2722,7 +2730,7 @@ args = ["${MULTIPLE_VALUES}"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml split
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: split
 [cargo-make] INFO - Profile: development
@@ -2734,7 +2742,7 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml no-split
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: no-split
 [cargo-make] INFO - Profile: development
@@ -2769,7 +2777,7 @@ args = ["@@getat(MULTIPLE_VALUES,|,3)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml getat
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: getat
 [cargo-make] INFO - Profile: development
@@ -2796,7 +2804,7 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: remove-empty
 [cargo-make] INFO - Profile: development
@@ -2829,7 +2837,7 @@ args = ["@@trim(TRIM_VALUE)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim
 [cargo-make] INFO - Profile: development
@@ -2858,7 +2866,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml trim-start
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-start
 [cargo-make] INFO - Profile: development
@@ -2870,7 +2878,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml trim-end
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-end
 [cargo-make] INFO - Profile: development
@@ -2908,7 +2916,7 @@ Sample run for a mapping that was found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=development decode
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -2924,7 +2932,7 @@ Another sample run for a mapping that was not found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -2949,7 +2957,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode-with-default
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-default
 [cargo-make] INFO - Profile: development
@@ -2973,7 +2981,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=test decode-with-eval
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-eval
 [cargo-make] INFO - Profile: development
@@ -3345,7 +3353,7 @@ In order to specify the minimal version, use the **min_version** in the config s
 
 ```toml
 [config]
-min_version = "0.35.15"
+min_version = "0.35.16"
 ```
 
 <a name="usage-performance-tuning"></a>
@@ -3433,7 +3441,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.35.15
+[cargo-make] INFO - cargo make 0.35.16
 [cargo-make] INFO - Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.
@@ -3604,6 +3612,7 @@ The plugin SDK contains the following:
     * ```cm_run_task [--async] takename``` - Runs a task and dependencies. Supports async execution (via --async flag). Must get the task name to invoke.
 * cargo-make plugin specific commands
     * ```cm_plugin_run_task``` - Runs the current task that invoked the plugin (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
+    * ```cm_plugin_run_custom_task``` - Accepts a task json string and runs the task definition (not including dependencies), including condition handling, env, cwd and all the logic that cargo-make has.
     * ```cm_plugin_check_task_condition``` - Returns true/false if the current task conditions are met
     * ```cm_plugin_force_plugin_set``` - All tasks that are going to be invoked in the future will call the current plugin regardless of their config
     * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
@@ -3727,6 +3736,52 @@ fn main() {
     println!("ENV_FROM_RUST2=world");
 }
 '''
+```
+
+<a name="usage-plugins-plugin-example-powershell"></a>
+### Plugin Example (Adding Simpler Windows Powershell Support)
+
+In the below example, we add the a simple powershell command support.<br>
+This plugin will take an existing task, set its command to powershell and prepend the **-C** argument.<br>
+This example also shows how to create new tasks in runtime and invoke them.
+
+```toml
+[plugins.impl.powershell]
+script = '''
+# Adds simpler powershell integration
+
+# make sure we are on windows
+windows = is_windows
+assert ${windows}
+
+# make sure the task has args
+args_empty = array_is_empty ${task.args}
+assert_false ${args_empty}
+
+task_definition = json_parse --collection ${task.as_json}
+
+# prepend powershell args to task args
+powershell_args = array -C
+all_args = array_concat ${powershell_args} ${task.args}
+args = map_get ${task_definition} args
+release ${args}
+map_put ${task_definition} args ${all_args}
+
+# set powershell command
+map_put ${task_definition} command pwsh.exe
+
+powershell_task_json = json_encode --collection ${task_definition}
+
+echo Custom Task:\n${powershell_task_json}
+cm_plugin_run_custom_task ${powershell_task_json}
+'''
+
+[tasks.default]
+alias = "test"
+
+[tasks.test]
+plugin = "powershell"
+args = ["echo hello from windows powershell"]
 ```
 
 <a name="usage-shell-completion"></a>
