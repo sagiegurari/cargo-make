@@ -3923,7 +3923,27 @@ install_crate = { rustup_component_name = "rust-src" }
 <a name="error-codes"></a>
 ## Error Codes
 
+<a name="e001"></a>
 ### E001: Cycle Detected
+
+A cycle between different environmental variables has been detected;
+This can happen during the merging of environments (at every loading step).
+Due to reordering and to make sure that no circular references exist,
+this error is emitted.
+
+You can fix this issue, by looking at your env config, and seeing if at any point a circular reference could have occurred.
+The error message mentions the environment variables that are likely candidates for the cause of the cycle.
+
+Your best bet is to try to break the cycle, by creating a new environmental variable or use a static value multiple times.
+Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems, 
+even without cycle detection or no reordering this would likely cause hidden issues during 
+execution, as `cargo-make` would need to otherwise set instances to an empty value instead.
+This way you are able to investigate and fix it yourself before it becomes an unexpected,
+hidden and hard to debug issue.
+
+> **Note:** Scripts are known to sometimes cause false-positives. 
+> In that case use the `depends_on` property, to explicitly tell `cargo-make`, which 
+> environmental variables should be considered a dependency instead of trying to guess from the script.
 
 <a name="articles"></a>
 ## Articles

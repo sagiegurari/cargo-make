@@ -160,7 +160,9 @@ pub(crate) fn merge_env(
             // (node) is reachable from every other node.
             // This means that there **must** be a cycle.
             // This isn't strictly necessary, but aids when debugging.
-            let mut err = "A cycle between different env variables has been detected.".to_owned();
+            let mut err =
+                "A cycle between different env variables has been detected (E001, see: https://github.com/sagiegurari/cargo-make#e001 for more information)."
+                    .to_owned();
             for scc in kosaraju_scc(&graph) {
                 let render = scc
                     .iter()
