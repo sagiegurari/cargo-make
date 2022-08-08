@@ -323,11 +323,11 @@ dependencies = [
 
 [[package]]
 name = "duckscript"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8799f52fc0ec9204bafb992b194cea54abd97371375a7de9df4375dbf1b73875"
+checksum = "25a3658fb573aa6858ec008008d6b33cb05c9eb77fd53b2d77f5f0cc6eb72536"
 dependencies = [
- "fsio 0.3.1",
+ "fsio 0.4.0",
 ]
 
 [[package]]
