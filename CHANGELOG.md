@@ -2,7 +2,7 @@
 
 ### v0.35.16 (2022-08-08)
 
-* Enhancement: Create task definition on runtime and invoke it via plugin #677
+* Enhancement: Create task definition in runtime and invoke it via plugin #677
 * Enhancement: Enable to remove force flag for custom install commands #674
 * Maintenance: Update dependencies #676
 
