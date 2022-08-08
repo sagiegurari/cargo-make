@@ -138,7 +138,6 @@ dependencies = [
  "once_cell",
  "petgraph",
  "regex",
- "regex",
  "run_script",
  "rust_info",
  "semver",

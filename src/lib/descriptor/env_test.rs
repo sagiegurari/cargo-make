@@ -1,7 +1,7 @@
 use crate::descriptor::env::merge_env;
 use crate::descriptor::load;
 use crate::environment;
-use crate::types::EnvValue;
+use crate::types::{EnvValue, EnvValueConditioned, EnvValuePathGlob, EnvValueScript};
 use indexmap::IndexMap;
 
 #[test]
@@ -20,6 +20,117 @@ fn merge_env_reorder() {
 
     let mut map2 = IndexMap::new();
     map2.insert("env1".to_owned(), EnvValue::Value("x".to_owned()));
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 2);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env2");
+}
+
+#[test]
+fn merge_env_reorder_list() {
+    let mut map1 = IndexMap::new();
+    map1.insert(
+        "env2".to_owned(),
+        EnvValue::List(vec![
+            "${env1}".to_owned(),
+            "${env3}".to_owned(),
+            "4".to_owned(),
+        ]),
+    );
+    map1.insert("env3".to_owned(), EnvValue::Value("4".to_owned()));
+
+    let mut map2 = IndexMap::new();
+    map2.insert("env1".to_owned(), EnvValue::Value("${env3}".to_owned()));
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 3);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env3");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(2).unwrap().0.as_str(), "env2");
+}
+
+#[test]
+fn merge_env_reorder_script() {
+    let mut map1 = IndexMap::new();
+    map1.insert(
+        "env2".to_owned(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo $env1".to_owned(), "echo ${env3} + $env3".to_owned()],
+            multi_line: None,
+            condition: None,
+            depends_on: None,
+        }),
+    );
+    map1.insert("env3".to_owned(), EnvValue::Value("4".to_owned()));
+
+    let mut map2 = IndexMap::new();
+    map2.insert("env1".to_owned(), EnvValue::Value("${env3}".to_owned()));
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 3);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env3");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(2).unwrap().0.as_str(), "env2");
+}
+
+#[test]
+fn merge_env_reorder_script_explicit() {
+    let mut map1 = IndexMap::new();
+    map1.insert(
+        "env2".to_owned(),
+        EnvValue::Script(EnvValueScript {
+            script: vec!["echo $env1".to_owned()],
+            multi_line: None,
+            condition: None,
+            depends_on: Some(vec!["env1".to_owned()]),
+        }),
+    );
+    map1.insert("env1".to_owned(), EnvValue::Value("4".to_owned()));
+
+    let map2 = IndexMap::new();
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 2);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env2");
+}
+
+#[test]
+fn merge_env_reorder_path() {
+    let mut map1 = IndexMap::new();
+    map1.insert(
+        "env2".to_owned(),
+        EnvValue::PathGlob(EnvValuePathGlob {
+            glob: "./**/${env1}/profile.txt".to_string(),
+            include_files: None,
+            include_dirs: None,
+            ignore_type: None,
+        }),
+    );
+    map1.insert("env1".to_owned(), EnvValue::Value("4".to_owned()));
+
+    let map2 = IndexMap::new();
+
+    let output = merge_env(&map1, &map2).expect("should have no cycle");
+    assert_eq!(output.len(), 2);
+    assert_eq!(output.get_index(0).unwrap().0.as_str(), "env1");
+    assert_eq!(output.get_index(1).unwrap().0.as_str(), "env2");
+}
+
+#[test]
+fn merge_env_reorder_conditional() {
+    let mut map1 = IndexMap::new();
+    map1.insert(
+        "env2".to_owned(),
+        EnvValue::Conditional(EnvValueConditioned {
+            value: "${env1}".to_string(),
+            condition: None,
+        }),
+    );
+    map1.insert("env1".to_owned(), EnvValue::Value("4".to_owned()));
+
+    let map2 = IndexMap::new();
 
     let output = merge_env(&map1, &map2).expect("should have no cycle");
     assert_eq!(output.len(), 2);
