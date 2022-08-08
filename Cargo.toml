@@ -50,7 +50,7 @@ colored = "^2"
 ctrlc = "^3.2.2"
 dirs-next = "^2"
 duckscript = "^0.7.4"
-duckscriptsdk = { version = "^0.8.13", default-features = false }
+duckscriptsdk = { version = "^0.8.14", default-features = false }
 envmnt = "^0.10.1"
 fern = "^0.6"
 fsio = { version = "^0.4", features = ["temp-path"] }
