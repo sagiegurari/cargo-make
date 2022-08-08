@@ -1832,6 +1832,13 @@ args = ["somecrate"]
 install_crate = { crate_name = "somecrate", install_command = "custom-install" }
 ```
 
+By default, the **--force** flag is added. In order to remove it, add the force=false to the install_crate definition as follows:
+
+```toml
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install", force = false }
+```
+
 <a name="usage-installing-dependencies-priorities"></a>
 ### Installation Priorities
 

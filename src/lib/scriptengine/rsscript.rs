@@ -45,6 +45,7 @@ fn install_crate(provider: &ScriptRunner) {
                 min_version: None,
                 version: None,
                 install_command: None,
+                force: None,
             };
 
             // due to fornwall/rust-script/issues/42
