@@ -111,6 +111,7 @@
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)
+* [Error Codes](#error-codes)
 * [Articles](#articles)
     * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
     * [Extending Tasks, Platform Overrides and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
@@ -1342,18 +1343,145 @@ We run task **3** the output would be:
 
 <a name="usage-env"></a>
 ### Environment Variables
-cargo-make enables you to defined environment variables in several ways.<br>
-Environment variables can later be used in commands, scripts, conditions, functions and more, so it is important to have a powerful way to define them for your build.
+`cargo-make` enabled the definition of environmental variables in several ways, which can later be accessed throughout task execution.
 
+Because environmental variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
+
+* [Declaration](#env-declaration)
 * [Global Configuration](#usage-env-config)
 * [Task](#usage-env-task)
 * [Command Line](#usage-env-cli)
 * [Env File](#usage-env-file)
 * [Global](#usage-env-global)
 
+<a name="env-declaration"></a>
+#### Declaration
+
+There are multiple ways to declare environmental variables, all of which are suited for specific suitcases.
+
+##### Simple
+
+The most ordinary one is the definition of a simple `KEY=Value` pair, which is reminiscent of tools like [dotenv](https://www.npmjs.com/package/dotenv) and [bash scripts](https://www.gnu.org/software/bash/). Values can use other variables as values, which are interpolated at runtime, using the `${variable}` syntax.
+
+> **Note:** The `$variable` syntax is currently not supported!
+
+> **Note:** Extended interpolation like `${variable:-default}` are currently unsupported!
+
+```toml
+RUST_BACKTRACE = 1
+BOOL_VALUE = true
+COMPOSITE = "${BOOL_VALUE} ${RUST_BACKTRACE}"
+```
+
+##### List
+
+`cargo-make` also supports lists, which are joined using `;` at runtime.
+
+```toml
+LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
+```
+
+##### Script
+
+`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environmental variable.
+
+The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environmental variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
+
+> **Note:** This uses `sh` for script evaluation ([spec](https://pubs.opengroup.org/onlinepubs/9699919799/)), other runners like `duckscript`, `rust`, etc. are **not** supported.
+
+```toml
+EVALUATED_VAR = { script = ["echo SOME VALUE"] }
+```
+
+##### Decode Map
+
+`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environmental variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
+
+```toml
+LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
+```
+
+##### Path
+
+`cargo-make` supports the use of glob syntax to find all files and directories in a given directory. The list of files will be joined using `;` during execution.
+
+```toml
+PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
+```
+
+##### Conditional
+
+`cargo-make` supports conditional variables, which are set to the `value` specified if the `condition` evaluates to true. To learn more about conditions, refer to [this chapter]
+
+##### Unset
+
+Variables can be unset, which will unset their value and reset it to an empty string.
+
+```toml
+VARIABLE = {unset = true}
+```
+
+#### Note about Ordering
+
+Environmental variables in `cargo-make`, create implicit dependencies between each other and are handled more in a declarative approach. Therefore ordering of variables is not necessarily the same between definition and evaluation.
+
+This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
+
+```toml
+[env]
+VAR1="${VAR2}"
+VAR2=2
+```
+
+A naive implementation would now result in `VAR1=""`, `VAR2=2`, this behavior can be very unexpected, especially when extending existing declarations of environment variables. `cargo-make` is different and uses an approach that is similar to tools like [`terraform`](https://www.terraform.io/), it will recognize that `VAR1` depends on `VAR2`, which will output `VAR1=2`, `VAR2=2`.
+
+```toml
+[env]
+VAR1="${VAR2}"
+
+[env.prod]
+VAR2=2
+
+[env.devel]
+VAR2=3
+```
+
+This is an extended example, which would not work using the naive implementation, as the different profiles are merged with the environment, basically appending them. This is not the case with `cargo-make`, which will - again - recognize the dependencies and correctly resolve all values.
+
+###### Naive Implementation
+
+```
+--release=test
+    VAR1=""
+--release=prod
+    VAR1=""
+    VAR2=2
+--release=devel
+    VAR1=""
+    VAR2=3
+```
+
+###### `cargo-make` Implementation
+
+```
+--release=test
+    VAR1=""
+--release=prod
+    VAR1="2"
+    VAR2=2
+--release=devel
+    VAR1="3"
+    VAR2=3
+```
+
 <a name="usage-env-config"></a>
 #### Global Configuration
-You can define env vars to be set as part of the execution of the flow in the global env block for your makefile, for example:
+
+Environmental variables can be set globally using the top level `[env]` key, with the ability to provide multiple profiles, which can be selected using `--profile <name>` when executing `cargo make`.
+
+Environment variables set in the global `[env]` block [and default `Makefile.toml`](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running any tasks.
+
+##### Example
 
 ```toml
 [env]
@@ -1382,42 +1510,10 @@ DEV = true
 PROD = true
 ```
 
-Environment variables can be defined as:
-
-* Simple key/value pair, where the value can be either string, boolean or a number.
-```toml
-RUST_BACKTRACE = 1
-BOOL_VALUE = true
-```
-* Key and an array which will be joined with the ';' separator
-```toml
-LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
-```
-* Key and output of a script **(only simple native shell scripts are supported, special runners such as duckscript, rust and so on, are not supported)**
-```toml
-EVALUATED_VAR = { script = ["echo SOME VALUE"] }
-```
-* Key and a decode map (if **default_value** not provided, it will default to the source value)
-```toml
-LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
-```
-* Key and a value expression built from strings and other env variables using the ${} syntax
-```toml
-COMPOSITE = "${TEST1} and ${TEST2}"
-```
-* Key and a path glob which will populate the env variable with all relevant paths separated by a ';' character
-```toml
-PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = false, ignore_type = "git" }
-```
-* Key and a structure holding the value (can be an expression) and optional condition which must be valid in order for the environment variable to be set
-
-All environment variables defined in the env block and in the [default Makefile.toml](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running the tasks.<br>
-To unset an environment variable, use the **MY_VAR = { unset = true }** syntax.<br>
-See more on profile based environment setup in the [profile environment section](#usage-profiles-env)
-
 <a name="usage-env-task"></a>
 #### Task
-Environment variables can be defined inside tasks using the env attribute, so when a task is invoked (after its dependencies), the environment variables will be set, for example:
+
+Environmental variables can be set in the scope of the task and will be merged (and reordered) with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
 
 ```toml
 [tasks.test-flow]
@@ -1430,8 +1526,6 @@ script = '''
 echo var: ${SOME_ENV_VAR}
 '''
 ```
-
-In task level, environment variables capabilities are the same as in the [global level](#usage-env-config).
 
 <a name="usage-env-cli"></a>
 #### Command Line
@@ -1449,12 +1543,9 @@ It is also possible to provide an env file path as part of the cli args as follo
 cargo make --env-file=./env/production.env
 ```
 
-This allows to use the same Makefile.toml but with different environment variables loaded from different env files.
+This allows using the same `Makefile.toml`, but with a different set of environmental variables loaded from the env file.
 
-The env file, is a simple key=value file.<br>
-<br>
-In addition, you can define environment variables values based on other environment variables using the ${} syntax.<br>
-For example:
+The env file is a simple `key=value`, which is similar to [dotenv](https://www.npmjs.com/package/dotenv), but only supports variable interpolation using the `${}` syntax.
 
 ```properties
 #just a comment...
@@ -1463,7 +1554,9 @@ ENV2_TEST=TEST2
 ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 ```
 
-Env files can also be defined globally in the Makefile.toml via **env_files** attribute as follows:
+Paths to environment files can also be defined globally in the `env_files` key of the `Makefile.toml`, which will be loaded in the order they are defined. All paths are relative to the `Makefile.toml` directory containing them.
+
+> **Note:** `env_files` can only be used on a task level, be aware that relative paths will instead be relative **to the current working directory**
 
 ```toml
 env_files = [
@@ -1472,8 +1565,7 @@ env_files = [
 ]
 ```
 
-In this example, the env files will be loaded in the order in which they were defined.<br>
-To load only environment variables from the file that are not yet defined in the current environment, add the **defaults_only** flag as true, for example:
+To only load environmental variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
 
 ```toml
 env_files = [
@@ -1482,7 +1574,9 @@ env_files = [
 ]
 ```
 
-To enable profile based filtering, you can use the object form as follows:
+Use the `profile` property to only load environmental variables whenever a specific profile is active. 
+
+> To learn more about profiles, check the [profiles section](#usage-profiles).
 
 ```toml
 env_files = [
@@ -1491,22 +1585,13 @@ env_files = [
 ]
 ```
 
-In this example, **profile.env** is only loaded in case the runtime profile is **development**.<br>
-*More on profiles in the [profiles](#usage-profiles) section.*<br>
-<br>
-Relative paths are relative compared to the toml file that declared them and not to the current working directory.<br>
-<br>
-The same **env_files** attribute can be defined on the task level, however relative paths on the task level are relative to the current working directory.<br>
-**If the task defines a different working directory, it will change after the env files are loaded.**
-
 <a name="usage-env-setup-scripts"></a>
 #### Env Setup Scripts
 
-Environment setup scripts are script that are invoked after environment files and the env block.<br>
-They are defined globally by the **env_scripts** attribute.<br>
-These scripts can be used to run anything needed before starting up the flow.<br>
-In case of duckscript scripts which are invoked by the embedded runtime, it is also possible to modify the
-cargo-make runtime environment variables directly.<br>
+Environment setup scripts are invoked after environment files and the env block. They are defined globally by the **env_scripts** attribute. These scripts can run anything needed before starting up the flow.
+
+In the case of `duckscript` scripts invoked by the embedded runtime, it is possible to modify the `cargo-make` runtime environment variables directly.
+
 For Example:
 
 ```toml
@@ -1535,13 +1620,13 @@ SCRIPT = { script = ["echo SCRIPT VALUE"] }
 COMPOSITE = "simple value: ${SIMPLE} script value: ${SCRIPT}"
 ```
 
-In this example, since the **env** block is invoked before the env scripts, the duckscripts have access to the COMPOSITE environment variable.<br>
-These scripts use that value to create a new environment variable **COMPOSITE_2** and in the second script we just print it.
+In this example, since the **env** block is invoked before the env scripts, the `duckscript`s have access to the COMPOSITE environment variable.<br>
+These scripts use that value to create a new environment variable **COMPOSITE_2**, and in the second script, we print it.
 
 <a name="usage-env-vars-loading-order"></a>
 #### Loading Order
 
-cargo-make will load the environment variables in the following order
+`cargo-make` will load the environment variables in the following order
 
 * Load environment file provided on the command line
 * Setup internal environment variables (see [Global](#usage-env-global) section). **Not including per task variables.**
@@ -1549,29 +1634,31 @@ cargo-make will load the environment variables in the following order
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
-* Load global environment setup scripts defines in the **env_scripts** attribute.
+* Load global environment setup scripts defined in the **env_scripts** attribute.
 * Per Task
-  * Load environment files defined in the **env_files** attribute (relative paths are treated differently then global env_files).
+  * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
   * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
-  * Load environment variables defined in the **env** block (same behaviour as global env block).
+  * Load environment variables defined in the **env** block (same behavior as global env block).
+
+During each step, variables can be reordered to ensure all dependencies are specified. The environmental variables will be interpolated before every task run.
 
 <a name="usage-env-global"></a>
 #### Global
-In addition to manually setting environment variables, cargo-make will also automatically add few environment variables on its own which can be helpful when running task scripts, commands, conditions, etc.
+In addition to manually setting environment variables, cargo-make will also automatically add a few environmental variables, which can be helpful when running task scripts, commands, conditions, and more.
 
-* **CARGO_MAKE** - Set to "true" to help sub processes identify they are running from cargo make.
+* **CARGO_MAKE** - Set to "true" to help sub-processes identify they are running from `cargo` make.
 * **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
 * **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, separated with a ';' character.
 * **CARGO_MAKE_CURRENT_TASK_NAME** - Holds the currently executed task name.
-* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE** - Holds the full path to the makefile which **initially** defined the currently executed task (not available for internal core tasks).
-* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY** - Holds the full path to the directory containing the makefile which **initially** defined the currently executed task (not available for internal core tasks).
+* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE** - Holds the full path to the makefile, which **initially** defined the currently executed task (not available for internal core tasks).
+* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY** - Holds the full path to the directory containing the makefile **initially** defined the currently executed task (not available for internal core tasks).
 * **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
 * **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
 * **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.
 * **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
 * **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, separated with a ';' character (should not be manually modified by global/task env blocks)
-* **CARGO_MAKE_PROJECT_NAME** - For standalone crates, this will be the same as CARGO_MAKE_CRATE_NAME and for workspace it will default to the working directory basename.
-* **CARGO_MAKE_PROJECT_VERSION** For standalone crates, this will be the same as CARGO_MAKE_CRATE_VERSION and for workspaces it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
+* **CARGO_MAKE_PROJECT_NAME** - For standalone crates, this will be the same as CARGO_MAKE_CRATE_NAME, and for workspace, it will default to the working directory basename.
+* **CARGO_MAKE_PROJECT_VERSION** For standalone crates, this will be the same as `CARGO_MAKE_CRATE_VERSION`, and for workspaces, it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
 * **CARGO_MAKE_CARGO_HOME** - The path to CARGO_HOME as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
 * **CARGO_MAKE_CARGO_PROFILE** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **CARGO_MAKE_PROFILE** (unmapped value will default to CARGO_MAKE_PROFILE value)
 * **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
@@ -1582,39 +1669,41 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
 * **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
 * **CARGO_MAKE_RUST_TARGET_TRIPLE** - x86_64-unknown-linux-gnu, x86_64-apple-darwin, x86_64-pc-windows-msvc, etc ...
-* **CARGO_MAKE_CRATE_TARGET_DIRECTORY** - Gets target directory where cargo stores the output of a build, respects ${CARGO_TARGET_DIR}, .cargo/config.toml's and ${CARGO_HOME}/config.toml, but not `--target-dir` command-line flag.
+* **CARGO_MAKE_CRATE_TARGET_DIRECTORY** - Gets target directory where cargo stores the output of a build, respects `${CARGO_TARGET_DIR}`, `.cargo/config.toml`'s and `${CARGO_HOME}/config.toml`, but not `--target-dir` command-line flag.
 * **CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY** - Like `CARGO_MAKE_CRATE_TARGET_DIRECTORY` but respects `build.target` in .cargo/config.toml.
-* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds true/false based if there are dependencies defined in the Cargo.toml or not (defined as *false* if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds true/false based if this is a workspace crate or not (defined even if no Cargo.toml is found)
-* **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds list of member paths (defined as empty value if no Cargo.toml is found)
+* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds `true`/`false` based if there are dependencies defined in the `Cargo.toml` or not (defined as *false* if no `Cargo.toml` is found)
+* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds `true`/`false` based if this is a workspace crate or not (defined even if no `Cargo.toml` is found)
+* **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds a list of member paths (defined as empty value if no `Cargo.toml` is found)
 * **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
-* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds true/false based if a Cargo.lock file exists in current working directory (in workspace projects, each member has a different working directory).
-* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects .cargo/config.toml and ${CARGO_HOME}/config.toml.
-* **CARGO_MAKE_CI** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI).
-* **CARGO_MAKE_PR** - Holds true/false based if the task is running in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
+* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds `true`/`false` if a `Cargo.lock` file exists in the current working directory (in workspace projects, each member has a different working directory).
+* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects `.cargo/config.toml` and `${CARGO_HOME}/config.toml`.
+* **CARGO_MAKE_CI** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI).
+* **CARGO_MAKE_PR** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 * **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name (if available).
 * **CARGO_MAKE_CI_VENDOR** - Holds the continuous integration vendor name (if available).
-* **CARGO_MAKE_DUCKSCRIPT_VERSION** - The embedded duckscript runtime version.
-* **CARGO_MAKE_DUCKSCRIPT_SDK_VERSION** - The embedded duckscript SDK version.
+* **CARGO_MAKE_DUCKSCRIPT_VERSION** - The embedded `duckscript` runtime version.
+* **CARGO_MAKE_DUCKSCRIPT_SDK_VERSION** - The embedded `duckscript` SDK version.
 
-The following environment variables will be set by cargo-make if Cargo.toml file exists and the relevant value is defined:
+The following environment variables will be set by cargo-make if `Cargo.toml` file exists and the relevant value is defined:
 
-* **CARGO_MAKE_CRATE_NAME** - Holds the crate name from the Cargo.toml file found in the cwd.
+* **CARGO_MAKE_CRATE_NAME** - Holds the crate name from the `Cargo.toml` file in the current working directory.
 * **CARGO_MAKE_CRATE_FS_NAME** - Same as CARGO_MAKE_CRATE_NAME however some characters are replaced (for example '-' to '_').
-* **CARGO_MAKE_CRATE_VERSION** - Holds the crate version from the Cargo.toml file found in the cwd.
-* **CARGO_MAKE_CRATE_DESCRIPTION** - Holds the crate description from the Cargo.toml file found in the cwd.
-* **CARGO_MAKE_CRATE_LICENSE** - Holds the crate license from the Cargo.toml file found in the cwd.
-* **CARGO_MAKE_CRATE_DOCUMENTATION** - Holds the crate documentation link from the Cargo.toml file found in the cwd.
-* **CARGO_MAKE_CRATE_HOMEPAGE** - Holds the crate homepage link from the Cargo.toml file found in the cwd.
-* **CARGO_MAKE_CRATE_REPOSITORY** - Holds the crate repository link from the Cargo.toml file found in the cwd.
+* **CARGO_MAKE_CRATE_VERSION** - Holds the crate version from the `Cargo.toml` file found in the current working directory.
+* **CARGO_MAKE_CRATE_DESCRIPTION** - Holds the crate description from the `Cargo.toml` file in the current working directory.
+* **CARGO_MAKE_CRATE_LICENSE** - Holds the crate license from the `Cargo.toml` file in the current working directory.
+* **CARGO_MAKE_CRATE_DOCUMENTATION** - Holds the crate documentation link from the `Cargo.toml` file in the current working directory.
+* **CARGO_MAKE_CRATE_HOMEPAGE** - Holds the crate homepage link from the `Cargo.toml` file in the current working directory.
+* **CARGO_MAKE_CRATE_REPOSITORY** - Holds the crate repository link from the `Cargo.toml` file in the current working directory.
 
 The following environment variables will be set by cargo-make if the project is part of a git repo:
 
 * **CARGO_MAKE_GIT_BRANCH** - The current branch name.
 * **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
-* **CARGO_MAKE_GIT_USER_EMAIL** - The user email pulled from the git config user.email key.
+* **CARGO_MAKE_GIT_USER_EMAIL** - The user email, which was taken from the git config `user.email` key.
 * **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH** - The last HEAD commit hash.
 * **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX** - The last HEAD commit hash prefix.
+
+
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
@@ -3775,6 +3864,11 @@ Tasks which only install some dependency but do not invoke any command start wit
 [tasks.install-rust-src]
 install_crate = { rustup_component_name = "rust-src" }
 ```
+
+<a name="error-codes"></a>
+## Error Codes
+
+### E001: Cycle Detected
 
 <a name="articles"></a>
 ## Articles
