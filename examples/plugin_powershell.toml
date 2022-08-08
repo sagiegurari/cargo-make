@@ -7,7 +7,7 @@ skip_crate_env_info = true
 
 [plugins.impl.powershell]
 script = '''
-# replaces cmd with powershell on windows
+# Adds simpler powershell integration
 
 # make sure we are on windows
 windows = is_windows

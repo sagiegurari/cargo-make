@@ -3522,15 +3522,16 @@ fn main() {
 ```
 
 <a name="usage-plugins-plugin-example-powershell"></a>
-### Plugin Example (Replace Windows cmd with powershell)
+### Plugin Example (Adding Simpler Windows Powershell Support)
 
-In the below example, we add the powershell command and modify the task args to include the **-C** argument.<br>
+In the below example, we add the a simple powershell command support.<br>
+This plugin will take an existing task, set its command to powershell and prepend the **-C** argument.<br>
 This example also shows how to create new tasks in runtime and invoke them.
 
 ```toml
 [plugins.impl.powershell]
 script = '''
-# replaces cmd with powershell on windows
+# Adds simpler powershell integration
 
 # make sure we are on windows
 windows = is_windows
