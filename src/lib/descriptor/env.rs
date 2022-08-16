@@ -168,7 +168,7 @@ pub(crate) fn merge_env(
                     .iter()
                     .chain(scc.first())
                     .map(ToString::to_string)
-                    .reduce(|acc, name| format!("{acc} -> {name}"));
+                    .reduce(|acc, name| format!("{} -> {}", acc, name));
 
                 if let Some(render) = render {
                     err.push_str(&format!(" Cycle: {}.", render));
