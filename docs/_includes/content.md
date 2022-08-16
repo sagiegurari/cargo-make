@@ -1299,7 +1299,7 @@ VARIABLE = {unset = true}
 <a name="env-note-about-ordering"></a>
 #### Note about Ordering
 
-Environmental variables in `cargo-make`, create implicit dependencies between each other and are handled more in a declarative approach. Therefore ordering of variables is not necessarily the same between definition and evaluation.
+The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
 
 This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
 
@@ -1389,7 +1389,11 @@ PROD = true
 <a name="usage-env-task"></a>
 #### Task
 
-Environmental variables can be set in the scope of the task and will be merged (and reordered) with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
+Environmental variables can be set in the scope of the task and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
+
+> **Note:** Reordering of task variables with global variables will **not** take place, tasks will simply overwrite previously declared variables.
+
+> **Note:** Variables are **not** cleaned up after execution, meaning that tasks following after the executed task will take over the variables set by the previous task. 
 
 `cargo-make` supports the same capabilities outlined for global configuration on a individual task level.
 
