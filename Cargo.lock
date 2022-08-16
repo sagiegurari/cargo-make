@@ -434,9 +434,9 @@ checksum = "a246d82be1c9d791c5dfde9a2bd045fc3cbba3fa2b11ad558f27d01712f00569"
 
 [[package]]
 name = "envmnt"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4498d2bc21512b323c159d2c6dff3fe6799ea6cfa6c24b991e76099abcd2a1ca"
+checksum = "70fb5696b71de967cbd2c2260ca0179a94e33f828dd91a07f1d8af8d543ebfdc"
 dependencies = [
  "fsio",
  "indexmap",
