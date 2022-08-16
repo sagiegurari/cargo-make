@@ -140,8 +140,8 @@ pub(crate) fn merge_env(
         // combined is unique (only latest value),
         // which is why we do not need to delete any previously declared outbound edges.
 
-        // if the env variable is in the current scope add add an edge,
-        // otherwise it is referencing and external variable.
+        // if the env variable is in the current scope add an edge,
+        // otherwise it is referencing an external variable.
         for used in env_depends_on(val).into_iter() {
             if graph.contains_node(used) {
                 graph.add_edge(*key, used, ());

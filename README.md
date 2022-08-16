@@ -1366,9 +1366,10 @@ The most ordinary one is the definition of a simple `KEY=Value` pair, which is r
 
 > **Note:** The `$variable` syntax is currently not supported!
 
-> **Note:** Extended interpolation like `${variable:-default}` are currently unsupported!
+> **Note:** Extended interpolation like `${variable:-default}` is currently unsupported!
 
 ```toml
+STRING = "value"
 RUST_BACKTRACE = 1
 BOOL_VALUE = true
 COMPOSITE = "${BOOL_VALUE} ${RUST_BACKTRACE}"
@@ -1416,7 +1417,7 @@ PATH_GLOB = { glob = "./src/**/mod.rs", include_files = true, include_dirs = fal
 
 ##### Unset
 
-Variables can be unset, which will unset their value and reset it to an empty string.
+Variables can be unset.
 
 ```toml
 VARIABLE = {unset = true}
@@ -1516,6 +1517,8 @@ PROD = true
 
 Environmental variables can be set in the scope of the task and will be merged (and reordered) with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
 
+`cargo-make` supports the same capabilities outlined for global configuration on a individual task level.
+
 ```toml
 [tasks.test-flow]
 env = { "SOME_ENV_VAR" = "value" }
@@ -1555,9 +1558,9 @@ ENV2_TEST=TEST2
 ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 ```
 
-Paths to environment files can also be defined globally in the `env_files` key of the `Makefile.toml`, which will be loaded in the order they are defined. All paths are relative to the `Makefile.toml` directory containing them.
+Paths to environment files can also be defined globally in the `env_files` key of the `Makefile.toml`, which will be loaded in the order they are defined. All relative paths are relative to the directory containing the `Makefile.toml` they were defined in.
 
-> **Note:** `env_files` can only be used on a task level, be aware that relative paths will instead be relative **to the current working directory**
+> **Note:** `env_files` can also be used on a task level, be aware that relative paths will instead be relative **to the current working directory**
 
 ```toml
 env_files = [
@@ -1703,7 +1706,6 @@ The following environment variables will be set by cargo-make if the project is 
 * **CARGO_MAKE_GIT_USER_EMAIL** - The user email, which was taken from the git config `user.email` key.
 * **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH** - The last HEAD commit hash.
 * **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX** - The last HEAD commit hash prefix.
-
 
 
 <a name="usage-ignoring-errors"></a>
