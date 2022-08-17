@@ -1262,7 +1262,7 @@ LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 
 The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environmental variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
 
-> **Note:** This uses `sh` for script evaluation ([spec](https://pubs.opengroup.org/onlinepubs/9699919799/)), other runners like `duckscript`, `rust`, etc. are **not** supported.
+> **Note:** This uses the default OS command runner (`cmd` on Windows, `sh` on UNIX systems), other runners like `duckscript`, `rust`, etc. are **not** supported.
 
 ```toml
 EVALUATED_VAR = { script = ["echo SOME VALUE"] }
@@ -1391,7 +1391,7 @@ PROD = true
 
 Environmental variables can be set in the scope of the task and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
 
-> **Note:** Reordering of task variables with global variables will **not** take place, tasks will simply overwrite previously declared variables.
+> **Note:** Reordering of task variables with global variables will **not** take place. Tasks will simply overwrite previously declared variables.
 
 > **Note:** Variables are **not** cleaned up after execution, meaning that tasks following after the executed task will take over the variables set by the previous task. 
 
@@ -1438,7 +1438,7 @@ ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 
 Paths to environment files can also be defined globally in the `env_files` key of the `Makefile.toml`, which will be loaded in the order they are defined. All relative paths are relative to the directory containing the `Makefile.toml` they were defined in.
 
-> **Note:** `env_files` can also be used on a task level, be aware that relative paths will instead be relative **to the current working directory**
+> **Note:** `env_files` can also be used on a task level. Be aware that relative paths will instead be relative **to the current working directory**
 
 ```toml
 env_files = [
