@@ -93,13 +93,13 @@ fn remove_rust_env_vars_existed() {
     envmnt::set("RUSTDOC", "bad2");
     envmnt::set("RUSTFLAGS", "bad3");
 
-    assert!(envmnt::exits("RUSTC"));
-    assert!(envmnt::exits("RUSTDOC"));
-    assert!(envmnt::exits("RUSTFLAGS"));
+    assert!(envmnt::exists("RUSTC"));
+    assert!(envmnt::exists("RUSTDOC"));
+    assert!(envmnt::exists("RUSTFLAGS"));
 
     remove_rust_env_vars();
 
-    assert!(!envmnt::exits("RUSTC"));
-    assert!(!envmnt::exits("RUSTDOC"));
-    assert!(!envmnt::exits("RUSTFLAGS"));
+    assert!(!envmnt::exists("RUSTC"));
+    assert!(!envmnt::exists("RUSTDOC"));
+    assert!(!envmnt::exists("RUSTFLAGS"));
 }
