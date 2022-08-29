@@ -88,6 +88,7 @@ fn get_cargo_binary_path_valid() {
 }
 
 #[test]
+#[ignore]
 fn remove_rust_env_vars_existed() {
     envmnt::set("RUSTC", "bad1");
     envmnt::set("RUSTDOC", "bad2");
