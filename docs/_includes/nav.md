@@ -24,6 +24,8 @@
         * [Platform Override](#usage-platform-override)
         * [Extend Attribute](#usage-task-extend-attribute)
     * [Environment Variables](#usage-env)
+        * [Declaration](#env-declaration)
+        * [Note about Ordering](#env-note-about-ordering)
         * [Global Configuration](#usage-env-config)
         * [Task](#usage-env-task)
         * [Command Line](#usage-env-cli)

@@ -221,6 +221,7 @@ fn set_env_multi_types() {
             script: vec!["echo script1".to_string()],
             multi_line: None,
             condition: None,
+            depends_on: None,
         }),
     );
     env.insert(
@@ -276,6 +277,7 @@ fn set_env_multi_line_script() {
             script: vec!["echo script1\necho script2".to_string()],
             multi_line: Some(true),
             condition: None,
+            depends_on: None,
         }),
     );
 
@@ -312,6 +314,7 @@ fn set_env_script_with_condition_true() {
             script: vec!["echo script_condition".to_string()],
             multi_line: None,
             condition: Some(condition),
+            depends_on: None,
         }),
     );
 
@@ -351,6 +354,7 @@ fn set_env_script_with_condition_false() {
             script: vec!["echo script_condition".to_string()],
             multi_line: None,
             condition: Some(condition),
+            depends_on: None,
         }),
     );
 
@@ -1168,6 +1172,7 @@ fn setup_env_script() {
             script: vec!["echo script1".to_string()],
             multi_line: None,
             condition: None,
+            depends_on: None,
         }),
     );
 
@@ -1194,6 +1199,7 @@ fn evaluate_env_value_valid() {
             script: vec!["echo script1".to_string()],
             multi_line: None,
             condition: None,
+            depends_on: None,
         },
     );
 
@@ -1209,6 +1215,7 @@ fn evaluate_env_value_empty() {
             script: vec!["".to_string()],
             multi_line: None,
             condition: None,
+            depends_on: None,
         },
     );
 
@@ -1224,6 +1231,7 @@ fn evaluate_env_error() {
             script: vec!["exit 1".to_string()],
             multi_line: None,
             condition: None,
+            depends_on: None,
         },
     );
 }
@@ -1236,6 +1244,7 @@ fn evaluate_env_value_single_line() {
             script: vec!["echo test".to_string()],
             multi_line: Some(false),
             condition: None,
+            depends_on: None,
         },
     );
 
@@ -1250,6 +1259,7 @@ fn evaluate_env_value_multi_line() {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
             condition: None,
+            depends_on: None,
         },
     );
 
@@ -1266,6 +1276,7 @@ fn evaluate_env_value_multi_line_linux() {
             script: vec!["echo 1\necho 2".to_string()],
             multi_line: Some(true),
             condition: None,
+            depends_on: None,
         },
     );
 
