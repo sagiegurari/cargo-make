@@ -84,6 +84,19 @@ fn evaluate_and_set_env_simple() {
 }
 
 #[test]
+fn evaluate_and_set_env_none_with_default() {
+    envmnt::remove("EVAL_SET_NONE_WITH_DEFAULT");
+    evaluate_and_set_env(
+        "EVAL_SET_NONE_WITH_DEFAULT",
+        "${EVAL_SET_NONE_USE_DEFAULT:test_default_value}",
+    );
+    assert_eq!(
+        envmnt::get_or_panic("EVAL_SET_NONE_WITH_DEFAULT"),
+        "test_default_value".to_string()
+    );
+}
+
+#[test]
 #[ignore]
 fn evaluate_and_set_env_exists() {
     envmnt::set("eval_test1", "test");

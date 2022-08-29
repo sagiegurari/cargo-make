@@ -2,6 +2,7 @@
 
 ### v0.36.0
 
+* \[**backward compatibility break**\] Enhancement: environment variables now support the default syntax: ${name:default}
 * Enhancement: Workaround rustup env issue when setting toolchain #702
 
 ### v0.35.16 (2022-08-08)
