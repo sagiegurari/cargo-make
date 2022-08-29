@@ -61,6 +61,8 @@ indexmap = { version = "^1", features = ["serde-1"] }
 ignore = "^0.4"
 lenient_semver = "^0.4.2"
 log = "^0.4"
+once_cell = "^1.13.0"
+petgraph = "^0.6.2"
 regex = "^1.5.5"
 run_script = "^0.10"
 rust_info = "^0.3.1"
@@ -71,8 +73,6 @@ serde_ignored = "^0.1"
 serde_json = "^1"
 shell2batch = "^0.4.4"
 toml = "^0.5"
-petgraph = "0.6.2"
-once_cell = "1.13.0"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "^0.12.1"

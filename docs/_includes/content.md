@@ -1221,11 +1221,13 @@ We run task **3** the output would be:
 Because environmental variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
 
 * [Declaration](#env-declaration)
-* [Note about Ordering](#env-note-about-ordering)
 * [Global Configuration](#usage-env-config)
 * [Task](#usage-env-task)
 * [Command Line](#usage-env-cli)
 * [Env File](#usage-env-file)
+* [Env Setup Scripts](#usage-env-setup-scripts)
+* [Loading Order](#usage-env-vars-loading-order)
+* [Note about Ordering](#env-note-about-ordering)
 * [Global](#usage-env-global)
 
 <a name="env-declaration"></a>
@@ -1236,10 +1238,6 @@ There are multiple ways to declare environmental variables, all of which are sui
 ##### Simple
 
 The most ordinary one is the definition of a simple `KEY=Value` pair, which is reminiscent of tools like [dotenv](https://www.npmjs.com/package/dotenv) and [bash scripts](https://www.gnu.org/software/bash/). Values can use other variables as values, which are interpolated at runtime, using the `${variable}` syntax.
-
-> **Note:** The `$variable` syntax is currently not supported!
-
-> **Note:** Extended interpolation like `${variable:-default}` is currently unsupported!
 
 ```toml
 STRING = "value"
@@ -1296,60 +1294,6 @@ Variables can be unset.
 VARIABLE = {unset = true}
 ```
 
-<a name="env-note-about-ordering"></a>
-#### Note about Ordering
-
-The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
-
-This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
-
-```toml
-[env]
-VAR1="${VAR2}"
-VAR2=2
-```
-
-A naive implementation would now result in `VAR1=""`, `VAR2=2`, this behavior can be very unexpected, especially when extending existing declarations of environment variables. `cargo-make` is different and uses an approach that is similar to tools like [`terraform`](https://www.terraform.io/), it will recognize that `VAR1` depends on `VAR2`, which will output `VAR1=2`, `VAR2=2`.
-
-```toml
-[env]
-VAR1="${VAR2}"
-
-[env.prod]
-VAR2=2
-
-[env.devel]
-VAR2=3
-```
-
-This is an extended example, which would not work using the naive implementation, as the different profiles are merged with the environment, basically appending them. This is not the case with `cargo-make`, which will - again - recognize the dependencies and correctly resolve all values.
-
-###### Naive Implementation
-
-```
---release=test
-    VAR1=""
---release=prod
-    VAR1=""
-    VAR2=2
---release=devel
-    VAR1=""
-    VAR2=3
-```
-
-###### `cargo-make` Implementation
-
-```
---release=test
-    VAR1=""
---release=prod
-    VAR1="2"
-    VAR2=2
---release=devel
-    VAR1="3"
-    VAR2=3
-```
-
 <a name="usage-env-config"></a>
 #### Global Configuration
 
@@ -1393,7 +1337,7 @@ Environmental variables can be set in the scope of the task and will be merged w
 
 > **Note:** Reordering of task variables with global variables will **not** take place. Tasks will simply overwrite previously declared variables.
 
-> **Note:** Variables are **not** cleaned up after execution, meaning that tasks following after the executed task will take over the variables set by the previous task. 
+> **Note:** Variables are **not** cleaned up after execution, meaning that tasks following after the executed task will take over the variables set by the previous task.
 
 `cargo-make` supports the same capabilities outlined for global configuration on a individual task level.
 
@@ -1438,7 +1382,7 @@ ENV3_TEST=VALUE OF ENV2 IS: ${ENV2_TEST}
 
 Paths to environment files can also be defined globally in the `env_files` key of the `Makefile.toml`, which will be loaded in the order they are defined. All relative paths are relative to the directory containing the `Makefile.toml` they were defined in.
 
-> **Note:** `env_files` can also be used on a task level. Be aware that relative paths will instead be relative **to the current working directory**
+> **Note:** `env_files` can also be used on a task level. Be aware that relative paths will instead be relative to the **current working directory**
 
 ```toml
 env_files = [
@@ -1456,7 +1400,7 @@ env_files = [
 ]
 ```
 
-Use the `profile` property to only load environmental variables whenever a specific profile is active. 
+Use the `profile` property to only load environmental variables whenever a specific profile is active.
 
 > To learn more about profiles, check the [profiles section](#usage-profiles).
 
@@ -1523,6 +1467,60 @@ These scripts use that value to create a new environment variable **COMPOSITE_2*
   * Load environment variables defined in the **env** block (same behavior as global env block).
 
 During each step, variables can be reordered to ensure all dependencies are specified. The environmental variables will be interpolated before every task run.
+
+<a name="env-note-about-ordering"></a>
+#### Note about Ordering
+
+The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
+
+This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
+
+```toml
+[env]
+VAR1="${VAR2}"
+VAR2=2
+```
+
+A naive implementation would now result in `VAR1=""`, `VAR2=2`, this behavior can be very unexpected, especially when extending existing declarations of environment variables. `cargo-make` is different and uses an approach that is similar to tools like [`terraform`](https://www.terraform.io/), it will recognize that `VAR1` depends on `VAR2`, which will output `VAR1=2`, `VAR2=2`.
+
+```toml
+[env]
+VAR1="${VAR2}"
+
+[env.prod]
+VAR2=2
+
+[env.devel]
+VAR2=3
+```
+
+This is an extended example, which would not work using the naive implementation, as the different profiles are merged with the environment, basically appending them. This is not the case with `cargo-make`, which will - again - recognize the dependencies and correctly resolve all values.
+
+###### Naive Implementation
+
+```
+--release=test
+    VAR1=""
+--release=prod
+    VAR1=""
+    VAR2=2
+--release=devel
+    VAR1=""
+    VAR2=3
+```
+
+###### `cargo-make` Implementation
+
+```
+--release=test
+    VAR1=""
+--release=prod
+    VAR1="2"
+    VAR2=2
+--release=devel
+    VAR1="3"
+    VAR2=3
+```
 
 <a name="usage-env-global"></a>
 #### Global
@@ -3814,14 +3812,14 @@ You can fix this issue, by looking at your env config, and seeing if at any poin
 The error message mentions the environment variables that are likely candidates for the cause of the cycle.
 
 Your best bet is to try to break the cycle, by creating a new environmental variable or use a static value multiple times.
-Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems, 
-even without cycle detection or no reordering this would likely cause hidden issues during 
+Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems,
+even without cycle detection or no reordering this would likely cause hidden issues during
 execution, as `cargo-make` would need to otherwise set instances to an empty value instead.
 This way you are able to investigate and fix it yourself before it becomes an unexpected,
 hidden and hard to debug issue.
 
-> **Note:** Scripts are known to sometimes cause false-positives. 
-> In that case use the `depends_on` property, to explicitly tell `cargo-make`, which 
+> **Note:** Scripts are known to sometimes cause false-positives.
+> In that case use the `depends_on` property, to explicitly tell `cargo-make`, which
 > environmental variables should be considered a dependency instead of trying to guess from the script.
 
 
