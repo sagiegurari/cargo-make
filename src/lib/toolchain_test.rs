@@ -86,3 +86,20 @@ fn get_cargo_binary_path_valid() {
     assert!(binary_path_value.find("bin").is_some());
     assert!(binary_path_value.find("cargo").is_some());
 }
+
+#[test]
+fn remove_rust_env_vars_existed() {
+    envmnt::set("RUSTC", "bad1");
+    envmnt::set("RUSTDOC", "bad2");
+    envmnt::set("RUSTFLAGS", "bad3");
+
+    assert!(envmnt::exits("RUSTC"));
+    assert!(envmnt::exits("RUSTDOC"));
+    assert!(envmnt::exits("RUSTFLAGS"));
+
+    remove_rust_env_vars();
+
+    assert!(!envmnt::exits("RUSTC"));
+    assert!(!envmnt::exits("RUSTDOC"));
+    assert!(!envmnt::exits("RUSTFLAGS"));
+}

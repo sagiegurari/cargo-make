@@ -18,6 +18,7 @@ use crate::profile;
 use crate::recursion_level;
 use crate::runner;
 use crate::time_summary;
+use crate::toolchain;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
 use std::time::SystemTime;
@@ -51,6 +52,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     if version::should_check(&cli_args, &global_config) {
         version::check();
     }
+
+    // clear env vars (see https://github.com/rust-lang/rustup/issues/3029)
+    toolchain::remove_rust_env_vars();
 
     let cwd_string_option = match cli_args.cwd.clone() {
         Some(value) => Some(value),

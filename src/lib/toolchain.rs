@@ -7,9 +7,9 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
-use semver::{Prerelease, Version};
-
 use crate::types::{CommandSpec, ToolchainSpecifier};
+use envmnt;
+use semver::{Prerelease, Version};
 use std::process::{Command, Stdio};
 
 pub(crate) fn wrap_command(
@@ -127,4 +127,8 @@ pub(crate) fn get_cargo_binary_path(toolchain: &ToolchainSpecifier) -> Option<St
     } else {
         Some(binary_path.to_string())
     }
+}
+
+pub(crate) fn remove_rust_env_vars() {
+    envmnt::remove_all(&vec!["RUSTC", "RUSTDOC", "RUSTFLAGS"]);
 }

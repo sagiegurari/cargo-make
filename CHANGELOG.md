@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.0
+
+* Enhancement: Workaround rustup env issue when setting toolchain #702
+
 ### v0.35.16 (2022-08-08)
 
 * Enhancement: Create task definition in runtime and invoke it via plugin #677
