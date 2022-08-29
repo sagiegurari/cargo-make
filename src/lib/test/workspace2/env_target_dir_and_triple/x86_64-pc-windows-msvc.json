@@ -31,7 +31,6 @@
     ]
   },
   "requires-uwtable": true,
-  "split-debuginfo": "packed",
   "staticlib-prefix": "",
   "staticlib-suffix": ".lib",
   "target-family": "windows",
