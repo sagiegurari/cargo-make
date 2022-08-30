@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/condition.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condition.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/condition.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>condition.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -337,344 +337,344 @@
 <span id="337">337</span>
 <span id="338">338</span>
 <span id="339">339</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # condition</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Evaluates conditions based on task configuration and current env.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # condition
+//!
+//! Evaluates conditions based on task configuration and current env.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;condition_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">condition_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;condition_test.rs&quot;</span>]
+</span><span class="kw">mod </span>condition_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::command</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">RustVersionCondition</span>, <span class="ident">Step</span>, <span class="ident">TaskCondition</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version</span>::{<span class="ident">is_newer</span>, <span class="ident">is_same</span>};
-<span class="kw">use</span> <span class="ident">envmnt</span>;
-<span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
-<span class="kw">use</span> <span class="ident">rust_info</span>;
-<span class="kw">use</span> <span class="ident">rust_info::types</span>::{<span class="ident">RustChannel</span>, <span class="ident">RustInfo</span>};
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
+<span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::profile;
+<span class="kw">use </span><span class="kw">crate</span>::types;
+<span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
+<span class="kw">use </span><span class="kw">crate</span>::version::{is_newer, is_same};
+<span class="kw">use </span>envmnt;
+<span class="kw">use </span>indexmap::IndexMap;
+<span class="kw">use </span>rust_info;
+<span class="kw">use </span>rust_info::types::{RustChannel, RustInfo};
+<span class="kw">use </span>std::path::Path;
 
-<span class="kw">fn</span> <span class="ident">validate_env_map</span>(<span class="ident">env</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">equal</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
+<span class="kw">fn </span>validate_env_map(env: <span class="prelude-ty">Option</span>&lt;IndexMap&lt;String, String&gt;&gt;, equal: bool) -&gt; bool {
+    <span class="kw">match </span>env {
+        <span class="prelude-val">Some</span>(env_vars) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>all_valid = <span class="bool-val">true</span>;
 
-            <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">current_value</span>) <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">if</span> (<span class="ident">equal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::is_equal</span>(<span class="ident">key</span>, <span class="ident">current_value</span>))
-                    <span class="op">|</span><span class="op">|</span> (<span class="op">!</span><span class="ident">equal</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::contains_ignore_case</span>(<span class="ident">key</span>, <span class="ident">current_value</span>))
+            <span class="kw">for </span>(key, current_value) <span class="kw">in </span>env_vars.iter() {
+                <span class="kw">if </span>(equal &amp;&amp; !envmnt::is_equal(key, current_value))
+                    || (!equal &amp;&amp; !envmnt::contains_ignore_case(key, current_value))
                 {
-                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                    all_valid = <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
 
-            <span class="ident">all_valid</span>
+            all_valid
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">validate_env_map</span>(<span class="ident">condition</span>.<span class="ident">env</span>.<span class="ident">clone</span>(), <span class="bool-val">true</span>)
+<span class="kw">fn </span>validate_env(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    validate_env_map(condition.env.clone(), <span class="bool-val">true</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_contains</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">validate_env_map</span>(<span class="ident">condition</span>.<span class="ident">env_contains</span>.<span class="ident">clone</span>(), <span class="bool-val">false</span>)
+<span class="kw">fn </span>validate_env_contains(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    validate_env_map(condition.env_contains.clone(), <span class="bool-val">false</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">env_set</span>.<span class="ident">clone</span>();
+<span class="kw">fn </span>validate_env_set(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>env = condition.env_set.clone();
 
-    <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="kw">match </span>env {
+        <span class="prelude-val">Some</span>(env_vars) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>all_valid = <span class="bool-val">true</span>;
 
-            <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">envmnt::exists</span>(<span class="ident">key</span>) {
-                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
+            <span class="kw">for </span>key <span class="kw">in </span>env_vars.iter() {
+                <span class="kw">if </span>!envmnt::exists(key) {
+                    all_valid = <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
 
-            <span class="ident">all_valid</span>
+            all_valid
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_not_set</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">env_not_set</span>.<span class="ident">clone</span>();
+<span class="kw">fn </span>validate_env_not_set(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>env = condition.env_not_set.clone();
 
-    <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="kw">match </span>env {
+        <span class="prelude-val">Some</span>(env_vars) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>all_valid = <span class="bool-val">true</span>;
 
-            <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">if</span> <span class="ident">envmnt::exists</span>(<span class="ident">key</span>) {
-                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
+            <span class="kw">for </span>key <span class="kw">in </span>env_vars.iter() {
+                <span class="kw">if </span>envmnt::exists(key) {
+                    all_valid = <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
 
-            <span class="ident">all_valid</span>
+            all_valid
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_env_bool</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">truthy</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">truthy</span> {
-        <span class="ident">condition</span>.<span class="ident">env_true</span>.<span class="ident">clone</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">condition</span>.<span class="ident">env_false</span>.<span class="ident">clone</span>()
+<span class="kw">fn </span>validate_env_bool(condition: <span class="kw-2">&amp;</span>TaskCondition, truthy: bool) -&gt; bool {
+    <span class="kw">let </span>env = <span class="kw">if </span>truthy {
+        condition.env_true.clone()
+    } <span class="kw">else </span>{
+        condition.env_false.clone()
     };
 
-    <span class="kw">match</span> <span class="ident">env</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">env_vars</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="kw">match </span>env {
+        <span class="prelude-val">Some</span>(env_vars) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>all_valid = <span class="bool-val">true</span>;
 
-            <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">env_vars</span>.<span class="ident">iter</span>() {
-                <span class="kw">let</span> <span class="ident">is_true</span> <span class="op">=</span> <span class="ident">envmnt::is_or</span>(<span class="ident">key</span>, <span class="op">!</span><span class="ident">truthy</span>);
+            <span class="kw">for </span>key <span class="kw">in </span>env_vars.iter() {
+                <span class="kw">let </span>is_true = envmnt::is_or(key, !truthy);
 
-                <span class="kw">if</span> <span class="ident">is_true</span> <span class="op">!</span><span class="op">=</span> <span class="ident">truthy</span> {
-                    <span class="ident">all_valid</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                <span class="kw">if </span>is_true != truthy {
+                    all_valid = <span class="bool-val">false</span>;
                     <span class="kw">break</span>;
                 }
             }
 
-            <span class="ident">all_valid</span>
+            all_valid
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_platform</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">platforms</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">platforms</span>.<span class="ident">clone</span>();
-    <span class="kw">match</span> <span class="ident">platforms</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">platform_names</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">platform_name</span> <span class="op">=</span> <span class="ident">types::get_platform_name</span>();
+<span class="kw">fn </span>validate_platform(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>platforms = condition.platforms.clone();
+    <span class="kw">match </span>platforms {
+        <span class="prelude-val">Some</span>(platform_names) =&gt; {
+            <span class="kw">let </span>platform_name = types::get_platform_name();
 
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">platform_names</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="ident">platform_name</span>);
+            <span class="kw">let </span>index = platform_names
+                .iter()
+                .position(|value| <span class="kw-2">*</span>value == platform_name);
 
-            <span class="kw">match</span> <span class="ident">index</span> {
-                <span class="prelude-val">None</span> =&gt; {
+            <span class="kw">match </span>index {
+                <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">debug!</span>(
                         <span class="string">&quot;Failed platform condition, current platform: {}&quot;</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">platform_name</span>
+                        <span class="kw-2">&amp;</span>platform_name
                     );
-                    <span class="bool-val">false</span>
-                }
-                <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
+                    <span class="bool-val">false
+                </span>}
+                <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_profile</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">profiles</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">profiles</span>.<span class="ident">clone</span>();
-    <span class="kw">match</span> <span class="ident">profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">profile_names</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">profile::get</span>();
+<span class="kw">fn </span>validate_profile(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>profiles = condition.profiles.clone();
+    <span class="kw">match </span>profiles {
+        <span class="prelude-val">Some</span>(profile_names) =&gt; {
+            <span class="kw">let </span>profile_name = profile::get();
 
-            <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">profile_names</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="ident">profile_name</span>);
+            <span class="kw">let </span>index = profile_names
+                .iter()
+                .position(|value| <span class="kw-2">*</span>value == profile_name);
 
-            <span class="kw">match</span> <span class="ident">index</span> {
-                <span class="prelude-val">None</span> =&gt; {
+            <span class="kw">match </span>index {
+                <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">debug!</span>(
                         <span class="string">&quot;Failed profile condition, current profile: {}&quot;</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">profile_name</span>
+                        <span class="kw-2">&amp;</span>profile_name
                     );
-                    <span class="bool-val">false</span>
-                }
-                <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
+                    <span class="bool-val">false
+                </span>}
+                <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_channel</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>, <span class="ident">flow_info_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">flow_info_option</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">channels</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">channels</span>.<span class="ident">clone</span>();
-            <span class="kw">match</span> <span class="ident">channels</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">channel_names</span>) =&gt; <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">env_info</span>.<span class="ident">rust_info</span>.<span class="ident">channel</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; {
-                        <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value</span> {
-                            <span class="ident">RustChannel::Stable</span> =&gt; <span class="ident">channel_names</span>
-                                .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;stable&quot;</span>.<span class="ident">to_string</span>()),
-                            <span class="ident">RustChannel::Beta</span> =&gt; <span class="ident">channel_names</span>
-                                .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;beta&quot;</span>.<span class="ident">to_string</span>()),
-                            <span class="ident">RustChannel::Nightly</span> =&gt; <span class="ident">channel_names</span>
-                                .<span class="ident">iter</span>()
-                                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;nightly&quot;</span>.<span class="ident">to_string</span>()),
+<span class="kw">fn </span>validate_channel(condition: <span class="kw-2">&amp;</span>TaskCondition, flow_info_option: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;) -&gt; bool {
+    <span class="kw">match </span>flow_info_option {
+        <span class="prelude-val">Some</span>(flow_info) =&gt; {
+            <span class="kw">let </span>channels = condition.channels.clone();
+            <span class="kw">match </span>channels {
+                <span class="prelude-val">Some</span>(channel_names) =&gt; <span class="kw">match </span>flow_info.env_info.rust_info.channel {
+                    <span class="prelude-val">Some</span>(value) =&gt; {
+                        <span class="kw">let </span>index = <span class="kw">match </span>value {
+                            RustChannel::Stable =&gt; channel_names
+                                .iter()
+                                .position(|value| <span class="kw-2">*</span>value == <span class="string">&quot;stable&quot;</span>.to_string()),
+                            RustChannel::Beta =&gt; channel_names
+                                .iter()
+                                .position(|value| <span class="kw-2">*</span>value == <span class="string">&quot;beta&quot;</span>.to_string()),
+                            RustChannel::Nightly =&gt; channel_names
+                                .iter()
+                                .position(|value| <span class="kw-2">*</span>value == <span class="string">&quot;nightly&quot;</span>.to_string()),
                         };
 
-                        <span class="kw">match</span> <span class="ident">index</span> {
-                            <span class="prelude-val">None</span> =&gt; {
+                        <span class="kw">match </span>index {
+                            <span class="prelude-val">None </span>=&gt; {
                                 <span class="macro">debug!</span>(<span class="string">&quot;Failed channel condition&quot;</span>);
-                                <span class="bool-val">false</span>
-                            }
-                            <span class="kw">_</span> =&gt; <span class="bool-val">true</span>,
+                                <span class="bool-val">false
+                            </span>}
+                            <span class="kw">_ </span>=&gt; <span class="bool-val">true</span>,
                         }
                     }
-                    <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+                    <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
                 },
-                <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+                <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_rust_version_condition</span>(<span class="ident">rustinfo</span>: <span class="ident">RustInfo</span>, <span class="ident">condition</span>: <span class="ident">RustVersionCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="ident">rustinfo</span>.<span class="ident">version</span>.<span class="ident">is_some</span>() {
-        <span class="kw">let</span> <span class="ident">current_version</span> <span class="op">=</span> <span class="ident">rustinfo</span>.<span class="ident">version</span>.<span class="ident">unwrap</span>();
+<span class="kw">fn </span>validate_rust_version_condition(rustinfo: RustInfo, condition: RustVersionCondition) -&gt; bool {
+    <span class="kw">if </span>rustinfo.version.is_some() {
+        <span class="kw">let </span>current_version = rustinfo.version.unwrap();
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">min</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; {
-                <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
-                    <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>valid = <span class="kw">match </span>condition.min {
+            <span class="prelude-val">Some</span>(version) =&gt; {
+                is_same(<span class="kw-2">&amp;</span>version, <span class="kw-2">&amp;</span>current_version, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+                    || is_newer(<span class="kw-2">&amp;</span>version, <span class="kw-2">&amp;</span>current_version, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
             }
-            <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
         };
 
-        <span class="kw">if</span> <span class="ident">valid</span> {
-            <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">max</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; {
-                    <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
-                        <span class="op">|</span><span class="op">|</span> <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+        <span class="kw">if </span>valid {
+            valid = <span class="kw">match </span>condition.max {
+                <span class="prelude-val">Some</span>(version) =&gt; {
+                    is_same(<span class="kw-2">&amp;</span>version, <span class="kw-2">&amp;</span>current_version, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
+                        || is_newer(<span class="kw-2">&amp;</span>current_version, <span class="kw-2">&amp;</span>version, <span class="bool-val">true</span>, <span class="bool-val">true</span>)
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+                <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
             };
         }
 
-        <span class="kw">if</span> <span class="ident">valid</span> {
-            <span class="ident">valid</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">condition</span>.<span class="ident">equal</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">version</span>) =&gt; <span class="ident">is_same</span>(<span class="kw-2">&amp;</span><span class="ident">version</span>, <span class="kw-2">&amp;</span><span class="ident">current_version</span>, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
-                <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="kw">if </span>valid {
+            valid = <span class="kw">match </span>condition.equal {
+                <span class="prelude-val">Some</span>(version) =&gt; is_same(<span class="kw-2">&amp;</span>version, <span class="kw-2">&amp;</span>current_version, <span class="bool-val">true</span>, <span class="bool-val">true</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
             };
         }
 
-        <span class="ident">valid</span>
-    } <span class="kw">else</span> {
-        <span class="bool-val">true</span>
-    }
+        valid
+    } <span class="kw">else </span>{
+        <span class="bool-val">true
+    </span>}
 }
 
-<span class="kw">fn</span> <span class="ident">validate_rust_version</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">rust_version</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">rust_version</span>.<span class="ident">clone</span>();
-    <span class="kw">match</span> <span class="ident">rust_version</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">rust_version_condition</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">rustinfo</span> <span class="op">=</span> <span class="ident">rust_info::get</span>();
+<span class="kw">fn </span>validate_rust_version(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>rust_version = condition.rust_version.clone();
+    <span class="kw">match </span>rust_version {
+        <span class="prelude-val">Some</span>(rust_version_condition) =&gt; {
+            <span class="kw">let </span>rustinfo = rust_info::get();
 
-            <span class="ident">validate_rust_version_condition</span>(<span class="ident">rustinfo</span>, <span class="ident">rust_version_condition</span>)
+            validate_rust_version_condition(rustinfo, rust_version_condition)
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_files</span>(<span class="ident">file_paths</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">exist</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">for</span> <span class="ident">file_path</span> <span class="kw">in</span> <span class="ident">file_paths</span>.<span class="ident">iter</span>() {
-        <span class="kw">let</span> <span class="ident">expanded_file_path</span> <span class="op">=</span> <span class="ident">environment::expand_value</span>(<span class="ident">file_path</span>);
-        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">Path::new</span>(<span class="kw-2">&amp;</span><span class="ident">expanded_file_path</span>);
+<span class="kw">fn </span>validate_files(file_paths: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, exist: bool) -&gt; bool {
+    <span class="kw">for </span>file_path <span class="kw">in </span>file_paths.iter() {
+        <span class="kw">let </span>expanded_file_path = environment::expand_value(file_path);
+        <span class="kw">let </span>path = Path::new(<span class="kw-2">&amp;</span>expanded_file_path);
 
-        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">exists</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">exist</span> {
-            <span class="kw">return</span> <span class="bool-val">false</span>;
+        <span class="kw">if </span>path.exists() != exist {
+            <span class="kw">return </span><span class="bool-val">false</span>;
         }
     }
 
-    <span class="bool-val">true</span>
-}
+    <span class="bool-val">true
+</span>}
 
-<span class="kw">fn</span> <span class="ident">validate_files_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">files_exist</span>.<span class="ident">clone</span>();
-    <span class="kw">match</span> <span class="ident">files</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) =&gt; <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">true</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+<span class="kw">fn </span>validate_files_exist(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>files = condition.files_exist.clone();
+    <span class="kw">match </span>files {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>file_paths) =&gt; validate_files(file_paths, <span class="bool-val">true</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_files_not_exist</span>(<span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="ident">condition</span>.<span class="ident">files_not_exist</span>.<span class="ident">clone</span>();
-    <span class="kw">match</span> <span class="ident">files</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">file_paths</span>) =&gt; <span class="ident">validate_files</span>(<span class="ident">file_paths</span>, <span class="bool-val">false</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+<span class="kw">fn </span>validate_files_not_exist(condition: <span class="kw-2">&amp;</span>TaskCondition) -&gt; bool {
+    <span class="kw">let </span>files = condition.files_not_exist.clone();
+    <span class="kw">match </span>files {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>file_paths) =&gt; validate_files(file_paths, <span class="bool-val">false</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_criteria</span>(<span class="ident">flow_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>, <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">condition</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">condition_struct</span>) =&gt; {
+<span class="kw">fn </span>validate_criteria(flow_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;, condition: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;TaskCondition&gt;) -&gt; bool {
+    <span class="kw">match </span>condition {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>condition_struct) =&gt; {
             <span class="macro">debug!</span>(<span class="string">&quot;Checking task condition structure.&quot;</span>);
 
-            <span class="ident">validate_platform</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_profile</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_channel</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="ident">flow_info</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_not_set</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_bool</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="bool-val">true</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_bool</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>, <span class="bool-val">false</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_env_contains</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_rust_version</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_files_exist</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
-                <span class="op">&amp;&amp;</span> <span class="ident">validate_files_not_exist</span>(<span class="kw-2">&amp;</span><span class="ident">condition_struct</span>)
+            validate_platform(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_profile(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_channel(<span class="kw-2">&amp;</span>condition_struct, flow_info)
+                &amp;&amp; validate_env(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_env_set(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_env_not_set(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_env_bool(<span class="kw-2">&amp;</span>condition_struct, <span class="bool-val">true</span>)
+                &amp;&amp; validate_env_bool(<span class="kw-2">&amp;</span>condition_struct, <span class="bool-val">false</span>)
+                &amp;&amp; validate_env_contains(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_rust_version(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_files_exist(<span class="kw-2">&amp;</span>condition_struct)
+                &amp;&amp; validate_files_not_exist(<span class="kw-2">&amp;</span>condition_struct)
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">validate_script</span>(<span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">condition_script</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) =&gt; {
+<span class="kw">fn </span>validate_script(condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;) -&gt; bool {
+    <span class="kw">match </span>condition_script {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
             <span class="macro">debug!</span>(<span class="string">&quot;Checking task condition script.&quot;</span>);
 
-            <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span>
-                <span class="ident">command::run_script_get_exit_code</span>(<span class="kw-2">&amp;</span><span class="ident">script</span>, <span class="ident">script_runner</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[], <span class="bool-val">false</span>);
+            <span class="kw">let </span>exit_code =
+                command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script, script_runner, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[], <span class="bool-val">false</span>);
 
-            <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="bool-val">true</span>
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>
-            }
+            <span class="kw">if </span>exit_code == <span class="number">0 </span>{
+                <span class="bool-val">true
+            </span>} <span class="kw">else </span>{
+                <span class="bool-val">false
+            </span>}
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions_without_context</span>(<span class="ident">condition</span>: <span class="ident">TaskCondition</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">validate_criteria</span>(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="ident">condition</span>))
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_conditions_without_context(condition: TaskCondition) -&gt; bool {
+    validate_criteria(<span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(condition))
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_conditions</span>(
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">condition</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TaskCondition</span><span class="op">&gt;</span>,
-    <span class="ident">condition_script</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="ident">validate_criteria</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>), <span class="kw-2">&amp;</span><span class="ident">condition</span>)
-        <span class="op">&amp;&amp;</span> <span class="ident">validate_script</span>(<span class="kw-2">&amp;</span><span class="ident">condition_script</span>, <span class="ident">script_runner</span>)
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_conditions(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    condition: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
+    condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+) -&gt; bool {
+    validate_criteria(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>flow_info), <span class="kw-2">&amp;</span>condition)
+        &amp;&amp; validate_script(<span class="kw-2">&amp;</span>condition_script, script_runner)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_condition_for_step</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">validate_conditions</span>(
-        <span class="kw-2">&amp;</span><span class="ident">flow_info</span>,
-        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition</span>,
-        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">condition_script</span>,
-        <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(),
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_condition_for_step(flow_info: <span class="kw-2">&amp;</span>FlowInfo, step: <span class="kw-2">&amp;</span>Step) -&gt; bool {
+    validate_conditions(
+        <span class="kw-2">&amp;</span>flow_info,
+        <span class="kw-2">&amp;</span>step.config.condition,
+        <span class="kw-2">&amp;</span>step.config.condition_script,
+        step.config.script_runner.clone(),
     )
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

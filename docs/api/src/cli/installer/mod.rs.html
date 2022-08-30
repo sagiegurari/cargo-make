@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/installer/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/installer/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -178,127 +178,127 @@
 <span id="178">178</span>
 <span id="179">179</span>
 <span id="180">180</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # installer</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Installs external dependencies for tasks.&lt;br&gt;</span>
-<span class="doccomment">//! There are 2 types of dependencies: install_crate, install_script.&lt;br&gt;</span>
-<span class="doccomment">//! install_crate ensures the crate command is available and if not installs the crate based on the provided name.&lt;br&gt;</span>
-<span class="doccomment">//! install_script always gets executed before the task command.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # installer
+//!
+//! Installs external dependencies for tasks.&lt;br&gt;
+//! There are 2 types of dependencies: install_crate, install_script.&lt;br&gt;
+//! install_crate ensures the crate command is available and if not installs the crate based on the provided name.&lt;br&gt;
+//! install_script always gets executed before the task command.
+//!
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">cargo_plugin_installer</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">crate_installer</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">crate_version_check</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">rustup_component_installer</span>;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>cargo_plugin_installer;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>crate_installer;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>crate_version_check;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>rustup_component_installer;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">mod_test</span>;
+<span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;mod_test.rs&quot;</span>]
+</span><span class="kw">mod </span>mod_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scriptengine</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">FlowState</span>, <span class="ident">InstallCrate</span>, <span class="ident">Task</span>};
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
+<span class="kw">use </span><span class="kw">crate</span>::scriptengine;
+<span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState, InstallCrate, Task};
+<span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::rc::Rc;
 
-<span class="kw">fn</span> <span class="ident">get_cargo_plugin_info_from_command</span>(<span class="ident">task_config</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">String</span>)<span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">command</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">command</span> <span class="op">==</span> <span class="string">&quot;cargo&quot;</span> {
-                <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">args</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; {
-                        <span class="kw">if</span> <span class="ident">args</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">args</span>[<span class="number">0</span>].<span class="ident">starts_with</span>(<span class="string">&quot;-&quot;</span>) {
-                            <span class="comment">// create crate name</span>
-                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">crate_name</span> <span class="op">=</span> <span class="string">&quot;cargo-&quot;</span>.<span class="ident">to_string</span>();
-                            <span class="ident">crate_name</span> <span class="op">=</span> <span class="ident">crate_name</span> <span class="op">+</span> <span class="kw-2">&amp;</span><span class="ident">args</span>[<span class="number">0</span>];
+<span class="kw">fn </span>get_cargo_plugin_info_from_command(task_config: <span class="kw-2">&amp;</span>Task) -&gt; <span class="prelude-ty">Option</span>&lt;(String, String)&gt; {
+    <span class="kw">match </span>task_config.command {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>command) =&gt; {
+            <span class="kw">if </span>command == <span class="string">&quot;cargo&quot; </span>{
+                <span class="kw">match </span>task_config.args {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args) =&gt; {
+                        <span class="kw">if </span>args.len() &gt; <span class="number">0 </span>&amp;&amp; !args[<span class="number">0</span>].starts_with(<span class="string">&quot;-&quot;</span>) {
+                            <span class="comment">// create crate name
+                            </span><span class="kw">let </span><span class="kw-2">mut </span>crate_name = <span class="string">&quot;cargo-&quot;</span>.to_string();
+                            crate_name = crate_name + <span class="kw-2">&amp;</span>args[<span class="number">0</span>];
 
-                            <span class="prelude-val">Some</span>((<span class="ident">args</span>[<span class="number">0</span>].<span class="ident">clone</span>(), <span class="ident">crate_name</span>))
-                        } <span class="kw">else</span> {
-                            <span class="prelude-val">None</span>
-                        }
+                            <span class="prelude-val">Some</span>((args[<span class="number">0</span>].clone(), crate_name))
+                        } <span class="kw">else </span>{
+                            <span class="prelude-val">None
+                        </span>}
                     }
-                    <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+                    <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 }
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            }
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_first_command_arg</span>(<span class="ident">task_config</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">args</span>.<span class="ident">is_empty</span>() {
-                <span class="prelude-val">None</span>
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">args</span>[<span class="number">0</span>].<span class="ident">to_string</span>())
+<span class="kw">fn </span>get_first_command_arg(task_config: <span class="kw-2">&amp;</span>Task) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">match </span>task_config.args {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args) =&gt; {
+            <span class="kw">if </span>args.is_empty() {
+                <span class="prelude-val">None
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Some</span>(args[<span class="number">0</span>].to_string())
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">install</span>(
-    <span class="ident">task_config</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>,
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">flow_state</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>install(
+    task_config: <span class="kw-2">&amp;</span>Task,
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
 ) {
-    <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task_config</span>.<span class="ident">should_ignore_errors</span>();
+    <span class="kw">let </span>validate = !task_config.should_ignore_errors();
 
-    <span class="kw">let</span> <span class="ident">toolchain</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">toolchain</span>.<span class="ident">clone</span>();
+    <span class="kw">let </span>toolchain = task_config.toolchain.clone();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">install_crate</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">install_crate</span>.<span class="ident">clone</span>();
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">install_crate_value</span>) <span class="op">=</span> <span class="ident">install_crate</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">InstallCrate::Enabled</span>(<span class="ident">enabled</span>) <span class="op">=</span> <span class="ident">install_crate_value</span> {
-            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">enabled</span> {
-                <span class="comment">// enabled true is the same as no install_crate defined</span>
-                <span class="ident">install_crate</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>install_crate = task_config.install_crate.clone();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>install_crate_value) = install_crate {
+        <span class="kw">if let </span>InstallCrate::Enabled(enabled) = install_crate_value {
+            <span class="kw">if </span><span class="kw-2">*</span>enabled {
+                <span class="comment">// enabled true is the same as no install_crate defined
+                </span>install_crate = <span class="prelude-val">None</span>;
             }
         }
     }
 
-    <span class="kw">match</span> <span class="ident">install_crate</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">install_crate_info</span>) =&gt; <span class="kw">match</span> <span class="ident">install_crate_info</span> {
-            <span class="ident">InstallCrate::Enabled</span>(<span class="kw">_</span>) =&gt; (),
-            <span class="ident">InstallCrate::Value</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">first_arg</span> <span class="op">=</span> <span class="ident">get_first_command_arg</span>(<span class="ident">task_config</span>);
-                <span class="kw">let</span> <span class="ident">cargo_command</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">first_arg</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">arg</span>) =&gt; <span class="ident">arg</span>,
-                    <span class="prelude-val">None</span> =&gt; {
+    <span class="kw">match </span>install_crate {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>install_crate_info) =&gt; <span class="kw">match </span>install_crate_info {
+            InstallCrate::Enabled(<span class="kw">_</span>) =&gt; (),
+            InstallCrate::Value(<span class="kw-2">ref </span>crate_name) =&gt; {
+                <span class="kw">let </span>first_arg = get_first_command_arg(task_config);
+                <span class="kw">let </span>cargo_command = <span class="kw">match </span>first_arg {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>arg) =&gt; arg,
+                    <span class="prelude-val">None </span>=&gt; {
                         <span class="macro">error!</span>(<span class="string">&quot;Missing cargo command to invoke.&quot;</span>);
                         <span class="macro">panic!</span>(<span class="string">&quot;Missing cargo command to invoke.&quot;</span>);
                     }
                 };
 
-                <span class="ident">cargo_plugin_installer::install_crate</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
-                    <span class="ident">cargo_command</span>,
-                    <span class="ident">crate_name</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
-                    <span class="ident">validate</span>,
+                cargo_plugin_installer::install_crate(
+                    <span class="kw-2">&amp;</span>toolchain,
+                    cargo_command,
+                    crate_name,
+                    <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                    validate,
                     <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                     <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                     <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                 );
             }
-            <span class="ident">InstallCrate::CargoPluginInfo</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) =&gt; {
-                <span class="kw">let</span> (<span class="ident">cargo_command</span>, <span class="ident">crate_name</span>) <span class="op">=</span>
-                    <span class="kw">match</span> <span class="ident">get_cargo_plugin_info_from_command</span>(<span class="kw-2">&amp;</span><span class="ident">task_config</span>) {
-                        <span class="prelude-val">Some</span>(<span class="ident">cargo_plugin_info</span>) =&gt; <span class="ident">cargo_plugin_info</span>,
-                        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">get_first_command_arg</span>(<span class="ident">task_config</span>) {
-                            <span class="prelude-val">Some</span>(<span class="ident">arg</span>) =&gt; <span class="kw">match</span> <span class="ident">install_info</span>.<span class="ident">crate_name</span> {
-                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) =&gt; (<span class="ident">arg</span>, <span class="ident">crate_name</span>.<span class="ident">to_string</span>()),
-                                <span class="prelude-val">None</span> =&gt; {
+            InstallCrate::CargoPluginInfo(<span class="kw-2">ref </span>install_info) =&gt; {
+                <span class="kw">let </span>(cargo_command, crate_name) =
+                    <span class="kw">match </span>get_cargo_plugin_info_from_command(<span class="kw-2">&amp;</span>task_config) {
+                        <span class="prelude-val">Some</span>(cargo_plugin_info) =&gt; cargo_plugin_info,
+                        <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>get_first_command_arg(task_config) {
+                            <span class="prelude-val">Some</span>(arg) =&gt; <span class="kw">match </span>install_info.crate_name {
+                                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>crate_name) =&gt; (arg, crate_name.to_string()),
+                                <span class="prelude-val">None </span>=&gt; {
                                     <span class="macro">error!</span>(<span class="string">&quot;Missing crate name to invoke.&quot;</span>);
                                     <span class="macro">panic!</span>(<span class="string">&quot;Missing crate name to invoke.&quot;</span>);
                                 }
                             },
-                            <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">install_info</span>.<span class="ident">crate_name</span> {
-                                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">crate_name</span>) =&gt; {
-                                    (<span class="ident">crate_name</span>.<span class="ident">to_string</span>(), <span class="ident">crate_name</span>.<span class="ident">to_string</span>())
+                            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>install_info.crate_name {
+                                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>crate_name) =&gt; {
+                                    (crate_name.to_string(), crate_name.to_string())
                                 }
-                                <span class="prelude-val">None</span> =&gt; {
+                                <span class="prelude-val">None </span>=&gt; {
                                     <span class="macro">error!</span>(<span class="string">&quot;Missing cargo command to invoke.&quot;</span>);
                                     <span class="macro">panic!</span>(<span class="string">&quot;Missing crate command to invoke.&quot;</span>);
                                 }
@@ -306,57 +306,57 @@
                         },
                     };
 
-                <span class="ident">cargo_plugin_installer::install_crate</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">cargo_command</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">crate_name</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
-                    <span class="ident">validate</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">install_info</span>.<span class="ident">min_version</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">install_info</span>.<span class="ident">install_command</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">install_info</span>.<span class="ident">force</span>,
+                cargo_plugin_installer::install_crate(
+                    <span class="kw-2">&amp;</span>toolchain,
+                    <span class="kw-2">&amp;</span>cargo_command,
+                    <span class="kw-2">&amp;</span>crate_name,
+                    <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                    validate,
+                    <span class="kw-2">&amp;</span>install_info.min_version,
+                    <span class="kw-2">&amp;</span>install_info.install_command,
+                    <span class="kw-2">&amp;</span>install_info.force,
                 );
             }
-            <span class="ident">InstallCrate::CrateInfo</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) =&gt; <span class="ident">crate_installer::install</span>(
-                <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
-                <span class="ident">install_info</span>,
-                <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
-                <span class="ident">validate</span>,
+            InstallCrate::CrateInfo(<span class="kw-2">ref </span>install_info) =&gt; crate_installer::install(
+                <span class="kw-2">&amp;</span>toolchain,
+                install_info,
+                <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                validate,
             ),
-            <span class="ident">InstallCrate::RustupComponentInfo</span>(<span class="kw-2">ref</span> <span class="ident">install_info</span>) =&gt; {
-                <span class="ident">rustup_component_installer::install</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="ident">install_info</span>, <span class="ident">validate</span>);
+            InstallCrate::RustupComponentInfo(<span class="kw-2">ref </span>install_info) =&gt; {
+                rustup_component_installer::install(<span class="kw-2">&amp;</span>toolchain, install_info, validate);
             }
         },
-        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">install_script</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) =&gt; {
-                <span class="ident">scriptengine::invoke_script_in_flow_context</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">script</span>,
-                    <span class="ident">task_config</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(),
-                    <span class="ident">task_config</span>.<span class="ident">script_runner_args</span>.<span class="ident">clone</span>(),
-                    <span class="ident">task_config</span>.<span class="ident">script_extension</span>.<span class="ident">clone</span>(),
-                    <span class="ident">validate</span>,
-                    <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>),
-                    <span class="prelude-val">Some</span>(<span class="ident">flow_state</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>task_config.install_script {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
+                scriptengine::invoke_script_in_flow_context(
+                    <span class="kw-2">&amp;</span>script,
+                    task_config.script_runner.clone(),
+                    task_config.script_runner_args.clone(),
+                    task_config.script_extension.clone(),
+                    validate,
+                    <span class="prelude-val">Some</span>(flow_info),
+                    <span class="prelude-val">Some</span>(flow_state),
                 );
                 ()
             }
-            <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">get_cargo_plugin_info_from_command</span>(<span class="kw-2">&amp;</span><span class="ident">task_config</span>) {
-                <span class="prelude-val">Some</span>((<span class="ident">cargo_command</span>, <span class="ident">crate_name</span>)) =&gt; {
-                    <span class="ident">cargo_plugin_installer::install_crate</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">toolchain</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">cargo_command</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">crate_name</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">task_config</span>.<span class="ident">install_crate_args</span>,
-                        <span class="ident">validate</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>get_cargo_plugin_info_from_command(<span class="kw-2">&amp;</span>task_config) {
+                <span class="prelude-val">Some</span>((cargo_command, crate_name)) =&gt; {
+                    cargo_plugin_installer::install_crate(
+                        <span class="kw-2">&amp;</span>toolchain,
+                        <span class="kw-2">&amp;</span>cargo_command,
+                        <span class="kw-2">&amp;</span>crate_name,
+                        <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                        validate,
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                     );
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;No installation script defined.&quot;</span>),
+                <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;No installation script defined.&quot;</span>),
             },
         },
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

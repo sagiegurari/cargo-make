@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/scriptengine/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/scriptengine/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -307,314 +307,314 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # scriptengine</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Facade for all different non OS scripts.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # scriptengine
+//!
+//! Facade for all different non OS scripts.
+//!
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">duck_script</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">generic_script</span>;
-<span class="kw">mod</span> <span class="ident">os_script</span>;
-<span class="kw">mod</span> <span class="ident">rsscript</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">script_utils</span>;
-<span class="kw">mod</span> <span class="ident">shebang_script</span>;
-<span class="kw">mod</span> <span class="ident">shell_to_batch</span>;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>duck_script;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>generic_script;
+<span class="kw">mod </span>os_script;
+<span class="kw">mod </span>rsscript;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>script_utils;
+<span class="kw">mod </span>shebang_script;
+<span class="kw">mod </span>shell_to_batch;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">mod_test</span>;
+<span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;mod_test.rs&quot;</span>]
+</span><span class="kw">mod </span>mod_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::io</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::toolchain</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">FlowInfo</span>, <span class="ident">FlowState</span>, <span class="ident">ScriptValue</span>, <span class="ident">Task</span>};
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
+<span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::io;
+<span class="kw">use </span><span class="kw">crate</span>::toolchain;
+<span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState, ScriptValue, Task};
+<span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::path::PathBuf;
+<span class="kw">use </span>std::rc::Rc;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// The currently supported engine types</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">EngineType</span> {
-    <span class="doccomment">/// OS native script</span>
-    <span class="ident">OS</span>,
-    <span class="doccomment">/// Duckscript script runner</span>
-    <span class="ident">Duckscript</span>,
-    <span class="doccomment">/// Rust language</span>
-    <span class="ident">Rust</span>,
-    <span class="doccomment">/// shell to windows batch conversion</span>
-    <span class="ident">Shell2Batch</span>,
-    <span class="doccomment">/// Generic script runner</span>
-    <span class="ident">Generic</span>,
-    <span class="doccomment">/// Shebang script runner</span>
-    <span class="ident">Shebang</span>,
-    <span class="doccomment">/// Unsupported type</span>
-    <span class="ident">Unsupported</span>,
+<span class="attribute">#[derive(Debug, Clone, PartialEq)]
+</span><span class="doccomment">/// The currently supported engine types
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>EngineType {
+    <span class="doccomment">/// OS native script
+    </span>OS,
+    <span class="doccomment">/// Duckscript script runner
+    </span>Duckscript,
+    <span class="doccomment">/// Rust language
+    </span>Rust,
+    <span class="doccomment">/// shell to windows batch conversion
+    </span>Shell2Batch,
+    <span class="doccomment">/// Generic script runner
+    </span>Generic,
+    <span class="doccomment">/// Shebang script runner
+    </span>Shebang,
+    <span class="doccomment">/// Unsupported type
+    </span>Unsupported,
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">script</span> {
-        <span class="ident">ScriptValue::SingleLine</span>(<span class="ident">text</span>) =&gt; <span class="macro">vec!</span>[<span class="ident">text</span>.<span class="ident">clone</span>()],
-        <span class="ident">ScriptValue::Text</span>(<span class="ident">text</span>) =&gt; <span class="ident">text</span>.<span class="ident">clone</span>(),
-        <span class="ident">ScriptValue::File</span>(<span class="ident">info</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file_path_string</span> <span class="op">=</span> <span class="ident">String::new</span>();
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">info</span>.<span class="ident">absolute_path</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
-                <span class="ident">file_path_string</span>.<span class="ident">push_str</span>(<span class="string">&quot;${CARGO_MAKE_WORKING_DIRECTORY}/&quot;</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_script_text(script: <span class="kw-2">&amp;</span>ScriptValue) -&gt; Vec&lt;String&gt; {
+    <span class="kw">match </span>script {
+        ScriptValue::SingleLine(text) =&gt; <span class="macro">vec!</span>[text.clone()],
+        ScriptValue::Text(text) =&gt; text.clone(),
+        ScriptValue::File(info) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>file_path_string = String::new();
+            <span class="kw">if </span>!info.absolute_path.unwrap_or(<span class="bool-val">false</span>) {
+                file_path_string.push_str(<span class="string">&quot;${CARGO_MAKE_WORKING_DIRECTORY}/&quot;</span>);
             }
-            <span class="ident">file_path_string</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">info</span>.<span class="ident">file</span>);
+            file_path_string.push_str(<span class="kw-2">&amp;</span>info.file);
 
-            <span class="comment">// expand env</span>
-            <span class="kw">let</span> <span class="ident">expanded_value</span> <span class="op">=</span> <span class="ident">environment::expand_value</span>(<span class="kw-2">&amp;</span><span class="ident">file_path_string</span>);
+            <span class="comment">// expand env
+            </span><span class="kw">let </span>expanded_value = environment::expand_value(<span class="kw-2">&amp;</span>file_path_string);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">PathBuf::new</span>();
-            <span class="ident">file_path</span>.<span class="ident">push</span>(<span class="ident">expanded_value</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>file_path = PathBuf::new();
+            file_path.push(expanded_value);
 
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">io::read_text_file</span>(<span class="kw-2">&amp;</span><span class="ident">file_path</span>);
-            <span class="kw">let</span> <span class="ident">lines</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">script_text</span>.<span class="ident">split</span>(<span class="string">&#39;\n&#39;</span>).<span class="ident">collect</span>();
+            <span class="kw">let </span>script_text = io::read_text_file(<span class="kw-2">&amp;</span>file_path);
+            <span class="kw">let </span>lines: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = script_text.split(<span class="string">&#39;\n&#39;</span>).collect();
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+            <span class="kw">let </span><span class="kw-2">mut </span>script_lines: Vec&lt;String&gt; = <span class="macro">vec!</span>[];
 
-            <span class="kw">for</span> <span class="ident">line</span> <span class="kw">in</span> <span class="ident">lines</span>.<span class="ident">iter</span>() {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">line</span>.<span class="ident">to_string</span>());
+            <span class="kw">for </span>line <span class="kw">in </span>lines.iter() {
+                script_lines.push(line.to_string());
             }
 
-            <span class="ident">script_lines</span>
+            script_lines
         }
-        <span class="ident">ScriptValue::Sections</span>(<span class="ident">sections</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+        ScriptValue::Sections(sections) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>script_lines = <span class="macro">vec!</span>[];
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">text</span>) <span class="op">=</span> <span class="ident">sections</span>.<span class="ident">pre</span> {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">text</span>.<span class="ident">to_string</span>());
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>text) = sections.pre {
+                script_lines.push(text.to_string());
             }
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">text</span>) <span class="op">=</span> <span class="ident">sections</span>.<span class="ident">main</span> {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">text</span>.<span class="ident">to_string</span>());
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>text) = sections.main {
+                script_lines.push(text.to_string());
             }
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">text</span>) <span class="op">=</span> <span class="ident">sections</span>.<span class="ident">post</span> {
-                <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">text</span>.<span class="ident">to_string</span>());
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>text) = sections.post {
+                script_lines.push(text.to_string());
             }
 
-            <span class="ident">script_lines</span>
+            script_lines
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_internal_runner</span>(<span class="ident">script_runner</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">EngineType</span> {
-    <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@duckscript&quot;</span> {
+<span class="kw">fn </span>get_internal_runner(script_runner: <span class="kw-2">&amp;</span>str) -&gt; EngineType {
+    <span class="kw">if </span>script_runner == <span class="string">&quot;@duckscript&quot; </span>{
         <span class="macro">debug!</span>(<span class="string">&quot;Duckscript detected.&quot;</span>);
-        <span class="ident">EngineType::Duckscript</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@rust&quot;</span> {
+        EngineType::Duckscript
+    } <span class="kw">else if </span>script_runner == <span class="string">&quot;@rust&quot; </span>{
         <span class="macro">debug!</span>(<span class="string">&quot;Rust script detected.&quot;</span>);
-        <span class="ident">EngineType::Rust</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">script_runner</span> <span class="op">==</span> <span class="string">&quot;@shell&quot;</span> {
+        EngineType::Rust
+    } <span class="kw">else if </span>script_runner == <span class="string">&quot;@shell&quot; </span>{
         <span class="macro">debug!</span>(<span class="string">&quot;Shell to batch detected.&quot;</span>);
-        <span class="ident">EngineType::Shell2Batch</span>
-    } <span class="kw">else</span> {
-        <span class="ident">EngineType::Unsupported</span>
+        EngineType::Shell2Batch
+    } <span class="kw">else </span>{
+        EngineType::Unsupported
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_engine_type</span>(
-    <span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>,
-    <span class="ident">script_runner</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_extension</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">EngineType</span> {
-    <span class="kw">match</span> <span class="ident">script_runner</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">runner</span>) =&gt; {
-            <span class="macro">debug!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, <span class="ident">runner</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_engine_type(
+    script: <span class="kw-2">&amp;</span>ScriptValue,
+    script_runner: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
+    script_extension: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
+) -&gt; EngineType {
+    <span class="kw">match </span>script_runner {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>runner) =&gt; {
+            <span class="macro">debug!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, runner);
 
-            <span class="kw">let</span> <span class="ident">engine_type</span> <span class="op">=</span> <span class="ident">get_internal_runner</span>(<span class="ident">runner</span>);
+            <span class="kw">let </span>engine_type = get_internal_runner(runner);
 
-            <span class="kw">match</span> <span class="ident">engine_type</span> {
-                <span class="ident">EngineType::Unsupported</span> =&gt; {
-                    <span class="kw">if</span> <span class="ident">script_extension</span>.<span class="ident">is_some</span>() {
-                        <span class="comment">// if both script runner and extension is defined, we use generic script runner</span>
-                        <span class="macro">debug!</span>(<span class="string">&quot;Generic script detected.&quot;</span>);
-                        <span class="ident">EngineType::Generic</span>
-                    } <span class="kw">else</span> {
-                        <span class="comment">// use default OS extension with custom runner</span>
-                        <span class="macro">debug!</span>(<span class="string">&quot;OS script with custom runner detected.&quot;</span>);
-                        <span class="ident">EngineType::OS</span>
+            <span class="kw">match </span>engine_type {
+                EngineType::Unsupported =&gt; {
+                    <span class="kw">if </span>script_extension.is_some() {
+                        <span class="comment">// if both script runner and extension is defined, we use generic script runner
+                        </span><span class="macro">debug!</span>(<span class="string">&quot;Generic script detected.&quot;</span>);
+                        EngineType::Generic
+                    } <span class="kw">else </span>{
+                        <span class="comment">// use default OS extension with custom runner
+                        </span><span class="macro">debug!</span>(<span class="string">&quot;OS script with custom runner detected.&quot;</span>);
+                        EngineType::OS
                     }
                 }
-                <span class="kw">_</span> =&gt; <span class="ident">engine_type</span>,
+                <span class="kw">_ </span>=&gt; engine_type,
             }
         }
-        <span class="prelude-val">None</span> =&gt; {
-            <span class="comment">// if no runner specified, try to extract it from script content</span>
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="kw-2">&amp;</span><span class="ident">script</span>);
+        <span class="prelude-val">None </span>=&gt; {
+            <span class="comment">// if no runner specified, try to extract it from script content
+            </span><span class="kw">let </span>script_text = get_script_text(<span class="kw-2">&amp;</span>script);
 
-            <span class="kw">let</span> <span class="ident">shebang</span> <span class="op">=</span> <span class="ident">shebang_script::get_shebang</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>);
-            <span class="kw">match</span> <span class="ident">shebang</span>.<span class="ident">runner</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">script_runner</span>) =&gt; {
-                    <span class="kw">if</span> <span class="ident">shebang</span>.<span class="ident">arguments</span>.<span class="ident">is_none</span>() {
-                        <span class="kw">let</span> <span class="ident">engine_type</span> <span class="op">=</span> <span class="ident">get_internal_runner</span>(<span class="kw-2">&amp;</span><span class="ident">script_runner</span>);
+            <span class="kw">let </span>shebang = shebang_script::get_shebang(<span class="kw-2">&amp;</span>script_text);
+            <span class="kw">match </span>shebang.runner {
+                <span class="prelude-val">Some</span>(script_runner) =&gt; {
+                    <span class="kw">if </span>shebang.arguments.is_none() {
+                        <span class="kw">let </span>engine_type = get_internal_runner(<span class="kw-2">&amp;</span>script_runner);
 
-                        <span class="kw">match</span> <span class="ident">engine_type</span> {
-                            <span class="ident">EngineType::Unsupported</span> =&gt; {
+                        <span class="kw">match </span>engine_type {
+                            EngineType::Unsupported =&gt; {
                                 <span class="macro">debug!</span>(<span class="string">&quot;Shebang line does not point to an internal engine, using normal shebang script runner.&quot;</span>);
-                                <span class="ident">EngineType::Shebang</span>
+                                EngineType::Shebang
                             }
-                            <span class="kw">_</span> =&gt; <span class="ident">engine_type</span>,
+                            <span class="kw">_ </span>=&gt; engine_type,
                         }
-                    } <span class="kw">else</span> {
-                        <span class="ident">EngineType::Shebang</span>
+                    } <span class="kw">else </span>{
+                        EngineType::Shebang
                     }
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="ident">EngineType::OS</span>,
+                <span class="prelude-val">None </span>=&gt; EngineType::OS,
             }
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">invoke</span>(
-    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">Task</span>,
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">flow_state</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">script</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">script</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task</span>.<span class="ident">should_ignore_errors</span>();
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke(
+    task: <span class="kw-2">&amp;</span>Task,
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+) -&gt; bool {
+    <span class="kw">match </span>task.script {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
+            <span class="kw">let </span>validate = !task.should_ignore_errors();
 
-            <span class="comment">// setup toolchain environment</span>
-            <span class="kw">let</span> (<span class="ident">reset_env</span>, <span class="ident">original_cargo</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">toolchain</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain</span>) =&gt; <span class="kw">match</span> <span class="ident">toolchain::get_cargo_binary_path</span>(<span class="ident">toolchain</span>) {
-                    <span class="prelude-val">Some</span>(<span class="ident">cargo_binary</span>) =&gt; (<span class="bool-val">true</span>, <span class="ident">envmnt::get_set</span>(<span class="string">&quot;CARGO&quot;</span>, <span class="ident">cargo_binary</span>)),
-                    <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
+            <span class="comment">// setup toolchain environment
+            </span><span class="kw">let </span>(reset_env, original_cargo) = <span class="kw">match </span>task.toolchain {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>toolchain) =&gt; <span class="kw">match </span>toolchain::get_cargo_binary_path(toolchain) {
+                    <span class="prelude-val">Some</span>(cargo_binary) =&gt; (<span class="bool-val">true</span>, envmnt::get_set(<span class="string">&quot;CARGO&quot;</span>, cargo_binary)),
+                    <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
                 },
-                <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
+                <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
             };
 
-            <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">invoke_script_in_flow_context</span>(
-                <span class="ident">script</span>,
-                <span class="ident">task</span>.<span class="ident">script_runner</span>.<span class="ident">clone</span>(),
-                <span class="ident">task</span>.<span class="ident">script_runner_args</span>.<span class="ident">clone</span>(),
-                <span class="ident">task</span>.<span class="ident">script_extension</span>.<span class="ident">clone</span>(),
-                <span class="ident">validate</span>,
-                <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>),
-                <span class="prelude-val">Some</span>(<span class="ident">flow_state</span>),
+            <span class="kw">let </span>output = invoke_script_in_flow_context(
+                script,
+                task.script_runner.clone(),
+                task.script_runner_args.clone(),
+                task.script_extension.clone(),
+                validate,
+                <span class="prelude-val">Some</span>(flow_info),
+                <span class="prelude-val">Some</span>(flow_state),
             );
 
-            <span class="comment">// reset toolchain environment</span>
-            <span class="kw">if</span> <span class="ident">reset_env</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="ident">original_cargo</span> {
-                    <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO&quot;</span>, <span class="ident">value</span>)
+            <span class="comment">// reset toolchain environment
+            </span><span class="kw">if </span>reset_env {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = original_cargo {
+                    envmnt::set(<span class="string">&quot;CARGO&quot;</span>, value)
                 }
             }
 
-            <span class="ident">output</span>
+            output
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">invoke_script_in_flow_context</span>(
-    <span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">script_extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">validate</span>: <span class="ident">bool</span>,
-    <span class="ident">flow_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>,
-    <span class="ident">flow_state</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">cli_arguments</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">flow_info</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">info</span>) =&gt; <span class="kw">match</span> <span class="ident">info</span>.<span class="ident">cli_arguments</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; <span class="ident">args</span>.<span class="ident">clone</span>(),
-            <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[],
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke_script_in_flow_context(
+    script: <span class="kw-2">&amp;</span>ScriptValue,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    script_extension: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    validate: bool,
+    flow_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;,
+    flow_state: <span class="prelude-ty">Option</span>&lt;Rc&lt;RefCell&lt;FlowState&gt;&gt;&gt;,
+) -&gt; bool {
+    <span class="kw">let </span>cli_arguments = <span class="kw">match </span>flow_info {
+        <span class="prelude-val">Some</span>(info) =&gt; <span class="kw">match </span>info.cli_arguments {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args) =&gt; args.clone(),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
         },
-        <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[],
+        <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
     };
 
-    <span class="ident">invoke_script</span>(
-        <span class="ident">script</span>,
-        <span class="ident">script_runner</span>,
-        <span class="ident">script_runner_args</span>,
-        <span class="ident">script_extension</span>,
-        <span class="ident">validate</span>,
-        <span class="ident">flow_info</span>,
-        <span class="ident">flow_state</span>,
-        <span class="kw-2">&amp;</span><span class="ident">cli_arguments</span>,
+    invoke_script(
+        script,
+        script_runner,
+        script_runner_args,
+        script_extension,
+        validate,
+        flow_info,
+        flow_state,
+        <span class="kw-2">&amp;</span>cli_arguments,
     )
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">invoke_script_pre_flow</span>(
-    <span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">script_extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">validate</span>: <span class="ident">bool</span>,
-    <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="ident">invoke_script</span>(
-        <span class="ident">script</span>,
-        <span class="ident">script_runner</span>,
-        <span class="ident">script_runner_args</span>,
-        <span class="ident">script_extension</span>,
-        <span class="ident">validate</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke_script_pre_flow(
+    script: <span class="kw-2">&amp;</span>ScriptValue,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    script_extension: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    validate: bool,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+) -&gt; bool {
+    invoke_script(
+        script,
+        script_runner,
+        script_runner_args,
+        script_extension,
+        validate,
         <span class="prelude-val">None</span>,
         <span class="prelude-val">None</span>,
-        <span class="ident">cli_arguments</span>,
+        cli_arguments,
     )
 }
 
-<span class="kw">fn</span> <span class="ident">invoke_script</span>(
-    <span class="ident">script</span>: <span class="kw-2">&amp;</span><span class="ident">ScriptValue</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner_args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">script_extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">validate</span>: <span class="ident">bool</span>,
-    <span class="ident">flow_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FlowInfo</span><span class="op">&gt;</span>,
-    <span class="ident">flow_state</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">engine_type</span> <span class="op">=</span> <span class="ident">get_engine_type</span>(<span class="ident">script</span>, <span class="kw-2">&amp;</span><span class="ident">script_runner</span>, <span class="kw-2">&amp;</span><span class="ident">script_extension</span>);
+<span class="kw">fn </span>invoke_script(
+    script: <span class="kw-2">&amp;</span>ScriptValue,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    script_extension: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    validate: bool,
+    flow_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;,
+    flow_state: <span class="prelude-ty">Option</span>&lt;Rc&lt;RefCell&lt;FlowState&gt;&gt;&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+) -&gt; bool {
+    <span class="kw">let </span>engine_type = get_engine_type(script, <span class="kw-2">&amp;</span>script_runner, <span class="kw-2">&amp;</span>script_extension);
 
-    <span class="kw">match</span> <span class="ident">engine_type</span> {
-        <span class="ident">EngineType::OS</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="ident">os_script::execute</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="ident">script_runner</span>, <span class="ident">cli_arguments</span>, <span class="ident">validate</span>);
+    <span class="kw">match </span>engine_type {
+        EngineType::OS =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            os_script::execute(<span class="kw-2">&amp;</span>script_text, script_runner, cli_arguments, validate);
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Duckscript</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="ident">duck_script::execute</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="ident">cli_arguments</span>, <span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">validate</span>);
+            <span class="bool-val">true
+        </span>}
+        EngineType::Duckscript =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            duck_script::execute(<span class="kw-2">&amp;</span>script_text, cli_arguments, flow_info, flow_state, validate);
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Rust</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="ident">rsscript::execute</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="ident">cli_arguments</span>, <span class="ident">validate</span>);
+            <span class="bool-val">true
+        </span>}
+        EngineType::Rust =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            rsscript::execute(<span class="kw-2">&amp;</span>script_text, cli_arguments, validate);
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Shell2Batch</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="ident">shell_to_batch::execute</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="ident">cli_arguments</span>, <span class="ident">validate</span>);
+            <span class="bool-val">true
+        </span>}
+        EngineType::Shell2Batch =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            shell_to_batch::execute(<span class="kw-2">&amp;</span>script_text, cli_arguments, validate);
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Generic</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="kw">let</span> <span class="ident">extension</span> <span class="op">=</span> <span class="ident">script_extension</span>.<span class="ident">clone</span>().<span class="ident">unwrap</span>();
-            <span class="ident">generic_script::execute</span>(
-                <span class="kw-2">&amp;</span><span class="ident">script_text</span>,
-                <span class="ident">script_runner</span>.<span class="ident">unwrap</span>(),
-                <span class="ident">extension</span>,
-                <span class="ident">script_runner_args</span>.<span class="ident">clone</span>(),
-                <span class="ident">cli_arguments</span>,
-                <span class="ident">validate</span>,
+            <span class="bool-val">true
+        </span>}
+        EngineType::Generic =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            <span class="kw">let </span>extension = script_extension.clone().unwrap();
+            generic_script::execute(
+                <span class="kw-2">&amp;</span>script_text,
+                script_runner.unwrap(),
+                extension,
+                script_runner_args.clone(),
+                cli_arguments,
+                validate,
             );
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Shebang</span> =&gt; {
-            <span class="kw">let</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="ident">get_script_text</span>(<span class="ident">script</span>);
-            <span class="kw">let</span> <span class="ident">extension</span> <span class="op">=</span> <span class="ident">script_extension</span>.<span class="ident">clone</span>();
-            <span class="ident">shebang_script::execute</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="kw-2">&amp;</span><span class="ident">extension</span>, <span class="ident">cli_arguments</span>, <span class="ident">validate</span>);
+            <span class="bool-val">true
+        </span>}
+        EngineType::Shebang =&gt; {
+            <span class="kw">let </span>script_text = get_script_text(script);
+            <span class="kw">let </span>extension = script_extension.clone();
+            shebang_script::execute(<span class="kw-2">&amp;</span>script_text, <span class="kw-2">&amp;</span>extension, cli_arguments, validate);
 
-            <span class="bool-val">true</span>
-        }
-        <span class="ident">EngineType::Unsupported</span> =&gt; <span class="bool-val">false</span>,
+            <span class="bool-val">true
+        </span>}
+        EngineType::Unsupported =&gt; <span class="bool-val">false</span>,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

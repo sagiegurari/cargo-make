@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/logger.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>logger.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/logger.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>logger.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -174,181 +174,181 @@
 <span id="174">174</span>
 <span id="175">175</span>
 <span id="176">176</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # log</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Initializes the global logger.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # log
+//!
+//! Initializes the global logger.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;logger_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">logger_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;logger_test.rs&quot;</span>]
+</span><span class="kw">mod </span>logger_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::recursion_level</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::FlowInfo</span>;
-<span class="kw">use</span> <span class="ident">colored</span>::{<span class="ident">ColoredString</span>, <span class="ident">Colorize</span>};
-<span class="kw">use</span> <span class="ident">envmnt</span>;
-<span class="kw">use</span> <span class="ident">fern</span>;
-<span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">Level</span>, <span class="ident">LevelFilter</span>};
-<span class="kw">use</span> <span class="ident">std::io::stdout</span>;
-<span class="kw">use</span> <span class="ident">std::process::exit</span>;
+<span class="kw">use </span><span class="kw">crate</span>::recursion_level;
+<span class="kw">use </span><span class="kw">crate</span>::types::FlowInfo;
+<span class="kw">use </span>colored::{ColoredString, Colorize};
+<span class="kw">use </span>envmnt;
+<span class="kw">use </span>fern;
+<span class="kw">use </span>log::{Level, LevelFilter};
+<span class="kw">use </span>std::io::stdout;
+<span class="kw">use </span>std::process::exit;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// The log levels</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">LogLevel</span> {
-    <span class="ident">VERBOSE</span>,
-    <span class="ident">INFO</span>,
-    <span class="ident">ERROR</span>,
+<span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="doccomment">/// The log levels
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>LogLevel {
+    VERBOSE,
+    INFO,
+    ERROR,
 }
 
-<span class="doccomment">/// The logger options used to initialize the logger</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">LoggerOptions</span> {
-    <span class="doccomment">/// The logger level name (verbose, info, error)</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">level</span>: <span class="ident">String</span>,
-    <span class="doccomment">/// True to printout colorful output</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">color</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// The logger options used to initialize the logger
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>LoggerOptions {
+    <span class="doccomment">/// The logger level name (verbose, info, error)
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) level: String,
+    <span class="doccomment">/// True to printout colorful output
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) color: bool,
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_level</span>(<span class="ident">level_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">LogLevel</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">LogLevel::INFO</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_level(level_name: <span class="kw-2">&amp;</span>str) -&gt; LogLevel {
+    <span class="kw">let </span><span class="kw-2">mut </span>level = LogLevel::INFO;
 
-    <span class="kw">if</span> <span class="ident">level_name</span> <span class="op">==</span> <span class="string">&quot;verbose&quot;</span> {
-        <span class="ident">level</span> <span class="op">=</span> <span class="ident">LogLevel::VERBOSE</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">level_name</span> <span class="op">==</span> <span class="string">&quot;error&quot;</span> {
-        <span class="ident">level</span> <span class="op">=</span> <span class="ident">LogLevel::ERROR</span>;
+    <span class="kw">if </span>level_name == <span class="string">&quot;verbose&quot; </span>{
+        level = LogLevel::VERBOSE;
+    } <span class="kw">else if </span>level_name == <span class="string">&quot;error&quot; </span>{
+        level = LogLevel::ERROR;
     }
 
-    <span class="ident">level</span>
+    level
 }
 
-<span class="doccomment">/// Returns the current logger level name</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_log_level</span>() -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="kw">if</span> <span class="macro">log_enabled!</span>(<span class="ident">Level::Debug</span>) {
-        <span class="string">&quot;verbose&quot;</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">log_enabled!</span>(<span class="ident">Level::Info</span>) {
-        <span class="string">&quot;info&quot;</span>
-    } <span class="kw">else</span> {
-        <span class="string">&quot;error&quot;</span>
+<span class="doccomment">/// Returns the current logger level name
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_log_level() -&gt; String {
+    <span class="kw">let </span>level = <span class="kw">if </span><span class="macro">log_enabled!</span>(Level::Debug) {
+        <span class="string">&quot;verbose&quot;
+    </span>} <span class="kw">else if </span><span class="macro">log_enabled!</span>(Level::Info) {
+        <span class="string">&quot;info&quot;
+    </span>} <span class="kw">else </span>{
+        <span class="string">&quot;error&quot;
+    </span>};
+
+    level.to_string()
+}
+
+<span class="kw">fn </span>get_name_for_filter(filter: <span class="kw-2">&amp;</span>LevelFilter) -&gt; String {
+    <span class="kw">let </span>level = <span class="kw">match </span>filter {
+        LevelFilter::Debug =&gt; Level::Debug,
+        LevelFilter::Warn =&gt; Level::Warn,
+        LevelFilter::Error =&gt; Level::Error,
+        <span class="kw">_ </span>=&gt; Level::Info,
     };
 
-    <span class="ident">level</span>.<span class="ident">to_string</span>()
+    get_name_for_level(<span class="kw-2">&amp;</span>level)
 }
 
-<span class="kw">fn</span> <span class="ident">get_name_for_filter</span>(<span class="ident">filter</span>: <span class="kw-2">&amp;</span><span class="ident">LevelFilter</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">filter</span> {
-        <span class="ident">LevelFilter::Debug</span> =&gt; <span class="ident">Level::Debug</span>,
-        <span class="ident">LevelFilter::Warn</span> =&gt; <span class="ident">Level::Warn</span>,
-        <span class="ident">LevelFilter::Error</span> =&gt; <span class="ident">Level::Error</span>,
-        <span class="kw">_</span> =&gt; <span class="ident">Level::Info</span>,
-    };
-
-    <span class="ident">get_name_for_level</span>(<span class="kw-2">&amp;</span><span class="ident">level</span>)
-}
-
-<span class="kw">fn</span> <span class="ident">get_name_for_level</span>(<span class="ident">level</span>: <span class="kw-2">&amp;</span><span class="ident">Level</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">Level::Debug</span> =&gt; <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">Level::Warn</span> =&gt; <span class="string">&quot;warn&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">Level::Error</span> =&gt; <span class="string">&quot;error&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="kw">_</span> =&gt; <span class="string">&quot;info&quot;</span>.<span class="ident">to_string</span>(),
+<span class="kw">fn </span>get_name_for_level(level: <span class="kw-2">&amp;</span>Level) -&gt; String {
+    <span class="kw">match </span>level {
+        Level::Debug =&gt; <span class="string">&quot;verbose&quot;</span>.to_string(),
+        Level::Warn =&gt; <span class="string">&quot;warn&quot;</span>.to_string(),
+        Level::Error =&gt; <span class="string">&quot;error&quot;</span>.to_string(),
+        <span class="kw">_ </span>=&gt; <span class="string">&quot;info&quot;</span>.to_string(),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_formatted_name</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">use_color</span>: <span class="ident">bool</span>) -&gt; <span class="ident">ColoredString</span> {
-    <span class="kw">if</span> <span class="ident">use_color</span> {
-        <span class="ident">name</span>.<span class="ident">bold</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">name</span>.<span class="ident">normal</span>()
+<span class="kw">fn </span>get_formatted_name(name: <span class="kw-2">&amp;</span>str, use_color: bool) -&gt; ColoredString {
+    <span class="kw">if </span>use_color {
+        name.bold()
+    } <span class="kw">else </span>{
+        name.normal()
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_formatted_log_level</span>(<span class="ident">level</span>: <span class="kw-2">&amp;</span><span class="ident">Level</span>, <span class="ident">use_color</span>: <span class="ident">bool</span>) -&gt; <span class="ident">ColoredString</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">level_name</span> <span class="op">=</span> <span class="ident">get_name_for_level</span>(<span class="kw-2">&amp;</span><span class="ident">level</span>);
-    <span class="ident">level_name</span> <span class="op">=</span> <span class="ident">level_name</span>.<span class="ident">to_uppercase</span>();
+<span class="kw">fn </span>get_formatted_log_level(level: <span class="kw-2">&amp;</span>Level, use_color: bool) -&gt; ColoredString {
+    <span class="kw">let </span><span class="kw-2">mut </span>level_name = get_name_for_level(<span class="kw-2">&amp;</span>level);
+    level_name = level_name.to_uppercase();
 
-    <span class="kw">if</span> <span class="ident">use_color</span> {
-        <span class="kw">let</span> <span class="ident">fmt_value</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">level</span> {
-            <span class="ident">Level::Debug</span> =&gt; <span class="ident">level_name</span>.<span class="ident">cyan</span>(),
-            <span class="ident">Level::Info</span> =&gt; <span class="ident">level_name</span>.<span class="ident">green</span>(),
-            <span class="ident">Level::Warn</span> =&gt; <span class="ident">level_name</span>.<span class="ident">yellow</span>(),
-            <span class="ident">Level::Error</span> =&gt; <span class="ident">level_name</span>.<span class="ident">red</span>(),
-            <span class="kw">_</span> =&gt; <span class="ident">level_name</span>.<span class="ident">normal</span>(),
+    <span class="kw">if </span>use_color {
+        <span class="kw">let </span>fmt_value = <span class="kw">match </span>level {
+            Level::Debug =&gt; level_name.cyan(),
+            Level::Info =&gt; level_name.green(),
+            Level::Warn =&gt; level_name.yellow(),
+            Level::Error =&gt; level_name.red(),
+            <span class="kw">_ </span>=&gt; level_name.normal(),
         };
 
-        <span class="ident">fmt_value</span>.<span class="ident">bold</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">level_name</span>.<span class="ident">normal</span>()
+        fmt_value.bold()
+    } <span class="kw">else </span>{
+        level_name.normal()
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">should_reduce_output</span>(<span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">reduce_output</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="op">!</span><span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>),
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>should_reduce_output(flow_info: <span class="kw-2">&amp;</span>FlowInfo) -&gt; bool {
+    <span class="kw">match </span>flow_info.config.config.reduce_output {
+        <span class="prelude-val">Some</span>(value) =&gt; value,
+        <span class="prelude-val">None </span>=&gt; !envmnt::is(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>),
     }
 }
 
-<span class="doccomment">/// Initializes the global logger.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Arguments</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `level_name` - The log level name (&#39;verbose&#39;, &#39;info&#39;, &#39;error&#39;)</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">init</span>(<span class="ident">options</span>: <span class="kw-2">&amp;</span><span class="ident">LoggerOptions</span>) {
-    <span class="kw">let</span> <span class="ident">level_name</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">options</span>.<span class="ident">level</span>;
-    <span class="kw">let</span> <span class="ident">color</span> <span class="op">=</span> <span class="ident">options</span>.<span class="ident">color</span>;
+<span class="doccomment">/// Initializes the global logger.
+///
+/// # Arguments
+///
+/// * `level_name` - The log level name (&#39;verbose&#39;, &#39;info&#39;, &#39;error&#39;)
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>init(options: <span class="kw-2">&amp;</span>LoggerOptions) {
+    <span class="kw">let </span>level_name = <span class="kw-2">&amp;</span>options.level;
+    <span class="kw">let </span>color = options.color;
 
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">get_level</span>(<span class="ident">level_name</span>);
+    <span class="kw">let </span>level = get_level(level_name);
 
-    <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">LogLevel::VERBOSE</span> =&gt; <span class="ident">LevelFilter::Debug</span>,
-        <span class="ident">LogLevel::INFO</span> =&gt; <span class="ident">LevelFilter::Info</span>,
-        <span class="ident">LogLevel::ERROR</span> =&gt; <span class="ident">LevelFilter::Error</span>,
+    <span class="kw">let </span>log_level = <span class="kw">match </span>level {
+        LogLevel::VERBOSE =&gt; LevelFilter::Debug,
+        LogLevel::INFO =&gt; LevelFilter::Info,
+        LogLevel::ERROR =&gt; LevelFilter::Error,
     };
-    <span class="kw">let</span> <span class="ident">level_name_value</span> <span class="op">=</span> <span class="ident">get_name_for_filter</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
+    <span class="kw">let </span>level_name_value = get_name_for_filter(<span class="kw-2">&amp;</span>log_level);
 
-    <span class="ident">envmnt::set</span>(<span class="string">&quot;CARGO_MAKE_LOG_LEVEL&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">level_name_value</span>);
-    <span class="ident">envmnt::set_bool</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>, <span class="op">!</span><span class="ident">color</span>);
+    envmnt::set(<span class="string">&quot;CARGO_MAKE_LOG_LEVEL&quot;</span>, <span class="kw-2">&amp;</span>level_name_value);
+    envmnt::set_bool(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>, !color);
 
-    <span class="kw">let</span> <span class="ident">recursion_lvl</span> <span class="op">=</span> <span class="ident">recursion_level::get</span>();
-    <span class="kw">let</span> <span class="ident">recursion_level_log</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">recursion_lvl</span> <span class="op">==</span> <span class="number">0</span> {
-        <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()
-    } <span class="kw">else</span> {
-        <span class="macro">format!</span>(<span class="string">&quot;[{}]&quot;</span>, <span class="ident">recursion_lvl</span>)
+    <span class="kw">let </span>recursion_lvl = recursion_level::get();
+    <span class="kw">let </span>recursion_level_log = <span class="kw">if </span>recursion_lvl == <span class="number">0 </span>{
+        <span class="string">&quot;&quot;</span>.to_string()
+    } <span class="kw">else </span>{
+        <span class="macro">format!</span>(<span class="string">&quot;[{}]&quot;</span>, recursion_lvl)
     };
 
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">fern::Dispatch::new</span>()
-        .<span class="ident">format</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">out</span>, <span class="ident">message</span>, <span class="ident">record</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_NAME&quot;</span>);
+    <span class="kw">let </span>result = fern::Dispatch::new()
+        .format(<span class="kw">move </span>|out, message, record| {
+            <span class="kw">let </span>name = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_NAME&quot;</span>);
 
-            <span class="kw">let</span> <span class="ident">record_level</span> <span class="op">=</span> <span class="ident">record</span>.<span class="ident">level</span>();
+            <span class="kw">let </span>record_level = record.level();
 
-            <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">test</span>) {
-                <span class="kw">if</span> <span class="ident">record_level</span> <span class="op">==</span> <span class="ident">LevelFilter::Error</span> {
-                    <span class="macro">panic!</span>(<span class="string">&quot;test error flow: {}&quot;</span>, <span class="ident">message</span>);
+            <span class="kw">if </span><span class="macro">cfg!</span>(test) {
+                <span class="kw">if </span>record_level == LevelFilter::Error {
+                    <span class="macro">panic!</span>(<span class="string">&quot;test error flow: {}&quot;</span>, message);
                 }
             }
 
-            <span class="kw">let</span> <span class="ident">name_fmt</span> <span class="op">=</span> <span class="ident">get_formatted_name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">color</span>);
+            <span class="kw">let </span>name_fmt = get_formatted_name(<span class="kw-2">&amp;</span>name, color);
 
-            <span class="kw">let</span> <span class="ident">record_level_fmt</span> <span class="op">=</span> <span class="ident">get_formatted_log_level</span>(<span class="kw-2">&amp;</span><span class="ident">record_level</span>, <span class="ident">color</span>);
+            <span class="kw">let </span>record_level_fmt = get_formatted_log_level(<span class="kw-2">&amp;</span>record_level, color);
 
-            <span class="ident">out</span>.<span class="ident">finish</span>(<span class="macro">format_args!</span>(
+            out.finish(<span class="macro">format_args!</span>(
                 <span class="string">&quot;[{}]{} {} - {}&quot;</span>,
-                <span class="kw-2">&amp;</span><span class="ident">name_fmt</span>, <span class="kw-2">&amp;</span><span class="ident">recursion_level_log</span>, <span class="kw-2">&amp;</span><span class="ident">record_level_fmt</span>, <span class="kw-2">&amp;</span><span class="ident">message</span>
+                <span class="kw-2">&amp;</span>name_fmt, <span class="kw-2">&amp;</span>recursion_level_log, <span class="kw-2">&amp;</span>record_level_fmt, <span class="kw-2">&amp;</span>message
             ));
 
-            <span class="kw">if</span> <span class="ident">record_level</span> <span class="op">==</span> <span class="ident">Level::Error</span> {
+            <span class="kw">if </span>record_level == Level::Error {
                 <span class="macro">warn!</span>(<span class="string">&quot;Build Failed.&quot;</span>);
 
-                <span class="ident">exit</span>(<span class="number">1</span>);
+                exit(<span class="number">1</span>);
             }
         })
-        .<span class="ident">level</span>(<span class="ident">log_level</span>)
-        .<span class="ident">chain</span>(<span class="ident">stdout</span>())
-        .<span class="ident">apply</span>();
+        .level(log_level)
+        .chain(stdout())
+        .apply();
 
-    <span class="kw">if</span> <span class="ident">result</span>.<span class="ident">is_err</span>() {
+    <span class="kw">if </span>result.is_err() {
         <span class="macro">println!</span>(<span class="string">&quot;Unable to setup logger.&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

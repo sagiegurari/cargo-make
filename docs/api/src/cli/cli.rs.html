@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -171,178 +171,186 @@
 <span id="171">171</span>
 <span id="172">172</span>
 <span id="173">173</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # cli</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The cargo-make cli</span>
-<span class="doccomment">//!</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # cli
+//!
+//! The cargo-make cli
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;cli_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">cli_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;cli_test.rs&quot;</span>]
+</span><span class="kw">mod </span>cli_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli_commands</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli_parser</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::config</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::descriptor</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger::LoggerOptions</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::recursion_level</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::runner</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::time_summary</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version</span>;
-<span class="kw">use</span> <span class="ident">std::time::SystemTime</span>;
+<span class="kw">use </span><span class="kw">crate</span>::cli_commands;
+<span class="kw">use </span><span class="kw">crate</span>::cli_parser;
+<span class="kw">use </span><span class="kw">crate</span>::config;
+<span class="kw">use </span><span class="kw">crate</span>::descriptor;
+<span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::logger;
+<span class="kw">use </span><span class="kw">crate</span>::logger::LoggerOptions;
+<span class="kw">use </span><span class="kw">crate</span>::profile;
+<span class="kw">use </span><span class="kw">crate</span>::recursion_level;
+<span class="kw">use </span><span class="kw">crate</span>::runner;
+<span class="kw">use </span><span class="kw">crate</span>::time_summary;
+<span class="kw">use </span><span class="kw">crate</span>::toolchain;
+<span class="kw">use </span><span class="kw">crate</span>::types::{CliArgs, GlobalConfig};
+<span class="kw">use </span><span class="kw">crate</span>::version;
+<span class="kw">use </span>std::time::SystemTime;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">VERSION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">AUTHOR</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_AUTHORS&quot;</span>);
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">DESCRIPTION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_DESCRIPTION&quot;</span>);
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">DEFAULT_TOML</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;Makefile.toml&quot;</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">DEFAULT_LOG_LEVEL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;info&quot;</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">DEFAULT_TASK_NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;default&quot;</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static</span> <span class="ident">DEFAULT_OUTPUT_FORMAT</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;default&quot;</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>VERSION: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>AUTHOR: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_AUTHORS&quot;</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DESCRIPTION: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_DESCRIPTION&quot;</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_TOML: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Makefile.toml&quot;</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_LOG_LEVEL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;info&quot;</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_TASK_NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;default&quot;</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_OUTPUT_FORMAT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;default&quot;</span>;
 
-<span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">cli_args</span>: <span class="ident">CliArgs</span>, <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) {
-    <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">SystemTime::now</span>();
+<span class="kw">fn </span>run(cli_args: CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) {
+    <span class="kw">let </span>start_time = SystemTime::now();
 
-    <span class="ident">recursion_level::increment</span>();
+    recursion_level::increment();
 
-    <span class="ident">logger::init</span>(<span class="kw-2">&amp;</span><span class="ident">LoggerOptions</span> {
-        <span class="ident">level</span>: <span class="ident">cli_args</span>.<span class="ident">log_level</span>.<span class="ident">clone</span>(),
-        <span class="ident">color</span>: <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_color</span>,
+    logger::init(<span class="kw-2">&amp;</span>LoggerOptions {
+        level: cli_args.log_level.clone(),
+        color: !cli_args.disable_color,
     });
 
-    <span class="kw">if</span> <span class="ident">recursion_level::is_top</span>() {
-        <span class="macro">info!</span>(<span class="string">&quot;{} {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>);
-        <span class="macro">debug!</span>(<span class="string">&quot;Written By {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">AUTHOR</span>);
+    <span class="kw">if </span>recursion_level::is_top() {
+        <span class="macro">info!</span>(<span class="string">&quot;{} {}&quot;</span>, <span class="kw-2">&amp;</span>cli_args.command, <span class="kw-2">&amp;</span>VERSION);
+        <span class="macro">debug!</span>(<span class="string">&quot;Written By {}&quot;</span>, <span class="kw-2">&amp;</span>AUTHOR);
     }
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Cli Args {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
-    <span class="macro">debug!</span>(<span class="string">&quot;Global Configuration {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>);
+    <span class="macro">debug!</span>(<span class="string">&quot;Cli Args {:#?}&quot;</span>, <span class="kw-2">&amp;</span>cli_args);
+    <span class="macro">debug!</span>(<span class="string">&quot;Global Configuration {:#?}&quot;</span>, <span class="kw-2">&amp;</span>global_config);
 
-    <span class="kw">if</span> <span class="ident">version::should_check</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>) {
-        <span class="ident">version::check</span>();
+    <span class="kw">if </span>version::should_check(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>global_config) {
+        version::check();
     }
 
-    <span class="kw">let</span> <span class="ident">cwd_string_option</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">cwd</span>.<span class="ident">clone</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">search_project_root</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">search</span>) =&gt; {
-                <span class="kw">if</span> <span class="ident">search</span> {
-                    <span class="kw">match</span> <span class="ident">environment::get_project_root</span>() {
-                        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="comment">// clear env vars (see https://github.com/rust-lang/rustup/issues/3029)
+    </span>toolchain::remove_rust_env_vars();
+
+    <span class="kw">let </span>cwd_string_option = <span class="kw">match </span>cli_args.cwd.clone() {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value),
+        <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>global_config.search_project_root {
+            <span class="prelude-val">Some</span>(search) =&gt; {
+                <span class="kw">if </span>search {
+                    <span class="kw">match </span>environment::get_project_root() {
+                        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value.clone()),
+                        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                     }
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">None</span>
-                }
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">None
+                </span>}
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         },
     };
-    <span class="kw">let</span> <span class="ident">cwd</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cwd_string_option</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">as_ref</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="kw">let </span>cwd = <span class="kw">match </span>cwd_string_option {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value.as_ref()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
-    <span class="kw">let</span> <span class="ident">home</span> <span class="op">=</span> <span class="ident">environment::setup_cwd</span>(<span class="ident">cwd</span>);
+    <span class="kw">let </span>home = environment::setup_cwd(cwd);
 
-    <span class="kw">let</span> <span class="ident">force_makefile</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">build_file</span>.<span class="ident">is_some</span>();
-    <span class="kw">let</span> <span class="ident">build_file</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cli_args</span>
-        .<span class="ident">build_file</span>
-        .<span class="ident">clone</span>()
-        .<span class="ident">unwrap_or</span>(<span class="ident">DEFAULT_TOML</span>.<span class="ident">to_string</span>());
-    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">task</span>;
-    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">cli_args</span>
-        .<span class="ident">profile</span>
-        .<span class="ident">clone</span>()
-        .<span class="ident">unwrap_or</span>(<span class="ident">profile::DEFAULT_PROFILE</span>.<span class="ident">to_string</span>());
-    <span class="kw">let</span> <span class="ident">normalized_profile_name</span> <span class="op">=</span> <span class="ident">profile::set</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
+    <span class="kw">let </span>force_makefile = cli_args.build_file.is_some();
+    <span class="kw">let </span>build_file = <span class="kw-2">&amp;</span>cli_args
+        .build_file
+        .clone()
+        .unwrap_or(DEFAULT_TOML.to_string());
+    <span class="kw">let </span>task = <span class="kw-2">&amp;</span>cli_args.task;
+    <span class="kw">let </span>profile_name = <span class="kw-2">&amp;</span>cli_args
+        .profile
+        .clone()
+        .unwrap_or(profile::DEFAULT_PROFILE.to_string());
+    <span class="kw">let </span>normalized_profile_name = profile::set(<span class="kw-2">&amp;</span>profile_name);
 
-    <span class="ident">environment::load_env_file</span>(<span class="ident">cli_args</span>.<span class="ident">env_file</span>.<span class="ident">clone</span>());
+    environment::load_env_file(cli_args.env_file.clone());
 
-    <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">env</span>.<span class="ident">clone</span>();
+    <span class="kw">let </span>env = cli_args.env.clone();
 
-    <span class="kw">let</span> <span class="ident">experimental</span> <span class="op">=</span> <span class="ident">cli_args</span>.<span class="ident">experimental</span>;
-    <span class="kw">let</span> <span class="ident">descriptor_load_result</span> <span class="op">=</span> <span class="ident">descriptor::load</span>(<span class="kw-2">&amp;</span><span class="ident">build_file</span>, <span class="ident">force_makefile</span>, <span class="ident">env</span>, <span class="ident">experimental</span>);
+    <span class="kw">let </span>experimental = cli_args.experimental;
+    <span class="kw">let </span>descriptor_load_result = descriptor::load(<span class="kw-2">&amp;</span>build_file, force_makefile, env, experimental);
 
-    <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">descriptor_load_result</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">config</span>) =&gt; <span class="ident">config</span>,
-        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">min_version</span>) =&gt; {
+    <span class="kw">let </span>config = <span class="kw">match </span>descriptor_load_result {
+        <span class="prelude-val">Ok</span>(config) =&gt; config,
+        <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>min_version) =&gt; {
             <span class="macro">error!</span>(
                 <span class="string">&quot;{} version: {} does not meet minimum required version: {}&quot;</span>,
-                <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>
+                <span class="kw-2">&amp;</span>cli_args.command, <span class="kw-2">&amp;</span>VERSION, <span class="kw-2">&amp;</span>min_version
             );
             <span class="macro">panic!</span>(
                 <span class="string">&quot;{} version: {} does not meet minimum required version: {}&quot;</span>,
-                <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">VERSION</span>, <span class="kw-2">&amp;</span><span class="ident">min_version</span>
+                <span class="kw-2">&amp;</span>cli_args.command, <span class="kw-2">&amp;</span>VERSION, <span class="kw-2">&amp;</span>min_version
             );
         }
     };
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">time_summary_vec</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="ident">time_summary::add</span>(
-        <span class="kw-2">&amp;mut</span> <span class="ident">time_summary_vec</span>,
+    <span class="kw">let </span><span class="kw-2">mut </span>time_summary_vec = <span class="macro">vec!</span>[];
+    time_summary::add(
+        <span class="kw-2">&amp;mut </span>time_summary_vec,
         <span class="string">&quot;[Load Makefiles]&quot;</span>,
-        <span class="ident">start_time</span>.<span class="ident">clone</span>(),
+        start_time.clone(),
     );
-    <span class="kw">let</span> <span class="ident">step_time</span> <span class="op">=</span> <span class="ident">SystemTime::now</span>();
+    <span class="kw">let </span>step_time = SystemTime::now();
 
-    <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">additional_profiles</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">profiles</span>) =&gt; <span class="ident">profile::set_additional</span>(<span class="ident">profiles</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">profile::set_additional</span>(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]),
+    <span class="kw">match </span>config.config.additional_profiles {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>profiles) =&gt; profile::set_additional(profiles),
+        <span class="prelude-val">None </span>=&gt; profile::set_additional(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]),
     };
 
-    <span class="kw">let</span> <span class="ident">env_info</span> <span class="op">=</span> <span class="ident">environment::setup_env</span>(<span class="kw-2">&amp;</span><span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">home</span>);
-    <span class="ident">time_summary::add</span>(<span class="kw-2">&amp;mut</span> <span class="ident">time_summary_vec</span>, <span class="string">&quot;[Setup Env]&quot;</span>, <span class="ident">step_time</span>);
+    <span class="kw">let </span>env_info = environment::setup_env(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, home);
+    time_summary::add(<span class="kw-2">&amp;mut </span>time_summary_vec, <span class="string">&quot;[Setup Env]&quot;</span>, step_time);
 
-    <span class="kw">let</span> <span class="ident">crate_name</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_CRATE_NAME&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">if</span> <span class="ident">crate_name</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-        <span class="macro">info!</span>(<span class="string">&quot;Project: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">crate_name</span>);
+    <span class="kw">let </span>crate_name = envmnt::get_or(<span class="string">&quot;CARGO_MAKE_CRATE_NAME&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">if </span>crate_name.len() &gt; <span class="number">0 </span>{
+        <span class="macro">info!</span>(<span class="string">&quot;Project: {}&quot;</span>, <span class="kw-2">&amp;</span>crate_name);
     }
-    <span class="macro">info!</span>(<span class="string">&quot;Build File: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">build_file</span>);
-    <span class="macro">info!</span>(<span class="string">&quot;Task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
-    <span class="macro">info!</span>(<span class="string">&quot;Profile: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
+    <span class="macro">info!</span>(<span class="string">&quot;Build File: {}&quot;</span>, <span class="kw-2">&amp;</span>build_file);
+    <span class="macro">info!</span>(<span class="string">&quot;Task: {}&quot;</span>, <span class="kw-2">&amp;</span>task);
+    <span class="macro">info!</span>(<span class="string">&quot;Profile: {}&quot;</span>, <span class="kw-2">&amp;</span>normalized_profile_name);
 
-    <span class="comment">// ensure profile env was not overridden</span>
-    <span class="ident">profile::set</span>(<span class="kw-2">&amp;</span><span class="ident">normalized_profile_name</span>);
+    <span class="comment">// ensure profile env was not overridden
+    </span>profile::set(<span class="kw-2">&amp;</span>normalized_profile_name);
 
-    <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> <span class="op">|</span><span class="op">|</span> <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span>.<span class="ident">is_some</span>() {
-        <span class="ident">cli_commands::list_steps::run</span>(
-            <span class="kw-2">&amp;</span><span class="ident">config</span>,
-            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_format</span>,
-            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_file</span>,
-            <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span>,
+    <span class="kw">if </span>cli_args.list_all_steps || cli_args.list_category_steps.is_some() {
+        cli_commands::list_steps::run(
+            <span class="kw-2">&amp;</span>config,
+            <span class="kw-2">&amp;</span>cli_args.output_format,
+            <span class="kw-2">&amp;</span>cli_args.output_file,
+            cli_args.list_category_steps,
         );
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> {
-        <span class="kw">let</span> <span class="ident">default_config</span> <span class="op">=</span> <span class="ident">descriptor::load_internal_descriptors</span>(<span class="bool-val">true</span>, <span class="ident">experimental</span>, <span class="prelude-val">None</span>);
-        <span class="ident">cli_commands::diff_steps::run</span>(<span class="kw-2">&amp;</span><span class="ident">default_config</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="ident">cli_args</span>);
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">cli_args</span>.<span class="ident">print_only</span> {
-        <span class="ident">cli_commands::print_steps::print</span>(
-            <span class="kw-2">&amp;</span><span class="ident">config</span>,
-            <span class="kw-2">&amp;</span><span class="ident">task</span>,
-            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>.<span class="ident">output_format</span>,
-            <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span>,
-            <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span>,
+    } <span class="kw">else if </span>cli_args.diff_execution_plan {
+        <span class="kw">let </span>default_config = descriptor::load_internal_descriptors(<span class="bool-val">true</span>, experimental, <span class="prelude-val">None</span>);
+        cli_commands::diff_steps::run(<span class="kw-2">&amp;</span>default_config, <span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, <span class="kw-2">&amp;</span>cli_args);
+    } <span class="kw">else if </span>cli_args.print_only {
+        cli_commands::print_steps::print(
+            <span class="kw-2">&amp;</span>config,
+            <span class="kw-2">&amp;</span>task,
+            <span class="kw-2">&amp;</span>cli_args.output_format,
+            cli_args.disable_workspace,
+            cli_args.skip_tasks_pattern,
         );
-    } <span class="kw">else</span> {
-        <span class="ident">runner::run</span>(
-            <span class="ident">config</span>,
-            <span class="kw-2">&amp;</span><span class="ident">task</span>,
-            <span class="ident">env_info</span>,
-            <span class="kw-2">&amp;</span><span class="ident">cli_args</span>,
-            <span class="ident">start_time</span>,
-            <span class="ident">time_summary_vec</span>,
+    } <span class="kw">else </span>{
+        runner::run(
+            config,
+            <span class="kw-2">&amp;</span>task,
+            env_info,
+            <span class="kw-2">&amp;</span>cli_args,
+            start_time,
+            time_summary_vec,
         );
     }
 }
 
-<span class="doccomment">/// Handles the command line arguments and executes the runner.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_cli</span>(<span class="ident">command_name</span>: <span class="ident">String</span>, <span class="ident">sub_command</span>: <span class="ident">bool</span>) {
-    <span class="kw">let</span> <span class="ident">global_config</span> <span class="op">=</span> <span class="ident">config::load</span>();
+<span class="doccomment">/// Handles the command line arguments and executes the runner.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_cli(command_name: String, sub_command: bool) {
+    <span class="kw">let </span>global_config = config::load();
 
-    <span class="kw">let</span> <span class="ident">cli_args</span> <span class="op">=</span> <span class="ident">cli_parser::parse</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>, <span class="kw-2">&amp;</span><span class="ident">command_name</span>, <span class="ident">sub_command</span>);
+    <span class="kw">let </span>cli_args = cli_parser::parse(<span class="kw-2">&amp;</span>global_config, <span class="kw-2">&amp;</span>command_name, sub_command);
 
-    <span class="ident">run</span>(<span class="ident">cli_args</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>);
+    run(cli_args, <span class="kw-2">&amp;</span>global_config);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

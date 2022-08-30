@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/plugin/descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>descriptor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/plugin/descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>descriptor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -67,74 +67,74 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # descriptor</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Handles the plugin descriptor section logic.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # descriptor
+//!
+//! Handles the plugin descriptor section logic.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;descriptor_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">descriptor_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;descriptor_test.rs&quot;</span>]
+</span><span class="kw">mod </span>descriptor_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::plugin::types</span>::{<span class="ident">Plugin</span>, <span class="ident">Plugins</span>};
-<span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
+<span class="kw">use </span><span class="kw">crate</span>::plugin::types::{Plugin, Plugins};
+<span class="kw">use </span>indexmap::IndexMap;
 
-<span class="kw">fn</span> <span class="ident">merge_aliases</span>(
-    <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">clone</span>();
-    <span class="ident">target</span>.<span class="ident">extend</span>(
-        <span class="ident">extended</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">value</span>)<span class="op">|</span> (<span class="ident">key</span>.<span class="ident">clone</span>(), <span class="ident">value</span>.<span class="ident">clone</span>())),
+<span class="kw">fn </span>merge_aliases(
+    base: <span class="kw-2">&amp;</span>IndexMap&lt;String, String&gt;,
+    extended: <span class="kw-2">&amp;</span>IndexMap&lt;String, String&gt;,
+) -&gt; IndexMap&lt;String, String&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>target = base.clone();
+    target.extend(
+        extended
+            .into_iter()
+            .map(|(key, value)| (key.clone(), value.clone())),
     );
 
-    <span class="ident">target</span>
+    target
 }
 
-<span class="kw">fn</span> <span class="ident">merge_plugins_map</span>(
-    <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Plugin</span><span class="op">&gt;</span>,
-    <span class="ident">extended</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Plugin</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Plugin</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">clone</span>();
-    <span class="ident">target</span>.<span class="ident">extend</span>(
-        <span class="ident">extended</span>
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">value</span>)<span class="op">|</span> (<span class="ident">key</span>.<span class="ident">clone</span>(), <span class="ident">value</span>.<span class="ident">clone</span>())),
+<span class="kw">fn </span>merge_plugins_map(
+    base: <span class="kw-2">&amp;</span>IndexMap&lt;String, Plugin&gt;,
+    extended: <span class="kw-2">&amp;</span>IndexMap&lt;String, Plugin&gt;,
+) -&gt; IndexMap&lt;String, Plugin&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>target = base.clone();
+    target.extend(
+        extended
+            .into_iter()
+            .map(|(key, value)| (key.clone(), value.clone())),
     );
 
-    <span class="ident">target</span>
+    target
 }
 
-<span class="kw">fn</span> <span class="ident">merge_plugins_config_impl</span>(<span class="ident">base</span>: <span class="ident">Plugins</span>, <span class="ident">extended</span>: <span class="ident">Plugins</span>) -&gt; <span class="ident">Plugins</span> {
-    <span class="kw">let</span> <span class="ident">aliases</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">base</span>.<span class="ident">aliases</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">base_aliases</span>) =&gt; <span class="kw">match</span> <span class="ident">extended</span>.<span class="ident">aliases</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extended_aliases</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">merge_aliases</span>(<span class="kw-2">&amp;</span><span class="ident">base_aliases</span>, <span class="ident">extended_aliases</span>)),
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">base_aliases</span>),
+<span class="kw">fn </span>merge_plugins_config_impl(base: Plugins, extended: Plugins) -&gt; Plugins {
+    <span class="kw">let </span>aliases = <span class="kw">match </span>base.aliases {
+        <span class="prelude-val">Some</span>(base_aliases) =&gt; <span class="kw">match </span>extended.aliases {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extended_aliases) =&gt; <span class="prelude-val">Some</span>(merge_aliases(<span class="kw-2">&amp;</span>base_aliases, extended_aliases)),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(base_aliases),
         },
-        <span class="prelude-val">None</span> =&gt; <span class="ident">extended</span>.<span class="ident">aliases</span>,
+        <span class="prelude-val">None </span>=&gt; extended.aliases,
     };
 
-    <span class="kw">let</span> <span class="ident">plugins</span> <span class="op">=</span> <span class="ident">merge_plugins_map</span>(<span class="kw-2">&amp;</span><span class="ident">base</span>.<span class="ident">plugins</span>, <span class="kw-2">&amp;</span><span class="ident">extended</span>.<span class="ident">plugins</span>);
+    <span class="kw">let </span>plugins = merge_plugins_map(<span class="kw-2">&amp;</span>base.plugins, <span class="kw-2">&amp;</span>extended.plugins);
 
-    <span class="ident">Plugins</span> { <span class="ident">aliases</span>, <span class="ident">plugins</span> }
+    Plugins { aliases, plugins }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">merge_plugins_config</span>(
-    <span class="ident">base</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Plugins</span><span class="op">&gt;</span>,
-    <span class="ident">extended</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Plugins</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Plugins</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">base</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">base_plugins</span>) =&gt; <span class="kw">match</span> <span class="ident">extended</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">extended_plugins</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">plugins</span> <span class="op">=</span> <span class="ident">merge_plugins_config_impl</span>(<span class="ident">base_plugins</span>, <span class="ident">extended_plugins</span>);
-                <span class="prelude-val">Some</span>(<span class="ident">plugins</span>)
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>merge_plugins_config(
+    base: <span class="prelude-ty">Option</span>&lt;Plugins&gt;,
+    extended: <span class="prelude-ty">Option</span>&lt;Plugins&gt;,
+) -&gt; <span class="prelude-ty">Option</span>&lt;Plugins&gt; {
+    <span class="kw">match </span>base {
+        <span class="prelude-val">Some</span>(base_plugins) =&gt; <span class="kw">match </span>extended {
+            <span class="prelude-val">Some</span>(extended_plugins) =&gt; {
+                <span class="kw">let </span>plugins = merge_plugins_config_impl(base_plugins, extended_plugins);
+                <span class="prelude-val">Some</span>(plugins)
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">base_plugins</span>),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(base_plugins),
         },
-        <span class="prelude-val">None</span> =&gt; <span class="ident">extended</span>,
+        <span class="prelude-val">None </span>=&gt; extended,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

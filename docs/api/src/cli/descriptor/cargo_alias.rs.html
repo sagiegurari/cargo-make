@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/descriptor/cargo_alias.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cargo_alias.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/descriptor/cargo_alias.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cargo_alias.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -63,70 +63,70 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # cargo_alias</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Dynamically creates tasks based on alias information in the cargo config.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # cargo_alias
+//!
+//! Dynamically creates tasks based on alias information in the cargo config.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;cargo_alias_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">cargo_alias_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;cargo_alias_test.rs&quot;</span>]
+</span><span class="kw">mod </span>cargo_alias_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::io</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">InstallCrate</span>, <span class="ident">Task</span>};
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
+<span class="kw">use </span><span class="kw">crate</span>::io;
+<span class="kw">use </span><span class="kw">crate</span>::types::{InstallCrate, Task};
+<span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::path::Path;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span>
-<span class="kw">enum</span> <span class="ident">AliasValue</span> {
-    <span class="ident">String</span>(<span class="ident">String</span>),
-    <span class="ident">List</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+#[serde(untagged)]
+</span><span class="kw">enum </span>AliasValue {
+    String(String),
+    List(Vec&lt;String&gt;),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">CargoConfig</span> {
-    <span class="ident">alias</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">AliasValue</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+</span><span class="kw">struct </span>CargoConfig {
+    alias: <span class="prelude-ty">Option</span>&lt;HashMap&lt;String, AliasValue&gt;&gt;,
 }
 
-<span class="kw">fn</span> <span class="ident">load_from_file</span>(<span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Task</span>)<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">file_path</span> <span class="op">=</span> <span class="ident">Path::new</span>(<span class="ident">file</span>);
+<span class="kw">fn </span>load_from_file(file: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;(String, Task)&gt; {
+    <span class="kw">let </span>file_path = Path::new(file);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tasks</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="kw">if</span> <span class="ident">file_path</span>.<span class="ident">exists</span>() {
-        <span class="kw">if</span> <span class="ident">file_path</span>.<span class="ident">is_file</span>() {
-            <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">io::read_text_file</span>(<span class="kw-2">&amp;</span><span class="ident">file_path</span>.<span class="ident">to_path_buf</span>());
+    <span class="kw">let </span><span class="kw-2">mut </span>tasks = <span class="macro">vec!</span>[];
+    <span class="kw">if </span>file_path.exists() {
+        <span class="kw">if </span>file_path.is_file() {
+            <span class="kw">let </span>text = io::read_text_file(<span class="kw-2">&amp;</span>file_path.to_path_buf());
 
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">text</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">let</span> <span class="ident">cargo_config</span>: <span class="ident">CargoConfig</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">toml::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">text</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-                    <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; {
-                        <span class="macro">warn!</span>(<span class="string">&quot;Unable to parse cargo config file, {}&quot;</span>, <span class="ident">error</span>);
-                        <span class="ident">CargoConfig</span> { <span class="ident">alias</span>: <span class="prelude-val">None</span> }
+            <span class="kw">if </span>!text.is_empty() {
+                <span class="kw">let </span>cargo_config: CargoConfig = <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>text) {
+                    <span class="prelude-val">Ok</span>(value) =&gt; value,
+                    <span class="prelude-val">Err</span>(error) =&gt; {
+                        <span class="macro">warn!</span>(<span class="string">&quot;Unable to parse cargo config file, {}&quot;</span>, error);
+                        CargoConfig { alias: <span class="prelude-val">None </span>}
                     }
                 };
 
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">aliases</span>) <span class="op">=</span> <span class="ident">cargo_config</span>.<span class="ident">alias</span> {
-                    <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">_value</span>) <span class="kw">in</span> <span class="ident">aliases</span> {
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">Task::new</span>();
-                        <span class="ident">task</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;cargo&quot;</span>.<span class="ident">to_string</span>());
-                        <span class="ident">task</span>.<span class="ident">args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="ident">key</span>.<span class="ident">to_string</span>()]);
-                        <span class="ident">task</span>.<span class="ident">install_crate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">InstallCrate::Enabled</span>(<span class="bool-val">false</span>));
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(aliases) = cargo_config.alias {
+                    <span class="kw">for </span>(key, _value) <span class="kw">in </span>aliases {
+                        <span class="kw">let </span><span class="kw-2">mut </span>task = Task::new();
+                        task.command = <span class="prelude-val">Some</span>(<span class="string">&quot;cargo&quot;</span>.to_string());
+                        task.args = <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[key.to_string()]);
+                        task.install_crate = <span class="prelude-val">Some</span>(InstallCrate::Enabled(<span class="bool-val">false</span>));
 
-                        <span class="ident">tasks</span>.<span class="ident">push</span>((<span class="ident">key</span>, <span class="ident">task</span>));
+                        tasks.push((key, task));
                     }
                 }
             }
-        } <span class="kw">else</span> {
-            <span class="macro">error!</span>(<span class="string">&quot;Invalid config file path provided: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>);
+        } <span class="kw">else </span>{
+            <span class="macro">error!</span>(<span class="string">&quot;Invalid config file path provided: {}&quot;</span>, <span class="kw-2">&amp;</span>file);
         }
     }
 
-    <span class="ident">tasks</span>
+    tasks
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">load</span>() -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Task</span>)<span class="op">&gt;</span> {
-    <span class="ident">load_from_file</span>(<span class="string">&quot;./.cargo/config.toml&quot;</span>)
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load() -&gt; Vec&lt;(String, Task)&gt; {
+    load_from_file(<span class="string">&quot;./.cargo/config.toml&quot;</span>)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

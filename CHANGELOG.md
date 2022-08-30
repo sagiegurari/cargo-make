@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.0
+### v0.36.0 (2022-08-30)
 
 * \[**backward compatibility break**\] Enhancement: Environment variables now support the default syntax: ${name:default}
 * \[**backward compatibility break**\] Enhancement: Environment variables definition order is now more flexible to support variable to variable dependency more easily #688 (thanks @indietyp)

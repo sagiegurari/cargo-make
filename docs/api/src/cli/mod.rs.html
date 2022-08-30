@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -225,232 +225,232 @@
 <span id="225">225</span>
 <span id="226">226</span>
 <span id="227">227</span>
-</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">deny</span>(
-    <span class="ident">absolute_paths_not_starting_with_crate</span>,
-    <span class="ident">ambiguous_associated_items</span>,
-    <span class="ident">anonymous_parameters</span>,
-    <span class="ident">arithmetic_overflow</span>,
-    <span class="ident">array_into_iter</span>,
-    <span class="ident">asm_sub_register</span>,
-    <span class="ident">bad_asm_style</span>,
-    <span class="ident">bindings_with_variant_name</span>,
-    <span class="ident">break_with_label_and_loop</span>,
-    <span class="ident">cenum_impl_drop_cast</span>,
-    <span class="ident">clashing_extern_declarations</span>,
-    <span class="ident">coherence_leak_check</span>,
-    <span class="ident">conflicting_repr_hints</span>,
-    <span class="ident">confusable_idents</span>,
-    <span class="ident">const_err</span>,
-    <span class="ident">const_evaluatable_unchecked</span>,
-    <span class="ident">const_item_mutation</span>,
-    <span class="ident">dead_code</span>,
-    <span class="ident">deprecated</span>,
-    <span class="ident">deprecated_cfg_attr_crate_type_name</span>,
-    <span class="ident">deprecated_in_future</span>,
-    <span class="ident">deprecated_where_clause_location</span>,
-    <span class="ident">deref_into_dyn_supertrait</span>,
-    <span class="ident">deref_nullptr</span>,
-    <span class="ident">drop_bounds</span>,
-    <span class="ident">duplicate_macro_attributes</span>,
-    <span class="ident">dyn_drop</span>,
-    <span class="ident">ellipsis_inclusive_range_patterns</span>,
-    <span class="ident">enum_intrinsics_non_enums</span>,
-    <span class="ident">explicit_outlives_requirements</span>,
-    <span class="ident">exported_private_dependencies</span>,
-    <span class="ident">forbidden_lint_groups</span>,
-    <span class="ident">function_item_references</span>,
-    <span class="ident">ill_formed_attribute_input</span>,
-    <span class="ident">illegal_floating_point_literal_pattern</span>,
-    <span class="ident">improper_ctypes</span>,
-    <span class="ident">improper_ctypes_definitions</span>,
-    <span class="ident">incomplete_features</span>,
-    <span class="ident">incomplete_include</span>,
-    <span class="ident">indirect_structural_match</span>,
-    <span class="ident">ineffective_unstable_trait_impl</span>,
-    <span class="ident">inline_no_sanitize</span>,
-    <span class="ident">invalid_atomic_ordering</span>,
-    <span class="ident">invalid_doc_attributes</span>,
-    <span class="ident">invalid_type_param_default</span>,
-    <span class="ident">invalid_value</span>,
-    <span class="ident">irrefutable_let_patterns</span>,
-    <span class="ident">keyword_idents</span>,
-    <span class="ident">large_assignments</span>,
-    <span class="ident">late_bound_lifetime_arguments</span>,
-    <span class="ident">legacy_derive_helpers</span>,
-    <span class="ident">macro_expanded_macro_exports_accessed_by_absolute_paths</span>,
-    <span class="ident">meta_variable_misuse</span>,
-    <span class="ident">missing_abi</span>,
-    <span class="ident">missing_copy_implementations</span>,
-    <span class="ident">missing_docs</span>,
-    <span class="ident">missing_fragment_specifier</span>,
-    <span class="ident">mixed_script_confusables</span>,
-    <span class="ident">mutable_transmutes</span>,
-    <span class="ident">named_arguments_used_positionally</span>,
-    <span class="ident">named_asm_labels</span>,
-    <span class="ident">no_mangle_const_items</span>,
-    <span class="ident">no_mangle_generic_items</span>,
-    <span class="ident">non_ascii_idents</span>,
-    <span class="ident">non_camel_case_types</span>,
-    <span class="ident">non_fmt_panics</span>,
-    <span class="ident">non_shorthand_field_patterns</span>,
-    <span class="ident">non_snake_case</span>,
-    <span class="ident">non_upper_case_globals</span>,
-    <span class="ident">nontrivial_structural_match</span>,
-    <span class="ident">noop_method_call</span>,
-    <span class="ident">order_dependent_trait_objects</span>,
-    <span class="ident">overflowing_literals</span>,
-    <span class="ident">overlapping_range_endpoints</span>,
-    <span class="ident">path_statements</span>,
-    <span class="ident">patterns_in_fns_without_body</span>,
-    <span class="ident">pointer_structural_match</span>,
-    <span class="ident">private_in_public</span>,
-    <span class="ident">proc_macro_back_compat</span>,
-    <span class="ident">proc_macro_derive_resolution_fallback</span>,
-    <span class="ident">pub_use_of_private_extern_crate</span>,
-    <span class="ident">redundant_semicolons</span>,
-    <span class="ident">repr_transparent_external_private_fields</span>,
-    <span class="ident">rust_2021_incompatible_closure_captures</span>,
-    <span class="ident">rust_2021_incompatible_or_patterns</span>,
-    <span class="ident">rust_2021_prefixes_incompatible_syntax</span>,
-    <span class="ident">rust_2021_prelude_collisions</span>,
-    <span class="ident">semicolon_in_expressions_from_macros</span>,
-    <span class="ident">soft_unstable</span>,
-    <span class="ident">stable_features</span>,
-    <span class="ident">suspicious_auto_trait_impls</span>,
-    <span class="ident">temporary_cstring_as_ptr</span>,
-    <span class="ident">text_direction_codepoint_in_comment</span>,
-    <span class="ident">text_direction_codepoint_in_literal</span>,
-    <span class="ident">trivial_bounds</span>,
-    <span class="ident">trivial_casts</span>,
-    <span class="ident">trivial_numeric_casts</span>,
-    <span class="ident">type_alias_bounds</span>,
-    <span class="ident">tyvar_behind_raw_pointer</span>,
-    <span class="ident">unaligned_references</span>,
-    <span class="ident">uncommon_codepoints</span>,
-    <span class="ident">unconditional_panic</span>,
-    <span class="ident">unconditional_recursion</span>,
-    <span class="ident">unexpected_cfgs</span>,
-    <span class="ident">uninhabited_static</span>,
-    <span class="ident">unknown_crate_types</span>,
-    <span class="ident">unnameable_test_items</span>,
-    <span class="ident">unreachable_code</span>,
-    <span class="ident">unreachable_patterns</span>,
-    <span class="ident">unreachable_pub</span>,
-    <span class="ident">unsafe_code</span>,
-    <span class="ident">unsafe_op_in_unsafe_fn</span>,
-    <span class="ident">unstable_features</span>,
-    <span class="ident">unstable_name_collisions</span>,
-    <span class="ident">unsupported_calling_conventions</span>,
-    <span class="ident">unused_allocation</span>,
-    <span class="ident">unused_assignments</span>,
-    <span class="ident">unused_assignments</span>,
-    <span class="ident">unused_attributes</span>,
-    <span class="ident">unused_braces</span>,
-    <span class="ident">unused_comparisons</span>,
-    <span class="ident">unused_crate_dependencies</span>,
-    <span class="ident">unused_doc_comments</span>,
-    <span class="ident">unused_extern_crates</span>,
-    <span class="ident">unused_features</span>,
-    <span class="ident">unused_import_braces</span>,
-    <span class="ident">unused_imports</span>,
-    <span class="ident">unused_labels</span>,
-    <span class="ident">unused_lifetimes</span>,
-    <span class="ident">unused_macro_rules</span>,
-    <span class="ident">unused_macros</span>,
-    <span class="ident">unused_must_use</span>,
-    <span class="ident">unused_mut</span>,
-    <span class="ident">unused_parens</span>,
-    <span class="ident">unused_qualifications</span>,
-    <span class="ident">unused_unsafe</span>,
-    <span class="ident">unused_variables</span>,
-    <span class="ident">useless_deprecated</span>,
-    <span class="ident">where_clauses_object_safety</span>,
-    <span class="ident">while_true</span>
-)]</span>
-<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">macro_use_extern_crate</span>, <span class="ident">unknown_lints</span>)]</span>
-<span class="attribute">#![<span class="ident">allow</span>(
-    <span class="ident">bare_trait_objects</span>,
-    <span class="ident">box_pointers</span>,
-    <span class="ident">elided_lifetimes_in_paths</span>,
-    <span class="ident">missing_debug_implementations</span>,
-    <span class="ident">single_use_lifetimes</span>,
-    <span class="ident">unused_results</span>,
-    <span class="ident">variant_size_differences</span>,
-    <span class="ident">warnings</span>,
-    <span class="ident">renamed_and_removed_lints</span>
-)]</span>
+</pre><pre class="rust"><code><span class="attribute">#![deny(
+    absolute_paths_not_starting_with_crate,
+    ambiguous_associated_items,
+    anonymous_parameters,
+    arithmetic_overflow,
+    array_into_iter,
+    asm_sub_register,
+    bad_asm_style,
+    bindings_with_variant_name,
+    break_with_label_and_loop,
+    cenum_impl_drop_cast,
+    clashing_extern_declarations,
+    coherence_leak_check,
+    conflicting_repr_hints,
+    confusable_idents,
+    const_err,
+    const_evaluatable_unchecked,
+    const_item_mutation,
+    dead_code,
+    deprecated,
+    deprecated_cfg_attr_crate_type_name,
+    deprecated_in_future,
+    deprecated_where_clause_location,
+    deref_into_dyn_supertrait,
+    deref_nullptr,
+    drop_bounds,
+    duplicate_macro_attributes,
+    dyn_drop,
+    ellipsis_inclusive_range_patterns,
+    enum_intrinsics_non_enums,
+    explicit_outlives_requirements,
+    exported_private_dependencies,
+    forbidden_lint_groups,
+    function_item_references,
+    ill_formed_attribute_input,
+    illegal_floating_point_literal_pattern,
+    improper_ctypes,
+    improper_ctypes_definitions,
+    incomplete_features,
+    incomplete_include,
+    indirect_structural_match,
+    ineffective_unstable_trait_impl,
+    inline_no_sanitize,
+    invalid_atomic_ordering,
+    invalid_doc_attributes,
+    invalid_type_param_default,
+    invalid_value,
+    irrefutable_let_patterns,
+    keyword_idents,
+    large_assignments,
+    late_bound_lifetime_arguments,
+    legacy_derive_helpers,
+    macro_expanded_macro_exports_accessed_by_absolute_paths,
+    meta_variable_misuse,
+    missing_abi,
+    missing_copy_implementations,
+    missing_docs,
+    missing_fragment_specifier,
+    mixed_script_confusables,
+    mutable_transmutes,
+    named_arguments_used_positionally,
+    named_asm_labels,
+    no_mangle_const_items,
+    no_mangle_generic_items,
+    non_ascii_idents,
+    non_camel_case_types,
+    non_fmt_panics,
+    non_shorthand_field_patterns,
+    non_snake_case,
+    non_upper_case_globals,
+    nontrivial_structural_match,
+    noop_method_call,
+    order_dependent_trait_objects,
+    overflowing_literals,
+    overlapping_range_endpoints,
+    path_statements,
+    patterns_in_fns_without_body,
+    pointer_structural_match,
+    private_in_public,
+    proc_macro_back_compat,
+    proc_macro_derive_resolution_fallback,
+    pub_use_of_private_extern_crate,
+    redundant_semicolons,
+    repr_transparent_external_private_fields,
+    rust_2021_incompatible_closure_captures,
+    rust_2021_incompatible_or_patterns,
+    rust_2021_prefixes_incompatible_syntax,
+    rust_2021_prelude_collisions,
+    semicolon_in_expressions_from_macros,
+    soft_unstable,
+    stable_features,
+    suspicious_auto_trait_impls,
+    temporary_cstring_as_ptr,
+    text_direction_codepoint_in_comment,
+    text_direction_codepoint_in_literal,
+    trivial_bounds,
+    trivial_casts,
+    trivial_numeric_casts,
+    type_alias_bounds,
+    tyvar_behind_raw_pointer,
+    unaligned_references,
+    uncommon_codepoints,
+    unconditional_panic,
+    unconditional_recursion,
+    unexpected_cfgs,
+    uninhabited_static,
+    unknown_crate_types,
+    unnameable_test_items,
+    unreachable_code,
+    unreachable_patterns,
+    unreachable_pub,
+    unsafe_code,
+    unsafe_op_in_unsafe_fn,
+    unstable_features,
+    unstable_name_collisions,
+    unsupported_calling_conventions,
+    unused_allocation,
+    unused_assignments,
+    unused_assignments,
+    unused_attributes,
+    unused_braces,
+    unused_comparisons,
+    unused_crate_dependencies,
+    unused_doc_comments,
+    unused_extern_crates,
+    unused_features,
+    unused_import_braces,
+    unused_imports,
+    unused_labels,
+    unused_lifetimes,
+    unused_macro_rules,
+    unused_macros,
+    unused_must_use,
+    unused_mut,
+    unused_parens,
+    unused_qualifications,
+    unused_unsafe,
+    unused_variables,
+    useless_deprecated,
+    where_clauses_object_safety,
+    while_true
+)]
+#![warn(macro_use_extern_crate, unknown_lints)]
+#![allow(
+    bare_trait_objects,
+    box_pointers,
+    elided_lifetimes_in_paths,
+    missing_debug_implementations,
+    single_use_lifetimes,
+    unused_results,
+    variant_size_differences,
+    warnings,
+    renamed_and_removed_lints
+)]
 
-<span class="doccomment">//! # cargo-make</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Rust task runner and build tool.&lt;br&gt;</span>
-<span class="doccomment">//! The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.&lt;br&gt;</span>
-<span class="doccomment">//! A task is a command or a script to execute.&lt;br&gt;</span>
-<span class="doccomment">//! Tasks can have dependencies which are also tasks that will be executed before the task itself.&lt;br&gt;</span>
-<span class="doccomment">//! With a simple toml based configuration file, you can define a multi platform build script that can run build, test,</span>
-<span class="doccomment">//! documentation generation, bench tests execution, security validations and more by running a single command.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Installation</span>
-<span class="doccomment">//! In order to install, just run the following command</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```sh</span>
-<span class="doccomment">//! cargo install cargo-make</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This will install cargo-make in your ~/.cargo/bin.&lt;br&gt;</span>
-<span class="doccomment">//! Make sure to add ~/.cargo/bin directory to your PATH variable.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Contributing</span>
-<span class="doccomment">//! See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # License</span>
-<span class="doccomment">//! Developed by Sagie Gur-Ari and licensed under the</span>
-<span class="doccomment">//! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//! # cargo-make
+//!
+//! Rust task runner and build tool.&lt;br&gt;
+//! The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.&lt;br&gt;
+//! A task is a command or a script to execute.&lt;br&gt;
+//! Tasks can have dependencies which are also tasks that will be executed before the task itself.&lt;br&gt;
+//! With a simple toml based configuration file, you can define a multi platform build script that can run build, test,
+//! documentation generation, bench tests execution, security validations and more by running a single command.
+//!
+//! ## Installation
+//! In order to install, just run the following command
+//!
+//! ```sh
+//! cargo install cargo-make
+//! ```
+//!
+//! This will install cargo-make in your ~/.cargo/bin.&lt;br&gt;
+//! Make sure to add ~/.cargo/bin directory to your PATH variable.
+//!
+//! # Contributing
+//! See [contributing guide](https://github.com/sagiegurari/cargo-make/blob/master/.github/CONTRIBUTING.md)
+//!
+//! # License
+//! Developed by Sagie Gur-Ari and licensed under the
+//! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
+//!
 
-<span class="comment">// Dependencies used in the binary `makers`:</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
-<span class="kw">use</span> <span class="ident">ansi_term</span> <span class="kw">as</span> <span class="kw">_</span>;
+</span><span class="comment">// Dependencies used in the binary `makers`:
+</span><span class="attribute">#[cfg(windows)]
+</span><span class="kw">use </span>ansi_term <span class="kw">as _</span>;
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
+<span class="attribute">#[macro_use]
+</span><span class="kw">extern crate </span>log;
+<span class="attribute">#[macro_use]
+</span><span class="kw">extern crate </span>serde_derive;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>test;
 
-<span class="comment">// make types public for docs</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span>;
+<span class="comment">// make types public for docs
+</span><span class="kw">pub mod </span>types;
 
-<span class="kw">mod</span> <span class="ident">cache</span>;
-<span class="kw">mod</span> <span class="ident">cli</span>;
-<span class="kw">mod</span> <span class="ident">cli_commands</span>;
-<span class="kw">mod</span> <span class="ident">cli_parser</span>;
-<span class="kw">mod</span> <span class="ident">command</span>;
-<span class="kw">mod</span> <span class="ident">condition</span>;
-<span class="kw">mod</span> <span class="ident">config</span>;
-<span class="kw">mod</span> <span class="ident">descriptor</span>;
-<span class="kw">mod</span> <span class="ident">environment</span>;
-<span class="kw">mod</span> <span class="ident">execution_plan</span>;
-<span class="kw">mod</span> <span class="ident">functions</span>;
-<span class="kw">mod</span> <span class="ident">installer</span>;
-<span class="kw">mod</span> <span class="ident">io</span>;
-<span class="kw">mod</span> <span class="ident">legacy</span>;
-<span class="kw">mod</span> <span class="ident">logger</span>;
-<span class="kw">mod</span> <span class="ident">plugin</span>;
-<span class="kw">mod</span> <span class="ident">profile</span>;
-<span class="kw">mod</span> <span class="ident">proxy_task</span>;
-<span class="kw">mod</span> <span class="ident">recursion_level</span>;
-<span class="kw">mod</span> <span class="ident">runner</span>;
-<span class="kw">mod</span> <span class="ident">scriptengine</span>;
-<span class="kw">mod</span> <span class="ident">storage</span>;
-<span class="kw">mod</span> <span class="ident">time_summary</span>;
-<span class="kw">mod</span> <span class="ident">toolchain</span>;
-<span class="kw">mod</span> <span class="ident">version</span>;
+<span class="kw">mod </span>cache;
+<span class="kw">mod </span>cli;
+<span class="kw">mod </span>cli_commands;
+<span class="kw">mod </span>cli_parser;
+<span class="kw">mod </span>command;
+<span class="kw">mod </span>condition;
+<span class="kw">mod </span>config;
+<span class="kw">mod </span>descriptor;
+<span class="kw">mod </span>environment;
+<span class="kw">mod </span>execution_plan;
+<span class="kw">mod </span>functions;
+<span class="kw">mod </span>installer;
+<span class="kw">mod </span>io;
+<span class="kw">mod </span>legacy;
+<span class="kw">mod </span>logger;
+<span class="kw">mod </span>plugin;
+<span class="kw">mod </span>profile;
+<span class="kw">mod </span>proxy_task;
+<span class="kw">mod </span>recursion_level;
+<span class="kw">mod </span>runner;
+<span class="kw">mod </span>scriptengine;
+<span class="kw">mod </span>storage;
+<span class="kw">mod </span>time_summary;
+<span class="kw">mod </span>toolchain;
+<span class="kw">mod </span>version;
 
-<span class="doccomment">/// Handles the command line arguments and executes the runner.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">run_cli</span>(<span class="ident">command_name</span>: <span class="ident">String</span>, <span class="ident">sub_command</span>: <span class="ident">bool</span>) {
-    <span class="ident">cli::run_cli</span>(<span class="ident">command_name</span>, <span class="ident">sub_command</span>)
+<span class="doccomment">/// Handles the command line arguments and executes the runner.
+</span><span class="kw">pub fn </span>run_cli(command_name: String, sub_command: bool) {
+    cli::run_cli(command_name, sub_command)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

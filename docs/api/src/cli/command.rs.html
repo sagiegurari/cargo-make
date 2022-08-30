@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/command.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>command.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/command.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>command.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -301,308 +301,308 @@
 <span id="301">301</span>
 <span id="302">302</span>
 <span id="303">303</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # command</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Runs task commands/scripts.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # command
+//!
+//! Runs task commands/scripts.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;command_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">command_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;command_test.rs&quot;</span>]
+</span><span class="kw">mod </span>command_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::toolchain</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">CommandSpec</span>, <span class="ident">Step</span>, <span class="ident">UnstableFeature</span>};
-<span class="kw">use</span> <span class="ident">envmnt</span>;
-<span class="kw">use</span> <span class="ident">run_script</span>;
-<span class="kw">use</span> <span class="ident">run_script</span>::{<span class="ident">IoOptions</span>, <span class="ident">ScriptError</span>, <span class="ident">ScriptOptions</span>};
-<span class="kw">use</span> <span class="ident">std::io</span>;
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">Error</span>, <span class="ident">ErrorKind</span>, <span class="ident">Read</span>};
-<span class="kw">use</span> <span class="ident">std::process</span>::{<span class="ident">Command</span>, <span class="ident">ExitStatus</span>, <span class="ident">Output</span>, <span class="ident">Stdio</span>};
-<span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicU32</span>, <span class="ident">Ordering</span>};
-<span class="kw">use</span> <span class="ident">std::sync::Once</span>;
+<span class="kw">use </span><span class="kw">crate</span>::logger;
+<span class="kw">use </span><span class="kw">crate</span>::toolchain;
+<span class="kw">use </span><span class="kw">crate</span>::types::{CommandSpec, Step, UnstableFeature};
+<span class="kw">use </span>envmnt;
+<span class="kw">use </span>run_script;
+<span class="kw">use </span>run_script::{IoOptions, ScriptError, ScriptOptions};
+<span class="kw">use </span>std::io;
+<span class="kw">use </span>std::io::{Error, ErrorKind, Read};
+<span class="kw">use </span>std::process::{Command, ExitStatus, Output, Stdio};
+<span class="kw">use </span>std::sync::atomic::{AtomicU32, Ordering};
+<span class="kw">use </span>std::sync::Once;
 
-<span class="doccomment">/// Returns the exit code (-1 if no exit code found)</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code</span>(<span class="ident">exit_status</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ExitStatus</span>, <span class="ident">Error</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) -&gt; <span class="ident">i32</span> {
-    <span class="kw">match</span> <span class="ident">exit_status</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">code</span>) =&gt; {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">code</span>.<span class="ident">success</span>() {
-                <span class="kw">match</span> <span class="ident">code</span>.<span class="ident">code</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-                    <span class="prelude-val">None</span> =&gt; <span class="op">-</span><span class="number">1</span>,
+<span class="doccomment">/// Returns the exit code (-1 if no exit code found)
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_exit_code(exit_status: <span class="prelude-ty">Result</span>&lt;ExitStatus, Error&gt;, force: bool) -&gt; i32 {
+    <span class="kw">match </span>exit_status {
+        <span class="prelude-val">Ok</span>(code) =&gt; {
+            <span class="kw">if </span>!code.success() {
+                <span class="kw">match </span>code.code() {
+                    <span class="prelude-val">Some</span>(value) =&gt; value,
+                    <span class="prelude-val">None </span>=&gt; -<span class="number">1</span>,
                 }
-            } <span class="kw">else</span> {
-                <span class="number">0</span>
-            }
+            } <span class="kw">else </span>{
+                <span class="number">0
+            </span>}
         }
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> {
-                <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
+        <span class="prelude-val">Err</span>(error) =&gt; {
+            <span class="kw">if </span>!force {
+                <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, error);
             }
 
-            <span class="op">-</span><span class="number">1</span>
-        }
+            -<span class="number">1
+        </span>}
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_exit_code_from_output</span>(<span class="ident">output</span>: <span class="kw-2">&amp;</span><span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) -&gt; <span class="ident">i32</span> {
-    <span class="kw">match</span> <span class="ident">output</span> {
-        <span class="kw-2">&amp;</span><span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="ident">output_struct</span>) =&gt; <span class="ident">get_exit_code</span>(<span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>.<span class="ident">status</span>), <span class="ident">force</span>),
-        <span class="kw-2">&amp;</span><span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">error</span>) =&gt; {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> {
-                <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, <span class="ident">error</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_exit_code_from_output(output: <span class="kw-2">&amp;</span>io::Result&lt;Output&gt;, force: bool) -&gt; i32 {
+    <span class="kw">match </span>output {
+        <span class="kw-2">&amp;</span><span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>output_struct) =&gt; get_exit_code(<span class="prelude-val">Ok</span>(output_struct.status), force),
+        <span class="kw-2">&amp;</span><span class="prelude-val">Err</span>(<span class="kw-2">ref </span>error) =&gt; {
+            <span class="kw">if </span>!force {
+                <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, error: {:#?}&quot;</span>, error);
             }
 
-            <span class="op">-</span><span class="number">1</span>
-        }
+            -<span class="number">1
+        </span>}
     }
 }
 
-<span class="doccomment">/// Validates the exit code code and if not 0 or unable to validate it, panic.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">validate_exit_code</span>(<span class="ident">code</span>: <span class="ident">i32</span>) {
-    <span class="kw">if</span> <span class="ident">code</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> {
+<span class="doccomment">/// Validates the exit code code and if not 0 or unable to validate it, panic.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_exit_code(code: i32) {
+    <span class="kw">if </span>code == -<span class="number">1 </span>{
         <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, unable to extract exit code.&quot;</span>);
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">code</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-        <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, exit code: {}&quot;</span>, <span class="ident">code</span>);
+    } <span class="kw">else if </span>code != <span class="number">0 </span>{
+        <span class="macro">error!</span>(<span class="string">&quot;Error while executing command, exit code: {}&quot;</span>, code);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">is_silent</span>() -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger::get_log_level</span>();
-    <span class="ident">is_silent_for_level</span>(<span class="ident">log_level</span>)
+<span class="kw">fn </span>is_silent() -&gt; bool {
+    <span class="kw">let </span>log_level = logger::get_log_level();
+    is_silent_for_level(log_level)
 }
 
-<span class="kw">fn</span> <span class="ident">is_silent_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">logger::get_level</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
+<span class="kw">fn </span>is_silent_for_level(log_level: String) -&gt; bool {
+    <span class="kw">let </span>level = logger::get_level(<span class="kw-2">&amp;</span>log_level);
 
-    <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">logger::LogLevel::ERROR</span> =&gt; <span class="bool-val">true</span>,
-        <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">match </span>level {
+        logger::LogLevel::ERROR =&gt; <span class="bool-val">true</span>,
+        <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_print_commands_by_default</span>() -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger::get_log_level</span>();
+<span class="kw">fn </span>should_print_commands_by_default() -&gt; bool {
+    <span class="kw">let </span>log_level = logger::get_log_level();
 
-    <span class="kw">if</span> <span class="ident">should_print_commands_for_level</span>(<span class="ident">log_level</span>) {
-        <span class="bool-val">true</span>
-    } <span class="kw">else</span> {
-        <span class="comment">// if log level defaults to not printing the script commands</span>
-        <span class="comment">// we also check if we are running in a CI env.</span>
-        <span class="comment">// Users will not see the commands while CI builds will have the commands printed out.</span>
-        <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>)
+    <span class="kw">if </span>should_print_commands_for_level(log_level) {
+        <span class="bool-val">true
+    </span>} <span class="kw">else </span>{
+        <span class="comment">// if log level defaults to not printing the script commands
+        // we also check if we are running in a CI env.
+        // Users will not see the commands while CI builds will have the commands printed out.
+        </span>envmnt::is(<span class="string">&quot;CARGO_MAKE_CI&quot;</span>)
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_print_commands_for_level</span>(<span class="ident">log_level</span>: <span class="ident">String</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">level</span> <span class="op">=</span> <span class="ident">logger::get_level</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
+<span class="kw">fn </span>should_print_commands_for_level(log_level: String) -&gt; bool {
+    <span class="kw">let </span>level = logger::get_level(<span class="kw-2">&amp;</span>log_level);
 
-    <span class="kw">match</span> <span class="ident">level</span> {
-        <span class="ident">logger::LogLevel::VERBOSE</span> =&gt; <span class="bool-val">true</span>,
-        <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">match </span>level {
+        logger::LogLevel::VERBOSE =&gt; <span class="bool-val">true</span>,
+        <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
     }
 }
 
-<span class="doccomment">/// Runs the requested script text and returns its output.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_script_get_output</span>(
-    <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">capture_output</span>: <span class="ident">bool</span>,
-    <span class="ident">print_commands</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">i32</span>, <span class="ident">String</span>, <span class="ident">String</span>), <span class="ident">ScriptError</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">ScriptOptions::new</span>();
-    <span class="ident">options</span>.<span class="ident">runner</span> <span class="op">=</span> <span class="ident">script_runner</span>.<span class="ident">clone</span>();
-    <span class="ident">options</span>.<span class="ident">output_redirection</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">capture_output</span> {
-        <span class="ident">IoOptions::Pipe</span>
-    } <span class="kw">else</span> {
-        <span class="ident">IoOptions::Inherit</span>
+<span class="doccomment">/// Runs the requested script text and returns its output.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_script_get_output(
+    script_lines: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    capture_output: bool,
+    print_commands: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(i32, String, String), ScriptError&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>options = ScriptOptions::new();
+    options.runner = script_runner.clone();
+    options.output_redirection = <span class="kw">if </span>capture_output {
+        IoOptions::Pipe
+    } <span class="kw">else </span>{
+        IoOptions::Inherit
     };
-    <span class="ident">options</span>.<span class="ident">exit_on_error</span> <span class="op">=</span> <span class="bool-val">true</span>;
-    <span class="ident">options</span>.<span class="ident">print_commands</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">print_commands</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">bool_value</span>) =&gt; <span class="ident">bool_value</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="ident">should_print_commands_by_default</span>(),
-    };
-
-    <span class="kw">if</span> <span class="ident">is_silent</span>() {
-        <span class="ident">options</span>.<span class="ident">output_redirection</span> <span class="op">=</span> <span class="ident">IoOptions::Pipe</span>;
-        <span class="ident">options</span>.<span class="ident">print_commands</span> <span class="op">=</span> <span class="bool-val">false</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">capture_output</span> <span class="op">&amp;&amp;</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_SCRIPT_FORCE_PIPE_STDIN&quot;</span>) {
-        <span class="ident">options</span>.<span class="ident">input_redirection</span> <span class="op">=</span> <span class="ident">IoOptions::Pipe</span>;
-    }
-
-    <span class="ident">run_script::run</span>(<span class="ident">script_lines</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>).<span class="ident">as_str</span>(), <span class="ident">cli_arguments</span>, <span class="kw-2">&amp;</span><span class="ident">options</span>)
-}
-
-<span class="doccomment">/// Runs the requested script text and panics in case of any script error.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_script_get_exit_code</span>(
-    <span class="ident">script_lines</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">script_runner</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">cli_arguments</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">validate</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">i32</span> {
-    <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">run_script_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">script_lines</span>, <span class="ident">script_runner</span>, <span class="ident">cli_arguments</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>);
-
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">output</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>) =&gt; <span class="ident">output_struct</span>.<span class="number">0</span>,
-        <span class="kw">_</span> =&gt; <span class="op">-</span><span class="number">1</span>,
+    options.exit_on_error = <span class="bool-val">true</span>;
+    options.print_commands = <span class="kw">match </span>print_commands {
+        <span class="prelude-val">Some</span>(bool_value) =&gt; bool_value,
+        <span class="prelude-val">None </span>=&gt; should_print_commands_by_default(),
     };
 
-    <span class="kw">if</span> <span class="ident">validate</span> {
-        <span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
+    <span class="kw">if </span>is_silent() {
+        options.output_redirection = IoOptions::Pipe;
+        options.print_commands = <span class="bool-val">false</span>;
+    } <span class="kw">else if </span>!capture_output &amp;&amp; envmnt::is(<span class="string">&quot;CARGO_MAKE_SCRIPT_FORCE_PIPE_STDIN&quot;</span>) {
+        options.input_redirection = IoOptions::Pipe;
     }
 
-    <span class="ident">exit_code</span>
+    run_script::run(script_lines.join(<span class="string">&quot;\n&quot;</span>).as_str(), cli_arguments, <span class="kw-2">&amp;</span>options)
 }
 
-<span class="doccomment">/// Runs the requested command and return its output.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command_get_output</span>(
-    <span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">capture_output</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">ctrl_c_handling</span> <span class="op">=</span> <span class="ident">UnstableFeature::CtrlCHandling</span>.<span class="ident">is_env_set</span>();
+<span class="doccomment">/// Runs the requested script text and panics in case of any script error.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_script_get_exit_code(
+    script_lines: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    validate: bool,
+) -&gt; i32 {
+    <span class="kw">let </span>output = run_script_get_output(<span class="kw-2">&amp;</span>script_lines, script_runner, cli_arguments, <span class="bool-val">false</span>, <span class="prelude-val">None</span>);
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Execute Command: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">command</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>);
+    <span class="kw">let </span>exit_code = <span class="kw">match </span>output {
+        <span class="prelude-val">Ok</span>(output_struct) =&gt; output_struct.<span class="number">0</span>,
+        <span class="kw">_ </span>=&gt; -<span class="number">1</span>,
+    };
 
-    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args_vec</span>) =&gt; {
-            <span class="ident">command</span>.<span class="ident">args</span>(<span class="ident">args_vec</span>);
+    <span class="kw">if </span>validate {
+        validate_exit_code(exit_code);
+    }
+
+    exit_code
+}
+
+<span class="doccomment">/// Runs the requested command and return its output.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_command_get_output(
+    command_string: <span class="kw-2">&amp;</span>str,
+    args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    capture_output: bool,
+) -&gt; io::Result&lt;Output&gt; {
+    <span class="kw">let </span>ctrl_c_handling = UnstableFeature::CtrlCHandling.is_env_set();
+
+    <span class="macro">debug!</span>(<span class="string">&quot;Execute Command: {}&quot;</span>, <span class="kw-2">&amp;</span>command_string);
+    <span class="kw">let </span><span class="kw-2">mut </span>command = Command::new(<span class="kw-2">&amp;</span>command_string);
+
+    <span class="kw">match </span><span class="kw-2">*</span>args {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args_vec) =&gt; {
+            command.args(args_vec);
         }
-        <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;No command args defined.&quot;</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;No command args defined.&quot;</span>),
     };
 
-    <span class="ident">command</span>.<span class="ident">stdin</span>(<span class="ident">Stdio::inherit</span>());
+    command.stdin(Stdio::inherit());
 
-    <span class="kw">if</span> <span class="ident">ctrl_c_handling</span> {
-        <span class="kw">if</span> <span class="ident">capture_output</span> {
-            <span class="ident">command</span>.<span class="ident">stdout</span>(<span class="ident">Stdio::piped</span>()).<span class="ident">stderr</span>(<span class="ident">Stdio::piped</span>());
+    <span class="kw">if </span>ctrl_c_handling {
+        <span class="kw">if </span>capture_output {
+            command.stdout(Stdio::piped()).stderr(Stdio::piped());
         }
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">capture_output</span> {
-        <span class="ident">command</span>.<span class="ident">stdout</span>(<span class="ident">Stdio::inherit</span>()).<span class="ident">stderr</span>(<span class="ident">Stdio::inherit</span>());
+    } <span class="kw">else if </span>!capture_output {
+        command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
     }
 
-    <span class="macro">info!</span>(<span class="string">&quot;Execute Command: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">command</span>);
+    <span class="macro">info!</span>(<span class="string">&quot;Execute Command: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>command);
 
-    <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ctrl_c_handling</span> {
-        <span class="ident">spawn_command</span>(<span class="ident">command</span>)
-    } <span class="kw">else</span> {
-        <span class="ident">command</span>.<span class="ident">output</span>()
+    <span class="kw">let </span>output = <span class="kw">if </span>ctrl_c_handling {
+        spawn_command(command)
+    } <span class="kw">else </span>{
+        command.output()
     };
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Output: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">output</span>);
+    <span class="macro">debug!</span>(<span class="string">&quot;Output: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>output);
 
-    <span class="ident">output</span>
+    output
 }
 
-<span class="kw">fn</span> <span class="ident">spawn_command</span>(<span class="kw-2">mut</span> <span class="ident">command</span>: <span class="ident">Command</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">&gt;</span> {
-    <span class="kw">static</span> <span class="ident">CTRL_C_COUNT</span>: <span class="ident">AtomicU32</span> <span class="op">=</span> <span class="ident">AtomicU32::new</span>(<span class="number">0</span>);
-    <span class="kw">static</span> <span class="ident">SET_CTRL_C_HANDLER_ONCE</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once::new</span>();
+<span class="kw">fn </span>spawn_command(<span class="kw-2">mut </span>command: Command) -&gt; io::Result&lt;Output&gt; {
+    <span class="kw">static </span>CTRL_C_COUNT: AtomicU32 = AtomicU32::new(<span class="number">0</span>);
+    <span class="kw">static </span>SET_CTRL_C_HANDLER_ONCE: Once = Once::new();
 
-    <span class="ident">SET_CTRL_C_HANDLER_ONCE</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
-        <span class="ident">ctrlc::set_handler</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="ident">CTRL_C_COUNT</span>.<span class="ident">fetch_add</span>(<span class="number">1</span>, <span class="ident">Ordering::SeqCst</span>) <span class="op">==</span> <span class="number">0</span> {
+    SET_CTRL_C_HANDLER_ONCE.call_once(|| {
+        ctrlc::set_handler(|| {
+            <span class="kw">if </span>CTRL_C_COUNT.fetch_add(<span class="number">1</span>, Ordering::SeqCst) == <span class="number">0 </span>{
                 <span class="macro">info!</span>(<span class="string">&quot;Shutting down...&quot;</span>);
             }
         })
-        .<span class="ident">expect</span>(<span class="string">&quot;Failed to set Ctrl+C handler.&quot;</span>);
+        .expect(<span class="string">&quot;Failed to set Ctrl+C handler.&quot;</span>);
     });
 
-    <span class="kw">if</span> <span class="ident">CTRL_C_COUNT</span>.<span class="ident">load</span>(<span class="ident">Ordering::Relaxed</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">Error::new</span>(
-            <span class="ident">ErrorKind::Other</span>,
+    <span class="kw">if </span>CTRL_C_COUNT.load(Ordering::Relaxed) != <span class="number">0 </span>{
+        <span class="prelude-val">Err</span>(Error::new(
+            ErrorKind::Other,
             <span class="string">&quot;Shutting down - cannot run the command.&quot;</span>,
         ))<span class="question-mark">?</span>;
     }
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">process</span> <span class="op">=</span> <span class="ident">command</span>.<span class="ident">spawn</span>()<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">process_stdout</span> <span class="op">=</span> <span class="ident">process</span>.<span class="ident">stdout</span>.<span class="ident">take</span>();
-    <span class="kw">let</span> <span class="ident">process_stderr</span> <span class="op">=</span> <span class="ident">process</span>.<span class="ident">stderr</span>.<span class="ident">take</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>process = command.spawn()<span class="question-mark">?</span>;
+    <span class="kw">let </span>process_stdout = process.stdout.take();
+    <span class="kw">let </span>process_stderr = process.stderr.take();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">killing_process</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>killing_process = <span class="bool-val">false</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="kw">loop</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">killing_process</span> <span class="op">&amp;&amp;</span> <span class="ident">CTRL_C_COUNT</span>.<span class="ident">load</span>(<span class="ident">Ordering::Relaxed</span>) <span class="op">&gt;</span><span class="op">=</span> <span class="number">2</span> {
-            <span class="ident">process</span>.<span class="ident">kill</span>()<span class="question-mark">?</span>;
-            <span class="ident">killing_process</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="prelude-val">Ok</span>(<span class="kw">loop </span>{
+        <span class="kw">if </span>!killing_process &amp;&amp; CTRL_C_COUNT.load(Ordering::Relaxed) &gt;= <span class="number">2 </span>{
+            process.kill()<span class="question-mark">?</span>;
+            killing_process = <span class="bool-val">true</span>;
         }
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">status</span>) <span class="op">=</span> <span class="ident">process</span>.<span class="ident">try_wait</span>()<span class="question-mark">?</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">process_stdout</span>) <span class="op">=</span> <span class="ident">process_stdout</span> {
-                <span class="ident">process_stdout</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">stdout</span>)<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(status) = process.try_wait()<span class="question-mark">? </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>stdout = Vec::new();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>process_stdout) = process_stdout {
+                process_stdout.read_to_end(<span class="kw-2">&amp;mut </span>stdout)<span class="question-mark">?</span>;
             }
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stderr</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">process_stderr</span>) <span class="op">=</span> <span class="ident">process_stderr</span> {
-                <span class="ident">process_stderr</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;mut</span> <span class="ident">stderr</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>stderr = Vec::new();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>process_stderr) = process_stderr {
+                process_stderr.read_to_end(<span class="kw-2">&amp;mut </span>stderr)<span class="question-mark">?</span>;
             }
 
-            <span class="kw">break</span> <span class="ident">Output</span> {
-                <span class="ident">status</span>,
-                <span class="ident">stdout</span>,
-                <span class="ident">stderr</span>,
+            <span class="kw">break </span>Output {
+                status,
+                stdout,
+                stderr,
             };
         }
     })
 }
 
-<span class="doccomment">/// Runs the requested command and panics in case of any error.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command</span>(<span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">validate</span>: <span class="ident">bool</span>) -&gt; <span class="ident">i32</span> {
-    <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">run_command_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="bool-val">false</span>);
+<span class="doccomment">/// Runs the requested command and panics in case of any error.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_command(command_string: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, validate: bool) -&gt; i32 {
+    <span class="kw">let </span>output = run_command_get_output(<span class="kw-2">&amp;</span>command_string, <span class="kw-2">&amp;</span>args, <span class="bool-val">false</span>);
 
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">get_exit_code_from_output</span>(<span class="kw-2">&amp;</span><span class="ident">output</span>, <span class="op">!</span><span class="ident">validate</span>);
+    <span class="kw">let </span>exit_code = get_exit_code_from_output(<span class="kw-2">&amp;</span>output, !validate);
 
-    <span class="kw">if</span> <span class="ident">validate</span> {
-        <span class="ident">validate_exit_code</span>(<span class="ident">exit_code</span>);
+    <span class="kw">if </span>validate {
+        validate_exit_code(exit_code);
     }
 
-    <span class="ident">exit_code</span>
+    exit_code
 }
 
-<span class="doccomment">/// Runs the requested command and returns the stdout if exit code is valid.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_command_get_output_string</span>(
-    <span class="ident">command_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">args</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">run_command_get_output</span>(<span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="bool-val">true</span>);
+<span class="doccomment">/// Runs the requested command and returns the stdout if exit code is valid.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_command_get_output_string(
+    command_string: <span class="kw-2">&amp;</span>str,
+    args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">let </span>output = run_command_get_output(<span class="kw-2">&amp;</span>command_string, <span class="kw-2">&amp;</span>args, <span class="bool-val">true</span>);
 
-    <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">get_exit_code_from_output</span>(<span class="kw-2">&amp;</span><span class="ident">output</span>, <span class="bool-val">true</span>);
+    <span class="kw">let </span>exit_code = get_exit_code_from_output(<span class="kw-2">&amp;</span>output, <span class="bool-val">true</span>);
 
-    <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span> {
-        <span class="kw">match</span> <span class="ident">output</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">output_struct</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">String::from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">output_struct</span>.<span class="ident">stdout</span>).<span class="ident">into_owned</span>();
-                <span class="prelude-val">Some</span>(<span class="ident">stdout</span>)
+    <span class="kw">if </span>exit_code == <span class="number">0 </span>{
+        <span class="kw">match </span>output {
+            <span class="prelude-val">Ok</span>(output_struct) =&gt; {
+                <span class="kw">let </span>stdout = String::from_utf8_lossy(<span class="kw-2">&amp;</span>output_struct.stdout).into_owned();
+                <span class="prelude-val">Some</span>(stdout)
             }
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
         }
-    } <span class="kw">else</span> {
-        <span class="prelude-val">None</span>
-    }
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="doccomment">/// Runs the given task command.</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) {
-    <span class="kw">let</span> <span class="ident">validate</span> <span class="op">=</span> <span class="op">!</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">should_ignore_errors</span>();
+<span class="doccomment">/// Runs the given task command.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) {
+    <span class="kw">let </span>validate = !step.config.should_ignore_errors();
 
-    <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">command</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">command_string</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">command_spec</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">toolchain</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">toolchain</span>) =&gt; {
-                    <span class="ident">toolchain::wrap_command</span>(<span class="kw-2">&amp;</span><span class="ident">toolchain</span>, <span class="kw-2">&amp;</span><span class="ident">command_string</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>)
+    <span class="kw">match </span>step.config.command {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>command_string) =&gt; {
+            <span class="kw">let </span>command_spec = <span class="kw">match </span>step.config.toolchain {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>toolchain) =&gt; {
+                    toolchain::wrap_command(<span class="kw-2">&amp;</span>toolchain, <span class="kw-2">&amp;</span>command_string, <span class="kw-2">&amp;</span>step.config.args)
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="ident">CommandSpec</span> {
-                    <span class="ident">command</span>: <span class="ident">command_string</span>.<span class="ident">to_string</span>(),
-                    <span class="ident">args</span>: <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">args</span>.<span class="ident">clone</span>(),
+                <span class="prelude-val">None </span>=&gt; CommandSpec {
+                    command: command_string.to_string(),
+                    args: step.config.args.clone(),
                 },
             };
 
-            <span class="ident">run_command</span>(<span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">command</span>, <span class="kw-2">&amp;</span><span class="ident">command_spec</span>.<span class="ident">args</span>, <span class="ident">validate</span>);
+            run_command(<span class="kw-2">&amp;</span>command_spec.command, <span class="kw-2">&amp;</span>command_spec.args, validate);
         }
-        <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;No command defined.&quot;</span>),
+        <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;No command defined.&quot;</span>),
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

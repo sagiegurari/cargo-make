@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/version.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>version.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/version.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>version.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -255,162 +255,162 @@
 <span id="255">255</span>
 <span id="256">256</span>
 <span id="257">257</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # version</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Checks if the currently running version is the most up to date version and</span>
-<span class="doccomment">//! if not, it will print a notification message.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # version
+//!
+//! Checks if the currently running version is the most up to date version and
+//! if not, it will print a notification message.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;version_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">version_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;version_test.rs&quot;</span>]
+</span><span class="kw">mod </span>version_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cache</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::command</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">Cache</span>, <span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
-<span class="kw">use</span> <span class="ident">lenient_semver</span>;
-<span class="kw">use</span> <span class="ident">semver::Version</span>;
-<span class="kw">use</span> <span class="ident">std::process::Command</span>;
-<span class="kw">use</span> <span class="ident">std::time</span>::{<span class="ident">SystemTime</span>, <span class="ident">UNIX_EPOCH</span>};
+<span class="kw">use </span><span class="kw">crate</span>::cache;
+<span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::types::{Cache, CliArgs, GlobalConfig};
+<span class="kw">use </span>lenient_semver;
+<span class="kw">use </span>semver::Version;
+<span class="kw">use </span>std::process::Command;
+<span class="kw">use </span>std::time::{SystemTime, UNIX_EPOCH};
 
-<span class="kw">static</span> <span class="ident">VERSION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
+<span class="kw">static </span>VERSION: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
 
-<span class="kw">fn</span> <span class="ident">get_version_from_output</span>(<span class="ident">line</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">parts</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">split</span>(<span class="string">&#39; &#39;</span>).<span class="ident">collect</span>();
+<span class="kw">fn </span>get_version_from_output(line: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">let </span>parts: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = line.split(<span class="string">&#39; &#39;</span>).collect();
 
-    <span class="kw">if</span> <span class="ident">parts</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">3</span> {
-        <span class="kw">let</span> <span class="ident">version_part</span> <span class="op">=</span> <span class="ident">parts</span>[<span class="number">2</span>];
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">str::replace</span>(<span class="ident">version_part</span>, <span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">if </span>parts.len() &gt;= <span class="number">3 </span>{
+        <span class="kw">let </span>version_part = parts[<span class="number">2</span>];
+        <span class="kw">let </span>version = str::replace(version_part, <span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;&quot;</span>);
 
-        <span class="prelude-val">Some</span>(<span class="ident">version</span>)
-    } <span class="kw">else</span> {
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">Some</span>(version)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="kw">fn</span> <span class="ident">get_latest_version</span>() -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">Command::new</span>(<span class="string">&quot;cargo&quot;</span>)
-        .<span class="ident">arg</span>(<span class="string">&quot;search&quot;</span>)
-        .<span class="ident">arg</span>(<span class="string">&quot;cargo-make&quot;</span>)
-        .<span class="ident">arg</span>(<span class="string">&quot;--limit=1&quot;</span>)
-        .<span class="ident">output</span>();
+<span class="kw">fn </span>get_latest_version() -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">let </span>result = Command::new(<span class="string">&quot;cargo&quot;</span>)
+        .arg(<span class="string">&quot;search&quot;</span>)
+        .arg(<span class="string">&quot;cargo-make&quot;</span>)
+        .arg(<span class="string">&quot;--limit=1&quot;</span>)
+        .output();
 
-    <span class="kw">match</span> <span class="ident">result</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">output</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">exit_code</span> <span class="op">=</span> <span class="ident">command::get_exit_code</span>(<span class="prelude-val">Ok</span>(<span class="ident">output</span>.<span class="ident">status</span>), <span class="bool-val">false</span>);
-            <span class="kw">if</span> <span class="ident">exit_code</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">let</span> <span class="ident">stdout</span> <span class="op">=</span> <span class="ident">String::from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">output</span>.<span class="ident">stdout</span>);
-                <span class="kw">let</span> <span class="ident">lines</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">stdout</span>.<span class="ident">split</span>(<span class="string">&#39;\n&#39;</span>).<span class="ident">collect</span>();
+    <span class="kw">match </span>result {
+        <span class="prelude-val">Ok</span>(output) =&gt; {
+            <span class="kw">let </span>exit_code = command::get_exit_code(<span class="prelude-val">Ok</span>(output.status), <span class="bool-val">false</span>);
+            <span class="kw">if </span>exit_code == <span class="number">0 </span>{
+                <span class="kw">let </span>stdout = String::from_utf8_lossy(<span class="kw-2">&amp;</span>output.stdout);
+                <span class="kw">let </span>lines: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = stdout.split(<span class="string">&#39;\n&#39;</span>).collect();
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">line</span> <span class="kw">in</span> <span class="ident">lines</span> {
-                    <span class="ident">line</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">trim</span>();
+                <span class="kw">let </span><span class="kw-2">mut </span>output = <span class="prelude-val">None</span>;
+                <span class="kw">for </span><span class="kw-2">mut </span>line <span class="kw">in </span>lines {
+                    line = line.trim();
 
-                    <span class="macro">debug!</span>(<span class="string">&quot;Checking: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">line</span>);
+                    <span class="macro">debug!</span>(<span class="string">&quot;Checking: {}&quot;</span>, <span class="kw-2">&amp;</span>line);
 
-                    <span class="kw">if</span> <span class="ident">line</span>.<span class="ident">starts_with</span>(<span class="string">&quot;cargo-make = &quot;</span>) {
-                        <span class="ident">output</span> <span class="op">=</span> <span class="ident">get_version_from_output</span>(<span class="ident">line</span>);
+                    <span class="kw">if </span>line.starts_with(<span class="string">&quot;cargo-make = &quot;</span>) {
+                        output = get_version_from_output(line);
 
                         <span class="kw">break</span>;
                     }
                 }
 
-                <span class="ident">output</span>
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            }
+                output
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
-        <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">version_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">allow_partial_version_string</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Version</span>, ()<span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">Version::parse</span>(<span class="ident">version_string</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">version</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">version</span>),
+<span class="kw">fn </span>parse(version_string: <span class="kw-2">&amp;</span>str, allow_partial_version_string: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Version, ()&gt; {
+    <span class="kw">match </span>Version::parse(version_string) {
+        <span class="prelude-val">Ok</span>(version) =&gt; <span class="prelude-val">Ok</span>(version),
         <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">allow_partial_version_string</span> {
-                <span class="kw">match</span> <span class="ident">lenient_semver::parse</span>(<span class="ident">version_string</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">version</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">version</span>),
+            <span class="kw">if </span>allow_partial_version_string {
+                <span class="kw">match </span>lenient_semver::parse(version_string) {
+                    <span class="prelude-val">Ok</span>(version) =&gt; <span class="prelude-val">Ok</span>(version),
                     <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(()),
                 }
-            } <span class="kw">else</span> {
+            } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(())
             }
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_same</span>(
-    <span class="ident">version_string1</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">version_string2</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">allow_partial_version_string</span>: <span class="ident">bool</span>,
-    <span class="ident">default_result</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">version1</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">version_string1</span>, <span class="ident">allow_partial_version_string</span>);
-    <span class="kw">match</span> <span class="ident">version1</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">values1</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">version2</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">version_string2</span>, <span class="ident">allow_partial_version_string</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_same(
+    version_string1: <span class="kw-2">&amp;</span>str,
+    version_string2: <span class="kw-2">&amp;</span>str,
+    allow_partial_version_string: bool,
+    default_result: bool,
+) -&gt; bool {
+    <span class="kw">let </span>version1 = parse(version_string1, allow_partial_version_string);
+    <span class="kw">match </span>version1 {
+        <span class="prelude-val">Ok</span>(values1) =&gt; {
+            <span class="kw">let </span>version2 = parse(version_string2, allow_partial_version_string);
 
-            <span class="kw">match</span> <span class="ident">version2</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">values2</span>) =&gt; {
-                    <span class="ident">values1</span>.<span class="ident">major</span> <span class="op">==</span> <span class="ident">values2</span>.<span class="ident">major</span>
-                        <span class="op">&amp;&amp;</span> <span class="ident">values1</span>.<span class="ident">minor</span> <span class="op">==</span> <span class="ident">values2</span>.<span class="ident">minor</span>
-                        <span class="op">&amp;&amp;</span> <span class="ident">values1</span>.<span class="ident">patch</span> <span class="op">==</span> <span class="ident">values2</span>.<span class="ident">patch</span>
+            <span class="kw">match </span>version2 {
+                <span class="prelude-val">Ok</span>(values2) =&gt; {
+                    values1.major == values2.major
+                        &amp;&amp; values1.minor == values2.minor
+                        &amp;&amp; values1.patch == values2.patch
                 }
-                <span class="kw">_</span> =&gt; <span class="ident">default_result</span>,
+                <span class="kw">_ </span>=&gt; default_result,
             }
         }
-        <span class="kw">_</span> =&gt; <span class="ident">default_result</span>,
+        <span class="kw">_ </span>=&gt; default_result,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_newer</span>(
-    <span class="ident">old_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">new_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">allow_partial_version_string</span>: <span class="ident">bool</span>,
-    <span class="ident">default_result</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">old_version</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">old_string</span>, <span class="ident">allow_partial_version_string</span>);
-    <span class="kw">match</span> <span class="ident">old_version</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">old_values</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">new_version</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">new_string</span>, <span class="ident">allow_partial_version_string</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_newer(
+    old_string: <span class="kw-2">&amp;</span>str,
+    new_string: <span class="kw-2">&amp;</span>str,
+    allow_partial_version_string: bool,
+    default_result: bool,
+) -&gt; bool {
+    <span class="kw">let </span>old_version = parse(old_string, allow_partial_version_string);
+    <span class="kw">match </span>old_version {
+        <span class="prelude-val">Ok</span>(old_values) =&gt; {
+            <span class="kw">let </span>new_version = parse(new_string, allow_partial_version_string);
 
-            <span class="kw">match</span> <span class="ident">new_version</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">new_values</span>) =&gt; {
-                    <span class="kw">if</span> <span class="ident">new_values</span>.<span class="ident">major</span> <span class="op">&gt;</span> <span class="ident">old_values</span>.<span class="ident">major</span> {
-                        <span class="bool-val">true</span>
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">new_values</span>.<span class="ident">major</span> <span class="op">==</span> <span class="ident">old_values</span>.<span class="ident">major</span> {
-                        <span class="kw">if</span> <span class="ident">new_values</span>.<span class="ident">minor</span> <span class="op">&gt;</span> <span class="ident">old_values</span>.<span class="ident">minor</span> {
-                            <span class="bool-val">true</span>
-                        } <span class="kw">else</span> {
-                            <span class="ident">new_values</span>.<span class="ident">minor</span> <span class="op">==</span> <span class="ident">old_values</span>.<span class="ident">minor</span>
-                                <span class="op">&amp;&amp;</span> <span class="ident">new_values</span>.<span class="ident">patch</span> <span class="op">&gt;</span> <span class="ident">old_values</span>.<span class="ident">patch</span>
+            <span class="kw">match </span>new_version {
+                <span class="prelude-val">Ok</span>(new_values) =&gt; {
+                    <span class="kw">if </span>new_values.major &gt; old_values.major {
+                        <span class="bool-val">true
+                    </span>} <span class="kw">else if </span>new_values.major == old_values.major {
+                        <span class="kw">if </span>new_values.minor &gt; old_values.minor {
+                            <span class="bool-val">true
+                        </span>} <span class="kw">else </span>{
+                            new_values.minor == old_values.minor
+                                &amp;&amp; new_values.patch &gt; old_values.patch
                         }
-                    } <span class="kw">else</span> {
-                        <span class="bool-val">false</span>
-                    }
+                    } <span class="kw">else </span>{
+                        <span class="bool-val">false
+                    </span>}
                 }
-                <span class="kw">_</span> =&gt; <span class="ident">default_result</span>,
+                <span class="kw">_ </span>=&gt; default_result,
             }
         }
-        <span class="kw">_</span> =&gt; <span class="ident">default_result</span>,
+        <span class="kw">_ </span>=&gt; default_result,
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_newer_found</span>(<span class="ident">version_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
-    <span class="macro">debug!</span>(<span class="string">&quot;Checking Version: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">version_string</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_newer_found(version_string: <span class="kw-2">&amp;</span>str) -&gt; bool {
+    <span class="macro">debug!</span>(<span class="string">&quot;Checking Version: {}&quot;</span>, <span class="kw-2">&amp;</span>version_string);
 
-    <span class="ident">is_newer</span>(<span class="kw-2">&amp;</span><span class="ident">VERSION</span>, <span class="kw-2">&amp;</span><span class="ident">version_string</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>)
+    is_newer(<span class="kw-2">&amp;</span>VERSION, <span class="kw-2">&amp;</span>version_string, <span class="bool-val">false</span>, <span class="bool-val">false</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">print_notification</span>(<span class="ident">latest_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+<span class="kw">fn </span>print_notification(latest_string: <span class="kw-2">&amp;</span>str) {
     <span class="macro">warn!</span>(<span class="string">&quot;#####################################################################&quot;</span>);
     <span class="macro">warn!</span>(<span class="string">&quot;#                                                                   #&quot;</span>);
     <span class="macro">warn!</span>(<span class="string">&quot;#                                                                   #&quot;</span>);
     <span class="macro">warn!</span>(<span class="string">&quot;#                  NEW CARGO-MAKE VERSION FOUND!!!                  #&quot;</span>);
     <span class="macro">warn!</span>(
         <span class="string">&quot;#{:^67}#&quot;</span>,
-        <span class="macro">format!</span>(<span class="string">&quot;Current: {}, Latest: {}&quot;</span>, <span class="ident">VERSION</span>, <span class="ident">latest_string</span>)
+        <span class="macro">format!</span>(<span class="string">&quot;Current: {}, Latest: {}&quot;</span>, VERSION, latest_string)
     );
     <span class="macro">warn!</span>(<span class="string">&quot;#    Run &#39;cargo install --force cargo-make&#39; to get latest version   #&quot;</span>);
     <span class="macro">warn!</span>(<span class="string">&quot;#                                                                   #&quot;</span>);
@@ -418,99 +418,99 @@
     <span class="macro">warn!</span>(<span class="string">&quot;#####################################################################&quot;</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">get_now_as_seconds</span>() -&gt; <span class="ident">u64</span> {
-    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">SystemTime::now</span>();
-    <span class="kw">match</span> <span class="ident">now</span>.<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">duration</span>) =&gt; <span class="ident">duration</span>.<span class="ident">as_secs</span>(),
-        <span class="kw">_</span> =&gt; <span class="number">0</span>,
+<span class="kw">fn </span>get_now_as_seconds() -&gt; u64 {
+    <span class="kw">let </span>now = SystemTime::now();
+    <span class="kw">match </span>now.duration_since(UNIX_EPOCH) {
+        <span class="prelude-val">Ok</span>(duration) =&gt; duration.as_secs(),
+        <span class="kw">_ </span>=&gt; <span class="number">0</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">has_amount_of_days_passed_from_last_check</span>(<span class="ident">days</span>: <span class="ident">u64</span>, <span class="ident">last_check_seconds</span>: <span class="ident">u64</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">now_seconds</span> <span class="op">=</span> <span class="ident">get_now_as_seconds</span>();
-    <span class="kw">if</span> <span class="ident">now_seconds</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">days</span> <span class="op">&gt;</span> <span class="number">0</span> {
-        <span class="kw">if</span> <span class="ident">last_check_seconds</span> <span class="op">&gt;</span> <span class="ident">now_seconds</span> {
-            <span class="bool-val">false</span>
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">diff_seconds</span> <span class="op">=</span> <span class="ident">now_seconds</span> <span class="op">-</span> <span class="ident">last_check_seconds</span>;
-            <span class="kw">let</span> <span class="ident">minimum_diff_seconds</span> <span class="op">=</span> <span class="ident">days</span> <span class="op">*</span> <span class="number">24</span> <span class="op">*</span> <span class="number">60</span> <span class="op">*</span> <span class="number">60</span>;
+<span class="kw">fn </span>has_amount_of_days_passed_from_last_check(days: u64, last_check_seconds: u64) -&gt; bool {
+    <span class="kw">let </span>now_seconds = get_now_as_seconds();
+    <span class="kw">if </span>now_seconds &gt; <span class="number">0 </span>&amp;&amp; days &gt; <span class="number">0 </span>{
+        <span class="kw">if </span>last_check_seconds &gt; now_seconds {
+            <span class="bool-val">false
+        </span>} <span class="kw">else </span>{
+            <span class="kw">let </span>diff_seconds = now_seconds - last_check_seconds;
+            <span class="kw">let </span>minimum_diff_seconds = days * <span class="number">24 </span>* <span class="number">60 </span>* <span class="number">60</span>;
 
-            <span class="ident">diff_seconds</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">minimum_diff_seconds</span>
+            diff_seconds &gt;= minimum_diff_seconds
         }
-    } <span class="kw">else</span> {
-        <span class="bool-val">true</span>
-    }
+    } <span class="kw">else </span>{
+        <span class="bool-val">true
+    </span>}
 }
 
-<span class="kw">fn</span> <span class="ident">has_amount_of_days_passed</span>(<span class="ident">days</span>: <span class="ident">u64</span>, <span class="ident">cache_data</span>: <span class="kw-2">&amp;</span><span class="ident">Cache</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="ident">cache_data</span>.<span class="ident">last_update_check</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">last_check_seconds</span>) =&gt; {
-            <span class="ident">has_amount_of_days_passed_from_last_check</span>(<span class="ident">days</span>, <span class="ident">last_check_seconds</span>)
+<span class="kw">fn </span>has_amount_of_days_passed(days: u64, cache_data: <span class="kw-2">&amp;</span>Cache) -&gt; bool {
+    <span class="kw">match </span>cache_data.last_update_check {
+        <span class="prelude-val">Some</span>(last_check_seconds) =&gt; {
+            has_amount_of_days_passed_from_last_check(days, last_check_seconds)
         }
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_days</span>(<span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) -&gt; <span class="ident">u64</span> {
-    <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">update_check_minimum_interval</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;always&quot;</span> {
-                <span class="number">0</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;daily&quot;</span> {
-                <span class="number">1</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">value</span> <span class="op">==</span> <span class="string">&quot;monthly&quot;</span> {
-                <span class="number">30</span>
-            } <span class="kw">else</span> {
-                <span class="comment">// default to weekly</span>
-                <span class="number">7</span>
+<span class="kw">fn </span>get_days(global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; u64 {
+    <span class="kw">match </span>global_config.update_check_minimum_interval {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; {
+            <span class="kw">if </span>value == <span class="string">&quot;always&quot; </span>{
+                <span class="number">0
+            </span>} <span class="kw">else if </span>value == <span class="string">&quot;daily&quot; </span>{
+                <span class="number">1
+            </span>} <span class="kw">else if </span>value == <span class="string">&quot;monthly&quot; </span>{
+                <span class="number">30
+            </span>} <span class="kw">else </span>{
+                <span class="comment">// default to weekly
+                </span><span class="number">7
+            </span>}
+        }
+        <span class="prelude-val">None </span>=&gt; <span class="number">7</span>, <span class="comment">// default to weekly
+    </span>}
+}
+
+<span class="kw">fn </span>should_check_overdue(global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; bool {
+    <span class="kw">let </span>days = get_days(global_config);
+
+    <span class="kw">if </span>days &gt; <span class="number">0 </span>{
+        <span class="kw">let </span>cache_data = cache::load();
+        has_amount_of_days_passed(days, <span class="kw-2">&amp;</span>cache_data)
+    } <span class="kw">else </span>{
+        <span class="bool-val">true
+    </span>}
+}
+
+<span class="kw">fn </span>should_check_for_args(cli_args: <span class="kw-2">&amp;</span>CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig, is_ci: bool) -&gt; bool {
+    <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check
+    </span>!cli_args.disable_check_for_updates
+        &amp;&amp; !is_ci
+        &amp;&amp; !envmnt::is_or(<span class="string">&quot;CARGO_MAKE_DISABLE_UPDATE_CHECK&quot;</span>, <span class="bool-val">false</span>)
+        &amp;&amp; should_check_overdue(<span class="kw-2">&amp;</span>global_config)
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>should_check(cli_args: <span class="kw-2">&amp;</span>CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; bool {
+    <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check
+    </span>should_check_for_args(cli_args, global_config, ci_info::is_ci())
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check() {
+    <span class="kw">let </span>latest = get_latest_version();
+
+    <span class="kw">let </span><span class="kw-2">mut </span>cache_data = cache::load();
+    <span class="kw">let </span>now = get_now_as_seconds();
+    <span class="kw">if </span>now &gt; <span class="number">0 </span>{
+        cache_data.last_update_check = <span class="prelude-val">Some</span>(now);
+        cache::store(<span class="kw-2">&amp;</span>cache_data);
+    }
+
+    <span class="kw">match </span>latest {
+        <span class="prelude-val">Some</span>(value) =&gt; {
+            <span class="kw">if </span>is_newer_found(<span class="kw-2">&amp;</span>value) {
+                print_notification(<span class="kw-2">&amp;</span>value);
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="number">7</span>, <span class="comment">// default to weekly</span>
-    }
-}
-
-<span class="kw">fn</span> <span class="ident">should_check_overdue</span>(<span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">days</span> <span class="op">=</span> <span class="ident">get_days</span>(<span class="ident">global_config</span>);
-
-    <span class="kw">if</span> <span class="ident">days</span> <span class="op">&gt;</span> <span class="number">0</span> {
-        <span class="kw">let</span> <span class="ident">cache_data</span> <span class="op">=</span> <span class="ident">cache::load</span>();
-        <span class="ident">has_amount_of_days_passed</span>(<span class="ident">days</span>, <span class="kw-2">&amp;</span><span class="ident">cache_data</span>)
-    } <span class="kw">else</span> {
-        <span class="bool-val">true</span>
-    }
-}
-
-<span class="kw">fn</span> <span class="ident">should_check_for_args</span>(<span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>, <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>, <span class="ident">is_ci</span>: <span class="ident">bool</span>) -&gt; <span class="ident">bool</span> {
-    <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check</span>
-    <span class="op">!</span><span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span>
-        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_ci</span>
-        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::is_or</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_UPDATE_CHECK&quot;</span>, <span class="bool-val">false</span>)
-        <span class="op">&amp;&amp;</span> <span class="ident">should_check_overdue</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>)
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">should_check</span>(<span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>, <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) -&gt; <span class="ident">bool</span> {
-    <span class="comment">// only run check for updates if we are not in a CI env and user didn&#39;t ask to skip the check</span>
-    <span class="ident">should_check_for_args</span>(<span class="ident">cli_args</span>, <span class="ident">global_config</span>, <span class="ident">ci_info::is_ci</span>())
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">check</span>() {
-    <span class="kw">let</span> <span class="ident">latest</span> <span class="op">=</span> <span class="ident">get_latest_version</span>();
-
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cache_data</span> <span class="op">=</span> <span class="ident">cache::load</span>();
-    <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">get_now_as_seconds</span>();
-    <span class="kw">if</span> <span class="ident">now</span> <span class="op">&gt;</span> <span class="number">0</span> {
-        <span class="ident">cache_data</span>.<span class="ident">last_update_check</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">now</span>);
-        <span class="ident">cache::store</span>(<span class="kw-2">&amp;</span><span class="ident">cache_data</span>);
-    }
-
-    <span class="kw">match</span> <span class="ident">latest</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">is_newer_found</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>) {
-                <span class="ident">print_notification</span>(<span class="kw-2">&amp;</span><span class="ident">value</span>);
-            }
-        }
-        <span class="prelude-val">None</span> =&gt; (),
+        <span class="prelude-val">None </span>=&gt; (),
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

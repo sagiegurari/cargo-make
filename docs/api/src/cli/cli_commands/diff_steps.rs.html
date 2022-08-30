@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli_commands/diff_steps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>diff_steps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli_commands/diff_steps.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>diff_steps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -84,91 +84,91 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # diff_steps</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Prints a diff of execution plans.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # diff_steps
+//!
+//! Prints a diff of execution plans.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;diff_steps_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">diff_steps_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;diff_steps_test.rs&quot;</span>]
+</span><span class="kw">mod </span>diff_steps_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::command</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::execution_plan::create</span> <span class="kw">as</span> <span class="ident">create_execution_plan</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::io</span>::{<span class="ident">create_file</span>, <span class="ident">delete_file</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">CliArgs</span>, <span class="ident">Config</span>, <span class="ident">ExecutionPlan</span>};
-<span class="kw">use</span> <span class="ident">regex::Regex</span>;
-<span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="kw">use</span> <span class="ident">std::io</span>;
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">BufWriter</span>, <span class="ident">Write</span>};
+<span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::execution_plan::create <span class="kw">as </span>create_execution_plan;
+<span class="kw">use </span><span class="kw">crate</span>::io::{create_file, delete_file};
+<span class="kw">use </span><span class="kw">crate</span>::types::{CliArgs, Config, ExecutionPlan};
+<span class="kw">use </span>regex::Regex;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io;
+<span class="kw">use </span>std::io::{BufWriter, Write};
 
-<span class="kw">fn</span> <span class="ident">write_as_string</span>(<span class="ident">execution_plan</span>: <span class="kw-2">&amp;</span><span class="ident">ExecutionPlan</span>, <span class="ident">file</span>: <span class="kw-2">&amp;</span><span class="ident">File</span>) -&gt; <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">writer</span> <span class="op">=</span> <span class="ident">BufWriter::new</span>(<span class="ident">file</span>);
-    <span class="macro">writeln!</span>(<span class="kw-2">&amp;mut</span> <span class="ident">writer</span>, <span class="string">&quot;{:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">execution_plan</span>.<span class="ident">steps</span>)
+<span class="kw">fn </span>write_as_string(execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan, file: <span class="kw-2">&amp;</span>File) -&gt; io::Result&lt;()&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>writer = BufWriter::new(file);
+    <span class="macro">writeln!</span>(<span class="kw-2">&amp;mut </span>writer, <span class="string">&quot;{:#?}&quot;</span>, <span class="kw-2">&amp;</span>execution_plan.steps)
 }
 
-<span class="doccomment">/// Runs the execution plan diff</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(
-    <span class="ident">internal_config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
-    <span class="ident">external_config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
-    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">cli_args</span>: <span class="kw-2">&amp;</span><span class="ident">CliArgs</span>,
+<span class="doccomment">/// Runs the execution plan diff
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(
+    internal_config: <span class="kw-2">&amp;</span>Config,
+    external_config: <span class="kw-2">&amp;</span>Config,
+    task: <span class="kw-2">&amp;</span>str,
+    cli_args: <span class="kw-2">&amp;</span>CliArgs,
 ) {
-    <span class="kw">let</span> <span class="ident">skip_tasks_pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) =&gt; <span class="kw">match</span> <span class="ident">Regex::new</span>(<span class="ident">pattern</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">reg</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">reg</span>),
+    <span class="kw">let </span>skip_tasks_pattern = <span class="kw">match </span>cli_args.skip_tasks_pattern {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; <span class="kw">match </span>Regex::new(pattern) {
+            <span class="prelude-val">Ok</span>(reg) =&gt; <span class="prelude-val">Some</span>(reg),
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                <span class="macro">warn!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, <span class="ident">pattern</span>);
-                <span class="prelude-val">None</span>
-            }
+                <span class="macro">warn!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, pattern);
+                <span class="prelude-val">None
+            </span>}
         },
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">internal_execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(
-        <span class="ident">internal_config</span>,
-        <span class="kw-2">&amp;</span><span class="ident">task</span>,
-        <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span>,
+    <span class="kw">let </span>internal_execution_plan = create_execution_plan(
+        internal_config,
+        <span class="kw-2">&amp;</span>task,
+        cli_args.disable_workspace,
         <span class="bool-val">true</span>,
         <span class="bool-val">false</span>,
-        <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
+        <span class="kw-2">&amp;</span>skip_tasks_pattern,
     );
 
-    <span class="kw">let</span> <span class="ident">external_execution_plan</span> <span class="op">=</span> <span class="ident">create_execution_plan</span>(
-        <span class="ident">external_config</span>,
-        <span class="kw-2">&amp;</span><span class="ident">task</span>,
-        <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span>,
+    <span class="kw">let </span>external_execution_plan = create_execution_plan(
+        external_config,
+        <span class="kw-2">&amp;</span>task,
+        cli_args.disable_workspace,
         <span class="bool-val">true</span>,
         <span class="bool-val">false</span>,
-        <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
+        <span class="kw-2">&amp;</span>skip_tasks_pattern,
     );
 
-    <span class="kw">let</span> <span class="ident">internal_file</span> <span class="op">=</span> <span class="ident">create_file</span>(
-        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span><span class="op">|</span> <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">internal_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>),
+    <span class="kw">let </span>internal_file = create_file(
+        <span class="kw-2">&amp;</span><span class="kw">move </span>|file: <span class="kw-2">&amp;mut </span>File| write_as_string(<span class="kw-2">&amp;</span>internal_execution_plan, <span class="kw-2">&amp;</span>file),
         <span class="string">&quot;toml&quot;</span>,
     );
-    <span class="kw">let</span> <span class="ident">external_file</span> <span class="op">=</span> <span class="ident">create_file</span>(
-        <span class="kw-2">&amp;</span><span class="kw">move</span> <span class="op">|</span><span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span><span class="op">|</span> <span class="ident">write_as_string</span>(<span class="kw-2">&amp;</span><span class="ident">external_execution_plan</span>, <span class="kw-2">&amp;</span><span class="ident">file</span>),
+    <span class="kw">let </span>external_file = create_file(
+        <span class="kw-2">&amp;</span><span class="kw">move </span>|file: <span class="kw-2">&amp;mut </span>File| write_as_string(<span class="kw-2">&amp;</span>external_execution_plan, <span class="kw-2">&amp;</span>file),
         <span class="string">&quot;toml&quot;</span>,
     );
 
     <span class="macro">info!</span>(<span class="string">&quot;Printing diff...&quot;</span>);
-    <span class="ident">command::run_command</span>(
+    command::run_command(
         <span class="string">&quot;git&quot;</span>,
         <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="macro">vec!</span>[
-            <span class="string">&quot;--no-pager&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="string">&quot;diff&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="string">&quot;--no-index&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">internal_file</span>.<span class="ident">to_string</span>(),
-            <span class="ident">external_file</span>.<span class="ident">to_string</span>(),
+            <span class="string">&quot;--no-pager&quot;</span>.to_string(),
+            <span class="string">&quot;diff&quot;</span>.to_string(),
+            <span class="string">&quot;--no-index&quot;</span>.to_string(),
+            internal_file.to_string(),
+            external_file.to_string(),
         ]),
         <span class="bool-val">false</span>,
     );
 
-    <span class="ident">delete_file</span>(<span class="kw-2">&amp;</span><span class="ident">internal_file</span>);
-    <span class="ident">delete_file</span>(<span class="kw-2">&amp;</span><span class="ident">external_file</span>);
+    delete_file(<span class="kw-2">&amp;</span>internal_file);
+    delete_file(<span class="kw-2">&amp;</span>external_file);
 
     <span class="macro">info!</span>(<span class="string">&quot;Done&quot;</span>);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

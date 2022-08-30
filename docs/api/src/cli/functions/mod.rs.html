@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/functions/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/functions/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -125,132 +125,132 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # functions</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Custom operations which can be invoked in makefiles.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # functions
+//!
+//! Custom operations which can be invoked in makefiles.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;mod_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">mod_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;mod_test.rs&quot;</span>]
+</span><span class="kw">mod </span>mod_test;
 
-<span class="kw">mod</span> <span class="ident">decode_func</span>;
-<span class="kw">mod</span> <span class="ident">getat_func</span>;
-<span class="kw">mod</span> <span class="ident">remove_empty_func</span>;
-<span class="kw">mod</span> <span class="ident">split_func</span>;
-<span class="kw">mod</span> <span class="ident">trim_func</span>;
+<span class="kw">mod </span>decode_func;
+<span class="kw">mod </span>getat_func;
+<span class="kw">mod </span>remove_empty_func;
+<span class="kw">mod </span>split_func;
+<span class="kw">mod </span>trim_func;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">Step</span>, <span class="ident">Task</span>};
+<span class="kw">use </span><span class="kw">crate</span>::types::{Step, Task};
 
-<span class="kw">fn</span> <span class="ident">run_function</span>(<span class="ident">function_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">function_args</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+<span class="kw">fn </span>run_function(function_name: <span class="kw-2">&amp;</span>str, function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
     <span class="macro">debug!</span>(
         <span class="string">&quot;Running function: {} arguments: {:#?}&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">function_name</span>, <span class="kw-2">&amp;</span><span class="ident">function_args</span>
+        <span class="kw-2">&amp;</span>function_name, <span class="kw-2">&amp;</span>function_args
     );
 
-    <span class="kw">match</span> <span class="ident">function_name</span> {
-        <span class="string">&quot;split&quot;</span> =&gt; <span class="ident">split_func::invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;remove-empty&quot;</span> =&gt; <span class="ident">remove_empty_func::invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;trim&quot;</span> =&gt; <span class="ident">trim_func::invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;getat&quot;</span> =&gt; <span class="ident">getat_func::invoke</span>(<span class="ident">function_args</span>),
-        <span class="string">&quot;decode&quot;</span> =&gt; <span class="ident">decode_func::invoke</span>(<span class="ident">function_args</span>),
-        <span class="kw">_</span> =&gt; {
-            <span class="macro">error!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">function_name</span>);
-            <span class="macro">panic!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">function_name</span>);
+    <span class="kw">match </span>function_name {
+        <span class="string">&quot;split&quot; </span>=&gt; split_func::invoke(function_args),
+        <span class="string">&quot;remove-empty&quot; </span>=&gt; remove_empty_func::invoke(function_args),
+        <span class="string">&quot;trim&quot; </span>=&gt; trim_func::invoke(function_args),
+        <span class="string">&quot;getat&quot; </span>=&gt; getat_func::invoke(function_args),
+        <span class="string">&quot;decode&quot; </span>=&gt; decode_func::invoke(function_args),
+        <span class="kw">_ </span>=&gt; {
+            <span class="macro">error!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span>function_name);
+            <span class="macro">panic!</span>(<span class="string">&quot;Unknown function: {}&quot;</span>, <span class="kw-2">&amp;</span>function_name);
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_name</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">function_string</span>.<span class="ident">find</span>(<span class="string">&#39;(&#39;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">index</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">function_string</span>[<span class="number">0</span>..<span class="ident">index</span>].<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">fn </span>get_function_name(function_string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">match </span>function_string.find(<span class="string">&#39;(&#39;</span>) {
+        <span class="prelude-val">Some</span>(index) =&gt; <span class="prelude-val">Some</span>(function_string[<span class="number">0</span>..index].to_string()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_argument</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">str_value</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">value</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-        <span class="ident">value</span>
-    } <span class="kw">else</span> {
-        <span class="ident">value</span>.<span class="ident">trim</span>()
+<span class="kw">fn </span>get_function_argument(value: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="kw">let </span>str_value = <span class="kw">if </span>value.len() == <span class="number">1 </span>{
+        value
+    } <span class="kw">else </span>{
+        value.trim()
     };
 
-    <span class="ident">str_value</span>.<span class="ident">to_string</span>()
+    str_value.to_string()
 }
 
-<span class="kw">fn</span> <span class="ident">get_function_arguments</span>(<span class="ident">function_string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">function_string</span>.<span class="ident">starts_with</span>(<span class="string">&quot;(&quot;</span>) <span class="op">&amp;&amp;</span> <span class="ident">function_string</span>.<span class="ident">ends_with</span>(<span class="string">&quot;)&quot;</span>) {
-        <span class="kw">let</span> <span class="ident">args_string</span> <span class="op">=</span> <span class="ident">function_string</span>[<span class="number">1</span>..(<span class="ident">function_string</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>)].<span class="ident">to_string</span>();
+<span class="kw">fn </span>get_function_arguments(function_string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt; {
+    <span class="kw">if </span>function_string.starts_with(<span class="string">&quot;(&quot;</span>) &amp;&amp; function_string.ends_with(<span class="string">&quot;)&quot;</span>) {
+        <span class="kw">let </span>args_string = function_string[<span class="number">1</span>..(function_string.len() - <span class="number">1</span>)].to_string();
 
-        <span class="kw">let</span> <span class="ident">arguments</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">args_string</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="ident">args_string</span>
-                .<span class="ident">split</span>(<span class="string">&quot;,&quot;</span>)
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">str_value</span><span class="op">|</span> <span class="ident">get_function_argument</span>(<span class="kw-2">&amp;</span><span class="ident">str_value</span>))
-                .<span class="ident">collect</span>()
-        } <span class="kw">else</span> {
+        <span class="kw">let </span>arguments = <span class="kw">if </span>args_string.len() &gt; <span class="number">0 </span>{
+            args_string
+                .split(<span class="string">&quot;,&quot;</span>)
+                .map(|str_value| get_function_argument(<span class="kw-2">&amp;</span>str_value))
+                .collect()
+        } <span class="kw">else </span>{
             <span class="macro">vec!</span>[]
         };
 
-        <span class="prelude-val">Some</span>(<span class="ident">arguments</span>)
-    } <span class="kw">else</span> {
-        <span class="prelude-val">None</span>
+        <span class="prelude-val">Some</span>(arguments)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">fn </span>evaluate_and_run(value: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;String&gt; {
+    <span class="kw">let </span>value_string = value.to_string();
+
+    <span class="kw">if </span>value_string.starts_with(<span class="string">&quot;@@&quot;</span>) {
+        <span class="kw">let </span><span class="kw-2">mut </span>function_string = value[<span class="number">2</span>..].to_string();
+
+        <span class="kw">let </span>func_name_option = get_function_name(<span class="kw-2">&amp;</span>function_string);
+        <span class="kw">match </span>func_name_option {
+            <span class="prelude-val">Some</span>(function_name) =&gt; {
+                function_string = function_string[function_name.len()..].to_string();
+                <span class="kw">let </span>func_args_option = get_function_arguments(<span class="kw-2">&amp;</span>function_string);
+
+                <span class="kw">match </span>func_args_option {
+                    <span class="prelude-val">Some</span>(function_args) =&gt; run_function(<span class="kw-2">&amp;</span>function_name, <span class="kw-2">&amp;</span>function_args),
+                    <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[value_string],
+                }
+            }
+            <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[value_string],
+        }
+    } <span class="kw">else </span>{
+        <span class="macro">vec!</span>[value_string]
     }
 }
 
-<span class="kw">fn</span> <span class="ident">evaluate_and_run</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">value_string</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">to_string</span>();
+<span class="kw">fn </span>modify_arguments(task: <span class="kw-2">&amp;mut </span>Task) {
+    task.args = <span class="kw">match </span>task.args {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>new_args = <span class="macro">vec!</span>[];
 
-    <span class="kw">if</span> <span class="ident">value_string</span>.<span class="ident">starts_with</span>(<span class="string">&quot;@@&quot;</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">function_string</span> <span class="op">=</span> <span class="ident">value</span>[<span class="number">2</span>..].<span class="ident">to_string</span>();
+            <span class="kw">for </span>index <span class="kw">in </span><span class="number">0</span>..args.len() {
+                <span class="kw">let </span>result_args = evaluate_and_run(<span class="kw-2">&amp;</span>args[index]);
 
-        <span class="kw">let</span> <span class="ident">func_name_option</span> <span class="op">=</span> <span class="ident">get_function_name</span>(<span class="kw-2">&amp;</span><span class="ident">function_string</span>);
-        <span class="kw">match</span> <span class="ident">func_name_option</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">function_name</span>) =&gt; {
-                <span class="ident">function_string</span> <span class="op">=</span> <span class="ident">function_string</span>[<span class="ident">function_name</span>.<span class="ident">len</span>()..].<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">func_args_option</span> <span class="op">=</span> <span class="ident">get_function_arguments</span>(<span class="kw-2">&amp;</span><span class="ident">function_string</span>);
-
-                <span class="kw">match</span> <span class="ident">func_args_option</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">function_args</span>) =&gt; <span class="ident">run_function</span>(<span class="kw-2">&amp;</span><span class="ident">function_name</span>, <span class="kw-2">&amp;</span><span class="ident">function_args</span>),
-                    <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[<span class="ident">value_string</span>],
-                }
-            }
-            <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[<span class="ident">value_string</span>],
-        }
-    } <span class="kw">else</span> {
-        <span class="macro">vec!</span>[<span class="ident">value_string</span>]
-    }
-}
-
-<span class="kw">fn</span> <span class="ident">modify_arguments</span>(<span class="ident">task</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Task</span>) {
-    <span class="ident">task</span>.<span class="ident">args</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">args</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_args</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-
-            <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">args</span>.<span class="ident">len</span>() {
-                <span class="kw">let</span> <span class="ident">result_args</span> <span class="op">=</span> <span class="ident">evaluate_and_run</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>[<span class="ident">index</span>]);
-
-                <span class="kw">for</span> <span class="ident">result_index</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">result_args</span>.<span class="ident">len</span>() {
-                    <span class="ident">new_args</span>.<span class="ident">push</span>(<span class="ident">result_args</span>[<span class="ident">result_index</span>].<span class="ident">clone</span>());
+                <span class="kw">for </span>result_index <span class="kw">in </span><span class="number">0</span>..result_args.len() {
+                    new_args.push(result_args[result_index].clone());
                 }
             }
 
-            <span class="prelude-val">Some</span>(<span class="ident">new_args</span>)
+            <span class="prelude-val">Some</span>(new_args)
         }
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run</span>(<span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>) -&gt; <span class="ident">Step</span> {
-    <span class="comment">//clone data before modify</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">clone</span>();
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) -&gt; Step {
+    <span class="comment">//clone data before modify
+    </span><span class="kw">let </span><span class="kw-2">mut </span>config = step.config.clone();
 
-    <span class="comment">//update args by running any needed function</span>
-    <span class="ident">modify_arguments</span>(<span class="kw-2">&amp;mut</span> <span class="ident">config</span>);
+    <span class="comment">//update args by running any needed function
+    </span>modify_arguments(<span class="kw-2">&amp;mut </span>config);
 
-    <span class="ident">Step</span> {
-        <span class="ident">name</span>: <span class="ident">step</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
-        <span class="ident">config</span>,
+    Step {
+        name: step.name.clone(),
+        config,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

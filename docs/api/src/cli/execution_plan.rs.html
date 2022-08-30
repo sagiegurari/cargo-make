@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/execution_plan.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>execution_plan.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/execution_plan.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>execution_plan.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -486,493 +486,493 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # execution_plan</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Creates execution plan for a given task and makefile.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # execution_plan
+//!
+//! Creates execution plan for a given task and makefile.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;execution_plan_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">execution_plan_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;execution_plan_test.rs&quot;</span>]
+</span><span class="kw">mod </span>execution_plan_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::logger</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::proxy_task::create_proxy_task</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{
-    <span class="ident">Config</span>, <span class="ident">CrateInfo</span>, <span class="ident">EnvValue</span>, <span class="ident">ExecutionPlan</span>, <span class="ident">ScriptValue</span>, <span class="ident">Step</span>, <span class="ident">Task</span>, <span class="ident">TaskIdentifier</span>, <span class="ident">Workspace</span>,
+<span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::logger;
+<span class="kw">use </span><span class="kw">crate</span>::profile;
+<span class="kw">use </span><span class="kw">crate</span>::proxy_task::create_proxy_task;
+<span class="kw">use </span><span class="kw">crate</span>::types::{
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
-<span class="kw">use</span> <span class="ident">envmnt</span>;
-<span class="kw">use</span> <span class="ident">fsio::path</span>::{<span class="ident">get_basename</span>, <span class="ident">get_parent_directory</span>};
-<span class="kw">use</span> <span class="ident">glob::Pattern</span>;
-<span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
-<span class="kw">use</span> <span class="ident">regex::Regex</span>;
-<span class="kw">use</span> <span class="ident">std::collections::HashSet</span>;
-<span class="kw">use</span> <span class="ident">std::env</span>;
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
-<span class="kw">use</span> <span class="ident">std::vec::Vec</span>;
+<span class="kw">use </span>envmnt;
+<span class="kw">use </span>fsio::path::{get_basename, get_parent_directory};
+<span class="kw">use </span>glob::Pattern;
+<span class="kw">use </span>indexmap::IndexMap;
+<span class="kw">use </span>regex::Regex;
+<span class="kw">use </span>std::collections::HashSet;
+<span class="kw">use </span>std::env;
+<span class="kw">use </span>std::path::Path;
+<span class="kw">use </span>std::vec::Vec;
 
-<span class="doccomment">/// Resolve aliases to different tasks, checking for cycles</span>
-<span class="kw">fn</span> <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">seen</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">seen</span>.<span class="ident">push</span>(<span class="ident">name</span>.<span class="ident">to_string</span>());
+<span class="doccomment">/// Resolve aliases to different tasks, checking for cycles
+</span><span class="kw">fn </span>get_task_name_recursive(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, seen: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    seen.push(name.to_string());
 
-    <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="ident">name</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">alias</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">get_alias</span>();
+    <span class="kw">match </span>config.tasks.get(name) {
+        <span class="prelude-val">Some</span>(task_config) =&gt; {
+            <span class="kw">let </span>alias = task_config.get_alias();
 
-            <span class="kw">match</span> <span class="ident">alias</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">contains</span>(<span class="ident">alias</span>) =&gt; {
-                    <span class="kw">let</span> <span class="ident">chain</span> <span class="op">=</span> <span class="ident">seen</span>.<span class="ident">join</span>(<span class="string">&quot; -&gt; &quot;</span>);
-                    <span class="macro">error!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
-                    <span class="macro">panic!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">chain</span>);
+            <span class="kw">match </span>alias {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>alias) <span class="kw">if </span>seen.contains(alias) =&gt; {
+                    <span class="kw">let </span>chain = seen.join(<span class="string">&quot; -&gt; &quot;</span>);
+                    <span class="macro">error!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span>name, chain);
+                    <span class="macro">panic!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span>name, chain);
                 }
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">alias</span>) =&gt; <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">alias</span>, <span class="ident">seen</span>),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>()),
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>alias) =&gt; get_task_name_recursive(config, alias, seen),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Some</span>(name.to_string()),
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases</span>
-<span class="kw">fn</span> <span class="ident">get_task_name</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases
+</span><span class="kw">fn </span>get_task_name(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>seen = Vec::new();
 
-    <span class="ident">get_task_name_recursive</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="kw-2">&amp;mut</span> <span class="ident">seen</span>)
+    get_task_name_recursive(config, name, <span class="kw-2">&amp;mut </span>seen)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Task</span> {
-    <span class="kw">match</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>, <span class="ident">name</span>, <span class="ident">support_alias</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">task</span>) =&gt; <span class="ident">task</span>,
-        <span class="prelude-val">None</span> =&gt; {
-            <span class="macro">error!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
-            <span class="macro">panic!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; Task {
+    <span class="kw">match </span>get_optional_normalized_task(config, name, support_alias) {
+        <span class="prelude-val">Some</span>(task) =&gt; task,
+        <span class="prelude-val">None </span>=&gt; {
+            <span class="macro">error!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span>name);
+            <span class="macro">panic!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span>name);
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">support_alias</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Task</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">actual_task_name_option</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">support_alias</span> {
-        <span class="ident">get_task_name</span>(<span class="ident">config</span>, <span class="ident">name</span>)
-    } <span class="kw">else</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">name</span>.<span class="ident">to_string</span>())
+<span class="kw">fn </span>get_optional_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; <span class="prelude-ty">Option</span>&lt;Task&gt; {
+    <span class="kw">let </span>actual_task_name_option = <span class="kw">if </span>support_alias {
+        get_task_name(config, name)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Some</span>(name.to_string())
     };
 
-    <span class="kw">match</span> <span class="ident">actual_task_name_option</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">actual_task_name</span>) =&gt; <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">tasks</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">actual_task_name</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">task_config</span>) =&gt; {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">clone_task</span> <span class="op">=</span> <span class="ident">task_config</span>.<span class="ident">clone</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">normalized_task</span> <span class="op">=</span> <span class="ident">clone_task</span>.<span class="ident">get_normalized_task</span>();
+    <span class="kw">match </span>actual_task_name_option {
+        <span class="prelude-val">Some</span>(actual_task_name) =&gt; <span class="kw">match </span>config.tasks.get(<span class="kw-2">&amp;</span>actual_task_name) {
+            <span class="prelude-val">Some</span>(task_config) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>clone_task = task_config.clone();
+                <span class="kw">let </span><span class="kw-2">mut </span>normalized_task = clone_task.get_normalized_task();
 
-                <span class="ident">normalized_task</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">normalized_task</span>.<span class="ident">extend</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extended_task_name</span>) =&gt; {
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extended_task</span> <span class="op">=</span>
-                            <span class="ident">get_normalized_task</span>(<span class="ident">config</span>, <span class="ident">extended_task_name</span>, <span class="ident">support_alias</span>);
+                normalized_task = <span class="kw">match </span>normalized_task.extend {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extended_task_name) =&gt; {
+                        <span class="kw">let </span><span class="kw-2">mut </span>extended_task =
+                            get_normalized_task(config, extended_task_name, support_alias);
 
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">env</span>) <span class="op">=</span> <span class="ident">normalized_task</span>.<span class="ident">env</span> {
-                            <span class="kw">if</span> <span class="ident">env</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">2</span>
-                                <span class="op">&amp;&amp;</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
-                                <span class="op">&amp;&amp;</span> <span class="ident">env</span>.<span class="ident">contains_key</span>(
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>env) = normalized_task.env {
+                            <span class="kw">if </span>env.len() == <span class="number">2
+                                </span>&amp;&amp; env.contains_key(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
+                                &amp;&amp; env.contains_key(
                                     <span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>,
                                 )
                             {
-                                <span class="ident">normalized_task</span>.<span class="ident">env</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                                normalized_task.env = <span class="prelude-val">None</span>;
                             }
                         }
-                        <span class="ident">extended_task</span>.<span class="ident">extend</span>(<span class="kw-2">&amp;</span><span class="ident">normalized_task</span>);
+                        extended_task.extend(<span class="kw-2">&amp;</span>normalized_task);
 
-                        <span class="ident">extended_task</span>
+                        extended_task
                     }
-                    <span class="prelude-val">None</span> =&gt; <span class="ident">normalized_task</span>,
+                    <span class="prelude-val">None </span>=&gt; normalized_task,
                 };
 
-                <span class="prelude-val">Some</span>(<span class="ident">normalized_task</span>)
+                <span class="prelude-val">Some</span>(normalized_task)
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         },
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">members_config</span>: <span class="ident">String</span>) -&gt; <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">members</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
+<span class="kw">fn </span>get_workspace_members_config(members_config: String) -&gt; HashSet&lt;String&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>members = HashSet::new();
 
-    <span class="kw">let</span> <span class="ident">members_list</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">members_config</span>.<span class="ident">split</span>(<span class="string">&#39;;&#39;</span>).<span class="ident">collect</span>();
+    <span class="kw">let </span>members_list: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = members_config.split(<span class="string">&#39;;&#39;</span>).collect();
 
-    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="ident">members_list</span>.<span class="ident">iter</span>() {
-        <span class="kw">if</span> <span class="ident">member</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="ident">members</span>.<span class="ident">insert</span>(<span class="ident">member</span>.<span class="ident">to_string</span>());
+    <span class="kw">for </span>member <span class="kw">in </span>members_list.iter() {
+        <span class="kw">if </span>member.len() &gt; <span class="number">0 </span>{
+            members.insert(member.to_string());
         }
     }
 
-    <span class="ident">members</span>
+    members
 }
 
-<span class="kw">fn</span> <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">members_map</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="ident">members_map</span>.<span class="ident">contains</span>(<span class="ident">member</span>) {
-        <span class="bool-val">true</span>
-    } <span class="kw">else</span> {
-        <span class="comment">// search for globs</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">found</span> <span class="op">=</span> <span class="bool-val">false</span>;
+<span class="kw">fn </span>is_workspace_member_found(member: <span class="kw-2">&amp;</span>str, members_map: <span class="kw-2">&amp;</span>HashSet&lt;String&gt;) -&gt; bool {
+    <span class="kw">if </span>members_map.contains(member) {
+        <span class="bool-val">true
+    </span>} <span class="kw">else </span>{
+        <span class="comment">// search for globs
+        </span><span class="kw">let </span><span class="kw-2">mut </span>found = <span class="bool-val">false</span>;
 
-        <span class="kw">for</span> <span class="ident">member_iter</span> <span class="kw">in</span> <span class="ident">members_map</span> {
-            <span class="kw">if</span> <span class="ident">member_iter</span>.<span class="ident">contains</span>(<span class="string">&quot;*&quot;</span>) {
-                <span class="ident">found</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Pattern::new</span>(<span class="ident">member_iter</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">pattern</span>) =&gt; <span class="ident">pattern</span>.<span class="ident">matches</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>),
-                    <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+        <span class="kw">for </span>member_iter <span class="kw">in </span>members_map {
+            <span class="kw">if </span>member_iter.contains(<span class="string">&quot;*&quot;</span>) {
+                found = <span class="kw">match </span>Pattern::new(member_iter) {
+                    <span class="prelude-val">Ok</span>(pattern) =&gt; pattern.matches(<span class="kw-2">&amp;</span>member),
+                    <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
                 };
 
-                <span class="kw">if</span> <span class="ident">found</span> {
+                <span class="kw">if </span>found {
                     <span class="kw">break</span>;
                 }
             }
         }
 
-        <span class="ident">found</span>
+        found
     }
 }
 
-<span class="kw">fn</span> <span class="ident">should_skip_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">skipped_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>, <span class="ident">skipped_members</span>)
+<span class="kw">fn </span>should_skip_workspace_member(member: <span class="kw-2">&amp;</span>str, skipped_members: <span class="kw-2">&amp;</span>HashSet&lt;String&gt;) -&gt; bool {
+    is_workspace_member_found(member, skipped_members)
 }
 
-<span class="kw">fn</span> <span class="ident">should_include_workspace_member</span>(<span class="ident">member</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">include_members</span>: <span class="kw-2">&amp;</span><span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="ident">include_members</span>.<span class="ident">is_empty</span>() {
-        <span class="bool-val">true</span>
-    } <span class="kw">else</span> {
-        <span class="ident">is_workspace_member_found</span>(<span class="ident">member</span>, <span class="ident">include_members</span>)
+<span class="kw">fn </span>should_include_workspace_member(member: <span class="kw-2">&amp;</span>str, include_members: <span class="kw-2">&amp;</span>HashSet&lt;String&gt;) -&gt; bool {
+    <span class="kw">if </span>include_members.is_empty() {
+        <span class="bool-val">true
+    </span>} <span class="kw">else </span>{
+        is_workspace_member_found(member, include_members)
     }
 }
 
-<span class="kw">fn</span> <span class="ident">filter_workspace_members</span>(<span class="ident">members</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">skip_members_config</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">let</span> <span class="ident">skip_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">skip_members_config</span>);
+<span class="kw">fn </span>filter_workspace_members(members: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
+    <span class="kw">let </span>skip_members_config = envmnt::get_or(<span class="string">&quot;CARGO_MAKE_WORKSPACE_SKIP_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let </span>skip_members = get_workspace_members_config(skip_members_config);
 
-    <span class="kw">let</span> <span class="ident">include_members_config</span> <span class="op">=</span> <span class="ident">envmnt::get_or</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
-    <span class="kw">let</span> <span class="ident">include_members</span> <span class="op">=</span> <span class="ident">get_workspace_members_config</span>(<span class="ident">include_members_config</span>);
+    <span class="kw">let </span>include_members_config = envmnt::get_or(<span class="string">&quot;CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw">let </span>include_members = get_workspace_members_config(include_members_config);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">filtered_members</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-    <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="ident">members</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">should_skip_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">skip_members</span>)
-            <span class="op">&amp;&amp;</span> <span class="ident">should_include_workspace_member</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>, <span class="kw-2">&amp;</span><span class="ident">include_members</span>)
+    <span class="kw">let </span><span class="kw-2">mut </span>filtered_members = <span class="macro">vec!</span>[];
+    <span class="kw">for </span>member <span class="kw">in </span>members {
+        <span class="kw">if </span>!should_skip_workspace_member(<span class="kw-2">&amp;</span>member, <span class="kw-2">&amp;</span>skip_members)
+            &amp;&amp; should_include_workspace_member(<span class="kw-2">&amp;</span>member, <span class="kw-2">&amp;</span>include_members)
         {
-            <span class="ident">filtered_members</span>.<span class="ident">push</span>(<span class="ident">member</span>.<span class="ident">to_string</span>());
-        } <span class="kw">else</span> {
-            <span class="macro">debug!</span>(<span class="string">&quot;Skipping Member: {}.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
+            filtered_members.push(member.to_string());
+        } <span class="kw">else </span>{
+            <span class="macro">debug!</span>(<span class="string">&quot;Skipping Member: {}.&quot;</span>, <span class="kw-2">&amp;</span>member);
         }
     }
 
-    <span class="ident">filtered_members</span>
+    filtered_members
 }
 
-<span class="kw">fn</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>: <span class="ident">CrateInfo</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Task</span> {
-    <span class="kw">let</span> <span class="ident">set_workspace_emulation</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_none</span>()
-        <span class="op">&amp;&amp;</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>)
-        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::exists</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>);
-    <span class="kw">if</span> <span class="ident">set_workspace_emulation</span> {
-        <span class="ident">environment::search_and_set_workspace_cwd</span>();
-        <span class="kw">let</span> <span class="ident">root_directory</span> <span class="op">=</span> <span class="ident">envmnt::get_or_panic</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY&quot;</span>);
-        <span class="ident">envmnt::set</span>(
+<span class="kw">fn </span>create_workspace_task(crate_info: CrateInfo, task: <span class="kw-2">&amp;</span>str) -&gt; Task {
+    <span class="kw">let </span>set_workspace_emulation = crate_info.workspace.is_none()
+        &amp;&amp; envmnt::is(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>)
+        &amp;&amp; !envmnt::exists(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>);
+    <span class="kw">if </span>set_workspace_emulation {
+        environment::search_and_set_workspace_cwd();
+        <span class="kw">let </span>root_directory = envmnt::get_or_panic(<span class="string">&quot;CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY&quot;</span>);
+        envmnt::set(
             <span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY&quot;</span>,
-            <span class="kw-2">&amp;</span><span class="ident">root_directory</span>,
+            <span class="kw-2">&amp;</span>root_directory,
         );
     }
 
-    <span class="kw">let</span> <span class="ident">members</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_some</span>() {
-        <span class="kw">let</span> <span class="ident">workspace</span> <span class="op">=</span> <span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">unwrap_or</span>(<span class="ident">Workspace::new</span>());
-        <span class="ident">workspace</span>.<span class="ident">members</span>.<span class="ident">unwrap_or</span>(<span class="macro">vec!</span>[])
-    } <span class="kw">else</span> {
-        <span class="ident">envmnt::get_list</span>(<span class="string">&quot;CARGO_MAKE_CRATE_WORKSPACE_MEMBERS&quot;</span>).<span class="ident">unwrap_or</span>(<span class="macro">vec!</span>[])
+    <span class="kw">let </span>members = <span class="kw">if </span>crate_info.workspace.is_some() {
+        <span class="kw">let </span>workspace = crate_info.workspace.unwrap_or(Workspace::new());
+        workspace.members.unwrap_or(<span class="macro">vec!</span>[])
+    } <span class="kw">else </span>{
+        envmnt::get_list(<span class="string">&quot;CARGO_MAKE_CRATE_WORKSPACE_MEMBERS&quot;</span>).unwrap_or(<span class="macro">vec!</span>[])
     };
 
-    <span class="kw">let</span> <span class="ident">log_level</span> <span class="op">=</span> <span class="ident">logger::get_log_level</span>();
+    <span class="kw">let </span>log_level = logger::get_log_level();
 
-    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">envmnt::is_or</span>(<span class="string">&quot;CARGO_MAKE_USE_WORKSPACE_PROFILE&quot;</span>, <span class="bool-val">true</span>) {
-        <span class="ident">profile::get</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">profile::DEFAULT_PROFILE</span>.<span class="ident">to_string</span>()
+    <span class="kw">let </span>profile_name = <span class="kw">if </span>envmnt::is_or(<span class="string">&quot;CARGO_MAKE_USE_WORKSPACE_PROFILE&quot;</span>, <span class="bool-val">true</span>) {
+        profile::get()
+    } <span class="kw">else </span>{
+        profile::DEFAULT_PROFILE.to_string()
     };
 
-    <span class="kw">let</span> <span class="ident">filtered_members</span> <span class="op">=</span> <span class="ident">filter_workspace_members</span>(<span class="kw-2">&amp;</span><span class="ident">members</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_lines</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+    <span class="kw">let </span>filtered_members = filter_workspace_members(<span class="kw-2">&amp;</span>members);
+    <span class="kw">let </span><span class="kw-2">mut </span>script_lines = <span class="macro">vec!</span>[];
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">filtered_members</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">let</span> <span class="ident">cargo_make_command</span> <span class="op">=</span> <span class="string">&quot;cargo make&quot;</span>;
+    <span class="kw">if </span>!filtered_members.is_empty() {
+        <span class="kw">let </span>cargo_make_command = <span class="string">&quot;cargo make&quot;</span>;
 
-        <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;workspace_directory = pwd&quot;</span>.<span class="ident">to_string</span>());
-        <span class="kw">for</span> <span class="ident">member</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">filtered_members</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cd_line</span> <span class="op">=</span> <span class="string">&quot;cd ./&quot;</span>.<span class="ident">to_string</span>();
-            <span class="ident">cd_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>.<span class="ident">replace</span>(<span class="string">&quot;\\&quot;</span>, <span class="string">&quot;/&quot;</span>));
-            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">cd_line</span>);
+        script_lines.push(<span class="string">&quot;workspace_directory = pwd&quot;</span>.to_string());
+        <span class="kw">for </span>member <span class="kw">in </span><span class="kw-2">&amp;</span>filtered_members {
+            <span class="kw">let </span><span class="kw-2">mut </span>cd_line = <span class="string">&quot;cd ./&quot;</span>.to_string();
+            cd_line.push_str(<span class="kw-2">&amp;</span>member.replace(<span class="string">&quot;\\&quot;</span>, <span class="string">&quot;/&quot;</span>));
+            script_lines.push(cd_line);
 
-            <span class="comment">//get member name</span>
-            <span class="kw">let</span> <span class="ident">member_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Path::new</span>(<span class="kw-2">&amp;</span><span class="ident">member</span>).<span class="ident">file_name</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">name</span>) =&gt; <span class="ident">String::from</span>(<span class="ident">name</span>.<span class="ident">to_string_lossy</span>()),
-                <span class="prelude-val">None</span> =&gt; <span class="ident">member</span>.<span class="ident">clone</span>(),
+            <span class="comment">//get member name
+            </span><span class="kw">let </span>member_name = <span class="kw">match </span>Path::new(<span class="kw-2">&amp;</span>member).file_name() {
+                <span class="prelude-val">Some</span>(name) =&gt; String::from(name.to_string_lossy()),
+                <span class="prelude-val">None </span>=&gt; member.clone(),
             };
 
-            <span class="macro">debug!</span>(<span class="string">&quot;Adding Member: {} Path: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">member_name</span>, <span class="kw-2">&amp;</span><span class="ident">member</span>);
+            <span class="macro">debug!</span>(<span class="string">&quot;Adding Member: {} Path: {}&quot;</span>, <span class="kw-2">&amp;</span>member_name, <span class="kw-2">&amp;</span>member);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">make_line</span> <span class="op">=</span> <span class="string">&quot;exec --fail-on-error &quot;</span>.<span class="ident">to_string</span>();
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">cargo_make_command</span>);
-            <span class="ident">make_line</span>
-                .<span class="ident">push_str</span>(<span class="string">&quot; --disable-check-for-updates --allow-private --no-on-error --loglevel=&quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">log_level</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=&quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">member_name</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; --profile &quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">profile_name</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; -- &quot;</span>);
-            <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>make_line = <span class="string">&quot;exec --fail-on-error &quot;</span>.to_string();
+            make_line.push_str(<span class="kw-2">&amp;</span>cargo_make_command);
+            make_line
+                .push_str(<span class="string">&quot; --disable-check-for-updates --allow-private --no-on-error --loglevel=&quot;</span>);
+            make_line.push_str(<span class="kw-2">&amp;</span>log_level);
+            make_line.push_str(<span class="string">&quot; --env CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER=&quot;</span>);
+            make_line.push_str(<span class="kw-2">&amp;</span>member_name);
+            make_line.push_str(<span class="string">&quot; --profile &quot;</span>);
+            make_line.push_str(<span class="kw-2">&amp;</span>profile_name);
+            make_line.push_str(<span class="string">&quot; -- &quot;</span>);
+            make_line.push_str(<span class="kw-2">&amp;</span>task);
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">envmnt::get_list</span>(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
-                <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">args</span> {
-                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="string">&quot; &quot;</span>);
-                    <span class="ident">make_line</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(args) = envmnt::get_list(<span class="string">&quot;CARGO_MAKE_TASK_ARGS&quot;</span>) {
+                <span class="kw">for </span>arg <span class="kw">in </span>args {
+                    make_line.push_str(<span class="string">&quot; &quot;</span>);
+                    make_line.push_str(<span class="kw-2">&amp;</span>arg);
                 }
             }
 
-            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="ident">make_line</span>);
+            script_lines.push(make_line);
 
-            <span class="ident">script_lines</span>.<span class="ident">push</span>(<span class="string">&quot;cd ${workspace_directory}&quot;</span>.<span class="ident">to_string</span>());
+            script_lines.push(<span class="string">&quot;cd ${workspace_directory}&quot;</span>.to_string());
         }
     }
 
-    <span class="comment">//only if environment variable is set</span>
-    <span class="kw">let</span> <span class="ident">task_env</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">envmnt::is_or</span>(<span class="string">&quot;CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE&quot;</span>, <span class="bool-val">false</span>) {
-        <span class="kw">match</span> <span class="ident">env::var</span>(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">makefile</span>) =&gt; {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">env_map</span> <span class="op">=</span> <span class="ident">IndexMap::new</span>();
-                <span class="ident">env_map</span>.<span class="ident">insert</span>(
-                    <span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>.<span class="ident">to_string</span>(),
-                    <span class="ident">EnvValue::Value</span>(<span class="ident">makefile</span>.<span class="ident">to_string</span>()),
+    <span class="comment">//only if environment variable is set
+    </span><span class="kw">let </span>task_env = <span class="kw">if </span>envmnt::is_or(<span class="string">&quot;CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE&quot;</span>, <span class="bool-val">false</span>) {
+        <span class="kw">match </span>env::var(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>) {
+            <span class="prelude-val">Ok</span>(makefile) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>env_map = IndexMap::new();
+                env_map.insert(
+                    <span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>.to_string(),
+                    EnvValue::Value(makefile.to_string()),
                 );
 
-                <span class="prelude-val">Some</span>(<span class="ident">env_map</span>)
+                <span class="prelude-val">Some</span>(env_map)
             }
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
-    } <span class="kw">else</span> {
-        <span class="prelude-val">None</span>
-    };
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>};
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Workspace Task Script: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">script_lines</span>);
+    <span class="macro">debug!</span>(<span class="string">&quot;Workspace Task Script: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>script_lines);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">workspace_task</span> <span class="op">=</span> <span class="ident">Task::new</span>();
-    <span class="ident">workspace_task</span>.<span class="ident">script_runner</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;@duckscript&quot;</span>.<span class="ident">to_string</span>());
-    <span class="ident">workspace_task</span>.<span class="ident">script</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ScriptValue::Text</span>(<span class="ident">script_lines</span>));
-    <span class="ident">workspace_task</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">task_env</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>workspace_task = Task::new();
+    workspace_task.script_runner = <span class="prelude-val">Some</span>(<span class="string">&quot;@duckscript&quot;</span>.to_string());
+    workspace_task.script = <span class="prelude-val">Some</span>(ScriptValue::Text(script_lines));
+    workspace_task.env = task_env;
 
-    <span class="ident">workspace_task</span>
+    workspace_task
 }
 
-<span class="kw">fn</span> <span class="ident">is_workspace_flow</span>(
-    <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
-    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
-    <span class="ident">crate_info</span>: <span class="kw-2">&amp;</span><span class="ident">CrateInfo</span>,
-    <span class="ident">sub_flow</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="comment">// determine if workspace flow is explicitly set and enabled in the requested task</span>
-    <span class="kw">let</span> (<span class="ident">task_set_workspace</span>, <span class="ident">task_enable_workspace</span>) <span class="op">=</span>
-        <span class="kw">match</span> <span class="ident">get_optional_normalized_task</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="bool-val">true</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">normalized_task</span>) =&gt; <span class="kw">match</span> <span class="ident">normalized_task</span>.<span class="ident">workspace</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">enable_workspace</span>) =&gt; (<span class="bool-val">true</span>, <span class="ident">enable_workspace</span>),
-                <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
+<span class="kw">fn </span>is_workspace_flow(
+    config: <span class="kw-2">&amp;</span>Config,
+    task: <span class="kw-2">&amp;</span>str,
+    disable_workspace: bool,
+    crate_info: <span class="kw-2">&amp;</span>CrateInfo,
+    sub_flow: bool,
+) -&gt; bool {
+    <span class="comment">// determine if workspace flow is explicitly set and enabled in the requested task
+    </span><span class="kw">let </span>(task_set_workspace, task_enable_workspace) =
+        <span class="kw">match </span>get_optional_normalized_task(config, task, <span class="bool-val">true</span>) {
+            <span class="prelude-val">Some</span>(normalized_task) =&gt; <span class="kw">match </span>normalized_task.workspace {
+                <span class="prelude-val">Some</span>(enable_workspace) =&gt; (<span class="bool-val">true</span>, enable_workspace),
+                <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
             },
-            <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
         };
 
-    <span class="comment">// if project is not a workspace or if workspace is disabled via cli, return no workspace flow</span>
-    <span class="kw">if</span> <span class="ident">disable_workspace</span>
-        <span class="op">|</span><span class="op">|</span> (<span class="ident">sub_flow</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">task_enable_workspace</span>)
-        <span class="op">|</span><span class="op">|</span> (<span class="ident">crate_info</span>.<span class="ident">workspace</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>))
-        <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt::exists</span>(<span class="string">&quot;CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER&quot;</span>)
+    <span class="comment">// if project is not a workspace or if workspace is disabled via cli, return no workspace flow
+    </span><span class="kw">if </span>disable_workspace
+        || (sub_flow &amp;&amp; !task_enable_workspace)
+        || (crate_info.workspace.is_none() &amp;&amp; !envmnt::is(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>))
+        || envmnt::exists(<span class="string">&quot;CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER&quot;</span>)
     {
-        <span class="bool-val">false</span>
-    } <span class="kw">else</span> {
-        <span class="comment">// project is a workspace and wasn&#39;t disabled via cli, need to check requested task</span>
+        <span class="bool-val">false
+    </span>} <span class="kw">else </span>{
+        <span class="comment">// project is a workspace and wasn&#39;t disabled via cli, need to check requested task
 
-        <span class="comment">// use requested task&#39;s workspace flag if set</span>
-        <span class="kw">if</span> <span class="ident">task_set_workspace</span> {
-            <span class="ident">task_enable_workspace</span>
-        } <span class="kw">else</span> {
-            <span class="comment">// use configured default workspace flag if set</span>
-            <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">default_to_workspace</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>)
+        // use requested task&#39;s workspace flag if set
+        </span><span class="kw">if </span>task_set_workspace {
+            task_enable_workspace
+        } <span class="kw">else </span>{
+            <span class="comment">// use configured default workspace flag if set
+            </span>config.config.default_to_workspace.unwrap_or(<span class="bool-val">true</span>)
         }
     }
 }
 
-<span class="doccomment">/// Creates an execution plan for the given step based on existing execution plan data</span>
-<span class="kw">fn</span> <span class="ident">create_for_step</span>(
-    <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
-    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">TaskIdentifier</span>,
-    <span class="ident">steps</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>,
-    <span class="ident">task_names</span>: <span class="kw-2">&amp;mut</span> <span class="ident">HashSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">root</span>: <span class="ident">bool</span>,
-    <span class="ident">allow_private</span>: <span class="ident">bool</span>,
-    <span class="ident">skip_tasks_pattern</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Regex</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Creates an execution plan for the given step based on existing execution plan data
+</span><span class="kw">fn </span>create_for_step(
+    config: <span class="kw-2">&amp;</span>Config,
+    task: <span class="kw-2">&amp;</span>TaskIdentifier,
+    steps: <span class="kw-2">&amp;mut </span>Vec&lt;Step&gt;,
+    task_names: <span class="kw-2">&amp;mut </span>HashSet&lt;String&gt;,
+    root: bool,
+    allow_private: bool,
+    skip_tasks_pattern: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Regex&gt;,
 ) {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">skip_tasks_pattern_regex</span>) <span class="op">=</span> <span class="ident">skip_tasks_pattern</span> {
-        <span class="kw">if</span> <span class="ident">skip_tasks_pattern_regex</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>) {
-            <span class="macro">debug!</span>(<span class="string">&quot;Skipping task: {} due to skip pattern.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(skip_tasks_pattern_regex) = skip_tasks_pattern {
+        <span class="kw">if </span>skip_tasks_pattern_regex.is_match(<span class="kw-2">&amp;</span>task.name) {
+            <span class="macro">debug!</span>(<span class="string">&quot;Skipping task: {} due to skip pattern.&quot;</span>, <span class="kw-2">&amp;</span>task.name);
             <span class="kw">return</span>;
         }
     }
 
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">path</span> {
-        <span class="comment">// this is referring to a task in another file</span>
-        <span class="comment">// so we create a proxy task to invoke it</span>
-        <span class="kw">let</span> <span class="ident">proxy_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}_proxy&quot;</span>, <span class="ident">task</span>.<span class="ident">name</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = <span class="kw-2">&amp;</span>task.path {
+        <span class="comment">// this is referring to a task in another file
+        // so we create a proxy task to invoke it
+        </span><span class="kw">let </span>proxy_name = <span class="macro">format!</span>(<span class="string">&quot;{}_proxy&quot;</span>, task.name);
 
-        <span class="kw">let</span> <span class="ident">path_obj</span> <span class="op">=</span> <span class="ident">Path::new</span>(<span class="ident">path</span>);
-        <span class="kw">let</span> (<span class="ident">working_directory</span>, <span class="ident">makefile</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">path_obj</span>.<span class="ident">is_file</span>() {
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="ident">get_basename</span>(<span class="kw-2">&amp;</span><span class="ident">path_obj</span>);
-            <span class="kw">let</span> <span class="ident">working_directory</span> <span class="op">=</span> <span class="ident">get_parent_directory</span>(<span class="kw-2">&amp;</span><span class="ident">path_obj</span>);
-            (<span class="ident">working_directory</span>, <span class="ident">filename</span>)
-        } <span class="kw">else</span> {
-            (<span class="prelude-val">Some</span>(<span class="ident">path</span>.<span class="ident">to_string</span>()), <span class="prelude-val">Some</span>(<span class="string">&quot;Makefile.toml&quot;</span>.<span class="ident">to_string</span>()))
+        <span class="kw">let </span>path_obj = Path::new(path);
+        <span class="kw">let </span>(working_directory, makefile) = <span class="kw">if </span>path_obj.is_file() {
+            <span class="kw">let </span>filename = get_basename(<span class="kw-2">&amp;</span>path_obj);
+            <span class="kw">let </span>working_directory = get_parent_directory(<span class="kw-2">&amp;</span>path_obj);
+            (working_directory, filename)
+        } <span class="kw">else </span>{
+            (<span class="prelude-val">Some</span>(path.to_string()), <span class="prelude-val">Some</span>(<span class="string">&quot;Makefile.toml&quot;</span>.to_string()))
         };
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">proxy_task</span> <span class="op">=</span> <span class="ident">create_proxy_task</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="ident">makefile</span>, <span class="prelude-val">None</span>);
-        <span class="ident">proxy_task</span>.<span class="ident">cwd</span> <span class="op">=</span> <span class="ident">working_directory</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>proxy_task = create_proxy_task(<span class="kw-2">&amp;</span>task.name, <span class="bool-val">true</span>, <span class="bool-val">false</span>, makefile, <span class="prelude-val">None</span>);
+        proxy_task.cwd = working_directory;
 
-        <span class="kw">let</span> <span class="ident">step</span> <span class="op">=</span> <span class="ident">Step</span> {
-            <span class="ident">name</span>: <span class="ident">proxy_name</span>,
-            <span class="ident">config</span>: <span class="ident">proxy_task</span>,
+        <span class="kw">let </span>step = Step {
+            name: proxy_name,
+            config: proxy_task,
         };
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Created external dependency step: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">step</span>);
+        <span class="macro">debug!</span>(<span class="string">&quot;Created external dependency step: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>step);
 
-        <span class="ident">steps</span>.<span class="ident">push</span>(<span class="ident">step</span>);
-        <span class="ident">task_names</span>.<span class="ident">insert</span>(<span class="ident">task</span>.<span class="ident">to_string</span>());
+        steps.push(step);
+        task_names.insert(task.to_string());
         <span class="kw">return</span>;
     }
 
-    <span class="kw">let</span> <span class="ident">task_config</span> <span class="op">=</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>, <span class="bool-val">true</span>);
+    <span class="kw">let </span>task_config = get_normalized_task(config, <span class="kw-2">&amp;</span>task.name, <span class="bool-val">true</span>);
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Normalized Task: {} config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="kw-2">&amp;</span><span class="ident">task_config</span>);
+    <span class="macro">debug!</span>(<span class="string">&quot;Normalized Task: {} config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>task, <span class="kw-2">&amp;</span>task_config);
 
-    <span class="kw">let</span> <span class="ident">is_private</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">private</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">let </span>is_private = <span class="kw">match </span>task_config.private {
+        <span class="prelude-val">Some</span>(value) =&gt; value,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
     };
 
-    <span class="kw">if</span> <span class="ident">allow_private</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">is_private</span> {
-        <span class="kw">let</span> <span class="ident">add</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task_config</span>.<span class="ident">disabled</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+    <span class="kw">if </span>allow_private || !is_private {
+        <span class="kw">let </span>add = !task_config.disabled.unwrap_or(<span class="bool-val">false</span>);
 
-        <span class="kw">if</span> <span class="ident">add</span> {
-            <span class="kw">match</span> <span class="ident">task_config</span>.<span class="ident">dependencies</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">dependencies</span>) =&gt; {
-                    <span class="kw">for</span> <span class="ident">dependency</span> <span class="kw">in</span> <span class="ident">dependencies</span> {
-                        <span class="ident">create_for_step</span>(
-                            <span class="kw-2">&amp;</span><span class="ident">config</span>,
-                            <span class="kw-2">&amp;</span><span class="ident">dependency</span>.<span class="ident">to_owned</span>().<span class="ident">into</span>(),
-                            <span class="ident">steps</span>,
-                            <span class="ident">task_names</span>,
+        <span class="kw">if </span>add {
+            <span class="kw">match </span>task_config.dependencies {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dependencies) =&gt; {
+                    <span class="kw">for </span>dependency <span class="kw">in </span>dependencies {
+                        create_for_step(
+                            <span class="kw-2">&amp;</span>config,
+                            <span class="kw-2">&amp;</span>dependency.to_owned().into(),
+                            steps,
+                            task_names,
                             <span class="bool-val">false</span>,
                             <span class="bool-val">true</span>,
-                            <span class="ident">skip_tasks_pattern</span>,
+                            skip_tasks_pattern,
                         );
                     }
                 }
-                <span class="kw">_</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;No dependencies found for task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>),
+                <span class="kw">_ </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;No dependencies found for task: {}&quot;</span>, <span class="kw-2">&amp;</span>task),
             };
 
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">task_names</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">task</span>.<span class="ident">name</span>) {
-                <span class="ident">steps</span>.<span class="ident">push</span>(<span class="ident">Step</span> {
-                    <span class="ident">name</span>: <span class="ident">task</span>.<span class="ident">to_string</span>(),
-                    <span class="ident">config</span>: <span class="ident">task_config</span>,
+            <span class="kw">if </span>!task_names.contains(<span class="kw-2">&amp;</span>task.name) {
+                steps.push(Step {
+                    name: task.to_string(),
+                    config: task_config,
                 });
-                <span class="ident">task_names</span>.<span class="ident">insert</span>(<span class="ident">task</span>.<span class="ident">to_string</span>());
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">root</span> {
-                <span class="macro">error!</span>(<span class="string">&quot;Circular reference found for task: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
+                task_names.insert(task.to_string());
+            } <span class="kw">else if </span>root {
+                <span class="macro">error!</span>(<span class="string">&quot;Circular reference found for task: {}&quot;</span>, <span class="kw-2">&amp;</span>task);
             }
         }
-    } <span class="kw">else</span> {
-        <span class="macro">error!</span>(<span class="string">&quot;Task {} is private&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
-        <span class="macro">panic!</span>(<span class="string">&quot;Task {} is private&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
+    } <span class="kw">else </span>{
+        <span class="macro">error!</span>(<span class="string">&quot;Task {} is private&quot;</span>, <span class="kw-2">&amp;</span>task);
+        <span class="macro">panic!</span>(<span class="string">&quot;Task {} is private&quot;</span>, <span class="kw-2">&amp;</span>task);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">add_predefined_step</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">steps</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Step</span><span class="op">&gt;</span>) {
-    <span class="kw">let</span> <span class="ident">task_config</span> <span class="op">=</span> <span class="ident">get_normalized_task</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="bool-val">false</span>);
-    <span class="kw">let</span> <span class="ident">add</span> <span class="op">=</span> <span class="op">!</span><span class="ident">task_config</span>.<span class="ident">disabled</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+<span class="kw">fn </span>add_predefined_step(config: <span class="kw-2">&amp;</span>Config, task: <span class="kw-2">&amp;</span>str, steps: <span class="kw-2">&amp;mut </span>Vec&lt;Step&gt;) {
+    <span class="kw">let </span>task_config = get_normalized_task(config, task, <span class="bool-val">false</span>);
+    <span class="kw">let </span>add = !task_config.disabled.unwrap_or(<span class="bool-val">false</span>);
 
-    <span class="kw">if</span> <span class="ident">add</span> {
-        <span class="ident">steps</span>.<span class="ident">push</span>(<span class="ident">Step</span> {
-            <span class="ident">name</span>: <span class="ident">task</span>.<span class="ident">to_string</span>(),
-            <span class="ident">config</span>: <span class="ident">task_config</span>,
+    <span class="kw">if </span>add {
+        steps.push(Step {
+            name: task.to_string(),
+            config: task_config,
         });
     }
 }
 
-<span class="doccomment">/// Creates the full execution plan</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create</span>(
-    <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>,
-    <span class="ident">task</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">disable_workspace</span>: <span class="ident">bool</span>,
-    <span class="ident">allow_private</span>: <span class="ident">bool</span>,
-    <span class="ident">sub_flow</span>: <span class="ident">bool</span>,
-    <span class="ident">skip_tasks_pattern</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Regex</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">ExecutionPlan</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">task_names</span> <span class="op">=</span> <span class="ident">HashSet::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">steps</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+<span class="doccomment">/// Creates the full execution plan
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create(
+    config: <span class="kw-2">&amp;</span>Config,
+    task: <span class="kw-2">&amp;</span>str,
+    disable_workspace: bool,
+    allow_private: bool,
+    sub_flow: bool,
+    skip_tasks_pattern: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Regex&gt;,
+) -&gt; ExecutionPlan {
+    <span class="kw">let </span><span class="kw-2">mut </span>task_names = HashSet::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>steps = Vec::new();
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">sub_flow</span> {
-        <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">legacy_migration_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Legacy migration task not defined.&quot;</span>),
+    <span class="kw">if </span>!sub_flow {
+        <span class="kw">match </span>config.config.legacy_migration_task {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;Legacy migration task not defined.&quot;</span>),
         };
-        <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">init_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Init task not defined.&quot;</span>),
+        <span class="kw">match </span>config.config.init_task {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;Init task not defined.&quot;</span>),
         };
     }
 
-    <span class="kw">let</span> <span class="ident">skip</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">skip_tasks_pattern</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>) =&gt; <span class="ident">pattern</span>.<span class="ident">is_match</span>(<span class="ident">task</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">let </span>skip = <span class="kw">match </span>skip_tasks_pattern {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; pattern.is_match(task),
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
     };
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">skip</span> {
-        <span class="comment">// load crate info and look for workspace info</span>
-        <span class="kw">let</span> <span class="ident">crate_info</span> <span class="op">=</span> <span class="ident">environment::crateinfo::load</span>();
+    <span class="kw">if </span>!skip {
+        <span class="comment">// load crate info and look for workspace info
+        </span><span class="kw">let </span>crate_info = environment::crateinfo::load();
 
-        <span class="kw">let</span> <span class="ident">workspace_flow</span> <span class="op">=</span>
-            <span class="ident">is_workspace_flow</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>, <span class="ident">disable_workspace</span>, <span class="kw-2">&amp;</span><span class="ident">crate_info</span>, <span class="ident">sub_flow</span>);
+        <span class="kw">let </span>workspace_flow =
+            is_workspace_flow(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, disable_workspace, <span class="kw-2">&amp;</span>crate_info, sub_flow);
 
-        <span class="kw">if</span> <span class="ident">workspace_flow</span> {
-            <span class="kw">let</span> <span class="ident">workspace_task</span> <span class="op">=</span> <span class="ident">create_workspace_task</span>(<span class="ident">crate_info</span>, <span class="ident">task</span>);
+        <span class="kw">if </span>workspace_flow {
+            <span class="kw">let </span>workspace_task = create_workspace_task(crate_info, task);
 
-            <span class="ident">steps</span>.<span class="ident">push</span>(<span class="ident">Step</span> {
-                <span class="ident">name</span>: <span class="string">&quot;workspace&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="ident">config</span>: <span class="ident">workspace_task</span>,
+            steps.push(Step {
+                name: <span class="string">&quot;workspace&quot;</span>.to_string(),
+                config: workspace_task,
             });
-        } <span class="kw">else</span> {
-            <span class="ident">create_for_step</span>(
-                <span class="kw-2">&amp;</span><span class="ident">config</span>,
-                <span class="kw-2">&amp;</span><span class="ident">TaskIdentifier::from_name</span>(<span class="ident">task</span>),
-                <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">task_names</span>,
+        } <span class="kw">else </span>{
+            create_for_step(
+                <span class="kw-2">&amp;</span>config,
+                <span class="kw-2">&amp;</span>TaskIdentifier::from_name(task),
+                <span class="kw-2">&amp;mut </span>steps,
+                <span class="kw-2">&amp;mut </span>task_names,
                 <span class="bool-val">true</span>,
-                <span class="ident">allow_private</span>,
-                <span class="kw-2">&amp;</span><span class="ident">skip_tasks_pattern</span>,
+                allow_private,
+                <span class="kw-2">&amp;</span>skip_tasks_pattern,
             );
         }
-    } <span class="kw">else</span> {
-        <span class="macro">debug!</span>(<span class="string">&quot;Skipping task: {} due to skip pattern.&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">task</span>);
+    } <span class="kw">else </span>{
+        <span class="macro">debug!</span>(<span class="string">&quot;Skipping task: {} due to skip pattern.&quot;</span>, <span class="kw-2">&amp;</span>task);
     }
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">sub_flow</span> {
-        <span class="comment">// always add end task even if already executed due to some dependency</span>
-        <span class="kw">match</span> <span class="ident">config</span>.<span class="ident">config</span>.<span class="ident">end_task</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">task</span>) =&gt; <span class="ident">add_predefined_step</span>(<span class="ident">config</span>, <span class="ident">task</span>, <span class="kw-2">&amp;mut</span> <span class="ident">steps</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Ent task not defined.&quot;</span>),
+    <span class="kw">if </span>!sub_flow {
+        <span class="comment">// always add end task even if already executed due to some dependency
+        </span><span class="kw">match </span>config.config.end_task {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">&quot;Ent task not defined.&quot;</span>),
         };
     }
 
-    <span class="ident">ExecutionPlan</span> { <span class="ident">steps</span> }
+    ExecutionPlan { steps }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli_parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli_parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/cli_parser.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>cli_parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -498,505 +498,505 @@
 <span id="498">498</span>
 <span id="499">499</span>
 <span id="500">500</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # cli_parser</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Defines the cli args and parsers them.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # cli_parser
+//!
+//! Defines the cli args and parsers them.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;cli_parser_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">cli_parser_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;cli_parser_test.rs&quot;</span>]
+</span><span class="kw">mod </span>cli_parser_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cli</span>::{
-    <span class="ident">AUTHOR</span>, <span class="ident">DEFAULT_LOG_LEVEL</span>, <span class="ident">DEFAULT_OUTPUT_FORMAT</span>, <span class="ident">DEFAULT_TASK_NAME</span>, <span class="ident">DESCRIPTION</span>, <span class="ident">VERSION</span>,
+<span class="kw">use </span><span class="kw">crate</span>::cli::{
+    AUTHOR, DEFAULT_LOG_LEVEL, DEFAULT_OUTPUT_FORMAT, DEFAULT_TASK_NAME, DESCRIPTION, VERSION,
 };
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::profile</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">CliArgs</span>, <span class="ident">GlobalConfig</span>};
-<span class="kw">use</span> <span class="ident">cliparser</span>;
-<span class="kw">use</span> <span class="ident">cliparser::types</span>::{
-    <span class="ident">Argument</span>, <span class="ident">ArgumentHelp</span>, <span class="ident">ArgumentOccurrence</span>, <span class="ident">ArgumentValueType</span>, <span class="ident">CliParsed</span>, <span class="ident">CliSpec</span>,
-    <span class="ident">CliSpecMetaInfo</span>, <span class="ident">PositionalArgument</span>,
+<span class="kw">use </span><span class="kw">crate</span>::profile;
+<span class="kw">use </span><span class="kw">crate</span>::types::{CliArgs, GlobalConfig};
+<span class="kw">use </span>cliparser;
+<span class="kw">use </span>cliparser::types::{
+    Argument, ArgumentHelp, ArgumentOccurrence, ArgumentValueType, CliParsed, CliSpec,
+    CliSpecMetaInfo, PositionalArgument,
 };
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">fn</span> <span class="ident">exit</span>() -&gt; <span class="op">!</span> {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">fn </span>exit() -&gt; ! {
     <span class="macro">panic!</span>(<span class="string">&quot;{}&quot;</span>, <span class="string">&quot;exit test&quot;</span>);
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
-<span class="kw">use</span> <span class="ident">std::process</span>;
+<span class="attribute">#[cfg(not(test))]
+</span><span class="kw">use </span>std::process;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
-<span class="kw">fn</span> <span class="ident">exit</span>() -&gt; <span class="op">!</span> {
-    <span class="ident">process::exit</span>(<span class="number">0</span>);
+<span class="attribute">#[cfg(not(test))]
+</span><span class="kw">fn </span>exit() -&gt; ! {
+    process::exit(<span class="number">0</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">get_args</span>(
-    <span class="ident">cli_parsed</span>: <span class="kw-2">&amp;</span><span class="ident">CliParsed</span>,
-    <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>,
-    <span class="ident">command_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">sub_command</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">CliArgs</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cli_args</span> <span class="op">=</span> <span class="ident">CliArgs::new</span>();
+<span class="kw">fn </span>get_args(
+    cli_parsed: <span class="kw-2">&amp;</span>CliParsed,
+    global_config: <span class="kw-2">&amp;</span>GlobalConfig,
+    command_name: <span class="kw-2">&amp;</span>str,
+    sub_command: bool,
+) -&gt; CliArgs {
+    <span class="kw">let </span><span class="kw-2">mut </span>cli_args = CliArgs::new();
 
-    <span class="ident">cli_args</span>.<span class="ident">command</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sub_command</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">binary</span> <span class="op">=</span> <span class="string">&quot;cargo &quot;</span>.<span class="ident">to_string</span>();
-        <span class="ident">binary</span>.<span class="ident">push_str</span>(<span class="ident">command_name</span>);
-        <span class="ident">binary</span>
-    } <span class="kw">else</span> {
-        <span class="ident">command_name</span>.<span class="ident">to_string</span>()
+    cli_args.command = <span class="kw">if </span>sub_command {
+        <span class="kw">let </span><span class="kw-2">mut </span>binary = <span class="string">&quot;cargo &quot;</span>.to_string();
+        binary.push_str(command_name);
+        binary
+    } <span class="kw">else </span>{
+        command_name.to_string()
     };
 
-    <span class="ident">cli_args</span>.<span class="ident">env</span> <span class="op">=</span> <span class="ident">to_owned_vec</span>(<span class="ident">cli_parsed</span>.<span class="ident">argument_values</span>.<span class="ident">get</span>(<span class="string">&quot;env&quot;</span>));
+    cli_args.env = to_owned_vec(cli_parsed.argument_values.get(<span class="string">&quot;env&quot;</span>));
 
-    <span class="ident">cli_args</span>.<span class="ident">build_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;makefile&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    cli_args.build_file = <span class="kw">match </span>cli_parsed.get_first_value(<span class="string">&quot;makefile&quot;</span>) {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="ident">cli_args</span>.<span class="ident">cwd</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;cwd&quot;</span>);
+    cli_args.cwd = cli_parsed.get_first_value(<span class="string">&quot;cwd&quot;</span>);
 
-    <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">to_string</span>(),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">DEFAULT_LOG_LEVEL</span>.<span class="ident">to_string</span>(),
+    <span class="kw">let </span>default_log_level = <span class="kw">match </span>global_config.log_level {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.to_string(),
+        <span class="prelude-val">None </span>=&gt; DEFAULT_LOG_LEVEL.to_string(),
     };
-    <span class="ident">cli_args</span>.<span class="ident">log_level</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;verbose&quot;</span>) {
-        <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>()
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;quiet&quot;</span>) {
-        <span class="string">&quot;error&quot;</span>.<span class="ident">to_string</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">cli_parsed</span>
-            .<span class="ident">get_first_value</span>(<span class="string">&quot;loglevel&quot;</span>)
-            .<span class="ident">unwrap_or</span>(<span class="ident">default_log_level</span>)
-            .<span class="ident">to_string</span>()
-    };
-
-    <span class="kw">let</span> <span class="ident">default_disable_color</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">disable_color</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
-    };
-    <span class="ident">cli_args</span>.<span class="ident">disable_color</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;no-color&quot;</span>)
-        <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>)
-        <span class="op">|</span><span class="op">|</span> <span class="ident">default_disable_color</span>;
-
-    <span class="ident">cli_args</span>.<span class="ident">print_time_summary</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;time-summary&quot;</span>)
-        <span class="op">|</span><span class="op">|</span> <span class="ident">envmnt::is</span>(<span class="string">&quot;CARGO_MAKE_PRINT_TIME_SUMMARY&quot;</span>);
-
-    <span class="ident">cli_args</span>.<span class="ident">env_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;envfile&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    cli_args.log_level = <span class="kw">if </span>cli_parsed.arguments.contains(<span class="string">&quot;verbose&quot;</span>) {
+        <span class="string">&quot;verbose&quot;</span>.to_string()
+    } <span class="kw">else if </span>cli_parsed.arguments.contains(<span class="string">&quot;quiet&quot;</span>) {
+        <span class="string">&quot;error&quot;</span>.to_string()
+    } <span class="kw">else </span>{
+        cli_parsed
+            .get_first_value(<span class="string">&quot;loglevel&quot;</span>)
+            .unwrap_or(default_log_level)
+            .to_string()
     };
 
-    <span class="ident">cli_args</span>.<span class="ident">output_format</span> <span class="op">=</span> <span class="ident">cli_parsed</span>
-        .<span class="ident">get_first_value</span>(<span class="string">&quot;output-format&quot;</span>)
-        .<span class="ident">unwrap_or</span>(<span class="ident">DEFAULT_OUTPUT_FORMAT</span>.<span class="ident">to_string</span>())
-        .<span class="ident">to_string</span>();
+    <span class="kw">let </span>default_disable_color = <span class="kw">match </span>global_config.disable_color {
+        <span class="prelude-val">Some</span>(value) =&gt; value,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
+    };
+    cli_args.disable_color = cli_parsed.arguments.contains(<span class="string">&quot;no-color&quot;</span>)
+        || envmnt::is(<span class="string">&quot;CARGO_MAKE_DISABLE_COLOR&quot;</span>)
+        || default_disable_color;
 
-    <span class="ident">cli_args</span>.<span class="ident">list_category_steps</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;list-category-steps&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    cli_args.print_time_summary = cli_parsed.arguments.contains(<span class="string">&quot;time-summary&quot;</span>)
+        || envmnt::is(<span class="string">&quot;CARGO_MAKE_PRINT_TIME_SUMMARY&quot;</span>);
+
+    cli_args.env_file = <span class="kw">match </span>cli_parsed.get_first_value(<span class="string">&quot;envfile&quot;</span>) {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value.to_string()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="ident">cli_args</span>.<span class="ident">output_file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;output-file&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    cli_args.output_format = cli_parsed
+        .get_first_value(<span class="string">&quot;output-format&quot;</span>)
+        .unwrap_or(DEFAULT_OUTPUT_FORMAT.to_string())
+        .to_string();
+
+    cli_args.list_category_steps = <span class="kw">match </span>cli_parsed.get_first_value(<span class="string">&quot;list-category-steps&quot;</span>) {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value.to_string()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">default_profile</span> <span class="op">=</span> <span class="ident">profile::DEFAULT_PROFILE</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="ident">profile_name</span> <span class="op">=</span> <span class="ident">cli_parsed</span>
-        .<span class="ident">get_first_value</span>(<span class="string">&quot;profile&quot;</span>)
-        .<span class="ident">unwrap_or</span>(<span class="ident">default_profile</span>);
-    <span class="ident">cli_args</span>.<span class="ident">profile</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">profile_name</span>.<span class="ident">to_string</span>());
-
-    <span class="ident">cli_args</span>.<span class="ident">disable_check_for_updates</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;disable-check-for-updates&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">experimental</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;experimental&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">print_only</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;print-steps&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">disable_workspace</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;no-workspace&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">disable_on_error</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;no-on-error&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">allow_private</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;allow-private&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">skip_init_end_tasks</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;skip-init-end-tasks&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">list_all_steps</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;list-steps&quot;</span>);
-    <span class="ident">cli_args</span>.<span class="ident">diff_execution_plan</span> <span class="op">=</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;diff-steps&quot;</span>);
-
-    <span class="ident">cli_args</span>.<span class="ident">skip_tasks_pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cli_parsed</span>.<span class="ident">get_first_value</span>(<span class="string">&quot;skip-tasks-pattern&quot;</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">to_string</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+    cli_args.output_file = <span class="kw">match </span>cli_parsed.get_first_value(<span class="string">&quot;output-file&quot;</span>) {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value.to_string()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">to_string</span>(),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">DEFAULT_TASK_NAME</span>.<span class="ident">to_string</span>(),
+    <span class="kw">let </span>default_profile = profile::DEFAULT_PROFILE.to_string();
+    <span class="kw">let </span>profile_name = cli_parsed
+        .get_first_value(<span class="string">&quot;profile&quot;</span>)
+        .unwrap_or(default_profile);
+    cli_args.profile = <span class="prelude-val">Some</span>(profile_name.to_string());
+
+    cli_args.disable_check_for_updates = cli_parsed.arguments.contains(<span class="string">&quot;disable-check-for-updates&quot;</span>);
+    cli_args.experimental = cli_parsed.arguments.contains(<span class="string">&quot;experimental&quot;</span>);
+    cli_args.print_only = cli_parsed.arguments.contains(<span class="string">&quot;print-steps&quot;</span>);
+    cli_args.disable_workspace = cli_parsed.arguments.contains(<span class="string">&quot;no-workspace&quot;</span>);
+    cli_args.disable_on_error = cli_parsed.arguments.contains(<span class="string">&quot;no-on-error&quot;</span>);
+    cli_args.allow_private = cli_parsed.arguments.contains(<span class="string">&quot;allow-private&quot;</span>);
+    cli_args.skip_init_end_tasks = cli_parsed.arguments.contains(<span class="string">&quot;skip-init-end-tasks&quot;</span>);
+    cli_args.list_all_steps = cli_parsed.arguments.contains(<span class="string">&quot;list-steps&quot;</span>);
+    cli_args.diff_execution_plan = cli_parsed.arguments.contains(<span class="string">&quot;diff-steps&quot;</span>);
+
+    cli_args.skip_tasks_pattern = <span class="kw">match </span>cli_parsed.get_first_value(<span class="string">&quot;skip-tasks-pattern&quot;</span>) {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="prelude-val">Some</span>(value.to_string()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
-    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">cli_parsed</span>
-        .<span class="ident">get_first_value</span>(<span class="string">&quot;task&quot;</span>)
-        .<span class="ident">unwrap_or</span>(<span class="ident">default_task_name</span>);
-    <span class="kw">let</span> <span class="ident">task_cmd</span> <span class="op">=</span> <span class="ident">to_owned_vec</span>(<span class="ident">cli_parsed</span>.<span class="ident">argument_values</span>.<span class="ident">get</span>(<span class="string">&quot;TASK_CMD&quot;</span>)).<span class="ident">unwrap_or</span>(<span class="macro">vec!</span>[]);
-    <span class="kw">let</span> <span class="ident">task_cmd_slice</span> <span class="op">=</span> <span class="ident">task_cmd</span>.<span class="ident">as_slice</span>();
-    <span class="kw">let</span> (<span class="ident">task</span>, <span class="ident">arguments</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">task_cmd_slice</span> {
-        <span class="kw-2">&amp;</span>[] =&gt; (<span class="ident">task</span>, <span class="prelude-val">None</span>),
-        <span class="kw-2">&amp;</span>[<span class="kw-2">ref</span> <span class="ident">task_name</span>, <span class="kw-2">ref</span> <span class="ident">task_args</span> @ ..] =&gt; {
-            <span class="kw">let</span> <span class="ident">args_strings</span> <span class="op">=</span> <span class="ident">task_args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">to_string</span>()).<span class="ident">collect</span>();
-            (<span class="ident">task_name</span>.<span class="ident">to_string</span>(), <span class="prelude-val">Some</span>(<span class="ident">args_strings</span>))
+
+    <span class="kw">let </span>default_task_name = <span class="kw">match </span>global_config.default_task_name {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.to_string(),
+        <span class="prelude-val">None </span>=&gt; DEFAULT_TASK_NAME.to_string(),
+    };
+    <span class="kw">let </span>task = cli_parsed
+        .get_first_value(<span class="string">&quot;task&quot;</span>)
+        .unwrap_or(default_task_name);
+    <span class="kw">let </span>task_cmd = to_owned_vec(cli_parsed.argument_values.get(<span class="string">&quot;TASK_CMD&quot;</span>)).unwrap_or(<span class="macro">vec!</span>[]);
+    <span class="kw">let </span>task_cmd_slice = task_cmd.as_slice();
+    <span class="kw">let </span>(task, arguments) = <span class="kw">match </span>task_cmd_slice {
+        <span class="kw-2">&amp;</span>[] =&gt; (task, <span class="prelude-val">None</span>),
+        <span class="kw-2">&amp;</span>[<span class="kw-2">ref </span>task_name, <span class="kw-2">ref </span>task_args @ ..] =&gt; {
+            <span class="kw">let </span>args_strings = task_args.iter().map(|item| item.to_string()).collect();
+            (task_name.to_string(), <span class="prelude-val">Some</span>(args_strings))
         }
     };
-    <span class="ident">cli_args</span>.<span class="ident">task</span> <span class="op">=</span> <span class="ident">task</span>;
-    <span class="ident">cli_args</span>.<span class="ident">arguments</span> <span class="op">=</span> <span class="ident">arguments</span>;
+    cli_args.task = task;
+    cli_args.arguments = arguments;
 
-    <span class="ident">cli_args</span>
+    cli_args
 }
 
-<span class="kw">fn</span> <span class="ident">create_cli</span>(<span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>) -&gt; <span class="ident">CliSpec</span> {
-    <span class="kw">let</span> <span class="ident">default_task_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">default_task_name</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_TASK_NAME</span>,
+<span class="kw">fn </span>create_cli(global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; CliSpec {
+    <span class="kw">let </span>default_task_name = <span class="kw">match </span>global_config.default_task_name {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.as_str(),
+        <span class="prelude-val">None </span>=&gt; <span class="kw-2">&amp;</span>DEFAULT_TASK_NAME,
     };
-    <span class="kw">let</span> <span class="ident">default_log_level</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">global_config</span>.<span class="ident">log_level</span> {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">as_str</span>(),
-        <span class="prelude-val">None</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">DEFAULT_LOG_LEVEL</span>,
+    <span class="kw">let </span>default_log_level = <span class="kw">match </span>global_config.log_level {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.as_str(),
+        <span class="prelude-val">None </span>=&gt; <span class="kw-2">&amp;</span>DEFAULT_LOG_LEVEL,
     };
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">CliSpec::new</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>spec = CliSpec::new();
 
-    <span class="ident">spec</span> <span class="op">=</span> <span class="ident">spec</span>
-        .<span class="ident">set_meta_info</span>(<span class="prelude-val">Some</span>(<span class="ident">CliSpecMetaInfo</span> {
-            <span class="ident">author</span>: <span class="prelude-val">Some</span>(<span class="ident">AUTHOR</span>.<span class="ident">to_string</span>()),
-            <span class="ident">version</span>: <span class="prelude-val">Some</span>(<span class="ident">VERSION</span>.<span class="ident">to_string</span>()),
-            <span class="ident">description</span>: <span class="prelude-val">Some</span>(<span class="ident">DESCRIPTION</span>.<span class="ident">to_string</span>()),
-            <span class="ident">project</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;cargo-make&quot;</span>.<span class="ident">to_string</span>()),
-            <span class="ident">help_post_text</span>: <span class="prelude-val">Some</span>(
-                <span class="string">&quot;See more info at: https://github.com/sagiegurari/cargo-make&quot;</span>.<span class="ident">to_string</span>(),
+    spec = spec
+        .set_meta_info(<span class="prelude-val">Some</span>(CliSpecMetaInfo {
+            author: <span class="prelude-val">Some</span>(AUTHOR.to_string()),
+            version: <span class="prelude-val">Some</span>(VERSION.to_string()),
+            description: <span class="prelude-val">Some</span>(DESCRIPTION.to_string()),
+            project: <span class="prelude-val">Some</span>(<span class="string">&quot;cargo-make&quot;</span>.to_string()),
+            help_post_text: <span class="prelude-val">Some</span>(
+                <span class="string">&quot;See more info at: https://github.com/sagiegurari/cargo-make&quot;</span>.to_string(),
             ),
         }))
-        .<span class="ident">add_command</span>(<span class="string">&quot;makers&quot;</span>)
-        .<span class="ident">add_subcommand</span>(<span class="macro">vec!</span>[<span class="string">&quot;cargo&quot;</span>, <span class="string">&quot;make&quot;</span>])
-        .<span class="ident">add_subcommand</span>(<span class="macro">vec!</span>[<span class="string">&quot;cargo-make&quot;</span>, <span class="string">&quot;make&quot;</span>]) <span class="comment">// done by cargo</span>
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;help&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--help&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-h&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(<span class="string">&quot;Print help information&quot;</span>.<span class="ident">to_string</span>())),
+        .add_command(<span class="string">&quot;makers&quot;</span>)
+        .add_subcommand(<span class="macro">vec!</span>[<span class="string">&quot;cargo&quot;</span>, <span class="string">&quot;make&quot;</span>])
+        .add_subcommand(<span class="macro">vec!</span>[<span class="string">&quot;cargo-make&quot;</span>, <span class="string">&quot;make&quot;</span>]) <span class="comment">// done by cargo
+        </span>.add_argument(Argument {
+            name: <span class="string">&quot;help&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--help&quot;</span>.to_string(), <span class="string">&quot;-h&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(<span class="string">&quot;Print help information&quot;</span>.to_string())),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;version&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-V&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(<span class="string">&quot;Print version information&quot;</span>.<span class="ident">to_string</span>())),
+        .add_argument(Argument {
+            name: <span class="string">&quot;version&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.to_string(), <span class="string">&quot;-V&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(<span class="string">&quot;Print version information&quot;</span>.to_string())),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;makefile&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--makefile&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;FILE&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;makefile&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--makefile&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The optional toml file containing the tasks definitions&quot;</span>.to_string(),
+                <span class="string">&quot;FILE&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;task&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--task&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-t&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">Some</span>(<span class="ident">default_task_name</span>.<span class="ident">to_string</span>()),
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The task name to execute (can omit the flag if the task name is the last argument)&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;TASK&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;task&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--task&quot;</span>.to_string(), <span class="string">&quot;-t&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">Some</span>(default_task_name.to_string()),
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The task name to execute (can omit the flag if the task name is the last argument)&quot;</span>.to_string(),
+                <span class="string">&quot;TASK&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;profile&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--profile&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-p&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">Some</span>(<span class="ident">profile::DEFAULT_PROFILE</span>.<span class="ident">to_string</span>()),
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The profile name (will be converted to lower case)&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;PROFILE&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;profile&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--profile&quot;</span>.to_string(), <span class="string">&quot;-p&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">Some</span>(profile::DEFAULT_PROFILE.to_string()),
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The profile name (will be converted to lower case)&quot;</span>.to_string(),
+                <span class="string">&quot;PROFILE&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;cwd&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--cwd&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;Will set the current working directory. The search for the makefile will be from this directory if defined.&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;DIRECTORY&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;cwd&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--cwd&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;Will set the current working directory. The search for the makefile will be from this directory if defined.&quot;</span>.to_string(),
+                <span class="string">&quot;DIRECTORY&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;no-workspace&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--no-workspace&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;no-workspace&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--no-workspace&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Disable workspace support (tasks are triggered on workspace and not on members)&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;no-on-error&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--no-on-error&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Disable on error flow even if defined in config sections&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;no-on-error&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--no-on-error&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Disable on error flow even if defined in config sections&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;allow-private&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--allow-private&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Allow invocation of private tasks&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;allow-private&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--allow-private&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Allow invocation of private tasks&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;skip-init-end-tasks&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--skip-init-end-tasks&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;If set, init and end tasks are skipped&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;skip-init-end-tasks&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--skip-init-end-tasks&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;If set, init and end tasks are skipped&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;skip-tasks-pattern&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--skip-tasks&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;Skip all tasks that match the provided regex (example: pre.*|post.*)&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;SKIP_TASK_PATTERNS&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;skip-tasks-pattern&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--skip-tasks&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;Skip all tasks that match the provided regex (example: pre.*|post.*)&quot;</span>.to_string(),
+                <span class="string">&quot;SKIP_TASK_PATTERNS&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;envfile&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--env-file&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;Set environment variables from provided file&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;FILE&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;envfile&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--env-file&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;Set environment variables from provided file&quot;</span>.to_string(),
+                <span class="string">&quot;FILE&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;env&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--env&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-e&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Multiple</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;Set environment variables&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;ENV&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;env&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--env&quot;</span>.to_string(), <span class="string">&quot;-e&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Multiple,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;Set environment variables&quot;</span>.to_string(),
+                <span class="string">&quot;ENV&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;loglevel&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--loglevel&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-l&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">Some</span>(<span class="ident">default_log_level</span>.<span class="ident">to_string</span>()),
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The log level (verbose, info, error)&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;LOG LEVEL&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;loglevel&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--loglevel&quot;</span>.to_string(), <span class="string">&quot;-l&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">Some</span>(default_log_level.to_string()),
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The log level (verbose, info, error)&quot;</span>.to_string(),
+                <span class="string">&quot;LOG LEVEL&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;verbose&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--verbose&quot;</span>.<span class="ident">to_string</span>(), <span class="string">&quot;-v&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;verbose&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--verbose&quot;</span>.to_string(), <span class="string">&quot;-v&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Sets the log level to verbose (shorthand for --loglevel verbose)&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;quiet&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--quiet&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Sets the log level to error (shorthand for --loglevel error)&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;quiet&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--quiet&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Sets the log level to error (shorthand for --loglevel error)&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;no-color&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--no-color&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Disables colorful output&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;no-color&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--no-color&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Disables colorful output&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;time-summary&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--time-summary&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Print task level time summary at end of flow&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;time-summary&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--time-summary&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Print task level time summary at end of flow&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;experimental&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--experimental&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;experimental&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--experimental&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Allows access unsupported experimental predefined tasks.&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;disable-check-for-updates&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--disable-check-for-updates&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Disables the update check during startup&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;disable-check-for-updates&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--disable-check-for-updates&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Disables the update check during startup&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;output-format&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--output-format&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The print/list steps format (some operations do not support all formats) (default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete)&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;OUTPUT FORMAT&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;output-format&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--output-format&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The print/list steps format (some operations do not support all formats) (default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete)&quot;</span>.to_string(),
+                <span class="string">&quot;OUTPUT FORMAT&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;output-file&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--output-file&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;The list steps output file name&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;OUTPUT_FILE&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;output-file&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--output-file&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;The list steps output file name&quot;</span>.to_string(),
+                <span class="string">&quot;OUTPUT_FILE&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;print-steps&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--print-steps&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Only prints the steps of the build in the order they will be invoked but without invoking them&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;print-steps&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--print-steps&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Only prints the steps of the build in the order they will be invoked but without invoking them&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;list-steps&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--list-all-steps&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Lists all known steps&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;list-steps&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--list-all-steps&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Lists all known steps&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;list-category-steps&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--list-category-steps&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::Single</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::TextAndParam</span>(
-                <span class="string">&quot;List steps for a given category&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="string">&quot;CATEGORY&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;list-category-steps&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--list-category-steps&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
+                <span class="string">&quot;List steps for a given category&quot;</span>.to_string(),
+                <span class="string">&quot;CATEGORY&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">add_argument</span>(<span class="ident">Argument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;diff-steps&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">key</span>: <span class="macro">vec!</span>[<span class="string">&quot;--diff-steps&quot;</span>.<span class="ident">to_string</span>()],
-            <span class="ident">argument_occurrence</span>: <span class="ident">ArgumentOccurrence::Single</span>,
-            <span class="ident">value_type</span>: <span class="ident">ArgumentValueType::None</span>,
-            <span class="ident">default_value</span>: <span class="prelude-val">None</span>,
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;Runs diff between custom flow and prebuilt flow (requires git)&quot;</span>.<span class="ident">to_string</span>(),
+        .add_argument(Argument {
+            name: <span class="string">&quot;diff-steps&quot;</span>.to_string(),
+            key: <span class="macro">vec!</span>[<span class="string">&quot;--diff-steps&quot;</span>.to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: <span class="prelude-val">None</span>,
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;Runs diff between custom flow and prebuilt flow (requires git)&quot;</span>.to_string(),
             )),
         })
-        .<span class="ident">set_positional_argument</span>(<span class="prelude-val">Some</span>(<span class="ident">PositionalArgument</span> {
-            <span class="ident">name</span>: <span class="string">&quot;TASK_CMD&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">help</span>: <span class="prelude-val">Some</span>(<span class="ident">ArgumentHelp::Text</span>(
-                <span class="string">&quot;The task to execute, potentially including arguments which can be accessed in the task itself.&quot;</span>.<span class="ident">to_string</span>(),
+        .set_positional_argument(<span class="prelude-val">Some</span>(PositionalArgument {
+            name: <span class="string">&quot;TASK_CMD&quot;</span>.to_string(),
+            help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
+                <span class="string">&quot;The task to execute, potentially including arguments which can be accessed in the task itself.&quot;</span>.to_string(),
             )),
         }));
 
-    <span class="ident">spec</span>
+    spec
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">parse_args</span>(
-    <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>,
-    <span class="ident">command_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">sub_command</span>: <span class="ident">bool</span>,
-    <span class="ident">args</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">CliArgs</span> {
-    <span class="kw">let</span> <span class="ident">spec</span> <span class="op">=</span> <span class="ident">create_cli</span>(<span class="kw-2">&amp;</span><span class="ident">global_config</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_args(
+    global_config: <span class="kw-2">&amp;</span>GlobalConfig,
+    command_name: <span class="kw-2">&amp;</span>str,
+    sub_command: bool,
+    args: <span class="prelude-ty">Option</span>&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;,
+) -&gt; CliArgs {
+    <span class="kw">let </span>spec = create_cli(<span class="kw-2">&amp;</span>global_config);
 
-    <span class="kw">let</span> <span class="ident">parse_result</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">args</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">args_vec</span>) =&gt; <span class="ident">cliparser::parse</span>(<span class="kw-2">&amp;</span><span class="ident">args_vec</span>, <span class="kw-2">&amp;</span><span class="ident">spec</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">cliparser::parse_process</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>),
+    <span class="kw">let </span>parse_result = <span class="kw">match </span>args {
+        <span class="prelude-val">Some</span>(args_vec) =&gt; cliparser::parse(<span class="kw-2">&amp;</span>args_vec, <span class="kw-2">&amp;</span>spec),
+        <span class="prelude-val">None </span>=&gt; cliparser::parse_process(<span class="kw-2">&amp;</span>spec),
     };
 
-    <span class="kw">match</span> <span class="ident">parse_result</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">cli_parsed</span>) =&gt; {
-            <span class="kw">if</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;help&quot;</span>) {
-                <span class="comment">// generate help text</span>
-                <span class="kw">let</span> <span class="ident">help_text</span> <span class="op">=</span> <span class="ident">cliparser::help</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>);
-                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">help_text</span>);
-                <span class="ident">exit</span>();
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">cli_parsed</span>.<span class="ident">arguments</span>.<span class="ident">contains</span>(<span class="string">&quot;version&quot;</span>) {
-                <span class="comment">// generate version text</span>
-                <span class="kw">let</span> <span class="ident">version_text</span> <span class="op">=</span> <span class="ident">cliparser::version</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>);
-                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">version_text</span>);
-                <span class="ident">exit</span>();
+    <span class="kw">match </span>parse_result {
+        <span class="prelude-val">Ok</span>(cli_parsed) =&gt; {
+            <span class="kw">if </span>cli_parsed.arguments.contains(<span class="string">&quot;help&quot;</span>) {
+                <span class="comment">// generate help text
+                </span><span class="kw">let </span>help_text = cliparser::help(<span class="kw-2">&amp;</span>spec);
+                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, help_text);
+                exit();
+            } <span class="kw">else if </span>cli_parsed.arguments.contains(<span class="string">&quot;version&quot;</span>) {
+                <span class="comment">// generate version text
+                </span><span class="kw">let </span>version_text = cliparser::version(<span class="kw-2">&amp;</span>spec);
+                <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, version_text);
+                exit();
             }
 
-            <span class="ident">get_args</span>(<span class="kw-2">&amp;</span><span class="ident">cli_parsed</span>, <span class="kw-2">&amp;</span><span class="ident">global_config</span>, <span class="ident">command_name</span>, <span class="ident">sub_command</span>)
+            get_args(<span class="kw-2">&amp;</span>cli_parsed, <span class="kw-2">&amp;</span>global_config, command_name, sub_command)
         }
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">help_text</span> <span class="op">=</span> <span class="ident">cliparser::help</span>(<span class="kw-2">&amp;</span><span class="ident">spec</span>);
-            <span class="macro">println!</span>(<span class="string">&quot;{}\n{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">error</span>, <span class="ident">help_text</span>);
-            <span class="ident">exit</span>();
+        <span class="prelude-val">Err</span>(error) =&gt; {
+            <span class="kw">let </span>help_text = cliparser::help(<span class="kw-2">&amp;</span>spec);
+            <span class="macro">println!</span>(<span class="string">&quot;{}\n{}&quot;</span>, <span class="kw-2">&amp;</span>error, help_text);
+            exit();
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">parse</span>(
-    <span class="ident">global_config</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalConfig</span>,
-    <span class="ident">command_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">sub_command</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">CliArgs</span> {
-    <span class="ident">parse_args</span>(<span class="ident">global_config</span>, <span class="ident">command_name</span>, <span class="ident">sub_command</span>, <span class="prelude-val">None</span>)
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse(
+    global_config: <span class="kw-2">&amp;</span>GlobalConfig,
+    command_name: <span class="kw-2">&amp;</span>str,
+    sub_command: bool,
+) -&gt; CliArgs {
+    parse_args(global_config, command_name, sub_command, <span class="prelude-val">None</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">to_owned_vec</span>(<span class="ident">vec_option</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">vec_option</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">vec</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">vec</span>.<span class="ident">to_owned</span>()),
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">fn </span>to_owned_vec(vec_option: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;String&gt;&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt; {
+    <span class="kw">match </span>vec_option {
+        <span class="prelude-val">Some</span>(vec) =&gt; <span class="prelude-val">Some</span>(vec.to_owned()),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>

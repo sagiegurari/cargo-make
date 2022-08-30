@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/plugin/runner.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>runner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/plugin/runner.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>runner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../cli/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -310,317 +310,317 @@
 <span id="310">310</span>
 <span id="311">311</span>
 <span id="312">312</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # runner</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Runs task plugins.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # runner
+//!
+//! Runs task plugins.
+//!
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;runner_test.rs&quot;</span>]</span>
-<span class="kw">mod</span> <span class="ident">runner_test</span>;
+</span><span class="attribute">#[cfg(test)]
+#[path = <span class="string">&quot;runner_test.rs&quot;</span>]
+</span><span class="kw">mod </span>runner_test;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::environment</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::plugin::sdk</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::plugin::types::Plugin</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scriptengine::duck_script</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">Config</span>, <span class="ident">DeprecationInfo</span>, <span class="ident">FlowInfo</span>, <span class="ident">FlowState</span>, <span class="ident">RunTaskOptions</span>, <span class="ident">Step</span>};
-<span class="kw">use</span> <span class="ident">duckscript::runner::run_script</span>;
-<span class="kw">use</span> <span class="ident">duckscript::types::command::Commands</span>;
-<span class="kw">use</span> <span class="ident">duckscript::types::error::ScriptError</span>;
-<span class="kw">use</span> <span class="ident">duckscript::types::runtime::Context</span>;
-<span class="kw">use</span> <span class="ident">indexmap::IndexMap</span>;
-<span class="kw">use</span> <span class="ident">serde_json::json</span>;
-<span class="kw">use</span> <span class="ident">std::cell::RefCell</span>;
-<span class="kw">use</span> <span class="ident">std::env</span>;
-<span class="kw">use</span> <span class="ident">std::rc::Rc</span>;
+<span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::plugin::sdk;
+<span class="kw">use </span><span class="kw">crate</span>::plugin::types::Plugin;
+<span class="kw">use </span><span class="kw">crate</span>::scriptengine::duck_script;
+<span class="kw">use </span><span class="kw">crate</span>::types::{Config, DeprecationInfo, FlowInfo, FlowState, RunTaskOptions, Step};
+<span class="kw">use </span>duckscript::runner::run_script;
+<span class="kw">use </span>duckscript::types::command::Commands;
+<span class="kw">use </span>duckscript::types::error::ScriptError;
+<span class="kw">use </span>duckscript::types::runtime::Context;
+<span class="kw">use </span>indexmap::IndexMap;
+<span class="kw">use </span>serde_json::json;
+<span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::env;
+<span class="kw">use </span>std::rc::Rc;
 
-<span class="doccomment">/// Resolve aliases to different plugins, checking for cycles</span>
-<span class="kw">fn</span> <span class="ident">get_plugin_name_recursive</span>(
-    <span class="ident">aliases</span>: <span class="kw-2">&amp;</span><span class="ident">IndexMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">seen</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-) -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">name_string</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">to_string</span>();
-    <span class="kw">if</span> <span class="ident">seen</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">name_string</span>) {
-        <span class="macro">error!</span>(<span class="string">&quot;Detected cycle while resolving plugin alias: {}&quot;</span>, <span class="ident">name</span>);
+<span class="doccomment">/// Resolve aliases to different plugins, checking for cycles
+</span><span class="kw">fn </span>get_plugin_name_recursive(
+    aliases: <span class="kw-2">&amp;</span>IndexMap&lt;String, String&gt;,
+    name: <span class="kw-2">&amp;</span>str,
+    seen: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;,
+) -&gt; String {
+    <span class="kw">let </span>name_string = name.to_string();
+    <span class="kw">if </span>seen.contains(<span class="kw-2">&amp;</span>name_string) {
+        <span class="macro">error!</span>(<span class="string">&quot;Detected cycle while resolving plugin alias: {}&quot;</span>, name);
     }
-    <span class="ident">seen</span>.<span class="ident">push</span>(<span class="ident">name_string</span>);
+    seen.push(name_string);
 
-    <span class="kw">match</span> <span class="ident">aliases</span>.<span class="ident">get</span>(<span class="ident">name</span>) {
-        <span class="prelude-val">Some</span>(<span class="ident">target_name</span>) =&gt; <span class="ident">get_plugin_name_recursive</span>(<span class="ident">aliases</span>, <span class="ident">target_name</span>, <span class="ident">seen</span>),
-        <span class="prelude-val">None</span> =&gt; <span class="ident">name</span>.<span class="ident">to_string</span>(),
+    <span class="kw">match </span>aliases.get(name) {
+        <span class="prelude-val">Some</span>(target_name) =&gt; get_plugin_name_recursive(aliases, target_name, seen),
+        <span class="prelude-val">None </span>=&gt; name.to_string(),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">get_plugin</span>(<span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">Config</span>, <span class="ident">plugin_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Plugin</span>)<span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">config</span>.<span class="ident">plugins</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">plugins_config</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">normalized_plugin_name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">plugins_config</span>.<span class="ident">aliases</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">aliases</span>) =&gt; {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen</span> <span class="op">=</span> <span class="macro">vec!</span>[];
-                    <span class="ident">get_plugin_name_recursive</span>(<span class="ident">aliases</span>, <span class="ident">plugin_name</span>, <span class="kw-2">&amp;mut</span> <span class="ident">seen</span>)
+<span class="kw">fn </span>get_plugin(config: <span class="kw-2">&amp;</span>Config, plugin_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;(String, Plugin)&gt; {
+    <span class="kw">match </span><span class="kw-2">&amp;</span>config.plugins {
+        <span class="prelude-val">Some</span>(plugins_config) =&gt; {
+            <span class="kw">let </span>normalized_plugin_name = <span class="kw">match </span>plugins_config.aliases {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>aliases) =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>seen = <span class="macro">vec!</span>[];
+                    get_plugin_name_recursive(aliases, plugin_name, <span class="kw-2">&amp;mut </span>seen)
                 }
-                <span class="prelude-val">None</span> =&gt; <span class="ident">plugin_name</span>.<span class="ident">to_string</span>(),
+                <span class="prelude-val">None </span>=&gt; plugin_name.to_string(),
             };
 
-            <span class="kw">match</span> <span class="ident">plugins_config</span>.<span class="ident">plugins</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">normalized_plugin_name</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">plugin</span>) =&gt; <span class="prelude-val">Some</span>((<span class="ident">normalized_plugin_name</span>, <span class="ident">plugin</span>.<span class="ident">clone</span>())),
-                <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="kw">match </span>plugins_config.plugins.get(<span class="kw-2">&amp;</span>normalized_plugin_name) {
+                <span class="prelude-val">Some</span>(plugin) =&gt; <span class="prelude-val">Some</span>((normalized_plugin_name, plugin.clone())),
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             }
         }
-        <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">run_plugin</span>(
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">flow_state</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
-    <span class="ident">plugin</span>: <span class="ident">Plugin</span>,
-    <span class="ident">impl_plugin_name</span>: <span class="ident">String</span>,
+<span class="kw">fn </span>run_plugin(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    step: <span class="kw-2">&amp;</span>Step,
+    plugin: Plugin,
+    impl_plugin_name: String,
 ) {
     <span class="macro">debug!</span>(
         <span class="string">&quot;Running Task: {} via plugin: {} script:\n{}&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">impl_plugin_name</span>, <span class="kw-2">&amp;</span><span class="ident">plugin</span>.<span class="ident">script</span>
+        <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>impl_plugin_name, <span class="kw-2">&amp;</span>plugin.script
     );
 
-    <span class="kw">let</span> <span class="ident">cli_arguments</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">flow_info</span>.<span class="ident">cli_arguments</span>.<span class="ident">clone</span>() {
-        <span class="prelude-val">Some</span>(<span class="ident">cli_arguments</span>) =&gt; <span class="ident">cli_arguments</span>.<span class="ident">clone</span>(),
-        <span class="prelude-val">None</span> =&gt; <span class="macro">vec!</span>[],
+    <span class="kw">let </span>cli_arguments = <span class="kw">match </span>flow_info.cli_arguments.clone() {
+        <span class="prelude-val">Some</span>(cli_arguments) =&gt; cli_arguments.clone(),
+        <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
     };
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">duck_script::create_common_context</span>(<span class="kw-2">&amp;</span><span class="ident">cli_arguments</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>context = duck_script::create_common_context(<span class="kw-2">&amp;</span>cli_arguments);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">script_text</span> <span class="op">=</span> <span class="string">&quot;exit_on_error true\n&quot;</span>.<span class="ident">to_string</span>();
-    <span class="ident">setup_script_globals</span>(
-        <span class="kw-2">&amp;mut</span> <span class="ident">context</span>,
-        <span class="ident">flow_info</span>,
-        <span class="ident">step</span>,
-        <span class="kw-2">&amp;</span><span class="ident">impl_plugin_name</span>,
-        <span class="kw-2">&amp;mut</span> <span class="ident">script_text</span>,
+    <span class="kw">let </span><span class="kw-2">mut </span>script_text = <span class="string">&quot;exit_on_error true\n&quot;</span>.to_string();
+    setup_script_globals(
+        <span class="kw-2">&amp;mut </span>context,
+        flow_info,
+        step,
+        <span class="kw-2">&amp;</span>impl_plugin_name,
+        <span class="kw-2">&amp;mut </span>script_text,
     );
-    <span class="ident">script_text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">plugin</span>.<span class="ident">script</span>);
+    script_text.push_str(<span class="kw-2">&amp;</span>plugin.script);
 
-    <span class="kw">match</span> <span class="ident">load_sdk</span>(<span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">step</span>, <span class="kw-2">&amp;mut</span> <span class="ident">context</span>.<span class="ident">commands</span>) {
+    <span class="kw">match </span>load_sdk(flow_info, flow_state, step, <span class="kw-2">&amp;mut </span>context.commands) {
         <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">directory</span> <span class="op">=</span> <span class="ident">env::current_dir</span>();
+            <span class="kw">let </span>directory = env::current_dir();
 
-            <span class="kw">match</span> <span class="ident">run_script</span>(<span class="kw-2">&amp;</span><span class="ident">script_text</span>, <span class="ident">context</span>) {
+            <span class="kw">match </span>run_script(<span class="kw-2">&amp;</span>script_text, context) {
                 <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; (),
-                <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; <span class="macro">error!</span>(<span class="string">&quot;Error while running plugin: {}&quot;</span>, <span class="ident">error</span>),
+                <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">error!</span>(<span class="string">&quot;Error while running plugin: {}&quot;</span>, error),
             };
 
-            <span class="comment">// revert to originl working directory</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">directory_path</span>) <span class="op">=</span> <span class="ident">directory</span> {
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">directory_path</span>.<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>();
-                <span class="ident">environment::setup_cwd</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>));
+            <span class="comment">// revert to originl working directory
+            </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(directory_path) = directory {
+                <span class="kw">let </span>path = directory_path.to_string_lossy().into_owned();
+                environment::setup_cwd(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>path));
             }
         }
-        <span class="prelude-val">Err</span>(<span class="ident">error</span>) =&gt; <span class="macro">error!</span>(<span class="string">&quot;Unable to load duckscript SDK: {}&quot;</span>, <span class="ident">error</span>),
+        <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">error!</span>(<span class="string">&quot;Unable to load duckscript SDK: {}&quot;</span>, error),
     };
 }
 
-<span class="kw">fn</span> <span class="ident">setup_script_globals</span>(
-    <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
-    <span class="ident">impl_plugin_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">script</span>: <span class="kw-2">&amp;mut</span> <span class="ident">String</span>,
+<span class="kw">fn </span>setup_script_globals(
+    context: <span class="kw-2">&amp;mut </span>Context,
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    step: <span class="kw-2">&amp;</span>Step,
+    impl_plugin_name: <span class="kw-2">&amp;</span>str,
+    script: <span class="kw-2">&amp;mut </span>String,
 ) {
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;flow.task.name&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">flow_info</span>.<span class="ident">task</span>.<span class="ident">to_string</span>());
-    <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;flow.cli.args = array\n&quot;</span>);
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">cli_arguments</span>) <span class="op">=</span> <span class="ident">flow_info</span>.<span class="ident">cli_arguments</span> {
-        <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="ident">cli_arguments</span> {
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;array_push ${flow.cli.args} \&quot;&quot;</span>);
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>.<span class="ident">replace</span>(<span class="string">&quot;$&quot;</span>, <span class="string">&quot;\\$&quot;</span>));
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;\&quot;\n&quot;</span>);
+    context
+        .variables
+        .insert(<span class="string">&quot;flow.task.name&quot;</span>.to_string(), flow_info.task.to_string());
+    script.push_str(<span class="string">&quot;flow.cli.args = array\n&quot;</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cli_arguments) = flow_info.cli_arguments {
+        <span class="kw">for </span>arg <span class="kw">in </span>cli_arguments {
+            script.push_str(<span class="string">&quot;array_push ${flow.cli.args} \&quot;&quot;</span>);
+            script.push_str(<span class="kw-2">&amp;</span>arg.replace(<span class="string">&quot;$&quot;</span>, <span class="string">&quot;\\$&quot;</span>));
+            script.push_str(<span class="string">&quot;\&quot;\n&quot;</span>);
         }
     }
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;plugin.impl.name&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">impl_plugin_name</span>.<span class="ident">to_string</span>());
+    context
+        .variables
+        .insert(<span class="string">&quot;plugin.impl.name&quot;</span>.to_string(), impl_plugin_name.to_string());
 
-    <span class="ident">setup_script_globals_for_task</span>(<span class="ident">context</span>, <span class="ident">step</span>, <span class="ident">script</span>);
+    setup_script_globals_for_task(context, step, script);
 }
 
-<span class="kw">fn</span> <span class="ident">setup_script_globals_for_task</span>(<span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>, <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>, <span class="ident">script</span>: <span class="kw-2">&amp;mut</span> <span class="ident">String</span>) {
-    <span class="comment">// all task data as json</span>
-    <span class="kw">let</span> <span class="ident">task</span> <span class="op">=</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">json_string</span> <span class="op">=</span> <span class="macro">json!</span>(<span class="ident">task</span>);
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;task.as_json&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">json_string</span>.<span class="ident">to_string</span>());
+<span class="kw">fn </span>setup_script_globals_for_task(context: <span class="kw-2">&amp;mut </span>Context, step: <span class="kw-2">&amp;</span>Step, script: <span class="kw-2">&amp;mut </span>String) {
+    <span class="comment">// all task data as json
+    </span><span class="kw">let </span>task = step.config.clone();
+    <span class="kw">let </span>json_string = <span class="macro">json!</span>(task);
+    context
+        .variables
+        .insert(<span class="string">&quot;task.as_json&quot;</span>.to_string(), json_string.to_string());
 
-    <span class="comment">// meta info</span>
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_condition&quot;</span>.<span class="ident">to_string</span>(),
-        (<span class="ident">task</span>.<span class="ident">condition</span>.<span class="ident">is_some</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">task</span>.<span class="ident">condition_script</span>.<span class="ident">is_some</span>()).<span class="ident">to_string</span>(),
+    <span class="comment">// meta info
+    </span>context.variables.insert(
+        <span class="string">&quot;task.has_condition&quot;</span>.to_string(),
+        (task.condition.is_some() || task.condition_script.is_some()).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_env&quot;</span>.<span class="ident">to_string</span>(),
-        (<span class="ident">task</span>.<span class="ident">env_files</span>.<span class="ident">is_some</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">task</span>.<span class="ident">env</span>.<span class="ident">is_some</span>()).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_env&quot;</span>.to_string(),
+        (task.env_files.is_some() || task.env.is_some()).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_install_instructions&quot;</span>.<span class="ident">to_string</span>(),
-        (<span class="ident">task</span>.<span class="ident">install_crate</span>.<span class="ident">is_some</span>()
-            <span class="op">|</span><span class="op">|</span> <span class="ident">task</span>.<span class="ident">install_crate_args</span>.<span class="ident">is_some</span>()
-            <span class="op">|</span><span class="op">|</span> <span class="ident">task</span>.<span class="ident">install_script</span>.<span class="ident">is_some</span>())
-        .<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_install_instructions&quot;</span>.to_string(),
+        (task.install_crate.is_some()
+            || task.install_crate_args.is_some()
+            || task.install_script.is_some())
+        .to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_command&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">command</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_command&quot;</span>.to_string(),
+        task.command.is_some().to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_script&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">script</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_script&quot;</span>.to_string(),
+        task.script.is_some().to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_run_task&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">run_task</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_run_task&quot;</span>.to_string(),
+        task.run_task.is_some().to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_dependencies&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">dependencies</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_dependencies&quot;</span>.to_string(),
+        task.dependencies.is_some().to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.has_toolchain_specifier&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">toolchain</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.has_toolchain_specifier&quot;</span>.to_string(),
+        task.toolchain.is_some().to_string(),
     );
 
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;task.name&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">step</span>.<span class="ident">name</span>.<span class="ident">clone</span>());
+    context
+        .variables
+        .insert(<span class="string">&quot;task.name&quot;</span>.to_string(), step.name.clone());
 
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.description&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">description</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()),
+    context.variables.insert(
+        <span class="string">&quot;task.description&quot;</span>.to_string(),
+        task.description.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.category&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">category</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()),
+    context.variables.insert(
+        <span class="string">&quot;task.category&quot;</span>.to_string(),
+        task.category.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.disabled&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">disabled</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.disabled&quot;</span>.to_string(),
+        task.disabled.unwrap_or(<span class="bool-val">false</span>).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.private&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">private</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.private&quot;</span>.to_string(),
+        task.private.unwrap_or(<span class="bool-val">false</span>).to_string(),
     );
-    <span class="kw">let</span> <span class="ident">deprecated</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">task</span>.<span class="ident">deprecated</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="kw">match</span> <span class="ident">value</span> {
-            <span class="ident">DeprecationInfo::Boolean</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>,
-            <span class="ident">DeprecationInfo::Message</span>(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
+    <span class="kw">let </span>deprecated = <span class="kw">match </span>task.deprecated {
+        <span class="prelude-val">Some</span>(value) =&gt; <span class="kw">match </span>value {
+            DeprecationInfo::Boolean(value) =&gt; value,
+            DeprecationInfo::Message(<span class="kw">_</span>) =&gt; <span class="bool-val">true</span>,
         },
-        <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
     };
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;task.deprecated&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">deprecated</span>.<span class="ident">to_string</span>());
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.workspace&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">workspace</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>).<span class="ident">to_string</span>(),
+    context
+        .variables
+        .insert(<span class="string">&quot;task.deprecated&quot;</span>.to_string(), deprecated.to_string());
+    context.variables.insert(
+        <span class="string">&quot;task.workspace&quot;</span>.to_string(),
+        task.workspace.unwrap_or(<span class="bool-val">false</span>).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.plugin.name&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">plugin</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()),
+    context.variables.insert(
+        <span class="string">&quot;task.plugin.name&quot;</span>.to_string(),
+        task.plugin.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()),
     );
-    <span class="ident">context</span>
-        .<span class="ident">variables</span>
-        .<span class="ident">insert</span>(<span class="string">&quot;task.watch&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">task</span>.<span class="ident">watch</span>.<span class="ident">is_some</span>().<span class="ident">to_string</span>());
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.ignore_errors&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">ignore_errors</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>).<span class="ident">to_string</span>(),
+    context
+        .variables
+        .insert(<span class="string">&quot;task.watch&quot;</span>.to_string(), task.watch.is_some().to_string());
+    context.variables.insert(
+        <span class="string">&quot;task.ignore_errors&quot;</span>.to_string(),
+        task.ignore_errors.unwrap_or(<span class="bool-val">false</span>).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.cwd&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">cwd</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.cwd&quot;</span>.to_string(),
+        task.cwd.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()).to_string(),
     );
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.command&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">command</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.command&quot;</span>.to_string(),
+        task.command.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()).to_string(),
     );
-    <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;task.args = array\n&quot;</span>);
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">task</span>.<span class="ident">args</span> {
-        <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">args</span> {
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;array_push ${task.args} \&quot;&quot;</span>);
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>.<span class="ident">replace</span>(<span class="string">&quot;$&quot;</span>, <span class="string">&quot;\\$&quot;</span>));
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;\&quot;\n&quot;</span>);
+    script.push_str(<span class="string">&quot;task.args = array\n&quot;</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(args) = task.args {
+        <span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;</span>args {
+            script.push_str(<span class="string">&quot;array_push ${task.args} \&quot;&quot;</span>);
+            script.push_str(<span class="kw-2">&amp;</span>arg.replace(<span class="string">&quot;$&quot;</span>, <span class="string">&quot;\\$&quot;</span>));
+            script.push_str(<span class="string">&quot;\&quot;\n&quot;</span>);
         }
     }
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.script_runner&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">script_runner</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.script_runner&quot;</span>.to_string(),
+        task.script_runner.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()).to_string(),
     );
-    <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;task.script_runner_args = array\n&quot;</span>);
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">task</span>.<span class="ident">script_runner_args</span> {
-        <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">args</span> {
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;array_push ${task.script_runner_args} \&quot;&quot;</span>);
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="ident">arg</span>);
-            <span class="ident">script</span>.<span class="ident">push_str</span>(<span class="string">&quot;\&quot;\n&quot;</span>);
+    script.push_str(<span class="string">&quot;task.script_runner_args = array\n&quot;</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(args) = task.script_runner_args {
+        <span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;</span>args {
+            script.push_str(<span class="string">&quot;array_push ${task.script_runner_args} \&quot;&quot;</span>);
+            script.push_str(arg);
+            script.push_str(<span class="string">&quot;\&quot;\n&quot;</span>);
         }
     }
-    <span class="ident">context</span>.<span class="ident">variables</span>.<span class="ident">insert</span>(
-        <span class="string">&quot;task.script_extension&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">task</span>.<span class="ident">script_extension</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">to_string</span>(),
+    context.variables.insert(
+        <span class="string">&quot;task.script_extension&quot;</span>.to_string(),
+        task.script_extension.unwrap_or(<span class="string">&quot;&quot;</span>.to_string()).to_string(),
     );
 }
 
-<span class="kw">fn</span> <span class="ident">load_sdk</span>(
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">flow_state</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
-    <span class="ident">commands</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Commands</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ScriptError</span><span class="op">&gt;</span> {
-    <span class="ident">duck_script::load_sdk</span>(<span class="ident">commands</span>, <span class="prelude-val">Some</span>(<span class="ident">flow_info</span>), <span class="prelude-val">Some</span>(<span class="ident">flow_state</span>.<span class="ident">clone</span>()))<span class="question-mark">?</span>;
-    <span class="ident">sdk::load</span>(<span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">step</span>, <span class="ident">commands</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>load_sdk(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    step: <span class="kw-2">&amp;</span>Step,
+    commands: <span class="kw-2">&amp;mut </span>Commands,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), ScriptError&gt; {
+    duck_script::load_sdk(commands, <span class="prelude-val">Some</span>(flow_info), <span class="prelude-val">Some</span>(flow_state.clone()))<span class="question-mark">?</span>;
+    sdk::load(flow_info, flow_state, step, commands)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">run_task</span>(
-    <span class="ident">flow_info</span>: <span class="kw-2">&amp;</span><span class="ident">FlowInfo</span>,
-    <span class="ident">flow_state</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FlowState</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">step</span>: <span class="kw-2">&amp;</span><span class="ident">Step</span>,
-    <span class="ident">options</span>: <span class="kw-2">&amp;</span><span class="ident">RunTaskOptions</span>,
-) -&gt; <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">options</span>.<span class="ident">plugins_enabled</span> {
-        <span class="bool-val">false</span>
-    } <span class="kw">else</span> {
-        <span class="kw">let</span> <span class="ident">plugin_name_option</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">flow_state</span>.<span class="ident">borrow</span>().<span class="ident">forced_plugin</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-            <span class="prelude-val">None</span> =&gt; <span class="kw">match</span> <span class="ident">step</span>.<span class="ident">config</span>.<span class="ident">plugin</span> {
-                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">value</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">value</span>.<span class="ident">clone</span>()),
-                <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_task(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    step: <span class="kw-2">&amp;</span>Step,
+    options: <span class="kw-2">&amp;</span>RunTaskOptions,
+) -&gt; bool {
+    <span class="kw">if </span>!options.plugins_enabled {
+        <span class="bool-val">false
+    </span>} <span class="kw">else </span>{
+        <span class="kw">let </span>plugin_name_option = <span class="kw">match </span>flow_state.borrow().forced_plugin {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value.clone()),
+            <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>step.config.plugin {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value.clone()),
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
             },
         };
 
-        <span class="kw">match</span> <span class="ident">plugin_name_option</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">plugin_name</span>) =&gt; <span class="kw">match</span> <span class="ident">get_plugin</span>(<span class="kw-2">&amp;</span><span class="ident">flow_info</span>.<span class="ident">config</span>, <span class="ident">plugin_name</span>) {
-                <span class="prelude-val">Some</span>((<span class="ident">normalized_plugin_name</span>, <span class="ident">plugin</span>)) =&gt; {
+        <span class="kw">match </span>plugin_name_option {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>plugin_name) =&gt; <span class="kw">match </span>get_plugin(<span class="kw-2">&amp;</span>flow_info.config, plugin_name) {
+                <span class="prelude-val">Some</span>((normalized_plugin_name, plugin)) =&gt; {
                     <span class="macro">debug!</span>(
                         <span class="string">&quot;Running Task: {} via plugin: {}&quot;</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">normalized_plugin_name</span>
+                        <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>normalized_plugin_name
                     );
 
-                    <span class="ident">run_plugin</span>(<span class="ident">flow_info</span>, <span class="ident">flow_state</span>, <span class="ident">step</span>, <span class="ident">plugin</span>, <span class="ident">normalized_plugin_name</span>);
+                    run_plugin(flow_info, flow_state, step, plugin, normalized_plugin_name);
 
-                    <span class="bool-val">true</span>
-                }
-                <span class="prelude-val">None</span> =&gt; {
+                    <span class="bool-val">true
+                </span>}
+                <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">error!</span>(
                         <span class="string">&quot;Invalid task: {}, unknown plugin: {}&quot;</span>,
-                        <span class="kw-2">&amp;</span><span class="ident">step</span>.<span class="ident">name</span>, <span class="ident">plugin_name</span>
+                        <span class="kw-2">&amp;</span>step.name, plugin_name
                     );
-                    <span class="bool-val">false</span>
-                }
+                    <span class="bool-val">false
+                </span>}
             },
-            <span class="prelude-val">None</span> =&gt; <span class="bool-val">false</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (ce36e8825 2022-08-28)" ></div></body></html>
