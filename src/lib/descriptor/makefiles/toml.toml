@@ -10,7 +10,11 @@ install_crate = { crate_name = "taplo-cli", binary = "taplo", test_arg = [
   "--help",
 ] }
 command = "taplo"
-args = ["format", "${CARGO_MAKE_FORMAT_TOML_FILES}"]
+args = [
+  "format",
+  "${CARGO_MAKE_FORMAT_TOML_FILES}",
+  "@@split(CARGO_MAKE_FORMAT_TOML_ARGS, )",
+]
 
 [tasks.post-format-toml]
 category = "Development"

@@ -5,8 +5,8 @@ on:
 env:
   CLICOLOR_FORCE: 1
 jobs:
-  ci:
-    name: CI
+  cron_ci:
+    name: cron_ci
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

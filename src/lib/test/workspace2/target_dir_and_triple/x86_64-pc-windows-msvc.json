@@ -12,7 +12,6 @@
   "env": "msvc",
   "exe-suffix": ".exe",
   "executables": true,
-  "has-elf-tls": true,
   "is-builtin": false,
   "is-like-msvc": true,
   "is-like-windows": true,
@@ -31,7 +30,6 @@
     ]
   },
   "requires-uwtable": true,
-  "split-debuginfo": "packed",
   "staticlib-prefix": "",
   "staticlib-suffix": ".lib",
   "target-family": "windows",

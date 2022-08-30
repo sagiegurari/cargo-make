@@ -21,17 +21,27 @@ dependencies = [
   "rustc-version-nightly",
 ]
 
-[tasks.echo-cargo-stable]
-toolchain = "stable"
+[tasks.echo-cargo-env]
 script = '''
-echo ${CARGO}
+echo CARGO=${CARGO}
+echo RUSTC=${RUSTC}
+echo RUSTDOC=${RUSTDOC}
+echo RUSTFLAGS=${RUSTFLAGS}
 '''
 
+[tasks.echo-cargo-stable]
+extend = "echo-cargo-env"
+toolchain = "stable"
+
+[tasks.stable]
+alias = "echo-cargo-stable"
+
 [tasks.echo-cargo-nightly]
+extend = "echo-cargo-env"
 toolchain = "nightly"
-script = '''
-echo ${CARGO}
-'''
+
+[tasks.nightly]
+alias = "echo-cargo-nightly"
 
 [tasks.echo-cargo-all]
 dependencies = ["echo-cargo-stable", "echo-cargo-nightly"]

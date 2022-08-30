@@ -81,7 +81,7 @@ fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
 
 pub(crate) fn expand_value(value: &str) -> String {
     let mut options = ExpandOptions::new();
-    options.expansion_type = Some(ExpansionType::UnixBrackets);
+    options.expansion_type = Some(ExpansionType::UnixBracketsWithDefaults);
     options.default_to_empty = false;
 
     envmnt::expand(&value, Some(options))
