@@ -132,7 +132,7 @@
 <a name="overview"></a>
 ## Overview
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
-A task is a command, script, rust code or other sub tasks to execute.<br>
+A task is a command, script, rust code, or other sub tasks to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
 With a simple toml based configuration file, you can define a multi platform build script that can run build, test, generate documentation, run bench tests, run security validations and more, executed by running a single command.
 
@@ -144,13 +144,13 @@ In order to install, just run the following command
 cargo install --force cargo-make
 ```
 
-This will install cargo-make in your ~/.cargo/bin.<br>
-Make sure to add ~/.cargo/bin directory to your PATH variable.<br>
+This will install cargo-make in your `~/.cargo/bin`.<br>
+Make sure to add `~/.cargo/bin` directory to your `PATH` variable.<br>
 <br>
 You will have two executables available: *cargo-make* and *makers*<br>
 
 * **cargo-make** - This is a cargo plugin invoked using **cargo make ...**
-* **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
+* **makers** - A standalone executable which provides same features and cli arguments as cargo-make, but is invoked directly and not as a cargo plugin.
 
 See [Cli Options](#usage-cli) section for full CLI instructions.
 
@@ -282,7 +282,7 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
-**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'makers' command.**<br>
+**cargo-make can be invoked as a cargo plugin via `cargo make` command, _or_ as a standalone executable via `makers` command.**<br>
 <br>
 **Important Note: if you are running this example in a cargo workspace, you will need to add the following to the top of the file:**<br>
 
@@ -325,7 +325,7 @@ It will try to run test, see that it has dependencies and those have other depen
 Therefore it will create an execution plan for the tasks based on the tasks and their dependencies.<br>
 In our case it will invoke format -> build -> test.<br>
 
-The same task will never be executed twice so if we have for example:
+The same task will never be executed twice. So if we have, for example:
 
 ```toml
 [tasks.A]
@@ -342,7 +342,7 @@ script = "echo hello"
 ```
 
 In this example, A depends on B and C, and both B and C are dependent on D.<br>
-Task D however will not be invoked twice.<br>
+Task D, however, will not be invoked twice.<br>
 The output of the execution will look something like this:
 
 ```console
@@ -358,11 +358,11 @@ hello
 
 As you can see, 'hello' was printed once by task D as it was only invoked once.<br>
 But what if we want to run D twice?<br>
-Simple answer would be to duplicate task D and have B depend on D and C depend on D2 which is a copy of D.<br>
+Simple answer would be to duplicate task D, and have B depend on D and C depend on D2, which is a copy of D.<br>
 But duplicating can lead to bugs and to huge makefiles, so we have aliases for that.<br>
 An alias task has its own name and points to another task.<br>
 All of the definitions of the alias task are ignored.<br>
-So now, if we want to have D execute twice we can do the following:
+So now, if we want to have D execute twice, we can do the following:
 
 ```toml
 [tasks.A]
@@ -381,7 +381,7 @@ script = "echo hello"
 alias="D"
 ```
 
-Now C depends on D2 and D2 is an alias for D.<br>
+Now C depends on D2, and D2 is an alias for D.<br>
 Execution output of such make file would like as follows:
 
 ```console
@@ -448,16 +448,16 @@ script = "echo hello"
 If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
-*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined unless they are defined also as sub dependencies.*
+*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined, unless they are defined also as sub dependencies.*
 
 <a name="usage-task-command-script-task"></a>
-### Commands, Scripts and Sub Tasks
+### Commands, Scripts, and Sub Tasks
 The actual operation that a task invokes can be defined in 3 ways.<br>
 The below explains each one:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
 * **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what command line arguments to provide as part of the command.
-* **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
+* **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (`cmd` for windows, `sh` for others).
 
 Only one of the definitions will be used.<br>
 If multiple attributes are defined (for example both command and script), the task will fail during invocation.
@@ -468,7 +468,7 @@ The following runners are currently supported:
 
 * **@duckscript** - Executes the defined duckscript code. See [example](#usage-task-command-script-task-exampleduckscript)
 * **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
-* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
+* **@shell** - For windows platforms, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script; for other platforms, the script will be executed as-is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
 Below are some basic examples of each action type.
 
@@ -594,11 +594,11 @@ This allows to run independent tasks in parallel and speed up the overall perfor
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
 * Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
-* Avoid using **CARGO_MAKE_CURRENT_TASK_** type environment variables as those may hold incorrect values.
+* Avoid using **`CARGO_MAKE_CURRENT_TASK_`** type environment variables, as those may hold incorrect values.
 
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
-For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
+When running commands, you can also define the command line arguments, as shown in the example below, to invoke the cargo command with the plugin name as a command line argument:
 
 ```toml
 [tasks.build-with-verbose]
@@ -621,7 +621,7 @@ args = [
 ```
 
 cargo-make cli also supports additional arguments which will be available to all tasks.<br>
-Following example task, will print those additional arguments:
+The following example prints additional arguments:
 
 ```toml
 [tasks.varargs]
@@ -707,7 +707,7 @@ script = [
 ]
 ```
 
-You can use multi line toml string to make the script more readable as follows:
+You can use multi-line toml string to make the script more readable, as follows:
 
 ```toml
 [tasks.hello-world]
@@ -719,7 +719,7 @@ echo end...
 ```
 
 cargo-make cli also supports additional arguments which will be available to all tasks.<br>
-Following example task, will print those additional arguments:
+The following example prints additional arguments:
 
 ```toml
 [tasks.cli-args]
@@ -768,7 +768,7 @@ It is also possible to point to an existing script instead of holding the script
 script = { file = "script.sh" }
 ```
 
-Script file paths are always relative to the current working directory unless specified by the **absolute_path** attribute, for example:
+Script file paths are always relative to the current working directory, unless specified by the **absolute_path** attribute, for example:
 
 ```toml
 [tasks.hello-world-from-script-file-absolute-path]
@@ -848,12 +848,12 @@ args = ["2"]
 ```
 
 Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
-In addition, all environment variables are preloaded as duckscript variables and can be directly read from the script (no need to invoke the **get_env** command).
+In addition, all environment variables are preloaded as duckscript variables, and can be directly read from the script. (No need to invoke the **get_env** command!)
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
 In this example, when the **rust** task is invoked, the **script** content will be compiled and executed.
-You can see how dependencies are defined in Cargo.toml format inside the code.
+You can see how dependencies are defined in `Cargo.toml` format inside the code.
 
 ```toml
 [tasks.rust]
@@ -877,7 +877,7 @@ There are several different rust script runners currently available:
 * [cargo-script](https://crates.io/crates/cargo-script)
 * [cargo-play](https://crates.io/crates/cargo-play)
 
-By default, rust-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
+By default, rust-script is used, however this can be changed via environment variable **`CARGO_MAKE_RUST_SCRIPT_PROVIDER`** which should hold the crate name.<br>
 This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
 For example:
 
@@ -915,7 +915,7 @@ Please see the specific crate docs for learn more.
 
 <a name="usage-task-command-script-task-exampleshell2batch"></a>
 #### Cross Platform Shell
-In this example, when the **shell** task is invoked, the **script** content will be automatically converted to windows batch commands (in case we are on windows platform) and invoked.
+In this example, when the **shell** task is invoked, the **script** content will be automatically converted to windows batch commands (when running on a windows platform) and invoked.
 
 ```toml
 [tasks.shell]
@@ -931,8 +931,8 @@ See [shell2batch](https://github.com/sagiegurari/shell2batch) project for comple
 
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
-cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
-Any runner which takes the form of **command file** (for example **python ./program.py**) is supported.
+cargo-make can also run scripts written in various scripting languages such as Python, Perl, Ruby, Javascript, and more...<br>
+Any runner which takes the form of **command file** (for example **`python ./program.py`**) is supported.
 
 Below are few examples:
 
@@ -994,7 +994,7 @@ echo "Hello, World!\n";
 #### Shebang Support
 Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
 
-In case of windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example cmd.exe does not), which would lead to an error.
+In case of windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example, `cmd.exe` does not!), which would lead to an error.
 
 Example task using bash:
 
@@ -1050,7 +1050,7 @@ Hello, World!
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Another trick you can do with shebang lines, is to define one of the special runners like @duckscript as follows:
+Another trick you can do with shebangs is to define one of the special runners like @duckscript as follows:
 
 ```toml
 [tasks.duckscript-shebang-example]
@@ -1060,15 +1060,15 @@ echo Running duckscript without runner attribute.
 '''
 ```
 
-However that language must support comments starting with the **#** character.
+However, that language must support comments starting with the **#** character.
 
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
-There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
-cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
+There is no real need to define some of the basic **build**, **test**, ... tasks that were shown in the previous examples.<br>
+cargo-make comes with a built-in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
 tasks that are defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/).<br>
-Lets take the build task definition which comes already in the default toml:
+Let's take the built-in **build** task, defined in the default toml:
 
 ```toml
 [tasks.build]
@@ -1078,7 +1078,7 @@ command = "cargo"
 args = ["build", "--all-features"]
 ```
 
-If for example, you would like to add verbose output to it and remove the **--all-features** flag, you would just need to change the args and add the --verbose as follows:
+If for example, you would like to add verbose output to it and remove the **--all-features** flag, you would just need to change the args and add the **--verbose** as follows:
 
 ```toml
 [tasks.build]
@@ -1093,9 +1093,9 @@ disabled = true
 ```
 
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
-The default toml file comes with many steps and flows already built in, so it is worth to check it first.<br>
+The default toml file comes with many steps and flows already built-in, so it is worth it to check it out first.<br>
 
-In case you do want to delete all of the original task attributes in your extended task, you can use the clear attribute as follows:
+In case you do want to delete all of the original task attributes in your extended task, you can use the **clear** attribute as follows:
 
 ```toml
 [tasks.sometask]
@@ -1106,15 +1106,15 @@ args = [
 ]
 ```
 
-You can also extend additional external files from your external makefile by using the extend attribute, for example:
+You can also extend additional external files from your external makefile by using the **extend** attribute, for example:
 
 ```toml
 extend = "my_common_makefile.toml"
 ```
 
-The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.
+The file path in the extend attribute is always relative to the current toml file you are in, not to the process working directory.
 
-The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
+The extend attribute can be very useful when you have a workspace with a `Makefile.toml` that contains all of the common custom tasks and in each project you can have a simple `Makefile.toml` which just has
 the extend attribute pointing to the workspace makefile.
 
 <a name="usage-workspace-extending-external-makefile"></a>
@@ -1146,7 +1146,7 @@ extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.tom
 #### Automatically Extend Workspace Makefile
 When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
 
-The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
+The workspace level makefile **env** section must contain the following environment variable (you can also set it via CLI).
 
 ```toml
 [env]
