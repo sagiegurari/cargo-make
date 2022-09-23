@@ -32,14 +32,14 @@ echo "*************************************"
 script = '''
 #!@duckscript
 
-fn <scoped> delete_all
-    handle = set ${1}
-    for file in ${handle}
+fn <scope> delete_all
+    files = set ${1}
+    for file in ${files}
         echo Deleting lock file: ${file}
         rm ${file}
     end
 
-    release ${handle}
+    release ${files}
 end
 
 handle = glob_array ./src/**/Cargo.lock
