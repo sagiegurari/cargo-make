@@ -1,10 +1,4 @@
 
 [workspace]
 members = ["member1", "member2"]
-
 exclude = ["member1"]
-
-[dependencies]
-test = "1.0.0"
-member1 = { path = "./member1" }
-member3 = { path = "./member/member3" }

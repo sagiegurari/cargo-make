@@ -7,14 +7,64 @@
 #[path = "crateinfo_test.rs"]
 mod crateinfo_test;
 
-use crate::types::{CrateDependency, CrateInfo};
+use crate::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
 use cargo_metadata::camino::Utf8PathBuf;
-use cargo_metadata::MetadataCommand;
+use cargo_metadata::{Metadata, MetadataCommand};
 use fsio;
 use glob::glob;
+use indexmap::IndexMap;
 use std::env;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
+
+#[derive(Debug, Deserialize)]
+struct CargoConfig {
+    build: Option<CargoConfigBuild>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct CargoConfigBuild {
+    target: Option<RustTarget>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(from = "PathBuf")]
+struct RustTarget(PathBuf);
+
+impl RustTarget {
+    fn name(&self) -> &str {
+        self.0.file_stem().unwrap().to_str().unwrap()
+    }
+}
+
+impl From<PathBuf> for RustTarget {
+    fn from(buf: PathBuf) -> Self {
+        Self(buf)
+    }
+}
+
+impl AsRef<OsStr> for RustTarget {
+    fn as_ref(&self) -> &OsStr {
+        self.0.as_ref()
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+/// Holds crate information loaded from the Cargo.toml file.
+struct CrateInfoMinimal {
+    /// workspace info
+    workspace: Option<Workspace>,
+    /// crate dependencies
+    dependencies: Option<IndexMap<String, CrateDependency>>,
+}
+
+impl CrateInfoMinimal {
+    /// Creates and returns a new instance.
+    fn new() -> CrateInfoMinimal {
+        Default::default()
+    }
+}
 
 fn expand_glob_members(glob_member: &str) -> Vec<String> {
     let emulation = envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION");
@@ -183,58 +233,58 @@ pub(crate) fn load() -> CrateInfo {
 
 pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     if file_path.exists() {
-        debug!("Reading file: {:#?}", &file_path);
-        let crate_info_string = match fsio::file::read_text_file(&file_path) {
-            Ok(content) => content,
-            Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
-        };
+        match MetadataCommand::new().manifest_path(&file_path).exec() {
+            Ok(metadata) => {
+                debug!("Cargo metadata: {:#?}", &metadata);
+                let mut crate_info = convert_metadata_to_crate_info(&metadata);
 
-        let mut crate_info: CrateInfo = match toml::from_str(&crate_info_string) {
-            Ok(value) => value,
+                debug!("Reading file: {:#?}", &file_path);
+                let crate_info_string = match fsio::file::read_text_file(&file_path) {
+                    Ok(content) => content,
+                    Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
+                };
+
+                let crate_info_deserialized: CrateInfoMinimal =
+                    match toml::from_str(&crate_info_string) {
+                        Ok(value) => value,
+                        Err(error) => {
+                            warn!("Unable to parse Cargo.toml, {}", error);
+                            CrateInfoMinimal::new()
+                        }
+                    };
+                crate_info.workspace = crate_info_deserialized.workspace;
+                crate_info.dependencies = crate_info_deserialized.dependencies;
+
+                load_workspace_members(&mut crate_info);
+
+                debug!("Loaded Cargo.toml: {:#?}", &crate_info);
+
+                crate_info
+            }
             Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
-        };
-
-        load_workspace_members(&mut crate_info);
-
-        debug!("Loaded Cargo.toml: {:#?}", &crate_info);
-
-        crate_info
+        }
     } else {
         CrateInfo::new()
     }
 }
 
-#[derive(Debug, Deserialize)]
-struct CargoConfig {
-    build: Option<CargoConfigBuild>,
-}
+fn convert_metadata_to_crate_info(metadata: &Metadata) -> CrateInfo {
+    let mut crate_info = CrateInfo::new();
 
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-struct CargoConfigBuild {
-    target: Option<RustTarget>,
-}
+    if let Some(root_package) = metadata.root_package() {
+        let mut package_info = PackageInfo::new();
+        package_info.name = Some(root_package.name.clone());
+        package_info.version = Some(root_package.version.to_string());
+        package_info.description = root_package.description.clone();
+        package_info.license = root_package.license.clone();
+        package_info.documentation = root_package.documentation.clone();
+        package_info.homepage = root_package.homepage.clone();
+        package_info.repository = root_package.repository.clone();
 
-#[derive(Debug, Deserialize)]
-#[serde(from = "PathBuf")]
-struct RustTarget(PathBuf);
-
-impl RustTarget {
-    fn name(&self) -> &str {
-        self.0.file_stem().unwrap().to_str().unwrap()
+        crate_info.package = Some(package_info);
     }
-}
 
-impl From<PathBuf> for RustTarget {
-    fn from(buf: PathBuf) -> Self {
-        Self(buf)
-    }
-}
-
-impl AsRef<OsStr> for RustTarget {
-    fn as_ref(&self) -> &OsStr {
-        self.0.as_ref()
-    }
+    crate_info
 }
 
 fn get_cargo_config(home: Option<PathBuf>) -> Option<CargoConfig> {

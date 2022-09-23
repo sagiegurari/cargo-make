@@ -2,6 +2,7 @@
 
 ### v0.36.1
 
+* Enhancement: Support inherited package info #712
 * Enhancement: Added shell completion files in included crate #565
 
 ### v0.36.0 (2022-08-30)
