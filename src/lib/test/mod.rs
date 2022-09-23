@@ -1,3 +1,4 @@
+use crate::installer::crate_version_check::is_min_version_valid_for_versions;
 use crate::logger;
 use crate::logger::LoggerOptions;
 use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, ToolchainSpecifier};
@@ -8,6 +9,7 @@ use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
+use semver::Version;
 use std::env;
 use std::path::PathBuf;
 
@@ -43,6 +45,16 @@ pub(crate) fn is_rust_channel(rust_channel: RustChannel) -> bool {
     let current_rust_channel = rustinfo.channel.unwrap();
 
     current_rust_channel == rust_channel
+}
+
+pub(crate) fn is_min_rust_version(version: &str) -> bool {
+    let rustinfo = rust_info::get();
+    let rust_version = rustinfo.version.unwrap();
+
+    let version_struct = Version::parse(version).unwrap();
+    let rust_version_struct = Version::parse(&rust_version).unwrap();
+
+    is_min_version_valid_for_versions(&version_struct, &rust_version_struct)
 }
 
 pub(crate) fn should_test(panic_if_false: bool) -> bool {

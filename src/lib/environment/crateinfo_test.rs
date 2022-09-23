@@ -1,4 +1,5 @@
 use super::*;
+use crate::test::is_min_rust_version;
 use crate::types::{CrateDependencyInfo, PackageInfo, Workspace};
 use cargo_metadata::camino::Utf8Path;
 use indexmap::IndexMap;
@@ -656,15 +657,17 @@ fn get_crate_target_dir() {
 
 #[test]
 fn load_from_inherit_from_workspace_toml() {
-    let crate_info =
-        load_from(Path::new("src/lib/test/workspace-inherit/member1/Cargo.toml").to_path_buf());
+    if is_min_rust_version("1.64.0") {
+        let crate_info =
+            load_from(Path::new("src/lib/test/workspace-inherit/member1/Cargo.toml").to_path_buf());
 
-    let package_info = crate_info.package.unwrap();
-    assert_eq!(package_info.name.unwrap(), "member1");
-    assert_eq!(package_info.version.unwrap(), "1.2.3");
-    assert_eq!(package_info.description.unwrap(), "test description");
-    assert_eq!(package_info.documentation.unwrap(), "test docs");
-    assert_eq!(package_info.license.unwrap(), "test license");
-    assert_eq!(package_info.homepage.unwrap(), "https://testpage.com");
-    assert_eq!(package_info.repository.unwrap(), "https://repotest.com");
+        let package_info = crate_info.package.unwrap();
+        assert_eq!(package_info.name.unwrap(), "member1");
+        assert_eq!(package_info.version.unwrap(), "1.2.3");
+        assert_eq!(package_info.description.unwrap(), "test description");
+        assert_eq!(package_info.documentation.unwrap(), "test docs");
+        assert_eq!(package_info.license.unwrap(), "test license");
+        assert_eq!(package_info.homepage.unwrap(), "https://testpage.com");
+        assert_eq!(package_info.repository.unwrap(), "https://repotest.com");
+    }
 }
