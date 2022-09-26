@@ -2,4 +2,3 @@
 [workspace]
 members = ["member", "member1", "member2"]
 exclude = ["member"]
-

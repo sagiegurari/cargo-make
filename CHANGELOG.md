@@ -4,6 +4,7 @@
 
 * Enhancement: Support inherited package info #712
 * Enhancement: Added shell completion files in included crate #565
+* Enhancement: Add skipping task message for all actionable tasks that fail condition #708
 
 ### v0.36.0 (2022-08-30)
 
