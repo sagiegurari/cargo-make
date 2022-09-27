@@ -1093,7 +1093,7 @@
                 <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
             };
 
-            <span class="kw">if </span>logger::should_reduce_output(<span class="kw-2">&amp;</span>flow_info) &amp;&amp; step.config.script.is_none() {
+            <span class="kw">if </span>logger::should_reduce_output(<span class="kw-2">&amp;</span>flow_info) &amp;&amp; !step.config.is_actionable() {
                 <span class="macro">debug!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);
             } <span class="kw">else </span>{
                 <span class="macro">info!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.1
+### v0.36.1 (2022-09-27)
 
 * Enhancement: Support inherited package info #712
 * Enhancement: Added shell completion files in included crate #565

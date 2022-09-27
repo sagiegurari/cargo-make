@@ -327,6 +327,56 @@
 <span id="327">327</span>
 <span id="328">328</span>
 <span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # crateinfo
 //!
 //! Loads crate information.
@@ -336,14 +386,64 @@
 #[path = <span class="string">&quot;crateinfo_test.rs&quot;</span>]
 </span><span class="kw">mod </span>crateinfo_test;
 
-<span class="kw">use </span><span class="kw">crate</span>::types::{CrateDependency, CrateInfo};
+<span class="kw">use </span><span class="kw">crate</span>::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
 <span class="kw">use </span>cargo_metadata::camino::Utf8PathBuf;
-<span class="kw">use </span>cargo_metadata::MetadataCommand;
+<span class="kw">use </span>cargo_metadata::{Metadata, MetadataCommand};
 <span class="kw">use </span>fsio;
 <span class="kw">use </span>glob::glob;
+<span class="kw">use </span>indexmap::IndexMap;
 <span class="kw">use </span>std::env;
 <span class="kw">use </span>std::ffi::OsStr;
 <span class="kw">use </span>std::path::{Path, PathBuf};
+
+<span class="attribute">#[derive(Debug, Deserialize)]
+</span><span class="kw">struct </span>CargoConfig {
+    build: <span class="prelude-ty">Option</span>&lt;CargoConfigBuild&gt;,
+}
+
+<span class="attribute">#[derive(Debug, Deserialize)]
+#[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
+</span><span class="kw">struct </span>CargoConfigBuild {
+    target: <span class="prelude-ty">Option</span>&lt;RustTarget&gt;,
+}
+
+<span class="attribute">#[derive(Debug, Deserialize)]
+#[serde(from = <span class="string">&quot;PathBuf&quot;</span>)]
+</span><span class="kw">struct </span>RustTarget(PathBuf);
+
+<span class="kw">impl </span>RustTarget {
+    <span class="kw">fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+        <span class="self">self</span>.<span class="number">0</span>.file_stem().unwrap().to_str().unwrap()
+    }
+}
+
+<span class="kw">impl </span>From&lt;PathBuf&gt; <span class="kw">for </span>RustTarget {
+    <span class="kw">fn </span>from(buf: PathBuf) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(buf)
+    }
+}
+
+<span class="kw">impl </span>AsRef&lt;OsStr&gt; <span class="kw">for </span>RustTarget {
+    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>OsStr {
+        <span class="self">self</span>.<span class="number">0</span>.as_ref()
+    }
+}
+
+<span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+</span><span class="doccomment">/// Holds crate information loaded from the Cargo.toml file.
+</span><span class="kw">struct </span>CrateInfoMinimal {
+    <span class="doccomment">/// workspace info
+    </span>workspace: <span class="prelude-ty">Option</span>&lt;Workspace&gt;,
+    <span class="doccomment">/// crate dependencies
+    </span>dependencies: <span class="prelude-ty">Option</span>&lt;IndexMap&lt;String, CrateDependency&gt;&gt;,
+}
+
+<span class="kw">impl </span>CrateInfoMinimal {
+    <span class="doccomment">/// Creates and returns a new instance.
+    </span><span class="kw">fn </span>new() -&gt; CrateInfoMinimal {
+        Default::default()
+    }
+}
 
 <span class="kw">fn </span>expand_glob_members(glob_member: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;String&gt; {
     <span class="kw">let </span>emulation = envmnt::is(<span class="string">&quot;CARGO_MAKE_WORKSPACE_EMULATION&quot;</span>);
@@ -512,58 +612,58 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load_from(file_path: PathBuf) -&gt; CrateInfo {
     <span class="kw">if </span>file_path.exists() {
-        <span class="macro">debug!</span>(<span class="string">&quot;Reading file: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>file_path);
-        <span class="kw">let </span>crate_info_string = <span class="kw">match </span>fsio::file::read_text_file(<span class="kw-2">&amp;</span>file_path) {
-            <span class="prelude-val">Ok</span>(content) =&gt; content,
-            <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unable to open Cargo.toml, error: {}&quot;</span>, error),
-        };
+        <span class="kw">match </span>MetadataCommand::new().manifest_path(<span class="kw-2">&amp;</span>file_path).exec() {
+            <span class="prelude-val">Ok</span>(metadata) =&gt; {
+                <span class="macro">debug!</span>(<span class="string">&quot;Cargo metadata: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>metadata);
+                <span class="kw">let </span><span class="kw-2">mut </span>crate_info = convert_metadata_to_crate_info(<span class="kw-2">&amp;</span>metadata);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>crate_info: CrateInfo = <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>crate_info_string) {
-            <span class="prelude-val">Ok</span>(value) =&gt; value,
+                <span class="macro">debug!</span>(<span class="string">&quot;Reading file: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>file_path);
+                <span class="kw">let </span>crate_info_string = <span class="kw">match </span>fsio::file::read_text_file(<span class="kw-2">&amp;</span>file_path) {
+                    <span class="prelude-val">Ok</span>(content) =&gt; content,
+                    <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unable to open Cargo.toml, error: {}&quot;</span>, error),
+                };
+
+                <span class="kw">let </span>crate_info_deserialized: CrateInfoMinimal =
+                    <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>crate_info_string) {
+                        <span class="prelude-val">Ok</span>(value) =&gt; value,
+                        <span class="prelude-val">Err</span>(error) =&gt; {
+                            <span class="macro">warn!</span>(<span class="string">&quot;Unable to parse Cargo.toml, {}&quot;</span>, error);
+                            CrateInfoMinimal::new()
+                        }
+                    };
+                crate_info.workspace = crate_info_deserialized.workspace;
+                crate_info.dependencies = crate_info_deserialized.dependencies;
+
+                load_workspace_members(<span class="kw-2">&amp;mut </span>crate_info);
+
+                <span class="macro">debug!</span>(<span class="string">&quot;Loaded Cargo.toml: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>crate_info);
+
+                crate_info
+            }
             <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unable to parse Cargo.toml, {}&quot;</span>, error),
-        };
-
-        load_workspace_members(<span class="kw-2">&amp;mut </span>crate_info);
-
-        <span class="macro">debug!</span>(<span class="string">&quot;Loaded Cargo.toml: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>crate_info);
-
-        crate_info
+        }
     } <span class="kw">else </span>{
         CrateInfo::new()
     }
 }
 
-<span class="attribute">#[derive(Debug, Deserialize)]
-</span><span class="kw">struct </span>CargoConfig {
-    build: <span class="prelude-ty">Option</span>&lt;CargoConfigBuild&gt;,
-}
+<span class="kw">fn </span>convert_metadata_to_crate_info(metadata: <span class="kw-2">&amp;</span>Metadata) -&gt; CrateInfo {
+    <span class="kw">let </span><span class="kw-2">mut </span>crate_info = CrateInfo::new();
 
-<span class="attribute">#[derive(Debug, Deserialize)]
-#[serde(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
-</span><span class="kw">struct </span>CargoConfigBuild {
-    target: <span class="prelude-ty">Option</span>&lt;RustTarget&gt;,
-}
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(root_package) = metadata.root_package() {
+        <span class="kw">let </span><span class="kw-2">mut </span>package_info = PackageInfo::new();
+        package_info.name = <span class="prelude-val">Some</span>(root_package.name.clone());
+        package_info.version = <span class="prelude-val">Some</span>(root_package.version.to_string());
+        package_info.description = root_package.description.clone();
+        package_info.license = root_package.license.clone();
+        package_info.documentation = root_package.documentation.clone();
+        package_info.homepage = root_package.homepage.clone();
+        package_info.repository = root_package.repository.clone();
 
-<span class="attribute">#[derive(Debug, Deserialize)]
-#[serde(from = <span class="string">&quot;PathBuf&quot;</span>)]
-</span><span class="kw">struct </span>RustTarget(PathBuf);
-
-<span class="kw">impl </span>RustTarget {
-    <span class="kw">fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="self">self</span>.<span class="number">0</span>.file_stem().unwrap().to_str().unwrap()
+        crate_info.package = <span class="prelude-val">Some</span>(package_info);
     }
-}
 
-<span class="kw">impl </span>From&lt;PathBuf&gt; <span class="kw">for </span>RustTarget {
-    <span class="kw">fn </span>from(buf: PathBuf) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(buf)
-    }
-}
-
-<span class="kw">impl </span>AsRef&lt;OsStr&gt; <span class="kw">for </span>RustTarget {
-    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>OsStr {
-        <span class="self">self</span>.<span class="number">0</span>.as_ref()
-    }
+    crate_info
 }
 
 <span class="kw">fn </span>get_cargo_config(home: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;CargoConfig&gt; {

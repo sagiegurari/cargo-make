@@ -2593,7 +2593,7 @@
     }
 }
 
-<span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+<span class="attribute">#[derive(Debug, Clone, Default)]
 </span><span class="doccomment">/// Holds crate package information loaded from the Cargo.toml file package section.
 </span><span class="kw">pub struct </span>PackageInfo {
     <span class="doccomment">/// name
@@ -2636,7 +2636,7 @@
     </span>Info(CrateDependencyInfo),
 }
 
-<span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+<span class="attribute">#[derive(Debug, Clone, Default)]
 </span><span class="doccomment">/// Holds crate information loaded from the Cargo.toml file.
 </span><span class="kw">pub struct </span>CrateInfo {
     <span class="doccomment">/// package info
