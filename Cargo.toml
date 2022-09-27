@@ -28,6 +28,7 @@ include = [
   "/README.md",
   "/CHANGELOG.md",
   "/Makefile.toml",
+  "/extra/shell/*",
 ]
 
 [lib]

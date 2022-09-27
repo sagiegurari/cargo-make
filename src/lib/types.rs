@@ -227,7 +227,7 @@ impl Workspace {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {
     /// name
@@ -270,7 +270,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info

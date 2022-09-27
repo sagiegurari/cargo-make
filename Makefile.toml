@@ -28,6 +28,26 @@ echo "    Unstable Format Environment: ${CARGO_MAKE_TEMP_UNSTABLE_FMT_ENV}"
 echo "*************************************"
 '''
 
+[tasks.test-multi-phases-cleanup]
+script = '''
+#!@duckscript
+
+fn <scope> delete_all
+    files = set ${1}
+    for file in ${files}
+        echo Deleting lock file: ${file}
+        rm ${file}
+    end
+
+    release ${files}
+end
+
+handle = glob_array ./src/**/Cargo.lock
+delete_all ${handle}
+handle = glob_array ./examples/**/Cargo.lock
+delete_all ${handle}
+'''
+
 [tasks.test-multi-phases-flow]
 condition = { env_false = ["CARGO_MAKE_TEMP_UNSTABLE_TEST_ENV"] }
 

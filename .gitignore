@@ -8,3 +8,5 @@ dump.rdb
 /rs*.sh
 /docs/_site
 /core
+/src/**/Cargo.lock
+/examples/**/Cargo.lock

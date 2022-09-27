@@ -443,7 +443,7 @@ pub(crate) fn run_task_with_options(
                 None => "".to_string(),
             };
 
-            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+            if logger::should_reduce_output(&flow_info) && !step.config.is_actionable() {
                 debug!("Skipping Task: {} {}", &step.name, &fail_message);
             } else {
                 info!("Skipping Task: {} {}", &step.name, &fail_message);
