@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.2
+
+* Fix: support shebang in scripts with spaces before shebang start #718
+
 ### v0.36.1 (2022-09-27)
 
 * Enhancement: Support inherited package info #712
