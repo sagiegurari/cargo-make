@@ -374,7 +374,7 @@ args = ["running test3"]
 
 [tasks.test-default]
 command = "echo"
-args = ["running test-default"]`
+args = ["running test-default"]
 
 [tasks.test-routing]
 run_task = [
@@ -490,7 +490,7 @@ args = [
 ]
 ```
 
-cargo-make cli also supports additional arguments which will be available to all tasks.<br>
+cargo-make CLI also supports additional arguments which will be available to all tasks.<br>
 The following example prints additional arguments:
 
 ```toml
@@ -588,7 +588,7 @@ echo end...
 '''
 ```
 
-cargo-make cli also supports additional arguments which will be available to all tasks.<br>
+cargo-make CLI also supports additional arguments which will be available to all tasks.<br>
 The following example prints additional arguments:
 
 ```toml
@@ -3703,7 +3703,7 @@ If for any reason, the above paths are not valid for the given platform, it will
 The following example `config.toml` shows all possible options with their default values:
 
 ```toml
-# The default log level if not defined by the --loglevel cli argument
+# The default log level if not defined by the `--loglevel` CLI argument
 log_level = "info"
 
 # The default configuration whether output coloring is disabled
