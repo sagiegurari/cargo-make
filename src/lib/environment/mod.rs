@@ -675,7 +675,9 @@ fn load_env_file_with_base_directory(
 ) -> bool {
     match env_file {
         Some(file_name) => {
-            let file_path = if file_name.starts_with(".") {
+            let expanded_file_name = expand_value(&file_name);
+
+            let file_path = if expanded_file_name.starts_with(".") {
                 let (base_path, check_relative_path) = match base_directory {
                     Some(file) => (file, true),
                     None => (envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."), false),
@@ -684,12 +686,12 @@ fn load_env_file_with_base_directory(
                 if check_relative_path && base_path.starts_with(".") {
                     Path::new(&envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "."))
                         .join(&base_path)
-                        .join(file_name)
+                        .join(expanded_file_name)
                 } else {
-                    Path::new(&base_path).join(file_name)
+                    Path::new(&base_path).join(expanded_file_name)
                 }
             } else {
-                Path::new(&file_name).to_path_buf()
+                Path::new(&expanded_file_name).to_path_buf()
             };
 
             match file_path.to_str() {

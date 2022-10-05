@@ -2,6 +2,7 @@
 
 ### v0.36.2
 
+* Enhancement: Add env var support in env_files values #723
 * Fix: support shebang in scripts with spaces before shebang start #718
 
 ### v0.36.1 (2022-09-27)

@@ -57,6 +57,27 @@ fn load_env_file_with_base_directory_not_defaults_and_exists() {
 
 #[test]
 #[ignore]
+fn load_env_file_with_base_directory_not_defaults_and_exists_path_has_env_var() {
+    envmnt::set("ENV_FILE_PATH_FOR_LOAD_ENV_FILE_TEST", "examples/test");
+    envmnt::set("ENV1_TEST", "existing");
+    envmnt::set("ENV2_TEST", "existing");
+    envmnt::set("ENV3_TEST", "existing");
+
+    let output = load_env_file_with_base_directory(
+        Some("./${ENV_FILE_PATH_FOR_LOAD_ENV_FILE_TEST}.env".to_string()),
+        None,
+        false,
+    );
+
+    assert!(output);
+
+    assert!(envmnt::is_equal("ENV1_TEST", "TEST1"));
+    assert!(envmnt::is_equal("ENV2_TEST", "TEST2"));
+    assert!(envmnt::is_equal("ENV3_TEST", "VALUE OF ENV2 IS: TEST2"));
+}
+
+#[test]
+#[ignore]
 fn load_env_file_with_base_directory_defaults_only_and_exists() {
     envmnt::set("ENV1_TEST", "existing");
     envmnt::set("ENV2_TEST", "existing");
