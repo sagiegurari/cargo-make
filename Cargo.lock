@@ -330,9 +330,9 @@ dependencies = [
 
 [[package]]
 name = "duckscript"
-version = "0.7.4"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25a3658fb573aa6858ec008008d6b33cb05c9eb77fd53b2d77f5f0cc6eb72536"
+checksum = "7e313b67f0b8ad7c9cd3e5ee9bf6626cfd6467e5f2a3704481c035ed52e4540a"
 dependencies = [
  "fsio",
 ]
