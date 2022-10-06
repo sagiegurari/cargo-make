@@ -55,7 +55,7 @@ fn install_crate(provider: &ScriptRunner) {
         }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
-            "script",
+            Some("script"),
             "cargo-script",
             &None,
             true,
@@ -65,7 +65,7 @@ fn install_crate(provider: &ScriptRunner) {
         ),
         ScriptRunner::CargoPlay => cargo_plugin_installer::install_crate(
             &None,
-            "play",
+            Some("play"),
             "cargo-play",
             &None,
             true,

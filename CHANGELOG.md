@@ -8,6 +8,7 @@
 ### v0.36.1 (2022-09-27)
 
 * Enhancement: Support inherited package info #712
+* Enhancement: Add support for install_crate value without args (skipping current installation validation) #725
 * Enhancement: Added shell completion files in included crate #565
 * Enhancement: Add skipping task message for all actionable tasks that fail condition #708
 
