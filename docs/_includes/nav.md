@@ -90,7 +90,7 @@
     * [Command Groups](#usage-command-groups)
     * [Diff Changes](#usage-diff-changes)
     * [Unstable Features](#usage-unstable-features)
-    * [Cli Options](#usage-cli)
+    * [CLI Options](#usage-cli)
     * [Plugins](#usage-plugins)
         * [Defining Plugins](#usage-plugins-defining-plugins)
         * [Plugin SDK](#usage-plugins-plugin-sdk)
