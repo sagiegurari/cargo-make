@@ -2,7 +2,7 @@
 <a name="overview"></a>
 ## Overview
 The cargo-make task runner enables to define and configure sets of tasks and run them as a flow.<br>
-A task is a command, script, rust code or other sub tasks to execute.<br>
+A task is a command, script, rust code, or other sub tasks to execute.<br>
 Tasks can have dependencies which are also tasks that will be executed before the task itself.<br>
 With a simple toml based configuration file, you can define a multi platform build script that can run build, test, generate documentation, run bench tests, run security validations and more, executed by running a single command.
 
@@ -14,13 +14,13 @@ In order to install, just run the following command
 cargo install --force cargo-make
 ```
 
-This will install cargo-make in your ~/.cargo/bin.<br>
-Make sure to add ~/.cargo/bin directory to your PATH variable.<br>
+This will install cargo-make in your `~/.cargo/bin`.<br>
+Make sure to add `~/.cargo/bin` directory to your `PATH` variable.<br>
 <br>
-You will have two executables available: *cargo-make* and *makers*<br>
+You will have two executables available: *`cargo-make`* and *`makers`*<br>
 
 * **cargo-make** - This is a cargo plugin invoked using **cargo make ...**
-* **makers** - A standalone executable which provides same features and cli arguments as cargo-make but is invoked directly and not as a cargo plugin.
+* **makers** - A standalone executable which provides same features and cli arguments as cargo-make, but is invoked directly and not as a cargo plugin.
 
 See [Cli Options](#usage-cli) section for full CLI instructions.
 
@@ -152,7 +152,7 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 
 We now created a build script that can run on any platform.
 
-**cargo-make can be invoked as a cargo plugin via 'cargo make' command or as a standalone executable via 'makers' command.**<br>
+**cargo-make can be invoked as a cargo plugin via `cargo make` command, _or_ as a standalone executable via `makers` command.**<br>
 <br>
 **Important Note: if you are running this example in a cargo workspace, you will need to add the following to the top of the file:**<br>
 
@@ -163,7 +163,7 @@ CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 **More on workspace support in the relevant sections in this document.**
 
 <a name="usage-task-dependencies-alias"></a>
-### Tasks, Dependencies and Aliases
+### Tasks, Dependencies, and Aliases
 In many cases, certain tasks depend on other tasks.<br>
 For example you would like to format the code before running build and run the build before running tests.<br>
 Such flow can be defined as follows:
@@ -195,7 +195,7 @@ It will try to run test, see that it has dependencies and those have other depen
 Therefore it will create an execution plan for the tasks based on the tasks and their dependencies.<br>
 In our case it will invoke format -> build -> test.<br>
 
-The same task will never be executed twice so if we have for example:
+The same task will never be executed twice. So, if we have, for example:
 
 ```toml
 [tasks.A]
@@ -212,7 +212,7 @@ script = "echo hello"
 ```
 
 In this example, A depends on B and C, and both B and C are dependent on D.<br>
-Task D however will not be invoked twice.<br>
+Task D, however, will not be invoked twice.<br>
 The output of the execution will look something like this:
 
 ```console
@@ -228,11 +228,11 @@ hello
 
 As you can see, 'hello' was printed once by task D as it was only invoked once.<br>
 But what if we want to run D twice?<br>
-Simple answer would be to duplicate task D and have B depend on D and C depend on D2 which is a copy of D.<br>
+Simple answer would be to duplicate task D, have B depend on D, and C depend on D2, which is a copy of D.<br>
 But duplicating can lead to bugs and to huge makefiles, so we have aliases for that.<br>
 An alias task has its own name and points to another task.<br>
 All of the definitions of the alias task are ignored.<br>
-So now, if we want to have D execute twice we can do the following:
+So now, if we want to have D execute twice, we can do the following:
 
 ```toml
 [tasks.A]
@@ -251,7 +251,7 @@ script = "echo hello"
 alias="D"
 ```
 
-Now C depends on D2 and D2 is an alias for D.<br>
+Now C depends on D2, and D2 is an alias for D.<br>
 Execution output of such make file would like as follows:
 
 ```console
@@ -318,16 +318,16 @@ script = "echo hello"
 If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
-*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined unless they are defined also as sub dependencies.*
+*As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined, unless they are defined also as sub dependencies.*
 
 <a name="usage-task-command-script-task"></a>
-### Commands, Scripts and Sub Tasks
+### Commands, Scripts, and Sub Tasks
 The actual operation that a task invokes can be defined in 3 ways.<br>
 The below explains each one:
 
 * **run_task** - Invokes another task with the name defined in this attribute. Unlike dependencies which are invoked before the current task, the task defined in the **run_task** is invoked after the current task.
 * **command** - The command attribute defines what executable to invoke. You can use the **args** attribute to define what command line arguments to provide as part of the command.
-* **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (cmd for windows, sh for others).
+* **script** - Invokes the script. You can change the executable used to invoke the script using the **script_runner** attribute. If not defined, the default platform runner is used (`cmd` for Windows, `sh` for others).
 
 Only one of the definitions will be used.<br>
 If multiple attributes are defined (for example both command and script), the task will fail during invocation.
@@ -338,7 +338,7 @@ The following runners are currently supported:
 
 * **@duckscript** - Executes the defined duckscript code. See [example](#usage-task-command-script-task-exampleduckscript)
 * **@rust** - Compiles and executes the defined rust code. See [example](#usage-task-command-script-task-examplerust)
-* **@shell** - For windows platform, it will try to convert the shell commands to windows batch commands (only basic scripts are supported) and execute the script, for other platforms the script will be executed as is. See [example](#usage-task-command-script-task-exampleshell2batch)
+* **@shell** - For Windows platforms, it will try to convert the shell commands to Windows batch commands (only basic scripts are supported) and execute the script; for other platforms, the script will be executed as-is. See [example](#usage-task-command-script-task-exampleshell2batch)
 
 Below are some basic examples of each action type.
 
@@ -444,7 +444,7 @@ args = ["cleanup"]
 run_task = { name = ["echo1", "echo2", "fail"], fork = true, cleanup_task = "cleanup" }
 ```
 
-In order to run multiple tasks in parallel, add **parallel = true** to the run_task object.<br>
+In order to run multiple tasks in parallel, add **parallel = true** to the `run_task` object.<br>
 For example:
 
 ```toml
@@ -464,11 +464,11 @@ This allows to run independent tasks in parallel and speed up the overall perfor
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
 * Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
-* Avoid using **CARGO_MAKE_CURRENT_TASK_** type environment variables as those may hold incorrect values.
+* Avoid using **`CARGO_MAKE_CURRENT_TASK_`** type environment variables as those may hold incorrect values.
 
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
-For running commands, you can also define the command line arguments as below example invokes cargo command with the plugin name as a command line argument:
+When running commands, you can also define the command line arguments, as shown in the example below, to invoke the cargo command with the plugin name as a command line argument:
 
 ```toml
 [tasks.build-with-verbose]
@@ -490,8 +490,8 @@ args = [
 ]
 ```
 
-cargo-make cli also supports additional arguments which will be available to all tasks.<br>
-Following example task, will print those additional arguments:
+cargo-make CLI also supports additional arguments which will be available to all tasks.<br>
+The following example prints additional arguments:
 
 ```toml
 [tasks.varargs]
@@ -562,11 +562,11 @@ args are: -o=arg1 -o=arg2 -o=arg3
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Command line arguments can also contain built in [functions which are explained later on in this document.](#usage-functions)
+Command line arguments can also contain [built-in functions](#usage-functions) (see below).
 
 <a name="usage-task-command-script-task-examplescript"></a>
 #### Script
-Below simple script which prints hello world.
+Below is simple script which prints hello world.
 
 ```toml
 [tasks.hello-world]
@@ -577,7 +577,7 @@ script = [
 ]
 ```
 
-You can use multi line toml string to make the script more readable as follows:
+You can use multi-line toml string to make the script more readable as follows:
 
 ```toml
 [tasks.hello-world]
@@ -588,8 +588,8 @@ echo end...
 '''
 ```
 
-cargo-make cli also supports additional arguments which will be available to all tasks.<br>
-Following example task, will print those additional arguments:
+cargo-make CLI also supports additional arguments which will be available to all tasks.<br>
+The following example prints additional arguments:
 
 ```toml
 [tasks.cli-args]
@@ -631,14 +631,14 @@ args are:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-It is also possible to point to an existing script instead of holding the script text inside the makefile by using the **file** property as follows:
+It is also possible to point to an existing script (instead of holding the script text inside the makefile) by using the **file** property as follows:
 
 ```toml
 [tasks.hello-world-from-script-file]
 script = { file = "script.sh" }
 ```
 
-Script file paths are always relative to the current working directory unless specified by the **absolute_path** attribute, for example:
+Script file paths are always relative to the current working directory, unless specified by the **absolute_path** attribute. For example:
 
 ```toml
 [tasks.hello-world-from-script-file-absolute-path]
@@ -718,12 +718,12 @@ args = ["2"]
 ```
 
 Same as OS scripts, the @duckscript runner also supports the cargo-make CLI arguments access.<br>
-In addition, all environment variables are preloaded as duckscript variables and can be directly read from the script (no need to invoke the **get_env** command).
+In addition, all environment variables are preloaded as duckscript variables, and can be directly read from the script. (No need to invoke the **get_env** command!)
 
 <a name="usage-task-command-script-task-examplerust"></a>
 #### Rust Code
 In this example, when the **rust** task is invoked, the **script** content will be compiled and executed.
-You can see how dependencies are defined in Cargo.toml format inside the code.
+You can see how dependencies are defined in `Cargo.toml` format inside the code.
 
 ```toml
 [tasks.rust]
@@ -747,7 +747,7 @@ There are several different rust script runners currently available:
 * [cargo-script](https://crates.io/crates/cargo-script)
 * [cargo-play](https://crates.io/crates/cargo-play)
 
-By default, rust-script is used, however this can be changed via environment variable **CARGO_MAKE_RUST_SCRIPT_PROVIDER** which should hold the crate name.<br>
+By default, rust-script is used, however this can be changed via environment variable **`CARGO_MAKE_RUST_SCRIPT_PROVIDER`** which should hold the crate name.<br>
 This enables to define a different runner for each task by setting it in the **env** block of the specific tasks.<br>
 For example:
 
@@ -785,7 +785,7 @@ Please see the specific crate docs for learn more.
 
 <a name="usage-task-command-script-task-exampleshell2batch"></a>
 #### Cross Platform Shell
-In this example, when the **shell** task is invoked, the **script** content will be automatically converted to windows batch commands (in case we are on windows platform) and invoked.
+In this example, when the **shell** task is invoked, the **script** content will be automatically converted to Windows batch commands (when running on a Windows platform) and invoked.
 
 ```toml
 [tasks.shell]
@@ -801,8 +801,8 @@ See [shell2batch](https://github.com/sagiegurari/shell2batch) project for comple
 
 <a name="usage-task-command-script-task-examplegeneric"></a>
 #### Other Programming Languages
-cargo-make can also run scripts written in various scripting languages such as python, perl, ruby, javascript and more...<br>
-Any runner which takes the form of **command file** (for example **python ./program.py**) is supported.
+cargo-make can also run scripts written in various scripting languages such as Python, Perl, Ruby, Javascript, and more...<br>
+Any runner which takes the form of **command file** (for example **`python ./program.py`**) is supported.
 
 Below are few examples:
 
@@ -864,7 +864,7 @@ echo "Hello, World!\n";
 #### Shebang Support
 Instead of defining custom runners via **script_runner** attribute, it's possible to define it in the script shebang line.
 
-In case of windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example cmd.exe does not), which would lead to an error.
+In case of Windows, make sure not to use a runner which doesn't have the **#** character defined as comment (for example, `cmd.exe` does not!), which would lead to an error.
 
 Example task using bash:
 
@@ -893,7 +893,7 @@ hello
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Example task using python:
+Example task using Python:
 
 ```toml
 [tasks.shebang-python]
@@ -920,7 +920,7 @@ Hello, World!
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Another trick you can do with shebang lines, is to define one of the special runners like @duckscript as follows:
+Another trick you can do with shebangs is to define one of the special runners like @duckscript as follows:
 
 ```toml
 [tasks.duckscript-shebang-example]
@@ -934,11 +934,12 @@ However that language must support comments starting with the **#** character.
 
 <a name="usage-default-tasks"></a>
 ### Default Tasks and Extending
-There is no real need to define some of the basic build, test, ... tasks that were shown in the previous examples.<br>
-cargo-make comes with a built in toml file that will serve as a base for every execution.<br>
+There is no real need to define some of the basic **build**, **test**, ... tasks that were shown in the previous examples.<br>
+cargo-make comes with a built-in toml file that will serve as a base for every execution.<br>
 The **optional** external toml file that is provided while running cargo-make will only extend and add or overwrite
 tasks that are defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/).<br>
-Lets take the build task definition which comes already in the default toml:
+
+Let's take the built-in **build** task, defined in the default toml:
 
 ```toml
 [tasks.build]
@@ -963,9 +964,9 @@ disabled = true
 ```
 
 There is no need to redefine existing properties of the task, only what needs to be added or overwritten.<br>
-The default toml file comes with many steps and flows already built in, so it is worth to check it first.<br>
+The default toml file comes with many steps and flows already built-in, so it is worth it to check it out first.<br>
 
-In case you do want to delete all of the original task attributes in your extended task, you can use the clear attribute as follows:
+In case you do want to delete all of the original task attributes in your extended task, you can use the **clear** attribute as follows:
 
 ```toml
 [tasks.sometask]
@@ -976,15 +977,15 @@ args = [
 ]
 ```
 
-You can also extend additional external files from your external makefile by using the extend attribute, for example:
+You can also extend additional external files from your external makefile by using the **extend** attribute, for example:
 
 ```toml
 extend = "my_common_makefile.toml"
 ```
 
-The file path in the extend attribute is always relative to the current toml file you are in and not to the process working directory.
+The file path in the **extend** attribute is always relative to the current toml file you are in, not to the process working directory.
 
-The extend attribute can be very useful when you have a workspace with a Makefile.toml that contains all of the common custom tasks and in each project you can have a simple Makefile.toml which just has
+The extend attribute can be very useful when you have a workspace with a `Makefile.toml` that contains all of the common custom tasks and in each project you can have a simple `Makefile.toml` which just has
 the extend attribute pointing to the workspace makefile.
 
 <a name="usage-workspace-extending-external-makefile"></a>
@@ -1016,7 +1017,7 @@ extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.tom
 #### Automatically Extend Workspace Makefile
 When running cargo make for modules which are part of a workspace, you can automatically have the member crates makefile (even if doesn't exist) extend the workspace level makefile.
 
-The workspace level makefile **env** section must contain the following environment variable (can also be set via cli)
+The workspace level makefile **env** section must contain the following environment variable (you can also set it via CLI).
 
 ```toml
 [env]
@@ -1030,11 +1031,11 @@ Flows that start directly in the member crate, must manually extend the workspac
 
 <a name="usage-load-scripts"></a>
 #### Load Scripts
-In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks, for example if you wish to notify some internal company server of the build status.<br>
-Instead of redefining those tasks in each project you can create a single toml file with those definitions and have all projects extend that file.<br>
-The extend however, only knows to find the extending files in the local file system, so in order to pull some common toml from a remote server (using http or git clone and so on...), you can use the load scripts.
+In more complex scenarios, you may want multiple unrelated projects to share some common custom tasks. For example, you may wish to notify some internal company server of the build status.<br>
+Instead of redefining those tasks in each project, you can create a single toml file with those definitions and have all projects extend that file.<br>
+However, this “extend” functionality only knows to find the such files in the local file system. So, in order to pull some common toml from a remote server, (using `http` or `git clone` and so on...), you can use the load scripts.
 
-Load scripts are defined in the config section using the load_script attribute and are invoked **before** the extend attribute is evaluated.<br>
+Load scripts are defined in the config section using the **load_script** attribute and are invoked **before** the extend attribute is evaluated.<br>
 This allows you to first pull the toml file from the remote server and put it in a location defined by the extend attribute.
 
 Here is an example of a load script which downloads the common toml from a remote server using HTTP:
@@ -1051,7 +1052,7 @@ Here is an example of pulling the common toml file from some git repo:
 load_script = "git clone git@mygitserver:user/project.git /home/myuser/common"
 ```
 
-You can run any command or set of commands you want, therefore you can build a more complex flow of how and from where to fetch the common toml file and where to put it.<br>
+You can run any command or set of commands you want. Therefore, you can build a more complex flow of how and from where to fetch the common toml file, and where to put it.<br>
 If needed, you can override the load_script per platform using the **linux_load_script**, **windows_load_script** and **mac_load_script** attributes.
 
 <a name="usage-predefined-makefiles"></a>
@@ -1075,7 +1076,7 @@ There are multiple ways of extending tasks in the same or from extended makefile
 #### Task Override
 cargo-make comes with many predefined tasks and flows that can be used without redefining them in your project.<br>
 However in some cases, you would like to change them a bit to fit your needs without rewriting the entire task.<br>
-Lets take for example the **build** task which is predefined internally inside cargo-make as follows:
+Let's take, for example, the **build** task which is predefined internally inside cargo-make as follows:
 
 ```toml
 [tasks.build]
@@ -1085,14 +1086,14 @@ command = "cargo"
 args = ["build", "--all-features"]
 ```
 
-If for example you do not want to use the **--all-features** mode, you can just change the args of the task in your external Makefile.toml as follows:
+If you do not want to use the **--all-features** mode, you can just change the args of the task in your external `Makefile.toml` as follows:
 
 ```toml
 [tasks.build]
 args = ["build"]
 ```
 
-When cargo-make starts up, it will load the external Makefile.toml and the internal makefile definitions and will merge them.<br>
+When cargo-make starts up, it will load the external `Makefile.toml` and the internal makefile definitions and will merge them.<br>
 Since the external file overrides the internal definitions, only the args attribute for the **build** task which was redefined,
 will override the args attribute which was defined internally, and the actual result would be:
 
@@ -1108,7 +1109,7 @@ The same process can be used to override tasks from other makefiles loaded using
 
 <a name="usage-platform-override"></a>
 #### Platform Override
-In case you want to override a task or specific attributes in a task for specific platforms, you can define an override task with the platform name (currently linux, windows and mac) under the specific task.<br>
+If you want to override a task (or specific attributes in a task) for specific platforms, you can define an override task with the platform name (currently Linux, Windows, and macOS) under the specific task.<br>
 For example:
 
 ```toml
@@ -1123,8 +1124,8 @@ echo "Hello World From Linux"
 '''
 ```
 
-If you run cargo make with task 'hello-world' on linux, it would redirect to hello-world.linux while on other platforms it will execute the original hello-world.<br>
-In linux the output would be:
+If you run cargo make with task 'hello-world' on Linux, it would redirect to hello-world.linux while on other platforms it will execute the original hello-world.<br>
+In Linux the output would be:
 
 ```console
 [cargo-make] INFO - Task: hello-world
@@ -1135,7 +1136,7 @@ Hello World From Linux
 [cargo-make] INFO - Build done in 0 seconds.
 ```
 
-While on other platforms
+While on other platforms it would output:
 
 ```console
 [cargo-make] INFO - Task: hello-world
@@ -1146,8 +1147,8 @@ Hello World From Unknown
 [cargo-make] INFO - Build done in 0 seconds.
 ```
 
-In the override task you can define any attribute that will override the attribute of the parent task, while undefined attributes will use the value from the parent task and will not be modified.<br>
-In case you need to delete attributes from the parent (for example you have a command defined in the parent task but you want to have a script defined in the override task), then you will
+In the override task, you can define any attribute that will override the attribute of the parent task, while undefined attributes will use the value from the parent task and will not be modified.<br>
+If you need to delete attributes from the parent (for example, you have a command defined in the parent task, but you want to have a script defined in the override task), then you will
 have to clear the parent task in the override task using the clear attribute as follows:
 
 ```toml
@@ -1159,9 +1160,9 @@ echo "Hello World From Linux"
 ```
 
 This means, however, that you will have to redefine all attributes in the override task that you want to carry with you from the parent task.<br>
-**Important - alias comes before checking override task so if parent task has an alias it will be redirected to that task instead of the override.**<br>
-**To have an alias redirect per platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
-**In addition, aliases can not be defined in platform override tasks, only in parent tasks.**
+**Important: alias comes before checking override task, so if the parent task has an alias, it will be redirected to that task instead of the override.**<br>
+**To have an alias redirect per-platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
+**In addition, aliases cannot be defined in platform override tasks, only in parent tasks.**
 
 <a name="usage-task-extend-attribute"></a>
 #### Extend Attribute
@@ -1333,11 +1334,11 @@ PROD = true
 <a name="usage-env-task"></a>
 #### Task
 
-Environmental variables can be set in the scope of the task and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run but before the task itself will run.
+Environmental variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run, but _before_ the task itself runs.
 
-> **Note:** Reordering of task variables with global variables will **not** take place. Tasks will simply overwrite previously declared variables.
+> **Note:** Reordering of task variables with global variables will **not** take place. Tasks simply overwrite previously declared variables.
 
-> **Note:** Variables are **not** cleaned up after execution, meaning that tasks following after the executed task will take over the variables set by the previous task.
+> **Note:** Variables are **not** cleaned up after execution, meaning that tasks following the executed task will inherit the variables set by the previous task.
 
 `cargo-make` supports the same capabilities outlined for global configuration on a individual task level.
 
@@ -1355,7 +1356,7 @@ echo var: ${SOME_ENV_VAR}
 
 <a name="usage-env-cli"></a>
 #### Command Line
-Environment variables can be defined in the command line using the --env/-e argument as follows:
+Environment variables can be defined in the command line using the `--env` / `-e` argument as follows:
 
 ```console
 cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
@@ -1363,7 +1364,7 @@ cargo make --env ENV1=VALUE1 --env ENV2=VALUE2 -e ENV3=VALUE3
 
 <a name="usage-env-file"></a>
 #### Env File
-It is also possible to provide an env file path as part of the cli args as follows:
+It is also possible to provide an env file path as part of the CLI args as follows:
 
 ```console
 cargo make --env-file=./env/production.env
@@ -1446,8 +1447,8 @@ SCRIPT = { script = ["echo SCRIPT VALUE"] }
 COMPOSITE = "simple value: ${SIMPLE} script value: ${SCRIPT}"
 ```
 
-In this example, since the **env** block is invoked before the env scripts, the `duckscript`s have access to the COMPOSITE environment variable.<br>
-These scripts use that value to create a new environment variable **COMPOSITE_2**, and in the second script, we print it.
+In this example, since the **env** block is invoked before the env scripts, the `duckscript`s have access to the `COMPOSITE` environment variable.<br>
+These scripts use that value to create a new environment variable **`COMPOSITE_2`**, and in the second script, we print it.
 
 <a name="usage-env-vars-loading-order"></a>
 #### Loading Order
@@ -1455,13 +1456,13 @@ These scripts use that value to create a new environment variable **COMPOSITE_2*
 `cargo-make` will load the environment variables in the following order
 
 * Load environment file provided on the command line
-* Setup internal environment variables (see [Global](#usage-env-global) section). **Not including per task variables.**
+* Setup internal environment variables (see [Global](#usage-env-global) section). **Does not per-task variables.**
 * Load global environment files defined in the **env_files** attribute.
 * Load global environment variables provided on the command line.
 * Load global environment variables defined in the **env** block and relevant sub env blocks based on profile/additional profiles.
 * Load global environment variables defined in the **env.\[current profile\]** block.
 * Load global environment setup scripts defined in the **env_scripts** attribute.
-* Per Task
+* **Per Task**
   * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
   * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
   * Load environment variables defined in the **env** block (same behavior as global env block).
@@ -1481,7 +1482,7 @@ VAR1="${VAR2}"
 VAR2=2
 ```
 
-A naive implementation would now result in `VAR1=""`, `VAR2=2`, this behavior can be very unexpected, especially when extending existing declarations of environment variables. `cargo-make` is different and uses an approach that is similar to tools like [`terraform`](https://www.terraform.io/), it will recognize that `VAR1` depends on `VAR2`, which will output `VAR1=2`, `VAR2=2`.
+A naive implementation would now result in `VAR1=""`, `VAR2=2`, this behavior can be very unexpected, especially when extending existing declarations of environment variables. `cargo-make` is different and uses an approach that is similar to tools like [`terraform`](https://www.terraform.io), it will recognize that `VAR1` depends on `VAR2`, which will output `VAR1=2`, `VAR2=2`.
 
 ```toml
 [env]
@@ -1494,7 +1495,7 @@ VAR2=2
 VAR2=3
 ```
 
-This is an extended example, which would not work using the naive implementation, as the different profiles are merged with the environment, basically appending them. This is not the case with `cargo-make`, which will - again - recognize the dependencies and correctly resolve all values.
+This is an extended example, which would not work using the naive implementation, because the different profiles are merged with the environment (basically appending them). This is not the case with `cargo-make`, which will recognize dependencies and correctly resolve all values.
 
 ###### Naive Implementation
 
@@ -1526,67 +1527,67 @@ This is an extended example, which would not work using the naive implementation
 #### Global
 In addition to manually setting environment variables, cargo-make will also automatically add a few environmental variables, which can be helpful when running task scripts, commands, conditions, and more.
 
-* **CARGO_MAKE** - Set to "true" to help sub-processes identify they are running from `cargo` make.
-* **CARGO_MAKE_TASK** - Holds the name of the main task being executed.
-* **CARGO_MAKE_TASK_ARGS** - A list of arguments provided to cargo-make after the task name, separated with a ';' character.
-* **CARGO_MAKE_CURRENT_TASK_NAME** - Holds the currently executed task name.
-* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE** - Holds the full path to the makefile, which **initially** defined the currently executed task (not available for internal core tasks).
-* **CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY** - Holds the full path to the directory containing the makefile **initially** defined the currently executed task (not available for internal core tasks).
-* **CARGO_MAKE_COMMAND** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
-* **CARGO_MAKE_WORKING_DIRECTORY** - The current working directory (can be defined by setting the --cwd cli option)
-* **CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY** - The original working directory of the workspace. Enables workspace members access to the workspace level CARGO_MAKE_WORKING_DIRECTORY.
-* **CARGO_MAKE_PROFILE** - The current profile name in lower case (should not be manually modified by global/task env blocks)
-* **CARGO_MAKE_ADDITIONAL_PROFILES** - The additional profile names in lower case, separated with a ';' character (should not be manually modified by global/task env blocks)
-* **CARGO_MAKE_PROJECT_NAME** - For standalone crates, this will be the same as CARGO_MAKE_CRATE_NAME, and for workspace, it will default to the working directory basename.
-* **CARGO_MAKE_PROJECT_VERSION** For standalone crates, this will be the same as `CARGO_MAKE_CRATE_VERSION`, and for workspaces, it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
-* **CARGO_MAKE_CARGO_HOME** - The path to CARGO_HOME as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
-* **CARGO_MAKE_CARGO_PROFILE** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **CARGO_MAKE_PROFILE** (unmapped value will default to CARGO_MAKE_PROFILE value)
-* **CARGO_MAKE_RUST_VERSION** - The rust version (for example 1.20.0)
-* **CARGO_MAKE_RUST_CHANNEL** - Rust channel (stable, beta, nightly)
-* **CARGO_MAKE_RUST_TARGET_ARCH** - x86, x86_64, arm, etc ... (see rust cfg feature)
-* **CARGO_MAKE_RUST_TARGET_ENV** - gnu, msvc, etc ... (see rust cfg feature)
-* **CARGO_MAKE_RUST_TARGET_OS** - windows, macos, ios, linux, android, etc ... (see rust cfg feature)
-* **CARGO_MAKE_RUST_TARGET_POINTER_WIDTH** - 32, 64
-* **CARGO_MAKE_RUST_TARGET_VENDOR** - apple, pc, unknown
-* **CARGO_MAKE_RUST_TARGET_TRIPLE** - x86_64-unknown-linux-gnu, x86_64-apple-darwin, x86_64-pc-windows-msvc, etc ...
-* **CARGO_MAKE_CRATE_TARGET_DIRECTORY** - Gets target directory where cargo stores the output of a build, respects `${CARGO_TARGET_DIR}`, `.cargo/config.toml`'s and `${CARGO_HOME}/config.toml`, but not `--target-dir` command-line flag.
-* **CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY** - Like `CARGO_MAKE_CRATE_TARGET_DIRECTORY` but respects `build.target` in .cargo/config.toml.
-* **CARGO_MAKE_CRATE_HAS_DEPENDENCIES** - Holds `true`/`false` based if there are dependencies defined in the `Cargo.toml` or not (defined as *false* if no `Cargo.toml` is found)
-* **CARGO_MAKE_CRATE_IS_WORKSPACE** - Holds `true`/`false` based if this is a workspace crate or not (defined even if no `Cargo.toml` is found)
-* **CARGO_MAKE_CRATE_WORKSPACE_MEMBERS** - Holds a list of member paths (defined as empty value if no `Cargo.toml` is found)
-* **CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
-* **CARGO_MAKE_CRATE_LOCK_FILE_EXISTS** - Holds `true`/`false` if a `Cargo.lock` file exists in the current working directory (in workspace projects, each member has a different working directory).
-* **CARGO_MAKE_CRATE_TARGET_TRIPLE** - Gets target triple that will be build with by default, respects `.cargo/config.toml` and `${CARGO_HOME}/config.toml`.
-* **CARGO_MAKE_CI** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI).
-* **CARGO_MAKE_PR** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
-* **CARGO_MAKE_CI_BRANCH_NAME** - Holds the continuous integration branch name (if available).
-* **CARGO_MAKE_CI_VENDOR** - Holds the continuous integration vendor name (if available).
-* **CARGO_MAKE_DUCKSCRIPT_VERSION** - The embedded `duckscript` runtime version.
-* **CARGO_MAKE_DUCKSCRIPT_SDK_VERSION** - The embedded `duckscript` SDK version.
+* **`CARGO_MAKE`** - Set to "true" to help sub-processes identify they are running from `cargo` make.
+* **`CARGO_MAKE_TASK`** - Holds the name of the main task being executed.
+* **`CARGO_MAKE_TASK_ARGS`** - A list of arguments provided to cargo-make after the task name, separated with a ';' character.
+* **`CARGO_MAKE_CURRENT_TASK_NAME`** - Holds the currently executed task name.
+* **`CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE`** - Holds the full path to the makefile, which **initially** defined the currently executed task (not available for internal core tasks).
+* **`CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY`** - Holds the full path to the directory containing the makefile **initially** defined the currently executed task (not available for internal core tasks).
+* **`CARGO_MAKE_COMMAND`** - The command used to invoke cargo-make (for example: *cargo make* and *makers*)
+* **`CARGO_MAKE_WORKING_DIRECTORY`** - The current working directory (can be defined by setting the `--cwd` CLI option)
+* **`CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY`** - The original working directory of the workspace. Enables workspace members access to the workspace level `CARGO_MAKE_WORKING_DIRECTORY`.
+* **`CARGO_MAKE_PROFILE`** - The current profile name in lower case (should not be manually modified by global/task env blocks)
+* **`CARGO_MAKE_ADDITIONAL_PROFILES`** - The additional profile names in lower case, separated with a `;` character (should not be manually modified by global/task env blocks)
+* **`CARGO_MAKE_PROJECT_NAME`** - For standalone crates, this will be the same as `CARGO_MAKE_CRATE_NAME`, and for workspace, it will default to the working directory basename.
+* **`CARGO_MAKE_PROJECT_VERSION`** For standalone crates, this will be the same as `CARGO_MAKE_CRATE_VERSION`, and for workspaces, it will be the main crate version (main crate defined by the optional **main_project_member** attribute in the config section).
+* **`CARGO_MAKE_CARGO_HOME`** - The path to `CARGO_HOME` as described in the [cargo documentation](https://doc.rust-lang.org/cargo/guide/cargo-home.html)
+* **`CARGO_MAKE_CARGO_PROFILE`** - The [cargo profile](https://doc.rust-lang.org/cargo/reference/manifest.html#the-profile-sections) name mapped from the **`CARGO_MAKE_PROFILE`** (unmapped value will default to `CARGO_MAKE_PROFILE` value)
+* **`CARGO_MAKE_RUST_VERSION`** - The rust version (for example 1.20.0)
+* **`CARGO_MAKE_RUST_CHANNEL`** - Rust channel (stable, beta, nightly)
+* **`CARGO_MAKE_RUST_TARGET_ARCH`** - x86, x86_64, arm, etc ... (see rust cfg feature)
+* **`CARGO_MAKE_RUST_TARGET_ENV`** - gnu, msvc, etc ... (see rust cfg feature)
+* **`CARGO_MAKE_RUST_TARGET_OS`** - Windows, macOS, iOS, Linux, Android, etc. ... (see rust cfg feature)
+* **`CARGO_MAKE_RUST_TARGET_POINTER_WIDTH`** - 32, 64
+* **`CARGO_MAKE_RUST_TARGET_VENDOR`** - apple, pc, unknown
+* **`CARGO_MAKE_RUST_TARGET_TRIPLE`** - x86_64-unknown-linux-gnu, x86_64-apple-darwin, x86_64-pc-windows-msvc, etc ...
+* **`CARGO_MAKE_CRATE_TARGET_DIRECTORY`** - Gets target directory where cargo stores the output of a build, respects `${CARGO_TARGET_DIR}`, `.cargo/config.toml`'s and `${CARGO_HOME}/config.toml`, but not `--target-dir` command-line flag.
+* **`CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY`** - Like `CARGO_MAKE_CRATE_TARGET_DIRECTORY` but respects `build.target` in `.cargo/config.toml`.
+* **`CARGO_MAKE_CRATE_HAS_DEPENDENCIES`** - Holds `true`/`false` based if there are dependencies defined in the `Cargo.toml` or not (defined as *false* if no `Cargo.toml` is found)
+* **`CARGO_MAKE_CRATE_IS_WORKSPACE`** - Holds `true`/`false` based if this is a workspace crate or not (defined even if no `Cargo.toml` is found)
+* **`CARGO_MAKE_CRATE_WORKSPACE_MEMBERS`** - Holds a list of member paths (defined as empty value if no `Cargo.toml` is found)
+* **`CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER`** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
+* **`CARGO_MAKE_CRATE_LOCK_FILE_EXISTS`** - Holds `true`/`false` if a `Cargo.lock` file exists in the current working directory (in workspace projects, each member has a different working directory).
+* **`CARGO_MAKE_CRATE_TARGET_TRIPLE`** - Gets target triple that will be build with by default, respects `.cargo/config.toml` and `${CARGO_HOME}/config.toml`.
+* **`CARGO_MAKE_CI`** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI).
+* **`CARGO_MAKE_PR`** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
+* **`CARGO_MAKE_CI_BRANCH_NAME`** - Holds the continuous integration branch name (if available).
+* **`CARGO_MAKE_CI_VENDOR`** - Holds the continuous integration vendor name (if available).
+* **`CARGO_MAKE_DUCKSCRIPT_VERSION`** - The embedded `duckscript` runtime version.
+* **`CARGO_MAKE_DUCKSCRIPT_SDK_VERSION`** - The embedded `duckscript` SDK version.
 
 The following environment variables will be set by cargo-make if `Cargo.toml` file exists and the relevant value is defined:
 
-* **CARGO_MAKE_CRATE_NAME** - Holds the crate name from the `Cargo.toml` file in the current working directory.
-* **CARGO_MAKE_CRATE_FS_NAME** - Same as CARGO_MAKE_CRATE_NAME however some characters are replaced (for example '-' to '_').
-* **CARGO_MAKE_CRATE_VERSION** - Holds the crate version from the `Cargo.toml` file found in the current working directory.
-* **CARGO_MAKE_CRATE_DESCRIPTION** - Holds the crate description from the `Cargo.toml` file in the current working directory.
-* **CARGO_MAKE_CRATE_LICENSE** - Holds the crate license from the `Cargo.toml` file in the current working directory.
-* **CARGO_MAKE_CRATE_DOCUMENTATION** - Holds the crate documentation link from the `Cargo.toml` file in the current working directory.
-* **CARGO_MAKE_CRATE_HOMEPAGE** - Holds the crate homepage link from the `Cargo.toml` file in the current working directory.
-* **CARGO_MAKE_CRATE_REPOSITORY** - Holds the crate repository link from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_NAME`** - Holds the crate name from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_FS_NAME`** - Same as `CARGO_MAKE_CRATE_NAME` however some characters are replaced (for example '-' to '_').
+* **`CARGO_MAKE_CRATE_VERSION`** - Holds the crate version from the `Cargo.toml` file found in the current working directory.
+* **`CARGO_MAKE_CRATE_DESCRIPTION`** - Holds the crate description from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_LICENSE`** - Holds the crate license from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_DOCUMENTATION`** - Holds the crate documentation link from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_HOMEPAGE`** - Holds the crate homepage link from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_CRATE_REPOSITORY`** - Holds the crate repository link from the `Cargo.toml` file in the current working directory.
 
 The following environment variables will be set by cargo-make if the project is part of a git repo:
 
-* **CARGO_MAKE_GIT_BRANCH** - The current branch name.
-* **CARGO_MAKE_GIT_USER_NAME** - The user name pulled from the git config user.name key.
-* **CARGO_MAKE_GIT_USER_EMAIL** - The user email, which was taken from the git config `user.email` key.
-* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH** - The last HEAD commit hash.
-* **CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX** - The last HEAD commit hash prefix.
+* **`CARGO_MAKE_GIT_BRANCH`** - The current branch name.
+* **`CARGO_MAKE_GIT_USER_NAME`** - The user name pulled from the git config user.name key.
+* **`CARGO_MAKE_GIT_USER_EMAIL`** - The user email, which was taken from the git config `user.email` key.
+* **`CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH`** - The last HEAD commit hash.
+* **`CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX`** - The last HEAD commit hash prefix.
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
 In some cases you want to run optional tasks as part of a bigger flow, but do not want to break your entire build in case of any error in those optional tasks.<br>
-For those tasks, you can add the ignore_errors=true attribute.
+For those tasks, you can add the **ignore_errors=true** attribute.
 
 ```toml
 [tasks.unstable_task]
@@ -1611,7 +1612,7 @@ The task runner will evaluate any condition defined and a task definition may co
 The condition attribute may define multiple parameters to validate.<br>
 All defined parameters must be valid for the condition as a whole to be true and enable the task to run.
 
-Below is an example of a condition definition that checks that we are running on windows or linux (but not mac) and that we are running on beta or nightly (but not stable):
+Below is an example of a condition definition that checks that we are running on Windows or Linux (but not macOS) and that we are running on beta or nightly (but not stable):
 
 ```toml
 [tasks.test-condition]
@@ -1632,9 +1633,9 @@ The following condition types are available:
 * **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **env_contains** - Map of environment variables that must be defined and contain (case insensitive) the provided values
-* **rust_version** - Optional definition of min, max and/or specific rust version
-* **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
-* **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml**
+* **rust_version** - Optional definition of min, max, and/or specific rust version
+* **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
+* **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 
 Few examples:
 
@@ -1691,7 +1692,7 @@ args = ["condition was met"]
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
-For example, if you have a coverage flow that should only be invoked on linux in a CI build, and only if the CARGO_MAKE_RUN_CODECOV environment variable is defined as "true":
+For example, if you have a coverage flow that should only be invoked on linux in a CI build, and only if the `CARGO_MAKE_RUN_CODECOV` environment variable is defined as "true":
 
 ```toml
 [tasks.ci-coverage-flow]
@@ -1708,14 +1709,14 @@ dependencies = [
 ]
 ```
 
-The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a CI build and the CARGO_MAKE_RUN_CODECOV environment variable is set to "true".<br>
+The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a CI build and the `CARGO_MAKE_RUN_CODECOV` environment variable is set to "true".<br>
 Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
 
 <a name="usage-installing-dependencies"></a>
 ### Installing Dependencies
 
-Some tasks will require third party crates, rustup components or other native tools.<br>
+Some tasks will require third party crates, rustup components, or other native tools.<br>
 cargo-make provides multiple ways to setup those dependencies before running the task.
 
 * [Cargo Plugins](#usage-installing-cargo-plugins)
@@ -1811,7 +1812,7 @@ install_crate = { rustup_component_name = "rust-src" }
 Native dependencies can also be installed, however it is up to the Makefile author to write the script which checks the dependency exists and if
 not, to install it correctly.<br>
 This is done by setting up an installation script in the **install_script** attribute of the task.<br>
-It is possible to use platform overrides to specify different installation scripts for linux/mac/windows platforms.<br>
+It is possible to use platform overrides to specify different installation scripts for Linux/macOS/Windows platforms.<br>
 For example:
 
 ```toml
@@ -1867,7 +1868,7 @@ fi
 '''
 ```
 
-This task, checks if kcov is installed and if not, will install it and any other dependency it requires.
+This task checks if kcov is installed; if not, it will install it and any other dependency it requires.
 
 <a name="usage-installing-version"></a>
 #### Defining Version
@@ -1887,12 +1888,12 @@ args = ["make", "--version"]
 ```
 
 This ensures we are using a crate version that supports the feature we require for the build.<br>
-Currently there are few limitations when defining min_version:
+Currently there are few limitations when defining **min_version**:
 
 * Specifying **toolchain** in the task or **rustup_component_name** in the install_crate structure, will make cargo-make ignore the min version value.
 * In case cargo-make is unable to detect the currently installed version due to any error, cargo-make will assume the version is valid and printout a warning.
 
-If you want to ensure a specific version is used, you can define the version attribute instead, for example:
+If you want to ensure a specific version is used, you can define the **version** attribute instead, for example:
 
 ```toml
 [tasks.complex-example]
@@ -1906,7 +1907,7 @@ args = ["make", "--version"]
 
 In case [min_version](#usage-installing-version) is defined,
 you can have the **--locked** flag automatically added to the crate installation command
-by defining the **CARGO_MAKE_CRATE_INSTALLATION_LOCKED=true** environment variable.
+by defining the **`CARGO_MAKE_CRATE_INSTALLATION_LOCKED`=true** environment variable.
 If version is defined instead of min_version, this will automatically be set as true.
 
 <a name="usage-installing-alternate-cargo-install-commands"></a>
@@ -1943,7 +1944,7 @@ The following defines the installation types sorted by priority for which cargo-
 * **install_script** - Custom script which can be used to install or run anything that is needed by the task command.
 * **automatic cargo plugin** - In case the command is **cargo**, cargo-make will check which cargo plugin to automatically install (if needed).
 
-In case multiple installation types are defined (for example both install_crate and install_script) only one installation type will be invoked based on the above priority list.
+In case multiple installation types are defined (for example both install_crate and install_script), only one installation type will be invoked based on the above priority list.
 
 <a name="usage-installing-dependencies-multiple"></a>
 ### Multiple Installations
@@ -1982,7 +1983,7 @@ dependencies = [ "xbuild1", "xbuild2" ]
 
 <a name="usage-workspace-support"></a>
 ### Workspace Support
-In case cargo-make detects that the current working directory is a workspace root (A directory with Cargo.toml which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
+In case cargo-make detects that the current working directory is a workspace root (A directory with `Cargo.toml` which defines a workspace and its members), it will not invoke the requested tasks in that directory.<br>
 Instead, it will generate a task definition in runtime which will go to each member directory and invoke the requested task on that member.<br>
 For example if we have the following directory structure:
 
@@ -1997,7 +1998,7 @@ workspace
 
 And we ran **cargo make mytask**, it will go to each workspace member directory and execute: **cargo make mytask** at that directory,
 where mytask is the original task that was requested on the workspace level.<br>
-The order of the members is defined by the member attribute in the workspace Cargo.toml.
+The order of the members is defined by the member attribute in the workspace `Cargo.toml`.
 
 This flow is called a **workspace** flow, as it identifies the workspace and handles the request for each workspace member, while the root directory which defines the workspace structure is ignored.
 
@@ -2008,16 +2009,16 @@ See more info at the [relevant section.](#usage-workspace-extend)
 
 <a name="usage-workspace-disabling-workspace-support"></a>
 #### Disabling Workspace Support
-In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the **--no-workspace** cli flag when running cargo make.<br>
+In case you wish to run the tasks on the workspace root directory and not on the members (for example generating a workspace level README file), use the **`--no-workspace`** CLI flag when running cargo make.<br>
 For example:
 
 ```sh
 cargo make --no-workspace mytask
 ```
 
-This makes cargo-make ignore that this directory is a workspace root and just runs a simple flow as if this was a simple directory with a makefile.
+This makes cargo-make ignore that this directory is a workspace root, and just runs a simple flow as if this was a simple directory with a makefile.
 
-Another way to call a task on the workspace level and not for each member, is to define that task in the workspace Makefile.toml with **workspace** set to false as follows:
+Another way to call a task on the workspace level (rather than for each member) is to define that task in the workspace `Makefile.toml` with **workspace** set to false as follows:
 
 ```toml
 [tasks.ignore-members]
@@ -2026,7 +2027,7 @@ workspace = false
 
 Setting **workspace=false** for the task requested on the cargo-make command line is equivalent to calling it with the **--no-workspace** flag.<br>
 This flag is only checked for the task on the cargo-make command line and is completely ignored for all other tasks which are executed as part of the flow.<br>
-By default the workspace flag for all tasks is set to true, but that can be configured differently in the config section as follows:
+By default, the workspace flag for all tasks is set to true, but that can be configured differently in the config section as follows:
 
 ```toml
 [config]
@@ -2039,7 +2040,7 @@ In which case, workspace level support is **always** disabled unless a task defi
 #### Composite Flow
 
 You can define a composite flow that runs tasks on both the workspace root directory and member directories.<br>
-This is an example of a workspace level Makefile.toml which enables to run such a flow:
+This is an example of a workspace level `Makefile.toml` which enables to run such a flow:
 
 ```toml
 [tasks.composite]
@@ -2062,7 +2063,7 @@ cargo make --no-workspace composite
 <a name="usage-workspace-profiles"></a>
 #### Profiles
 
-You can prevent profiles from being passed down to workspace members by setting **CARGO_MAKE_USE_WORKSPACE_PROFILE** to false:
+You can prevent profiles from being passed down to workspace members by setting **`CARGO_MAKE_USE_WORKSPACE_PROFILE`** to false:
 
 ```toml
 [env]
@@ -2076,9 +2077,9 @@ See more on profiles in the [profile section](#usage-profiles).
 
 In most cases you will want to run a specific flow on all members, but in rare cases you will want to skip specific members.
 
-By setting the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable to hold the member names to skip (as an array), you can define if you want those members not to participate in the flow.
+By setting the **`CARGO_MAKE_WORKSPACE_SKIP_MEMBERS`** environment variable to hold the member names to skip (as an array), you can define if you want those members not to participate in the flow.
 
-In the below example we will skip member3 and member4 (should be defined in the workspace level Makefile.toml):
+In the below example we will skip member3 and member4 (should be defined in the workspace level `Makefile.toml`):
 
 ```toml
 [env]
@@ -2094,7 +2095,7 @@ CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "tools/*"
 
 However there are some cases you will want to skip specific members only if a specific condition is met.<br>
 For example, you want to build a member module only if we are running on a rust nightly compiler.<br>
-This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level Makefile.toml):
+This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level `Makefile.toml`):
 
 ```toml
 [tasks.workspace-task]
@@ -2109,17 +2110,17 @@ You will have to invoke this as a composite flow:
 cargo make workspace-task --no-workspace
 ```
 
-In addition you can also state the opposite, meaning which members to include via **CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS** environment variable.<br>
-It follows the same rules as the **CARGO_MAKE_WORKSPACE_SKIP_MEMBERS** environment variable.<br>
+In addition you can also state the opposite, meaning which members to include via **`CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS`** environment variable.<br>
+It follows the same rules as the **`CARGO_MAKE_WORKSPACE_SKIP_MEMBERS`** environment variable.<br>
 If you define both, the included members will be a subset of the non excluded members, meaning both filters will apply.
 
 <a name="usage-workspace-emulation"></a>
 #### Workspace Emulation
 Workspace emulation enables you to create a workspace like structure for your project without actually defining a rust workspace.<br>
-This means you can have a project directory without a Cargo.toml and have many child crates.<br>
+This means you can have a project directory without a `Cargo.toml` and have many child crates.<br>
 This enables to run cargo make on all **member** crates while on the root project folder without having the need of an actual cargo workspace which has some side effects (such as shared target folder and dependencies).
 
-In order to setup the workspace emulation, you will need to define the following in your workspace level Makefile.toml:
+In order to setup the workspace emulation, you will need to define the following in your workspace level `Makefile.toml`:
 
 ```toml
 [env]
@@ -2174,7 +2175,7 @@ rustc 1.32.0-nightly (451987d86 2018-11-01)
 [cargo-make] INFO - Build Done  in 2 seconds.
 ```
 
-When defined with scripts (as opposed to commands), the **CARGO** environment variable will be defined for the requested toolchain.<br>
+When defined with scripts (as opposed to commands), the **`CARGO`** environment variable will be defined for the requested toolchain.<br>
 The following example shows how to print both stable and nightly CARGO binary paths:
 
 ```toml
@@ -2267,7 +2268,7 @@ echo "Doing cleanups in catch"
 ### Cargo Alias Tasks
 
 [Cargo alias commands](https://doc.rust-lang.org/cargo/reference/config.html#alias) can be automatically loaded as cargo-make tasks.<br>
-To automatically loading them, the following must be defined in the Makefile.toml config section:
+To automatically loading them, the following must be defined in the `Makefile.toml` config section:
 
 ```toml
 [config]
@@ -2282,7 +2283,7 @@ The task definition will simply call cargo and the alias value, therefore no aut
 ### Profiles
 
 Profiles are a useful tool used to define custom behaviour.<br>
-In order to set the execution profile, use the **--profile** or **-p** cli argument and provide the profile name.<br>
+In order to set the execution profile, use the **`--profile`** or **`-p`** CLI argument and provide the profile name.<br>
 Profile names are automatically converted to underscores and are trimmed.<br>
 If no profile name is provided, the profile will be defaulted to **development**.
 
@@ -2299,7 +2300,7 @@ Profiles provide multiple capabilities:
 ```toml
 condition = { profiles = ["development", "production"] }
 ```
-* [New environment variable](#usage-env-global) **CARGO_MAKE_PROFILE** which holds the profile name and can be used by conditions, scripts and commands.
+* [New environment variable](#usage-env-global) **`CARGO_MAKE_PROFILE`** which holds the profile name and can be used by conditions, scripts and commands.
 
 It is possible to activate multiple profiles simultaneously using **additional_profiles**, but these have limited support.
 
@@ -2308,7 +2309,7 @@ It is possible to activate multiple profiles simultaneously using **additional_p
 additional_profiles = ["second_profile", "another_profile"]
 ```
 
-Additional profiles can be used to define additional environment blocks and they will be defined in a new environment variable **CARGO_MAKE_ADDITIONAL_PROFILES**
+Additional profiles can be used to define additional environment blocks and they will be defined in a new environment variable **`CARGO_MAKE_ADDITIONAL_PROFILES`**
 
 <a name="usage-profiles-env"></a>
 #### Environment Variables
@@ -2331,9 +2332,7 @@ DEV = true
 PROD = true
 ```
 
-Example:
-
-We have the following makefile with 2 profile based env maps
+For example, given the following makefile with 2 profile-based env maps:
 
 ```toml
 [env]
@@ -2388,7 +2387,7 @@ IS_PROD: TRUE
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-Env files also can be filtered based on profile, using the **profile** attribute as follows:
+Env files also can be filtered based on profile using the **profile** attribute as follows:
 
 ```toml
 env_files = [
@@ -2456,7 +2455,7 @@ cargo-make comes with few built in profiles to quickly enable additional conditi
 <a name="usage-private-tasks"></a>
 ### Private Tasks
 
-Private tasks are tasks that should only be invoked by other tasks and not directly from the cli.
+Private tasks are tasks that should only be invoked by other tasks and not directly from the CLI.
 
 In order to define a task as private, add the **private** attribute with value true as follows:
 
@@ -2786,7 +2785,7 @@ command = "echo"
 args = ["Env:", "${CARGO_MAKE_PROFILE}", "Decoded:", "@@decode(CARGO_MAKE_PROFILE,development,dev,ci,test)"]
 ```
 
-We check the CARGO_MAKE_PROFILE environment variable value and look for it in the mappings.<br>
+We check the `CARGO_MAKE_PROFILE` environment variable value and look for it in the mappings.<br>
 If the value is **development** it will be mapped to **dev** while **ci** is mapped to **test**.<br>
 In case no mapping is found, the original value is returned.<br>
 Sample run for a mapping that was found:
@@ -2921,7 +2920,7 @@ To speed up cargo-make installation during the build, you can use the [rust-carg
 
 <a name="usage-ci-travis"></a>
 #### Travis
-Add the following to .travis.yml file:
+Add the following to `.travis.yml` file:
 
 ```yaml
 script:
@@ -2950,7 +2949,7 @@ env:
     - CARGO_MAKE_RUN_CODECOV="true"
 ```
 
-*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY environment variable to a location which is cached by travis.*
+*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the `CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY` environment variable to a location which is cached by travis.*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
@@ -2962,7 +2961,7 @@ script:
 
 <a name="usage-ci-appveyor"></a>
 #### AppVeyor
-Add the following to appveyor.yml file:
+Add the following to the `appveyor.yml` file:
 
 ```yaml
 build: false
@@ -3050,7 +3049,7 @@ When caching `cargo`:
 
 *NOTE: While using cache, in order to update cargo-make, you will need to manually clear the CircleCI cache*
 
-*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY environment variable to a location which is cached by CircleCI.*
+*NOTE: If you are using kcov coverage, you can cache the kcov installation by setting the `CARGO_MAKE_KCOV_INSTALLATION_DIRECTORY` environment variable to a location which is cached by CircleCI.*
 
 When working with workspaces, in order to run the ci-flow for each member and package all coverage data, use the following command:
 
@@ -3113,22 +3112,22 @@ task:
 <a name="usage-predefined-flows"></a>
 ### Predefined Flows
 The [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/) file comes with many predefined tasks and flows.<br>
-The following are some of the main flows that can be used without any need of an external Makefile.toml definition.
+The following are some of the main flows that can be used without any need of an external `Makefile.toml` definition.
 
-* **default** - Can be executed without adding the task name, simply run 'cargo make'. This task is an alias for dev-test-flow.
+* **default** - Can be executed without adding the task name, simply run `cargo make`. This task is an alias for dev-test-flow.
 * **dev-test-flow** - Also the default flow so it can be invoked without writing any task name (simply run **cargo make**).<br>This task runs formatting, cargo build and cargo test and will most likely be the set of tasks that you will run while developing and testing a rust project.
 * **watch-flow** - Watches for any file change and if any change is detected, it will invoke the test flow.
 * **ci-flow** - Should be used in CI builds (such as travis/appveyor) and it runs build and test with verbose level.
 * **workspace-ci-flow** - Should be used in CI builds (such as travis/appveyor) for workspace projects.
 * **publish-flow** - Cleans old target directory and publishes the project.
-* **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
-* **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows). By default cargo-make uses kcov for code coverage, however additional unsupported implementations are defined.
+* **build-flow** - Runs full cycle of build, tests, security checks, dependencies up to date validations, and documentation generation.<br>This flow can be used to make sure your project is fully tested and up to date.
+* **coverage-flow** - Creates coverage report from all unit and integration tests (not supported on windows). By default cargo-make uses kcov for code coverage; however, additional unsupported implementations are defined.
 * **codecov-flow** - Runs the coverage-flow and uploads the coverage results to codecov (not supported on windows).
 
 <a name="usage-predefined-flows-coverage"></a>
 #### Coverage
 cargo-make has built in support for multiple coverage tasks.<br>
-Switching between them without modifying the flows is done by setting the coverage provider name in the **CARGO_MAKE_COVERAGE_PROVIDER** environment variable as follows:
+Switching between them without modifying the flows is done by setting the coverage provider name in the **`CARGO_MAKE_COVERAGE_PROVIDER`** environment variable as follows:
 
 ```toml
 [env]
@@ -3196,7 +3195,7 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_CRATE_FS_NAME}-[a-z0-9]*$
 <a name="usage-predefined-flows-full"></a>
 #### Full List
 
-See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via **cargo make --list-all-steps**)
+See [full list of all predefined tasks](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md) (generated via **`cargo make --list-all-steps`**)
 
 <a name="usage-predefined-flows-disable"></a>
 #### Disabling Predefined Tasks/Flows
@@ -3312,7 +3311,7 @@ args = ["stopping client..."]
 
 <a name="usage-diff-changes"></a>
 ### Diff Changes
-Using the **--diff-steps** cli command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
+Using the **`--diff-steps`** CLI command flag, you can diff your correct overrides compared to the prebuilt internal makefile flow.
 
 Example Usage:
 
@@ -3347,9 +3346,9 @@ index 5152290..ba0ef1d 100644
 <a name="usage-unstable-features"></a>
 ### Unstable Features
 Some cargo-make capabilities, while working well, are not yet set as default behaviour.<br>
-Therefore they are gated using the unstable features attribute.<br>
+Therefore they are gated using the **unstable_features** attribute.<br>
 In order to enable such a feature, you need to define its name.<br>
-For example for the xxx feature would be defined as follows:<br>
+For example, for the xxx feature would be defined as follows:<br>
 
 ```toml
 [config]
@@ -3358,10 +3357,10 @@ unstable_features = ["CTRL_C_HANDLING"]
 
 Below is a list of currently existing unstable features
 
-* CTRL_C_HANDLING - Adds ctrl-c handler which will stop any currently running command invoked by the current task and exit cargo-make
+* **CTRL_C_HANDLING** - Adds <kbd>ctrl-c</kbd> handler, which will stop any currently running command invoked by the current task and exit cargo-make
 
 <a name="usage-cli"></a>
-### Cli Options
+### CLI Options
 These are the following options available while running cargo-make:
 
 ```console
@@ -3417,7 +3416,7 @@ exec --fail-on-error ${task.command} %{args_string}
 <a name="usage-plugins-defining-plugins"></a>
 ### Defining Plugins
 
-Plugins are defined under the plugin.impl prefix, for example:
+Plugins are defined under the `plugin.impl` prefix, for example:
 
 ```toml
 [plugins.impl.command-runner]
@@ -3456,7 +3455,7 @@ plugin = "my-plugin"
 The plugin SDK contains the following:
 
 * [Common Duckscript SDK](https://github.com/sagiegurari/duckscript/blob/master/docs/sdk.md)
-* Meta data variables
+* Metadata variables
     * flow.task.name - Holds the flow task (not current task) which triggered this task
     * flow.cli.args - Array holding all the task arguments provided to cargo-make on the command line
     * plugin.impl.name - The current plugin name (after aliases modifications)
@@ -3566,7 +3565,7 @@ cargo make docker_flow
 ```
 
 Will result in creation of a new docker container that will run parts 1-3 inside it.<br>
-**The example works, however it does not support several features like passing cli args and so on...**
+**The example works. However, it does not support several features like passing CLI args, etc....**
 
 <a name="usage-plugins-plugin-example-rustenv"></a>
 ### Plugin Example (load env from rust script)
@@ -3619,7 +3618,7 @@ fn main() {
 ### Plugin Example (Adding Simpler Windows Powershell Support)
 
 In the below example, we add the a simple powershell command support.<br>
-This plugin will take an existing task, set its command to powershell and prepend the **-C** argument.<br>
+This plugin will take an existing task, set its command to powershell and prepend the **`-C`** argument.<br>
 This example also shows how to create new tasks in runtime and invoke them.
 
 ```toml
@@ -3665,16 +3664,16 @@ args = ["echo hello from windows powershell"]
 ### Shell Completion
 
 cargo-make comes with shell auto completion support, however in order to provide the exact task names that are
-available in the current directory, it will run the --list-all-steps command which might take a bit to finish.
+available in the current directory, it will run the `--list-all-steps` command which might take a bit to finish.
 
 <a name="usage-shell-completion-bash"></a>
 #### Bash
-Source the makers-completion.bash file found in extra/shell folder at the start of your shell session.
+Source the `makers-completion.bash` file (found in `extra/shell` folder) at the start of your shell session.
 It will enable auto completion for the **makers** executable.
 
 <a name="usage-shell-completion-zsh"></a>
 #### zsh
-zsh supports bash auto completion, therefore the existing bash autocomplete can be used by running the following script:
+zsh supports bash auto completion. Therefore, the existing bash autocomplete can be used by running the following script:
 
 ```
 autoload -U +X compinit && compinit
@@ -3688,10 +3687,10 @@ It will enable auto completion for the **makers** executable.
 
 <a name="cargo-make-global-config"></a>
 ### Global Configuration
-Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file config.toml located in the cargo-make directory.
+Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file `config.toml` located in the cargo-make directory.
 
-The cargo-make directory location can be defined via CARGO_MAKE_HOME environment variable value.<br>
-If CARGO_MAKE_HOME has not been defined, the cargo-make default location is:
+The cargo-make directory location can be defined via `CARGO_MAKE_HOME` environment variable value.<br>
+If `CARGO_MAKE_HOME` has not been defined, the cargo-make default location is:
 
 | OS      | Location                          |
 | ------- | --------------------------------- |
@@ -3699,12 +3698,12 @@ If CARGO_MAKE_HOME has not been defined, the cargo-make default location is:
 | Windows | RoamingAppData                    |
 | Mac     | $HOME/Library/Preferences         |
 
-If for any reason, the above paths are not valid for the given platform, it will default to $HOME/.cargo-make
+If for any reason, the above paths are not valid for the given platform, it will default to `$HOME/.cargo-make`.
 
-The following example config.toml shows all possible options with their default values:
+The following example `config.toml` shows all possible options with their default values:
 
 ```toml
-# The default log level if not defined by the --loglevel cli argument
+# The default log level if not defined by the `--loglevel` CLI argument
 log_level = "info"
 
 # The default configuration whether output coloring is disabled
@@ -3771,9 +3770,9 @@ For example for task build the default toml also defines pre-build and post-buil
 ```
 
 In the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/), all pre/post tasks are empty and are there as placeholders
-for external Makefile.toml to override so custom functionality can be defined easily before/after running a specific task.
+for external `Makefile.toml` to override so custom functionality can be defined easily before/after running a specific task.
 
-Flows are named with the flow suffix, for example: ci-flow
+Flows are named with the flow suffix.  For example, **ci-flow**:
 
 ```toml
 [tasks.ci-flow]
