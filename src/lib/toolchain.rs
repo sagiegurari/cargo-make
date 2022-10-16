@@ -7,10 +7,16 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
+use crate::environment::expand_value;
 use crate::types::{CommandSpec, ToolchainSpecifier};
 use envmnt;
 use semver::{Prerelease, Version};
 use std::process::{Command, Stdio};
+
+pub(crate) fn get_channel(toolchain: &ToolchainSpecifier) -> String {
+    let channel = toolchain.channel().to_string();
+    expand_value(&channel)
+}
 
 pub(crate) fn wrap_command(
     toolchain: &ToolchainSpecifier,
@@ -19,11 +25,9 @@ pub(crate) fn wrap_command(
 ) -> CommandSpec {
     check_toolchain(toolchain);
 
-    let mut rustup_args = vec![
-        "run".to_string(),
-        toolchain.channel().to_string(),
-        command.to_string(),
-    ];
+    let channel = get_channel(&toolchain);
+
+    let mut rustup_args = vec!["run".to_string(), channel, command.to_string()];
 
     match args {
         Some(array) => {
@@ -50,8 +54,9 @@ fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> 
 }
 
 fn check_toolchain(toolchain: &ToolchainSpecifier) {
+    let channel = get_channel(&toolchain);
     let output = Command::new("rustup")
-        .args(&["run", toolchain.channel(), "rustc", "--version"])
+        .args(&["run", &channel, "rustc", "--version"])
         .stderr(Stdio::null())
         .stdout(Stdio::piped())
         .output()
@@ -59,7 +64,7 @@ fn check_toolchain(toolchain: &ToolchainSpecifier) {
     if !output.status.success() {
         error!(
             "Missing toolchain {}! Please install it using rustup.",
-            &toolchain
+            &channel
         );
         return;
     }
@@ -86,7 +91,7 @@ fn check_toolchain(toolchain: &ToolchainSpecifier) {
         if &rustc_version < spec_min_version {
             error!(
                 "Installed toolchain {} is required to satisfy version {}, found {}! Please upgrade it using rustup.",
-                toolchain.channel(),
+                &channel,
                 &spec_min_version,
                 rustc_version,
             );

@@ -77,6 +77,30 @@ fn wrap_command_with_args() {
 }
 
 #[test]
+fn wrap_command_with_args_and_simple_variable_toolchain() {
+    let env_toolchain = get_test_env_toolchain();
+    let toolchain = ToolchainSpecifier::Bounded(ToolchainBoundedSpecifier {
+        channel: "${CARGO_MAKE_RUST_CHANNEL}".to_string(),
+        min_version: "${CARGO_MAKE_RUST_VERSION}".to_string(),
+    });
+    let output = wrap_command(
+        &toolchain,
+        "true",
+        &Some(vec!["echo".to_string(), "test".to_string()]),
+    );
+
+    assert_eq!(output.command, "rustup".to_string());
+
+    let args = output.args.unwrap();
+    assert_eq!(args.len(), 5);
+    assert_eq!(args[0], "run".to_string());
+    assert_eq!(args[1], env_toolchain.channel());
+    assert_eq!(args[2], "true".to_string());
+    assert_eq!(args[3], "echo".to_string());
+    assert_eq!(args[4], "test".to_string());
+}
+
+#[test]
 fn get_cargo_binary_path_valid() {
     let toolchain = get_test_env_toolchain();
     let binary_path = get_cargo_binary_path(&toolchain);

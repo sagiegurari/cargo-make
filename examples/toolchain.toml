@@ -1,4 +1,7 @@
 
+[env]
+NIGHTLY_VERSION = "2019-07-16"
+
 [tasks.rustc-version-stable]
 toolchain = "stable"
 command = "rustc"
@@ -45,3 +48,9 @@ alias = "echo-cargo-nightly"
 
 [tasks.echo-cargo-all]
 dependencies = ["echo-cargo-stable", "echo-cargo-nightly"]
+
+[tasks.with_env_vars]
+toolchain = "nightly-${NIGHTLY_VERSION}"
+command = "rustc"
+args = ["--version"]
+

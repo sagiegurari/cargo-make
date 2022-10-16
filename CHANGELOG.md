@@ -3,6 +3,7 @@
 ### v0.36.2
 
 * Enhancement: Add env var support in env_files values #723
+* Enhancement: Support environment expansion for toolchain attribute
 * Fix: support shebang in scripts with spaces before shebang start #718
 * Documentation: small edits for spelling, grammar, formatting #721 (thanks @Zearin)
 

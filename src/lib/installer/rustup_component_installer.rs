@@ -8,7 +8,7 @@
 mod rustup_component_installer_test;
 
 use crate::command;
-use crate::toolchain::wrap_command;
+use crate::toolchain::{get_channel, wrap_command};
 use crate::types::{InstallRustupComponentInfo, ToolchainSpecifier};
 use std::process::Command;
 
@@ -65,8 +65,10 @@ pub(crate) fn invoke_rustup_install(
 
     match toolchain {
         Some(ref toolchain) => {
+            let channel = get_channel(toolchain);
+
             command_spec.arg("--toolchain");
-            command_spec.arg(toolchain.channel());
+            command_spec.arg(&channel);
         }
         None => {}
     };
