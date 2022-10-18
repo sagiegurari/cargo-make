@@ -132,6 +132,11 @@
 <span id="132">132</span>
 <span id="133">133</span>
 <span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # toolchain
 //!
 //! Toolchain related utilify functions.
@@ -141,10 +146,16 @@
 #[path = <span class="string">&quot;toolchain_test.rs&quot;</span>]
 </span><span class="kw">mod </span>toolchain_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::environment::expand_value;
 <span class="kw">use </span><span class="kw">crate</span>::types::{CommandSpec, ToolchainSpecifier};
 <span class="kw">use </span>envmnt;
 <span class="kw">use </span>semver::{Prerelease, Version};
 <span class="kw">use </span>std::process::{Command, Stdio};
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_channel(toolchain: <span class="kw-2">&amp;</span>ToolchainSpecifier) -&gt; String {
+    <span class="kw">let </span>channel = toolchain.channel().to_string();
+    expand_value(<span class="kw-2">&amp;</span>channel)
+}
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>wrap_command(
     toolchain: <span class="kw-2">&amp;</span>ToolchainSpecifier,
@@ -153,11 +164,9 @@
 ) -&gt; CommandSpec {
     check_toolchain(toolchain);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>rustup_args = <span class="macro">vec!</span>[
-        <span class="string">&quot;run&quot;</span>.to_string(),
-        toolchain.channel().to_string(),
-        command.to_string(),
-    ];
+    <span class="kw">let </span>channel = get_channel(<span class="kw-2">&amp;</span>toolchain);
+
+    <span class="kw">let </span><span class="kw-2">mut </span>rustup_args = <span class="macro">vec!</span>[<span class="string">&quot;run&quot;</span>.to_string(), channel, command.to_string()];
 
     <span class="kw">match </span>args {
         <span class="prelude-val">Some</span>(array) =&gt; {
@@ -184,8 +193,9 @@
 }
 
 <span class="kw">fn </span>check_toolchain(toolchain: <span class="kw-2">&amp;</span>ToolchainSpecifier) {
+    <span class="kw">let </span>channel = get_channel(<span class="kw-2">&amp;</span>toolchain);
     <span class="kw">let </span>output = Command::new(<span class="string">&quot;rustup&quot;</span>)
-        .args(<span class="kw-2">&amp;</span>[<span class="string">&quot;run&quot;</span>, toolchain.channel(), <span class="string">&quot;rustc&quot;</span>, <span class="string">&quot;--version&quot;</span>])
+        .args(<span class="kw-2">&amp;</span>[<span class="string">&quot;run&quot;</span>, <span class="kw-2">&amp;</span>channel, <span class="string">&quot;rustc&quot;</span>, <span class="string">&quot;--version&quot;</span>])
         .stderr(Stdio::null())
         .stdout(Stdio::piped())
         .output()
@@ -193,7 +203,7 @@
     <span class="kw">if </span>!output.status.success() {
         <span class="macro">error!</span>(
             <span class="string">&quot;Missing toolchain {}! Please install it using rustup.&quot;</span>,
-            <span class="kw-2">&amp;</span>toolchain
+            <span class="kw-2">&amp;</span>channel
         );
         <span class="kw">return</span>;
     }
@@ -220,7 +230,7 @@
         <span class="kw">if </span><span class="kw-2">&amp;</span>rustc_version &lt; spec_min_version {
             <span class="macro">error!</span>(
                 <span class="string">&quot;Installed toolchain {} is required to satisfy version {}, found {}! Please upgrade it using rustup.&quot;</span>,
-                toolchain.channel(),
+                <span class="kw-2">&amp;</span>channel,
                 <span class="kw-2">&amp;</span>spec_min_version,
                 rustc_version,
             );

@@ -177,7 +177,7 @@
         }
         ScriptRunner::CargoScript =&gt; cargo_plugin_installer::install_crate(
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-            <span class="string">&quot;script&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="string">&quot;script&quot;</span>),
             <span class="string">&quot;cargo-script&quot;</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="bool-val">true</span>,
@@ -187,7 +187,7 @@
         ),
         ScriptRunner::CargoPlay =&gt; cargo_plugin_installer::install_crate(
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-            <span class="string">&quot;play&quot;</span>,
+            <span class="prelude-val">Some</span>(<span class="string">&quot;play&quot;</span>),
             <span class="string">&quot;cargo-play&quot;</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="bool-val">true</span>,

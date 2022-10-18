@@ -158,6 +158,9 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # cargo_plugin_installer
 //!
 //! Installs cargo plugins automatically if needed.
@@ -276,7 +279,7 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>install_crate(
     toolchain: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ToolchainSpecifier&gt;,
-    cargo_command: <span class="kw-2">&amp;</span>str,
+    cargo_command: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
     crate_name: <span class="kw-2">&amp;</span>str,
     args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     validate: bool,
@@ -284,7 +287,10 @@
     install_command: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     allow_force: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;bool&gt;,
 ) {
-    <span class="kw">let </span>installed = is_crate_installed(<span class="kw-2">&amp;</span>toolchain, cargo_command);
+    <span class="kw">let </span>installed = <span class="kw">match </span>cargo_command {
+        <span class="prelude-val">Some</span>(cargo_command) =&gt; is_crate_installed(<span class="kw-2">&amp;</span>toolchain, cargo_command),
+        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
+    };
     <span class="kw">let </span><span class="kw-2">mut </span>force = <span class="bool-val">false</span>;
     <span class="kw">let </span>allow_force_value = allow_force.unwrap_or(<span class="bool-val">true</span>);
     <span class="kw">let </span>run_installation = <span class="kw">if </span>!installed {

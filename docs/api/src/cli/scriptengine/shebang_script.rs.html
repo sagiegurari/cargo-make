@@ -102,6 +102,8 @@
 <span id="102">102</span>
 <span id="103">103</span>
 <span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # shebang_script
 //!
 //! Runs scripts using the executable defined in the shebang line.
@@ -135,8 +137,10 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_shebang(script_text: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Shebang {
     <span class="kw">match </span>script_text.first() {
         <span class="prelude-val">Some</span>(line) =&gt; {
-            <span class="kw">if </span>line.starts_with(<span class="string">&quot;#!&quot;</span>) {
-                <span class="kw">let </span><span class="kw-2">mut </span>lines = line.split(<span class="string">&quot;\n&quot;</span>);
+            <span class="kw">let </span>trimmed_line = line.trim();
+
+            <span class="kw">if </span>trimmed_line.starts_with(<span class="string">&quot;#!&quot;</span>) {
+                <span class="kw">let </span><span class="kw-2">mut </span>lines = trimmed_line.split(<span class="string">&quot;\n&quot;</span>);
                 <span class="kw">match </span>lines.next() {
                     <span class="prelude-val">Some</span>(first_line) =&gt; {
                         <span class="kw">let </span><span class="kw-2">mut </span>shebang_line = first_line.replace(<span class="string">&quot;#!&quot;</span>, <span class="string">&quot;&quot;</span>);

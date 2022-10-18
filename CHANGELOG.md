@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.2
+### v0.36.2 (2022-10-18)
 
 * Enhancement: Add env var support in env_files values #723
 * Enhancement: Support environment expansion for toolchain attribute

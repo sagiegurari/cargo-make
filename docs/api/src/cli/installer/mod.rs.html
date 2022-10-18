@@ -178,6 +178,10 @@
 <span id="178">178</span>
 <span id="179">179</span>
 <span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # installer
 //!
 //! Installs external dependencies for tasks.&lt;br&gt;
@@ -263,24 +267,28 @@
             InstallCrate::Enabled(<span class="kw">_</span>) =&gt; (),
             InstallCrate::Value(<span class="kw-2">ref </span>crate_name) =&gt; {
                 <span class="kw">let </span>first_arg = get_first_command_arg(task_config);
-                <span class="kw">let </span>cargo_command = <span class="kw">match </span>first_arg {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>arg) =&gt; arg,
-                    <span class="prelude-val">None </span>=&gt; {
-                        <span class="macro">error!</span>(<span class="string">&quot;Missing cargo command to invoke.&quot;</span>);
-                        <span class="macro">panic!</span>(<span class="string">&quot;Missing cargo command to invoke.&quot;</span>);
-                    }
+                <span class="kw">match </span>first_arg {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cargo_command) =&gt; cargo_plugin_installer::install_crate(
+                        <span class="kw-2">&amp;</span>toolchain,
+                        <span class="prelude-val">Some</span>(cargo_command),
+                        crate_name,
+                        <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                        validate,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                    ),
+                    <span class="prelude-val">None </span>=&gt; cargo_plugin_installer::install_crate(
+                        <span class="kw-2">&amp;</span>toolchain,
+                        <span class="prelude-val">None</span>,
+                        crate_name,
+                        <span class="kw-2">&amp;</span>task_config.install_crate_args,
+                        validate,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
+                        <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="bool-val">false</span>), <span class="comment">// we can&#39;t validate, so we do not allow force
+                    </span>),
                 };
-
-                cargo_plugin_installer::install_crate(
-                    <span class="kw-2">&amp;</span>toolchain,
-                    cargo_command,
-                    crate_name,
-                    <span class="kw-2">&amp;</span>task_config.install_crate_args,
-                    validate,
-                    <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-                    <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-                    <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-                );
             }
             InstallCrate::CargoPluginInfo(<span class="kw-2">ref </span>install_info) =&gt; {
                 <span class="kw">let </span>(cargo_command, crate_name) =
@@ -308,7 +316,7 @@
 
                 cargo_plugin_installer::install_crate(
                     <span class="kw-2">&amp;</span>toolchain,
-                    <span class="kw-2">&amp;</span>cargo_command,
+                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>cargo_command),
                     <span class="kw-2">&amp;</span>crate_name,
                     <span class="kw-2">&amp;</span>task_config.install_crate_args,
                     validate,
@@ -344,7 +352,7 @@
                 <span class="prelude-val">Some</span>((cargo_command, crate_name)) =&gt; {
                     cargo_plugin_installer::install_crate(
                         <span class="kw-2">&amp;</span>toolchain,
-                        <span class="kw-2">&amp;</span>cargo_command,
+                        <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>cargo_command),
                         <span class="kw-2">&amp;</span>crate_name,
                         <span class="kw-2">&amp;</span>task_config.install_crate_args,
                         validate,
