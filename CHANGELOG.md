@@ -1,8 +1,16 @@
 ## CHANGELOG
 
+### v0.36.2
+
+* Enhancement: Add env var support in env_files values #723
+* Enhancement: Support environment expansion for toolchain attribute
+* Fix: support shebang in scripts with spaces before shebang start #718
+* Documentation: small edits for spelling, grammar, formatting #721 (thanks @Zearin)
+
 ### v0.36.1 (2022-09-27)
 
 * Enhancement: Support inherited package info #712
+* Enhancement: Add support for install_crate value without args (skipping current installation validation) #725
 * Enhancement: Added shell completion files in included crate #565
 * Enhancement: Add skipping task message for all actionable tasks that fail condition #708
 

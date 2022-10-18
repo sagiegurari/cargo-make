@@ -116,7 +116,7 @@ pub(crate) fn get_install_crate_args(
 
 pub(crate) fn install_crate(
     toolchain: &Option<ToolchainSpecifier>,
-    cargo_command: &str,
+    cargo_command: Option<&str>,
     crate_name: &str,
     args: &Option<Vec<String>>,
     validate: bool,
@@ -124,7 +124,10 @@ pub(crate) fn install_crate(
     install_command: &Option<String>,
     allow_force: &Option<bool>,
 ) {
-    let installed = is_crate_installed(&toolchain, cargo_command);
+    let installed = match cargo_command {
+        Some(cargo_command) => is_crate_installed(&toolchain, cargo_command),
+        None => false,
+    };
     let mut force = false;
     let allow_force_value = allow_force.unwrap_or(true);
     let run_installation = if !installed {

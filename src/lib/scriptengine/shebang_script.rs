@@ -31,8 +31,10 @@ impl Shebang {
 pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
     match script_text.first() {
         Some(line) => {
-            if line.starts_with("#!") {
-                let mut lines = line.split("\n");
+            let trimmed_line = line.trim();
+
+            if trimmed_line.starts_with("#!") {
+                let mut lines = trimmed_line.split("\n");
                 match lines.next() {
                     Some(first_line) => {
                         let mut shebang_line = first_line.replace("#!", "");

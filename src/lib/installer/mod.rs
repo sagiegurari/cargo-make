@@ -83,24 +83,28 @@ pub(crate) fn install(
             InstallCrate::Enabled(_) => (),
             InstallCrate::Value(ref crate_name) => {
                 let first_arg = get_first_command_arg(task_config);
-                let cargo_command = match first_arg {
-                    Some(ref arg) => arg,
-                    None => {
-                        error!("Missing cargo command to invoke.");
-                        panic!("Missing cargo command to invoke.");
-                    }
+                match first_arg {
+                    Some(ref cargo_command) => cargo_plugin_installer::install_crate(
+                        &toolchain,
+                        Some(cargo_command),
+                        crate_name,
+                        &task_config.install_crate_args,
+                        validate,
+                        &None,
+                        &None,
+                        &None,
+                    ),
+                    None => cargo_plugin_installer::install_crate(
+                        &toolchain,
+                        None,
+                        crate_name,
+                        &task_config.install_crate_args,
+                        validate,
+                        &None,
+                        &None,
+                        &Some(false), // we can't validate, so we do not allow force
+                    ),
                 };
-
-                cargo_plugin_installer::install_crate(
-                    &toolchain,
-                    cargo_command,
-                    crate_name,
-                    &task_config.install_crate_args,
-                    validate,
-                    &None,
-                    &None,
-                    &None,
-                );
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
                 let (cargo_command, crate_name) =
@@ -128,7 +132,7 @@ pub(crate) fn install(
 
                 cargo_plugin_installer::install_crate(
                     &toolchain,
-                    &cargo_command,
+                    Some(&cargo_command),
                     &crate_name,
                     &task_config.install_crate_args,
                     validate,
@@ -164,7 +168,7 @@ pub(crate) fn install(
                 Some((cargo_command, crate_name)) => {
                     cargo_plugin_installer::install_crate(
                         &toolchain,
-                        &cargo_command,
+                        Some(&cargo_command),
                         &crate_name,
                         &task_config.install_crate_args,
                         validate,

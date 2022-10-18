@@ -75,6 +75,15 @@ fn get_shebang_command_and_args_multi_line() {
 }
 
 #[test]
+fn get_shebang_single_command_with_spaces_before_shebang() {
+    let output = get_shebang(&vec!["     #! test  ".to_string()]);
+
+    assert!(output.runner.is_some());
+    assert_eq!(output.runner.unwrap(), "test");
+    assert!(output.arguments.is_none());
+}
+
+#[test]
 #[cfg(target_os = "linux")]
 fn execute_sh() {
     execute(
