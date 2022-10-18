@@ -37,9 +37,9 @@ dependencies = [
 
 [[package]]
 name = "attohttpc"
-version = "0.22.0"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1fcf00bc6d5abb29b5f97e3c61a90b6d3caa12f3faf897d4a3e3607c050a35a7"
+checksum = "12489f6c5525b06c7e5d689f0efeeae5b9efc38824478e854da9f4f33f040cf5"
 dependencies = [
  "flate2",
  "http",
@@ -337,9 +337,9 @@ dependencies = [
 
 [[package]]
 name = "duckscriptsdk"
-version = "0.8.15"
+version = "0.8.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "155142acbce19c002494699c2bdf8ba9ce0dcb90635ebe17d1c435df7baf81e5"
+checksum = "bb76069d03de8f70b6febb721ac2bbea382866cfea06c72d3a70d04a9931d79f"
 dependencies = [
  "attohttpc",
  "base64",
@@ -1219,9 +1219,9 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 
 [[package]]
 name = "suppaftp"
-version = "4.4.0"
+version = "4.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "374fa36af4a114155280ba725b6487d78ec4ed8e54c69fe80f59805ffed9cd65"
+checksum = "e847b04a392385badf1f7a766dcb4f9c7ce5f180360e5820d0b78cda026a9802"
 dependencies = [
  "chrono",
  "lazy-regex",
