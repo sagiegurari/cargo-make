@@ -1284,9 +1284,9 @@ dependencies = [
 
 [[package]]
 name = "shell2batch"
-version = "0.4.4"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14f4ec0e1f6a52fffcb4789ee0070f473f4cf5581ee532b8b2b8a6da901904a9"
+checksum = "3a0c7d0c8a1c5abed83821a6c803df835eadae0c12ccd02a4f8da3da94b6240e"
 dependencies = [
  "regex",
 ]
