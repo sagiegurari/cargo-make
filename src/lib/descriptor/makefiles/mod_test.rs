@@ -160,7 +160,7 @@ fn makefile_build_file_increment_test() {
 #[test]
 #[ignore]
 fn makefile_build_file_increment_no_file_test() {
-    let mut file = test::get_temp_test_directory();
+    let mut file = test::get_temp_test_directory(None);
     file.push("build_file_increment_test_no_file");
     fsio::directory::delete(&file).unwrap();
     file.push("buildnumber.txt");
@@ -191,7 +191,7 @@ fn makefile_build_file_increment_no_file_test() {
 #[test]
 #[ignore]
 fn makefile_build_file_increment_file_exists_test() {
-    let mut file = test::get_temp_test_directory();
+    let mut file = test::get_temp_test_directory(None);
     file.push("build_file_increment_test_file_exists");
     fsio::directory::delete(&file).unwrap();
     file.push("buildnumber.txt");
@@ -226,7 +226,7 @@ fn makefile_build_file_increment_file_exists_test() {
 #[ignore]
 #[should_panic]
 fn makefile_build_file_increment_panic_invalid_data_test() {
-    let mut file = test::get_temp_test_directory();
+    let mut file = test::get_temp_test_directory(None);
     file.push("build_file_increment_test_invalid_data");
     fsio::directory::delete(&file).unwrap();
     file.push("buildnumber.txt");

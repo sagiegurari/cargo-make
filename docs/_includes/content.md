@@ -1636,12 +1636,24 @@ The following condition types are available:
 * **rust_version** - Optional definition of min, max, and/or specific rust version
 * **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 * **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
+* **files_modified** - Lists input and output globs. If any input file is newer than all output files, the condition is met.
 
 Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
+condition = {
+    profiles = ["development", "production"],
+    platforms = ["windows", "linux"],
+    channels = ["beta", "nightly"],
+    env_set = [ "CARGO_MAKE_KCOV_VERSION" ],
+    env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ],
+    env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true },
+    rust_version = { min = "1.20.0", max = "1.30.0" },
+    files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"],
+    files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"],
+    files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] }
+}
 ```
 
 To setup a custom failure message, use the **fail_message** inside the condition object, for example:
@@ -1691,6 +1703,7 @@ args = ["condition was met"]
 
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
+
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
 For example, if you have a coverage flow that should only be invoked on linux in a CI build, and only if the `CARGO_MAKE_RUN_CODECOV` environment variable is defined as "true":
 
@@ -1712,6 +1725,21 @@ dependencies = [
 The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a CI build and the `CARGO_MAKE_RUN_CODECOV` environment variable is set to "true".<br>
 Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
+
+<a name="usage-running-tasks-only-if-sources-changed"></a>
+#### Running Tasks Only If Sources Changed
+
+The **files_modified** condition enables tasks to be skipped based on file modifications timestamp.<br>
+The condition will cause the task to be skipped if no input file was found to be newer then any of the files in the output.<br>
+The input and output are defined as arrays of **globs** (not regex) of files to check.<br>
+In the below example, if the target binaries are newer then the Cargo.toml or any of the rust sources in the src directory, it will not run cargo build command.
+
+```toml
+[tasks.compile-if-modified]
+condition = { files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] } }
+command = "cargo"
+args = ["build"]
+```
 
 <a name="usage-installing-dependencies"></a>
 ### Installing Dependencies

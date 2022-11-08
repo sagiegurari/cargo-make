@@ -38,6 +38,7 @@
         * [Criteria](#usage-conditions-structure)
         * [Scripts](#usage-conditions-script)
         * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
+        * [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed)
     * [Installing Dependencies](#usage-installing-dependencies)
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)

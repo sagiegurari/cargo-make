@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.3
+
+* Enhancement: Add new files_modified condition #741
+
 ### v0.36.2 (2022-10-18)
 
 * Enhancement: Add env var support in env_files values #723

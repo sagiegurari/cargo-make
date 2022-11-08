@@ -352,6 +352,15 @@ pub struct RustVersionCondition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+/// Files modified (input/output) condition structure
+pub struct FilesFilesModifiedCondition {
+    /// input files
+    pub input: Vec<String>,
+    /// output files
+    pub output: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds condition attributes
 pub struct TaskCondition {
     /// Failure message
@@ -380,6 +389,8 @@ pub struct TaskCondition {
     pub files_exist: Option<Vec<String>>,
     /// Files which do not exist
     pub files_not_exist: Option<Vec<String>>,
+    /// Files modified since last execution
+    pub files_modified: Option<FilesFilesModifiedCondition>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

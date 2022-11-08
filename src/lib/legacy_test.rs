@@ -53,7 +53,7 @@ fn migrate_from_directory_dir_exists_file_not_exists() {
     let path = env::current_dir().unwrap();
     let target_directory = path.join("target_bad");
 
-    let legacy_directory = test::get_temp_test_directory();
+    let legacy_directory = test::get_temp_test_directory(None);
 
     let done = migrate_from_directory(target_directory, "test.txt", &legacy_directory);
 
@@ -63,7 +63,7 @@ fn migrate_from_directory_dir_exists_file_not_exists() {
 #[test]
 #[ignore]
 fn migrate_from_directory_delete_legacy_directory() {
-    let test_directory = test::get_temp_test_directory();
+    let test_directory = test::get_temp_test_directory(None);
     let legacy_directory = test_directory.join("legacy");
     let target_directory = test_directory.join("target");
 
