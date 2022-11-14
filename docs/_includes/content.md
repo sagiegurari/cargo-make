@@ -3281,6 +3281,8 @@ When running in a rust workspace, you can disable some of the features in the me
 For example, if the members are in the same git repo as the entire project, you can add **skip_git_env_info** in the members
 makefiles and they will still have the environment variables setup from the parent process.
 
+For tasks that can be skipped in case no input file has been modified, see the [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed) section.
+
 <a name="usage-command-groups"></a>
 ### Command Groups
 
