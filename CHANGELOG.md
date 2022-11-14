@@ -3,6 +3,7 @@
 ### v0.36.3
 
 * Enhancement: Add new files_modified condition #741
+* Enhancement: Enable to set default toolchain for all core cargo tasks #743
 
 ### v0.36.2 (2022-10-18)
 

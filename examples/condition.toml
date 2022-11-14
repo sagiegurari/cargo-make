@@ -102,6 +102,11 @@ command = "echo"
 args = ["condition was met, sources updated..."]
 
 [tasks.compile-if-modified]
-condition = { files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/makers*"] } }
+condition = { files_modified = { input = [
+  "./Cargo.toml",
+  "./src/**/*.rs",
+], output = [
+  "./target/**/makers*",
+] } }
 command = "cargo"
 args = ["build"]

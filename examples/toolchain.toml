@@ -53,3 +53,8 @@ dependencies = ["echo-cargo-stable", "echo-cargo-nightly"]
 toolchain = "nightly-${NIGHTLY_VERSION}"
 command = "rustc"
 args = ["--version"]
+
+[tasks.empty_value]
+toolchain = ""
+command = "rustc"
+args = ["--version"]
