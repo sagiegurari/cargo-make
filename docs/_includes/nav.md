@@ -19,6 +19,7 @@
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
         * [Predefined Makefiles](#usage-predefined-makefiles)
+        * [The Default Task](#usage-default-task)
     * [Extending Tasks](#usage-extending-tasks)
         * [Task Override](#usage-task-override)
         * [Platform Override](#usage-platform-override)

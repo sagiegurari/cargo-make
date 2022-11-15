@@ -1057,11 +1057,41 @@ If needed, you can override the load_script per platform using the **linux_load_
 
 <a name="usage-predefined-makefiles"></a>
 #### Predefined Makefiles
+
 While cargo-make comes with many built in tasks, defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/), they are not always relevant for every project.<br>
 The [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository holds a collection of additional makefiles that can be loaded and provide replacement tasks for the built in cargo-make tasks.<br>
 For example the cmake.toml provides cmake related tasks for projects using cmake.
 
 See the [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository for more information and usage examples.
+
+<a name="usage-default-task"></a>
+#### The Default Task
+
+When invoking the cargo make command without a task name, the default task is invoked.<br>
+The default task is actually an alias to another task defined as follows:
+
+```toml
+[tasks.default]
+alias = "dev-test-flow"
+```
+
+There are multiple ways to define the default task differently, for example:
+
+* Alias to another task in your custom makefile
+
+```toml
+[tasks.default]
+alias = "my-custom-task"
+```
+
+* Clear the alias and define the task actions
+
+```toml
+[tasks.default]
+clear = true # clears the alias
+command = "echo"
+args = ["custom!!!"]
+```
 
 <a name="usage-extending-tasks"></a>
 ### Extending Tasks
