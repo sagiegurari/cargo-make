@@ -11,7 +11,7 @@ use rust_info::types::{RustChannel, RustInfo};
 use std::{thread, time::Duration};
 
 fn setup_test_dir(subdir: &str) -> String {
-    let pathbuf = get_temp_test_directory(Some(subdir));
+    let pathbuf = get_temp_test_directory(subdir);
     let directory = pathbuf.to_str().unwrap().to_string();
 
     let mut file = pathbuf.join("src/file1.txt").to_str().unwrap().to_string();

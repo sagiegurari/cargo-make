@@ -89,14 +89,12 @@ pub(crate) fn get_os_extension() -> String {
     }
 }
 
-pub(crate) fn get_temp_test_directory(subdir: Option<&str>) -> PathBuf {
+pub(crate) fn get_temp_test_directory(subdir: &str) -> PathBuf {
     on_test_startup();
 
     let path = env::current_dir().unwrap();
     let mut directory = path.join("target/_cargo_make_temp/test");
-    if let Some(subpath) = subdir {
-        directory = directory.join(subpath);
-    }
+    directory = directory.join(subdir);
 
     if directory.exists() {
         fsio::directory::delete(&directory).unwrap();
