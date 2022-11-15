@@ -29,6 +29,17 @@ fn wrap_command_unreachable_version() {
 }
 
 #[test]
+fn wrap_command_empty_toolchain() {
+    let output = wrap_command(&"".into(), "mycommand", &Some(vec!["arg1".to_string()]));
+
+    assert_eq!(output.command, "mycommand".to_string());
+
+    let args = output.args.unwrap();
+    assert_eq!(args.len(), 1);
+    assert_eq!(args[0], "arg1".to_string());
+}
+
+#[test]
 fn wrap_command_none_args() {
     let toolchain = get_test_env_toolchain();
     let output = wrap_command(&toolchain, "true", &None);

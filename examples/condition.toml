@@ -90,3 +90,23 @@ condition = { fail_message = "Condition Script Failed." }
 condition_script = ["exit 1"]
 command = "echo"
 args = ["condition was met"]
+
+[tasks.test-condition-files-modified]
+condition = { files_modified = { input = [
+  "./examples/condition.toml",
+  "./src/**/*",
+], output = [
+  "./target/**/cargo-make*",
+] } }
+command = "echo"
+args = ["condition was met, sources updated..."]
+
+[tasks.compile-if-modified]
+condition = { files_modified = { input = [
+  "./Cargo.toml",
+  "./src/**/*.rs",
+], output = [
+  "./target/**/makers*",
+] } }
+command = "cargo"
+args = ["build"]

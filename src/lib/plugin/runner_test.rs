@@ -469,6 +469,7 @@ fn run_task_invoked_valid() {
             rust_version: None,
             files_exist: None,
             files_not_exist: None,
+            files_modified: None,
         }),
         condition_script: Some(vec!["exit 0".to_string()]),
         ignore_errors: Some(true),

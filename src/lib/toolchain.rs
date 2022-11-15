@@ -26,21 +26,30 @@ pub(crate) fn wrap_command(
     check_toolchain(toolchain);
 
     let channel = get_channel(&toolchain);
+    if channel.is_empty() {
+        let mut command_args = vec![];
+        if let Some(array) = args {
+            for arg in array.iter() {
+                command_args.push(arg.to_string());
+            }
+        };
 
-    let mut rustup_args = vec!["run".to_string(), channel, command.to_string()];
-
-    match args {
-        Some(array) => {
+        CommandSpec {
+            command: command.to_string(),
+            args: Some(command_args),
+        }
+    } else {
+        let mut rustup_args = vec!["run".to_string(), channel, command.to_string()];
+        if let Some(array) = args {
             for arg in array.iter() {
                 rustup_args.push(arg.to_string());
             }
-        }
-        None => (),
-    };
+        };
 
-    CommandSpec {
-        command: "rustup".to_string(),
-        args: Some(rustup_args),
+        CommandSpec {
+            command: "rustup".to_string(),
+            args: Some(rustup_args),
+        }
     }
 }
 
@@ -55,6 +64,11 @@ fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> 
 
 fn check_toolchain(toolchain: &ToolchainSpecifier) {
     let channel = get_channel(&toolchain);
+
+    if channel.is_empty() {
+        return;
+    }
+
     let output = Command::new("rustup")
         .args(&["run", &channel, "rustc", "--version"])
         .stderr(Stdio::null())

@@ -152,6 +152,7 @@ rm -Rf ${DOCS_DIRECTORY}
 description = "Runs the cargo clean command."
 category = "Cleanup"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["clean"]
 
@@ -210,6 +211,7 @@ category = "Development"
 description = "Runs the cargo rustfmt plugin."
 category = "Development"
 dependencies = ["install-rustfmt"]
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["fmt"]
 
@@ -223,6 +225,7 @@ category = "Test"
 description = "Runs cargo fmt to check appropriate code format."
 category = "Test"
 dependencies = ["install-rustfmt"]
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["fmt", "--", "--check"]
 
@@ -258,6 +261,7 @@ category = "Documentation"
 description = "Generate rust documentation."
 category = "Documentation"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["doc", "--no-deps"]
 
@@ -388,6 +392,7 @@ category = "Build"
 description = "Runs the rust compiler."
 category = "Build"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = [
   "build",
@@ -399,6 +404,7 @@ args = [
 description = "Runs release build."
 category = "Build"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["build", "--release", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -412,6 +418,7 @@ category = "Test"
 description = "Runs all available tests."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = [
   "test",
@@ -430,6 +437,7 @@ description = "Runs all ignored tests with a single test thread."
 category = "Test"
 install_crate = false
 env = { RUST_TEST_THREADS = 1 }
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = [
   "test",
@@ -473,6 +481,7 @@ dependencies = ["pre-test", "test-multi-phases-flow", "post-test"]
 description = "Runs cargo test with command line arguments."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["test", "${@}"]
 
@@ -486,6 +495,7 @@ category = "Test"
 description = "Runs all available bench files."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["bench", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -507,6 +517,7 @@ run_task = "bench-flow"
 description = "Compiles all available bench files."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["build", "--benches", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 
@@ -528,6 +539,7 @@ category = "Test"
 description = "Runs cargo check."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["check"]
 
@@ -543,6 +555,7 @@ dependencies = ["pre-check", "check", "post-check"]
 description = "Runs cargo check for project tests."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["check", "--tests"]
 
@@ -550,6 +563,7 @@ args = ["check", "--tests"]
 description = "Runs cargo check for project examples."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["check", "--examples"]
 
@@ -557,6 +571,7 @@ args = ["check", "--examples"]
 description = "Runs cargo build for project examples."
 category = "Test"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["build", "--examples"]
 
@@ -577,6 +592,7 @@ category = "CI"
 [tasks.verify-project]
 description = "Runs verify-project cargo plugin."
 category = "CI"
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["verify-project"]
 
@@ -593,6 +609,7 @@ condition = { env_true = [
   "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
   "CARGO_MAKE_CRATE_LOCK_FILE_EXISTS",
 ] }
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["audit"]
 
@@ -606,6 +623,7 @@ category = "CI"
 description = "Runs cargo-outdated cargo plugin."
 category = "CI"
 condition = { env_true = ["CARGO_MAKE_CRATE_HAS_DEPENDENCIES"] }
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 
@@ -654,6 +672,7 @@ condition = { channels = [
 ], env_true = [
   "CARGO_MAKE_CRATE_HAS_DEPENDENCIES",
 ] }
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["udeps"]
 
@@ -691,6 +710,7 @@ category = "Test"
 description = "Runs clippy code linter."
 category = "Test"
 dependencies = ["install-clippy"]
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["clippy", "@@split(CARGO_MAKE_CLIPPY_ARGS, )"]
 
@@ -799,6 +819,7 @@ category = "Publish"
 description = "Runs the cargo package command."
 category = "Publish"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["package"]
 
@@ -812,6 +833,7 @@ category = "Publish"
 description = "Runs the cargo publish command."
 category = "Publish"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 args = ["publish", "@@split(CARGO_MAKE_CARGO_PUBLISH_FLAGS, )"]
 
@@ -1063,6 +1085,7 @@ command = "cross"
 [tasks.build-release-for-target]
 extend = "build-release-for-target-base"
 install_crate = false
+toolchain = "${CARGO_MAKE_RUST_DEFAULT_TOOLCHAIN}"
 command = "cargo"
 
 [tasks.zip-release-binary-for-target]

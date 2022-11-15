@@ -326,6 +326,7 @@ fn set_env_script_with_condition_true() {
         rust_version: None,
         files_exist: None,
         files_not_exist: None,
+        files_modified: None,
     };
 
     let mut env = IndexMap::new();
@@ -366,6 +367,7 @@ fn set_env_script_with_condition_false() {
         rust_version: None,
         files_exist: None,
         files_not_exist: None,
+        files_modified: None,
     };
 
     let mut env = IndexMap::new();
@@ -494,6 +496,7 @@ fn set_env_for_conditional_value_condition_true() {
         rust_version: None,
         files_exist: None,
         files_not_exist: None,
+        files_modified: None,
     };
 
     let info = EnvValueConditioned {
@@ -528,6 +531,7 @@ fn set_env_for_conditional_value_condition_false() {
         rust_version: None,
         files_exist: None,
         files_not_exist: None,
+        files_modified: None,
     };
 
     let info = EnvValueConditioned {
@@ -671,6 +675,7 @@ fn set_env_for_config_conditional() {
             rust_version: None,
             files_exist: None,
             files_not_exist: None,
+            files_modified: None,
         }),
     };
 

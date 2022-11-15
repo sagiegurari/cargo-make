@@ -30,6 +30,7 @@
         * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
         * [Load Scripts](#usage-load-scripts)
         * [Predefined Makefiles](#usage-predefined-makefiles)
+        * [The Default Task](#usage-default-task)
     * [Extending Tasks](#usage-extending-tasks)
         * [Task Override](#usage-task-override)
         * [Platform Override](#usage-platform-override)
@@ -49,6 +50,7 @@
         * [Criteria](#usage-conditions-structure)
         * [Scripts](#usage-conditions-script)
         * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
+        * [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed)
     * [Installing Dependencies](#usage-installing-dependencies)
         * [Cargo Plugins](#usage-installing-cargo-plugins)
         * [Crates](#usage-installing-crates)
@@ -1187,11 +1189,41 @@ If needed, you can override the load_script per platform using the **linux_load_
 
 <a name="usage-predefined-makefiles"></a>
 #### Predefined Makefiles
+
 While cargo-make comes with many built in tasks, defined in the [default makefiles](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/), they are not always relevant for every project.<br>
 The [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository holds a collection of additional makefiles that can be loaded and provide replacement tasks for the built in cargo-make tasks.<br>
 For example the cmake.toml provides cmake related tasks for projects using cmake.
 
 See the [cargo-make-tasks](https://github.com/sagiegurari/cargo-make-tasks/) repository for more information and usage examples.
+
+<a name="usage-default-task"></a>
+#### The Default Task
+
+When invoking the cargo make command without a task name, the default task is invoked.<br>
+The default task is actually an alias to another task defined as follows:
+
+```toml
+[tasks.default]
+alias = "dev-test-flow"
+```
+
+There are multiple ways to define the default task differently, for example:
+
+* Alias to another task in your custom makefile
+
+```toml
+[tasks.default]
+alias = "my-custom-task"
+```
+
+* Clear the alias and define the task actions
+
+```toml
+[tasks.default]
+clear = true # clears the alias
+command = "echo"
+args = ["custom!!!"]
+```
 
 <a name="usage-extending-tasks"></a>
 ### Extending Tasks
@@ -1766,12 +1798,24 @@ The following condition types are available:
 * **rust_version** - Optional definition of min, max, and/or specific rust version
 * **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 * **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
+* **files_modified** - Lists input and output globs. If any input file is newer than all output files, the condition is met.
 
 Few examples:
 
 ```toml
 [tasks.test-condition]
-condition = { profiles = ["development", "production"], platforms = ["windows", "linux"], channels = ["beta", "nightly"], env_set = [ "CARGO_MAKE_KCOV_VERSION" ], env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ], env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true }, rust_version = { min = "1.20.0", max = "1.30.0" } files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"] files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"] }
+condition = {
+    profiles = ["development", "production"],
+    platforms = ["windows", "linux"],
+    channels = ["beta", "nightly"],
+    env_set = [ "CARGO_MAKE_KCOV_VERSION" ],
+    env_not_set = [ "CARGO_MAKE_SKIP_CODECOV" ],
+    env = { "CARGO_MAKE_CI" = true, "CARGO_MAKE_RUN_CODECOV" = true },
+    rust_version = { min = "1.20.0", max = "1.30.0" },
+    files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"],
+    files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"],
+    files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] }
+}
 ```
 
 To setup a custom failure message, use the **fail_message** inside the condition object, for example:
@@ -1821,6 +1865,7 @@ args = ["condition was met"]
 
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
+
 Conditions and run_task combined can enable you to define a conditional sub flow.<br>
 For example, if you have a coverage flow that should only be invoked on linux in a CI build, and only if the `CARGO_MAKE_RUN_CODECOV` environment variable is defined as "true":
 
@@ -1842,6 +1887,21 @@ dependencies = [
 The first task **ci-coverage-flow** defines the condition that checks we are on linux, running as part of a CI build and the `CARGO_MAKE_RUN_CODECOV` environment variable is set to "true".<br>
 Only if all conditions are met, it will run the **codecov-flow** task.<br>
 We can't define the condition directly on the **codecov-flow** task, as it will invoke the task dependencies before checking the condition.
+
+<a name="usage-running-tasks-only-if-sources-changed"></a>
+#### Running Tasks Only If Sources Changed
+
+The **files_modified** condition enables tasks to be skipped based on file modifications timestamp.<br>
+The condition will cause the task to be skipped if no input file was found to be newer then any of the files in the output.<br>
+The input and output are defined as arrays of **globs** (not regex) of files to check.<br>
+In the below example, if the target binaries are newer then the Cargo.toml or any of the rust sources in the src directory, it will not run cargo build command.
+
+```toml
+[tasks.compile-if-modified]
+condition = { files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] } }
+command = "cargo"
+args = ["build"]
+```
 
 <a name="usage-installing-dependencies"></a>
 ### Installing Dependencies
@@ -3382,6 +3442,8 @@ skip_crate_env_info = true
 When running in a rust workspace, you can disable some of the features in the member makefiles.<br>
 For example, if the members are in the same git repo as the entire project, you can add **skip_git_env_info** in the members
 makefiles and they will still have the environment variables setup from the parent process.
+
+For tasks that can be skipped in case no input file has been modified, see the [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed) section.
 
 <a name="usage-command-groups"></a>
 ### Command Groups

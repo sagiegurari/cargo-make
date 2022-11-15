@@ -47,6 +47,7 @@ fn run_valid() {
         rust_version: None,
         files_exist: None,
         files_not_exist: None,
+        files_modified: None,
     });
 
     let mut flow_info = create_empty_flow_info();

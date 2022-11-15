@@ -14,6 +14,9 @@ use crate::types;
 use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
 use crate::version::{is_newer, is_same};
 use envmnt;
+use fsio;
+use fsio::path::from_path::FromPath;
+use glob::glob;
 use indexmap::IndexMap;
 use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
@@ -275,6 +278,116 @@ fn validate_files_not_exist(condition: &TaskCondition) -> bool {
     }
 }
 
+fn validate_files_modified(condition: &TaskCondition) -> bool {
+    match condition.files_modified.clone() {
+        Some(files_modified) => {
+            if files_modified.input.len() == 0 {
+                return true;
+            }
+
+            let mut latest_binary = 0;
+            for glob_pattern in &files_modified.output {
+                match glob(glob_pattern) {
+                    Ok(paths) => {
+                        for entry in paths {
+                            match entry {
+                                Ok(path_value) => {
+                                    if path_value.is_file() {
+                                        let value_string: String = FromPath::from_path(&path_value);
+                                        match fsio::path::get_last_modified_time(&value_string) {
+                                            Ok(last_modified_time) => {
+                                                if last_modified_time > latest_binary {
+                                                    latest_binary = last_modified_time;
+                                                }
+                                            }
+                                            Err(error) => {
+                                                error!(
+                                            "Unable to extract last modified time for path: {} {:#?}",
+                                            &value_string, &error
+                                        )
+                                            }
+                                        }
+                                    }
+                                }
+                                Err(error) => {
+                                    error!(
+                                        "Unable to process paths for glob: {} {:#?}",
+                                        &glob_pattern, &error
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Err(error) => {
+                        error!(
+                            "Unable to fetch paths for glob: {} {:#?}",
+                            &glob_pattern, &error
+                        )
+                    }
+                }
+            }
+
+            if latest_binary == 0 {
+                true
+            } else {
+                for glob_pattern in &files_modified.input {
+                    match glob(glob_pattern) {
+                        Ok(paths) => {
+                            let mut paths_found = false;
+                            for entry in paths {
+                                paths_found = true;
+
+                                match entry {
+                                    Ok(path_value) => {
+                                        if path_value.is_file() {
+                                            let value_string: String =
+                                                FromPath::from_path(&path_value);
+                                            match fsio::path::get_last_modified_time(&value_string)
+                                            {
+                                                Ok(last_modified_time) => {
+                                                    if last_modified_time > latest_binary {
+                                                        return true;
+                                                    }
+                                                }
+                                                Err(error) => {
+                                                    error!(
+                                            "Unable to extract last modified time for path: {} {:#?}",
+                                            &value_string, &error
+                                        )
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Err(error) => {
+                                        error!(
+                                            "Unable to process paths for glob: {} {:#?}",
+                                            &glob_pattern, &error
+                                        )
+                                    }
+                                }
+                            }
+
+                            if !paths_found {
+                                error!("Unable to find input files for pattern: {}", &glob_pattern);
+                            }
+                        }
+                        Err(error) => {
+                            error!(
+                                "Unable to fetch paths for glob: {} {:#?}",
+                                &glob_pattern, &error
+                            )
+                        }
+                    }
+                }
+
+                // all sources (input) are older than binaries (output)
+                false
+            }
+        }
+        None => true,
+    }
+}
+
 fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondition>) -> bool {
     match condition {
         Some(ref condition_struct) => {
@@ -292,6 +405,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 && validate_rust_version(&condition_struct)
                 && validate_files_exist(&condition_struct)
                 && validate_files_not_exist(&condition_struct)
+                && validate_files_modified(&condition_struct)
         }
         None => true,
     }
