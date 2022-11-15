@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.3
+### v0.36.3 (2022-11-15)
 
 * Enhancement: Add new files_modified condition #741
 * Enhancement: Enable to set default toolchain for all core cargo tasks #743

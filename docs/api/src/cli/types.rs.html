@@ -2364,6 +2364,17 @@
 <span id="2364">2364</span>
 <span id="2365">2365</span>
 <span id="2366">2366</span>
+<span id="2367">2367</span>
+<span id="2368">2368</span>
+<span id="2369">2369</span>
+<span id="2370">2370</span>
+<span id="2371">2371</span>
+<span id="2372">2372</span>
+<span id="2373">2373</span>
+<span id="2374">2374</span>
+<span id="2375">2375</span>
+<span id="2376">2376</span>
+<span id="2377">2377</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -2718,6 +2729,15 @@
 }
 
 <span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone)]
+</span><span class="doccomment">/// Files modified (input/output) condition structure
+</span><span class="kw">pub struct </span>FilesFilesModifiedCondition {
+    <span class="doccomment">/// input files
+    </span><span class="kw">pub </span>input: Vec&lt;String&gt;,
+    <span class="doccomment">/// output files
+    </span><span class="kw">pub </span>output: Vec&lt;String&gt;,
+}
+
+<span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone)]
 </span><span class="doccomment">/// Holds condition attributes
 </span><span class="kw">pub struct </span>TaskCondition {
     <span class="doccomment">/// Failure message
@@ -2746,6 +2766,8 @@
     </span><span class="kw">pub </span>files_exist: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// Files which do not exist
     </span><span class="kw">pub </span>files_not_exist: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    <span class="doccomment">/// Files modified since last execution
+    </span><span class="kw">pub </span>files_modified: <span class="prelude-ty">Option</span>&lt;FilesFilesModifiedCondition&gt;,
 }
 
 <span class="attribute">#[derive(Serialize, Deserialize, Debug, Clone)]
