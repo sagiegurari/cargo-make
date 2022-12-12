@@ -48,7 +48,7 @@ cargo_metadata = "^0.15"
 ci_info = "^0.14.9"
 cliparser = "^0.1.2"
 colored = "^2"
-ctrlc = "^3.2.3"
+ctrlc = "^3.2.4"
 dirs-next = "^2"
 duckscript = "^0.7.5"
 duckscriptsdk = { version = "^0.8.16", default-features = false }
