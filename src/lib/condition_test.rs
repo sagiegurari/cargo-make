@@ -1,5 +1,5 @@
 use super::*;
-use crate::test::get_temp_test_directory;
+use crate::test::{get_temp_test_directory, should_test_unstable};
 use crate::types::{
     Config, ConfigSection, CrateInfo, EnvInfo, FilesFilesModifiedCondition, FlowInfo,
     RustVersionCondition, Step, Task, TaskCondition,
@@ -1378,68 +1378,74 @@ fn validate_files_modified_same_timestamp() {
 
 #[test]
 fn validate_files_modified_output_newer() {
-    let directory = setup_test_dir("condition/files_modified/validate_files_modified_output_newer");
-    let mut src_glob = directory.clone();
-    src_glob.push_str("/src/**/*");
-    let mut target_glob = directory.clone();
-    target_glob.push_str("/target/**/*");
+    if should_test_unstable() {
+        let directory =
+            setup_test_dir("condition/files_modified/validate_files_modified_output_newer");
+        let mut src_glob = directory.clone();
+        src_glob.push_str("/src/**/*");
+        let mut target_glob = directory.clone();
+        target_glob.push_str("/target/**/*");
 
-    let condition = TaskCondition {
-        fail_message: None,
-        profiles: None,
-        platforms: None,
-        channels: None,
-        env_set: None,
-        env_not_set: None,
-        env_true: None,
-        env_false: None,
-        env: None,
-        env_contains: None,
-        rust_version: None,
-        files_exist: None,
-        files_not_exist: None,
-        files_modified: Some(FilesFilesModifiedCondition {
-            input: vec![src_glob],
-            output: vec![target_glob],
-        }),
-    };
+        let condition = TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: Some(FilesFilesModifiedCondition {
+                input: vec![src_glob],
+                output: vec![target_glob],
+            }),
+        };
 
-    let enabled = validate_files_modified(&condition);
+        let enabled = validate_files_modified(&condition);
 
-    assert!(!enabled);
+        assert!(!enabled);
+    }
 }
 
 #[test]
 fn validate_files_modified_input_newer() {
-    let directory = setup_test_dir("condition/files_modified/validate_files_modified_input_newer");
-    let mut src_glob = directory.clone();
-    src_glob.push_str("/src/**/*");
-    let mut target_glob = directory.clone();
-    target_glob.push_str("/target/**/*");
+    if should_test_unstable() {
+        let directory =
+            setup_test_dir("condition/files_modified/validate_files_modified_input_newer");
+        let mut src_glob = directory.clone();
+        src_glob.push_str("/src/**/*");
+        let mut target_glob = directory.clone();
+        target_glob.push_str("/target/**/*");
 
-    let condition = TaskCondition {
-        fail_message: None,
-        profiles: None,
-        platforms: None,
-        channels: None,
-        env_set: None,
-        env_not_set: None,
-        env_true: None,
-        env_false: None,
-        env: None,
-        env_contains: None,
-        rust_version: None,
-        files_exist: None,
-        files_not_exist: None,
-        files_modified: Some(FilesFilesModifiedCondition {
-            input: vec![target_glob],
-            output: vec![src_glob],
-        }),
-    };
+        let condition = TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: Some(FilesFilesModifiedCondition {
+                input: vec![target_glob],
+                output: vec![src_glob],
+            }),
+        };
 
-    let enabled = validate_files_modified(&condition);
+        let enabled = validate_files_modified(&condition);
 
-    assert!(enabled);
+        assert!(enabled);
+    }
 }
 
 #[test]

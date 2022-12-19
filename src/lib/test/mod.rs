@@ -69,6 +69,10 @@ pub(crate) fn should_test(panic_if_false: bool) -> bool {
     }
 }
 
+pub(crate) fn should_test_unstable() -> bool {
+    return !ci_info::is_ci();
+}
+
 pub(crate) fn get_os_runner() -> String {
     on_test_startup();
 
