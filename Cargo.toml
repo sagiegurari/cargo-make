@@ -51,7 +51,7 @@ colored = "^2"
 ctrlc = "^3.2.4"
 dirs-next = "^2"
 duckscript = "^0.7.5"
-duckscriptsdk = { version = "^0.8.16", default-features = false }
+duckscriptsdk = { version = "^0.8.17", default-features = false }
 envmnt = "^0.10.4"
 fern = "^0.6"
 fsio = { version = "^0.4", features = ["temp-path"] }
@@ -64,7 +64,7 @@ lenient_semver = "^0.4.2"
 log = "^0.4"
 once_cell = "^1.17.0"
 petgraph = "^0.6.2"
-regex = "^1.7.0"
+regex = "^1.7.1"
 run_script = "^0.10"
 rust_info = "^0.3.1"
 semver = "^1"
