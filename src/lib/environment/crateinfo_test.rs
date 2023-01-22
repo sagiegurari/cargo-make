@@ -223,12 +223,19 @@ fn get_members_from_dependencies_workspace_paths() {
     crate_info.dependencies = Some(dependencies);
     let members = get_members_from_dependencies(&crate_info);
 
-    assert_eq!(members.len(), 2);
-    let value1 = &members[0];
-    assert!((value1 == "member1") || value1 == "member2");
-    let value2 = &members[1];
-    assert!((value2 == "member1") || value2 == "member2");
-    assert!(value1 != value2);
+    assert_eq!(members.len(), 3);
+    assert!(members
+        .iter()
+        .position(|member| member == "member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "somepath")
+        .is_some());
 }
 
 #[test]
@@ -571,7 +578,41 @@ fn load_workspace_members_mixed() {
         .position(|member| member == "examples/workspace/member1")
         .is_some());
     assert!(members.iter().position(|member| member == ".").is_some());
-    assert_eq!(members.len(), 8);
+    assert_eq!(members.len(), 9);
+}
+
+#[test]
+fn load_workspace_members_mixed_members_and_paths() {
+    let mut crate_info = CrateInfo::new();
+
+    let mut dependencies = IndexMap::new();
+    dependencies.insert(
+        "my_package2".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("path/to/my_package2".to_string()),
+        }),
+    );
+    crate_info.dependencies = Some(dependencies);
+
+    let mut workspace = Workspace::new();
+    workspace.members = Some(vec!["path/to/my_package1".to_string()]);
+
+    crate_info.workspace = Some(workspace);
+    load_workspace_members(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    let members = workspace.members.unwrap();
+    assert_eq!(members.len(), 2);
+    assert!(members
+        .iter()
+        .position(|member| member == "path/to/my_package1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "path/to/my_package2")
+        .is_some());
 }
 
 #[test]
