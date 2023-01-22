@@ -51,12 +51,12 @@ colored = "^2"
 ctrlc = "^3.2.4"
 dirs-next = "^2"
 duckscript = "^0.7.5"
-duckscriptsdk = { version = "^0.8.16", default-features = false }
+duckscriptsdk = { version = "^0.8.17", default-features = false }
 envmnt = "^0.10.4"
 fern = "^0.6"
 fsio = { version = "^0.4", features = ["temp-path"] }
 git_info = "^0.1.2"
-glob = "^0.3"
+glob = "^0.3.1"
 home = "^0.5"
 indexmap = { version = "^1", features = ["serde-1"] }
 ignore = "^0.4"

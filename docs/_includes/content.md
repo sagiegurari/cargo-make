@@ -466,6 +466,9 @@ Be aware that parallel invocation of tasks will cause issues if the following fe
 * Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
 * Avoid using **`CARGO_MAKE_CURRENT_TASK_`** type environment variables as those may hold incorrect values.
 
+In addition, in some scenarios, child processes may be left as zombie processes.<br>
+It is possible to setup a manual cleanup task to resolve it.
+
 <a name="usage-task-command-script-task-examplecommand"></a>
 #### Command
 When running commands, you can also define the command line arguments, as shown in the example below, to invoke the cargo command with the plugin name as a command line argument:
@@ -3264,6 +3267,8 @@ In order to prevent loading of internal core tasks and flows, simply add the fol
 [config]
 skip_core_tasks = true
 ```
+
+*Few empty tasks would be loaded even with skipping core tasks to ensure cargo-make has a default task defined.*
 
 <a name="usage-predefined-flows-modify"></a>
 #### Modifying Predefined Tasks/Flows

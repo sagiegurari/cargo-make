@@ -1,5 +1,14 @@
 ## CHANGELOG
 
+### v0.36.4
+
+* Fix: relative path detection for workspace members defined in dependencies #773
+* Maintenance: Bump cargo-watch to 0.8.3 #771
+* Maintenance: Bump rust minimal version to 0.65 due to dependencies updates
+* Maintenance: Upgrade dependencies
+* Documentation: Update skip_core_tasks docs #752
+* Documentation: Update parallel attribute docs #751
+
 ### v0.36.3 (2022-11-15)
 
 * Enhancement: Add new files_modified condition #741

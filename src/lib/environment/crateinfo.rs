@@ -142,6 +142,8 @@ fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
                                 let member_path =
                                     path.chars().skip(2).take(path.len() - 2).collect();
                                 members.push(member_path);
+                            } else if Path::new(path).is_relative() {
+                                members.push(path.to_string());
                             }
                         }
                         None => (),
@@ -173,6 +175,15 @@ fn add_members(crate_info: &mut CrateInfo, new_members: Vec<String>) {
                 None => workspace.members = Some(new_members),
             },
             None => (), //not a workspace
+        }
+    }
+}
+
+fn dedup_members(crate_info: &mut CrateInfo) {
+    if let Some(ref mut workspace) = crate_info.workspace {
+        if let Some(ref mut members) = workspace.members {
+            members.sort();
+            members.dedup();
         }
     }
 }
@@ -221,6 +232,8 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
             let members_vec = vec![".".to_string()];
             add_members(crate_info, members_vec);
         }
+
+        dedup_members(crate_info);
 
         remove_excludes(crate_info);
     }
