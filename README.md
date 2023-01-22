@@ -3397,6 +3397,8 @@ In order to prevent loading of internal core tasks and flows, simply add the fol
 skip_core_tasks = true
 ```
 
+*Few empty tasks would be loaded even with skipping core tasks to ensure cargo-make has a default task defined.*
+
 <a name="usage-predefined-flows-modify"></a>
 #### Modifying Predefined Tasks/Flows
 

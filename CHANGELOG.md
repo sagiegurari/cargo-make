@@ -6,6 +6,7 @@
 * Maintenance: Bump cargo-watch to 0.8.3 #771
 * Maintenance: Bump rust minimal version to 0.65 due to dependencies updates
 * Maintenance: Upgrade dependencies
+* Documentation: Update skip_core_tasks docs #752
 
 ### v0.36.3 (2022-11-15)
 
