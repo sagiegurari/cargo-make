@@ -377,6 +377,19 @@
 <span id="377">377</span>
 <span id="378">378</span>
 <span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # crateinfo
 //!
 //! Loads crate information.
@@ -521,6 +534,8 @@
                                 <span class="kw">let </span>member_path =
                                     path.chars().skip(<span class="number">2</span>).take(path.len() - <span class="number">2</span>).collect();
                                 members.push(member_path);
+                            } <span class="kw">else if </span>Path::new(path).is_relative() {
+                                members.push(path.to_string());
                             }
                         }
                         <span class="prelude-val">None </span>=&gt; (),
@@ -553,6 +568,15 @@
             },
             <span class="prelude-val">None </span>=&gt; (), <span class="comment">//not a workspace
         </span>}
+    }
+}
+
+<span class="kw">fn </span>dedup_members(crate_info: <span class="kw-2">&amp;mut </span>CrateInfo) {
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>workspace) = crate_info.workspace {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>members) = workspace.members {
+            members.sort();
+            members.dedup();
+        }
     }
 }
 
@@ -600,6 +624,8 @@
             <span class="kw">let </span>members_vec = <span class="macro">vec!</span>[<span class="string">&quot;.&quot;</span>.to_string()];
             add_members(crate_info, members_vec);
         }
+
+        dedup_members(crate_info);
 
         remove_excludes(crate_info);
     }

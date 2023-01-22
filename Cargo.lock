@@ -167,7 +167,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-make"
-version = "0.36.3"
+version = "0.36.4"
 dependencies = [
  "ansi_term",
  "cargo_metadata",

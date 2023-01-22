@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.4
+### v0.36.4 (2023-01-22)
 
 * Fix: relative path detection for workspace members defined in dependencies #773
 * Maintenance: Bump cargo-watch to 0.8.3 #771
