@@ -73,7 +73,7 @@ serde_derive = "^1"
 serde_ignored = "^0.1"
 serde_json = "^1"
 shell2batch = "^0.4.5"
-toml = "^0.5"
+toml = "^0.7"
 
 [target.'cfg(windows)'.dependencies]
 ansi_term = "^0.12.1"
