@@ -3675,7 +3675,7 @@ The plugin SDK contains the following:
     * task.plugin.name - The plugin name defined in the task (before aliases)
     * task.watch - true/false based on the watch attributes
     * task.ignore_errors - true/false based on the ignore_errors attributes
-    * task.cwd - The task current working directory value
+    * task.cwd - The task's current working directory value
     * task.command - The command
     * task.args - Array of all the command arguments
     * task.script_runner - The script runner value
