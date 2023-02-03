@@ -459,11 +459,11 @@ args = ["2"]
 [tasks.parallel-multi]
 run_task = { name = ["echo1", "echo2"], parallel = true }
 ```
-
+The task's current working directory value
 This allows to run independent tasks in parallel and speed up the overall performance of the flow.<br>
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
-* Setting the task current working directory via **cwd** attribute will result in all parallel tasks being affected.
+* Setting the task's current working directory via **cwd** attribute will result in all parallel tasks being affected.
 * Avoid using **`CARGO_MAKE_CURRENT_TASK_`** type environment variables as those may hold incorrect values.
 
 In addition, in some scenarios, child processes may be left as zombie processes.<br>
@@ -3543,7 +3543,7 @@ The plugin SDK contains the following:
     * task.plugin.name - The plugin name defined in the task (before aliases)
     * task.watch - true/false based on the watch attributes
     * task.ignore_errors - true/false based on the ignore_errors attributes
-    * task.cwd - The task current working directory value
+    * task.cwd - The task's current working directory value
     * task.command - The command
     * task.args - Array of all the command arguments
     * task.script_runner - The script runner value
