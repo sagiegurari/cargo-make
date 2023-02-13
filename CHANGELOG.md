@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.5
+
+* Documentation: Add documentation on multiple blocking watches #788
+
 ### v0.36.4 (2023-01-22)
 
 * Fix: relative path detection for workspace members defined in dependencies #773

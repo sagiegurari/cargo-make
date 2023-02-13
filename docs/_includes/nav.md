@@ -67,6 +67,7 @@
     * [Private Tasks](#usage-private-tasks)
     * [Deprecated Tasks](#usage-deprecated-tasks)
     * [Watch](#usage-watch)
+        * [Running Multiple Blocking Watches](#usage-watch-running-multiple-blocking-watches)
     * [Functions](#usage-functions)
         * [Split](#usage-functions-split)
         * [GetAt](#usage-functions-getat)

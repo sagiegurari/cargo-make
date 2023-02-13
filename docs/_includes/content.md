@@ -459,7 +459,7 @@ args = ["2"]
 [tasks.parallel-multi]
 run_task = { name = ["echo1", "echo2"], parallel = true }
 ```
-The task's current working directory value
+
 This allows to run independent tasks in parallel and speed up the overall performance of the flow.<br>
 Be aware that parallel invocation of tasks will cause issues if the following feature are used:
 
@@ -2617,6 +2617,18 @@ You can also fine tune the watch setup (which is based on **cargo-watch**) by pr
 command = "echo"
 args = [ "Triggered by watch" ]
 watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
+```
+
+<a name="usage-watch-running-multiple-blocking-watches"></a>
+#### Running Multiple Blocking Watches
+
+In scenarios that you are required to run multiple blocking watches (for example running compilation + http server) you will need to run all such watches as parallel forked sub tasks.<br>
+In order to implement that, you will need to use both fork=true and parallel=true attributes.<br>
+For example:
+
+```toml
+[tasks.multiple-watches]
+run_task = { name = ["build", "http-server", "something-else"], fork = true, parallel = true }
 ```
 
 <a name="usage-functions"></a>
