@@ -34,6 +34,7 @@
         * [Loading Order](#usage-env-vars-loading-order)
         * [Note about Ordering](#env-note-about-ordering)
         * [Global](#usage-env-global)
+    * [Setting Up Working Directory](#usage-setting-up-working-directory)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)

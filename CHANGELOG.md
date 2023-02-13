@@ -3,6 +3,7 @@
 ### v0.36.5
 
 * Documentation: Add documentation on multiple blocking watches #788
+* Documentation: Add documentation on cwd #787
 
 ### v0.36.4 (2023-01-22)
 

@@ -45,6 +45,7 @@
         * [Loading Order](#usage-env-vars-loading-order)
         * [Note about Ordering](#env-note-about-ordering)
         * [Global](#usage-env-global)
+    * [Setting Up Working Directory](#usage-setting-up-working-directory)
     * [Ignoring Errors](#usage-ignoring-errors)
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)
@@ -1749,6 +1750,16 @@ The following environment variables will be set by cargo-make if the project is 
 * **`CARGO_MAKE_GIT_USER_EMAIL`** - The user email, which was taken from the git config `user.email` key.
 * **`CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH`** - The last HEAD commit hash.
 * **`CARGO_MAKE_GIT_HEAD_LAST_COMMIT_HASH_PREFIX`** - The last HEAD commit hash prefix.
+
+<a name="usage-setting-up-working-directory"></a>
+### Setting Up Working Directory
+To modify the current working directory for a specific task (not entire run), use the **cwd** attribute.<br>
+For example:
+
+```toml
+[tasks.move-dir]
+cwd = "./mysubdir/"
+```
 
 <a name="usage-ignoring-errors"></a>
 ### Ignoring Errors
