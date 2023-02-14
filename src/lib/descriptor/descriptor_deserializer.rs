@@ -12,7 +12,7 @@ use toml;
 
 pub(crate) fn load_config(descriptor_string: &str, validate: bool) -> Config {
     let config: Config = if validate {
-        let deserializer = &mut toml::de::Deserializer::new(descriptor_string);
+        let deserializer = toml::de::Deserializer::new(descriptor_string);
 
         match serde_ignored::deserialize(deserializer, |path| {
             error!("Found unknown key: {}", path);
@@ -37,7 +37,7 @@ pub(crate) fn load_config(descriptor_string: &str, validate: bool) -> Config {
 }
 
 pub(crate) fn load_external_config(descriptor_string: &str, file: &str) -> ExternalConfig {
-    let deserializer = &mut toml::de::Deserializer::new(descriptor_string);
+    let deserializer = toml::de::Deserializer::new(descriptor_string);
 
     let config: ExternalConfig = match serde_ignored::deserialize(deserializer, |path| {
         warn!("Found unknown key: {} in file: {}", path, file);

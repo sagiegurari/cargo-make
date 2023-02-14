@@ -4,6 +4,7 @@
 
 * Documentation: Add documentation on multiple blocking watches #788
 * Documentation: Add documentation on cwd #787
+* Maintenance: Upgrade dependencies
 
 ### v0.36.4 (2023-01-22)
 
