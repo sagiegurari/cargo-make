@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.5
+### v0.36.5 (2023-02-18)
 
 * Enhancement: Support workspace.dependencies setup to find workspace members #773
 * Enhancement: Performance improvement by reducing cargo-metadata calls #796

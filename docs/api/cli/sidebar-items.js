@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["run_cli","Handles the command line arguments and executes the runner."]],"mod":[["types","types"]]};
+window.SIDEBAR_ITEMS = {"fn":["run_cli"],"mod":["types"]};
