@@ -19,7 +19,13 @@ fn run_same() {
 
     let config2 = config1.clone();
 
-    run(&config1, &config2, "test", &CliArgs::new());
+    run(
+        &config1,
+        &config2,
+        "test",
+        &CliArgs::new(),
+        &CrateInfo::new(),
+    );
 }
 
 #[test]
@@ -53,7 +59,13 @@ fn run_different() {
     config2.tasks.insert("end".to_string(), Task::new());
     config2.tasks.insert("test".to_string(), Task::new());
 
-    run(&config1, &config2, "test", &CliArgs::new());
+    run(
+        &config1,
+        &config2,
+        "test",
+        &CliArgs::new(),
+        &CrateInfo::new(),
+    );
 }
 
 #[test]
@@ -90,7 +102,7 @@ fn run_different_with_skip() {
     let mut cli_args = CliArgs::new();
     cli_args.skip_tasks_pattern = Some("test".to_string());
 
-    run(&config1, &config2, "test", &cli_args);
+    run(&config1, &config2, "test", &cli_args, &CrateInfo::new());
 }
 
 #[test]
@@ -121,7 +133,13 @@ fn run_missing_task_in_first_config() {
     config2.tasks.insert("end".to_string(), Task::new());
     config2.tasks.insert("test".to_string(), Task::new());
 
-    run(&config1, &config2, "test", &CliArgs::new());
+    run(
+        &config1,
+        &config2,
+        "test",
+        &CliArgs::new(),
+        &CrateInfo::new(),
+    );
 }
 
 #[test]
@@ -152,5 +170,11 @@ fn run_missing_task_in_second_config() {
     config2.tasks.insert("init".to_string(), Task::new());
     config2.tasks.insert("end".to_string(), Task::new());
 
-    run(&config1, &config2, "test", &CliArgs::new());
+    run(
+        &config1,
+        &config2,
+        "test",
+        &CliArgs::new(),
+        &CrateInfo::new(),
+    );
 }

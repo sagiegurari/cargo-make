@@ -180,7 +180,7 @@ pub(crate) fn run_command_get_output(
         command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
     }
 
-    info!("Execute Command: {:#?}", &command);
+    info!("Execute Command: {:?}", &command);
 
     let output = if ctrl_c_handling {
         spawn_command(command)

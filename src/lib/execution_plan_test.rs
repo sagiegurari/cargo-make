@@ -167,9 +167,10 @@ fn create_workspace_task_no_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     assert!(task.script.is_some());
     let script = match task.script.unwrap() {
@@ -192,11 +193,12 @@ fn create_workspace_task_with_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     let mut expected_script = r#"workspace_directory = pwd
 cd ./member1
@@ -237,11 +239,12 @@ fn create_workspace_task_with_members_no_workspace_profile() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", false);
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     let mut expected_script = r#"workspace_directory = pwd
 cd ./member1
@@ -279,6 +282,7 @@ fn create_workspace_task_with_members_and_arguments() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
@@ -288,7 +292,7 @@ fn create_workspace_task_with_members_and_arguments() {
         &vec!["arg1".to_string(), "arg2".to_string()],
     );
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     envmnt::remove("CARGO_MAKE_TASK_ARGS");
 
@@ -332,6 +336,7 @@ fn create_workspace_task_with_included_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_list(
@@ -345,7 +350,7 @@ fn create_workspace_task_with_included_members() {
 
     profile::set(profile::DEFAULT_PROFILE);
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
 
@@ -384,6 +389,7 @@ fn create_workspace_task_with_included_and_skipped_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_list(
@@ -398,7 +404,7 @@ fn create_workspace_task_with_included_and_skipped_members() {
 
     profile::set(profile::DEFAULT_PROFILE);
 
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
 
     envmnt::remove("CARGO_MAKE_WORKSPACE_INCLUDE_MEMBERS");
     envmnt::remove("CARGO_MAKE_WORKSPACE_SKIP_MEMBERS");
@@ -429,10 +435,11 @@ fn create_workspace_task_extend_workspace_makefile() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
-    let task = create_workspace_task(crate_info, "some_task");
+    let task = create_workspace_task(&crate_info, "some_task");
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "false");
 
     assert!(task.script.is_some());
@@ -456,6 +463,7 @@ fn is_workspace_flow_true_default() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -482,6 +490,7 @@ fn is_workspace_flow_false_in_config() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -511,6 +520,7 @@ fn is_workspace_flow_true_in_config() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -540,6 +550,7 @@ fn is_workspace_flow_true_in_task() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -567,6 +578,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -593,6 +605,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -620,6 +633,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -647,6 +661,7 @@ fn is_workspace_flow_task_not_defined() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let config = Config {
@@ -692,6 +707,7 @@ fn is_workspace_flow_disabled_via_cli() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -719,6 +735,7 @@ fn is_workspace_flow_disabled_via_task() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -760,7 +777,15 @@ fn create_single() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -789,7 +814,15 @@ fn create_single_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -818,7 +851,15 @@ fn create_single_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    create(&config, "test-private", false, false, false, &None);
+    create(
+        &config,
+        "test-private",
+        &CrateInfo::new(),
+        false,
+        false,
+        false,
+        &None,
+    );
 }
 
 #[test]
@@ -843,7 +884,15 @@ fn create_single_allow_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    let execution_plan = create(&config, "test-private", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test-private",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test-private");
@@ -877,7 +926,15 @@ fn create_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -915,7 +972,15 @@ fn create_with_foreign_dependencies_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -958,7 +1023,15 @@ fn create_with_foreign_dependencies_filename() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1001,7 +1074,15 @@ fn create_with_foreign_dependencies_file_and_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1041,7 +1122,7 @@ fn create_with_dependencies_sub_flow() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, true, &None);
+    let execution_plan = create(&config, "test", &CrateInfo::new(), false, true, true, &None);
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "task_dependency");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1075,7 +1156,15 @@ fn create_disabled_task_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -1109,7 +1198,15 @@ fn create_with_dependencies_disabled() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1215,7 +1312,15 @@ fn create_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &None,
+    );
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
@@ -1249,7 +1354,15 @@ fn create_with_dependencies_and_skip_filter() {
 
     let skip_filter = Regex::new("filtered.*").unwrap();
 
-    let execution_plan = create(&config, "test", false, true, false, &Some(skip_filter));
+    let execution_plan = create(
+        &config,
+        "test",
+        &CrateInfo::new(),
+        false,
+        true,
+        false,
+        &Some(skip_filter),
+    );
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -1274,7 +1387,8 @@ fn create_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create(&config, "test", false, true, false, &None);
+    let crateinfo = environment::crateinfo::load();
+    let execution_plan = create(&config, "test", &crateinfo, false, true, false, &None);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -1297,7 +1411,8 @@ fn create_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let execution_plan = create(&config, "test", true, true, false, &None);
+    let crateinfo = environment::crateinfo::load();
+    let execution_plan = create(&config, "test", &crateinfo, true, true, false, &None);
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
@@ -1314,7 +1429,15 @@ fn create_task_extends_empty_env_bug_verification() {
     )
     .unwrap();
 
-    let execution_plan = create(&config, "task2", true, false, false, &None);
+    let execution_plan = create(
+        &config,
+        "task2",
+        &CrateInfo::new(),
+        true,
+        false,
+        false,
+        &None,
+    );
 
     assert_eq!(execution_plan.steps.len(), 3);
 

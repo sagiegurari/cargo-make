@@ -130,9 +130,24 @@ fn normalize_members(crate_info: &mut CrateInfo) {
 }
 
 fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
-    let mut members = vec![];
+    get_members_from_dependencies_map(crate_info.dependencies.clone())
+}
 
-    match crate_info.dependencies {
+fn get_members_from_workspace_dependencies(crate_info: &CrateInfo) -> Vec<String> {
+    let workspace = crate_info.workspace.clone();
+    match workspace {
+        Some(workspace) => get_members_from_dependencies_map(workspace.dependencies),
+        None => vec![],
+    }
+}
+
+fn get_members_from_dependencies_map(
+    dependencies: Option<IndexMap<String, CrateDependency>>,
+) -> Vec<String> {
+    let mut members = vec![];
+    debug!("Searching members in dependencies: {:#?}", &dependencies);
+
+    match dependencies {
         Some(ref dependencies) => {
             for value in dependencies.values() {
                 match *value {
@@ -227,6 +242,8 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
 
         let dependencies = get_members_from_dependencies(&crate_info);
         add_members(crate_info, dependencies);
+        let workspace_dependencies = get_members_from_workspace_dependencies(&crate_info);
+        add_members(crate_info, workspace_dependencies);
 
         if crate_info.package.is_some() {
             let members_vec = vec![".".to_string()];
@@ -246,8 +263,11 @@ pub(crate) fn load() -> CrateInfo {
 
 pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     if file_path.exists() {
+        info!("Calling cargo metadata to extract project info");
+
         match MetadataCommand::new().manifest_path(&file_path).exec() {
             Ok(metadata) => {
+                info!("Cargo metadata done");
                 debug!("Cargo metadata: {:#?}", &metadata);
                 let mut crate_info = convert_metadata_to_crate_info(&metadata);
 

@@ -239,6 +239,57 @@ fn get_members_from_dependencies_workspace_paths() {
 }
 
 #[test]
+fn get_members_from_workspace_dependencies_workspace_paths() {
+    let mut dependencies = IndexMap::new();
+    dependencies.insert(
+        "test1".to_string(),
+        CrateDependency::Version("1".to_string()),
+    );
+    dependencies.insert(
+        "test2".to_string(),
+        CrateDependency::Version("2".to_string()),
+    );
+    dependencies.insert(
+        "test3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("somepath".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid1".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./member1".to_string()),
+        }),
+    );
+    dependencies.insert(
+        "valid2".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("./member2".to_string()),
+        }),
+    );
+
+    let mut workspace = Workspace::new();
+    workspace.dependencies = Some(dependencies);
+    let mut crate_info = CrateInfo::new();
+    crate_info.workspace = Some(workspace);
+    let members = get_members_from_workspace_dependencies(&crate_info);
+
+    assert_eq!(members.len(), 3);
+    assert!(members
+        .iter()
+        .position(|member| member == "member1")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "member2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "somepath")
+        .is_some());
+}
+
+#[test]
 fn remove_excludes_no_workspace() {
     let mut crate_info = CrateInfo::new();
     remove_excludes(&mut crate_info);
@@ -597,6 +648,15 @@ fn load_workspace_members_mixed_members_and_paths() {
     let mut workspace = Workspace::new();
     workspace.members = Some(vec!["path/to/my_package1".to_string()]);
 
+    dependencies = IndexMap::new();
+    dependencies.insert(
+        "my_package3".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("path/to/my_package3".to_string()),
+        }),
+    );
+    workspace.dependencies = Some(dependencies);
+
     crate_info.workspace = Some(workspace);
     load_workspace_members(&mut crate_info);
 
@@ -604,7 +664,7 @@ fn load_workspace_members_mixed_members_and_paths() {
     workspace = crate_info.workspace.unwrap();
     assert!(workspace.members.is_some());
     let members = workspace.members.unwrap();
-    assert_eq!(members.len(), 2);
+    assert_eq!(members.len(), 3);
     assert!(members
         .iter()
         .position(|member| member == "path/to/my_package1")
@@ -612,6 +672,10 @@ fn load_workspace_members_mixed_members_and_paths() {
     assert!(members
         .iter()
         .position(|member| member == "path/to/my_package2")
+        .is_some());
+    assert!(members
+        .iter()
+        .position(|member| member == "path/to/my_package3")
         .is_some());
 }
 

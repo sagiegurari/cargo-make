@@ -14,6 +14,7 @@ use crate::condition;
 use crate::io;
 use crate::profile;
 use crate::scriptengine;
+use crate::time_summary;
 use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
     EnvValuePathGlob, EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
@@ -31,6 +32,7 @@ use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::{Path, PathBuf};
+use std::time::SystemTime;
 
 fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true, Some(false)) {
@@ -548,6 +550,7 @@ pub(crate) fn setup_env(
     config: &Config,
     task: &str,
     home: Option<PathBuf>,
+    time_summary_vec: &mut Vec<(String, u128)>,
 ) -> EnvInfo {
     envmnt::set_bool("CARGO_MAKE", true);
     envmnt::set("CARGO_MAKE_TASK", &task);
@@ -561,37 +564,51 @@ pub(crate) fn setup_env(
     envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
     // load duckscript_info
+    let mut now = SystemTime::now();
     setup_env_for_duckscript();
+    time_summary::add(time_summary_vec, "[Setup Env - Duckscript]", now);
 
     // load crate info
+    now = SystemTime::now();
     let crate_info = if config.config.skip_crate_env_info.unwrap_or(false) {
         CrateInfo::new()
     } else {
         setup_env_for_crate()
     };
+    time_summary::add(time_summary_vec, "[Setup Env - Crate Info]", now);
 
     // load git info
+    now = SystemTime::now();
     let gitinfo = if config.config.skip_git_env_info.unwrap_or(false) {
         GitInfo::new()
     } else {
         setup_env_for_git_repo()
     };
+    time_summary::add(time_summary_vec, "[Setup Env - Git]", now);
 
     // load rust info
+    now = SystemTime::now();
     let rustinfo = if config.config.skip_rust_env_info.unwrap_or(false) {
         RustInfo::new()
     } else {
         setup_env_for_rust(home)
     };
+    time_summary::add(time_summary_vec, "[Setup Env - Rust]", now);
 
     // load CI info
+    now = SystemTime::now();
     let ci_info_struct = setup_env_for_ci();
+    time_summary::add(time_summary_vec, "[Setup Env - CI]", now);
 
     // setup project info
+    now = SystemTime::now();
     setup_env_for_project(config, &crate_info);
+    time_summary::add(time_summary_vec, "[Setup Env - Project]", now);
 
     // load env vars
+    now = SystemTime::now();
     initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]));
+    time_summary::add(time_summary_vec, "[Setup Env - Vars]", now);
 
     EnvInfo {
         rust_info: rustinfo,
