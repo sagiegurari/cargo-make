@@ -2,6 +2,7 @@
 
 ### v0.36.5
 
+* Enhancement: Added additional time summary breakdown for env setup #796
 * Documentation: Add documentation on multiple blocking watches #788
 * Documentation: Add documentation on cwd #787
 * Maintenance: Upgrade dependencies

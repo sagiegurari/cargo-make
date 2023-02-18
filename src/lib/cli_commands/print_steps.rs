@@ -8,7 +8,7 @@
 mod print_steps_test;
 
 use crate::execution_plan::create as create_execution_plan;
-use crate::types::{Config, ExecutionPlan};
+use crate::types::{Config, CrateInfo, ExecutionPlan};
 use regex::Regex;
 
 #[derive(Debug)]
@@ -67,6 +67,7 @@ pub(crate) fn print(
     output_format: &str,
     disable_workspace: bool,
     skip_tasks_pattern: Option<String>,
+    crateinfo: &CrateInfo,
 ) {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
@@ -82,6 +83,7 @@ pub(crate) fn print(
     let execution_plan = create_execution_plan(
         &config,
         &task,
+        crateinfo,
         disable_workspace,
         false,
         false,

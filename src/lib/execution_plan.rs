@@ -177,7 +177,7 @@ fn filter_workspace_members(members: &Vec<String>) -> Vec<String> {
     filtered_members
 }
 
-fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
+fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
     let set_workspace_emulation = crate_info.workspace.is_none()
         && envmnt::is("CARGO_MAKE_WORKSPACE_EMULATION")
         && !envmnt::exists("CARGO_MAKE_WORKSPACE_EMULATION_ROOT_DIRECTORY");
@@ -191,7 +191,8 @@ fn create_workspace_task(crate_info: CrateInfo, task: &str) -> Task {
     }
 
     let members = if crate_info.workspace.is_some() {
-        let workspace = crate_info.workspace.unwrap_or(Workspace::new());
+        let workspace_clone = crate_info.workspace.clone();
+        let workspace = workspace_clone.unwrap_or(Workspace::new());
         workspace.members.unwrap_or(vec![])
     } else {
         envmnt::get_list("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap_or(vec![])
@@ -423,6 +424,7 @@ fn add_predefined_step(config: &Config, task: &str, steps: &mut Vec<Step>) {
 pub(crate) fn create(
     config: &Config,
     task: &str,
+    crate_info: &CrateInfo,
     disable_workspace: bool,
     allow_private: bool,
     sub_flow: bool,
@@ -448,9 +450,6 @@ pub(crate) fn create(
     };
 
     if !skip {
-        // load crate info and look for workspace info
-        let crate_info = environment::crateinfo::load();
-
         let workspace_flow =
             is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
 

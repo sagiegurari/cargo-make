@@ -246,8 +246,11 @@ pub(crate) fn load() -> CrateInfo {
 
 pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
     if file_path.exists() {
+        info!("Calling cargo metadata to extract project info");
+
         match MetadataCommand::new().manifest_path(&file_path).exec() {
             Ok(metadata) => {
+                info!("Cargo metadata done");
                 debug!("Cargo metadata: {:#?}", &metadata);
                 let mut crate_info = convert_metadata_to_crate_info(&metadata);
 

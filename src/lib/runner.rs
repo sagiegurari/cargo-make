@@ -551,6 +551,7 @@ pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>,
     let execution_plan = create_execution_plan(
         &flow_info.config,
         &flow_info.task,
+        &flow_info.env_info.crate_info,
         flow_info.disable_workspace,
         allow_private,
         sub_flow,

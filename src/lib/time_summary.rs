@@ -8,6 +8,10 @@ use envmnt;
 use std::cmp::Ordering;
 use std::time::SystemTime;
 
+pub(crate) fn is_time_summary_enabled() -> bool {
+    envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY")
+}
+
 pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time: SystemTime) {
     match start_time.elapsed() {
         Ok(elapsed) => time_summary.push((name.to_string(), elapsed.as_millis())),
@@ -16,7 +20,7 @@ pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time
 }
 
 pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
-    if envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY") {
+    if is_time_summary_enabled() {
         let mut time_summary_sorted = time_summary.clone();
         time_summary_sorted
             .sort_by(|entry1, entry2| entry2.1.partial_cmp(&entry1.1).unwrap_or(Ordering::Equal));

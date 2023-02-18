@@ -10,7 +10,7 @@ mod diff_steps_test;
 use crate::command;
 use crate::execution_plan::create as create_execution_plan;
 use crate::io::{create_file, delete_file};
-use crate::types::{CliArgs, Config, ExecutionPlan};
+use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
 use regex::Regex;
 use std::fs::File;
 use std::io;
@@ -27,6 +27,7 @@ pub(crate) fn run(
     external_config: &Config,
     task: &str,
     cli_args: &CliArgs,
+    crateinfo: &CrateInfo,
 ) {
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
@@ -42,6 +43,7 @@ pub(crate) fn run(
     let internal_execution_plan = create_execution_plan(
         internal_config,
         &task,
+        crateinfo,
         cli_args.disable_workspace,
         true,
         false,
@@ -51,6 +53,7 @@ pub(crate) fn run(
     let external_execution_plan = create_execution_plan(
         external_config,
         &task,
+        crateinfo,
         cli_args.disable_workspace,
         true,
         false,

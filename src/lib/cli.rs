@@ -123,7 +123,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => profile::set_additional(&vec![]),
     };
 
-    let env_info = environment::setup_env(&cli_args, &config, &task, home);
+    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec);
     time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
@@ -146,7 +146,13 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         );
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental, None);
-        cli_commands::diff_steps::run(&default_config, &config, &task, &cli_args);
+        cli_commands::diff_steps::run(
+            &default_config,
+            &config,
+            &task,
+            &cli_args,
+            &env_info.crate_info,
+        );
     } else if cli_args.print_only {
         cli_commands::print_steps::print(
             &config,
@@ -154,6 +160,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             &cli_args.output_format,
             cli_args.disable_workspace,
             cli_args.skip_tasks_pattern,
+            &env_info.crate_info,
         );
     } else {
         runner::run(
