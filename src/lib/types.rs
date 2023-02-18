@@ -218,6 +218,8 @@ pub struct Workspace {
     pub members: Option<Vec<String>>,
     /// exclude paths
     pub exclude: Option<Vec<String>>,
+    /// workspace level dependencies
+    pub dependencies: Option<IndexMap<String, CrateDependency>>,
 }
 
 impl Workspace {

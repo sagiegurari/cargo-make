@@ -167,6 +167,7 @@ fn create_workspace_task_no_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = create_workspace_task(&crate_info, "some_task");
@@ -192,6 +193,7 @@ fn create_workspace_task_with_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
@@ -237,6 +239,7 @@ fn create_workspace_task_with_members_no_workspace_profile() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", false);
@@ -279,6 +282,7 @@ fn create_workspace_task_with_members_and_arguments() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
@@ -332,6 +336,7 @@ fn create_workspace_task_with_included_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_list(
@@ -384,6 +389,7 @@ fn create_workspace_task_with_included_and_skipped_members() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set_list(
@@ -429,6 +435,7 @@ fn create_workspace_task_extend_workspace_makefile() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
@@ -456,6 +463,7 @@ fn is_workspace_flow_true_default() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -482,6 +490,7 @@ fn is_workspace_flow_false_in_config() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -511,6 +520,7 @@ fn is_workspace_flow_true_in_config() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -540,6 +550,7 @@ fn is_workspace_flow_true_in_task() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -567,6 +578,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let task = Task::new();
@@ -593,6 +605,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -620,6 +633,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -647,6 +661,7 @@ fn is_workspace_flow_task_not_defined() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let config = Config {
@@ -692,6 +707,7 @@ fn is_workspace_flow_disabled_via_cli() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();
@@ -719,6 +735,7 @@ fn is_workspace_flow_disabled_via_task() {
     crate_info.workspace = Some(Workspace {
         members: Some(members),
         exclude: None,
+        dependencies: None,
     });
 
     let mut task = Task::new();

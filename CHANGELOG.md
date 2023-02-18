@@ -2,6 +2,8 @@
 
 ### v0.36.5
 
+* Enhancement: Support workspace.dependencies setup to find workspace members #773
+* Enhancement: Performance improvement by reducing cargo-metadata calls #796
 * Enhancement: Added additional time summary breakdown for env setup #796
 * Documentation: Add documentation on multiple blocking watches #788
 * Documentation: Add documentation on cwd #787
