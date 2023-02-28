@@ -279,7 +279,7 @@ fn validate_files_not_exist(condition: &TaskCondition) -> bool {
 }
 
 fn validate_files_modified(condition: &TaskCondition) -> bool {
-    match condition.files_modified.clone() {
+    match &condition.files_modified {
         Some(files_modified) => {
             if files_modified.input.len() == 0 {
                 return true;
@@ -287,7 +287,8 @@ fn validate_files_modified(condition: &TaskCondition) -> bool {
 
             let mut latest_binary = 0;
             for glob_pattern in &files_modified.output {
-                match glob(glob_pattern) {
+                let glob_pattern = environment::expand_value(glob_pattern);
+                match glob(&glob_pattern) {
                     Ok(paths) => {
                         for entry in paths {
                             match entry {
@@ -331,7 +332,8 @@ fn validate_files_modified(condition: &TaskCondition) -> bool {
                 true
             } else {
                 for glob_pattern in &files_modified.input {
-                    match glob(glob_pattern) {
+                    let glob_pattern = environment::expand_value(glob_pattern);
+                    match glob(&glob_pattern) {
                         Ok(paths) => {
                             let mut paths_found = false;
                             for entry in paths {
