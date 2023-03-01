@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.6 (2023-03-01)
+
+* Enhancement: Support environment expansion for files_modified condition #802 (thanks @stormshield-guillaumed)
+
 ### v0.36.5 (2023-02-18)
 
 * Enhancement: Support workspace.dependencies setup to find workspace members #773
