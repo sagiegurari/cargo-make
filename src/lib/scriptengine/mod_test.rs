@@ -26,7 +26,9 @@ fn get_script_text_file() {
         file: "src/lib/test/test_files/text_file.txt".to_string(),
         absolute_path: None,
     };
-    let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
+    let output = get_script_text(&ScriptValue::File(file_info))
+        .join("\n")
+        .replace("\r", "");
 
     assert_eq!(output, "text 1\ntext 2");
 }
@@ -37,7 +39,9 @@ fn get_script_text_file_relative() {
         file: "src/lib/test/test_files/text_file.txt".to_string(),
         absolute_path: Some(false),
     };
-    let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
+    let output = get_script_text(&ScriptValue::File(file_info))
+        .join("\n")
+        .replace("\r", "");
 
     assert_eq!(output, "text 1\ntext 2");
 }
@@ -48,7 +52,9 @@ fn get_script_text_file_absolute() {
         file: "${CARGO_MAKE_WORKING_DIRECTORY}/src/lib/test/test_files/text_file.txt".to_string(),
         absolute_path: Some(true),
     };
-    let output = get_script_text(&ScriptValue::File(file_info)).join("\n");
+    let output = get_script_text(&ScriptValue::File(file_info))
+        .join("\n")
+        .replace("\r", "");
 
     assert_eq!(output, "text 1\ntext 2");
 }
