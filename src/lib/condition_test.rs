@@ -1312,7 +1312,7 @@ fn validate_files_modified_only_input() {
         files_exist: None,
         files_not_exist: None,
         files_modified: Some(FilesFilesModifiedCondition {
-            input: vec!["./Cargo.toml".to_string()],
+            input: vec!["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()],
             output: vec![],
         }),
     };
@@ -1340,7 +1340,7 @@ fn validate_files_modified_only_output() {
         files_not_exist: None,
         files_modified: Some(FilesFilesModifiedCondition {
             input: vec![],
-            output: vec!["./Cargo.toml".to_string()],
+            output: vec!["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()],
         }),
     };
 
@@ -1366,8 +1366,8 @@ fn validate_files_modified_same_timestamp() {
         files_exist: None,
         files_not_exist: None,
         files_modified: Some(FilesFilesModifiedCondition {
-            input: vec!["./Cargo.toml".to_string()],
-            output: vec!["./Cargo.toml".to_string()],
+            input: vec!["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()],
+            output: vec!["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()],
         }),
     };
 
@@ -1439,6 +1439,72 @@ fn validate_files_modified_input_newer() {
             files_modified: Some(FilesFilesModifiedCondition {
                 input: vec![target_glob],
                 output: vec![src_glob],
+            }),
+        };
+
+        let enabled = validate_files_modified(&condition);
+
+        assert!(enabled);
+    }
+}
+
+#[test]
+fn validate_files_modified_output_newer_env() {
+    if should_test_unstable() {
+        let directory =
+            setup_test_dir("condition/files_modified/validate_files_modified_output_newer_env");
+        envmnt::set("DIR", directory);
+
+        let condition = TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: Some(FilesFilesModifiedCondition {
+                input: vec!["${DIR}/src/**/*".to_owned()],
+                output: vec!["${DIR}/target/**/*".to_owned()],
+            }),
+        };
+
+        let enabled = validate_files_modified(&condition);
+
+        assert!(!enabled);
+    }
+}
+
+#[test]
+fn validate_files_modified_input_newer_env() {
+    if should_test_unstable() {
+        let directory =
+            setup_test_dir("condition/files_modified/validate_files_modified_input_newer_env");
+        envmnt::set("DIR", directory);
+
+        let condition = TaskCondition {
+            fail_message: None,
+            profiles: None,
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: Some(FilesFilesModifiedCondition {
+                input: vec!["${DIR}/target/**/*".to_owned()],
+                output: vec!["${DIR}/src/**/*".to_owned()],
             }),
         };
 

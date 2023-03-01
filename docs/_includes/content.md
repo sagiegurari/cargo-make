@@ -1679,7 +1679,7 @@ The following condition types are available:
 * **rust_version** - Optional definition of min, max, and/or specific rust version
 * **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 * **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
-* **files_modified** - Lists input and output globs. If any input file is newer than all output files, the condition is met.
+* **files_modified** - Lists input and output globs. If any input file is newer than all output files, the condition is met. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 
 Few examples:
 
@@ -1695,7 +1695,7 @@ condition = {
     rust_version = { min = "1.20.0", max = "1.30.0" },
     files_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml"],
     files_not_exist = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml"],
-    files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] }
+    files_modified = { input = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] }
 }
 ```
 
@@ -1779,7 +1779,7 @@ In the below example, if the target binaries are newer then the Cargo.toml or an
 
 ```toml
 [tasks.compile-if-modified]
-condition = { files_modified = { input = ["./Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] } }
+condition = { files_modified = { input = ["${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml", "./src/**/*.rs"], output = ["./target/**/myapp*"] } }
 command = "cargo"
 args = ["build"]
 ```
