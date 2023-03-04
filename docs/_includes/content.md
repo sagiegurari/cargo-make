@@ -55,7 +55,9 @@ For example, if we would like to have a script which:
 * Runs build
 * Runs tests
 
-We will create a toml file as follows:
+By default, cargo-make reads tasks from `Makefile.toml` if it exists.
+
+We will create a `Makefile.toml` file as follows:
 
 ```toml
 [tasks.format]
@@ -88,14 +90,14 @@ dependencies = [
 We would execute the flow with the following command:
 
 ```sh
-cargo make --makefile simple-example.toml my-flow
+cargo make my-flow
 ```
 
 The output would look something like this:
 
 ```console
 [cargo-make] INFO - cargo make {{ site.version }}
-[cargo-make] INFO - Build File: simple-example.toml
+[cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
 [cargo-make] INFO - Running Task: format
@@ -151,6 +153,9 @@ test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 We now created a build script that can run on any platform.
+
+The tasks can be stored in any toml file.  Invoke cargo-make with `--makefile other-filename.toml`
+to start processing using `other-filename.toml`.
 
 **cargo-make can be invoked as a cargo plugin via `cargo make` command, _or_ as a standalone executable via `makers` command.**<br>
 <br>
