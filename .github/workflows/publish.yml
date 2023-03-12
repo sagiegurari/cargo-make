@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 env:
   CLICOLOR_FORCE: 1
 jobs:
@@ -19,6 +20,8 @@ jobs:
             binary_target: x86_64-pc-windows-msvc
           - os: macos-latest
             binary_target: x86_64-apple-darwin
+          - os: macos-latest
+            binary_target: aarch64-apple-darwin
     steps:
     - name: Install musl tools
       if: matrix.os == 'ubuntu-latest'
@@ -28,14 +31,7 @@ jobs:
     - name: Install rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: stable
-        profile: minimal
-        override: true
-    - name: Install rust windows msvc target
-      if: matrix.os == 'windows-latest'
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable-x86_64-pc-windows-msvc
+        toolchain: stable-${{ matrix.binary_target }}
         profile: minimal
         override: true
     - name: Build Binary
