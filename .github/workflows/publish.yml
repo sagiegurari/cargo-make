@@ -7,7 +7,7 @@ env:
   CLICOLOR_FORCE: 1
 jobs:
   build:
-    name: Publish for ${{ matrix.os }}
+    name: Publish for ${{ matrix.binary_target }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -19,25 +19,19 @@ jobs:
             binary_target: x86_64-pc-windows-msvc
           - os: macos-latest
             binary_target: x86_64-apple-darwin
+          - os: macos-latest
+            binary_target: aarch64-apple-darwin
     steps:
     - name: Install musl tools
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get install musl-tools
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Install rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        profile: minimal
-        override: true
-    - name: Install rust windows msvc target
-      if: matrix.os == 'windows-latest'
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable-x86_64-pc-windows-msvc
-        profile: minimal
-        override: true
+    - name: Update rust
+      run: |
+        rustup override set stable
+        rustup update stable
+        rustup target add ${{ matrix.binary_target }}
     - name: Build Binary
       uses: actions-rs/cargo@v1
       with:
