@@ -2768,6 +2768,8 @@ args = [ "Triggered by watch" ]
 watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
 ```
 
+See [the documentation](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.WatchOptions.html) for a description of all the options available.
+
 <a name="usage-watch-running-multiple-blocking-watches"></a>
 #### Running Multiple Blocking Watches
 
@@ -4139,3 +4141,4 @@ See [Changelog](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.
 <a name="license"></a>
 ## License
 Developed by Sagie Gur-Ari and licensed under the Apache 2 open source license.
+
