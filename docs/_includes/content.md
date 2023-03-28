@@ -2634,6 +2634,8 @@ args = [ "Triggered by watch" ]
 watch = { postpone = true, no_git_ignore = true, ignore_pattern = "examples/files/*", watch = ["./docs/"] }
 ```
 
+See [the documentation](https://sagiegurari.github.io/cargo-make/api/cli/types/struct.WatchOptions.html) for a description of all the options available.
+
 <a name="usage-watch-running-multiple-blocking-watches"></a>
 #### Running Multiple Blocking Watches
 
