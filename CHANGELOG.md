@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.7
+
+* Documentation: Add documentation link on README for watch attribute #829
+
 ### v0.36.6 (2023-03-01)
 
 * Enhancement: Support environment expansion for files_modified condition #802 (thanks @stormshield-guillaumed)
@@ -977,3 +981,4 @@
 ### v0.1.0 (2017-06-23)
 
 * Initial release.
+
