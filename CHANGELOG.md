@@ -2,7 +2,9 @@
 
 ### v0.36.7
 
-* Documentation: Add documentation link on README for watch attribute #829
+* Fix: Clear did not remove parent task environment variables definitions #816
+* Enhancement: Add aarch64-apple-darwin binary release target #812 (thanks @dbanty)
+* Documentation: Add documentation link on README for watch attribute #829 (thanks @saona-raimundo)
 
 ### v0.36.6 (2023-03-01)
 
