@@ -2,6 +2,7 @@
 
 ### v0.36.7
 
+* Fix: Clear did not remove parent task environment variables definitions #816
 * Documentation: Add documentation link on README for watch attribute #829
 
 ### v0.36.6 (2023-03-01)

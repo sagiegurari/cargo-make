@@ -55,10 +55,12 @@ fn merge_tasks(
 
                 if merge_task_env && value.env.is_some() && task.env.is_some() {
                     let extended_env = task.env.clone().unwrap();
+                    let clear = task.clear.clone().unwrap_or(false);
                     if extended_env.len() == 2
                         && extended_env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
                         && extended_env
                             .contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY")
+                        && !clear
                     {
                         let base_env = value.env.clone().unwrap();
                         merged_task.env = Some(base_env);
