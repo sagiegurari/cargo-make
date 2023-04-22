@@ -425,6 +425,8 @@ dependencies = [
 ]
 ```
 
+*The run_task attribute will tell a task to invoke another task in a new execution plan. This will also result in dependencies being invoked multiple times.*
+
 It is also possible to define platform specific aliases, for example:
 
 ```toml
@@ -4141,4 +4143,3 @@ See [Changelog](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.
 <a name="license"></a>
 ## License
 Developed by Sagie Gur-Ari and licensed under the Apache 2 open source license.
-
