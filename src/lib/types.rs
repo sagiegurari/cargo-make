@@ -1355,7 +1355,7 @@ impl Task {
                                 RunTaskInfo::Details(run_task_details)
                             }
                             RunTaskInfo::Routing(mut routing_info_vector) => {
-                                for mut routing_info in &mut routing_info_vector {
+                                for routing_info in &mut routing_info_vector {
                                     match routing_info.name {
                                         RunTaskName::Single(ref name) => {
                                             routing_info.name = RunTaskName::Single(
