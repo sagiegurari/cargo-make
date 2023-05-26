@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.8
+
+* Enhancement: New precompiled target: x86_64-unknown-linux-gnu #853 (thanks @steverusso)
+
 ### v0.36.7 (2023-04-23)
 
 * Fix: Clear did not remove parent task environment variables definitions #816
