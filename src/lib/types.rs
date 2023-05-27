@@ -888,6 +888,8 @@ pub struct WatchOptions {
     pub ignore_pattern: Option<String>,
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
+    /// Show paths that changed
+    pub why: Option<bool>,
     /// Select which files/folders to watch
     pub watch: Option<Vec<String>>,
 }

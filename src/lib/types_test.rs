@@ -3760,6 +3760,7 @@ fn task_is_actionable_with_watch_options() {
         postpone: None,
         ignore_pattern: None,
         no_git_ignore: None,
+        why: None,
         watch: None,
     }));
 
