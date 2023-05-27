@@ -74,20 +74,27 @@ fn is_silent_for_level(log_level: String) -> bool {
 
     match level {
         logger::LogLevel::ERROR => true,
+        logger::LogLevel::OFF => true,
         _ => false,
     }
 }
 
 fn should_print_commands_by_default() -> bool {
     let log_level = logger::get_log_level();
+    let level = logger::get_level(&log_level);
 
-    if should_print_commands_for_level(log_level) {
-        true
-    } else {
-        // if log level defaults to not printing the script commands
-        // we also check if we are running in a CI env.
-        // Users will not see the commands while CI builds will have the commands printed out.
-        envmnt::is("CARGO_MAKE_CI")
+    match level {
+        logger::LogLevel::OFF => false,
+        _ => {
+            if should_print_commands_for_level(log_level) {
+                true
+            } else {
+                // if log level defaults to not printing the script commands
+                // we also check if we are running in a CI env.
+                // Users will not see the commands while CI builds will have the commands printed out.
+                envmnt::is("CARGO_MAKE_CI")
+            }
+        }
     }
 }
 
@@ -108,9 +115,12 @@ pub(crate) fn run_script_get_output(
     capture_output: bool,
     print_commands: Option<bool>,
 ) -> Result<(i32, String, String), ScriptError> {
+    let silent = is_silent();
     let mut options = ScriptOptions::new();
     options.runner = script_runner.clone();
-    options.output_redirection = if capture_output {
+    options.output_redirection = if silent {
+        IoOptions::Null
+    } else if capture_output {
         IoOptions::Pipe
     } else {
         IoOptions::Inherit
@@ -159,6 +169,7 @@ pub(crate) fn run_command_get_output(
     capture_output: bool,
 ) -> io::Result<Output> {
     let ctrl_c_handling = UnstableFeature::CtrlCHandling.is_env_set();
+    let silent = is_silent();
 
     debug!("Execute Command: {}", &command_string);
     let mut command = Command::new(&command_string);
@@ -172,7 +183,9 @@ pub(crate) fn run_command_get_output(
 
     command.stdin(Stdio::inherit());
 
-    if ctrl_c_handling {
+    if silent {
+        command.stdout(Stdio::null()).stderr(Stdio::null());
+    } else if ctrl_c_handling {
         if capture_output {
             command.stdout(Stdio::piped()).stderr(Stdio::piped());
         }

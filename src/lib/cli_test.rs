@@ -35,6 +35,7 @@ fn run_makefile_not_found() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -71,6 +72,7 @@ fn run_empty_task() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -107,6 +109,7 @@ fn print_empty_task() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -143,6 +146,7 @@ fn list_empty_task() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -179,6 +183,7 @@ fn run_file_and_task() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -218,6 +223,7 @@ fn run_cwd_with_file() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -255,6 +261,7 @@ fn run_file_not_go_to_project_root() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -292,6 +299,7 @@ fn run_cwd_go_to_project_root_current_dir() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -332,6 +340,7 @@ fn run_cwd_go_to_project_root_child_dir() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );
@@ -372,6 +381,7 @@ fn run_cwd_task_not_found() {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         },
         &global_config,
     );

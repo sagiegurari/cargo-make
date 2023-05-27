@@ -497,32 +497,32 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
             TaskWatchOptions::Options(watch_options) => {
                 let watch_version = match watch_options.version {
                     Some(value) => value.to_string(),
-                    _ => "8.3.0".to_string(), // current version
+                    _ => "8.4.0".to_string(), // current version
                 };
                 task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
 
-                match watch_options.postpone {
-                    Some(value) => {
-                        if value {
-                            watch_args.push("--postpone".to_string());
-                        }
+                if let Some(option_value) = watch_options.postpone {
+                    if option_value {
+                        watch_args.push("--postpone".to_string());
                     }
-                    _ => (),
-                };
+                }
 
                 match watch_options.ignore_pattern {
                     Some(value) => watch_args.extend_from_slice(&["-i".to_string(), value]),
                     _ => (),
                 };
 
-                match watch_options.no_git_ignore {
-                    Some(value) => {
-                        if value {
-                            watch_args.push("--no-gitignore".to_string());
-                        }
+                if let Some(option_value) = watch_options.no_git_ignore {
+                    if option_value {
+                        watch_args.push("--no-gitignore".to_string());
                     }
-                    _ => (),
-                };
+                }
+
+                if let Some(option_value) = watch_options.why {
+                    if option_value {
+                        watch_args.push("--why".to_string());
+                    }
+                }
 
                 match watch_options.watch {
                     Some(paths) => {

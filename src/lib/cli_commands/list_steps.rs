@@ -18,8 +18,9 @@ pub(crate) fn run(
     output_format: &str,
     output_file: &Option<String>,
     category: Option<String>,
+    hide_uninteresting: bool,
 ) -> u32 {
-    let (output, count) = create_list(&config, output_format, category);
+    let (output, count) = create_list(&config, output_format, category, hide_uninteresting);
 
     match output_file {
         Some(file) => {
@@ -36,6 +37,7 @@ pub(crate) fn create_list(
     config: &Config,
     output_format: &str,
     category_filter: Option<String>,
+    hide_uninteresting: bool,
 ) -> (String, u32) {
     let mut count = 0;
     let mut buffer = String::new();
@@ -60,7 +62,19 @@ pub(crate) fn create_list(
             None => false,
         };
 
-        if !is_private {
+        let skip_task = if is_private {
+            true
+        } else if hide_uninteresting {
+            key.contains("pre-")
+                || key.contains("post-")
+                || key == "init"
+                || key == "end"
+                || key == "empty"
+        } else {
+            false
+        };
+
+        if !skip_task {
             let category = match task.category {
                 Some(value) => value,
                 None => "No Category".to_string(),

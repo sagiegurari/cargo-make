@@ -19,7 +19,7 @@ fn run_empty() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None);
+    let count = run(&config, "default", &None, None, false);
 
     assert_eq!(count, 0);
 }
@@ -32,10 +32,10 @@ fn run_all_public() {
     let mut tasks = IndexMap::<String, Task>::new();
     let mut task1 = Task::new();
     task1.description = Some("1".to_string());
-    tasks.insert("1".to_string(), task1);
+    tasks.insert("pre-1".to_string(), task1);
     let mut task2 = Task::new();
     task2.description = Some("2".to_string());
-    tasks.insert("2".to_string(), task2);
+    tasks.insert("post-2".to_string(), task2);
 
     let config = Config {
         config: config_section,
@@ -46,9 +46,39 @@ fn run_all_public() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None);
+    let count = run(&config, "default", &None, None, false);
 
     assert_eq!(count, 2);
+}
+
+#[test]
+fn run_all_public_hide_uninteresting() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    tasks.insert("pre-1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    tasks.insert("post-2".to_string(), task2);
+    let mut task3 = Task::new();
+    task3.description = Some("3".to_string());
+    tasks.insert("3".to_string(), task3);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env,
+        env_scripts: vec![],
+        tasks,
+        plugins: None,
+    };
+
+    let count = run(&config, "default", &None, None, true);
+
+    assert_eq!(count, 1);
 }
 
 #[test]
@@ -73,7 +103,7 @@ fn run_all_public_markdown() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown", &None, None);
+    let count = run(&config, "markdown", &None, None, false);
 
     assert_eq!(count, 2);
 }
@@ -100,7 +130,7 @@ fn run_all_public_markdown_sub_section() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown-sub-section", &None, None);
+    let count = run(&config, "markdown-sub-section", &None, None, false);
 
     assert_eq!(count, 2);
 }
@@ -127,7 +157,7 @@ fn run_all_public_markdown_single_page() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown-single-page", &None, None);
+    let count = run(&config, "markdown-single-page", &None, None, false);
 
     assert_eq!(count, 2);
 }
@@ -156,7 +186,7 @@ fn run_all_private() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None);
+    let count = run(&config, "default", &None, None, false);
 
     assert_eq!(count, 0);
 }
@@ -192,7 +222,7 @@ fn run_mixed() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None);
+    let count = run(&config, "default", &None, None, false);
 
     assert_eq!(count, 3);
 }
@@ -225,6 +255,7 @@ fn run_write_to_file() {
         "markdown-single-page",
         &Some(file.to_string()),
         None,
+        false,
     );
 
     assert_eq!(count, 2);
@@ -266,7 +297,13 @@ fn run_category_public() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, Some("TestCategory1".to_owned()));
+    let count = run(
+        &config,
+        "default",
+        &None,
+        Some("TestCategory1".to_owned()),
+        false,
+    );
 
     assert_eq!(count, 2);
 }

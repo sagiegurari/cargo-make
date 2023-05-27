@@ -143,6 +143,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             &cli_args.output_format,
             &cli_args.output_file,
             cli_args.list_category_steps,
+            cli_args.hide_uninteresting,
         );
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental, None);

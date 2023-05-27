@@ -64,6 +64,8 @@ fn get_args(
         "verbose".to_string()
     } else if cli_parsed.arguments.contains("quiet") {
         "error".to_string()
+    } else if cli_parsed.arguments.contains("silent") {
+        "off".to_string()
     } else {
         cli_parsed
             .get_first_value("loglevel")
@@ -117,6 +119,7 @@ fn get_args(
     cli_args.skip_init_end_tasks = cli_parsed.arguments.contains("skip-init-end-tasks");
     cli_args.list_all_steps = cli_parsed.arguments.contains("list-steps");
     cli_args.diff_execution_plan = cli_parsed.arguments.contains("diff-steps");
+    cli_args.hide_uninteresting = cli_parsed.arguments.contains("hide-uninteresting");
 
     cli_args.skip_tasks_pattern = match cli_parsed.get_first_value("skip-tasks-pattern") {
         Some(value) => Some(value.to_string()),
@@ -310,7 +313,7 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             value_type: ArgumentValueType::Single,
             default_value: Some(default_log_level.to_string()),
             help: Some(ArgumentHelp::TextAndParam(
-                "The log level (verbose, info, error)".to_string(),
+                "The log level (verbose, info, error, off)".to_string(),
                 "LOG LEVEL".to_string(),
             )),
         })
@@ -332,6 +335,16 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             default_value: None,
             help: Some(ArgumentHelp::Text(
                 "Sets the log level to error (shorthand for --loglevel error)".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "silent".to_string(),
+            key: vec!["--silent".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Sets the log level to off (shorthand for --loglevel off)".to_string(),
             )),
         })
         .add_argument(Argument {
@@ -394,6 +407,16 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             help: Some(ArgumentHelp::TextAndParam(
                 "The list steps output file name".to_string(),
                 "OUTPUT_FILE".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "hide_uninteresting".to_string(),
+            key: vec!["--hide-uninteresting".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Hide any minor tasks such as pre/post hooks.".to_string(),
             )),
         })
         .add_argument(Argument {

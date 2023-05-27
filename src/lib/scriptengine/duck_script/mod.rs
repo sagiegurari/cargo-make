@@ -10,6 +10,7 @@ mod mod_test;
 mod sdk;
 
 use crate::environment;
+use crate::logger::{get_level, get_log_level, LogLevel};
 use crate::types::{FlowInfo, FlowState};
 use duckscript::runner;
 use duckscript::types::command::Commands;
@@ -33,6 +34,13 @@ pub(crate) fn execute(
         index = index + 1;
         array_command.push_str(format!(" ${{{}}}", index).as_str());
     }
+
+    let log_level = get_log_level();
+    let level = get_level(&log_level);
+    if level == LogLevel::OFF {
+        array_command.push_str("alias echo noop");
+    }
+
     let mut script_text = script.join("\n");
     script_text.insert_str(
         0,

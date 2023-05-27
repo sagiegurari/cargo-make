@@ -127,6 +127,8 @@ pub struct CliArgs {
     pub output_file: Option<String>,
     /// Print time summary at end of the flow
     pub print_time_summary: bool,
+    /// Hide any minor tasks such as pre/post hooks
+    pub hide_uninteresting: bool,
 }
 
 impl CliArgs {
@@ -157,6 +159,7 @@ impl CliArgs {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         }
     }
 }
@@ -888,6 +891,8 @@ pub struct WatchOptions {
     pub ignore_pattern: Option<String>,
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
+    /// Show paths that changed
+    pub why: Option<bool>,
     /// Select which files/folders to watch
     pub watch: Option<Vec<String>>,
 }
