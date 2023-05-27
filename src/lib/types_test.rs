@@ -191,6 +191,7 @@ fn cli_args_new() {
     assert_eq!(cli_args.output_format, "default");
     assert!(cli_args.output_file.is_none());
     assert!(!cli_args.print_time_summary);
+    assert!(!cli_args.hide_uninteresting);
 }
 
 #[test]

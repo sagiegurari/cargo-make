@@ -3490,6 +3490,7 @@ OPTIONS:
     --disable-check-for-updates          Disables the update check during startup
     --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats) (default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete)
     --output-file <OUTPUT_FILE>          The list steps output file name
+    --hide-uninteresting                 Hide any minor tasks such as pre/post hooks.
     --print-steps                        Only prints the steps of the build in the order they will be invoked but without invoking them
     --list-all-steps                     Lists all known steps
     --list-category-steps <CATEGORY>     List steps for a given category

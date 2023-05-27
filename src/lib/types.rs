@@ -127,6 +127,8 @@ pub struct CliArgs {
     pub output_file: Option<String>,
     /// Print time summary at end of the flow
     pub print_time_summary: bool,
+    /// Hide any minor tasks such as pre/post hooks
+    pub hide_uninteresting: bool,
 }
 
 impl CliArgs {
@@ -157,6 +159,7 @@ impl CliArgs {
             output_format: "default".to_string(),
             output_file: None,
             print_time_summary: false,
+            hide_uninteresting: false,
         }
     }
 }

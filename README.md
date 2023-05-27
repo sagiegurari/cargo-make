@@ -3614,15 +3614,17 @@ OPTIONS:
     --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
     --env-file <FILE>                    Set environment variables from provided file
     --env, -e <ENV>                      Set environment variables
-    --loglevel, -l <LOG LEVEL>           The log level (verbose, info, error) [default: info]
+    --loglevel, -l <LOG LEVEL>           The log level (verbose, info, error, off) [default: info]
     --verbose, -v                        Sets the log level to verbose (shorthand for --loglevel verbose)
     --quiet                              Sets the log level to error (shorthand for --loglevel error)
+    --silent                             Sets the log level to off (shorthand for --loglevel off)
     --no-color                           Disables colorful output
     --time-summary                       Print task level time summary at end of flow
     --experimental                       Allows access unsupported experimental predefined tasks.
     --disable-check-for-updates          Disables the update check during startup
     --output-format <OUTPUT FORMAT>      The print/list steps format (some operations do not support all formats) (default, short-description, markdown, markdown-single-page, markdown-sub-section, autocomplete)
     --output-file <OUTPUT_FILE>          The list steps output file name
+    --hide-uninteresting                 Hide any minor tasks such as pre/post hooks.
     --print-steps                        Only prints the steps of the build in the order they will be invoked but without invoking them
     --list-all-steps                     Lists all known steps
     --list-category-steps <CATEGORY>     List steps for a given category
