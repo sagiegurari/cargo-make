@@ -3,6 +3,7 @@
 ### v0.36.8
 
 * Enhancement: New precompiled target: x86_64-unknown-linux-gnu #853 (thanks @steverusso)
+* Enhancement: New log level 'off' and cli flag --slient #846
 
 ### v0.36.7 (2023-04-23)
 

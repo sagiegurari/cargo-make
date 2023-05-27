@@ -64,6 +64,8 @@ fn get_args(
         "verbose".to_string()
     } else if cli_parsed.arguments.contains("quiet") {
         "error".to_string()
+    } else if cli_parsed.arguments.contains("silent") {
+        "off".to_string()
     } else {
         cli_parsed
             .get_first_value("loglevel")
@@ -310,7 +312,7 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             value_type: ArgumentValueType::Single,
             default_value: Some(default_log_level.to_string()),
             help: Some(ArgumentHelp::TextAndParam(
-                "The log level (verbose, info, error)".to_string(),
+                "The log level (verbose, info, error, off)".to_string(),
                 "LOG LEVEL".to_string(),
             )),
         })
@@ -332,6 +334,16 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             default_value: None,
             help: Some(ArgumentHelp::Text(
                 "Sets the log level to error (shorthand for --loglevel error)".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "silent".to_string(),
+            key: vec!["--silent".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::None,
+            default_value: None,
+            help: Some(ArgumentHelp::Text(
+                "Sets the log level to off (shorthand for --loglevel off)".to_string(),
             )),
         })
         .add_argument(Argument {

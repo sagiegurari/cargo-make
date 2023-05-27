@@ -22,11 +22,12 @@ pub(crate) enum LogLevel {
     VERBOSE,
     INFO,
     ERROR,
+    OFF,
 }
 
 /// The logger options used to initialize the logger
 pub(crate) struct LoggerOptions {
-    /// The logger level name (verbose, info, error)
+    /// The logger level name (verbose, info, error, off)
     pub(crate) level: String,
     /// True to printout colorful output
     pub(crate) color: bool,
@@ -39,6 +40,8 @@ pub(crate) fn get_level(level_name: &str) -> LogLevel {
         level = LogLevel::VERBOSE;
     } else if level_name == "error" {
         level = LogLevel::ERROR;
+    } else if level_name == "off" {
+        level = LogLevel::OFF;
     }
 
     level
@@ -46,7 +49,9 @@ pub(crate) fn get_level(level_name: &str) -> LogLevel {
 
 /// Returns the current logger level name
 pub(crate) fn get_log_level() -> String {
-    let level = if log_enabled!(Level::Debug) {
+    let level = if envmnt::is_equal("CARGO_MAKE_LOG_LEVEL", "off") {
+        "off"
+    } else if log_enabled!(Level::Debug) {
         "verbose"
     } else if log_enabled!(Level::Info) {
         "info"
@@ -59,6 +64,7 @@ pub(crate) fn get_log_level() -> String {
 
 fn get_name_for_filter(filter: &LevelFilter) -> String {
     let level = match filter {
+        LevelFilter::Off => return "off".to_string(),
         LevelFilter::Debug => Level::Debug,
         LevelFilter::Warn => Level::Warn,
         LevelFilter::Error => Level::Error,
@@ -115,7 +121,7 @@ pub(crate) fn should_reduce_output(flow_info: &FlowInfo) -> bool {
 ///
 /// # Arguments
 ///
-/// * `level_name` - The log level name ('verbose', 'info', 'error')
+/// * `level_name` - The log level name ('verbose', 'info', 'error', 'off')
 pub(crate) fn init(options: &LoggerOptions) {
     let level_name = &options.level;
     let color = options.color;
@@ -126,6 +132,7 @@ pub(crate) fn init(options: &LoggerOptions) {
         LogLevel::VERBOSE => LevelFilter::Debug,
         LogLevel::INFO => LevelFilter::Info,
         LogLevel::ERROR => LevelFilter::Error,
+        LogLevel::OFF => LevelFilter::Off,
     };
     let level_name_value = get_name_for_filter(&log_level);
 

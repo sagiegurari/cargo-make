@@ -19,6 +19,12 @@ fn get_level_error() {
 }
 
 #[test]
+fn get_level_off() {
+    let level = get_level("off");
+    assert_eq!(level, LogLevel::OFF);
+}
+
+#[test]
 fn get_level_other() {
     let level = get_level("test123");
     assert_eq!(level, LogLevel::INFO);
@@ -70,6 +76,12 @@ fn get_name_for_filter_info() {
 fn get_name_for_filter_error() {
     let level = get_name_for_filter(&LevelFilter::Error);
     assert_eq!(level, "error");
+}
+
+#[test]
+fn get_name_for_filter_off() {
+    let level = get_name_for_filter(&LevelFilter::Off);
+    assert_eq!(level, "off");
 }
 
 #[test]

@@ -3480,9 +3480,10 @@ OPTIONS:
     --skip-tasks <SKIP_TASK_PATTERNS>    Skip all tasks that match the provided regex (example: pre.*|post.*)
     --env-file <FILE>                    Set environment variables from provided file
     --env, -e <ENV>                      Set environment variables
-    --loglevel, -l <LOG LEVEL>           The log level (verbose, info, error) [default: info]
+    --loglevel, -l <LOG LEVEL>           The log level (verbose, info, error, off) [default: info]
     --verbose, -v                        Sets the log level to verbose (shorthand for --loglevel verbose)
     --quiet                              Sets the log level to error (shorthand for --loglevel error)
+    --silent                             Sets the log level to off (shorthand for --loglevel off)
     --no-color                           Disables colorful output
     --time-summary                       Print task level time summary at end of flow
     --experimental                       Allows access unsupported experimental predefined tasks.
