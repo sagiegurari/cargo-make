@@ -1,0 +1,35 @@
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
+
+[plugins.impl.python]
+script = '''
+member_run = eq ${CARGO_MAKE_WORKSPACE_EMULATION} 1
+
+if ${member_run}
+    cm_plugin_run_task
+else
+    set_env CARGO_MAKE_WORKSPACE_EMULATION 1
+    set_env CARGO_MAKE_CRATE_WORKSPACE_MEMBERS ${PYTHON_MEMBERS}
+    args = array_join ${flow.cli.args} " "
+    exec --fail-on-error cargo make ${flow.task.name} %{args}
+end
+'''
+
+[plugins.impl.rust]
+script = '''
+member_run = eq ${CARGO_MAKE_WORKSPACE_EMULATION} 1
+
+if ${member_run}
+    cm_plugin_run_task
+else
+    set_env CARGO_MAKE_WORKSPACE_EMULATION 1
+    set_env CARGO_MAKE_CRATE_WORKSPACE_MEMBERS ${RUST_MEMBERS}
+    args = array_join ${flow.cli.args} " "
+    exec --fail-on-error cargo make ${flow.task.name} %{args}
+end
+'''
+

@@ -1,0 +1,20 @@
+
+extend = "../plugin_workspace_emulation.toml"
+
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+PYTHON_MEMBERS = ["python1"]
+RUST_MEMBERS = ["rust1", "rust2"]
+
+[tasks.cargo]
+plugin = "rust"
+workspace = true
+command = "cargo"
+args = ["${@}"]
+
+[tasks.pip]
+plugin = "python"
+workspace = true
+command = "pip"
+args = ["${@}"]
+
