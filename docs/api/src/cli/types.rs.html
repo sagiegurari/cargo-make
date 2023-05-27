@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-000000003c917dd8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-000000002350f6a9.css"><link rel="stylesheet" disabled href="../../static.files/dark-00000000691478b8.css"><link rel="stylesheet" disabled href="../../static.files/ayu-00000000ae54050d.css"><script src="../../static.files/storage-000000001db72db6.js"></script><script defer src="../../static.files/source-script-00000000478a5402.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-000000000682f2dc.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2377,7 +2377,12 @@
 <a href="#2377" id="2377">2377</a>
 <a href="#2378" id="2378">2378</a>
 <a href="#2379" id="2379">2379</a>
-</pre><pre class="rust"><code><span class="doccomment">//! # types
+<a href="#2380" id="2380">2380</a>
+<a href="#2381" id="2381">2381</a>
+<a href="#2382" id="2382">2382</a>
+<a href="#2383" id="2383">2383</a>
+<a href="#2384" id="2384">2384</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
 //!
@@ -2506,6 +2511,8 @@
     </span><span class="kw">pub </span>output_file: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Print time summary at end of the flow
     </span><span class="kw">pub </span>print_time_summary: bool,
+    <span class="doccomment">/// Hide any minor tasks such as pre/post hooks
+    </span><span class="kw">pub </span>hide_uninteresting: bool,
 }
 
 <span class="kw">impl </span>CliArgs {
@@ -2536,6 +2543,7 @@
             output_format: <span class="string">&quot;default&quot;</span>.to_string(),
             output_file: <span class="prelude-val">None</span>,
             print_time_summary: <span class="bool-val">false</span>,
+            hide_uninteresting: <span class="bool-val">false</span>,
         }
     }
 }
@@ -3267,6 +3275,8 @@
     </span><span class="kw">pub </span>ignore_pattern: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Do not use .gitignore files
     </span><span class="kw">pub </span>no_git_ignore: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="doccomment">/// Show paths that changed
+    </span><span class="kw">pub </span>why: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// Select which files/folders to watch
     </span><span class="kw">pub </span>watch: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
 }
@@ -3734,7 +3744,7 @@
                                 RunTaskInfo::Details(run_task_details)
                             }
                             RunTaskInfo::Routing(<span class="kw-2">mut </span>routing_info_vector) =&gt; {
-                                <span class="kw">for </span><span class="kw-2">mut </span>routing_info <span class="kw">in </span><span class="kw-2">&amp;mut </span>routing_info_vector {
+                                <span class="kw">for </span>routing_info <span class="kw">in </span><span class="kw-2">&amp;mut </span>routing_info_vector {
                                     <span class="kw">match </span>routing_info.name {
                                         RunTaskName::Single(<span class="kw-2">ref </span>name) =&gt; {
                                             routing_info.name = RunTaskName::Single(
@@ -4756,5 +4766,4 @@
     <span class="doccomment">/// The command args
     </span><span class="kw">pub </span>args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
 }
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0-nightly (065852def 2023-02-13)" data-search-js="search-00000000a9ae988e.js" data-settings-js="settings-00000000951b6b67.js" data-settings-css="settings-000000009bfc1ad1.css" ></div></body></html>
+</code></pre></div></section></main></body></html>
