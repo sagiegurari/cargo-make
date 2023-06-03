@@ -410,7 +410,7 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             )),
         })
         .add_argument(Argument {
-            name: "hide_uninteresting".to_string(),
+            name: "hide-uninteresting".to_string(),
             key: vec!["--hide-uninteresting".to_string()],
             argument_occurrence: ArgumentOccurrence::Single,
             value_type: ArgumentValueType::None,
