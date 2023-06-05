@@ -649,6 +649,11 @@
 <a href="#649" id="649">649</a>
 <a href="#650" id="650">650</a>
 <a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # runner
 //!
 //! Runs the requested tasks.&lt;br&gt;
@@ -1141,7 +1146,7 @@
     }
     make_command = make_command.trim().to_string();
 
-    <span class="kw">let </span><span class="kw-2">mut </span>watch_args = <span class="macro">vec!</span>[<span class="string">&quot;watch&quot;</span>.to_string(), <span class="string">&quot;-q&quot;</span>.to_string()];
+    <span class="kw">let </span><span class="kw-2">mut </span>watch_args = <span class="macro">vec!</span>[<span class="string">&quot;watch&quot;</span>.to_string()];
 
     <span class="kw">match </span>options {
         <span class="prelude-val">Some</span>(task_watch_options) =&gt; <span class="kw">match </span>task_watch_options {
@@ -1151,6 +1156,17 @@
                     <span class="kw">_ </span>=&gt; <span class="string">&quot;8.4.0&quot;</span>.to_string(), <span class="comment">// current version
                 </span>};
                 task_config.install_crate_args = <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.to_string(), watch_version]);
+
+                <span class="kw">match </span>watch_options.why {
+                    <span class="prelude-val">Some</span>(option_value) =&gt; {
+                        <span class="kw">if </span>option_value {
+                            watch_args.push(<span class="string">&quot;--why&quot;</span>.to_string());
+                        } <span class="kw">else </span>{
+                            watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string());
+                        }
+                    }
+                    <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
+                }
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(option_value) = watch_options.postpone {
                     <span class="kw">if </span>option_value {
@@ -1169,12 +1185,6 @@
                     }
                 }
 
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(option_value) = watch_options.why {
-                    <span class="kw">if </span>option_value {
-                        watch_args.push(<span class="string">&quot;--why&quot;</span>.to_string());
-                    }
-                }
-
                 <span class="kw">match </span>watch_options.watch {
                     <span class="prelude-val">Some</span>(paths) =&gt; {
                         <span class="kw">for </span>watch_path <span class="kw">in </span>paths {
@@ -1184,9 +1194,9 @@
                     <span class="kw">_ </span>=&gt; (),
                 };
             }
-            <span class="kw">_ </span>=&gt; (),
+            <span class="kw">_ </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
         },
-        <span class="kw">_ </span>=&gt; (),
+        <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
     }
 
     watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">&quot;-x&quot;</span>.to_string(), make_command.to_string()]);

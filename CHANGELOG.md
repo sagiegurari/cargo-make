@@ -1,9 +1,9 @@
 ## CHANGELOG
 
-### v0.36.9
+### v0.36.9 (2023-06-05)
 
 * Fix: '--hide-uninteresting'  cli flag #859 (thanks @xxchan)
-* Fix: cargo-watch option 'why' should remove '--q' #849
+* Fix: cargo-watch option 'why' should remove '-q' #849
 
 ### v0.36.8 (2023-05-27)
 
