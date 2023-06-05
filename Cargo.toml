@@ -62,7 +62,7 @@ indexmap = { version = "^1", features = ["serde-1"] }
 ignore = "^0.4"
 lenient_semver = "^0.4.2"
 log = "^0.4"
-once_cell = "^1.17.2"
+once_cell = "^1.18.0"
 petgraph = "^0.6.3"
 regex = "^1.8"
 run_script = "^0.10"
