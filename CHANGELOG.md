@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.9
+
+* Fix: '--hide-uninteresting'  cli flag #859 (thanks @xxchan)
+
 ### v0.36.8 (2023-05-27)
 
 * Enhancement: New precompiled target: x86_64-unknown-linux-gnu #853 (thanks @steverusso)
