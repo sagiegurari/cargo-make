@@ -490,7 +490,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     }
     make_command = make_command.trim().to_string();
 
-    let mut watch_args = vec!["watch".to_string(), "-q".to_string()];
+    let mut watch_args = vec!["watch".to_string()];
 
     match options {
         Some(task_watch_options) => match task_watch_options {
@@ -500,6 +500,17 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
                     _ => "8.4.0".to_string(), // current version
                 };
                 task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
+
+                match watch_options.why {
+                    Some(option_value) => {
+                        if option_value {
+                            watch_args.push("--why".to_string());
+                        } else {
+                            watch_args.push("-q".to_string());
+                        }
+                    }
+                    None => watch_args.push("-q".to_string()),
+                }
 
                 if let Some(option_value) = watch_options.postpone {
                     if option_value {
@@ -518,12 +529,6 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
                     }
                 }
 
-                if let Some(option_value) = watch_options.why {
-                    if option_value {
-                        watch_args.push("--why".to_string());
-                    }
-                }
-
                 match watch_options.watch {
                     Some(paths) => {
                         for watch_path in paths {
@@ -533,9 +538,9 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
                     _ => (),
                 };
             }
-            _ => (),
+            _ => watch_args.push("-q".to_string()),
         },
-        _ => (),
+        None => watch_args.push("-q".to_string()),
     }
 
     watch_args.extend_from_slice(&["-x".to_string(), make_command.to_string()]);
