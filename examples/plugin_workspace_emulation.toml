@@ -32,4 +32,3 @@ else
     exec --fail-on-error cargo make ${flow.task.name} %{args}
 end
 '''
-

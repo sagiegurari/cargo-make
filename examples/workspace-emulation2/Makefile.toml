@@ -17,4 +17,3 @@ plugin = "python"
 workspace = true
 command = "pip"
 args = ["${@}"]
-
