@@ -78,13 +78,20 @@ fn run_all_public() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, false, expect![[r#"
+    check(
+        &config,
+        "default",
+        &None,
+        None,
+        false,
+        expect![[r#"
         No Category
         ----------
         post-2 - 2
         pre-1 - 1
 
-    "#]]);
+    "#]],
+    );
 }
 
 #[test]
@@ -112,12 +119,66 @@ fn run_all_public_hide_uninteresting() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, true, expect![[r#"
+    check(
+        &config,
+        "default",
+        &None,
+        None,
+        true,
+        expect![[r#"
         No Category
         ----------
         3 - 3
 
-    "#]]);
+    "#]],
+    );
+}
+
+#[test]
+fn run_aliases() {
+    let config_section = ConfigSection::new();
+    let env = IndexMap::<String, EnvValue>::new();
+
+    let mut tasks = IndexMap::<String, Task>::new();
+    let mut task1 = Task::new();
+    task1.description = Some("1".to_string());
+    tasks.insert("1".to_string(), task1);
+    let mut task2 = Task::new();
+    task2.description = Some("2".to_string());
+    tasks.insert("2".to_string(), task2);
+    let mut task3 = Task::new();
+    // 4->3->1
+    task3.description = Some("3".to_string());
+    task3.alias = Some("1".to_string());
+    tasks.insert("3".to_string(), task3);
+    let mut task4 = Task::new();
+    task4.description = Some("4".to_string());
+    task4.alias = Some("3".to_string());
+    tasks.insert("4".to_string(), task4);
+
+    let config = Config {
+        config: config_section,
+        env_files: vec![],
+        env,
+        env_scripts: vec![],
+        tasks,
+        plugins: None,
+    };
+
+    check(
+        &config,
+        "default",
+        &None,
+        None,
+        false,
+        expect![[r#"
+            No Category
+            ----------
+            1 - 1 [aliases: 3, 4]
+            2 - 2
+
+        "#]],
+    );
 }
 
 #[test]
@@ -142,13 +203,20 @@ fn run_all_public_markdown() {
         plugins: None,
     };
 
-    check(&config, "markdown", &None, None, false, expect![[r#"
+    check(
+        &config,
+        "markdown",
+        &None,
+        None,
+        false,
+        expect![[r#"
         #### No Category
 
         * **1** - 1
         * **2** - 2
 
-    "#]]);
+    "#]],
+    );
 }
 
 #[test]
@@ -287,14 +355,21 @@ fn run_mixed() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, false, expect![[r#"
+    check(
+        &config,
+        "default",
+        &None,
+        None,
+        false,
+        expect![[r#"
         No Category
         ----------
         2 - 2
         3 - 3 (deprecated)
         4 - 4 (deprecated - test)
 
-    "#]]);
+    "#]],
+    );
 }
 
 #[test]
