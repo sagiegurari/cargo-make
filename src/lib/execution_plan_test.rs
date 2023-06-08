@@ -8,7 +8,7 @@ use indexmap::IndexMap;
 use std::env;
 
 #[test]
-fn get_task_name_not_found() {
+fn get_actual_task_name_not_found() {
     let config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -18,13 +18,13 @@ fn get_task_name_not_found() {
         plugins: None,
     };
 
-    let name = get_task_name(&config, "test");
+    let name = get_actual_task_name(&config, "test");
 
     assert!(name.is_none());
 }
 
 #[test]
-fn get_task_name_no_alias() {
+fn get_actual_task_name_no_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -36,13 +36,13 @@ fn get_task_name_no_alias() {
 
     config.tasks.insert("test".to_string(), Task::new());
 
-    let name = get_task_name(&config, "test");
+    let name = get_actual_task_name(&config, "test");
 
     assert_eq!(name.unwrap(), "test");
 }
 
 #[test]
-fn get_task_name_alias() {
+fn get_actual_task_name_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -58,14 +58,14 @@ fn get_task_name_alias() {
 
     config.tasks.insert("test2".to_string(), Task::new());
 
-    let name = get_task_name(&config, "test");
+    let name = get_actual_task_name(&config, "test");
 
     assert_eq!(name.unwrap(), "test2");
 }
 
 #[test]
 #[should_panic]
-fn get_task_name_alias_self_referential() {
+fn get_actual_task_name_alias_self_referential() {
     let mut config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -79,12 +79,12 @@ fn get_task_name_alias_self_referential() {
     task.alias = Some("rec".to_string());
     config.tasks.insert("rec".to_string(), task);
 
-    get_task_name(&config, "rec");
+    get_actual_task_name(&config, "rec");
 }
 
 #[test]
 #[should_panic]
-fn get_task_name_alias_circular() {
+fn get_actual_task_name_alias_circular() {
     let mut config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -103,11 +103,11 @@ fn get_task_name_alias_circular() {
     config.tasks.insert("rec-mut-a".to_string(), task_a);
     config.tasks.insert("rec-mut-b".to_string(), task_b);
 
-    get_task_name(&config, "rec-mut-a");
+    get_actual_task_name(&config, "rec-mut-a");
 }
 
 #[test]
-fn get_task_name_platform_alias() {
+fn get_actual_task_name_platform_alias() {
     let mut config = Config {
         config: ConfigSection::new(),
         env_files: vec![],
@@ -130,7 +130,7 @@ fn get_task_name_platform_alias() {
 
     config.tasks.insert("test2".to_string(), Task::new());
 
-    let name = get_task_name(&config, "test");
+    let name = get_actual_task_name(&config, "test");
 
     assert_eq!(name.unwrap(), "test2");
 }
