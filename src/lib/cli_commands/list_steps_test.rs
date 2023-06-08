@@ -78,7 +78,13 @@ fn run_all_public() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, false, expect![[""]]);
+    check(&config, "default", &None, None, false, expect![[r#"
+        No Category
+        ----------
+        post-2 - 2
+        pre-1 - 1
+
+    "#]]);
 }
 
 #[test]
@@ -106,7 +112,12 @@ fn run_all_public_hide_uninteresting() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, true, expect![[""]]);
+    check(&config, "default", &None, None, true, expect![[r#"
+        No Category
+        ----------
+        3 - 3
+
+    "#]]);
 }
 
 #[test]
@@ -131,7 +142,13 @@ fn run_all_public_markdown() {
         plugins: None,
     };
 
-    check(&config, "markdown", &None, None, false, expect![[""]]);
+    check(&config, "markdown", &None, None, false, expect![[r#"
+        #### No Category
+
+        * **1** - 1
+        * **2** - 2
+
+    "#]]);
 }
 
 #[test]
@@ -162,7 +179,13 @@ fn run_all_public_markdown_sub_section() {
         &None,
         None,
         false,
-        expect![[""]],
+        expect![[r#"
+            #### No Category
+
+            * **1** - 1
+            * **2** - 2
+
+        "#]],
     );
 }
 
@@ -194,7 +217,15 @@ fn run_all_public_markdown_single_page() {
         &None,
         None,
         false,
-        expect![[""]],
+        expect![[r#"
+            # Task List
+
+            ## No Category
+
+            * **1** - 1
+            * **2** - 2
+
+        "#]],
     );
 }
 
@@ -256,7 +287,14 @@ fn run_mixed() {
         plugins: None,
     };
 
-    check(&config, "default", &None, None, false, expect![[""]]);
+    check(&config, "default", &None, None, false, expect![[r#"
+        No Category
+        ----------
+        2 - 2
+        3 - 3 (deprecated)
+        4 - 4 (deprecated - test)
+
+    "#]]);
 }
 
 #[test]
@@ -288,7 +326,15 @@ fn run_write_to_file() {
         &Some(file.to_string()),
         None,
         false,
-        expect![[""]],
+        expect![[r#"
+            # Task List
+
+            ## No Category
+
+            * **1** - 1
+            * **2** - 2
+
+        "#]],
     );
 }
 
@@ -326,6 +372,12 @@ fn run_category_public() {
         &None,
         Some("TestCategory1".to_owned()),
         false,
-        expect![[""]],
+        expect![[r#"
+            TestCategory1
+            ----------
+            1 - 1
+            2 - 2
+
+        "#]],
     );
 }
