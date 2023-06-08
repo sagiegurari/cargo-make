@@ -2,8 +2,42 @@ use super::*;
 
 use crate::io;
 use crate::types::{ConfigSection, EnvValue, Task};
+use expect_test::{expect, Expect};
 use indexmap::IndexMap;
 use std::path::PathBuf;
+
+fn check(
+    config: &Config,
+    output_format: &str,
+    output_file: &Option<String>,
+    category: Option<String>,
+    hide_uninteresting: bool,
+    expect: Expect,
+) {
+    match output_file {
+        Some(file) => {
+            run(
+                &config,
+                output_format,
+                output_file,
+                category,
+                hide_uninteresting,
+            );
+
+            let mut path = PathBuf::new();
+            path.push(&file);
+
+            let actual = io::read_text_file(&path);
+            io::delete_file(&file);
+
+            expect.assert_eq(&actual);
+        }
+        None => {
+            let actual = create_list(&config, output_format, category, hide_uninteresting);
+            expect.assert_eq(&actual);
+        }
+    }
+}
 
 #[test]
 fn run_empty() {
@@ -19,9 +53,7 @@ fn run_empty() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None, false);
-
-    assert_eq!(count, 0);
+    check(&config, "default", &None, None, false, expect![[""]]);
 }
 
 #[test]
@@ -46,9 +78,7 @@ fn run_all_public() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None, false);
-
-    assert_eq!(count, 2);
+    check(&config, "default", &None, None, false, expect![[""]]);
 }
 
 #[test]
@@ -76,9 +106,7 @@ fn run_all_public_hide_uninteresting() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None, true);
-
-    assert_eq!(count, 1);
+    check(&config, "default", &None, None, true, expect![[""]]);
 }
 
 #[test]
@@ -103,9 +131,7 @@ fn run_all_public_markdown() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown", &None, None, false);
-
-    assert_eq!(count, 2);
+    check(&config, "markdown", &None, None, false, expect![[""]]);
 }
 
 #[test]
@@ -130,9 +156,14 @@ fn run_all_public_markdown_sub_section() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown-sub-section", &None, None, false);
-
-    assert_eq!(count, 2);
+    check(
+        &config,
+        "markdown-sub-section",
+        &None,
+        None,
+        false,
+        expect![[""]],
+    );
 }
 
 #[test]
@@ -157,9 +188,14 @@ fn run_all_public_markdown_single_page() {
         plugins: None,
     };
 
-    let count = run(&config, "markdown-single-page", &None, None, false);
-
-    assert_eq!(count, 2);
+    check(
+        &config,
+        "markdown-single-page",
+        &None,
+        None,
+        false,
+        expect![[""]],
+    );
 }
 
 #[test]
@@ -186,9 +222,7 @@ fn run_all_private() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None, false);
-
-    assert_eq!(count, 0);
+    check(&config, "default", &None, None, false, expect![[""]]);
 }
 
 #[test]
@@ -222,9 +256,7 @@ fn run_mixed() {
         plugins: None,
     };
 
-    let count = run(&config, "default", &None, None, false);
-
-    assert_eq!(count, 3);
+    check(&config, "default", &None, None, false, expect![[""]]);
 }
 
 #[test]
@@ -250,23 +282,14 @@ fn run_write_to_file() {
     };
 
     let file = "./target/_temp/tasklist.md";
-    let count = run(
+    check(
         &config,
         "markdown-single-page",
         &Some(file.to_string()),
         None,
         false,
+        expect![[""]],
     );
-
-    assert_eq!(count, 2);
-
-    let mut path = PathBuf::new();
-    path.push(&file);
-
-    let text = io::read_text_file(&path);
-    io::delete_file(&file);
-
-    assert!(text.contains("# Task List"));
 }
 
 #[test]
@@ -297,13 +320,12 @@ fn run_category_public() {
         plugins: None,
     };
 
-    let count = run(
+    check(
         &config,
         "default",
         &None,
         Some("TestCategory1".to_owned()),
         false,
+        expect![[""]],
     );
-
-    assert_eq!(count, 2);
 }

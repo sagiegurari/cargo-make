@@ -20,8 +20,8 @@ pub(crate) fn run(
     output_file: &Option<String>,
     category: Option<String>,
     hide_uninteresting: bool,
-) -> u32 {
-    let (output, count) = create_list(&config, output_format, category, hide_uninteresting);
+) {
+    let output = create_list(&config, output_format, category, hide_uninteresting);
 
     match output_file {
         Some(file) => {
@@ -30,8 +30,6 @@ pub(crate) fn run(
         }
         None => print!("{}", output),
     }
-
-    count
 }
 
 /// Panics if task does not exist.
@@ -40,9 +38,7 @@ pub(crate) fn create_list(
     output_format: &str,
     category_filter: Option<String>,
     hide_uninteresting: bool,
-) -> (String, u32) {
-    let mut count = 0;
-
+) -> String {
     // category -> actual_task -> description
     let mut categories: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
     // actual_task -> aliases
@@ -87,8 +83,6 @@ pub(crate) fn create_list(
             {
                 continue;
             }
-
-            count = count + 1;
 
             if &actual_task_name != key {
                 aliases
@@ -193,5 +187,5 @@ pub(crate) fn create_list(
         }
     }
 
-    (buffer, count)
+    buffer
 }
