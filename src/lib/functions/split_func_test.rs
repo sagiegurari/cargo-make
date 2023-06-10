@@ -13,7 +13,12 @@ fn split_invoke_empty() {
 #[should_panic]
 fn split_invoke_invalid_too_many_args() {
     test::on_test_startup();
-    invoke(&vec!["TEST".to_string(), "1".to_string(), "2".to_string()]);
+    invoke(&vec![
+        "TEST".to_string(),
+        "1".to_string(),
+        "2".to_string(),
+        "3".to_string(),
+    ]);
 }
 
 #[test]
@@ -43,6 +48,39 @@ fn split_invoke_exists_splitted_space() {
     envmnt::set("TEST_SPLIT_VALUE_SPACE", "1 2 3 4");
 
     let output = invoke(&vec!["TEST_SPLIT_VALUE_SPACE".to_string(), " ".to_string()]);
+
+    assert_eq!(output, vec!["1", "2", "3", "4"]);
+}
+
+#[test]
+fn split_invoke_exists_splitted_with_empty_value() {
+    envmnt::set("TEST_SPLIT_VALUE_WITH_EMPTY_VALUE", "1;2;3;;4");
+
+    let mut output = invoke(&vec![
+        "TEST_SPLIT_VALUE_WITH_EMPTY_VALUE".to_string(),
+        ";".to_string(),
+    ]);
+
+    assert_eq!(output, vec!["1", "2", "3", "", "4"]);
+
+    output = invoke(&vec![
+        "TEST_SPLIT_VALUE_WITH_EMPTY_VALUE".to_string(),
+        ";".to_string(),
+        "default".to_string(),
+    ]);
+
+    assert_eq!(output, vec!["1", "2", "3", "", "4"]);
+}
+
+#[test]
+fn split_invoke_exists_splitted_with_empty_value_removed() {
+    envmnt::set("TEST_SPLIT_VALUE_WITH_EMPTY_VALUE_REMOVED", "1;2;3;;4");
+
+    let output = invoke(&vec![
+        "TEST_SPLIT_VALUE_WITH_EMPTY_VALUE_REMOVED".to_string(),
+        ";".to_string(),
+        "remove-empty".to_string(),
+    ]);
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }

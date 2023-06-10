@@ -24,7 +24,10 @@ use std::env;
 use std::path::Path;
 use std::vec::Vec;
 
-/// Resolve aliases to different tasks, checking for cycles
+/// Resolve aliases recursively until a task without alias is found.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
 fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> Option<String> {
     seen.push(name.to_string());
 
@@ -39,20 +42,27 @@ fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) 
                     panic!("Detected cycle while resolving alias {}: {}", &name, chain);
                 }
                 Some(ref alias) => get_task_name_recursive(config, alias, seen),
-                _ => Some(name.to_string()),
+                None => Some(name.to_string()),
             }
         }
         None => None,
     }
 }
 
-/// Returns the actual task name to invoke as tasks may have aliases
-fn get_task_name(config: &Config, name: &str) -> Option<String> {
+/// Returns the actual task name to invoke as tasks may have aliases.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
+pub(crate) fn get_actual_task_name(config: &Config, name: &str) -> Option<String> {
     let mut seen = Vec::new();
 
     get_task_name_recursive(config, name, &mut seen)
 }
 
+/// Resolves alias and normalizes task.
+///
+/// # Panics
+/// if task is not found or there is a cycle in the alias chain.
 pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
     match get_optional_normalized_task(config, name, support_alias) {
         Some(task) => task,
@@ -63,9 +73,13 @@ pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bo
     }
 }
 
+/// Resolves alias and normalizes task.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
 fn get_optional_normalized_task(config: &Config, name: &str, support_alias: bool) -> Option<Task> {
     let actual_task_name_option = if support_alias {
-        get_task_name(config, name)
+        get_actual_task_name(config, name)
     } else {
         Some(name.to_string())
     };

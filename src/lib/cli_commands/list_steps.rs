@@ -11,7 +11,7 @@ mod list_steps_test;
 use crate::execution_plan;
 use crate::io;
 use crate::types::{Config, DeprecationInfo};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) fn run(
     config: &Config,
@@ -19,8 +19,8 @@ pub(crate) fn run(
     output_file: &Option<String>,
     category: Option<String>,
     hide_uninteresting: bool,
-) -> u32 {
-    let (output, count) = create_list(&config, output_format, category, hide_uninteresting);
+) {
+    let output = create_list(&config, output_format, category, hide_uninteresting);
 
     match output_file {
         Some(file) => {
@@ -29,33 +29,29 @@ pub(crate) fn run(
         }
         None => print!("{}", output),
     }
-
-    count
 }
 
+/// Panics if task does not exist.
 pub(crate) fn create_list(
     config: &Config,
     output_format: &str,
     category_filter: Option<String>,
     hide_uninteresting: bool,
-) -> (String, u32) {
-    let mut count = 0;
-    let mut buffer = String::new();
+) -> String {
+    // category -> actual_task -> description
+    let mut categories: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
+    // actual_task -> aliases
+    let mut aliases: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
 
-    let single_page_markdown = output_format == "markdown-single-page";
-    let markdown = single_page_markdown
-        || output_format == "markdown"
-        || output_format == "markdown-sub-section";
-    let just_task_name = output_format == "autocomplete";
-
-    let mut categories = BTreeMap::new();
-
-    if single_page_markdown {
-        buffer.push_str(&format!("# Task List\n\n"));
-    }
-
+    // iterate over all tasks to build categories and aliases
     for key in config.tasks.keys() {
-        let task = execution_plan::get_normalized_task(&config, &key, true);
+        let actual_task_name =
+            execution_plan::get_actual_task_name(&config, &key).unwrap_or_else(|| {
+                error!("Task {} not found", &key);
+                panic!("Task {} not found", &key);
+            });
+
+        let task = execution_plan::get_normalized_task(&config, &actual_task_name, true);
 
         let is_private = match task.private {
             Some(private) => private,
@@ -87,7 +83,13 @@ pub(crate) fn create_list(
                 continue;
             }
 
-            count = count + 1;
+            if &actual_task_name != key {
+                aliases
+                    .entry(actual_task_name)
+                    .or_default()
+                    .insert(key.clone());
+                continue;
+            }
 
             let description = match task.description {
                 Some(value) => value,
@@ -117,15 +119,23 @@ pub(crate) fn create_list(
             let mut text = String::from(description);
             text.push_str(&deprecated_message);
 
-            let mut tasks_map = BTreeMap::new();
-            match categories.get_mut(&category) {
-                Some(value) => tasks_map.append(value),
-                _ => (),
-            };
-
-            tasks_map.insert(key.clone(), text.clone());
-            categories.insert(category, tasks_map);
+            categories
+                .entry(category)
+                .or_default()
+                .insert(key.clone(), text);
         }
+    }
+
+    // build the task list output string
+    let single_page_markdown = output_format == "markdown-single-page";
+    let markdown = single_page_markdown
+        || output_format == "markdown"
+        || output_format == "markdown-sub-section";
+    let just_task_name = output_format == "autocomplete";
+
+    let mut buffer = String::new();
+    if single_page_markdown {
+        buffer.push_str(&format!("# Task List\n\n"));
     }
 
     let post_key = if markdown { "**" } else { "" };
@@ -152,10 +162,22 @@ pub(crate) fn create_list(
                 buffer.push_str(&format!("* **"));
             }
 
-            if just_task_name {
-                buffer.push_str(&format!("{} ", &key));
+            let aliases = if let Some(aliases) = aliases.remove(key) {
+                format!(
+                    " [aliases: {}]",
+                    aliases.into_iter().collect::<Vec<String>>().join(", ")
+                )
             } else {
-                buffer.push_str(&format!("{}{} - {}\n", &key, &post_key, &description));
+                "".to_string()
+            };
+
+            if just_task_name {
+                buffer.push_str(&format!("{}{}", &key, aliases));
+            } else {
+                buffer.push_str(&format!(
+                    "{}{} - {}{}\n",
+                    &key, &post_key, &description, aliases
+                ));
             }
         }
 
@@ -164,5 +186,5 @@ pub(crate) fn create_list(
         }
     }
 
-    (buffer, count)
+    buffer
 }

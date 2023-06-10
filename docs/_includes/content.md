@@ -2722,6 +2722,9 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
+The split function also supports optional third *mode* attribute.<br>
+If mode: *remove-empty* the output will not include empty values.
+
 <a name="usage-functions-getat"></a>
 #### GetAt
 

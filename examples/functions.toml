@@ -4,6 +4,7 @@ skip_core_tasks = true
 
 [env]
 MULTIPLE_VALUES = "1|2|3|4"
+MULTIPLE_VALUES_WITH_EMPTY_CELLS = "1|2|||3|4"
 TRIM_VALUE = "   123    "
 CARGO_MAKE_CLIPPY_ARGS = ""
 
@@ -13,6 +14,14 @@ CARGO_MAKE_CLIPPY_ARGS = "--all-features -- -D warnings"
 [tasks.split]
 command = "echo"
 args = ["@@split(MULTIPLE_VALUES,|)"]
+
+[tasks.split-remove-empty]
+command = "echo"
+args = ["@@split(MULTIPLE_VALUES_WITH_EMPTY_CELLS,|,remove-empty)"]
+
+[tasks.split-with-empty]
+command = "echo"
+args = ["@@split(MULTIPLE_VALUES_WITH_EMPTY_CELLS,|,default)"]
 
 [tasks.no-split]
 command = "echo"
