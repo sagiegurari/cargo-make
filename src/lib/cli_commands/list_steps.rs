@@ -66,6 +66,7 @@ pub(crate) fn create_list(
                 || key == "init"
                 || key == "end"
                 || key == "empty"
+                || key == "default"
         } else {
             false
         };
