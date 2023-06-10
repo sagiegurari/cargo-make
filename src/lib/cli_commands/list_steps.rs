@@ -11,8 +11,7 @@ mod list_steps_test;
 use crate::execution_plan;
 use crate::io;
 use crate::types::{Config, DeprecationInfo};
-use std::collections::BTreeMap;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) fn run(
     config: &Config,

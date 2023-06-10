@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.10
+
+* Enhancement: list-steps command should group aliases with original commands #862 (thanks @xxchan)
+
 ### v0.36.9 (2023-06-05)
 
 * Fix: '--hide-uninteresting'  cli flag #859 (thanks @xxchan)
