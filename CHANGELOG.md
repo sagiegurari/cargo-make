@@ -2,6 +2,7 @@
 
 ### v0.36.10
 
+* Enhancement: split function now allows to remove empty values via new third part 'remove-empty' #863
 * Enhancement: list-steps command should group aliases with original commands #862 (thanks @xxchan)
 
 ### v0.36.9 (2023-06-05)
