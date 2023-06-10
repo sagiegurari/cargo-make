@@ -485,6 +485,20 @@
 <a href="#485" id="485">485</a>
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # execution_plan
 //!
 //! Creates execution plan for a given task and makefile.
@@ -511,7 +525,10 @@
 <span class="kw">use </span>std::path::Path;
 <span class="kw">use </span>std::vec::Vec;
 
-<span class="doccomment">/// Resolve aliases to different tasks, checking for cycles
+<span class="doccomment">/// Resolve aliases recursively until a task without alias is found.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
 </span><span class="kw">fn </span>get_task_name_recursive(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, seen: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
     seen.push(name.to_string());
 
@@ -526,21 +543,28 @@
                     <span class="macro">panic!</span>(<span class="string">&quot;Detected cycle while resolving alias {}: {}&quot;</span>, <span class="kw-2">&amp;</span>name, chain);
                 }
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>alias) =&gt; get_task_name_recursive(config, alias, seen),
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Some</span>(name.to_string()),
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(name.to_string()),
             }
         }
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     }
 }
 
-<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases
-</span><span class="kw">fn </span>get_task_name(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+<span class="doccomment">/// Returns the actual task name to invoke as tasks may have aliases.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_actual_task_name(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>seen = Vec::new();
 
     get_task_name_recursive(config, name, <span class="kw-2">&amp;mut </span>seen)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; Task {
+<span class="doccomment">/// Resolves alias and normalizes task.
+///
+/// # Panics
+/// if task is not found or there is a cycle in the alias chain.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; Task {
     <span class="kw">match </span>get_optional_normalized_task(config, name, support_alias) {
         <span class="prelude-val">Some</span>(task) =&gt; task,
         <span class="prelude-val">None </span>=&gt; {
@@ -550,9 +574,13 @@
     }
 }
 
-<span class="kw">fn </span>get_optional_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; <span class="prelude-ty">Option</span>&lt;Task&gt; {
+<span class="doccomment">/// Resolves alias and normalizes task.
+///
+/// # Panics
+/// if there is a cycle in the alias chain.
+</span><span class="kw">fn </span>get_optional_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; <span class="prelude-ty">Option</span>&lt;Task&gt; {
     <span class="kw">let </span>actual_task_name_option = <span class="kw">if </span>support_alias {
-        get_task_name(config, name)
+        get_actual_task_name(config, name)
     } <span class="kw">else </span>{
         <span class="prelude-val">Some</span>(name.to_string())
     };

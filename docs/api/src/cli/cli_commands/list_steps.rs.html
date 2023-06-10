@@ -166,6 +166,28 @@
 <a href="#166" id="166">166</a>
 <a href="#167" id="167">167</a>
 <a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # list_steps
 //!
 //! Lists all known tasks in multiple formats.
@@ -179,7 +201,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::execution_plan;
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="kw">use </span><span class="kw">crate</span>::types::{Config, DeprecationInfo};
-<span class="kw">use </span>std::collections::BTreeMap;
+<span class="kw">use </span>std::collections::{BTreeMap, BTreeSet};
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(
     config: <span class="kw-2">&amp;</span>Config,
@@ -187,8 +209,8 @@
     output_file: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     category: <span class="prelude-ty">Option</span>&lt;String&gt;,
     hide_uninteresting: bool,
-) -&gt; u32 {
-    <span class="kw">let </span>(output, count) = create_list(<span class="kw-2">&amp;</span>config, output_format, category, hide_uninteresting);
+) {
+    <span class="kw">let </span>output = create_list(<span class="kw-2">&amp;</span>config, output_format, category, hide_uninteresting);
 
     <span class="kw">match </span>output_file {
         <span class="prelude-val">Some</span>(file) =&gt; {
@@ -197,33 +219,29 @@
         }
         <span class="prelude-val">None </span>=&gt; <span class="macro">print!</span>(<span class="string">&quot;{}&quot;</span>, output),
     }
-
-    count
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_list(
+<span class="doccomment">/// Panics if task does not exist.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_list(
     config: <span class="kw-2">&amp;</span>Config,
     output_format: <span class="kw-2">&amp;</span>str,
     category_filter: <span class="prelude-ty">Option</span>&lt;String&gt;,
     hide_uninteresting: bool,
-) -&gt; (String, u32) {
-    <span class="kw">let </span><span class="kw-2">mut </span>count = <span class="number">0</span>;
-    <span class="kw">let </span><span class="kw-2">mut </span>buffer = String::new();
+) -&gt; String {
+    <span class="comment">// category -&gt; actual_task -&gt; description
+    </span><span class="kw">let </span><span class="kw-2">mut </span>categories: BTreeMap&lt;String, BTreeMap&lt;String, String&gt;&gt; = BTreeMap::new();
+    <span class="comment">// actual_task -&gt; aliases
+    </span><span class="kw">let </span><span class="kw-2">mut </span>aliases: BTreeMap&lt;String, BTreeSet&lt;String&gt;&gt; = BTreeMap::new();
 
-    <span class="kw">let </span>single_page_markdown = output_format == <span class="string">&quot;markdown-single-page&quot;</span>;
-    <span class="kw">let </span>markdown = single_page_markdown
-        || output_format == <span class="string">&quot;markdown&quot;
-        </span>|| output_format == <span class="string">&quot;markdown-sub-section&quot;</span>;
-    <span class="kw">let </span>just_task_name = output_format == <span class="string">&quot;autocomplete&quot;</span>;
+    <span class="comment">// iterate over all tasks to build categories and aliases
+    </span><span class="kw">for </span>key <span class="kw">in </span>config.tasks.keys() {
+        <span class="kw">let </span>actual_task_name =
+            execution_plan::get_actual_task_name(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>key).unwrap_or_else(|| {
+                <span class="macro">error!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span>key);
+                <span class="macro">panic!</span>(<span class="string">&quot;Task {} not found&quot;</span>, <span class="kw-2">&amp;</span>key);
+            });
 
-    <span class="kw">let </span><span class="kw-2">mut </span>categories = BTreeMap::new();
-
-    <span class="kw">if </span>single_page_markdown {
-        buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;# Task List\n\n&quot;</span>));
-    }
-
-    <span class="kw">for </span>key <span class="kw">in </span>config.tasks.keys() {
-        <span class="kw">let </span>task = execution_plan::get_normalized_task(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>key, <span class="bool-val">true</span>);
+        <span class="kw">let </span>task = execution_plan::get_normalized_task(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>actual_task_name, <span class="bool-val">true</span>);
 
         <span class="kw">let </span>is_private = <span class="kw">match </span>task.private {
             <span class="prelude-val">Some</span>(private) =&gt; private,
@@ -255,7 +273,13 @@
                 <span class="kw">continue</span>;
             }
 
-            count = count + <span class="number">1</span>;
+            <span class="kw">if </span><span class="kw-2">&amp;</span>actual_task_name != key {
+                aliases
+                    .entry(actual_task_name)
+                    .or_default()
+                    .insert(key.clone());
+                <span class="kw">continue</span>;
+            }
 
             <span class="kw">let </span>description = <span class="kw">match </span>task.description {
                 <span class="prelude-val">Some</span>(value) =&gt; value,
@@ -285,15 +309,23 @@
             <span class="kw">let </span><span class="kw-2">mut </span>text = String::from(description);
             text.push_str(<span class="kw-2">&amp;</span>deprecated_message);
 
-            <span class="kw">let </span><span class="kw-2">mut </span>tasks_map = BTreeMap::new();
-            <span class="kw">match </span>categories.get_mut(<span class="kw-2">&amp;</span>category) {
-                <span class="prelude-val">Some</span>(value) =&gt; tasks_map.append(value),
-                <span class="kw">_ </span>=&gt; (),
-            };
-
-            tasks_map.insert(key.clone(), text.clone());
-            categories.insert(category, tasks_map);
+            categories
+                .entry(category)
+                .or_default()
+                .insert(key.clone(), text);
         }
+    }
+
+    <span class="comment">// build the task list output string
+    </span><span class="kw">let </span>single_page_markdown = output_format == <span class="string">&quot;markdown-single-page&quot;</span>;
+    <span class="kw">let </span>markdown = single_page_markdown
+        || output_format == <span class="string">&quot;markdown&quot;
+        </span>|| output_format == <span class="string">&quot;markdown-sub-section&quot;</span>;
+    <span class="kw">let </span>just_task_name = output_format == <span class="string">&quot;autocomplete&quot;</span>;
+
+    <span class="kw">let </span><span class="kw-2">mut </span>buffer = String::new();
+    <span class="kw">if </span>single_page_markdown {
+        buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;# Task List\n\n&quot;</span>));
     }
 
     <span class="kw">let </span>post_key = <span class="kw">if </span>markdown { <span class="string">&quot;**&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;&quot; </span>};
@@ -320,10 +352,22 @@
                 buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;* **&quot;</span>));
             }
 
-            <span class="kw">if </span>just_task_name {
-                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{} &quot;</span>, <span class="kw-2">&amp;</span>key));
+            <span class="kw">let </span>aliases = <span class="kw">if let </span><span class="prelude-val">Some</span>(aliases) = aliases.remove(key) {
+                <span class="macro">format!</span>(
+                    <span class="string">&quot; [aliases: {}]&quot;</span>,
+                    aliases.into_iter().collect::&lt;Vec&lt;String&gt;&gt;().join(<span class="string">&quot;, &quot;</span>)
+                )
             } <span class="kw">else </span>{
-                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{}{} - {}\n&quot;</span>, <span class="kw-2">&amp;</span>key, <span class="kw-2">&amp;</span>post_key, <span class="kw-2">&amp;</span>description));
+                <span class="string">&quot;&quot;</span>.to_string()
+            };
+
+            <span class="kw">if </span>just_task_name {
+                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="kw-2">&amp;</span>key, aliases));
+            } <span class="kw">else </span>{
+                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+                    <span class="string">&quot;{}{} - {}{}\n&quot;</span>,
+                    <span class="kw-2">&amp;</span>key, <span class="kw-2">&amp;</span>post_key, <span class="kw-2">&amp;</span>description, aliases
+                ));
             }
         }
 
@@ -332,6 +376,6 @@
         }
     }
 
-    (buffer, count)
+    buffer
 }
 </code></pre></div></section></main></body></html>

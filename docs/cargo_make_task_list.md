@@ -58,8 +58,7 @@
 
 ## Development
 
-* **default** - Development testing flow will first format the code, and than run cargo build and test
-* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test
+* **dev-test-flow** - Development testing flow will first format the code, and than run cargo build and test [aliases: default]
 * **format** - Runs the cargo rustfmt plugin.
 * **format-flow** - Runs the cargo rustfmt plugin as part of a flow.
 * **format-toml** - Formats all toml files defined in the CARGO_MAKE_FORMAT_TOML_FILES environment variable.
@@ -156,13 +155,12 @@
 * **clippy-allow-fail** - Runs clippy code linter.
 * **clippy-flow** - Runs clippy flow.
 * **clippy-router** - Selects clippy task based on current environment.
-* **codecov** - Runs codecov script to upload coverage results to codecov.
+* **codecov** - Runs codecov script to upload coverage results to codecov. [aliases: workspace-coverage-pack]
 * **codecov-flow** - Runs the full coverage flow and uploads the results to codecov.
 * **coverage** - Runs coverage (by default using kcov).
 * **coverage-flow** - Runs the full coverage flow.
 * **coverage-kcov** - Installs (if missing) and runs coverage using kcov (not supported on windows)
 * **coverage-tarpaulin** - Runs coverage using tarpaulin rust crate (linux only)
-* **dev-watch-flow** - Runs pre/post hooks and cargo test.
 * **examples-compile** - Runs cargo build for project examples.
 * **examples-conditioned-compile** - Runs cargo build for project examples if conditions are met.
 * **install-clippy** - Installs the clippy code linter.
@@ -182,23 +180,21 @@
 * **pre-test** - No Description.
 * **test** - Runs all available tests.
 * **test-custom** - Runs custom test command.
-* **test-flow** - Runs pre/post hooks and cargo test.
+* **test-flow** - Runs pre/post hooks and cargo test. [aliases: dev-watch-flow]
 * **test-multi-phases-flow** - Runs single/multi and custom test tasks.
 * **test-single-threaded** - Runs all ignored tests with a single test thread.
 * **test-thread-safe** - Runs all available tests without limiting test threads.
 * **test-with-args** - Runs cargo test with command line arguments.
 * **workspace-coverage** - Runs coverage task for all members and packages all of them (by default the codecov flow).
-* **workspace-coverage-pack** - Runs codecov script to upload coverage results to codecov.
 * **workspace-members-coverage** - Runs the ci-flow for every workspace member.
 
 ## Tools
 
 * **build-file-increment** - Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable.
 * **build-file-increment-flow** - Increments (or creates) the build number in the build file, defined in CARGO_MAKE_BUILD_NUMBER_FILE environment variable.
-* **diff-files** - Run diff on two provided files.
 * **do-on-members** - Runs the requested task for every workspace member.
 * **empty** - Empty Task
-* **git-diff-files** - Run diff on two provided files.
+* **git-diff-files** - Run diff on two provided files. [aliases: diff-files]
 * **github-hub-find** - Sets the CARGO_MAKE_GITHUB_HUB_CLI_FOUND environment variable with the current hub executable location (if found).
 * **install-rls** - Installs rust Language server rustup component.
 * **install-rust-src** - Installs rust-src rustup component.
