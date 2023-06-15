@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.11 (2023-06-15)
+
+* Maintenance: Upgrade dependencies
+
 ### v0.36.10 (2023-06-10)
 
 * Enhancement: split function now allows to remove empty values via new third argument 'remove-empty' #863
