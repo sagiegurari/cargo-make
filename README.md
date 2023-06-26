@@ -12,6 +12,7 @@
 
 * [Overview](#overview)
 * [Installation](#installation)
+    * [Arch Linux](#installation-arch-linux)
     * [Binary Release](#installation-binary-release)
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
@@ -162,6 +163,13 @@ In order to install with minimal features (for example, no TLS support), run the
 
 ```sh
 cargo install --no-default-features --force cargo-make
+```
+
+<a name="installation-arch-linux"></a>
+### Arch Linux
+
+```sh
+sudo pacman -S cargo-make
 ```
 
 <a name="installation-binary-release"></a>
