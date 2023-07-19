@@ -794,3 +794,36 @@ fn load_from_inherit_from_workspace_toml() {
         assert_eq!(package_info.repository.unwrap(), "https://repotest.com");
     }
 }
+
+#[test]
+fn dedup_members_with_duplicates() {
+    let mut crate_info = CrateInfo::new();
+    crate_info.workspace = Some(Workspace::new());
+    add_members(
+        &mut crate_info,
+        vec![
+            "test4".to_string(),
+            "test1".to_string(),
+            "test2".to_string(),
+            "test1".to_string(),
+            "test3".to_string(),
+        ],
+    );
+
+    dedup_members(&mut crate_info);
+
+    assert!(crate_info.workspace.is_some());
+    let workspace = crate_info.workspace.unwrap();
+    assert!(workspace.members.is_some());
+    let members = workspace.members.unwrap();
+    assert_eq!(members.len(), 4);
+    assert_eq!(
+        members,
+        vec![
+            "test4".to_string(),
+            "test1".to_string(),
+            "test2".to_string(),
+            "test3".to_string()
+        ]
+    );
+}

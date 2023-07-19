@@ -13,6 +13,7 @@ use cargo_metadata::{Metadata, MetadataCommand};
 use fsio;
 use glob::glob;
 use indexmap::IndexMap;
+use itertools::Itertools;
 use std::env;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
@@ -196,8 +197,14 @@ fn add_members(crate_info: &mut CrateInfo, new_members: Vec<String>) {
 
 fn dedup_members(crate_info: &mut CrateInfo) {
     if let Some(ref mut workspace) = crate_info.workspace {
-        if let Some(ref mut members) = workspace.members {
-            members.dedup();
+        if let Some(ref members) = workspace.members {
+            workspace.members = Some(
+                members
+                    .into_iter()
+                    .unique()
+                    .map(|value| value.to_string())
+                    .collect(),
+            );
         }
     }
 }
