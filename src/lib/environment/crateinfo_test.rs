@@ -50,6 +50,24 @@ fn add_members_workspace_new_members_with_data() {
 }
 
 #[test]
+fn add_members_workspace_non_alpha_ordered() {
+    let mut crate_info = CrateInfo::new();
+
+    crate_info.workspace = Some(Workspace::new());
+    add_members(
+        &mut crate_info,
+        vec!["test2".to_string(), "test1".to_string()],
+    );
+
+    load_workspace_members(&mut crate_info);
+
+    let members = crate_info.workspace.unwrap().members.unwrap();
+    assert_eq!(members.len(), 2);
+    assert_eq!(members[0], "test2".to_owned());
+    assert_eq!(members[1], "test1".to_owned());
+}
+
+#[test]
 fn add_members_workspace_empty_members_with_data() {
     let mut crate_info = CrateInfo::new();
     let mut workspace = Workspace::new();

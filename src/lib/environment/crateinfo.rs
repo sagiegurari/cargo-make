@@ -197,7 +197,6 @@ fn add_members(crate_info: &mut CrateInfo, new_members: Vec<String>) {
 fn dedup_members(crate_info: &mut CrateInfo) {
     if let Some(ref mut workspace) = crate_info.workspace {
         if let Some(ref mut members) = workspace.members {
-            members.sort();
             members.dedup();
         }
     }
