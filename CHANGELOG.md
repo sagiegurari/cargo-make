@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.12 (2023-07-19)
+
+* Fix: Remove workspace members sorting #897 (thanks @pskrgag)
+
 ### v0.36.11 (2023-06-15)
 
 * Maintenance: Upgrade dependencies
