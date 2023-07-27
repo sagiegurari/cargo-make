@@ -1,0 +1,26 @@
+
+[plugins.impl.parallel-members]
+script = '''
+plugin_used = get_env PLUGIN_USED
+plugin_used = eq "${plugin_used}" 1
+
+if not ${plugin_used}
+    set_env PLUGIN_USED 1
+    members = split ${CARGO_MAKE_CRATE_WORKSPACE_MEMBERS} ,
+
+    workspace_dir = pwd
+    for member in ${members}
+        cd ./${member}
+        spawn cargo make --disable-check-for-updates --allow-private --no-on-error ${flow.task.name} %{args}
+        cd ${workspace_dir}
+    end
+
+    release ${members}
+else
+    task_definition = json_parse --collection ${task.as_json}
+    map_remove ${task_definition} workspace
+    task_json = json_encode --collection ${task_definition}
+    cm_plugin_run_custom_task ${task_json}
+end
+'''
+

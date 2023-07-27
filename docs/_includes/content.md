@@ -3595,7 +3595,7 @@ The plugin SDK contains the following:
     * ```cm_plugin_force_plugin_clear``` - Undos the cm_plugin_force_plugin_set change and tasks will behave as before
 
 <a name="usage-plugins-plugin-example-dockerize"></a>
-### Plugin Example (Docker Integration)
+### Plugin Example - Docker Integration
 
 Below is a simple example which runs a task (and the rest of the flow from that point) in a docker container.
 
@@ -3668,8 +3668,45 @@ cargo make docker_flow
 Will result in creation of a new docker container that will run parts 1-3 inside it.<br>
 **The example works. However, it does not support several features like passing CLI args, etc....**
 
+<a name="usage-plugins-plugin-example-parallel-workspace-members"></a>
+### Plugin Example - Run workspace members in parallel
+
+The following example shows how to define a task on workspace level makefile to enable to invoke it on each member in parallel.
+
+```toml
+[plugins.impl.parallel-members]
+script = '''
+plugin_used = get_env PLUGIN_USED
+plugin_used = eq "${plugin_used}" 1
+
+if not ${plugin_used}
+    set_env PLUGIN_USED 1
+    members = split ${CARGO_MAKE_CRATE_WORKSPACE_MEMBERS} ,
+
+    workspace_dir = pwd
+    for member in ${members}
+        cd ./${member}
+        spawn cargo make --disable-check-for-updates --allow-private --no-on-error ${flow.task.name} %{args}
+        cd ${workspace_dir}
+    end
+
+    release ${members}
+else
+    task_definition = json_parse --collection ${task.as_json}
+    map_remove ${task_definition} workspace
+    task_json = json_encode --collection ${task_definition}
+    cm_plugin_run_custom_task ${task_json}
+end
+'''
+
+[tasks.sometask]
+# to make this task serial and not parallel, remove following 2 lines
+plugin = "parallel-members"
+workspace = false
+```
+
 <a name="usage-plugins-plugin-example-rustenv"></a>
-### Plugin Example (load env from rust script)
+### Plugin Example - Load Env From Rust Script
 
 The following example shows how to enable rust scripts invoked from cargo-make to update the main cargo-make process env.<br>
 It assumes the task has a script line and that the script is rust. It will execute it (ignoring any rust script provider config for sake of simplicity) and load each output line as an env key/value pair.
@@ -3716,7 +3753,7 @@ fn main() {
 ```
 
 <a name="usage-plugins-plugin-example-powershell"></a>
-### Plugin Example (Adding Simpler Windows Powershell Support)
+### Plugin Example - Adding Simpler Windows Powershell Support
 
 In the below example, we add the a simple powershell command support.<br>
 This plugin will take an existing task, set its command to powershell and prepend the **`-C`** argument.<br>

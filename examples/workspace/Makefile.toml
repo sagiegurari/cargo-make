@@ -1,4 +1,18 @@
 
+extend = "../plugin_workspace_parallel.toml"
+
+[config]
+skip_core_tasks = true
+
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[tasks.echo]
+# to make echo serial and not parallel, remove following 2 lines
+plugin = "parallel-members"
+workspace = false
+
 [tasks.workspace-echo]
 env = { "CARGO_MAKE_MEMBER_TASK" = "echo", "CARGO_MAKE_WORKSPACE_SKIP_MEMBERS" = "member2" }
 run_task = "do-on-members"
+
