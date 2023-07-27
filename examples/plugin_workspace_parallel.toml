@@ -23,4 +23,3 @@ else
     cm_plugin_run_custom_task ${task_json}
 end
 '''
-
