@@ -35,10 +35,11 @@ cargo install --no-default-features --force cargo-make
 Binary releases are available in the [github releases page](https://github.com/sagiegurari/cargo-make/releases).<br>
 The following binaries are available for each release:
 
+* x86_64-unknown-linux-gnu
 * x86_64-unknown-linux-musl
 * x86_64-apple-darwin
 * x86_64-pc-windows-msvc
-* arm-unknown-linux-gnueabihf
+* aarch64-apple-darwin
 
 <a name="usage"></a>
 ## Usage
