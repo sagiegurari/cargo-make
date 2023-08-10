@@ -99,15 +99,9 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
 
     let config = match descriptor_load_result {
         Ok(config) => config,
-        Err(ref min_version) => {
-            error!(
-                "{} version: {} does not meet minimum required version: {}",
-                &cli_args.command, &VERSION, &min_version
-            );
-            panic!(
-                "{} version: {} does not meet minimum required version: {}",
-                &cli_args.command, &VERSION, &min_version
-            );
+        Err(ref error) => {
+            error!("{}", error);
+            panic!("{}", error);
         }
     };
     let mut time_summary_vec = vec![];

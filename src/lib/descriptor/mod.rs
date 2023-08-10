@@ -290,7 +290,11 @@ fn check_makefile_min_version(external_descriptor: &str) -> Result<(), String> {
 
     if let Some(ref min_version) = min_version {
         if version::is_newer_found(&min_version) {
-            return Err(min_version.to_string());
+            return Err(format!(
+                "Unable to run, minimum required version is: {}",
+                &min_version
+            )
+            .to_string());
         }
     }
 
