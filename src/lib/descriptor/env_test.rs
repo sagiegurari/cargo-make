@@ -167,6 +167,46 @@ fn merge_env_cycle() {
 }
 
 #[test]
+fn merge_env_no_cycle_if_pointing_to_self_not_external() {
+    let map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
+
+    map2.insert("test".to_string(), EnvValue::Value("${test}".to_string()));
+
+    let output = merge_env(&map1, &map2).expect_err("should have cycle");
+    assert!(output.ends_with("test -> test."));
+}
+
+#[test]
+fn merge_env_no_cycle_if_pointing_to_self_external() {
+    let mut map1 = IndexMap::<String, EnvValue>::new();
+    let mut map2 = IndexMap::<String, EnvValue>::new();
+
+    envmnt::set(
+        "merge_env_no_cycle_if_pointing_to_self_external",
+        "env_value",
+    );
+
+    map2.insert(
+        "merge_env_no_cycle_if_pointing_to_self_external".to_string(),
+        EnvValue::Value("${merge_env_no_cycle_if_pointing_to_self_external}".to_string()),
+    );
+
+    let output = merge_env(&mut map1, &mut map2).expect("should have no cycle");
+    assert_eq!(output.len(), 1);
+    let value = output
+        .get("merge_env_no_cycle_if_pointing_to_self_external")
+        .unwrap();
+    match value {
+        &EnvValue::Value(ref value_string) => assert_eq!(
+            value_string,
+            &"${merge_env_no_cycle_if_pointing_to_self_external}".to_string()
+        ),
+        _ => panic!("wrong value type"),
+    };
+}
+
+#[test]
 fn merge_env_first_empty() {
     let mut map1 = IndexMap::<String, EnvValue>::new();
     let mut map2 = IndexMap::<String, EnvValue>::new();

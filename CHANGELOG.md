@@ -1,10 +1,12 @@
 ## CHANGELOG
 
-### draft
+### v0.36.13
 
+* Fix: External env vars are detected as cycles #911
 * Fix: Auto complete bash script #914 (thanks @gw31415)
 * Documentation: Arch Linux installation #880 (thanks @CosminGGeorgescu)
 * Documentation: Fix Readme about Binary Release Target #915 (thanks @Azuki-bar)
+* Maintenance: Replace unmaintained ansi_term with nu_ansi_term #913
 
 ### v0.36.12 (2023-07-19)
 

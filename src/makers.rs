@@ -22,7 +22,7 @@ fn get_name() -> String {
 
 fn main() {
     #[cfg(windows)]
-    let _ = ansi_term::enable_ansi_support();
+    let _ = nu_ansi_term::enable_ansi_support();
     let name = get_name();
     cli::run_cli(name, false);
 }

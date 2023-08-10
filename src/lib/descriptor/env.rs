@@ -142,8 +142,10 @@ pub(crate) fn merge_env(
 
         // if the env variable is in the current scope add an edge,
         // otherwise it is referencing an external variable.
+        // also, ignore self reference (such as PATH=${PATH})
+        let is_external = envmnt::exists(&key);
         for used in env_depends_on(val).into_iter() {
-            if graph.contains_node(used) {
+            if (key != &used || !is_external) && graph.contains_node(used) {
                 graph.add_edge(*key, used, ());
             }
         }

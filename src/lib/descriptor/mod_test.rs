@@ -598,7 +598,7 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
             false
         )
         .err(),
-        Some("999.999.999".into())
+        Some("Unable to run, minimum required version is: 999.999.999".into())
     );
 }
 
@@ -926,7 +926,10 @@ fn check_makefile_min_version_bigger_min_version() {
     let result = check_makefile_min_version(toml_string);
 
     assert!(result.is_err());
-    assert_eq!(result.err().unwrap(), "999.999.999");
+    assert_eq!(
+        result.err().unwrap(),
+        "Unable to run, minimum required version is: 999.999.999"
+    );
 }
 
 #[test]
