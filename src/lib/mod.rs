@@ -201,7 +201,7 @@
 
 // Dependencies used in the binary `makers`:
 #[cfg(windows)]
-use ansi_term as _;
+use nu_ansi_term as _;
 
 #[macro_use]
 extern crate log;
