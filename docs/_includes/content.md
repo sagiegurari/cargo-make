@@ -30,6 +30,13 @@ In order to install with minimal features (for example, no TLS support), run the
 cargo install --no-default-features --force cargo-make
 ```
 
+<a name="installation-arch-linux"></a>
+### Arch Linux
+
+```sh
+sudo pacman -S cargo-make
+```
+
 <a name="installation-binary-release"></a>
 ### Binary Release
 Binary releases are available in the [github releases page](https://github.com/sagiegurari/cargo-make/releases).<br>

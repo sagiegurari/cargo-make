@@ -1,6 +1,7 @@
 
 * [Overview](#overview)
 * [Installation](#installation)
+    * [Arch Linux](#installation-arch-linux)
     * [Binary Release](#installation-binary-release)
 * [Usage](#usage)
     * [Simple Example](#usage-simple)
