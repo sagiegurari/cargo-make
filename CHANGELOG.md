@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### draft
+
+* Fix: Auto complete bash script #914 (thanks @gw31415)
+* Documentation: Arch Linux installation #880 (thanks @CosminGGeorgescu)
+* Documentation: Fix Readme about Binary Release Target #915 (thanks @Azuki-bar)
+
 ### v0.36.12 (2023-07-19)
 
 * Fix: Remove workspace members sorting #897 (thanks @pskrgag)
