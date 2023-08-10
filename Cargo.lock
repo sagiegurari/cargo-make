@@ -141,7 +141,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-make"
-version = "0.36.12"
+version = "0.36.13"
 dependencies = [
  "cargo_metadata",
  "ci_info",

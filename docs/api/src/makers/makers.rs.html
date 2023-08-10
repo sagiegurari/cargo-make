@@ -50,7 +50,7 @@
 
 <span class="kw">fn </span>main() {
     <span class="attr">#[cfg(windows)]
-    </span><span class="kw">let _ </span>= ansi_term::enable_ansi_support();
+    </span><span class="kw">let _ </span>= nu_ansi_term::enable_ansi_support();
     <span class="kw">let </span>name = get_name();
     cli::run_cli(name, <span class="bool-val">false</span>);
 }

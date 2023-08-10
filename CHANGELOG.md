@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.36.13
+### v0.36.13 (2023-08-10)
 
 * Fix: External env vars are detected as cycles #911
 * Fix: Auto complete bash script #914 (thanks @gw31415)

@@ -636,6 +636,10 @@
 <a href="#636" id="636">636</a>
 <a href="#637" id="637">637</a>
 <a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # descriptor
 //!
 //! Loads the tasks descriptor.&lt;br&gt;
@@ -928,7 +932,11 @@
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>min_version) = min_version {
         <span class="kw">if </span>version::is_newer_found(<span class="kw-2">&amp;</span>min_version) {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(min_version.to_string());
+            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+                <span class="string">&quot;Unable to run, minimum required version is: {}&quot;</span>,
+                <span class="kw-2">&amp;</span>min_version
+            )
+            .to_string());
         }
     }
 

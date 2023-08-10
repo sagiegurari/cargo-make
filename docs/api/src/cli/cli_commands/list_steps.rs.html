@@ -188,6 +188,10 @@
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # list_steps
 //!
 //! Lists all known tasks in multiple formats.
@@ -353,16 +357,20 @@
             }
 
             <span class="kw">let </span>aliases = <span class="kw">if let </span><span class="prelude-val">Some</span>(aliases) = aliases.remove(key) {
-                <span class="macro">format!</span>(
-                    <span class="string">&quot; [aliases: {}]&quot;</span>,
-                    aliases.into_iter().collect::&lt;Vec&lt;String&gt;&gt;().join(<span class="string">&quot;, &quot;</span>)
-                )
+                <span class="kw">if </span>just_task_name {
+                    aliases.into_iter().collect::&lt;Vec&lt;String&gt;&gt;().join(<span class="string">&quot; &quot;</span>)
+                } <span class="kw">else </span>{
+                    <span class="macro">format!</span>(
+                        <span class="string">&quot; [aliases: {}]&quot;</span>,
+                        aliases.into_iter().collect::&lt;Vec&lt;String&gt;&gt;().join(<span class="string">&quot;, &quot;</span>)
+                    )
+                }
             } <span class="kw">else </span>{
                 <span class="string">&quot;&quot;</span>.to_string()
             };
 
             <span class="kw">if </span>just_task_name {
-                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="kw-2">&amp;</span>key, aliases));
+                buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{} {} &quot;</span>, <span class="kw-2">&amp;</span>key, aliases));
             } <span class="kw">else </span>{
                 buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
                     <span class="string">&quot;{}{} - {}{}\n&quot;</span>,
