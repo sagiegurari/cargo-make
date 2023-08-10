@@ -163,16 +163,20 @@ pub(crate) fn create_list(
             }
 
             let aliases = if let Some(aliases) = aliases.remove(key) {
-                format!(
-                    " [aliases: {}]",
-                    aliases.into_iter().collect::<Vec<String>>().join(", ")
-                )
+                if just_task_name {
+                    aliases.into_iter().collect::<Vec<String>>().join(" ")
+                } else {
+                    format!(
+                        " [aliases: {}]",
+                        aliases.into_iter().collect::<Vec<String>>().join(", ")
+                    )
+                }
             } else {
                 "".to_string()
             };
 
             if just_task_name {
-                buffer.push_str(&format!("{}{}", &key, aliases));
+                buffer.push_str(&format!("{} {} ", &key, aliases));
             } else {
                 buffer.push_str(&format!(
                     "{}{} - {}{}\n",
