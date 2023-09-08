@@ -1,12 +1,11 @@
 use crate::types::{
     EnvFile, EnvValue, EnvValueConditioned, EnvValueDecode, EnvValuePathGlob, EnvValueScript,
 };
-use indexmap::IndexMap;
+use indexmap::{IndexMap, IndexSet};
 use once_cell::sync::Lazy;
 use petgraph::algo::{kosaraju_scc, toposort};
 use petgraph::graphmap::{DiGraphMap, GraphMap};
 use regex::Regex;
-use std::collections::HashSet;
 
 #[cfg(test)]
 #[path = "env_test.rs"]
@@ -15,7 +14,7 @@ mod env_test;
 static RE_VARIABLE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\$\{.*?}").unwrap());
 
 fn env_unique<'a>(vals: &'a [&'a IndexMap<String, EnvValue>]) -> Vec<(&'a str, &'a EnvValue)> {
-    let mut visited = HashSet::new();
+    let mut visited = IndexSet::new();
     let mut unique = vec![];
 
     // iterate through the list in reverse, only taking the first value, then
@@ -131,7 +130,7 @@ pub(crate) fn merge_env(
 
     let mut graph: GraphMap<&str, (), _> = DiGraphMap::new();
 
-    let keys: HashSet<_> = combined.iter().map(|(key, _)| *key).collect();
+    let keys: IndexSet<_> = combined.iter().map(|(key, _)| *key).collect();
     for key in keys {
         graph.add_node(key);
     }
