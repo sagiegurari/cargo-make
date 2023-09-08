@@ -1,8 +1,10 @@
 ## CHANGELOG
 
-### v0.36.14
+### v0.37.0
 
 * Fix: env vars loading order is not consistent #934
+* \[**backward compatibility break**\] Maintenance: Upgrade duckscript runtime to 0.8
+* Maintenance: Upgrade cargo-watch to 8.4.1
 
 ### v0.36.13 (2023-08-10)
 
