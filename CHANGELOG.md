@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.0
+### v0.37.0 (2023-09-08)
 
 * Fix: env vars loading order is not consistent #934
 * \[**backward compatibility break**\] Maintenance: Upgrade duckscript runtime to 0.8
