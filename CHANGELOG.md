@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.36.14
+
+* Fix: env vars loading order is not consistent #934
+
 ### v0.36.13 (2023-08-10)
 
 * Fix: External env vars are detected as cycles #911
