@@ -345,7 +345,7 @@ fn setup_env_for_duckscript() {
     envmnt::set("CARGO_MAKE_DUCKSCRIPT_SDK_VERSION", version);
 }
 
-fn setup_env_for_crate() -> CrateInfo {
+fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
     let crate_info = crateinfo::load();
     let crate_info_clone = crate_info.clone();
 
@@ -399,6 +399,13 @@ fn setup_env_for_crate() -> CrateInfo {
     let lock_file = Path::new("Cargo.lock");
     let lock_file_exists = lock_file.exists();
     envmnt::set_bool("CARGO_MAKE_CRATE_LOCK_FILE_EXISTS", lock_file_exists);
+
+    let crate_target_dirs = crateinfo::crate_target_dirs(home);
+    envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", crate_target_dirs.host);
+    envmnt::set_optional(
+        "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
+        &crate_target_dirs.custom,
+    );
 
     crate_info_clone
 }
@@ -464,13 +471,6 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
     envmnt::set_or_remove(
         "CARGO_MAKE_CRATE_TARGET_TRIPLE",
         &crateinfo::crate_target_triple(rustinfo.target_triple, home.clone()),
-    );
-
-    let crate_target_dirs = crateinfo::crate_target_dirs(home);
-    envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", crate_target_dirs.host);
-    envmnt::set_optional(
-        "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
-        &crate_target_dirs.custom,
     );
 
     rust_info_clone
@@ -573,7 +573,7 @@ pub(crate) fn setup_env(
     let crate_info = if config.config.skip_crate_env_info.unwrap_or(false) {
         CrateInfo::new()
     } else {
-        setup_env_for_crate()
+        setup_env_for_crate(home.clone())
     };
     time_summary::add(time_summary_vec, "[Setup Env - Crate Info]", now);
 
