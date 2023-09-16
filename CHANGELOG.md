@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.1
+
+* Fix: workspace dependencies outside workspace directory should not be detected as members #948
+
 ### v0.37.0 (2023-09-08)
 
 * Fix: env vars loading order is not consistent #934

@@ -131,19 +131,20 @@ fn normalize_members(crate_info: &mut CrateInfo) {
 }
 
 fn get_members_from_dependencies(crate_info: &CrateInfo) -> Vec<String> {
-    get_members_from_dependencies_map(crate_info.dependencies.clone())
+    get_members_from_dependencies_map(crate_info.dependencies.clone(), false)
 }
 
 fn get_members_from_workspace_dependencies(crate_info: &CrateInfo) -> Vec<String> {
     let workspace = crate_info.workspace.clone();
     match workspace {
-        Some(workspace) => get_members_from_dependencies_map(workspace.dependencies),
+        Some(workspace) => get_members_from_dependencies_map(workspace.dependencies, true),
         None => vec![],
     }
 }
 
 fn get_members_from_dependencies_map(
     dependencies: Option<IndexMap<String, CrateDependency>>,
+    ensure_inside_workspace: bool,
 ) -> Vec<String> {
     let mut members = vec![];
     debug!("Searching members in dependencies: {:#?}", &dependencies);
@@ -154,7 +155,11 @@ fn get_members_from_dependencies_map(
                 match *value {
                     CrateDependency::Info(ref info) => match info.path {
                         Some(ref path) => {
-                            if path.starts_with("./") {
+                            // workspace dependencies are members only if inside the workspace
+                            // directory (this is a simple not accurate check for that)
+                            if ensure_inside_workspace && path.starts_with("..") {
+                                // skip
+                            } else if path.starts_with("./") {
                                 let member_path =
                                     path.chars().skip(2).take(path.len() - 2).collect();
                                 members.push(member_path);
