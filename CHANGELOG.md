@@ -3,6 +3,8 @@
 ### v0.37.1
 
 * Fix: workspace dependencies outside workspace directory should not be detected as members #948
+* Enhancement: Move crate_target_dirs from RustInfo to CrateInfo for improved performance #941
+* Maintenance: upgrade duckscript #945
 
 ### v0.37.0 (2023-09-08)
 
