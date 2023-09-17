@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.1
+### v0.37.1 (2023-09-17)
 
 * Fix: workspace dependencies outside workspace directory should not be detected as members #948
 * Enhancement: Move crate_target_dirs from RustInfo to CrateInfo for improved performance #941 (thanks @xxchan)

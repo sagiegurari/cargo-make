@@ -1202,7 +1202,7 @@
     envmnt::set(<span class="string">&quot;CARGO_MAKE_DUCKSCRIPT_SDK_VERSION&quot;</span>, version);
 }
 
-<span class="kw">fn </span>setup_env_for_crate() -&gt; CrateInfo {
+<span class="kw">fn </span>setup_env_for_crate(home: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; CrateInfo {
     <span class="kw">let </span>crate_info = crateinfo::load();
     <span class="kw">let </span>crate_info_clone = crate_info.clone();
 
@@ -1256,6 +1256,13 @@
     </span><span class="kw">let </span>lock_file = Path::new(<span class="string">&quot;Cargo.lock&quot;</span>);
     <span class="kw">let </span>lock_file_exists = lock_file.exists();
     envmnt::set_bool(<span class="string">&quot;CARGO_MAKE_CRATE_LOCK_FILE_EXISTS&quot;</span>, lock_file_exists);
+
+    <span class="kw">let </span>crate_target_dirs = crateinfo::crate_target_dirs(home);
+    envmnt::set(<span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>, crate_target_dirs.host);
+    envmnt::set_optional(
+        <span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>,
+        <span class="kw-2">&amp;</span>crate_target_dirs.custom,
+    );
 
     crate_info_clone
 }
@@ -1321,13 +1328,6 @@
     envmnt::set_or_remove(
         <span class="string">&quot;CARGO_MAKE_CRATE_TARGET_TRIPLE&quot;</span>,
         <span class="kw-2">&amp;</span>crateinfo::crate_target_triple(rustinfo.target_triple, home.clone()),
-    );
-
-    <span class="kw">let </span>crate_target_dirs = crateinfo::crate_target_dirs(home);
-    envmnt::set(<span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>, crate_target_dirs.host);
-    envmnt::set_optional(
-        <span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>,
-        <span class="kw-2">&amp;</span>crate_target_dirs.custom,
     );
 
     rust_info_clone
@@ -1430,7 +1430,7 @@
     <span class="kw">let </span>crate_info = <span class="kw">if </span>config.config.skip_crate_env_info.unwrap_or(<span class="bool-val">false</span>) {
         CrateInfo::new()
     } <span class="kw">else </span>{
-        setup_env_for_crate()
+        setup_env_for_crate(home.clone())
     };
     time_summary::add(time_summary_vec, <span class="string">&quot;[Setup Env - Crate Info]&quot;</span>, now);
 

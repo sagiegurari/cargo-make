@@ -416,6 +416,11 @@
 <a href="#416" id="416">416</a>
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # crateinfo
 //!
 //! Loads crate information.
@@ -549,19 +554,20 @@
 }
 
 <span class="kw">fn </span>get_members_from_dependencies(crate_info: <span class="kw-2">&amp;</span>CrateInfo) -&gt; Vec&lt;String&gt; {
-    get_members_from_dependencies_map(crate_info.dependencies.clone())
+    get_members_from_dependencies_map(crate_info.dependencies.clone(), <span class="bool-val">false</span>)
 }
 
 <span class="kw">fn </span>get_members_from_workspace_dependencies(crate_info: <span class="kw-2">&amp;</span>CrateInfo) -&gt; Vec&lt;String&gt; {
     <span class="kw">let </span>workspace = crate_info.workspace.clone();
     <span class="kw">match </span>workspace {
-        <span class="prelude-val">Some</span>(workspace) =&gt; get_members_from_dependencies_map(workspace.dependencies),
+        <span class="prelude-val">Some</span>(workspace) =&gt; get_members_from_dependencies_map(workspace.dependencies, <span class="bool-val">true</span>),
         <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
     }
 }
 
 <span class="kw">fn </span>get_members_from_dependencies_map(
     dependencies: <span class="prelude-ty">Option</span>&lt;IndexMap&lt;String, CrateDependency&gt;&gt;,
+    ensure_inside_workspace: bool,
 ) -&gt; Vec&lt;String&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>members = <span class="macro">vec!</span>[];
     <span class="macro">debug!</span>(<span class="string">&quot;Searching members in dependencies: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>dependencies);
@@ -572,7 +578,11 @@
                 <span class="kw">match </span><span class="kw-2">*</span>value {
                     CrateDependency::Info(<span class="kw-2">ref </span>info) =&gt; <span class="kw">match </span>info.path {
                         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>path) =&gt; {
-                            <span class="kw">if </span>path.starts_with(<span class="string">&quot;./&quot;</span>) {
+                            <span class="comment">// workspace dependencies are members only if inside the workspace
+                            // directory (this is a simple not accurate check for that)
+                            </span><span class="kw">if </span>ensure_inside_workspace &amp;&amp; path.starts_with(<span class="string">&quot;..&quot;</span>) {
+                                <span class="comment">// skip
+                            </span>} <span class="kw">else if </span>path.starts_with(<span class="string">&quot;./&quot;</span>) {
                                 <span class="kw">let </span>member_path =
                                     path.chars().skip(<span class="number">2</span>).take(path.len() - <span class="number">2</span>).collect();
                                 members.push(member_path);
