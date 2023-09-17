@@ -285,6 +285,12 @@ fn get_members_from_workspace_dependencies_workspace_paths() {
             path: Some("./member2".to_string()),
         }),
     );
+    dependencies.insert(
+        "invalid1".to_string(),
+        CrateDependency::Info(CrateDependencyInfo {
+            path: Some("../outside_workspace".to_string()),
+        }),
+    );
 
     let mut workspace = Workspace::new();
     workspace.dependencies = Some(dependencies);
