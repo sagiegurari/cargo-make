@@ -1326,7 +1326,7 @@ fn setup_env_for_crate_load_toml_found() {
     envmnt::set("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
-    setup_env_for_crate();
+    setup_env_for_crate(None);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
@@ -1390,7 +1390,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") == "EMPTY");
 
     setup_cwd(Some("examples"));
-    setup_env_for_crate();
+    setup_env_for_crate(None);
     setup_cwd(Some(".."));
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") != "EMPTY");
@@ -1422,7 +1422,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
         ""
     );
 
-    setup_env_for_crate();
+    setup_env_for_crate(None);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
@@ -1483,7 +1483,7 @@ fn setup_env_for_crate_workspace() {
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
     setup_cwd(Some("examples/workspace"));
-    setup_env_for_crate();
+    setup_env_for_crate(None);
     setup_cwd(Some("../.."));
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "EMPTY");
