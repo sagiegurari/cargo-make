@@ -103,7 +103,7 @@
         * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
     * [Minimal Version](#usage-min-version)
     * [Performance Tuning](#usage-performance-tuning)
-    * [Command Groups](#usage-command-groups)
+    * [Command Groups (Subcommands)](#usage-command-groups)
     * [Diff Changes](#usage-diff-changes)
     * [Unstable Features](#usage-unstable-features)
     * [CLI Options](#usage-cli)
@@ -3497,9 +3497,20 @@ makefiles and they will still have the environment variables setup from the pare
 For tasks that can be skipped in case no input file has been modified, see the [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed) section.
 
 <a name="usage-command-groups"></a>
-### Command Groups
+### Command Groups (Subcommands)
 
-You can expose the tasks as *groups* by creating a top level task which will call other internal private tasks (private is not mandatory).<br>
+You can expose the tasks as *groups* by creating a top level task which will call other internal tasks.
+
+There are two possible approaches for this.
+
+#### Local tasks
+
+Using private tasks (private is not mandatory) are more suited for simple cases and redirect one command to another.
+
+This approach has some limitations:
+- `--list-all-steps` will not list private tasks
+- the tasks required a specific naming pattern
+
 For example, if you want to have server start/stop and client start/stop commands and execute them as follows:
 
 ```sh
@@ -3550,6 +3561,35 @@ args = ["starting client..."]
 private = true
 command = "echo"
 args = ["stopping client..."]
+```
+
+#### Extenal subcommand file
+
+Another approach is to use a different configuration file for the subcommands.
+
+This allows using `--list-all-steps` for the subcommand and also set `[config]` options in the subcommand file.
+
+For projects with subprojects in folders, a `Makefile.toml` can be created for each subproject and be reached as subcommands from the main folder.
+
+Example implementation of a `foo` sobcommand with a configuration file in the `foo/` folder.
+
+```toml
+[tasks.foo]
+description = "Foo subcommands"
+category = "Subcommands"
+cwd = "foo/"
+command = "makers"
+args = ["${@}"]
+```
+
+Example implementation of a `foo` sobcommand with a `Makefile.foo.toml` configuration file in the same folder.
+
+```toml
+[tasks.foo]
+description = "Foo subcommands"
+category = "Subcommands"
+command = "makers"
+args = ["--makefile", "Makefile.foo.toml", "${@}"]
 ```
 
 <a name="usage-diff-changes"></a>
