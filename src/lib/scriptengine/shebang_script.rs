@@ -8,6 +8,12 @@
 mod shebang_script_test;
 
 use crate::scriptengine::generic_script;
+use std::path::Path;
+
+#[cfg(target_os = "windows")]
+const DEFAULT_EXTENSION: &'static str = "cmd.exe";
+#[cfg(not(target_os = "windows"))]
+const DEFAULT_EXTENSION: &'static str = "sh";
 
 #[derive(Debug, Clone)]
 /// Holds flow information
@@ -73,6 +79,27 @@ pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
     }
 }
 
+fn get_extension_for_runner(runner: &str) -> String {
+    let runner_no_extension = match Path::new(runner).file_stem() {
+        Some(value) => value,
+        None => return DEFAULT_EXTENSION.to_string(),
+    };
+
+    let extension = if runner_no_extension == "python" {
+        "py"
+    } else if runner_no_extension == "perl" {
+        "pl"
+    } else if runner_no_extension == "node" {
+        "js"
+    } else if runner_no_extension == "powershell" || runner_no_extension == "pwsh" {
+        "ps1"
+    } else {
+        DEFAULT_EXTENSION
+    };
+
+    extension.to_string()
+}
+
 pub(crate) fn execute(
     script_text: &Vec<String>,
     extension: &Option<String>,
@@ -84,14 +111,14 @@ pub(crate) fn execute(
     match shebang.runner {
         Some(runner) => {
             let extension_str = match extension {
-                Some(value) => value,
-                None => "sh",
+                Some(value) => value.to_string(),
+                None => get_extension_for_runner(&runner),
             };
 
             generic_script::execute(
                 &script_text,
                 runner,
-                extension_str.to_string(),
+                extension_str,
                 shebang.arguments,
                 &cli_arguments,
                 validate,

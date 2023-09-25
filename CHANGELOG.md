@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.2
+
+* Enhancement: improve support for shebang script file extensions #926
+
 ### v0.37.1 (2023-09-17)
 
 * Fix: workspace dependencies outside workspace directory should not be detected as members #948
