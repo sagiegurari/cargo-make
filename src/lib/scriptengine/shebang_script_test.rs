@@ -105,3 +105,57 @@ fn execute_sh_error() {
         true,
     );
 }
+
+#[test]
+fn get_extension_for_runner_empty() {
+    let output = get_extension_for_runner("");
+
+    let expected = if cfg!(windows) { "cmd.exe" } else { "sh" };
+
+    assert_eq!(output, expected);
+}
+
+#[test]
+fn get_extension_for_runner_unsupported() {
+    let output = get_extension_for_runner("whatever");
+
+    let expected = if cfg!(windows) { "cmd.exe" } else { "sh" };
+
+    assert_eq!(output, expected);
+}
+
+#[test]
+fn get_extension_for_runner_supported_with_path_and_extension() {
+    let output = get_extension_for_runner("/dir1/dir2/python.exe");
+    assert_eq!(output, "py");
+}
+
+#[test]
+fn get_extension_for_runner_python() {
+    let output = get_extension_for_runner("python");
+    assert_eq!(output, "py");
+}
+
+#[test]
+fn get_extension_for_runner_perl() {
+    let output = get_extension_for_runner("perl");
+    assert_eq!(output, "pl");
+}
+
+#[test]
+fn get_extension_for_runner_node() {
+    let output = get_extension_for_runner("node");
+    assert_eq!(output, "js");
+}
+
+#[test]
+fn get_extension_for_runner_powershell1() {
+    let output = get_extension_for_runner("powershell");
+    assert_eq!(output, "ps1");
+}
+
+#[test]
+fn get_extension_for_runner_powershell2() {
+    let output = get_extension_for_runner("pwsh");
+    assert_eq!(output, "ps1");
+}
