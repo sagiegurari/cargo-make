@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.2
+### v0.37.2 (2023-09-27)
 
 * Enhancement: improve support for shebang script file extensions #926
 
