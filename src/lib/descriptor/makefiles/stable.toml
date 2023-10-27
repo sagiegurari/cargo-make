@@ -181,6 +181,8 @@ echo "    Target OS: ${CARGO_MAKE_RUST_TARGET_OS}"
 echo "    Pointer Width: ${CARGO_MAKE_RUST_TARGET_POINTER_WIDTH}"
 echo "    Target Vendor: ${CARGO_MAKE_RUST_TARGET_VENDOR}"
 echo "    Target Triple: ${CARGO_MAKE_RUST_TARGET_TRIPLE}"
+echo "    Target Directory: ${CARGO_MAKE_CRATE_TARGET_DIRECTORY}"
+echo "    Custom Triple Target Directory: ${CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY}"
 echo "*************************************"
 '''
 

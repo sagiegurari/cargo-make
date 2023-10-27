@@ -404,7 +404,10 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
     envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", &crate_target_dirs.host);
     match crate_target_dirs.custom {
         Some(ref value) => envmnt::set("CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY", value),
-        None => envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", &crate_target_dirs.host),
+        None => envmnt::set(
+            "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
+            &crate_target_dirs.host,
+        ),
     }
 
     crate_info_clone
