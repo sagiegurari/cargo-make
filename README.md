@@ -655,7 +655,7 @@ args = [
 ]
 ```
 
-*For native scripts, use that native script syntax.*
+*For native scripts, use that native script syntax.*<br>
 *For shell you can use ```${0}``` and for windows: ```%*```*
 
 Invoking cargo-make with additional arguments would result in the following:
