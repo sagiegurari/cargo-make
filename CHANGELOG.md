@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.37.3
+
+* Fix: Fallback CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY to CARGO_MAKE_CRATE_TARGET_DIRECTORY #972
+* Enhancement: Improve rust based scripts performance by enabling script caching #968
+
 ### v0.37.2 (2023-09-27)
 
 * Enhancement: improve support for shebang script file extensions #926

@@ -401,11 +401,14 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
     envmnt::set_bool("CARGO_MAKE_CRATE_LOCK_FILE_EXISTS", lock_file_exists);
 
     let crate_target_dirs = crateinfo::crate_target_dirs(home);
-    envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", crate_target_dirs.host);
-    envmnt::set_optional(
-        "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
-        &crate_target_dirs.custom,
-    );
+    envmnt::set("CARGO_MAKE_CRATE_TARGET_DIRECTORY", &crate_target_dirs.host);
+    match crate_target_dirs.custom {
+        Some(ref value) => envmnt::set("CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY", value),
+        None => envmnt::set(
+            "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
+            &crate_target_dirs.host,
+        ),
+    }
 
     crate_info_clone
 }
