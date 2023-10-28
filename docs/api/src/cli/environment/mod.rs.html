@@ -855,6 +855,9 @@
 <a href="#855" id="855">855</a>
 <a href="#856" id="856">856</a>
 <a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # env
 //!
 //! Sets up the env vars before running the tasks.
@@ -1258,11 +1261,14 @@
     envmnt::set_bool(<span class="string">&quot;CARGO_MAKE_CRATE_LOCK_FILE_EXISTS&quot;</span>, lock_file_exists);
 
     <span class="kw">let </span>crate_target_dirs = crateinfo::crate_target_dirs(home);
-    envmnt::set(<span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>, crate_target_dirs.host);
-    envmnt::set_optional(
-        <span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>,
-        <span class="kw-2">&amp;</span>crate_target_dirs.custom,
-    );
+    envmnt::set(<span class="string">&quot;CARGO_MAKE_CRATE_TARGET_DIRECTORY&quot;</span>, <span class="kw-2">&amp;</span>crate_target_dirs.host);
+    <span class="kw">match </span>crate_target_dirs.custom {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; envmnt::set(<span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>, value),
+        <span class="prelude-val">None </span>=&gt; envmnt::set(
+            <span class="string">&quot;CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY&quot;</span>,
+            <span class="kw-2">&amp;</span>crate_target_dirs.host,
+        ),
+    }
 
     crate_info_clone
 }

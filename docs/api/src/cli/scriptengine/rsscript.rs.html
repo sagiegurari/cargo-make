@@ -117,9 +117,6 @@
 <a href="#117" id="117">117</a>
 <a href="#118" id="118">118</a>
 <a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # rsscript
 //!
 //! Compiles and runs rust code.
@@ -131,8 +128,7 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
 <span class="kw">use </span><span class="kw">crate</span>::installer::{cargo_plugin_installer, crate_installer};
-<span class="kw">use </span><span class="kw">crate</span>::io::delete_file;
-<span class="kw">use </span><span class="kw">crate</span>::scriptengine::script_utils::create_script_file;
+<span class="kw">use </span><span class="kw">crate</span>::scriptengine::script_utils::create_persisted_script_file;
 <span class="kw">use </span><span class="kw">crate</span>::types::{InstallCrateInfo, TestArg};
 
 <span class="attr">#[derive(PartialEq, Debug)]
@@ -199,7 +195,7 @@
 }
 
 <span class="kw">fn </span>create_rust_file(rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; String {
-    create_script_file(rust_script, <span class="string">&quot;rs&quot;</span>)
+    create_persisted_script_file(rust_script, <span class="string">&quot;rs&quot;</span>)
 }
 
 <span class="kw">fn </span>run_file(file: <span class="kw-2">&amp;</span>str, cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, provider: <span class="kw-2">&amp;</span>ScriptRunner) -&gt; bool {
@@ -235,8 +231,6 @@
     <span class="kw">let </span>file = create_rust_file(rust_script);
 
     <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, <span class="kw-2">&amp;</span>cli_arguments, <span class="kw-2">&amp;</span>provider);
-
-    delete_file(<span class="kw-2">&amp;</span>file);
 
     <span class="kw">if </span>validate &amp;&amp; !valid {
         <span class="macro">error!</span>(<span class="string">&quot;Unable to execute rust code.&quot;</span>);
