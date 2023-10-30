@@ -47,10 +47,7 @@ fn install_crate(provider: &ScriptRunner) {
                 force: None,
             };
 
-            // due to fornwall/rust-script/issues/42
-            let rust_script_install_args = vec!["--version".to_string(), "0.7.0".to_string()];
-
-            crate_installer::install(&None, &info, &Some(rust_script_install_args), false);
+            crate_installer::install(&None, &info, &None, false);
         }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
