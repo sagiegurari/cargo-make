@@ -99,9 +99,7 @@ dependencies = [
   "pre-verify-project",
   "verify-project",
   "post-verify-project",
-  "pre-audit",
-  "audit",
-  "post-audit",
+  "audit-flow",
   "outdated-flow",
   "docs-flow",
   "end-build-flow",
@@ -616,6 +614,18 @@ args = ["audit"]
 [tasks.post-audit]
 category = "CI"
 
+[tasks.audit-flow-no-condition]
+description = "Runs audit flow."
+category = "CI"
+private = true
+dependencies = ["pre-audit", "audit", "post-audit"]
+
+[tasks.audit-flow]
+description = "Runs audit flow."
+category = "CI"
+condition = { env_not_set = ["CARGO_MAKE_SKIP_SLOW_SECONDARY_FLOWS"] }
+run_task = "audit-flow-no-condition"
+
 [tasks.pre-outdated]
 category = "CI"
 
@@ -630,10 +640,17 @@ args = ["outdated", "--root-deps-only", "--exit-code", "1"]
 [tasks.post-outdated]
 category = "CI"
 
+[tasks.outdated-flow-no-condition]
+description = "Runs outdated cargo flow."
+category = "CI"
+private = true
+dependencies = ["pre-outdated", "outdated", "post-outdated"]
+
 [tasks.outdated-flow]
 description = "Runs outdated cargo flow."
 category = "CI"
-dependencies = ["pre-outdated", "outdated", "post-outdated"]
+condition = { env_not_set = ["CARGO_MAKE_SKIP_SLOW_SECONDARY_FLOWS"] }
+run_task = "outdated-flow-no-condition"
 
 [tasks.outdated-ci-flow]
 description = "Runs outdated cargo conditioned CI flow."

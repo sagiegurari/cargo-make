@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.4 (2023-10-31)
+
+* Fix: Enable latest rust-script installation by default #979 (thanks @wmmc88)
+
 ### v0.37.3 (2023-10-28)
 
 * Fix: Fallback CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY to CARGO_MAKE_CRATE_TARGET_DIRECTORY #972

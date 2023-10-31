@@ -114,9 +114,6 @@
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # rsscript
 //!
 //! Compiles and runs rust code.
@@ -166,10 +163,7 @@
                 force: <span class="prelude-val">None</span>,
             };
 
-            <span class="comment">// due to fornwall/rust-script/issues/42
-            </span><span class="kw">let </span>rust_script_install_args = <span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.to_string(), <span class="string">&quot;0.7.0&quot;</span>.to_string()];
-
-            crate_installer::install(<span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>info, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(rust_script_install_args), <span class="bool-val">false</span>);
+            crate_installer::install(<span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>info, <span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="bool-val">false</span>);
         }
         ScriptRunner::CargoScript =&gt; cargo_plugin_installer::install_crate(
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,

@@ -14,6 +14,7 @@
 ## CI
 
 * **audit** - Runs audit cargo plugin.
+* **audit-flow** - Runs audit flow.
 * **bench-ci-flow** - Runs/Compiles the benches if conditions are met.
 * **ci-coverage-flow** - Runs the coverage flow and uploads the results to codecov.
 * **ci-flow** - CI task will run cargo build and cargo test with verbose output
