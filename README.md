@@ -4010,6 +4010,20 @@ source ./extra/shell/makers-completion.bash
 
 It will enable auto completion for the **makers** executable.
 
+<a name="usage-shell-completion-fig"></a>
+
+#### Fig / Amazon CodeWhisperer for command line
+
+Fig supports cargo-make as of [this PR](https://github.com/withfig/autocomplete/pull/2180), no special configuration is needed, just download the latest version of [Fig](https://fig.io/) or [Amazon CodeWhisperer for command line](https://aws.amazon.com/blogs/devops/introducing-amazon-codewhisperer-for-command-line/).
+
+Double check if `cargo-make` is globally installed by running:
+
+```bash
+cargo --list
+```
+
+If you can see `make` on the list, Fig should work and load the completion automatically from `./Makefile.toml` or any directory you specify with `--makefile <path>`
+
 <a name="cargo-make-global-config"></a>
 ### Global Configuration
 Some of the default CLI values and cargo-make behaviour can be configured via optional global configuration file `config.toml` located in the cargo-make directory.
