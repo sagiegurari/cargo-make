@@ -10,8 +10,9 @@ mod profile_test;
 use envmnt;
 
 static PROFILE_ENV_KEY: &str = "CARGO_MAKE_PROFILE";
+static DEFAULT_PROFILE_ENV_KEY: &str = "CARGO_MAKE_DEFAULT_PROFILE";
 static ADDITIONAL_PROFILES_ENV_KEY: &str = "CARGO_MAKE_ADDITIONAL_PROFILES";
-pub(crate) static DEFAULT_PROFILE: &str = "development";
+static DEFAULT_PROFILE: &str = "development";
 
 fn normalize_profile(profile: &str) -> String {
     let profile_normalized = profile.to_lowercase();
@@ -33,7 +34,11 @@ fn normalize_additional_profiles(profiles: &Vec<String>) -> Vec<String> {
 }
 
 pub(crate) fn get() -> String {
-    envmnt::get_or(PROFILE_ENV_KEY, DEFAULT_PROFILE)
+    envmnt::get_or(PROFILE_ENV_KEY, &default_profile())
+}
+
+pub(crate) fn default_profile() -> String {
+    envmnt::get_or(DEFAULT_PROFILE_ENV_KEY, DEFAULT_PROFILE)
 }
 
 pub(crate) fn set(profile: &str) -> String {

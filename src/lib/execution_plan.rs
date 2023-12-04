@@ -217,7 +217,7 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
     let profile_name = if envmnt::is_or("CARGO_MAKE_USE_WORKSPACE_PROFILE", true) {
         profile::get()
     } else {
-        profile::DEFAULT_PROFILE.to_string()
+        profile::default_profile()
     };
 
     let filtered_members = filter_workspace_members(&members);

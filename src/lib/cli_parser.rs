@@ -104,10 +104,9 @@ fn get_args(
         None => None,
     };
 
-    let default_profile = profile::DEFAULT_PROFILE.to_string();
     let profile_name = cli_parsed
         .get_first_value("profile")
-        .unwrap_or(default_profile);
+        .unwrap_or_else(profile::default_profile);
     cli_args.profile = Some(profile_name.to_string());
 
     cli_args.disable_check_for_updates = cli_parsed.arguments.contains("disable-check-for-updates");
@@ -216,7 +215,7 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             key: vec!["--profile".to_string(), "-p".to_string()],
             argument_occurrence: ArgumentOccurrence::Single,
             value_type: ArgumentValueType::Single,
-            default_value: Some(profile::DEFAULT_PROFILE.to_string()),
+            default_value: Some(profile::default_profile()),
             help: Some(ArgumentHelp::TextAndParam(
                 "The profile name (will be converted to lower case)".to_string(),
                 "PROFILE".to_string(),
