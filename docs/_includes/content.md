@@ -3567,6 +3567,10 @@ args_string = array_join ${task.args} " " # simple example which doesn't support
 exec --fail-on-error ${task.command} %{args_string}
 ```
 
+Once a plugin is defined for a task, the task execution control moves to the plugin itself.<br>
+All scripts, commands, conditions, env, etc... are ignored and should be handled by the plugin code itself.<br>
+All specific task environment variables will not be defined globally (all CARGO_MAKE_CURRENT_TASK_ variables) and instead available in the task env block in the json string.
+
 <a name="usage-plugins-defining-plugins"></a>
 ### Defining Plugins
 

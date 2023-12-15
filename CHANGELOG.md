@@ -5,6 +5,7 @@
 * Enhancement: Enable setting default profile by env variable #996 (thanks @Johnabell)
 * Documentation: Add Fig Autocompletion to README.md #993 (thanks @beeinger)
 * Maintenance: update dependencies and build
+* Documentation: Add additional plugin env handling details #978
 
 ### v0.37.4 (2023-10-31)
 
