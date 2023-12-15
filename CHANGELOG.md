@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.38.5
+
+* Maintenance: update dependencies and build
+
 ### v0.37.4 (2023-10-31)
 
 * Fix: Enable latest rust-script installation by default #979 (thanks @wmmc88)
