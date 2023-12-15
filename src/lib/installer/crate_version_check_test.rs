@@ -132,7 +132,7 @@ fn get_crate_version_from_info_valid() {
 
 #[test]
 fn get_crate_version_for_rustup_component() {
-    if (!ci_info::is_ci()) {
+    if !ci_info::is_ci() {
         let mut version = get_crate_version("rustfmt", None);
         assert!(version.is_none());
 
