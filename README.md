@@ -1823,6 +1823,7 @@ echo "condition was met"
 The following condition types are available:
 
 * **profile** - See [profiles](#usage-profiles) for more info
+* **os** - List of OS names (Windows, macOS, iOS, Linux, Android, etc... as defined by cfg!(target_os))
 * **platforms** - List of platform names (windows, linux, mac)
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined

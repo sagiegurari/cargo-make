@@ -34,6 +34,7 @@ fn run_valid() {
     task.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec![

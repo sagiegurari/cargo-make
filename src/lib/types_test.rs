@@ -1956,6 +1956,7 @@ fn task_extend_extended_have_all_fields() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -2006,6 +2007,7 @@ fn task_extend_extended_have_all_fields() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2053,6 +2055,7 @@ fn task_extend_extended_have_all_fields() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2100,6 +2103,7 @@ fn task_extend_extended_have_all_fields() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2217,6 +2221,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.mac.unwrap().clear.is_none());
 
     let condition = base.condition.unwrap();
+    assert_eq!(condition.os.unwrap().len(), 2);
     assert_eq!(condition.platforms.unwrap().len(), 2);
     assert_eq!(condition.channels.unwrap().len(), 2);
 }
@@ -2241,6 +2246,7 @@ fn task_extend_clear_with_no_data() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -2291,6 +2297,7 @@ fn task_extend_clear_with_no_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2338,6 +2345,7 @@ fn task_extend_clear_with_no_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2385,6 +2393,7 @@ fn task_extend_clear_with_no_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2485,6 +2494,7 @@ fn task_extend_clear_with_all_data() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -2535,6 +2545,7 @@ fn task_extend_clear_with_all_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2582,6 +2593,7 @@ fn task_extend_clear_with_all_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2629,6 +2641,7 @@ fn task_extend_clear_with_all_data() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -2887,6 +2900,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -2933,6 +2947,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
                 platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
                 channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
                 env_set: None,
@@ -3060,6 +3075,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2".into());
 
     let condition = normalized_task.condition.unwrap();
+    assert_eq!(condition.os.unwrap().len(), 2);
     assert_eq!(condition.platforms.unwrap().len(), 2);
     assert_eq!(condition.channels.unwrap().len(), 2);
 }
@@ -3091,6 +3107,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -3136,6 +3153,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string()]),
                 platforms: Some(vec!["linux".to_string()]),
                 channels: Some(vec![
                     "nightly".to_string(),
@@ -3268,6 +3286,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert_eq!(normalized_task.toolchain.unwrap(), "toolchain2".into());
 
     let condition = normalized_task.condition.unwrap();
+    assert_eq!(condition.os.unwrap().len(), 1);
     assert_eq!(condition.platforms.unwrap().len(), 1);
     assert_eq!(condition.channels.unwrap().len(), 3);
 }
@@ -3292,6 +3311,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
@@ -3456,6 +3476,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: Some(vec!["os1".to_string(), "os2".to_string()]),
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,

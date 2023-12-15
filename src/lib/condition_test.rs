@@ -42,6 +42,7 @@ fn validate_env_set_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -70,6 +71,7 @@ fn validate_env_set_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
@@ -94,6 +96,7 @@ fn validate_env_set_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
@@ -122,6 +125,7 @@ fn validate_env_set_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec![
@@ -150,6 +154,7 @@ fn validate_env_not_set_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -175,6 +180,7 @@ fn validate_env_not_set_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -203,6 +209,7 @@ fn validate_env_not_set_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -231,6 +238,7 @@ fn validate_env_not_set_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -259,6 +267,7 @@ fn validate_env_bool_true_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -287,6 +296,7 @@ fn validate_env_bool_true_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -315,6 +325,7 @@ fn validate_env_bool_true_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -343,6 +354,7 @@ fn validate_env_bool_true_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -371,6 +383,7 @@ fn validate_env_bool_true_invalid_partial_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -395,6 +408,7 @@ fn validate_env_bool_false_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -423,6 +437,7 @@ fn validate_env_bool_false_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -451,6 +466,7 @@ fn validate_env_bool_false_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -479,6 +495,7 @@ fn validate_env_bool_false_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -507,6 +524,7 @@ fn validate_env_bool_false_invalid_partial_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -531,6 +549,7 @@ fn validate_env_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -563,6 +582,7 @@ fn validate_env_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -592,6 +612,7 @@ fn validate_env_invalid_not_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -622,6 +643,7 @@ fn validate_env_invalid_not_equal() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -654,6 +676,7 @@ fn validate_env_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -686,6 +709,7 @@ fn validate_env_contains_valid_same() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -718,6 +742,7 @@ fn validate_env_contains_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -747,6 +772,7 @@ fn validate_env_contains_invalid_not_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -777,6 +803,7 @@ fn validate_env_contains_invalid_not_equal() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -809,6 +836,7 @@ fn validate_env_contains_invalid_partial_found() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -861,6 +889,7 @@ fn validate_profile_valid() {
             "my_profile".to_string(),
             "bad2".to_string(),
         ]),
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -888,6 +917,7 @@ fn validate_profile_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -908,10 +938,65 @@ fn validate_profile_invalid() {
 }
 
 #[test]
+fn validate_os_valid() {
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        os: Some(vec![
+            "bad1".to_string(),
+            envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS"),
+            "bad2".to_string(),
+        ]),
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_os(&condition);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_os_invalid() {
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        os: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_os(&condition);
+
+    assert!(!enabled);
+}
+
+#[test]
 fn validate_platform_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: Some(vec![
             "bad1".to_string(),
             types::get_platform_name(),
@@ -940,6 +1025,7 @@ fn validate_platform_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         channels: None,
         env_set: None,
@@ -990,6 +1076,7 @@ fn validate_channel_valid() {
     let mut condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: Some(vec![
             "bad1".to_string(),
@@ -1014,6 +1101,7 @@ fn validate_channel_valid() {
     condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: Some(vec![
             "bad1".to_string(),
@@ -1039,6 +1127,7 @@ fn validate_channel_valid() {
     condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: Some(vec![
             "bad1".to_string(),
@@ -1092,6 +1181,7 @@ fn validate_channel_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         env_set: None,
@@ -1115,6 +1205,7 @@ fn validate_file_exists_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1141,6 +1232,7 @@ fn validate_file_exists_partial_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1168,6 +1260,7 @@ fn validate_file_exists_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1194,6 +1287,7 @@ fn validate_file_not_exists_valid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1220,6 +1314,7 @@ fn validate_file_not_exists_partial_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1247,6 +1342,7 @@ fn validate_file_not_exists_invalid() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1273,6 +1369,7 @@ fn validate_files_modified_all_empty() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1300,6 +1397,7 @@ fn validate_files_modified_only_input() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1327,6 +1425,7 @@ fn validate_files_modified_only_output() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1354,6 +1453,7 @@ fn validate_files_modified_same_timestamp() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -1389,6 +1489,7 @@ fn validate_files_modified_output_newer() {
         let condition = TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1425,6 +1526,7 @@ fn validate_files_modified_input_newer() {
         let condition = TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1458,6 +1560,7 @@ fn validate_files_modified_output_newer_env() {
         let condition = TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1491,6 +1594,7 @@ fn validate_files_modified_input_newer_env() {
         let condition = TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1546,6 +1650,7 @@ fn validate_criteria_empty() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1562,6 +1667,112 @@ fn validate_criteria_empty() {
     );
 
     assert!(enabled);
+}
+
+#[test]
+fn validate_criteria_valid_os() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        Some(&flow_info),
+        &Some(TaskCondition {
+            fail_message: None,
+            profiles: None,
+            os: Some(vec![
+                "bad1".to_string(),
+                envmnt::get_or_panic("CARGO_MAKE_RUST_TARGET_OS"),
+                "bad2".to_string(),
+            ]),
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: None,
+        }),
+    );
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_criteria_invalid_os() {
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    let enabled = validate_criteria(
+        Some(&flow_info),
+        &Some(TaskCondition {
+            fail_message: None,
+            profiles: None,
+            os: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+            platforms: None,
+            channels: None,
+            env_set: None,
+            env_not_set: None,
+            env_true: None,
+            env_false: None,
+            env: None,
+            env_contains: None,
+            rust_version: None,
+            files_exist: None,
+            files_not_exist: None,
+            files_modified: None,
+        }),
+    );
+
+    assert!(!enabled);
 }
 
 #[test]
@@ -1596,6 +1807,7 @@ fn validate_criteria_valid_platform() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: Some(vec![
                 "bad1".to_string(),
                 types::get_platform_name(),
@@ -1650,6 +1862,7 @@ fn validate_criteria_invalid_platform() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             channels: None,
             env_set: None,
@@ -1701,6 +1914,7 @@ fn validate_criteria_valid_profile() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), profile::get(), "bad2".to_string()]),
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1752,6 +1966,7 @@ fn validate_criteria_invalid_profile() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), "bad2".to_string()]),
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -1803,6 +2018,7 @@ fn validate_criteria_valid_channel() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: Some(vec![
                 "bad1".to_string(),
@@ -1830,6 +2046,7 @@ fn validate_criteria_valid_channel() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: Some(vec![
                 "bad1".to_string(),
@@ -1857,6 +2074,7 @@ fn validate_criteria_valid_channel() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: Some(vec![
                 "bad1".to_string(),
@@ -1912,6 +2130,7 @@ fn validate_criteria_invalid_channel() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             env_set: None,
@@ -1962,6 +2181,7 @@ fn validate_criteria_valid_file_exists() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -2014,6 +2234,7 @@ fn validate_criteria_invalid_file_exists() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -2066,6 +2287,7 @@ fn validate_criteria_valid_file_not_exists() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -2118,6 +2340,7 @@ fn validate_criteria_invalid_file_not_exists() {
         &Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,
@@ -2173,6 +2396,7 @@ fn validate_condition_for_step_both_valid() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: Some(vec![
             "bad1".to_string(),
             types::get_platform_name(),
@@ -2232,6 +2456,7 @@ fn validate_condition_for_step_valid_script_invalid() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: Some(vec![
             "bad1".to_string(),
             types::get_platform_name(),
@@ -2291,6 +2516,7 @@ fn validate_condition_for_step_invalid_script_valid() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         channels: None,
         env_set: None,
@@ -2347,6 +2573,7 @@ fn validate_condition_for_step_invalid_env_set() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec!["BAD_ENV_SET1".to_string()]),
@@ -2405,6 +2632,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2468,6 +2696,7 @@ fn validate_condition_for_step_valid_env() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2528,6 +2757,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2591,6 +2821,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2654,6 +2885,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2717,6 +2949,7 @@ fn validate_condition_for_step_valid_env_contains() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2777,6 +3010,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2840,6 +3074,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2898,6 +3133,7 @@ fn validate_condition_for_step_valid_rust_version() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -2960,6 +3196,7 @@ fn validate_condition_for_step_invalid_rust_version() {
     step.config.condition = Some(TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -3378,6 +3615,7 @@ fn validate_rust_version_no_condition() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -3405,6 +3643,7 @@ fn validate_rust_version_with_valid_condition() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -3437,6 +3676,7 @@ fn validate_rust_version_with_invalid_condition() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,

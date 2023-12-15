@@ -315,6 +315,7 @@ fn set_env_script_with_condition_true() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -356,6 +357,7 @@ fn set_env_script_with_condition_false() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_FALSE".to_string()]),
@@ -485,6 +487,7 @@ fn set_env_for_conditional_value_condition_true() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: None,
@@ -520,6 +523,7 @@ fn set_env_for_conditional_value_condition_false() {
     let condition = TaskCondition {
         fail_message: None,
         profiles: None,
+        os: None,
         platforms: None,
         channels: None,
         env_set: Some(vec!["ENV_CONDITIONAL_CONDITION_FALSE".to_string()]),
@@ -664,6 +668,7 @@ fn set_env_for_config_conditional() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: None,
             env_set: None,

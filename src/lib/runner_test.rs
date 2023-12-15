@@ -1626,6 +1626,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: None,
+            os: None,
             platforms: None,
             channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             env_set: None,
@@ -1824,6 +1825,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: None,
+                os: None,
                 platforms: None,
                 channels: Some(vec!["bad1".to_string(), "bad2".to_string()]),
                 env_set: None,
@@ -1884,6 +1886,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: None,
+                os: None,
                 platforms: None,
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
@@ -1944,6 +1947,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: None,
+                os: None,
                 platforms: None,
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
@@ -2095,6 +2099,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 condition: Some(TaskCondition {
                     fail_message: None,
                     profiles: None,
+                    os: None,
                     platforms: None,
                     channels: None,
                     env_set: Some(vec!["CARGO_MAKE".to_string()]),
@@ -2165,6 +2170,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 condition: Some(TaskCondition {
                     fail_message: None,
                     profiles: None,
+                    os: None,
                     platforms: None,
                     channels: None,
                     env_set: None,
@@ -2243,6 +2249,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 condition: Some(TaskCondition {
                     fail_message: None,
                     profiles: None,
+                    os: None,
                     platforms: None,
                     channels: None,
                     env_set: None,
@@ -2328,6 +2335,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: None,
+                os: None,
                 platforms: None,
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
@@ -2388,6 +2396,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
             condition: Some(TaskCondition {
                 fail_message: None,
                 profiles: None,
+                os: None,
                 platforms: None,
                 channels: None,
                 env_set: Some(vec!["CARGO_MAKE".to_string()]),
