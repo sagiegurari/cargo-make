@@ -23,13 +23,21 @@ pub(crate) fn on_test_startup() {
 pub(crate) fn is_linux() -> bool {
     on_test_startup();
 
-    cfg!(target_os = "linux")
+    if cfg!(target_os = "linux") {
+        true
+    } else {
+        false
+    }
 }
 
 pub(crate) fn is_windows() -> bool {
     on_test_startup();
 
-    cfg!(windows)
+    if cfg!(windows) {
+        true
+    } else {
+        false
+    }
 }
 
 pub(crate) fn is_rust_channel(rust_channel: RustChannel) -> bool {
