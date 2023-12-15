@@ -53,6 +53,11 @@
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
 <a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # profile
 //!
 //! Profile related utility functions
@@ -65,8 +70,9 @@
 <span class="kw">use </span>envmnt;
 
 <span class="kw">static </span>PROFILE_ENV_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;CARGO_MAKE_PROFILE&quot;</span>;
+<span class="kw">static </span>DEFAULT_PROFILE_ENV_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;CARGO_MAKE_DEFAULT_PROFILE&quot;</span>;
 <span class="kw">static </span>ADDITIONAL_PROFILES_ENV_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;CARGO_MAKE_ADDITIONAL_PROFILES&quot;</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_PROFILE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;development&quot;</span>;
+<span class="kw">static </span>DEFAULT_PROFILE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;development&quot;</span>;
 
 <span class="kw">fn </span>normalize_profile(profile: <span class="kw-2">&amp;</span>str) -&gt; String {
     <span class="kw">let </span>profile_normalized = profile.to_lowercase();
@@ -88,7 +94,11 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get() -&gt; String {
-    envmnt::get_or(PROFILE_ENV_KEY, DEFAULT_PROFILE)
+    envmnt::get_or(PROFILE_ENV_KEY, <span class="kw-2">&amp;</span>default_profile())
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>default_profile() -&gt; String {
+    envmnt::get_or(DEFAULT_PROFILE_ENV_KEY, DEFAULT_PROFILE)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set(profile: <span class="kw-2">&amp;</span>str) -&gt; String {

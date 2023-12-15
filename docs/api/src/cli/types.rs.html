@@ -2382,6 +2382,8 @@
 <a href="#2382" id="2382">2382</a>
 <a href="#2383" id="2383">2383</a>
 <a href="#2384" id="2384">2384</a>
+<a href="#2385" id="2385">2385</a>
+<a href="#2386" id="2386">2386</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -2756,6 +2758,8 @@
     </span><span class="kw">pub </span>fail_message: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Profile names (development, ...)
     </span><span class="kw">pub </span>profiles: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    <span class="doccomment">/// As defined in the cfg target_os
+    </span><span class="kw">pub </span>os: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// Platform names (linux, windows, mac)
     </span><span class="kw">pub </span>platforms: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// Channel names (stable, beta, nightly)

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.38.5
+### v0.37.5 (2023-12-15)
 
 * Enhancement: Add OS condition #989
 * Enhancement: Enable setting default profile by env variable #996 (thanks @Johnabell)

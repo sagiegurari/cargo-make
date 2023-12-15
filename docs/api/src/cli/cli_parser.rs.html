@@ -520,7 +520,6 @@
 <a href="#520" id="520">520</a>
 <a href="#521" id="521">521</a>
 <a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cli_parser
 //!
 //! Defines the cli args and parsers them.
@@ -627,10 +626,9 @@
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let </span>default_profile = profile::DEFAULT_PROFILE.to_string();
     <span class="kw">let </span>profile_name = cli_parsed
         .get_first_value(<span class="string">&quot;profile&quot;</span>)
-        .unwrap_or(default_profile);
+        .unwrap_or_else(profile::default_profile);
     cli_args.profile = <span class="prelude-val">Some</span>(profile_name.to_string());
 
     cli_args.disable_check_for_updates = cli_parsed.arguments.contains(<span class="string">&quot;disable-check-for-updates&quot;</span>);
@@ -739,7 +737,7 @@
             key: <span class="macro">vec!</span>[<span class="string">&quot;--profile&quot;</span>.to_string(), <span class="string">&quot;-p&quot;</span>.to_string()],
             argument_occurrence: ArgumentOccurrence::Single,
             value_type: ArgumentValueType::Single,
-            default_value: <span class="prelude-val">Some</span>(profile::DEFAULT_PROFILE.to_string()),
+            default_value: <span class="prelude-val">Some</span>(profile::default_profile()),
             help: <span class="prelude-val">Some</span>(ArgumentHelp::TextAndParam(
                 <span class="string">&quot;The profile name (will be converted to lower case)&quot;</span>.to_string(),
                 <span class="string">&quot;PROFILE&quot;</span>.to_string(),

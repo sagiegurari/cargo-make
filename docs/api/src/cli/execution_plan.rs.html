@@ -718,7 +718,7 @@
     <span class="kw">let </span>profile_name = <span class="kw">if </span>envmnt::is_or(<span class="string">&quot;CARGO_MAKE_USE_WORKSPACE_PROFILE&quot;</span>, <span class="bool-val">true</span>) {
         profile::get()
     } <span class="kw">else </span>{
-        profile::DEFAULT_PROFILE.to_string()
+        profile::default_profile()
     };
 
     <span class="kw">let </span>filtered_members = filter_workspace_members(<span class="kw-2">&amp;</span>members);

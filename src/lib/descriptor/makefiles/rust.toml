@@ -143,7 +143,7 @@ script = '''
 DOCS_DIRECTORY = set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
 
 # Removing Documentation Directory: ${DOCS_DIRECTORY}
-rm -Rf ${DOCS_DIRECTORY}
+rm -r ${DOCS_DIRECTORY}
 '''
 
 [tasks.clean]
@@ -811,7 +811,7 @@ end
 if is_empty "${CARGO_MAKE_DOCS_SUB_FOLDER}"
     dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api
 else
-    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}
+    dest_dir= set ${CARGO_MAKE_DOCS_ROOT_FOLDER}/docs/api/${CARGO_MAKE_DOCS_SUB_FOLDER}/
 end
 
 echo Source Directory: ${src_dir}
@@ -822,8 +822,15 @@ mkdir ${dest_dir}
 
 handle = glob_array ${src_dir}/*
 for path in ${handle}
-    mv ${path} ${dest_dir}
+    echo Moving documentation path: ${path}
+    if is_directory ${path}
+        mv ${path}/ ${dest_dir}
+    else
+        mv ${path} ${dest_dir}
+    end
 end
+
+echo All docs copied
 '''
 
 [tasks.end-build-flow]
