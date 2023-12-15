@@ -2391,7 +2391,9 @@ condition = { profiles = ["development", "production"] }
 ```
 * [New environment variable](#usage-env-global) **`CARGO_MAKE_PROFILE`** which holds the profile name and can be used by conditions, scripts and commands.
 
-It is possible to activate multiple profiles simultaneously using **additional_profiles**, but these have limited support.
+It is possible to activate multiple profiles simultaneously using **additional_profiles**, but these have limited support.<br>
+The default profile (if not provided via command line) is `"development"`.<br>
+However, this can be overridden by setting the `CARGO_MAKE_DEFAULT_PROFILE` environment variable.
 
 ```toml
 [config]
