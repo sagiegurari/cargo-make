@@ -106,6 +106,7 @@
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
+        * [Fig / Amazon CodeWhisperer for command line](#usage-shell-completion-fig)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)

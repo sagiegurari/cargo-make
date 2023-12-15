@@ -348,7 +348,7 @@ fn create_workspace_task_with_included_members() {
         ],
     );
 
-    profile::set(profile::DEFAULT_PROFILE);
+    profile::set(&profile::default_profile());
 
     let task = create_workspace_task(&crate_info, "some_task");
 
@@ -402,7 +402,7 @@ fn create_workspace_task_with_included_and_skipped_members() {
         &vec!["member2".to_string(), "dir1/member3".to_string()],
     );
 
-    profile::set(profile::DEFAULT_PROFILE);
+    profile::set(&profile::default_profile());
 
     let task = create_workspace_task(&crate_info, "some_task");
 

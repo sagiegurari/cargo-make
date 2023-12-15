@@ -9,6 +9,12 @@ script = '''
 echo "condition was met"
 '''
 
+[tasks.test-os-condition]
+condition = { os = ["linux"] }
+script = '''
+echo "OS condition was met"
+'''
+
 [tasks.test-rust-version-condition]
 condition = { rust_version = { min = "1.20.0", max = "1.30.0" } }
 script = '''

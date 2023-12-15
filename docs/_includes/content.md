@@ -1686,6 +1686,7 @@ echo "condition was met"
 The following condition types are available:
 
 * **profile** - See [profiles](#usage-profiles) for more info
+* **os** - List of OS names (Windows, macOS, iOS, Linux, Android, etc... as defined by cfg!(target_os))
 * **platforms** - List of platform names (windows, linux, mac)
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
@@ -2391,7 +2392,9 @@ condition = { profiles = ["development", "production"] }
 ```
 * [New environment variable](#usage-env-global) **`CARGO_MAKE_PROFILE`** which holds the profile name and can be used by conditions, scripts and commands.
 
-It is possible to activate multiple profiles simultaneously using **additional_profiles**, but these have limited support.
+It is possible to activate multiple profiles simultaneously using **additional_profiles**, but these have limited support.<br>
+The default profile (if not provided via command line) is `"development"`.<br>
+However, this can be overridden by setting the `CARGO_MAKE_DEFAULT_PROFILE` environment variable.
 
 ```toml
 [config]
@@ -3565,6 +3568,10 @@ args_string = array_join ${task.args} " " # simple example which doesn't support
 exec --fail-on-error ${task.command} %{args_string}
 ```
 
+Once a plugin is defined for a task, the task execution control moves to the plugin itself.<br>
+All scripts, commands, conditions, env, etc... are ignored and should be handled by the plugin code itself.<br>
+All specific task environment variables will not be defined globally (all CARGO_MAKE_CURRENT_TASK_ variables) and instead available in the task env block in the json string.
+
 <a name="usage-plugins-defining-plugins"></a>
 ### Defining Plugins
 
@@ -3873,6 +3880,19 @@ source ./extra/shell/makers-completion.bash
 ```
 
 It will enable auto completion for the **makers** executable.
+
+<a name="usage-shell-completion-fig"></a>
+#### Fig / Amazon CodeWhisperer for command line
+
+Fig supports cargo-make as of [this PR](https://github.com/withfig/autocomplete/pull/2180), no special configuration is needed, just download the latest version of [Fig](https://fig.io/) or [Amazon CodeWhisperer for command line](https://aws.amazon.com/blogs/devops/introducing-amazon-codewhisperer-for-command-line/).
+
+Double check if `cargo-make` is globally installed by running:
+
+```bash
+cargo --list
+```
+
+If you can see `make` on the list, Fig should work and load the completion automatically from `./Makefile.toml` or any directory you specify with `--makefile <path>`
 
 <a name="cargo-make-global-config"></a>
 ### Global Configuration

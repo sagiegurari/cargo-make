@@ -372,6 +372,8 @@ pub struct TaskCondition {
     pub fail_message: Option<String>,
     /// Profile names (development, ...)
     pub profiles: Option<Vec<String>>,
+    /// As defined in the cfg target_os
+    pub os: Option<Vec<String>>,
     /// Platform names (linux, windows, mac)
     pub platforms: Option<Vec<String>>,
     /// Channel names (stable, beta, nightly)

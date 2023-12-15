@@ -116,6 +116,25 @@ fn validate_env_bool(condition: &TaskCondition, truthy: bool) -> bool {
     }
 }
 
+fn validate_os(condition: &TaskCondition) -> bool {
+    let os = condition.os.clone();
+    match os {
+        Some(os_names) => {
+            let os_name = envmnt::get_or("CARGO_MAKE_RUST_TARGET_OS", "");
+            let index = os_names.iter().position(|value| *value == os_name);
+
+            match index {
+                None => {
+                    debug!("Failed OS condition, current OS: {}", &os_name);
+                    false
+                }
+                _ => true,
+            }
+        }
+        None => true,
+    }
+}
+
 fn validate_platform(condition: &TaskCondition) -> bool {
     let platforms = condition.platforms.clone();
     match platforms {
@@ -395,7 +414,8 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
         Some(ref condition_struct) => {
             debug!("Checking task condition structure.");
 
-            validate_platform(&condition_struct)
+            validate_os(&condition_struct)
+                && validate_platform(&condition_struct)
                 && validate_profile(&condition_struct)
                 && validate_channel(&condition_struct, flow_info)
                 && validate_env(&condition_struct)

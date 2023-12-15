@@ -458,6 +458,7 @@ fn run_task_invoked_valid() {
         condition: Some(TaskCondition {
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
+            os: None,
             platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
             channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
             env_set: None,
