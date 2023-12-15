@@ -2662,6 +2662,10 @@ command = "echo"
 args = [ "running in production profile" ]
 ```
 
+#### Default profile
+
+The default profile is `"development"`. However, this can be overridden by setting the `CARGO_MAKE_DEFAULT_PROFILE` environment variable.
+
 <a name="usage-profiles-built-in"></a>
 #### Built In Profiles
 

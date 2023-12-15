@@ -87,7 +87,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let profile_name = &cli_args
         .profile
         .clone()
-        .unwrap_or(profile::DEFAULT_PROFILE.to_string());
+        .unwrap_or_else(profile::default_profile);
     let normalized_profile_name = profile::set(&profile_name);
 
     environment::load_env_file(cli_args.env_file.clone());
