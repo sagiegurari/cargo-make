@@ -230,9 +230,9 @@ dependencies = [
 
 [[package]]
 name = "ci_info"
-version = "0.14.13"
+version = "0.14.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e32051a4c1d4548018ac9bfbb648e3a03e09fe72439d5d1ce8b46dcdeb955a92"
+checksum = "840dbb7bdd1f2c4d434d6b08420ef204e0bfad0ab31a07a80a1248d24cc6e38b"
 dependencies = [
  "envmnt",
 ]
@@ -374,9 +374,9 @@ dependencies = [
 
 [[package]]
 name = "duckscriptsdk"
-version = "0.9.1"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d3c73c31500888233d2765ae6b3e21e2a571585c2a8fbb0ef87be6b18a305ff"
+checksum = "0999f2dc160e5480e6fc23e4586a383d2ab7e495d00b1810d87d1929ba140a3a"
 dependencies = [
  "attohttpc",
  "base64",
@@ -1580,14 +1580,15 @@ checksum = "14247bb57be4f377dfb94c72830b8ce8fc6beac03cf4bf7b9732eadd414123fc"
 
 [[package]]
 name = "which"
-version = "4.4.2"
+version = "5.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87ba24419a2078cd2b0f2ede2691b6c66d8e47836da3b6db8265ebad47afbfc7"
+checksum = "9bf3ea8596f3a0dd5980b46430f2058dfe2c36a27ccfbb1845d6fbfcd9ba6e14"
 dependencies = [
  "either",
  "home",
  "once_cell",
  "rustix",
+ "windows-sys",
 ]
 
 [[package]]
