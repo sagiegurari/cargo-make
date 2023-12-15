@@ -3,6 +3,7 @@
 ### v0.38.5
 
 * Enhancement: Enable setting default profile by env variable #996 (thanks @Johnabell)
+* Documentation: Add Fig Autocompletion to README.md #993 (thanks @beeinger)
 * Maintenance: update dependencies and build
 
 ### v0.37.4 (2023-10-31)

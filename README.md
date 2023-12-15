@@ -117,6 +117,7 @@
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
+        * [Fig / Amazon CodeWhisperer for command line](#usage-shell-completion-fig)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
 * [Task Naming Conventions](#task-name-conventions)
@@ -4013,7 +4014,6 @@ source ./extra/shell/makers-completion.bash
 It will enable auto completion for the **makers** executable.
 
 <a name="usage-shell-completion-fig"></a>
-
 #### Fig / Amazon CodeWhisperer for command line
 
 Fig supports cargo-make as of [this PR](https://github.com/withfig/autocomplete/pull/2180), no special configuration is needed, just download the latest version of [Fig](https://fig.io/) or [Amazon CodeWhisperer for command line](https://aws.amazon.com/blogs/devops/introducing-amazon-codewhisperer-for-command-line/).
