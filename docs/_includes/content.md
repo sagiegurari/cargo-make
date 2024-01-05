@@ -4098,7 +4098,7 @@ You can view the future development items list in the [github project issues](ht
 * [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
 * [vim-duckscript](https://github.com/nastevens/vim-duckscript)
 
-<a name="editor-support-vim"></a>
+<a name="editor-support-vs-code"></a>
 ### VSCode
 
 For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example/) directory
