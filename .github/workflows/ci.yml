@@ -1,7 +1,13 @@
 name: CI
 on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   CLICOLOR_FORCE: 1
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
 jobs:
   ci:
     name: CI
@@ -13,27 +19,25 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Install rust
-      uses: actions-rs/toolchain@v1
+      uses: actions/checkout@v4
+    - name: Install rust & cargo-make
+      uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: ${{ matrix.rust }}
-        profile: minimal
-        override: true
-    - name: Install cargo-make
-      uses: actions-rs/cargo@v1
-      with:
-        command: install
-        args: --debug cargo-make
+        toolchain: ${{ matrix.rust }}    
+    - run: cargo install --debug cargo-make
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
     - name: Run CI
       if: matrix.rust == 'stable' || matrix.rust == 'beta' || matrix.rust == 'nightly'
-      uses: actions-rs/cargo@v1
-      with:
-        command: run
-        args: --bin cargo-make --target-dir target/ci -- make ci-flow
+      run: cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
+      # uses: actions-rs/cargo@v1
+      # with:
+      #   command: run
+      #   args: --bin cargo-make --target-dir target/ci -- make ci-flow
     - name: Run CI (Minimal Supported Rust Version)
       if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
-      uses: actions-rs/cargo@v1
-      with:
-        command: make
-        args: ci-flow
+      run: cargo make ci-flow
+      # uses: actions-rs/cargo@v1
+      # with:
+      #   command: make
+      #   args: ci-flow
