@@ -13,27 +13,16 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Install rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
         toolchain: ${{ matrix.rust }}
-        profile: minimal
-        override: true
     - name: Install cargo-make
-      uses: actions-rs/cargo@v1
-      with:
-        command: install
-        args: --debug cargo-make
+      run: cargo install --debug cargo-make
     - name: Run CI
       if: matrix.rust == 'stable' || matrix.rust == 'beta' || matrix.rust == 'nightly'
-      uses: actions-rs/cargo@v1
-      with:
-        command: run
-        args: --bin cargo-make --target-dir target/ci -- make ci-flow
+      run: cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
     - name: Run CI (Minimal Supported Rust Version)
       if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
-      uses: actions-rs/cargo@v1
-      with:
-        command: make
-        args: ci-flow
+      run: cargo make ci-flow
