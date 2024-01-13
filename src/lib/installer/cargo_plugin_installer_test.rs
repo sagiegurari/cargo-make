@@ -2,10 +2,14 @@ use super::*;
 use crate::test;
 
 #[test]
-fn is_crate_installed_true() {
-    let mut output = is_crate_installed(&None, "test");
+fn is_crate_installed_true_core() {
+    let output = is_crate_installed(&None, "test");
     assert!(output);
-    output = is_crate_installed(&None, "make");
+}
+
+#[test]
+fn is_crate_installed_true_plugin() {
+    let output = is_crate_installed(&None, "make");
     assert!(output);
 }
 
