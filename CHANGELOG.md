@@ -3,6 +3,7 @@
 ### v0.37.6
 
 * Fix: Detect crate installation fix for new cargo list format
+* Maintenance: Update lint rules
 
 ### v0.37.5 (2023-12-15)
 
