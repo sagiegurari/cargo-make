@@ -3,7 +3,9 @@ use crate::test;
 
 #[test]
 fn is_crate_installed_true() {
-    let output = is_crate_installed(&None, "test");
+    let mut output = is_crate_installed(&None, "test");
+    assert!(output);
+    output = is_crate_installed(&None, "make");
     assert!(output);
 }
 

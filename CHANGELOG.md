@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.6
+
+* Fix: Detect crate installation fix for new cargo list format
+
 ### v0.37.5 (2023-12-15)
 
 * Enhancement: Add OS condition #989
