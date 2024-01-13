@@ -39,4 +39,3 @@ args = ["fmt", "badarg"]
 [tasks.make]
 command = "cargo"
 args = ["make", "--version"]
-
