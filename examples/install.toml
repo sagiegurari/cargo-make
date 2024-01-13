@@ -35,3 +35,8 @@ force = false
 install_crate = { crate_name = "rustfmt", binary = "rustfmt", version = "1.4.37", test_arg = "--help" }
 command = "cargo"
 args = ["fmt", "badarg"]
+
+[tasks.make]
+command = "cargo"
+args = ["make", "--version"]
+

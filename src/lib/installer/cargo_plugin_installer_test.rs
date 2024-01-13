@@ -10,10 +10,8 @@ fn is_crate_installed_true_core() {
 
 #[test]
 fn is_crate_installed_true_plugin() {
-    if !ci_info::is_ci() {
-        let output = is_crate_installed(&None, "make");
-        assert!(output);
-    }
+    let output = is_crate_installed(&None, "make");
+    assert!(output);
 }
 
 #[test]
