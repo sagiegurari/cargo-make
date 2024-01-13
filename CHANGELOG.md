@@ -4,6 +4,7 @@
 
 * Fix: Detect crate installation fix for new cargo list format
 * Maintenance: Update lint rules
+* Enhancement: Remove format check from static lint checks profile
 
 ### v0.37.5 (2023-12-15)
 
