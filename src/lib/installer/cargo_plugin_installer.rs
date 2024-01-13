@@ -76,8 +76,9 @@ fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) 
             command::validate_exit_code(exit_code);
 
             let stdout = String::from_utf8_lossy(&output.stdout).replace("\r", "");
-            is_crate_in_list_output(crate_name, &stdout)
-                || is_crate_in_list_output_legacy(crate_name, &stdout)
+            let crate_name_trimmed = crate_name.trim();
+            is_crate_in_list_output(&crate_name_trimmed, &stdout)
+                || is_crate_in_list_output_legacy(&crate_name_trimmed, &stdout)
         }
         Err(error) => {
             error!(
