@@ -37,14 +37,15 @@ fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
         line = line.trim();
 
         let words: Vec<&str> = line.split(' ').collect();
-        let plugin_name = words[0].trim();
-        let found = plugin_name.eq_ignore_ascii_case(crate_name);
+        let mut plugin_name = words[0].trim().to_string();
+        plugin_name.make_ascii_lowercase();
+        let found = crate_name.eq_ignore_ascii_case(&plugin_name);
         warn!(
             "Checking Line: {}\nPlugin: <{}> Expected: <{}> Sizes: {}/{} Found: {}",
             &line,
             &plugin_name,
             &crate_name,
-            plugin_name.make_ascii_lowercase().len(),
+            plugin_name.len(),
             crate_name.len(),
             found
         );
