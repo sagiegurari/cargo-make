@@ -126,17 +126,24 @@ fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
 }
 
 fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
-    let source_value = expand_value(&decode_info.source);
-
-    let mapped_value = match decode_info.mapping.get(&source_value) {
-        Some(value) => value.to_string(),
-        None => match decode_info.default_value {
-            Some(ref value) => value.clone().to_string(),
-            None => source_value.clone(),
-        },
+    let valid = match decode_info.condition {
+        Some(ref condition) => condition::validate_conditions_without_context(condition.clone()),
+        None => true,
     };
 
-    evaluate_and_set_env(&key, &mapped_value);
+    if valid {
+        let source_value = expand_value(&decode_info.source);
+
+        let mapped_value = match decode_info.mapping.get(&source_value) {
+            Some(value) => value.to_string(),
+            None => match decode_info.default_value {
+                Some(ref value) => value.clone().to_string(),
+                None => source_value.clone(),
+            },
+        };
+
+        evaluate_and_set_env(&key, &mapped_value);
+    }
 }
 
 fn set_env_for_conditional_value(key: &str, conditional_value: &EnvValueConditioned) {

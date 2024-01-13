@@ -1,5 +1,12 @@
 ## CHANGELOG
 
+### v0.37.6
+
+* Fix: Detect crate installation fix for new cargo list format
+* Enhancement: Add condition support for decode info #1020 (thanks @Bauke)
+* Enhancement: Remove format check from static lint checks profile
+* Maintenance: Update lint rules
+
 ### v0.37.5 (2023-12-15)
 
 * Enhancement: Add OS condition #989

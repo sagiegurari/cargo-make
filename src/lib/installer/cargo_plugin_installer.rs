@@ -14,6 +14,41 @@ use crate::types::ToolchainSpecifier;
 use envmnt;
 use std::process::Command;
 
+fn is_crate_in_list_output_legacy(crate_name: &str, output: &str) -> bool {
+    let lines: Vec<&str> = output.split(' ').collect();
+    for mut line in lines {
+        line = line.trim();
+
+        debug!("Checking: {}", &line);
+
+        if line.contains(crate_name) && crate_name.contains(line) {
+            debug!("Found installed crate.");
+
+            return true;
+        }
+    }
+
+    false
+}
+
+fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
+    let lines: Vec<&str> = output.split('\n').collect();
+    for mut line in lines {
+        line = line.trim();
+
+        debug!("Checking: {}", &line);
+        let words: Vec<&str> = line.split(' ').collect();
+
+        if words[0].contains(crate_name) && crate_name.contains(words[0]) {
+            debug!("Found installed crate.");
+
+            return true;
+        }
+    }
+
+    false
+}
+
 fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) -> bool {
     debug!("Getting list of installed cargo commands.");
 
@@ -32,27 +67,12 @@ fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) 
 
     match result {
         Ok(output) => {
-            let mut found = false;
-
             let exit_code = command::get_exit_code(Ok(output.status), false);
             command::validate_exit_code(exit_code);
 
             let stdout = String::from_utf8_lossy(&output.stdout);
-            let lines: Vec<&str> = stdout.split(' ').collect();
-            for mut line in lines {
-                line = line.trim();
-
-                debug!("Checking: {}", &line);
-
-                if line.contains(crate_name) && crate_name.contains(line) {
-                    found = true;
-                    debug!("Found installed crate.");
-
-                    break;
-                }
-            }
-
-            found
+            is_crate_in_list_output(crate_name, &stdout)
+                || is_crate_in_list_output_legacy(crate_name, &stdout)
         }
         Err(error) => {
             error!(

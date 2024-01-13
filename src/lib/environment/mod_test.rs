@@ -230,6 +230,7 @@ fn set_env_multi_types() {
         source: "${ENV_DECODE_EXPRESSIONS_MULTI_TYPE_VAR1}".to_string(),
         default_value: None,
         mapping,
+        condition: None,
     };
 
     let mut env = IndexMap::new();
@@ -278,6 +279,7 @@ fn set_env_for_decode_info_strings_found() {
         source: "key2".to_string(),
         default_value: None,
         mapping,
+        condition: None,
     };
 
     set_env_for_decode_info("ENV_DECODE_STRING_FOUND", &decode_info);
@@ -402,6 +404,7 @@ fn set_env_for_decode_info_strings_default() {
         source: "key0".to_string(),
         default_value: Some("default value".to_string()),
         mapping,
+        condition: None,
     };
 
     set_env_for_decode_info("ENV_DECODE_STRING_DEFAULT", &decode_info);
@@ -426,6 +429,7 @@ fn set_env_for_decode_info_strings_default_none() {
         source: "key0".to_string(),
         default_value: None,
         mapping,
+        condition: None,
     };
 
     set_env_for_decode_info("ENV_DECODE_STRING_DEFAULT_NONE", &decode_info);
@@ -454,11 +458,90 @@ fn set_env_for_decode_info_expressions() {
         source: "${ENV_DECODE_EXPRESSIONS_VAR1}".to_string(),
         default_value: None,
         mapping,
+        condition: None,
     };
 
     set_env_for_decode_info("ENV_DECODE_EXPRESSIONS", &decode_info);
 
     assert!(envmnt::is_equal("ENV_DECODE_EXPRESSIONS", "ENV2-ENV3"));
+}
+
+#[test]
+fn set_env_for_decode_info_condition_true() {
+    envmnt::remove("ENV_DECODE_CONDITION_TRUE");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["ENV_DECODE_CONDITION_TRUE".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let decode_info = EnvValueDecode {
+        source: "key2".to_string(),
+        default_value: None,
+        mapping,
+        condition: Some(condition),
+    };
+
+    set_env_for_decode_info("ENV_DECODE_CONDITION_TRUE", &decode_info);
+
+    assert!(envmnt::is_equal("ENV_DECODE_CONDITION_TRUE", "value2"));
+}
+
+#[test]
+fn set_env_for_decode_info_condition_false() {
+    envmnt::remove("ENV_DECODE_CONDITION_FALSE");
+
+    let mut mapping = HashMap::new();
+    mapping.insert("key1".to_string(), "value1".to_string());
+    mapping.insert("key2".to_string(), "value2".to_string());
+    mapping.insert("key3".to_string(), "value3".to_string());
+
+    let condition = TaskCondition {
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["ENV_DECODE_CONDITION_FALSE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let decode_info = EnvValueDecode {
+        source: "key2".to_string(),
+        default_value: None,
+        mapping,
+        condition: Some(condition),
+    };
+
+    set_env_for_decode_info("ENV_DECODE_CONDITION_FALSE", &decode_info);
+
+    assert!(!envmnt::exists("ENV_DECODE_CONDITION_FALSE"));
 }
 
 #[test]
