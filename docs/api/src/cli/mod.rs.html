@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -244,14 +246,34 @@
 <a href="#244" id="244">244</a>
 <a href="#245" id="245">245</a>
 <a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
 </pre></div><pre class="rust"><code><span class="attr">#![deny(
     absolute_paths_not_starting_with_crate,
     ambiguous_associated_items,
+    ambiguous_glob_imports,
     ambiguous_glob_reexports,
+    ambiguous_wide_pointer_comparisons,
     anonymous_parameters,
     arithmetic_overflow,
     array_into_iter,
     asm_sub_register,
+    async_fn_in_trait,
     bad_asm_style,
     bindings_with_variant_name,
     break_with_label_and_loop,
@@ -263,6 +285,7 @@
     confusable_idents,
     const_evaluatable_unchecked,
     const_item_mutation,
+    const_patterns_without_partial_eq,
     dead_code,
     deprecated,
     deprecated_cfg_attr_crate_type_name,
@@ -275,6 +298,7 @@
     dropping_references,
     duplicate_macro_attributes,
     dyn_drop,
+    elided_lifetimes_in_associated_constant,
     ellipsis_inclusive_range_patterns,
     enum_intrinsics_non_enums,
     explicit_outlives_requirements,
@@ -285,9 +309,9 @@
     forgetting_copy_types,
     forgetting_references,
     function_item_references,
+    hidden_glob_reexports,
     ill_formed_attribute_input,
     illegal_floating_point_literal_pattern,
-    implied_bounds_entailment,
     improper_ctypes,
     improper_ctypes_definitions,
     incomplete_features,
@@ -295,10 +319,14 @@
     indirect_structural_match,
     ineffective_unstable_trait_impl,
     inline_no_sanitize,
-    invalid_alignment,
+    internal_features,
     invalid_atomic_ordering,
     invalid_doc_attributes,
+    invalid_from_utf8,
+    invalid_from_utf8_unchecked,
     invalid_macro_export_arguments,
+    invalid_nan_comparisons,
+    invalid_reference_casting,
     invalid_type_param_default,
     invalid_value,
     irrefutable_let_patterns,
@@ -308,6 +336,7 @@
     legacy_derive_helpers,
     let_underscore_drop,
     let_underscore_lock,
+    long_running_const_eval,
     macro_expanded_macro_exports_accessed_by_absolute_paths,
     map_unit_fn,
     meta_variable_misuse,
@@ -336,11 +365,13 @@
     path_statements,
     patterns_in_fns_without_body,
     pointer_structural_match,
-    private_in_public,
+    private_bounds,
+    private_interfaces,
     proc_macro_back_compat,
     proc_macro_derive_resolution_fallback,
     pub_use_of_private_extern_crate,
     redundant_semicolons,
+    refining_impl_trait,
     repr_transparent_external_private_fields,
     rust_2021_incompatible_closure_captures,
     rust_2021_incompatible_or_patterns,
@@ -350,6 +381,7 @@
     soft_unstable,
     special_module_name,
     stable_features,
+    static_mut_ref,
     suspicious_auto_trait_impls,
     suspicious_double_ref_op,
     temporary_cstring_as_ptr,
@@ -364,9 +396,11 @@
     unconditional_panic,
     unconditional_recursion,
     undefined_naked_function_abi,
+    undropped_manually_drops,
     unexpected_cfgs,
     ungated_async_fn_track_caller,
     uninhabited_static,
+    unit_bindings,
     unknown_crate_types,
     unnameable_test_items,
     unreachable_code,
@@ -381,6 +415,7 @@
     unused_allocation,
     unused_assignments,
     unused_assignments,
+    unused_associated_type_bounds,
     unused_attributes,
     unused_braces,
     unused_comparisons,
@@ -398,12 +433,13 @@
     unused_mut,
     unused_parens,
     unused_qualifications,
-    unused_tuple_struct_fields,
     unused_unsafe,
     unused_variables,
     useless_deprecated,
+    useless_ptr_null_checks,
     where_clauses_object_safety,
-    while_true
+    while_true,
+    writes_through_immutable_pointer
 )]
 #![warn(macro_use_extern_crate, unknown_lints)]
 #![allow(

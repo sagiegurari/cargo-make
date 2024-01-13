@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.6
+### v0.37.6 (2024-01-13)
 
 * Fix: Detect crate installation fix for new cargo list format
 * Enhancement: Add condition support for decode info #1020 (thanks @Bauke)

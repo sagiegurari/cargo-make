@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/descriptor/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/descriptor/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -649,7 +651,7 @@
 //! the default descriptor.
 
 </span><span class="attr">#[cfg(test)]
-#[path = <span class="string">&quot;mod_test.rs&quot;</span>]
+#[path = <span class="string">"mod_test.rs"</span>]
 </span><span class="kw">mod </span>mod_test;
 
 <span class="kw">mod </span>cargo_alias;
@@ -699,9 +701,9 @@
                     <span class="kw">let </span>extended_env = task.env.clone().unwrap();
                     <span class="kw">let </span>clear = task.clear.clone().unwrap_or(<span class="bool-val">false</span>);
                     <span class="kw">if </span>extended_env.len() == <span class="number">2
-                        </span>&amp;&amp; extended_env.contains_key(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>)
+                        </span>&amp;&amp; extended_env.contains_key(<span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE"</span>)
                         &amp;&amp; extended_env
-                            .contains_key(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>)
+                            .contains_key(<span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY"</span>)
                         &amp;&amp; !clear
                     {
                         <span class="kw">let </span>base_env = value.env.clone().unwrap();
@@ -727,7 +729,7 @@
     <span class="kw">let </span>file_path = file_path_string.as_path();
     <span class="kw">let </span>base_directory = <span class="kw">match </span>file_path.parent() {
         <span class="prelude-val">Some</span>(directory) =&gt; FromPath::from_path(directory),
-        <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+        <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
     };
 
     <span class="kw">match </span>external_config.env_files {
@@ -766,11 +768,11 @@
             };
 
             env.insert(
-                <span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE&quot;</span>.to_string(),
+                <span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE"</span>.to_string(),
                 EnvValue::Value(file_path_string.to_string()),
             );
             env.insert(
-                <span class="string">&quot;CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY&quot;</span>.to_string(),
+                <span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY"</span>.to_string(),
                 EnvValue::Value(base_directory.to_string()),
             );
 
@@ -792,20 +794,20 @@
 
             <span class="kw">match </span>load_script {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
-                    <span class="macro">debug!</span>(<span class="string">&quot;Load script found.&quot;</span>);
+                    <span class="macro">debug!</span>(<span class="string">"Load script found."</span>);
 
                     scriptengine::invoke_script_pre_flow(script, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[]);
 
                     <span class="bool-val">true
                 </span>}
                 <span class="prelude-val">None </span>=&gt; {
-                    <span class="macro">debug!</span>(<span class="string">&quot;No load script defined.&quot;</span>);
+                    <span class="macro">debug!</span>(<span class="string">"No load script defined."</span>);
                     <span class="bool-val">false
                 </span>}
             }
         }
         <span class="prelude-val">None </span>=&gt; {
-            <span class="macro">debug!</span>(<span class="string">&quot;No load script defined.&quot;</span>);
+            <span class="macro">debug!</span>(<span class="string">"No load script defined."</span>);
             <span class="bool-val">false
         </span>}
     }
@@ -862,12 +864,12 @@
     <span class="kw">let </span><span class="kw-2">mut </span>config_section = ConfigSection::new();
     <span class="kw">if </span>parent_config.config.is_some() {
         <span class="kw">let </span><span class="kw-2">mut </span>config_section_data = parent_config.config.unwrap();
-        <span class="macro">debug!</span>(<span class="string">&quot;Adding parent config section: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>config_section_data);
+        <span class="macro">debug!</span>(<span class="string">"Adding parent config section: {:#?}"</span>, <span class="kw-2">&amp;</span>config_section_data);
         config_section.extend(<span class="kw-2">&amp;mut </span>config_section_data);
     }
     <span class="kw">if </span>config.config.is_some() {
         <span class="kw">let </span><span class="kw-2">mut </span>config_section_data = config.config.unwrap();
-        <span class="macro">debug!</span>(<span class="string">&quot;Adding config section: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>config_section_data);
+        <span class="macro">debug!</span>(<span class="string">"Adding config section: {:#?}"</span>, <span class="kw-2">&amp;</span>config_section_data);
         config_section.extend(<span class="kw-2">&amp;mut </span>config_section_data);
     }
 
@@ -915,25 +917,25 @@
     }
 }
 
-<span class="doccomment">/// Ensure the Makefile&#39;s min_version, if present, is older than cargo-make&#39;s
+<span class="doccomment">/// Ensure the Makefile's min_version, if present, is older than cargo-make's
 /// currently running version.
 </span><span class="kw">fn </span>check_makefile_min_version(external_descriptor: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
     <span class="kw">let </span>value: toml::Value = <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>external_descriptor) {
         <span class="prelude-val">Ok</span>(value) =&gt; value,
-        <span class="comment">// If there&#39;s an error parsing the file, let the caller function figure
+        <span class="comment">// If there's an error parsing the file, let the caller function figure
         // it out
         </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
     };
 
     <span class="kw">let </span>min_version = value
-        .get(<span class="string">&quot;config&quot;</span>)
-        .and_then(|config| config.get(<span class="string">&quot;min_version&quot;</span>))
+        .get(<span class="string">"config"</span>)
+        .and_then(|config| config.get(<span class="string">"min_version"</span>))
         .and_then(|min_ver| min_ver.as_str());
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>min_version) = min_version {
         <span class="kw">if </span>version::is_newer_found(<span class="kw-2">&amp;</span>min_version) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;Unable to run, minimum required version is: {}&quot;</span>,
+                <span class="string">"Unable to run, minimum required version is: {}"</span>,
                 <span class="kw-2">&amp;</span>min_version
             )
             .to_string());
@@ -950,7 +952,7 @@
     set_env: bool,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, String&gt; {
     <span class="macro">debug!</span>(
-        <span class="string">&quot;Loading tasks from file: {} base directory: {}&quot;</span>,
+        <span class="string">"Loading tasks from file: {} base directory: {}"</span>,
         <span class="kw-2">&amp;</span>file_name, <span class="kw-2">&amp;</span>base_path
     );
 
@@ -961,7 +963,7 @@
         <span class="kw">let </span>absolute_file_path = io::canonicalize_to_string(<span class="kw-2">&amp;</span>file_path_string);
 
         <span class="kw">if </span>set_env {
-            envmnt::set(<span class="string">&quot;CARGO_MAKE_MAKEFILE_PATH&quot;</span>, <span class="kw-2">&amp;</span>absolute_file_path);
+            envmnt::set(<span class="string">"CARGO_MAKE_MAKEFILE_PATH"</span>, <span class="kw-2">&amp;</span>absolute_file_path);
         }
 
         <span class="kw">let </span>external_descriptor = io::read_text_file(<span class="kw-2">&amp;</span>file_path);
@@ -970,7 +972,7 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>file_config =
             descriptor_deserializer::load_external_config(<span class="kw-2">&amp;</span>external_descriptor, <span class="kw-2">&amp;</span>file_path_string);
-        <span class="macro">debug!</span>(<span class="string">&quot;Loaded external config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>file_config);
+        <span class="macro">debug!</span>(<span class="string">"Loaded external config: {:#?}"</span>, <span class="kw-2">&amp;</span>file_config);
 
         file_config = add_file_location_info(file_config, <span class="kw-2">&amp;</span>absolute_file_path);
 
@@ -978,13 +980,13 @@
 
         <span class="kw">match </span>file_config.extend {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extend_struct) =&gt; {
-                <span class="kw">let </span>parent_path_buf = Path::new(base_path).join(file_name).join(<span class="string">&quot;..&quot;</span>);
+                <span class="kw">let </span>parent_path_buf = Path::new(base_path).join(file_name).join(<span class="string">".."</span>);
                 <span class="kw">let </span>parent_path = file_path
                     .parent()
                     .unwrap_or(<span class="kw-2">&amp;</span>parent_path_buf)
                     .to_str()
-                    .unwrap_or(<span class="string">&quot;.&quot;</span>);
-                <span class="macro">debug!</span>(<span class="string">&quot;External config parent path: {}&quot;</span>, <span class="kw-2">&amp;</span>parent_path);
+                    .unwrap_or(<span class="string">"."</span>);
+                <span class="macro">debug!</span>(<span class="string">"External config parent path: {}"</span>, <span class="kw-2">&amp;</span>parent_path);
 
                 <span class="kw">let </span>base_file_config =
                     load_descriptor_extended_makefiles(<span class="kw-2">&amp;</span>parent_path, extend_struct)<span class="question-mark">?</span>;
@@ -994,10 +996,10 @@
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(file_config),
         }
     } <span class="kw">else if </span>force {
-        <span class="macro">error!</span>(<span class="string">&quot;Descriptor file: {:#?} not found.&quot;</span>, <span class="kw-2">&amp;</span>file_path);
-        <span class="macro">panic!</span>(<span class="string">&quot;Descriptor file: {:#?} not found.&quot;</span>, <span class="kw-2">&amp;</span>file_path);
+        <span class="macro">error!</span>(<span class="string">"Descriptor file: {:#?} not found."</span>, <span class="kw-2">&amp;</span>file_path);
+        <span class="macro">panic!</span>(<span class="string">"Descriptor file: {:#?} not found."</span>, <span class="kw-2">&amp;</span>file_path);
     } <span class="kw">else </span>{
-        <span class="macro">debug!</span>(<span class="string">&quot;External file not found or is not a file, skipping.&quot;</span>);
+        <span class="macro">debug!</span>(<span class="string">"External file not found or is not a file, skipping."</span>);
 
         <span class="prelude-val">Ok</span>(ExternalConfig::new())
     }
@@ -1008,7 +1010,7 @@
     experimental: bool,
     modify_config: <span class="prelude-ty">Option</span>&lt;ModifyConfig&gt;,
 ) -&gt; Config {
-    <span class="macro">debug!</span>(<span class="string">&quot;Loading base tasks.&quot;</span>);
+    <span class="macro">debug!</span>(<span class="string">"Loading base tasks."</span>);
 
     <span class="kw">let </span>base_descriptor = <span class="kw">if </span>stable {
         makefiles::STABLE
@@ -1017,15 +1019,15 @@
     };
 
     <span class="kw">let </span><span class="kw-2">mut </span>base_config = descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>base_descriptor, <span class="bool-val">false</span>);
-    <span class="macro">debug!</span>(<span class="string">&quot;Loaded base config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>base_config);
+    <span class="macro">debug!</span>(<span class="string">"Loaded base config: {:#?}"</span>, <span class="kw-2">&amp;</span>base_config);
 
     <span class="kw">if </span>experimental {
-        <span class="macro">debug!</span>(<span class="string">&quot;Loading experimental tasks.&quot;</span>);
+        <span class="macro">debug!</span>(<span class="string">"Loading experimental tasks."</span>);
         <span class="kw">let </span>experimental_descriptor = makefiles::BETA;
 
         <span class="kw">let </span>experimental_config =
             descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>experimental_descriptor, <span class="bool-val">false</span>);
-        <span class="macro">debug!</span>(<span class="string">&quot;Loaded experimental config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>experimental_config);
+        <span class="macro">debug!</span>(<span class="string">"Loaded experimental config: {:#?}"</span>, <span class="kw-2">&amp;</span>experimental_config);
 
         <span class="kw">let </span><span class="kw-2">mut </span>base_tasks = base_config.tasks;
         <span class="kw">let </span><span class="kw-2">mut </span>experimental_tasks = experimental_config.tasks;
@@ -1035,8 +1037,8 @@
     }
 
     <span class="comment">// reset
-    </span>envmnt::set(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE&quot;</span>, <span class="string">&quot;&quot;</span>);
-    envmnt::set(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX&quot;</span>, <span class="string">&quot;&quot;</span>);
+    </span>envmnt::set(<span class="string">"CARGO_MAKE_CORE_TASK_NAMESPACE"</span>, <span class="string">""</span>);
+    envmnt::set(<span class="string">"CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX"</span>, <span class="string">""</span>);
 
     <span class="kw">match </span>modify_config {
         <span class="prelude-val">Some</span>(props) =&gt; {
@@ -1046,8 +1048,8 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>namespace) =&gt; {
                     <span class="kw">let </span>prefix = props.get_namespace_prefix();
 
-                    envmnt::set(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE&quot;</span>, <span class="kw-2">&amp;</span>namespace);
-                    envmnt::set(<span class="string">&quot;CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX&quot;</span>, <span class="kw-2">&amp;</span>prefix);
+                    envmnt::set(<span class="string">"CARGO_MAKE_CORE_TASK_NAMESPACE"</span>, <span class="kw-2">&amp;</span>namespace);
+                    envmnt::set(<span class="string">"CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX"</span>, <span class="kw-2">&amp;</span>prefix);
                 }
                 <span class="prelude-val">None </span>=&gt; (),
             };
@@ -1093,8 +1095,8 @@
             <span class="kw">let </span><span class="kw-2">mut </span>cli_env = IndexMap::new();
 
             <span class="kw">for </span>env_pair <span class="kw">in </span><span class="kw-2">&amp;</span>values {
-                <span class="macro">debug!</span>(<span class="string">&quot;Checking env pair: {}&quot;</span>, <span class="kw-2">&amp;</span>env_pair);
-                <span class="kw">let </span>env_parts: <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>str, <span class="kw-2">&amp;</span>str)&gt; = split_once(env_pair, <span class="string">&#39;=&#39;</span>);
+                <span class="macro">debug!</span>(<span class="string">"Checking env pair: {}"</span>, <span class="kw-2">&amp;</span>env_pair);
+                <span class="kw">let </span>env_parts: <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span>str, <span class="kw-2">&amp;</span>str)&gt; = split_once(env_pair, <span class="string">'='</span>);
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>((key, value)) = env_parts {
                     cli_env.insert(key.to_string(), EnvValue::Value(value.to_string()));
@@ -1158,9 +1160,9 @@
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Config, String&gt; {
     <span class="kw">let </span>default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>external_config = load_external_descriptor(<span class="string">&quot;.&quot;</span>, file_name, force, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>external_config = load_external_descriptor(<span class="string">"."</span>, file_name, force, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
-    external_config = <span class="kw">match </span>std::env::var(<span class="string">&quot;CARGO_MAKE_WORKSPACE_MAKEFILE&quot;</span>) {
+    external_config = <span class="kw">match </span>std::env::var(<span class="string">"CARGO_MAKE_WORKSPACE_MAKEFILE"</span>) {
         <span class="prelude-val">Ok</span>(workspace_makefile) =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>pathbuf = PathBuf::from(workspace_makefile);
             <span class="kw">match </span>pathbuf.clone().file_name() {
@@ -1192,7 +1194,7 @@
     <span class="kw">let </span>config =
         merge_base_config_and_external_config(default_config, external_config, env_map, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 
-    <span class="macro">debug!</span>(<span class="string">&quot;Loaded merged config: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>config);
+    <span class="macro">debug!</span>(<span class="string">"Loaded merged config: {:#?}"</span>, <span class="kw-2">&amp;</span>config);
 
     <span class="prelude-val">Ok</span>(config)
 }
@@ -1204,10 +1206,10 @@
             <span class="kw">for </span>(name, task) <span class="kw">in </span>alias_tasks {
                 <span class="kw">match </span>config.tasks.get(<span class="kw-2">&amp;</span>name) {
                     <span class="prelude-val">None </span>=&gt; {
-                        <span class="macro">debug!</span>(<span class="string">&quot;Creating cargo alias task: {}&quot;</span>, <span class="kw-2">&amp;</span>name);
+                        <span class="macro">debug!</span>(<span class="string">"Creating cargo alias task: {}"</span>, <span class="kw-2">&amp;</span>name);
                         config.tasks.insert(name, task);
                     }
-                    <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="macro">debug!</span>(<span class="string">&quot;Ignoring cargo alias task: {}&quot;</span>, <span class="kw-2">&amp;</span>name),
+                    <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; <span class="macro">debug!</span>(<span class="string">"Ignoring cargo alias task: {}"</span>, <span class="kw-2">&amp;</span>name),
                 }
             }
         }
