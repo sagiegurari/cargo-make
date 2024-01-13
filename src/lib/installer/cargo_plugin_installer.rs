@@ -19,7 +19,7 @@ fn is_crate_in_list_output_legacy(crate_name: &str, output: &str) -> bool {
     for mut line in lines {
         line = line.trim();
 
-        debug!("Checking: {}", &line);
+        debug!("Checking (legacy): {}", &line);
 
         if line.contains(crate_name) && crate_name.contains(line) {
             debug!("Found installed cratei (legacy).");
@@ -36,8 +36,8 @@ fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
     for mut line in lines {
         line = line.trim();
 
-        debug!("Checking: {}", &line);
         let words: Vec<&str> = line.split(' ').collect();
+        debug!("Checking Line: {}\nWord: {}", &line, &words[0]);
 
         if words[0].contains(crate_name) && crate_name.contains(words[0]) {
             debug!("Found installed crate.");
