@@ -21,4 +21,4 @@ jobs:
     - name: Install cargo-make
       run: cargo install --debug cargo-make
     - name: Run Example
-      run: cargo run --bin cargo-make -- make -v --makefile ./examples/install.toml make
+      run: cargo run --bin cargo-make -- make --makefile ./examples/install.toml make
