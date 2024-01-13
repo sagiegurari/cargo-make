@@ -457,6 +457,8 @@ pub struct EnvValueDecode {
     pub default_value: Option<String>,
     /// The decoding mapping
     pub mapping: HashMap<String, String>,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
