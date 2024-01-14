@@ -73,7 +73,7 @@
 ### v0.36.8 (2023-05-27)
 
 * Enhancement: New precompiled target: x86_64-unknown-linux-gnu #853 (thanks @steverusso)
-* Enhancement: New log level 'off' and cli flag --slient #846
+* Enhancement: New log level 'off' and cli flag --silent #846
 * Enhancement: Upgrade cargo-watch to 8.4.0 and add new 'why' watch option #849
 * Enhancement: New cli flag '--hide-uninteresting' for list commands to reduce output and skip hooks #848
 
