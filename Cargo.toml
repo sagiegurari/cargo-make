@@ -75,6 +75,7 @@ serde_ignored = "^0.1"
 serde_json = "^1"
 sha2 = "^0.10"
 shell2batch = "^0.4.5"
+strip-ansi-escapes = "^0.2"
 toml = "^0.8"
 
 [dev-dependencies]
