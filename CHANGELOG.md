@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.7 (2024-01-14)
+
+* Fix: Detect crate installation fix for new cargo list format
+
 ### v0.37.6 (2024-01-13)
 
 * Fix: Detect crate installation fix for new cargo list format

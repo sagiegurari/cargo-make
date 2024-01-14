@@ -183,6 +183,18 @@
 <a href="#181" id="181">181</a>
 <a href="#182" id="182">182</a>
 <a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cargo_plugin_installer
 //!
 //! Installs cargo plugins automatically if needed.
@@ -198,16 +210,17 @@
 <span class="kw">use </span><span class="kw">crate</span>::types::ToolchainSpecifier;
 <span class="kw">use </span>envmnt;
 <span class="kw">use </span>std::process::Command;
+<span class="kw">use </span>strip_ansi_escapes::strip_str;
 
 <span class="kw">fn </span>is_crate_in_list_output_legacy(crate_name: <span class="kw-2">&amp;</span>str, output: <span class="kw-2">&amp;</span>str) -&gt; bool {
     <span class="kw">let </span>lines: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = output.split(<span class="string">' '</span>).collect();
     <span class="kw">for </span><span class="kw-2">mut </span>line <span class="kw">in </span>lines {
         line = line.trim();
 
-        <span class="macro">debug!</span>(<span class="string">"Checking: {}"</span>, <span class="kw-2">&amp;</span>line);
+        <span class="macro">debug!</span>(<span class="string">"Checking (legacy): {}"</span>, <span class="kw-2">&amp;</span>line);
 
         <span class="kw">if </span>line.contains(crate_name) &amp;&amp; crate_name.contains(line) {
-            <span class="macro">debug!</span>(<span class="string">"Found installed crate."</span>);
+            <span class="macro">debug!</span>(<span class="string">"Found installed cratei (legacy)."</span>);
 
             <span class="kw">return </span><span class="bool-val">true</span>;
         }
@@ -221,10 +234,20 @@
     <span class="kw">for </span><span class="kw-2">mut </span>line <span class="kw">in </span>lines {
         line = line.trim();
 
-        <span class="macro">debug!</span>(<span class="string">"Checking: {}"</span>, <span class="kw-2">&amp;</span>line);
         <span class="kw">let </span>words: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = line.split(<span class="string">' '</span>).collect();
+        <span class="kw">let </span>plugin_name = words[<span class="number">0</span>].trim();
+        <span class="kw">let </span>found = crate_name.eq(plugin_name);
+        <span class="macro">debug!</span>(
+            <span class="string">"Checking Line: {}\nPlugin: &lt;{}&gt; Expected: &lt;{}&gt; Sizes: {}/{} Found: {}"</span>,
+            <span class="kw-2">&amp;</span>line,
+            <span class="kw-2">&amp;</span>plugin_name,
+            <span class="kw-2">&amp;</span>crate_name,
+            plugin_name.len(),
+            crate_name.len(),
+            found
+        );
 
-        <span class="kw">if </span>words[<span class="number">0</span>].contains(crate_name) &amp;&amp; crate_name.contains(words[<span class="number">0</span>]) {
+        <span class="kw">if </span>found {
             <span class="macro">debug!</span>(<span class="string">"Found installed crate."</span>);
 
             <span class="kw">return </span><span class="bool-val">true</span>;
@@ -255,9 +278,10 @@
             <span class="kw">let </span>exit_code = command::get_exit_code(<span class="prelude-val">Ok</span>(output.status), <span class="bool-val">false</span>);
             command::validate_exit_code(exit_code);
 
-            <span class="kw">let </span>stdout = String::from_utf8_lossy(<span class="kw-2">&amp;</span>output.stdout);
-            is_crate_in_list_output(crate_name, <span class="kw-2">&amp;</span>stdout)
-                || is_crate_in_list_output_legacy(crate_name, <span class="kw-2">&amp;</span>stdout)
+            <span class="kw">let </span>stdout = strip_str(String::from_utf8_lossy(<span class="kw-2">&amp;</span>output.stdout));
+            <span class="kw">let </span>crate_name_trimmed = crate_name.trim();
+            is_crate_in_list_output(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout)
+                || is_crate_in_list_output_legacy(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout)
         }
         <span class="prelude-val">Err</span>(error) =&gt; {
             <span class="macro">error!</span>(
