@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [nightly]
-        os: [ubuntu-latest]
+        rust: [stable, beta, nightly, 1.73.0]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -20,5 +20,9 @@ jobs:
         toolchain: ${{ matrix.rust }}
     - name: Install cargo-make
       run: cargo install --debug cargo-make
-    - name: Run Example
-      run: cargo run --bin cargo-make -- make --makefile ./examples/install.toml make
+    - name: Run CI
+      if: matrix.rust == 'stable' || matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
+    - name: Run CI (Minimal Supported Rust Version)
+      if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
+      run: cargo make ci-flow

@@ -38,9 +38,9 @@ fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
         line = line.trim();
 
         let words: Vec<&str> = line.split(' ').collect();
-        let plugin_name = format!("{}", words[0].trim());
-        let found = crate_name.eq(&plugin_name);
-        warn!(
+        let plugin_name = words[0].trim();
+        let found = crate_name.eq(plugin_name);
+        debug!(
             "Checking Line: {}\nPlugin: <{}> Expected: <{}> Sizes: {}/{} Found: {}",
             &line,
             &plugin_name,
