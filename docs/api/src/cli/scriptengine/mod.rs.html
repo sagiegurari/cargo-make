@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/scriptengine/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../cli/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/scriptengine/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -321,7 +323,7 @@
 <span class="kw">mod </span>shell_to_batch;
 
 <span class="attr">#[cfg(test)]
-#[path = <span class="string">&quot;mod_test.rs&quot;</span>]
+#[path = <span class="string">"mod_test.rs"</span>]
 </span><span class="kw">mod </span>mod_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::environment;
@@ -358,7 +360,7 @@
         ScriptValue::File(info) =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>file_path_string = String::new();
             <span class="kw">if </span>!info.absolute_path.unwrap_or(<span class="bool-val">false</span>) {
-                file_path_string.push_str(<span class="string">&quot;${CARGO_MAKE_WORKING_DIRECTORY}/&quot;</span>);
+                file_path_string.push_str(<span class="string">"${CARGO_MAKE_WORKING_DIRECTORY}/"</span>);
             }
             file_path_string.push_str(<span class="kw-2">&amp;</span>info.file);
 
@@ -369,7 +371,7 @@
             file_path.push(expanded_value);
 
             <span class="kw">let </span>script_text = io::read_text_file(<span class="kw-2">&amp;</span>file_path);
-            <span class="kw">let </span>lines: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = script_text.split(<span class="string">&#39;\n&#39;</span>).collect();
+            <span class="kw">let </span>lines: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = script_text.split(<span class="string">'\n'</span>).collect();
 
             <span class="kw">let </span><span class="kw-2">mut </span>script_lines: Vec&lt;String&gt; = <span class="macro">vec!</span>[];
 
@@ -398,14 +400,14 @@
 }
 
 <span class="kw">fn </span>get_internal_runner(script_runner: <span class="kw-2">&amp;</span>str) -&gt; EngineType {
-    <span class="kw">if </span>script_runner == <span class="string">&quot;@duckscript&quot; </span>{
-        <span class="macro">debug!</span>(<span class="string">&quot;Duckscript detected.&quot;</span>);
+    <span class="kw">if </span>script_runner == <span class="string">"@duckscript" </span>{
+        <span class="macro">debug!</span>(<span class="string">"Duckscript detected."</span>);
         EngineType::Duckscript
-    } <span class="kw">else if </span>script_runner == <span class="string">&quot;@rust&quot; </span>{
-        <span class="macro">debug!</span>(<span class="string">&quot;Rust script detected.&quot;</span>);
+    } <span class="kw">else if </span>script_runner == <span class="string">"@rust" </span>{
+        <span class="macro">debug!</span>(<span class="string">"Rust script detected."</span>);
         EngineType::Rust
-    } <span class="kw">else if </span>script_runner == <span class="string">&quot;@shell&quot; </span>{
-        <span class="macro">debug!</span>(<span class="string">&quot;Shell to batch detected.&quot;</span>);
+    } <span class="kw">else if </span>script_runner == <span class="string">"@shell" </span>{
+        <span class="macro">debug!</span>(<span class="string">"Shell to batch detected."</span>);
         EngineType::Shell2Batch
     } <span class="kw">else </span>{
         EngineType::Unsupported
@@ -419,7 +421,7 @@
 ) -&gt; EngineType {
     <span class="kw">match </span>script_runner {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>runner) =&gt; {
-            <span class="macro">debug!</span>(<span class="string">&quot;Checking script runner: {}&quot;</span>, runner);
+            <span class="macro">debug!</span>(<span class="string">"Checking script runner: {}"</span>, runner);
 
             <span class="kw">let </span>engine_type = get_internal_runner(runner);
 
@@ -427,11 +429,11 @@
                 EngineType::Unsupported =&gt; {
                     <span class="kw">if </span>script_extension.is_some() {
                         <span class="comment">// if both script runner and extension is defined, we use generic script runner
-                        </span><span class="macro">debug!</span>(<span class="string">&quot;Generic script detected.&quot;</span>);
+                        </span><span class="macro">debug!</span>(<span class="string">"Generic script detected."</span>);
                         EngineType::Generic
                     } <span class="kw">else </span>{
                         <span class="comment">// use default OS extension with custom runner
-                        </span><span class="macro">debug!</span>(<span class="string">&quot;OS script with custom runner detected.&quot;</span>);
+                        </span><span class="macro">debug!</span>(<span class="string">"OS script with custom runner detected."</span>);
                         EngineType::OS
                     }
                 }
@@ -450,7 +452,7 @@
 
                         <span class="kw">match </span>engine_type {
                             EngineType::Unsupported =&gt; {
-                                <span class="macro">debug!</span>(<span class="string">&quot;Shebang line does not point to an internal engine, using normal shebang script runner.&quot;</span>);
+                                <span class="macro">debug!</span>(<span class="string">"Shebang line does not point to an internal engine, using normal shebang script runner."</span>);
                                 EngineType::Shebang
                             }
                             <span class="kw">_ </span>=&gt; engine_type,
@@ -477,7 +479,7 @@
             <span class="comment">// setup toolchain environment
             </span><span class="kw">let </span>(reset_env, original_cargo) = <span class="kw">match </span>task.toolchain {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>toolchain) =&gt; <span class="kw">match </span>toolchain::get_cargo_binary_path(toolchain) {
-                    <span class="prelude-val">Some</span>(cargo_binary) =&gt; (<span class="bool-val">true</span>, envmnt::get_set(<span class="string">&quot;CARGO&quot;</span>, cargo_binary)),
+                    <span class="prelude-val">Some</span>(cargo_binary) =&gt; (<span class="bool-val">true</span>, envmnt::get_set(<span class="string">"CARGO"</span>, cargo_binary)),
                     <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
                 },
                 <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="prelude-val">None</span>),
@@ -496,7 +498,7 @@
             <span class="comment">// reset toolchain environment
             </span><span class="kw">if </span>reset_env {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = original_cargo {
-                    envmnt::set(<span class="string">&quot;CARGO&quot;</span>, value)
+                    envmnt::set(<span class="string">"CARGO"</span>, value)
                 }
             }
 

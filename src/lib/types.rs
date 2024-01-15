@@ -457,6 +457,8 @@ pub struct EnvValueDecode {
     pub default_value: Option<String>,
     /// The decoding mapping
     pub mapping: HashMap<String, String>,
+    /// The condition to validate
+    pub condition: Option<TaskCondition>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
@@ -1206,7 +1208,7 @@ impl std::fmt::Display for ToolchainBoundedSpecifier {
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum DependencyIdentifier {
-    /// A full dependency definion (potentially in a different file)
+    /// A full dependency definition (potentially in a different file)
     Definition(TaskIdentifier),
     /// A string dependency definition (its name in the current file)
     Name(String),

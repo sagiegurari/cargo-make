@@ -33,4 +33,3 @@ jobs:
     - name: Run CI (Minimal Supported Rust Version)
       if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
       run: cargo make ci-flow
-      

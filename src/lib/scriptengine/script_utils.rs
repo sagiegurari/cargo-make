@@ -57,11 +57,11 @@ fn bytes_to_hex(bytes: &[u8]) -> String {
         match write!(hex_string, "{:02X}", byte) {
             Err(error) => {
                 error!(
-                    "Unable to conver script hash to hex string, error: {}",
+                    "Unable to convert script hash to hex string, error: {}",
                     &error
                 );
                 panic!(
-                    "Unable to conver script hash to hex string, error: {}",
+                    "Unable to convert script hash to hex string, error: {}",
                     &error
                 );
             }

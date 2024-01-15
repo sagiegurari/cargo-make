@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2384,13 +2386,15 @@
 <a href="#2384" id="2384">2384</a>
 <a href="#2385" id="2385">2385</a>
 <a href="#2386" id="2386">2386</a>
+<a href="#2387" id="2387">2387</a>
+<a href="#2388" id="2388">2388</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
 //!
 
 </span><span class="attr">#[cfg(test)]
-#[path = <span class="string">&quot;types_test.rs&quot;</span>]
+#[path = <span class="string">"types_test.rs"</span>]
 </span><span class="kw">mod </span>types_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::legacy;
@@ -2405,11 +2409,11 @@
 <span class="doccomment">/// Returns the platform name
 </span><span class="kw">pub fn </span>get_platform_name() -&gt; String {
     <span class="kw">if </span><span class="macro">cfg!</span>(windows) {
-        <span class="string">&quot;windows&quot;</span>.to_string()
-    } <span class="kw">else if </span><span class="macro">cfg!</span>(target_os = <span class="string">&quot;macos&quot;</span>) || <span class="macro">cfg!</span>(target_os = <span class="string">&quot;ios&quot;</span>) {
-        <span class="string">&quot;mac&quot;</span>.to_string()
+        <span class="string">"windows"</span>.to_string()
+    } <span class="kw">else if </span><span class="macro">cfg!</span>(target_os = <span class="string">"macos"</span>) || <span class="macro">cfg!</span>(target_os = <span class="string">"ios"</span>) {
+        <span class="string">"mac"</span>.to_string()
     } <span class="kw">else </span>{
-        <span class="string">&quot;linux&quot;</span>.to_string()
+        <span class="string">"linux"</span>.to_string()
     }
 }
 
@@ -2418,7 +2422,7 @@
 
     <span class="kw">if </span>namespace.len() &gt; <span class="number">0 </span>{
         namespaced_task.push_str(namespace);
-        namespaced_task.push_str(<span class="string">&quot;::&quot;</span>);
+        namespaced_task.push_str(<span class="string">"::"</span>);
     }
     namespaced_task.push_str(task);
 
@@ -2521,11 +2525,11 @@
     <span class="doccomment">/// Creates and returns a new instance.
     </span><span class="kw">pub fn </span>new() -&gt; CliArgs {
         CliArgs {
-            command: <span class="string">&quot;&quot;</span>.to_string(),
+            command: <span class="string">""</span>.to_string(),
             build_file: <span class="prelude-val">None</span>,
-            task: <span class="string">&quot;default&quot;</span>.to_string(),
+            task: <span class="string">"default"</span>.to_string(),
             profile: <span class="prelude-val">None</span>,
-            log_level: <span class="string">&quot;info&quot;</span>.to_string(),
+            log_level: <span class="string">"info"</span>.to_string(),
             disable_color: <span class="bool-val">false</span>,
             cwd: <span class="prelude-val">None</span>,
             env: <span class="prelude-val">None</span>,
@@ -2542,7 +2546,7 @@
             disable_check_for_updates: <span class="bool-val">false</span>,
             experimental: <span class="bool-val">false</span>,
             arguments: <span class="prelude-val">None</span>,
-            output_format: <span class="string">&quot;default&quot;</span>.to_string(),
+            output_format: <span class="string">"default"</span>.to_string(),
             output_file: <span class="prelude-val">None</span>,
             print_time_summary: <span class="bool-val">false</span>,
             hide_uninteresting: <span class="bool-val">false</span>,
@@ -2843,6 +2847,8 @@
     </span><span class="kw">pub </span>default_value: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// The decoding mapping
     </span><span class="kw">pub </span>mapping: HashMap&lt;String, String&gt;,
+    <span class="doccomment">/// The condition to validate
+    </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
@@ -2924,17 +2930,17 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; serde::de::Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>TestArg {
+<span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; serde::de::Deserialize&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>TestArg {
     <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
     <span class="kw">where
-        </span>D: serde::de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: serde::de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         <span class="kw">struct </span>StringVecVisitor;
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; serde::de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>StringVecVisitor {
+        <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; serde::de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>StringVecVisitor {
             <span class="kw">type </span>Value = TestArg;
 
             <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
-                formatter.write_str(<span class="string">&quot;A string or an array of strings&quot;</span>)
+                formatter.write_str(<span class="string">"A string or an array of strings"</span>)
             }
 
             <span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
@@ -2948,7 +2954,7 @@
 
             <span class="kw">fn </span>visit_seq&lt;A&gt;(<span class="self">self</span>, <span class="kw-2">mut </span>seq: A) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, A::Error&gt;
             <span class="kw">where
-                </span>A: serde::de::SeqAccess&lt;<span class="lifetime">&#39;de</span>&gt;,
+                </span>A: serde::de::SeqAccess&lt;<span class="lifetime">'de</span>&gt;,
             {
                 <span class="kw">let </span><span class="kw-2">mut </span>v = Vec::with_capacity(seq.size_hint().unwrap_or(<span class="number">0</span>));
                 <span class="kw">while let </span><span class="prelude-val">Some</span>(s) = seq.next_element()<span class="question-mark">? </span>{
@@ -2969,7 +2975,7 @@
     </span><span class="kw">pub </span>crate_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Minimal version
     </span><span class="kw">pub </span>min_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="doccomment">/// Optional alternate &#39;install&#39; command
+    <span class="doccomment">/// Optional alternate 'install' command
     </span><span class="kw">pub </span>install_command: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Optional add force flag (if needed), default is true
     </span><span class="kw">pub </span>force: <span class="prelude-ty">Option</span>&lt;bool&gt;,
@@ -3047,7 +3053,7 @@
     </span><span class="kw">pub </span>min_version: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Exact version
     </span><span class="kw">pub </span>version: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="doccomment">/// Optional alternate &#39;install&#39; command
+    <span class="doccomment">/// Optional alternate 'install' command
     </span><span class="kw">pub </span>install_command: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Optional add force flag (if needed), default is true
     </span><span class="kw">pub </span>force: <span class="prelude-ty">Option</span>&lt;bool&gt;,
@@ -3545,10 +3551,10 @@
 }
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>ToolchainSpecifier {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::Simple(<span class="kw-2">ref </span>channel) =&gt; <span class="macro">write!</span>(formatter, <span class="string">&quot;{}&quot;</span>, channel),
-            <span class="self">Self</span>::Bounded(<span class="kw-2">ref </span>spec) =&gt; <span class="macro">write!</span>(formatter, <span class="string">&quot;{}&quot;</span>, spec),
+            <span class="self">Self</span>::Simple(<span class="kw-2">ref </span>channel) =&gt; <span class="macro">write!</span>(formatter, <span class="string">"{}"</span>, channel),
+            <span class="self">Self</span>::Bounded(<span class="kw-2">ref </span>spec) =&gt; <span class="macro">write!</span>(formatter, <span class="string">"{}"</span>, spec),
         }
     }
 }
@@ -3583,8 +3589,8 @@
 }
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>ToolchainBoundedSpecifier {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="macro">write!</span>(formatter, <span class="string">&quot;{} &gt;= {}&quot;</span>, <span class="self">self</span>.channel, <span class="self">self</span>.min_version)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="macro">write!</span>(formatter, <span class="string">"{} &gt;= {}"</span>, <span class="self">self</span>.channel, <span class="self">self</span>.min_version)
     }
 }
 
@@ -3637,10 +3643,10 @@
 }
 
 <span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>TaskIdentifier {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.path {
-            <span class="prelude-val">Some</span>(path) =&gt; <span class="macro">write!</span>(formatter, <span class="string">&quot;{}:{}&quot;</span>, path, <span class="self">self</span>.name),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(formatter, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.name),
+            <span class="prelude-val">Some</span>(path) =&gt; <span class="macro">write!</span>(formatter, <span class="string">"{}:{}"</span>, path, <span class="self">self</span>.name),
+            <span class="prelude-val">None </span>=&gt; <span class="macro">write!</span>(formatter, <span class="string">"{}"</span>, <span class="self">self</span>.name),
         }
     }
 }
@@ -4023,7 +4029,7 @@
             <span class="prelude-val">Some</span>(value) =&gt; value,
             <span class="prelude-val">None </span>=&gt; <span class="kw">match </span><span class="self">self</span>.force {
                 <span class="prelude-val">Some</span>(value) =&gt; {
-                    legacy::show_deprecated_attriute_warning(<span class="string">&quot;force&quot;</span>, <span class="string">&quot;ignore_errors&quot;</span>);
+                    legacy::show_deprecated_attriute_warning(<span class="string">"force"</span>, <span class="string">"ignore_errors"</span>);
 
                     value
                 }
@@ -4035,12 +4041,12 @@
     <span class="doccomment">/// Returns the override task definition based on the current platform.
     </span><span class="kw">fn </span>get_override(<span class="self">self</span>: <span class="kw-2">&amp;</span>Task) -&gt; <span class="prelude-ty">Option</span>&lt;PlatformOverrideTask&gt; {
         <span class="kw">let </span>platform_name = get_platform_name();
-        <span class="kw">if </span>platform_name == <span class="string">&quot;windows&quot; </span>{
+        <span class="kw">if </span>platform_name == <span class="string">"windows" </span>{
             <span class="kw">match </span><span class="self">self</span>.windows {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value.clone()),
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             }
-        } <span class="kw">else if </span>platform_name == <span class="string">&quot;mac&quot; </span>{
+        } <span class="kw">else if </span>platform_name == <span class="string">"mac" </span>{
             <span class="kw">match </span><span class="self">self</span>.mac {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value.clone()),
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
@@ -4109,7 +4115,7 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value),
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             }
-        } <span class="kw">else if </span><span class="macro">cfg!</span>(target_os = <span class="string">&quot;macos&quot;</span>) || <span class="macro">cfg!</span>(target_os = <span class="string">&quot;ios&quot;</span>) {
+        } <span class="kw">else if </span><span class="macro">cfg!</span>(target_os = <span class="string">"macos"</span>) || <span class="macro">cfg!</span>(target_os = <span class="string">"ios"</span>) {
             <span class="kw">match </span><span class="self">self</span>.mac_alias {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(value),
                 <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
@@ -4430,14 +4436,14 @@
     <span class="doccomment">/// Returns the namespace prefix for task names
     </span><span class="kw">pub fn </span>get_namespace_prefix(<span class="self">self</span>: <span class="kw-2">&amp;</span>ModifyConfig) -&gt; String {
         <span class="kw">match </span><span class="self">self</span>.namespace {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; get_namespaced_task_name(value, <span class="string">&quot;&quot;</span>),
-            <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; get_namespaced_task_name(value, <span class="string">""</span>),
+            <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
         }
     }
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Copy, Hash, PartialEq, Eq)]
-#[serde(rename_all = <span class="string">&quot;SCREAMING_SNAKE_CASE&quot;</span>)]
+#[serde(rename_all = <span class="string">"SCREAMING_SNAKE_CASE"</span>)]
 </span><span class="doccomment">/// Unstable cargo-make feature
 </span><span class="kw">pub enum </span>UnstableFeature {
     <span class="doccomment">/// Gracefully shutdown and then kill the running command on Ctrl+C signal
@@ -4448,8 +4454,8 @@
     <span class="doccomment">/// Creates the env. variable name associated to the feature
     </span><span class="kw">pub fn </span>to_env_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="kw">let </span><span class="kw-2">mut </span>feature = serde_json::to_string(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap();
-        feature = feature.replace(<span class="string">&quot;\&quot;&quot;</span>, <span class="string">&quot;&quot;</span>);
-        <span class="macro">format!</span>(<span class="string">&quot;CARGO_MAKE_UNSTABLE_FEATURE_{feature}&quot;</span>, feature = feature)
+        feature = feature.replace(<span class="string">"\""</span>, <span class="string">""</span>);
+        <span class="macro">format!</span>(<span class="string">"CARGO_MAKE_UNSTABLE_FEATURE_{feature}"</span>, feature = feature)
     }
 
     <span class="doccomment">/// Is the corresponding env. variable set?
@@ -4656,13 +4662,13 @@
     </span><span class="kw">pub fn </span>get_load_script(<span class="self">self</span>: <span class="kw-2">&amp;</span>ConfigSection) -&gt; <span class="prelude-ty">Option</span>&lt;ScriptValue&gt; {
         <span class="kw">let </span>platform_name = get_platform_name();
 
-        <span class="kw">if </span>platform_name == <span class="string">&quot;windows&quot; </span>{
+        <span class="kw">if </span>platform_name == <span class="string">"windows" </span>{
             <span class="kw">if </span><span class="self">self</span>.windows_load_script.is_some() {
                 <span class="self">self</span>.windows_load_script.clone()
             } <span class="kw">else </span>{
                 <span class="self">self</span>.load_script.clone()
             }
-        } <span class="kw">else if </span>platform_name == <span class="string">&quot;mac&quot; </span>{
+        } <span class="kw">else if </span>platform_name == <span class="string">"mac" </span>{
             <span class="kw">if </span><span class="self">self</span>.mac_load_script.is_some() {
                 <span class="self">self</span>.mac_load_script.clone()
             } <span class="kw">else </span>{
@@ -4702,7 +4708,7 @@
 
         <span class="kw">let </span>namespace = <span class="kw">match </span>modify_config.namespace {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>namespace) =&gt; namespace,
-            <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>,
+            <span class="prelude-val">None </span>=&gt; <span class="string">""</span>,
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>modified_tasks = IndexMap::&lt;String, Task&gt;::new();

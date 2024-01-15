@@ -13,6 +13,52 @@ use crate::toolchain::wrap_command;
 use crate::types::ToolchainSpecifier;
 use envmnt;
 use std::process::Command;
+use strip_ansi_escapes::strip_str;
+
+fn is_crate_in_list_output_legacy(crate_name: &str, output: &str) -> bool {
+    let lines: Vec<&str> = output.split(' ').collect();
+    for mut line in lines {
+        line = line.trim();
+
+        debug!("Checking (legacy): {}", &line);
+
+        if line.contains(crate_name) && crate_name.contains(line) {
+            debug!("Found installed cratei (legacy).");
+
+            return true;
+        }
+    }
+
+    false
+}
+
+fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
+    let lines: Vec<&str> = output.split('\n').collect();
+    for mut line in lines {
+        line = line.trim();
+
+        let words: Vec<&str> = line.split(' ').collect();
+        let plugin_name = words[0].trim();
+        let found = crate_name.eq(plugin_name);
+        debug!(
+            "Checking Line: {}\nPlugin: <{}> Expected: <{}> Sizes: {}/{} Found: {}",
+            &line,
+            &plugin_name,
+            &crate_name,
+            plugin_name.len(),
+            crate_name.len(),
+            found
+        );
+
+        if found {
+            debug!("Found installed crate.");
+
+            return true;
+        }
+    }
+
+    false
+}
 
 fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) -> bool {
     debug!("Getting list of installed cargo commands.");
@@ -32,27 +78,13 @@ fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) 
 
     match result {
         Ok(output) => {
-            let mut found = false;
-
             let exit_code = command::get_exit_code(Ok(output.status), false);
             command::validate_exit_code(exit_code);
 
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let lines: Vec<&str> = stdout.split(' ').collect();
-            for mut line in lines {
-                line = line.trim();
-
-                debug!("Checking: {}", &line);
-
-                if line.contains(crate_name) && crate_name.contains(line) {
-                    found = true;
-                    debug!("Found installed crate.");
-
-                    break;
-                }
-            }
-
-            found
+            let stdout = strip_str(String::from_utf8_lossy(&output.stdout));
+            let crate_name_trimmed = crate_name.trim();
+            is_crate_in_list_output(&crate_name_trimmed, &stdout)
+                || is_crate_in_list_output_legacy(&crate_name_trimmed, &stdout)
         }
         Err(error) => {
             error!(

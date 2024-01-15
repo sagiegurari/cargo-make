@@ -1,5 +1,16 @@
 ## CHANGELOG
 
+### v0.37.7 (2024-01-14)
+
+* Fix: Detect crate installation fix for new cargo list format
+
+### v0.37.6 (2024-01-13)
+
+* Fix: Detect crate installation fix for new cargo list format
+* Enhancement: Add condition support for decode info #1020 (thanks @Bauke)
+* Enhancement: Remove format check from static lint checks profile
+* Maintenance: Update lint rules
+
 ### v0.37.5 (2023-12-15)
 
 * Enhancement: Add OS condition #989
@@ -62,7 +73,7 @@
 ### v0.36.8 (2023-05-27)
 
 * Enhancement: New precompiled target: x86_64-unknown-linux-gnu #853 (thanks @steverusso)
-* Enhancement: New log level 'off' and cli flag --slient #846
+* Enhancement: New log level 'off' and cli flag --silent #846
 * Enhancement: Upgrade cargo-watch to 8.4.0 and add new 'why' watch option #849
 * Enhancement: New cli flag '--hide-uninteresting' for list commands to reduce output and skip hooks #848
 

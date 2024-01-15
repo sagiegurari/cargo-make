@@ -2185,7 +2185,7 @@ CARGO_MAKE_WORKSPACE_SKIP_MEMBERS = "tools/*"
 
 However there are some cases you will want to skip specific members only if a specific condition is met.<br>
 For example, you want to build a member module only if we are running on a rust nightly compiler.<br>
-This is a simple example of a conditioned skip for member3 and memeber4 (should be defined in the workspace level `Makefile.toml`):
+This is a simple example of a conditioned skip for member3 and member4 (should be defined in the workspace level `Makefile.toml`):
 
 ```toml
 [tasks.workspace-task]
@@ -3433,7 +3433,7 @@ command = "echo"
 args = ["stopping client..."]
 ```
 
-#### Extenal subcommand file
+#### External subcommand file
 
 Another approach is to use a different configuration file for the subcommands.
 
@@ -4098,7 +4098,7 @@ You can view the future development items list in the [github project issues](ht
 * [vim-cargo-make](https://github.com/nastevens/vim-cargo-make)
 * [vim-duckscript](https://github.com/nastevens/vim-duckscript)
 
-<a name="editor-support-vim"></a>
+<a name="editor-support-vs-code"></a>
 ### VSCode
 
 For debugging purposes there are some example .vscode files located within the [docs/vscode-example](./docs/vscode-example/) directory

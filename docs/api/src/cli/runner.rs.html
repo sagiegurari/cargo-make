@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/runner.rs`."><title>runner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-00000000ad926a49.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-00000000e7d700b8.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (8b4b20836 2023-05-22)" data-search-js="search-000000008f4b879f.js" data-settings-js="settings-00000000ae536cfc.js" data-settings-css="settings-00000000de69f609.css" data-theme-light-css="light-0000000098ecf2b2.css" data-theme-dark-css="dark-0000000038bf9c10.css" data-theme-ayu-css="ayu-00000000d52bec7d.css" ></div><script src="../../static.files/storage-0000000014d63f83.js"></script><script defer src="../../static.files/source-script-00000000502bce96.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-0000000094b202b6.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0000000098ecf2b2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0000000038bf9c10.css"><link rel="stylesheet" href="../../static.files/noscript-00000000e18db8d9.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../cli/index.html"><img class="rust-logo" src="../../static.files/rust-logo-00000000a653c8a4.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/runner.rs`."><title>runner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -665,7 +667,7 @@
 //!
 
 </span><span class="attr">#[cfg(test)]
-#[path = <span class="string">&quot;runner_test.rs&quot;</span>]
+#[path = <span class="string">"runner_test.rs"</span>]
 </span><span class="kw">mod </span>runner_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
@@ -700,16 +702,16 @@
             <span class="kw">let </span>expanded_cwd = environment::expand_value(cwd);
 
             <span class="kw">if </span>expanded_cwd.len() &gt; <span class="number">0 </span>{
-                <span class="kw">let </span>directory = envmnt::get_or(<span class="string">&quot;CARGO_MAKE_WORKING_DIRECTORY&quot;</span>, <span class="string">&quot;&quot;</span>);
+                <span class="kw">let </span>directory = envmnt::get_or(<span class="string">"CARGO_MAKE_WORKING_DIRECTORY"</span>, <span class="string">""</span>);
 
                 environment::setup_cwd(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>expanded_cwd));
 
                 directory
             } <span class="kw">else </span>{
-                <span class="string">&quot;&quot;</span>.to_string()
+                <span class="string">""</span>.to_string()
             }
         }
-        <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+        <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
     };
 
     action();
@@ -778,7 +780,7 @@
     );
 
     Step {
-        name: <span class="string">&quot;cargo_make_run_fork&quot;</span>.to_string(),
+        name: <span class="string">"cargo_make_run_fork"</span>.to_string(),
         config: fork_task,
     }
 }
@@ -793,7 +795,7 @@
                 config: cleanup_task_info.clone(),
             },
         ),
-        <span class="prelude-val">None </span>=&gt; <span class="macro">error!</span>(<span class="string">&quot;Cleanup task: {} not found.&quot;</span>, <span class="kw-2">&amp;</span>task),
+        <span class="prelude-val">None </span>=&gt; <span class="macro">error!</span>(<span class="string">"Cleanup task: {} not found."</span>, <span class="kw-2">&amp;</span>task),
     }
 }
 
@@ -851,7 +853,7 @@
 
         <span class="comment">// clean up task only supported for forked tasks
         </span><span class="kw">if </span>!fork &amp;&amp; cleanup_task.is_some() {
-            <span class="macro">error!</span>(<span class="string">&quot;Invalid task, cannot use cleanup_task without fork.&quot;</span>);
+            <span class="macro">error!</span>(<span class="string">"Invalid task, cannot use cleanup_task without fork."</span>);
         }
 
         <span class="kw">for </span>name <span class="kw">in </span>names {
@@ -908,9 +910,9 @@
 }
 
 <span class="kw">fn </span>create_watch_task_name(task: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>watch_task_name = <span class="string">&quot;&quot;</span>.to_string();
+    <span class="kw">let </span><span class="kw-2">mut </span>watch_task_name = <span class="string">""</span>.to_string();
     watch_task_name.push_str(<span class="kw-2">&amp;</span>task);
-    watch_task_name.push_str(<span class="string">&quot;-watch&quot;</span>);
+    watch_task_name.push_str(<span class="string">"-watch"</span>);
 
     watch_task_name
 }
@@ -938,7 +940,7 @@
 }
 
 <span class="kw">fn </span>is_watch_enabled() -&gt; bool {
-    !envmnt::is_or(<span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>, <span class="bool-val">false</span>)
+    !envmnt::is_or(<span class="string">"CARGO_MAKE_DISABLE_WATCH"</span>, <span class="bool-val">false</span>)
 }
 
 <span class="kw">fn </span>should_watch(task: <span class="kw-2">&amp;</span>Task) -&gt; bool {
@@ -991,14 +993,14 @@
 
         <span class="kw">if </span>validate_condition(<span class="kw-2">&amp;</span>flow_info, <span class="kw-2">&amp;</span>step) {
             <span class="kw">if </span>logger::should_reduce_output(<span class="kw-2">&amp;</span>flow_info) &amp;&amp; step.config.script.is_none() {
-                <span class="macro">debug!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span>step.name);
+                <span class="macro">debug!</span>(<span class="string">"Running Task: {}"</span>, <span class="kw-2">&amp;</span>step.name);
             } <span class="kw">else </span>{
-                <span class="macro">info!</span>(<span class="string">&quot;Running Task: {}&quot;</span>, <span class="kw-2">&amp;</span>step.name);
+                <span class="macro">info!</span>(<span class="string">"Running Task: {}"</span>, <span class="kw-2">&amp;</span>step.name);
             }
 
             <span class="kw">if </span>!step.config.is_valid() {
                 <span class="macro">error!</span>(
-                    <span class="string">&quot;Invalid task: {}, contains multiple actions.\n{:#?}&quot;</span>,
+                    <span class="string">"Invalid task: {}, contains multiple actions.\n{:#?}"</span>,
                     <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>step.config
                 );
             }
@@ -1008,13 +1010,13 @@
                 <span class="prelude-val">Some</span>(deprecated) =&gt; <span class="kw">match </span>deprecated {
                     DeprecationInfo::Boolean(value) =&gt; {
                         <span class="kw">if </span>value {
-                            <span class="macro">warn!</span>(<span class="string">&quot;Task: {} is deprecated.&quot;</span>, <span class="kw-2">&amp;</span>step.name);
+                            <span class="macro">warn!</span>(<span class="string">"Task: {} is deprecated."</span>, <span class="kw-2">&amp;</span>step.name);
                         }
 
                         ()
                     }
                     DeprecationInfo::Message(<span class="kw-2">ref </span>message) =&gt; {
-                        <span class="macro">warn!</span>(<span class="string">&quot;Task: {} is deprecated - {}&quot;</span>, <span class="kw-2">&amp;</span>step.name, message);
+                        <span class="macro">warn!</span>(<span class="string">"Task: {} is deprecated - {}"</span>, <span class="kw-2">&amp;</span>step.name, message);
 
                         ()
                     }
@@ -1034,7 +1036,7 @@
                 <span class="prelude-val">None </span>=&gt; (),
             };
 
-            envmnt::set(<span class="string">&quot;CARGO_MAKE_CURRENT_TASK_NAME&quot;</span>, <span class="kw-2">&amp;</span>step.name);
+            envmnt::set(<span class="string">"CARGO_MAKE_CURRENT_TASK_NAME"</span>, <span class="kw-2">&amp;</span>step.name);
 
             <span class="comment">//make sure profile env is not overwritten
             </span>profile::set(<span class="kw-2">&amp;</span>profile_name);
@@ -1094,19 +1096,19 @@
             <span class="kw">let </span>fail_message = <span class="kw">match </span>step.config.condition {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>condition) =&gt; <span class="kw">match </span>condition.fail_message {
                     <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.to_string(),
-                    <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+                    <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
                 },
-                <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+                <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
             };
 
             <span class="kw">if </span>logger::should_reduce_output(<span class="kw-2">&amp;</span>flow_info) &amp;&amp; !step.config.is_actionable() {
-                <span class="macro">debug!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);
+                <span class="macro">debug!</span>(<span class="string">"Skipping Task: {} {}"</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);
             } <span class="kw">else </span>{
-                <span class="macro">info!</span>(<span class="string">&quot;Skipping Task: {} {}&quot;</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);
+                <span class="macro">info!</span>(<span class="string">"Skipping Task: {} {}"</span>, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>fail_message);
             }
         }
     } <span class="kw">else </span>{
-        <span class="macro">debug!</span>(<span class="string">&quot;Ignoring Empty Task: {}&quot;</span>, <span class="kw-2">&amp;</span>step.name);
+        <span class="macro">debug!</span>(<span class="string">"Ignoring Empty Task: {}"</span>, <span class="kw-2">&amp;</span>step.name);
     }
 }
 
@@ -1126,80 +1128,80 @@
 
     <span class="kw">let </span><span class="kw-2">mut </span>env_map = task_config.env.unwrap_or(IndexMap::new());
     env_map.insert(
-        <span class="string">&quot;CARGO_MAKE_DISABLE_WATCH&quot;</span>.to_string(),
-        EnvValue::Value(<span class="string">&quot;true&quot;</span>.to_string()),
+        <span class="string">"CARGO_MAKE_DISABLE_WATCH"</span>.to_string(),
+        EnvValue::Value(<span class="string">"true"</span>.to_string()),
     );
     task_config.env = <span class="prelude-val">Some</span>(env_map);
 
     <span class="kw">let </span>make_args = task_config.args.unwrap();
     <span class="kw">let </span><span class="kw-2">mut </span>make_command = String::new();
     <span class="kw">for </span>make_arg <span class="kw">in </span>make_args {
-        <span class="kw">if </span>make_arg.contains(<span class="string">&quot; &quot;</span>) {
-            make_command.push_str(<span class="string">&quot;\&quot;&quot;</span>);
+        <span class="kw">if </span>make_arg.contains(<span class="string">" "</span>) {
+            make_command.push_str(<span class="string">"\""</span>);
             make_command.push_str(<span class="kw-2">&amp;</span>make_arg);
-            make_command.push_str(<span class="string">&quot;\&quot;&quot;</span>);
+            make_command.push_str(<span class="string">"\""</span>);
         } <span class="kw">else </span>{
             make_command.push_str(<span class="kw-2">&amp;</span>make_arg);
         }
 
-        make_command.push(<span class="string">&#39; &#39;</span>);
+        make_command.push(<span class="string">' '</span>);
     }
     make_command = make_command.trim().to_string();
 
-    <span class="kw">let </span><span class="kw-2">mut </span>watch_args = <span class="macro">vec!</span>[<span class="string">&quot;watch&quot;</span>.to_string()];
+    <span class="kw">let </span><span class="kw-2">mut </span>watch_args = <span class="macro">vec!</span>[<span class="string">"watch"</span>.to_string()];
 
     <span class="kw">match </span>options {
         <span class="prelude-val">Some</span>(task_watch_options) =&gt; <span class="kw">match </span>task_watch_options {
             TaskWatchOptions::Options(watch_options) =&gt; {
                 <span class="kw">let </span>watch_version = <span class="kw">match </span>watch_options.version {
                     <span class="prelude-val">Some</span>(value) =&gt; value.to_string(),
-                    <span class="kw">_ </span>=&gt; <span class="string">&quot;8.4.1&quot;</span>.to_string(), <span class="comment">// current version
+                    <span class="kw">_ </span>=&gt; <span class="string">"8.4.1"</span>.to_string(), <span class="comment">// current version
                 </span>};
-                task_config.install_crate_args = <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="string">&quot;--version&quot;</span>.to_string(), watch_version]);
+                task_config.install_crate_args = <span class="prelude-val">Some</span>(<span class="macro">vec!</span>[<span class="string">"--version"</span>.to_string(), watch_version]);
 
                 <span class="kw">match </span>watch_options.why {
                     <span class="prelude-val">Some</span>(option_value) =&gt; {
                         <span class="kw">if </span>option_value {
-                            watch_args.push(<span class="string">&quot;--why&quot;</span>.to_string());
+                            watch_args.push(<span class="string">"--why"</span>.to_string());
                         } <span class="kw">else </span>{
-                            watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string());
+                            watch_args.push(<span class="string">"-q"</span>.to_string());
                         }
                     }
-                    <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
+                    <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">"-q"</span>.to_string()),
                 }
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(option_value) = watch_options.postpone {
                     <span class="kw">if </span>option_value {
-                        watch_args.push(<span class="string">&quot;--postpone&quot;</span>.to_string());
+                        watch_args.push(<span class="string">"--postpone"</span>.to_string());
                     }
                 }
 
                 <span class="kw">match </span>watch_options.ignore_pattern {
-                    <span class="prelude-val">Some</span>(value) =&gt; watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">&quot;-i&quot;</span>.to_string(), value]),
+                    <span class="prelude-val">Some</span>(value) =&gt; watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">"-i"</span>.to_string(), value]),
                     <span class="kw">_ </span>=&gt; (),
                 };
 
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(option_value) = watch_options.no_git_ignore {
                     <span class="kw">if </span>option_value {
-                        watch_args.push(<span class="string">&quot;--no-gitignore&quot;</span>.to_string());
+                        watch_args.push(<span class="string">"--no-gitignore"</span>.to_string());
                     }
                 }
 
                 <span class="kw">match </span>watch_options.watch {
                     <span class="prelude-val">Some</span>(paths) =&gt; {
                         <span class="kw">for </span>watch_path <span class="kw">in </span>paths {
-                            watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">&quot;-w&quot;</span>.to_string(), watch_path])
+                            watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">"-w"</span>.to_string(), watch_path])
                         }
                     }
                     <span class="kw">_ </span>=&gt; (),
                 };
             }
-            <span class="kw">_ </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
+            <span class="kw">_ </span>=&gt; watch_args.push(<span class="string">"-q"</span>.to_string()),
         },
-        <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">&quot;-q&quot;</span>.to_string()),
+        <span class="prelude-val">None </span>=&gt; watch_args.push(<span class="string">"-q"</span>.to_string()),
     }
 
-    watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">&quot;-x&quot;</span>.to_string(), make_command.to_string()]);
+    watch_args.extend_from_slice(<span class="kw-2">&amp;</span>[<span class="string">"-x"</span>.to_string(), make_command.to_string()]);
 
     task_config.args = <span class="prelude-val">Some</span>(watch_args);
 
@@ -1218,7 +1220,7 @@
         sub_flow,
         <span class="kw-2">&amp;</span>flow_info.skip_tasks_pattern,
     );
-    <span class="macro">debug!</span>(<span class="string">&quot;Created execution plan: {:#?}&quot;</span>, <span class="kw-2">&amp;</span>execution_plan);
+    <span class="macro">debug!</span>(<span class="string">"Created execution plan: {:#?}"</span>, <span class="kw-2">&amp;</span>execution_plan);
 
     run_task_flow(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>execution_plan);
 }
@@ -1246,7 +1248,7 @@
             <span class="kw">_ </span>=&gt; (),
         };
 
-        <span class="macro">error!</span>(<span class="string">&quot;Task error detected, exit code: {}&quot;</span>, <span class="kw-2">&amp;</span>exit_code);
+        <span class="macro">error!</span>(<span class="string">"Task error detected, exit code: {}"</span>, <span class="kw-2">&amp;</span>exit_code);
     }
 }
 
@@ -1269,7 +1271,7 @@
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; <span class="kw">match </span>Regex::new(pattern) {
             <span class="prelude-val">Ok</span>(reg) =&gt; <span class="prelude-val">Some</span>(reg),
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                <span class="macro">warn!</span>(<span class="string">&quot;Invalid skip tasks pattern provided: {}&quot;</span>, pattern);
+                <span class="macro">warn!</span>(<span class="string">"Invalid skip tasks pattern provided: {}"</span>, pattern);
                 <span class="prelude-val">None
             </span>}
         },
@@ -1301,13 +1303,13 @@
     <span class="kw">let </span>time_string = <span class="kw">match </span>start_time.elapsed() {
         <span class="prelude-val">Ok</span>(elapsed) =&gt; {
             <span class="kw">let </span>time_millies = elapsed.as_millis() <span class="kw">as </span>f64 / <span class="number">1000.0</span>;
-            <span class="macro">format!</span>(<span class="string">&quot; in {:.2} seconds&quot;</span>, time_millies)
+            <span class="macro">format!</span>(<span class="string">" in {:.2} seconds"</span>, time_millies)
         }
-        <span class="kw">_ </span>=&gt; <span class="string">&quot;&quot;</span>.to_string(),
+        <span class="kw">_ </span>=&gt; <span class="string">""</span>.to_string(),
     };
 
     time_summary::print(<span class="kw-2">&amp;</span>flow_state_rc.borrow().time_summary);
 
-    <span class="macro">info!</span>(<span class="string">&quot;Build Done{}.&quot;</span>, <span class="kw-2">&amp;</span>time_string);
+    <span class="macro">info!</span>(<span class="string">"Build Done{}."</span>, <span class="kw-2">&amp;</span>time_string);
 }
 </code></pre></div></section></main></body></html>
