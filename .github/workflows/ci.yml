@@ -1,7 +1,13 @@
 name: CI
 on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   CLICOLOR_FORCE: 1
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
 jobs:
   ci:
     name: CI
@@ -20,6 +26,8 @@ jobs:
         toolchain: ${{ matrix.rust }}
     - name: Install cargo-make
       run: cargo install --debug cargo-make
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
     - name: Run CI
       if: matrix.rust == 'stable' || matrix.rust == 'beta' || matrix.rust == 'nightly'
       run: cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
