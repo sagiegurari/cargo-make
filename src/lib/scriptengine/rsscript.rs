@@ -26,7 +26,7 @@ fn get_script_runner() -> ScriptRunner {
         "rust-script" => ScriptRunner::RustScript,
         "cargo-script" => ScriptRunner::CargoScript,
         "cargo-play" => ScriptRunner::CargoPlay,
-        _ => ScriptRunner::CargoScript,
+        _ => ScriptRunner::RustScript,
     }
 }
 

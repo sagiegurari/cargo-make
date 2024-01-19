@@ -47,7 +47,7 @@ fn get_script_runner_cargo_other() {
     let provider = get_script_runner();
     envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
 
-    assert_eq!(provider, ScriptRunner::CargoScript);
+    assert_eq!(provider, ScriptRunner::RustScript);
 }
 
 #[test]
