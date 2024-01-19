@@ -878,6 +878,20 @@ fn validate_script_invalid() {
 }
 
 #[test]
+fn validate_script_valid_with_duckscript_shebang() {
+    let enabled = validate_script(&Some(vec!["#!@duckscript\nexit 0".to_string()]), None);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_script_invalid_with_duckscript_shebang() {
+    let enabled = validate_script(&Some(vec!["#!@duckscript\nexit 1".to_string()]), None);
+
+    assert!(!enabled);
+}
+
+#[test]
 #[ignore]
 fn validate_profile_valid() {
     profile::set("my_profile");

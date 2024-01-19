@@ -56,11 +56,12 @@ fn execute_default_valid() {
     if test::should_test(false) {
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
 
-        execute(
+        let valid = execute(
             &vec!["fn main() {println!(\"test\");}".to_string()],
             &vec![],
             true,
         );
+        assert!(valid);
     }
 }
 
@@ -104,11 +105,12 @@ fn execute_default_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
 
-        execute(
+        let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
             &vec![],
             false,
         );
+        assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -120,11 +122,12 @@ fn execute_rust_script_valid() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "rust-script");
 
-        execute(
+        let valid = execute(
             &vec!["fn main() {println!(\"test\");}".to_string()],
             &vec![],
             true,
         );
+        assert!(valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -170,11 +173,12 @@ fn execute_rust_script_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "rust-script");
 
-        execute(
+        let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
             &vec![],
             false,
         );
+        assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -220,11 +224,12 @@ fn execute_cargo_play_runtime_panic_no_validate() {
     if test::should_test(false) {
         envmnt::set("CARGO_MAKE_RUST_SCRIPT_PROVIDER", "cargo-play");
 
-        execute(
+        let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
             &vec![],
             false,
         );
+        assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }

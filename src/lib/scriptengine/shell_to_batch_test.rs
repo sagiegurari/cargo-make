@@ -2,11 +2,13 @@ use super::*;
 
 #[test]
 fn execute_valid() {
-    execute(
+    let valid = execute(
         &vec!["echo test".to_string()],
         &vec!["test".to_string()],
         true,
     );
+
+    assert!(valid);
 }
 
 #[test]
@@ -17,5 +19,6 @@ fn execute_error() {
 
 #[test]
 fn execute_error_no_validate() {
-    execute(&vec!["exit 1".to_string()], &vec![], false);
+    let valid = execute(&vec!["exit 1".to_string()], &vec![], false);
+    assert!(!valid);
 }

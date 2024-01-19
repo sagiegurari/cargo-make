@@ -116,3 +116,17 @@ condition = { files_modified = { input = [
 ] } }
 command = "cargo"
 args = ["build"]
+
+[tasks.test-duckscript-condition]
+condition_script = ['''
+#!@duckscript
+
+var = set "hello from duckscript"
+echo ${var}
+echo %{var}
+
+exit 0
+''']
+script = '''
+echo "duckscript condition was met"
+'''

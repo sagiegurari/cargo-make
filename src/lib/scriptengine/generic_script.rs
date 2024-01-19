@@ -39,7 +39,7 @@ pub(crate) fn execute(
     arguments: Option<Vec<String>>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) {
+) -> bool {
     let file = create_script_file(script_text, &extension);
 
     let valid = run_file(&file, &runner, arguments, &mut cli_arguments.clone());
@@ -49,4 +49,6 @@ pub(crate) fn execute(
     if validate && !valid {
         error!("Unable to execute script.");
     }
+
+    return valid;
 }

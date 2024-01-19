@@ -261,27 +261,19 @@ fn invoke_script(
     match engine_type {
         EngineType::OS => {
             let script_text = get_script_text(script);
-            os_script::execute(&script_text, script_runner, cli_arguments, validate);
-
-            true
+            os_script::execute(&script_text, script_runner, cli_arguments, validate)
         }
         EngineType::Duckscript => {
             let script_text = get_script_text(script);
-            duck_script::execute(&script_text, cli_arguments, flow_info, flow_state, validate);
-
-            true
+            duck_script::execute(&script_text, cli_arguments, flow_info, flow_state, validate)
         }
         EngineType::Rust => {
             let script_text = get_script_text(script);
-            rsscript::execute(&script_text, cli_arguments, validate);
-
-            true
+            rsscript::execute(&script_text, cli_arguments, validate)
         }
         EngineType::Shell2Batch => {
             let script_text = get_script_text(script);
-            shell_to_batch::execute(&script_text, cli_arguments, validate);
-
-            true
+            shell_to_batch::execute(&script_text, cli_arguments, validate)
         }
         EngineType::Generic => {
             let script_text = get_script_text(script);
@@ -293,16 +285,12 @@ fn invoke_script(
                 script_runner_args.clone(),
                 cli_arguments,
                 validate,
-            );
-
-            true
+            )
         }
         EngineType::Shebang => {
             let script_text = get_script_text(script);
             let extension = script_extension.clone();
-            shebang_script::execute(&script_text, &extension, cli_arguments, validate);
-
-            true
+            shebang_script::execute(&script_text, &extension, cli_arguments, validate)
         }
         EngineType::Unsupported => false,
     }

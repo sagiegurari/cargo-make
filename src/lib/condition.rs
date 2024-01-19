@@ -7,11 +7,11 @@
 #[path = "condition_test.rs"]
 mod condition_test;
 
-use crate::command;
 use crate::environment;
 use crate::profile;
+use crate::scriptengine;
 use crate::types;
-use crate::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
+use crate::types::{FlowInfo, RustVersionCondition, ScriptValue, Step, TaskCondition};
 use crate::version::{is_newer, is_same};
 use envmnt;
 use fsio;
@@ -438,14 +438,14 @@ fn validate_script(condition_script: &Option<Vec<String>>, script_runner: Option
         Some(ref script) => {
             debug!("Checking task condition script.");
 
-            let exit_code =
-                command::run_script_get_exit_code(&script, script_runner, &vec![], false);
-
-            if exit_code == 0 {
-                true
-            } else {
-                false
-            }
+            return scriptengine::invoke_script_pre_flow(
+                &ScriptValue::Text(script.to_vec()),
+                script_runner,
+                None,
+                None,
+                false,
+                &vec![],
+            );
         }
         None => true,
     }

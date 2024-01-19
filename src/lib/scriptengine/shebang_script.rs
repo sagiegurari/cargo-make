@@ -105,7 +105,7 @@ pub(crate) fn execute(
     extension: &Option<String>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) {
+) -> bool {
     let shebang = get_shebang(&script_text);
 
     match shebang.runner {
@@ -122,12 +122,14 @@ pub(crate) fn execute(
                 shebang.arguments,
                 &cli_arguments,
                 validate,
-            );
+            )
         }
         None => {
             if validate {
                 error!("Unable to execute script using shebang.");
             }
+
+            false
         }
-    };
+    }
 }

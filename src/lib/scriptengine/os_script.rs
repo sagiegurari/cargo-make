@@ -14,6 +14,8 @@ pub(crate) fn execute(
     runner: Option<String>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) {
-    command::run_script_get_exit_code(&script_text, runner, &cli_arguments, validate);
+) -> bool {
+    let exit_code =
+        command::run_script_get_exit_code(&script_text, runner, &cli_arguments, validate);
+    exit_code == 0
 }

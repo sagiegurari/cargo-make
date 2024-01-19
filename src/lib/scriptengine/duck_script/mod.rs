@@ -27,7 +27,7 @@ pub(crate) fn execute(
     flow_info: Option<&FlowInfo>,
     flow_state: Option<Rc<RefCell<FlowState>>>,
     validate: bool,
-) {
+) -> bool {
     let mut array_command = "@ = array".to_string();
     let mut index = 0;
     for _ in cli_arguments {
@@ -59,6 +59,8 @@ pub(crate) fn execute(
                     if validate {
                         error!("Error while running duckscript: {}", error);
                     }
+
+                    return false;
                 }
             };
 
@@ -66,13 +68,17 @@ pub(crate) fn execute(
             if !directory.is_empty() {
                 environment::setup_cwd(Some(&directory));
             }
+
+            true
         }
         Err(error) => {
             if validate {
                 error!("Unable to load duckscript SDK: {}", error);
             }
+
+            false
         }
-    };
+    }
 }
 
 pub(crate) fn create_common_context(cli_arguments: &Vec<String>) -> Context {

@@ -3,7 +3,7 @@ use crate::test;
 
 #[test]
 fn execute_shell() {
-    execute(
+    let valid = execute(
         &vec!["exit 0".to_string()],
         test::get_os_runner(),
         test::get_os_extension(),
@@ -11,6 +11,7 @@ fn execute_shell() {
         &vec![],
         true,
     );
+    assert!(valid);
 }
 
 #[test]
@@ -28,7 +29,7 @@ fn execute_shell_error() {
 
 #[test]
 fn execute_shell_error_no_validate() {
-    execute(
+    let valid = execute(
         &vec!["exit 1".to_string()],
         test::get_os_runner(),
         test::get_os_extension(),
@@ -36,11 +37,12 @@ fn execute_shell_error_no_validate() {
         &vec![],
         false,
     );
+    assert!(!valid);
 }
 
 #[test]
 fn execute_shell_empty_arguments() {
-    execute(
+    let valid = execute(
         &vec!["exit 0".to_string()],
         test::get_os_runner(),
         test::get_os_extension(),
@@ -48,12 +50,13 @@ fn execute_shell_empty_arguments() {
         &vec![],
         true,
     );
+    assert!(valid);
 }
 
 #[test]
 #[cfg(target_os = "linux")]
 fn execute_shell_cli_arguments() {
-    execute(
+    let valid = execute(
         &vec!["exit $1".to_string()],
         test::get_os_runner(),
         test::get_os_extension(),
@@ -61,6 +64,7 @@ fn execute_shell_cli_arguments() {
         &vec!["0".to_string()],
         true,
     );
+    assert!(valid);
 }
 
 #[test]

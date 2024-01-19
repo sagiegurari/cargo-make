@@ -101,7 +101,11 @@ fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) ->
     exit_code == 0
 }
 
-pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
+pub(crate) fn execute(
+    rust_script: &Vec<String>,
+    cli_arguments: &Vec<String>,
+    validate: bool,
+) -> bool {
     let provider = get_script_runner();
 
     install_crate(&provider);
@@ -113,4 +117,6 @@ pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>, va
     if validate && !valid {
         error!("Unable to execute rust code.");
     }
+
+    return valid;
 }
