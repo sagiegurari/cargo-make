@@ -58,6 +58,7 @@ fn execute_default_valid() {
 
         let valid = execute(
             &vec!["fn main() {println!(\"test\");}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -74,6 +75,7 @@ fn execute_default_not_compile() {
 
         execute(
             &vec!["fn main() {donotcompile();}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -91,6 +93,7 @@ fn execute_default_runtime_panic() {
 
         execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -107,6 +110,7 @@ fn execute_default_runtime_panic_no_validate() {
 
         let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             false,
         );
@@ -124,6 +128,7 @@ fn execute_rust_script_valid() {
 
         let valid = execute(
             &vec!["fn main() {println!(\"test\");}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -142,6 +147,7 @@ fn execute_rust_script_not_compile() {
 
         execute(
             &vec!["fn main() {donotcompile();}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -159,6 +165,7 @@ fn execute_rust_script_runtime_panic() {
 
         execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -175,6 +182,7 @@ fn execute_rust_script_runtime_panic_no_validate() {
 
         let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             false,
         );
@@ -193,6 +201,7 @@ fn execute_cargo_play_not_compile() {
 
         execute(
             &vec!["fn main() {donotcompile();}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -210,6 +219,7 @@ fn execute_cargo_play_runtime_panic() {
 
         execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             true,
         );
@@ -226,6 +236,7 @@ fn execute_cargo_play_runtime_panic_no_validate() {
 
         let valid = execute(
             &vec!["fn main() {panic!(\"error\");}".to_string()],
+            None,
             &vec![],
             false,
         );
