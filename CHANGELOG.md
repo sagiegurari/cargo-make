@@ -3,6 +3,7 @@
 ### v0.37.8
 
 * Enhancement: Support script runners and shebang in condition scripts #987
+* Enhancement: Support script runner args for rust scripts #987
 
 ### v0.37.7 (2024-01-14)
 

@@ -269,7 +269,12 @@ fn invoke_script(
         }
         EngineType::Rust => {
             let script_text = get_script_text(script);
-            rsscript::execute(&script_text, cli_arguments, validate)
+            rsscript::execute(
+                &script_text,
+                script_runner_args.clone(),
+                cli_arguments,
+                validate,
+            )
         }
         EngineType::Shell2Batch => {
             let script_text = get_script_text(script);
