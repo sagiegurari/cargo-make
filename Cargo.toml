@@ -82,7 +82,7 @@ toml = "^0.8"
 expect-test = "^1"
 
 [target.'cfg(windows)'.dependencies]
-nu-ansi-term = "^0.49"
+nu-ansi-term = "^0.50"
 
 [features]
 tls-rustls = ["duckscriptsdk/tls-rustls"]
