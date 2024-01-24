@@ -865,28 +865,44 @@ fn validate_script_empty() {
 
 #[test]
 fn validate_script_valid() {
-    let enabled = validate_script(&Some(vec!["exit 0".to_string()]), None);
+    let enabled = validate_script(
+        &Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        None,
+    );
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_script_invalid() {
-    let enabled = validate_script(&Some(vec!["exit 1".to_string()]), None);
+    let enabled = validate_script(
+        &Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
+        None,
+    );
 
     assert!(!enabled);
 }
 
 #[test]
 fn validate_script_valid_with_duckscript_shebang() {
-    let enabled = validate_script(&Some(vec!["#!@duckscript\nexit 0".to_string()]), None);
+    let enabled = validate_script(
+        &Some(ConditionScriptValue::Text(vec![
+            "#!@duckscript\nexit 0".to_string()
+        ])),
+        None,
+    );
 
     assert!(enabled);
 }
 
 #[test]
 fn validate_script_invalid_with_duckscript_shebang() {
-    let enabled = validate_script(&Some(vec!["#!@duckscript\nexit 1".to_string()]), None);
+    let enabled = validate_script(
+        &Some(ConditionScriptValue::Text(vec![
+            "#!@duckscript\nexit 1".to_string()
+        ])),
+        None,
+    );
 
     assert!(!enabled);
 }
@@ -2428,7 +2444,7 @@ fn validate_condition_for_step_both_valid() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2488,7 +2504,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 1".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 1".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2544,7 +2560,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2601,7 +2617,7 @@ fn validate_condition_for_step_invalid_env_set() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2660,7 +2676,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2724,7 +2740,7 @@ fn validate_condition_for_step_valid_env() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2785,7 +2801,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2849,7 +2865,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2913,7 +2929,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -2977,7 +2993,7 @@ fn validate_condition_for_step_valid_env_contains() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -3038,7 +3054,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -3102,7 +3118,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
         files_not_exist: None,
         files_modified: None,
     });
-    step.config.condition_script = Some(vec!["exit 0".to_string()]);
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
     let enabled = validate_condition_for_step(&flow_info, &step);
 
@@ -3712,4 +3728,22 @@ fn validate_rust_version_with_invalid_condition() {
     let enabled = validate_rust_version(&condition);
 
     assert!(!enabled);
+}
+
+#[test]
+fn get_script_text_single_line() {
+    let output = get_script_text(&ConditionScriptValue::SingleLine("test".to_string())).join("\n");
+
+    assert_eq!(output, "test");
+}
+
+#[test]
+fn get_script_text_vector() {
+    let output = get_script_text(&ConditionScriptValue::Text(vec![
+        "line 1".to_string(),
+        "line 2".to_string(),
+    ]))
+    .join("\n");
+
+    assert_eq!(output, "line 1\nline 2");
 }

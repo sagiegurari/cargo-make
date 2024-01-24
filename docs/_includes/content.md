@@ -1742,9 +1742,9 @@ Below is an example of a condition script that always returns a non zero value, 
 
 ```toml
 [tasks.never]
-condition_script = [
-    "exit 1"
-]
+condition_script = """
+exit 1
+"""
 command = "cargo"
 args = ["build"]
 ```

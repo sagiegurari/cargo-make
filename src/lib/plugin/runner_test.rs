@@ -2,8 +2,8 @@ use super::*;
 use crate::plugin::types::Plugins;
 use crate::test::create_empty_flow_info;
 use crate::types::{
-    ConfigSection, EnvFile, EnvValue, InstallCrate, RunTaskInfo, ScriptValue, Task, TaskCondition,
-    TaskWatchOptions,
+    ConditionScriptValue, ConfigSection, EnvFile, EnvValue, InstallCrate, RunTaskInfo, ScriptValue,
+    Task, TaskCondition, TaskWatchOptions,
 };
 
 #[test]
@@ -472,7 +472,7 @@ fn run_task_invoked_valid() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(true),
         force: Some(true),
         env_files: Some(vec![EnvFile::Path("extended".to_string())]),

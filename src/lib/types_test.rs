@@ -1970,7 +1970,7 @@ fn task_extend_extended_have_all_fields() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2021,7 +2021,7 @@ fn task_extend_extended_have_all_fields() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2069,7 +2069,7 @@ fn task_extend_extended_have_all_fields() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2117,7 +2117,7 @@ fn task_extend_extended_have_all_fields() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2194,7 +2194,11 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.deprecated.unwrap(), DeprecationInfo::Boolean(false));
     assert_eq!(base.extend.unwrap(), "extended");
     assert_eq!(base.watch.unwrap(), TaskWatchOptions::Boolean(false));
-    assert_eq!(base.condition_script.unwrap().len(), 1);
+    let condition_script = match base.condition_script.unwrap() {
+        ConditionScriptValue::Text(script) => script,
+        _ => panic!("Invalid condition script value."),
+    };
+    assert_eq!(condition_script.len(), 1);
     assert!(!base.ignore_errors.unwrap());
     assert!(!base.force.unwrap());
     assert_eq!(base.env_files.unwrap().len(), 1);
@@ -2260,7 +2264,7 @@ fn task_extend_clear_with_no_data() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2311,7 +2315,7 @@ fn task_extend_clear_with_no_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2359,7 +2363,7 @@ fn task_extend_clear_with_no_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2407,7 +2411,7 @@ fn task_extend_clear_with_no_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2508,7 +2512,7 @@ fn task_extend_clear_with_all_data() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2559,7 +2563,7 @@ fn task_extend_clear_with_all_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2607,7 +2611,7 @@ fn task_extend_clear_with_all_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2655,7 +2659,7 @@ fn task_extend_clear_with_all_data() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2914,7 +2918,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2961,7 +2965,7 @@ fn task_get_normalized_task_with_override_no_clear() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -3055,7 +3059,11 @@ fn task_get_normalized_task_with_override_no_clear() {
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(false)
     );
-    assert_eq!(normalized_task.condition_script.unwrap().len(), 1);
+    let condition_script = match normalized_task.condition_script.unwrap() {
+        ConditionScriptValue::Text(script) => script,
+        _ => panic!("Invalid condition script value."),
+    };
+    assert_eq!(condition_script.len(), 1);
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.env_files.unwrap().len(), 1);
@@ -3121,7 +3129,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -3171,7 +3179,10 @@ fn task_get_normalized_task_with_override_clear_false() {
                 files_not_exist: None,
                 files_modified: None,
             }),
-            condition_script: Some(vec!["echo test".to_string(), "exit 1".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec![
+                "echo test".to_string(),
+                "exit 1".to_string(),
+            ])),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -3265,7 +3276,11 @@ fn task_get_normalized_task_with_override_clear_false() {
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(false)
     );
-    assert_eq!(normalized_task.condition_script.unwrap().len(), 2);
+    let condition_script = match normalized_task.condition_script.unwrap() {
+        ConditionScriptValue::Text(script) => script,
+        _ => panic!("Invalid condition script value."),
+    };
+    assert_eq!(condition_script.len(), 2);
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.env_files.unwrap().len(), 1);
@@ -3325,7 +3340,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -3490,7 +3505,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             files_not_exist: None,
             files_modified: None,
         }),
-        condition_script: Some(vec!["exit 0".to_string()]),
+        condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
