@@ -19,6 +19,8 @@
 <a href="#17" id="17">17</a>
 <a href="#18" id="18">18</a>
 <a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # os_script
 //!
 //! Runs OS scripts.
@@ -35,7 +37,9 @@
     runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) {
-    command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script_text, runner, <span class="kw-2">&amp;</span>cli_arguments, validate);
-}
+) -&gt; bool {
+    <span class="kw">let </span>exit_code =
+        command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script_text, runner, <span class="kw-2">&amp;</span>cli_arguments, validate);
+    exit_code == <span class="number">0
+</span>}
 </code></pre></div></section></main></body></html>

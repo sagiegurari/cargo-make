@@ -133,6 +133,8 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # shebang_script
 //!
 //! Runs scripts using the executable defined in the shebang line.
@@ -240,7 +242,7 @@
     extension: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) {
+) -&gt; bool {
     <span class="kw">let </span>shebang = get_shebang(<span class="kw-2">&amp;</span>script_text);
 
     <span class="kw">match </span>shebang.runner {
@@ -257,13 +259,15 @@
                 shebang.arguments,
                 <span class="kw-2">&amp;</span>cli_arguments,
                 validate,
-            );
+            )
         }
         <span class="prelude-val">None </span>=&gt; {
             <span class="kw">if </span>validate {
                 <span class="macro">error!</span>(<span class="string">"Unable to execute script using shebang."</span>);
             }
-        }
-    };
+
+            <span class="bool-val">false
+        </span>}
+    }
 }
 </code></pre></div></section></main></body></html>

@@ -52,6 +52,8 @@
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
 <a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # generic_script
 //!
 //! Runs generic scripts for other languages based on provided config.
@@ -93,7 +95,7 @@
     arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) {
+) -&gt; bool {
     <span class="kw">let </span>file = create_script_file(script_text, <span class="kw-2">&amp;</span>extension);
 
     <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, <span class="kw-2">&amp;</span>runner, arguments, <span class="kw-2">&amp;mut </span>cli_arguments.clone());
@@ -103,5 +105,7 @@
     <span class="kw">if </span>validate &amp;&amp; !valid {
         <span class="macro">error!</span>(<span class="string">"Unable to execute script."</span>);
     }
+
+    <span class="kw">return </span>valid;
 }
 </code></pre></div></section></main></body></html>

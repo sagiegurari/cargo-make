@@ -2388,6 +2388,16 @@
 <a href="#2386" id="2386">2386</a>
 <a href="#2387" id="2387">2387</a>
 <a href="#2388" id="2388">2388</a>
+<a href="#2389" id="2389">2389</a>
+<a href="#2390" id="2390">2390</a>
+<a href="#2391" id="2391">2391</a>
+<a href="#2392" id="2392">2392</a>
+<a href="#2393" id="2393">2393</a>
+<a href="#2394" id="2394">2394</a>
+<a href="#2395" id="2395">2395</a>
+<a href="#2396" id="2396">2396</a>
+<a href="#2397" id="2397">2397</a>
+<a href="#2398" id="2398">2398</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -3259,7 +3269,7 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the task will not be invoked
-    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3450,6 +3460,16 @@
     </span>Sections(ScriptSections),
 }
 
+<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+</span><span class="doccomment">/// Condition script value (not as advanced as normal script value)
+</span><span class="kw">pub enum </span>ConditionScriptValue {
+    <span class="doccomment">/// The script text as single line
+    </span>SingleLine(String),
+    <span class="doccomment">/// The script text lines
+    </span>Text(Vec&lt;String&gt;),
+}
+
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 </span><span class="doccomment">/// Holds a single task configuration such as command and dependencies list
 </span><span class="kw">pub struct </span>Task {
@@ -3476,7 +3496,7 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build
     </span><span class="kw">pub </span>ignore_errors: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors
@@ -3598,7 +3618,7 @@
 </span><span class="attr">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(untagged)]
 </span><span class="kw">pub enum </span>DependencyIdentifier {
-    <span class="doccomment">/// A full dependency definion (potentially in a different file)
+    <span class="doccomment">/// A full dependency definition (potentially in a different file)
     </span>Definition(TaskIdentifier),
     <span class="doccomment">/// A string dependency definition (its name in the current file)
     </span>Name(String),
@@ -4236,7 +4256,7 @@
     <span class="doccomment">/// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build
     </span><span class="kw">pub </span>ignore_errors: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors

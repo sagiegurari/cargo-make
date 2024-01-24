@@ -475,6 +475,19 @@
 <a href="#473" id="473">473</a>
 <a href="#474" id="474">474</a>
 <a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # condition
 //!
 //! Evaluates conditions based on task configuration and current env.
@@ -484,11 +497,13 @@
 #[path = <span class="string">"condition_test.rs"</span>]
 </span><span class="kw">mod </span>condition_test;
 
-<span class="kw">use </span><span class="kw">crate</span>::command;
 <span class="kw">use </span><span class="kw">crate</span>::environment;
 <span class="kw">use </span><span class="kw">crate</span>::profile;
+<span class="kw">use </span><span class="kw">crate</span>::scriptengine;
 <span class="kw">use </span><span class="kw">crate</span>::types;
-<span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, RustVersionCondition, Step, TaskCondition};
+<span class="kw">use </span><span class="kw">crate</span>::types::{
+    ConditionScriptValue, FlowInfo, RustVersionCondition, ScriptValue, Step, TaskCondition,
+};
 <span class="kw">use </span><span class="kw">crate</span>::version::{is_newer, is_same};
 <span class="kw">use </span>envmnt;
 <span class="kw">use </span>fsio;
@@ -910,19 +925,30 @@
     }
 }
 
-<span class="kw">fn </span>validate_script(condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;) -&gt; bool {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_script_text(script: <span class="kw-2">&amp;</span>ConditionScriptValue) -&gt; Vec&lt;String&gt; {
+    <span class="kw">match </span>script {
+        ConditionScriptValue::SingleLine(text) =&gt; <span class="macro">vec!</span>[text.clone()],
+        ConditionScriptValue::Text(text) =&gt; text.clone(),
+    }
+}
+
+<span class="kw">fn </span>validate_script(
+    condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
+    script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
+) -&gt; bool {
     <span class="kw">match </span>condition_script {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
             <span class="macro">debug!</span>(<span class="string">"Checking task condition script."</span>);
 
-            <span class="kw">let </span>exit_code =
-                command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script, script_runner, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[], <span class="bool-val">false</span>);
-
-            <span class="kw">if </span>exit_code == <span class="number">0 </span>{
-                <span class="bool-val">true
-            </span>} <span class="kw">else </span>{
-                <span class="bool-val">false
-            </span>}
+            <span class="kw">let </span>script_text = get_script_text(script);
+            <span class="kw">return </span>scriptengine::invoke_script_pre_flow(
+                <span class="kw-2">&amp;</span>ScriptValue::Text(script_text),
+                script_runner,
+                <span class="prelude-val">None</span>,
+                <span class="prelude-val">None</span>,
+                <span class="bool-val">false</span>,
+                <span class="kw-2">&amp;</span><span class="macro">vec!</span>[],
+            );
         }
         <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
     }
@@ -935,7 +961,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_conditions(
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     condition: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
-    condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
     script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
 ) -&gt; bool {
     validate_criteria(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>flow_info), <span class="kw-2">&amp;</span>condition)

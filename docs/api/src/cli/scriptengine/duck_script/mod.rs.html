@@ -107,6 +107,12 @@
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # duck_script
 //!
 //! Compiles and runs duckscript code.
@@ -136,7 +142,7 @@
     flow_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;,
     flow_state: <span class="prelude-ty">Option</span>&lt;Rc&lt;RefCell&lt;FlowState&gt;&gt;&gt;,
     validate: bool,
-) {
+) -&gt; bool {
     <span class="kw">let </span><span class="kw-2">mut </span>array_command = <span class="string">"@ = array"</span>.to_string();
     <span class="kw">let </span><span class="kw-2">mut </span>index = <span class="number">0</span>;
     <span class="kw">for _ in </span>cli_arguments {
@@ -168,6 +174,8 @@
                     <span class="kw">if </span>validate {
                         <span class="macro">error!</span>(<span class="string">"Error while running duckscript: {}"</span>, error);
                     }
+
+                    <span class="kw">return </span><span class="bool-val">false</span>;
                 }
             };
 
@@ -175,13 +183,17 @@
             </span><span class="kw">if </span>!directory.is_empty() {
                 environment::setup_cwd(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>directory));
             }
-        }
+
+            <span class="bool-val">true
+        </span>}
         <span class="prelude-val">Err</span>(error) =&gt; {
             <span class="kw">if </span>validate {
                 <span class="macro">error!</span>(<span class="string">"Unable to load duckscript SDK: {}"</span>, error);
             }
-        }
-    };
+
+            <span class="bool-val">false
+        </span>}
+    }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_common_context(cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Context {

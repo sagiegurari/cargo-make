@@ -116,6 +116,21 @@
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # rsscript
 //!
 //! Compiles and runs rust code.
@@ -144,7 +159,7 @@
         <span class="string">"rust-script" </span>=&gt; ScriptRunner::RustScript,
         <span class="string">"cargo-script" </span>=&gt; ScriptRunner::CargoScript,
         <span class="string">"cargo-play" </span>=&gt; ScriptRunner::CargoPlay,
-        <span class="kw">_ </span>=&gt; ScriptRunner::CargoScript,
+        <span class="kw">_ </span>=&gt; ScriptRunner::RustScript,
     }
 }
 
@@ -194,7 +209,12 @@
     create_persisted_script_file(rust_script, <span class="string">"rs"</span>)
 }
 
-<span class="kw">fn </span>run_file(file: <span class="kw-2">&amp;</span>str, cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, provider: <span class="kw-2">&amp;</span>ScriptRunner) -&gt; bool {
+<span class="kw">fn </span>run_file(
+    file: <span class="kw-2">&amp;</span>str,
+    runner_arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    provider: <span class="kw-2">&amp;</span>ScriptRunner,
+) -&gt; bool {
     <span class="kw">let </span>(use_cargo, command) = <span class="kw">match </span>provider {
         ScriptRunner::RustScript =&gt; (<span class="bool-val">false</span>, <span class="string">"rust-script"</span>),
         ScriptRunner::CargoScript =&gt; (<span class="bool-val">true</span>, <span class="string">"script"</span>),
@@ -204,6 +224,9 @@
     <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[];
     <span class="kw">if </span>use_cargo {
         args.push(command.to_string());
+    }
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>runner_args) = runner_arguments {
+        args.append(<span class="kw-2">&amp;mut </span>runner_args);
     }
     args.push(file.to_string());
     <span class="kw">let </span><span class="kw-2">mut </span>cli_args = cli_arguments.clone();
@@ -219,17 +242,24 @@
     exit_code == <span class="number">0
 </span>}
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, validate: bool) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(
+    rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    runner_arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    validate: bool,
+) -&gt; bool {
     <span class="kw">let </span>provider = get_script_runner();
 
     install_crate(<span class="kw-2">&amp;</span>provider);
 
     <span class="kw">let </span>file = create_rust_file(rust_script);
 
-    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, <span class="kw-2">&amp;</span>cli_arguments, <span class="kw-2">&amp;</span>provider);
+    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, runner_arguments, <span class="kw-2">&amp;</span>cli_arguments, <span class="kw-2">&amp;</span>provider);
 
     <span class="kw">if </span>validate &amp;&amp; !valid {
         <span class="macro">error!</span>(<span class="string">"Unable to execute rust code."</span>);
     }
+
+    <span class="kw">return </span>valid;
 }
 </code></pre></div></section></main></body></html>

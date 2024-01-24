@@ -132,11 +132,11 @@
         <span class="kw">match </span><span class="macro">write!</span>(hex_string, <span class="string">"{:02X}"</span>, byte) {
             <span class="prelude-val">Err</span>(error) =&gt; {
                 <span class="macro">error!</span>(
-                    <span class="string">"Unable to conver script hash to hex string, error: {}"</span>,
+                    <span class="string">"Unable to convert script hash to hex string, error: {}"</span>,
                     <span class="kw-2">&amp;</span>error
                 );
                 <span class="macro">panic!</span>(
-                    <span class="string">"Unable to conver script hash to hex string, error: {}"</span>,
+                    <span class="string">"Unable to convert script hash to hex string, error: {}"</span>,
                     <span class="kw-2">&amp;</span>error
                 );
             }

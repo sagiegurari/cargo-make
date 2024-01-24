@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.8
+### v0.37.8 (2024-01-24)
 
 * Enhancement: Support script runners and shebang in condition scripts #987
 * Enhancement: Support script runner args for rust scripts #1025
