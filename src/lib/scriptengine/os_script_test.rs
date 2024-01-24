@@ -8,12 +8,13 @@ fn execute_shell() {
 
 #[test]
 fn execute_shell_with_runner() {
-    execute(
+    let valid = execute(
         &vec!["exit 0".to_string()],
         Some(test::get_os_runner()),
         &vec![],
         true,
     );
+    assert!(valid);
 }
 
 #[test]
@@ -24,5 +25,6 @@ fn execute_shell_error() {
 
 #[test]
 fn execute_shell_error_no_validate() {
-    execute(&vec!["exit 1".to_string()], None, &vec![], false);
+    let valid = execute(&vec!["exit 1".to_string()], None, &vec![], false);
+    assert!(!valid);
 }

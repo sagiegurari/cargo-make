@@ -10,8 +10,8 @@ mod shell_to_batch_test;
 use crate::command;
 use shell2batch;
 
-pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
-    if cfg!(windows) {
+pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) -> bool {
+    let exit_code = if cfg!(windows) {
         let shell_script = script.join("\n");
         let windows_batch = shell2batch::convert(&shell_script);
 
@@ -20,8 +20,10 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
             .map(|string| string.to_string())
             .collect();
 
-        command::run_script_get_exit_code(&windows_script_lines, None, cli_arguments, validate);
+        command::run_script_get_exit_code(&windows_script_lines, None, cli_arguments, validate)
     } else {
-        command::run_script_get_exit_code(script, None, cli_arguments, validate);
+        command::run_script_get_exit_code(script, None, cli_arguments, validate)
     };
+
+    exit_code == 0
 }

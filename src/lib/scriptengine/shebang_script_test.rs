@@ -86,12 +86,13 @@ fn get_shebang_single_command_with_spaces_before_shebang() {
 #[test]
 #[cfg(target_os = "linux")]
 fn execute_sh() {
-    execute(
+    let valid = execute(
         &vec!["#! sh".to_string(), "exit $1".to_string()],
         &None,
         &vec!["0".to_string()],
         true,
     );
+    assert!(valid);
 }
 
 #[test]

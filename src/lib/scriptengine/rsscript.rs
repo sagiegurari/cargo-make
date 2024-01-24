@@ -26,7 +26,7 @@ fn get_script_runner() -> ScriptRunner {
         "rust-script" => ScriptRunner::RustScript,
         "cargo-script" => ScriptRunner::CargoScript,
         "cargo-play" => ScriptRunner::CargoPlay,
-        _ => ScriptRunner::CargoScript,
+        _ => ScriptRunner::RustScript,
     }
 }
 
@@ -76,7 +76,12 @@ fn create_rust_file(rust_script: &Vec<String>) -> String {
     create_persisted_script_file(rust_script, "rs")
 }
 
-fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) -> bool {
+fn run_file(
+    file: &str,
+    runner_arguments: Option<Vec<String>>,
+    cli_arguments: &Vec<String>,
+    provider: &ScriptRunner,
+) -> bool {
     let (use_cargo, command) = match provider {
         ScriptRunner::RustScript => (false, "rust-script"),
         ScriptRunner::CargoScript => (true, "script"),
@@ -86,6 +91,9 @@ fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) ->
     let mut args = vec![];
     if use_cargo {
         args.push(command.to_string());
+    }
+    if let Some(mut runner_args) = runner_arguments {
+        args.append(&mut runner_args);
     }
     args.push(file.to_string());
     let mut cli_args = cli_arguments.clone();
@@ -101,16 +109,23 @@ fn run_file(file: &str, cli_arguments: &Vec<String>, provider: &ScriptRunner) ->
     exit_code == 0
 }
 
-pub(crate) fn execute(rust_script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) {
+pub(crate) fn execute(
+    rust_script: &Vec<String>,
+    runner_arguments: Option<Vec<String>>,
+    cli_arguments: &Vec<String>,
+    validate: bool,
+) -> bool {
     let provider = get_script_runner();
 
     install_crate(&provider);
 
     let file = create_rust_file(rust_script);
 
-    let valid = run_file(&file, &cli_arguments, &provider);
+    let valid = run_file(&file, runner_arguments, &cli_arguments, &provider);
 
     if validate && !valid {
         error!("Unable to execute rust code.");
     }
+
+    return valid;
 }

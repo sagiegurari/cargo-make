@@ -82,7 +82,9 @@ echo "condition was met"
 '''
 
 [tasks.test-condition-script]
-condition_script = ["exit 1"]
+condition_script = """
+exit 1
+"""
 command = "echo"
 args = ["condition was met"]
 
@@ -93,7 +95,9 @@ args = ["condition was met"]
 
 [tasks.test-condition-script-with-message]
 condition = { fail_message = "Condition Script Failed." }
-condition_script = ["exit 1"]
+condition_script = """
+exit 1
+"""
 command = "echo"
 args = ["condition was met"]
 
@@ -116,3 +120,17 @@ condition = { files_modified = { input = [
 ] } }
 command = "cargo"
 args = ["build"]
+
+[tasks.test-duckscript-condition]
+condition_script = ['''
+#!@duckscript
+
+var = set "hello from duckscript"
+echo ${var}
+echo %{var}
+
+exit 0
+''']
+script = '''
+echo "duckscript condition was met"
+'''

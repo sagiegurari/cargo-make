@@ -869,7 +869,7 @@ pub struct RunTaskRoutingInfo {
     /// if provided all condition values must be met in order for the task to be invoked
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the task will not be invoked
-    pub condition_script: Option<Vec<String>>,
+    pub condition_script: Option<ConditionScriptValue>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1060,6 +1060,16 @@ pub enum ScriptValue {
     Sections(ScriptSections),
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
+/// Condition script value (not as advanced as normal script value)
+pub enum ConditionScriptValue {
+    /// The script text as single line
+    SingleLine(String),
+    /// The script text lines
+    Text(Vec<String>),
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
@@ -1086,7 +1096,7 @@ pub struct Task {
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    pub condition_script: Option<Vec<String>>,
+    pub condition_script: Option<ConditionScriptValue>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors
@@ -1846,7 +1856,7 @@ pub struct PlatformOverrideTask {
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
-    pub condition_script: Option<Vec<String>>,
+    pub condition_script: Option<ConditionScriptValue>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors

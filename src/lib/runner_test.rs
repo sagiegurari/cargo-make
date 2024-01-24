@@ -1,8 +1,8 @@
 use super::*;
 use crate::test;
 use crate::types::{
-    ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue, FlowInfo,
-    RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
+    ConditionScriptValue, ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue,
+    FlowInfo, RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
 };
 use ci_info;
 use git_info::types::GitInfo;
@@ -2006,7 +2006,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
             parallel: None,
             cleanup_task: None,
             condition: None,
-            condition_script: Some(vec!["exit 1".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
         }],
     );
 
@@ -2051,7 +2051,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
             parallel: None,
             cleanup_task: None,
             condition: None,
-            condition_script: Some(vec!["exit 0".to_string()]),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         }],
     );
 
@@ -2121,7 +2121,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 parallel: None,
                 cleanup_task: None,
                 condition: None,
-                condition_script: Some(vec!["exit 0".to_string()]),
+                condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             },
         ],
     );
@@ -2192,7 +2192,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 parallel: None,
                 cleanup_task: None,
                 condition: None,
-                condition_script: Some(vec!["exit 1".to_string()]),
+                condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),
@@ -2271,7 +2271,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 parallel: None,
                 cleanup_task: None,
                 condition: None,
-                condition_script: Some(vec!["exit 1".to_string()]),
+                condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test3".to_string()),
@@ -2279,7 +2279,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 parallel: None,
                 cleanup_task: None,
                 condition: None,
-                condition_script: Some(vec!["exit 0".to_string()]),
+                condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),

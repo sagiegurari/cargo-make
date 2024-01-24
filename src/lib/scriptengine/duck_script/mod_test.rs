@@ -5,24 +5,26 @@ use envmnt;
 
 #[test]
 fn execute_duckscript() {
-    execute(
+    let valid = execute(
         &vec!["echo test".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
+    assert!(valid);
 }
 
 #[test]
 fn execute_duckscript_error_no_validate() {
-    execute(
+    let valid = execute(
         &vec!["badcommand".to_string()],
         &vec![],
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         false,
     );
+    assert!(!valid);
 }
 
 #[test]
@@ -39,13 +41,14 @@ fn execute_duckscript_error_with_validate() {
 
 #[test]
 fn execute_duckscript_cli_arguments() {
-    execute(
+    let valid = execute(
         &vec!["assert ${1}".to_string()],
         &vec!["true".to_string()],
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
     );
+    assert!(valid);
 }
 
 #[test]
