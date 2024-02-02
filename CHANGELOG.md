@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.9
+### v0.37.9 (2024-02-02)
 
 * Fix: fix rust script invocation as load_script #1035
 

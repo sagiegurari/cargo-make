@@ -73,6 +73,10 @@
 <a href="#71" id="71">71</a>
 <a href="#72" id="72">72</a>
 <a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # script_utils
 //!
 //! Helper functions for script invocations.
@@ -102,7 +106,11 @@
     <span class="kw">let </span>bytes = Sha256::digest(string_bytes);
     <span class="kw">let </span>file_name = bytes_to_hex(<span class="kw-2">&amp;</span>bytes[..]);
 
-    <span class="kw">let </span>directory = envmnt::get_or_panic(<span class="string">"CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY"</span>);
+    <span class="kw">let </span>default_target_directory = envmnt::get_or(<span class="string">"CARGO_MAKE_CRATE_TARGET_DIRECTORY"</span>, <span class="string">"target"</span>);
+    <span class="kw">let </span>directory = envmnt::get_or(
+        <span class="string">"CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY"</span>,
+        <span class="kw-2">&amp;</span>default_target_directory,
+    );
     <span class="kw">let </span><span class="kw-2">mut </span>file_path_buf = PathBuf::new();
     file_path_buf.push(<span class="kw-2">&amp;</span>directory);
     file_path_buf.push(<span class="string">"_cargo_make_temp"</span>);
