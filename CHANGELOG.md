@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.9
+
+* Fix: fix rust script invocation as load_script #1035
+
 ### v0.37.8 (2024-01-24)
 
 * Enhancement: Support script runners and shebang in condition scripts #987
