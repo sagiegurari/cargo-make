@@ -27,7 +27,11 @@ pub(crate) fn create_persisted_script_file(script_text: &Vec<String>, extension:
     let bytes = Sha256::digest(string_bytes);
     let file_name = bytes_to_hex(&bytes[..]);
 
-    let directory = envmnt::get_or_panic("CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY");
+    let default_target_directory = envmnt::get_or("CARGO_MAKE_CRATE_TARGET_DIRECTORY", "target");
+    let directory = envmnt::get_or(
+        "CARGO_MAKE_CRATE_CUSTOM_TRIPLE_TARGET_DIRECTORY",
+        &default_target_directory,
+    );
     let mut file_path_buf = PathBuf::new();
     file_path_buf.push(&directory);
     file_path_buf.push("_cargo_make_temp");

@@ -1,4 +1,13 @@
 
+[config]
+load_script = """
+#!@rust
+
+fn main() {
+    println!("test load script invocation via rust");
+}
+"""
+
 [tasks.rust]
 script_runner = "@rust"
 script = '''
