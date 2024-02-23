@@ -1,7 +1,5 @@
 use super::*;
 
-use envmnt;
-
 #[test]
 #[should_panic]
 fn trim_invoke_empty() {

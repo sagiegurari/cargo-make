@@ -1,5 +1,4 @@
 use super::*;
-use crate::types::{CliArgs, GlobalConfig};
 use std::env;
 use std::path::Path;
 

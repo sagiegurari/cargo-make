@@ -1,10 +1,8 @@
 use super::*;
 
 use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task, TaskCondition};
-use indexmap::IndexMap;
 use std::collections::HashMap;
 use std::env;
-use std::path::Path;
 use std::{thread, time};
 
 #[test]

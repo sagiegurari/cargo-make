@@ -1,5 +1,4 @@
 use super::*;
-use std::collections::HashMap;
 
 #[test]
 fn load_from_file_no_file() {

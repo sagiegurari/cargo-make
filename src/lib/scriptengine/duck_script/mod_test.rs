@@ -1,7 +1,6 @@
 use super::*;
 use crate::test;
 use crate::types::{ScriptValue, Task};
-use envmnt;
 
 #[test]
 fn execute_duckscript() {

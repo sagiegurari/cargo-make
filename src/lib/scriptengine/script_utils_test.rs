@@ -1,6 +1,5 @@
 use super::*;
 use crate::io;
-use fsio;
 
 #[test]
 fn create_script_file_text() {

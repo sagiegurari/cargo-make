@@ -1,7 +1,6 @@
 use super::*;
 use crate::test;
 use crate::types::{InstallCrateInfo, InstallRustupComponentInfo, ScriptValue, TestArg};
-use envmnt;
 
 #[test]
 fn get_cargo_plugin_info_from_command_no_command() {
