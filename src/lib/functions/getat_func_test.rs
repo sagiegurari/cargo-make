@@ -1,7 +1,6 @@
 use super::*;
 
 use crate::test;
-use envmnt;
 
 #[test]
 #[should_panic]

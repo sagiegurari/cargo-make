@@ -12,7 +12,6 @@ use crate::cli::{
 };
 use crate::profile;
 use crate::types::{CliArgs, GlobalConfig};
-use cliparser;
 use cliparser::types::{
     Argument, ArgumentHelp, ArgumentOccurrence, ArgumentValueType, CliParsed, CliSpec,
     CliSpecMetaInfo, PositionalArgument,

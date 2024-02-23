@@ -9,7 +9,6 @@ mod toolchain_test;
 
 use crate::environment::expand_value;
 use crate::types::{CommandSpec, ToolchainSpecifier};
-use envmnt;
 use semver::{Prerelease, Version};
 use std::process::{Command, Stdio};
 

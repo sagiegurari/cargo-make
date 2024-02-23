@@ -10,7 +10,6 @@
 mod decode_func_test;
 
 use crate::environment;
-use envmnt;
 
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() == 0 {

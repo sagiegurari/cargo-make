@@ -5,13 +5,11 @@ use crate::scriptengine;
 use crate::scriptengine::EngineType;
 use crate::test;
 use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, FlowState, RunTaskInfo, Step, Task};
-use ci_info;
-use envmnt;
-use fsio;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
 use std::cell::RefCell;
 use std::rc::Rc;
+
 fn load_descriptor() -> Config {
     descriptor::load_internal_descriptors(true, false, None)
 }

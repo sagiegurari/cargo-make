@@ -1,7 +1,6 @@
 use super::*;
 use crate::test;
 use crate::types::Task;
-use std::io::ErrorKind;
 
 #[test]
 #[should_panic]

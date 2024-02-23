@@ -16,8 +16,6 @@ use duckscript::runner;
 use duckscript::types::command::Commands;
 use duckscript::types::error::ScriptError;
 use duckscript::types::runtime::Context;
-use duckscriptsdk;
-use envmnt;
 use std::cell::RefCell;
 use std::rc::Rc;
 

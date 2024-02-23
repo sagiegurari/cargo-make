@@ -1,7 +1,5 @@
 use super::*;
 
-use envmnt;
-
 #[test]
 #[should_panic]
 fn run_function_empty() {

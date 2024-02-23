@@ -1,11 +1,6 @@
 use super::*;
 use crate::descriptor;
-use crate::types::{
-    ConfigSection, CrateInfo, DependencyIdentifier, PlatformOverrideTask, Task, TaskWatchOptions,
-    Workspace,
-};
-use indexmap::IndexMap;
-use std::env;
+use crate::types::{ConfigSection, DependencyIdentifier, PlatformOverrideTask, TaskWatchOptions};
 
 #[test]
 fn get_actual_task_name_not_found() {

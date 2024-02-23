@@ -7,8 +7,6 @@
 #[path = "legacy_test.rs"]
 mod legacy_test;
 
-use dirs_next;
-use fsio;
 use std::env;
 use std::fs::copy;
 use std::path::PathBuf;

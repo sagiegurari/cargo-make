@@ -20,7 +20,6 @@ use std::path::{Path, PathBuf};
 use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
-use {envmnt, toml};
 
 use crate::descriptor::env::{merge_env, merge_env_files, merge_env_scripts};
 use crate::plugin::descriptor::merge_plugins_config;

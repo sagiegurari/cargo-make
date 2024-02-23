@@ -8,13 +8,10 @@
 mod crate_version_check_test;
 
 use crate::command;
-use dirs_next;
-use fsio;
 use semver::Version;
 use std::collections::HashMap;
 use std::env;
 use std::path::Path;
-use toml;
 
 #[derive(Deserialize, Debug)]
 struct CratesRegistryInfo {

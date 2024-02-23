@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::{ConfigSection, ExecutionPlan, Step, Task};
+use crate::types::{ConfigSection, Step, Task};
 use indexmap::IndexMap;
 
 #[test]

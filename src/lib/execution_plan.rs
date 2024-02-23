@@ -14,7 +14,6 @@ use crate::proxy_task::create_proxy_task;
 use crate::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
-use envmnt;
 use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
@@ -22,7 +21,6 @@ use regex::Regex;
 use std::collections::HashSet;
 use std::env;
 use std::path::Path;
-use std::vec::Vec;
 
 /// Resolve aliases recursively until a task without alias is found.
 ///

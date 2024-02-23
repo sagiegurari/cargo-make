@@ -7,8 +7,6 @@
 #[path = "profile_test.rs"]
 mod profile_test;
 
-use envmnt;
-
 static PROFILE_ENV_KEY: &str = "CARGO_MAKE_PROFILE";
 static DEFAULT_PROFILE_ENV_KEY: &str = "CARGO_MAKE_DEFAULT_PROFILE";
 static ADDITIONAL_PROFILES_ENV_KEY: &str = "CARGO_MAKE_ADDITIONAL_PROFILES";

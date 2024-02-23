@@ -1,5 +1,4 @@
 use super::*;
-use std::iter::FromIterator;
 
 #[test]
 fn create_text_file_read_and_delete() {

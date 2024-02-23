@@ -7,8 +7,6 @@
 #[path = "getat_func_test.rs"]
 mod getat_func_test;
 
-use envmnt;
-
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 3 {
         error!(
