@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.37.10
+
+* Enhancement: Prevent wasteful busy cpu spinning #1045 (thanks @permosegaard)
+* Enhancement: Enable multiple ignored watch patterns #1041 (thanks @Buzzec)
+
 ### v0.37.9 (2024-02-02)
 
 * Fix: fix rust script invocation as load_script #1035

@@ -892,13 +892,23 @@ pub struct WatchOptions {
     /// Postpone first run until a file changes
     pub postpone: Option<bool>,
     /// Ignore a glob/gitignore-style pattern
-    pub ignore_pattern: Option<String>,
+    pub ignore_pattern: Option<MaybeArray<String>>,
     /// Do not use .gitignore files
     pub no_git_ignore: Option<bool>,
     /// Show paths that changed
     pub why: Option<bool>,
     /// Select which files/folders to watch
     pub watch: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+#[serde(untagged)]
+/// Could be an array or single value
+pub enum MaybeArray<T> {
+    /// Single value
+    Single(T),
+    /// Multiple values
+    Multiple(Vec<T>),
 }
 
 impl PartialEq for WatchOptions {
