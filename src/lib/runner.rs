@@ -26,7 +26,8 @@ use crate::scriptengine;
 use crate::time_summary;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
-    RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task, TaskWatchOptions,
+    MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
+    TaskWatchOptions,
 };
 use indexmap::IndexMap;
 use regex::Regex;
@@ -519,7 +520,15 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
                 }
 
                 match watch_options.ignore_pattern {
-                    Some(value) => watch_args.extend_from_slice(&["-i".to_string(), value]),
+                    Some(MaybeArray::Single(value)) => {
+                        watch_args.extend_from_slice(&["-i".to_string(), value])
+                    }
+                    Some(MaybeArray::Multiple(values)) => watch_args.extend(
+                        values
+                            .iter()
+                            .flat_map(|value| ["-i".to_string(), value.to_string()])
+                            .collect::<Vec<String>>(),
+                    ),
                     _ => (),
                 };
 
