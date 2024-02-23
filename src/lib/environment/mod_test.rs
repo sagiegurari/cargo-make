@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, Task, TaskCondition};
+use crate::types::{ConfigSection, EnvFileInfo, EnvValueUnset, TaskCondition};
 use std::collections::HashMap;
 use std::env;
 use std::{thread, time};
