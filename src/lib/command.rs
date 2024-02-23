@@ -253,6 +253,9 @@ fn spawn_command(mut command: Command) -> io::Result<Output> {
                 stderr,
             };
         }
+        else {
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
     })
 }
 
