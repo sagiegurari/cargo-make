@@ -40,8 +40,6 @@
 <a href="#38" id="38">38</a>
 <a href="#39" id="39">39</a>
 <a href="#40" id="40">40</a>
-<a href="#41" id="41">41</a>
-<a href="#42" id="42">42</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # trim_func
 //!
 //! Takes an environment variable name and returns its value trimmed.
@@ -51,8 +49,6 @@
 </span><span class="attr">#[cfg(test)]
 #[path = <span class="string">"trim_func_test.rs"</span>]
 </span><span class="kw">mod </span>trim_func_test;
-
-<span class="kw">use </span>envmnt;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke(function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
     <span class="kw">if </span>function_args.len() &gt; <span class="number">2 </span>{

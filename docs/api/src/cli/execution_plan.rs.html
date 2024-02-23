@@ -499,8 +499,6 @@
 <a href="#497" id="497">497</a>
 <a href="#498" id="498">498</a>
 <a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
-<a href="#501" id="501">501</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # execution_plan
 //!
 //! Creates execution plan for a given task and makefile.
@@ -517,7 +515,6 @@
 <span class="kw">use </span><span class="kw">crate</span>::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
-<span class="kw">use </span>envmnt;
 <span class="kw">use </span>fsio::path::{get_basename, get_parent_directory};
 <span class="kw">use </span>glob::Pattern;
 <span class="kw">use </span>indexmap::IndexMap;
@@ -525,7 +522,6 @@
 <span class="kw">use </span>std::collections::HashSet;
 <span class="kw">use </span>std::env;
 <span class="kw">use </span>std::path::Path;
-<span class="kw">use </span>std::vec::Vec;
 
 <span class="doccomment">/// Resolve aliases recursively until a task without alias is found.
 ///

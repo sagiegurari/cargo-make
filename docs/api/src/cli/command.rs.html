@@ -328,8 +328,6 @@
 <span class="kw">use </span><span class="kw">crate</span>::logger;
 <span class="kw">use </span><span class="kw">crate</span>::toolchain;
 <span class="kw">use </span><span class="kw">crate</span>::types::{CommandSpec, Step, UnstableFeature};
-<span class="kw">use </span>envmnt;
-<span class="kw">use </span>run_script;
 <span class="kw">use </span>run_script::{IoOptions, ScriptError, ScriptOptions};
 <span class="kw">use </span>std::io;
 <span class="kw">use </span>std::io::{Error, ErrorKind, Read};
@@ -572,6 +570,8 @@
                 stdout,
                 stderr,
             };
+        } <span class="kw">else </span>{
+            std::thread::sleep(std::time::Duration::from_millis(<span class="number">10</span>));
         }
     })
 }

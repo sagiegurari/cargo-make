@@ -24,8 +24,6 @@
 <a href="#22" id="22">22</a>
 <a href="#23" id="23">23</a>
 <a href="#24" id="24">24</a>
-<a href="#25" id="25">25</a>
-<a href="#26" id="26">26</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # remove_empty_func
 //!
 //! Takes an environment variable name and returns its value of if its defined and contains some text.
@@ -34,8 +32,6 @@
 </span><span class="attr">#[cfg(test)]
 #[path = <span class="string">"remove_empty_func_test.rs"</span>]
 </span><span class="kw">mod </span>remove_empty_func_test;
-
-<span class="kw">use </span>envmnt;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke(function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
     <span class="kw">if </span>function_args.len() != <span class="number">1 </span>{

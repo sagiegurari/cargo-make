@@ -2398,6 +2398,16 @@
 <a href="#2396" id="2396">2396</a>
 <a href="#2397" id="2397">2397</a>
 <a href="#2398" id="2398">2398</a>
+<a href="#2399" id="2399">2399</a>
+<a href="#2400" id="2400">2400</a>
+<a href="#2401" id="2401">2401</a>
+<a href="#2402" id="2402">2402</a>
+<a href="#2403" id="2403">2403</a>
+<a href="#2404" id="2404">2404</a>
+<a href="#2405" id="2405">2405</a>
+<a href="#2406" id="2406">2406</a>
+<a href="#2407" id="2407">2407</a>
+<a href="#2408" id="2408">2408</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -3292,13 +3302,23 @@
     <span class="doccomment">/// Postpone first run until a file changes
     </span><span class="kw">pub </span>postpone: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// Ignore a glob/gitignore-style pattern
-    </span><span class="kw">pub </span>ignore_pattern: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    </span><span class="kw">pub </span>ignore_pattern: <span class="prelude-ty">Option</span>&lt;MaybeArray&lt;String&gt;&gt;,
     <span class="doccomment">/// Do not use .gitignore files
     </span><span class="kw">pub </span>no_git_ignore: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// Show paths that changed
     </span><span class="kw">pub </span>why: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// Select which files/folders to watch
     </span><span class="kw">pub </span>watch: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+}
+
+<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+#[serde(untagged)]
+</span><span class="doccomment">/// Could be an array or single value
+</span><span class="kw">pub enum </span>MaybeArray&lt;T&gt; {
+    <span class="doccomment">/// Single value
+    </span>Single(T),
+    <span class="doccomment">/// Multiple values
+    </span>Multiple(Vec&lt;T&gt;),
 }
 
 <span class="kw">impl </span>PartialEq <span class="kw">for </span>WatchOptions {

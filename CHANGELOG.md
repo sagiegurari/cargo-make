@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.10
+### v0.37.10 (2024-02-23)
 
 * Enhancement: Prevent wasteful busy cpu spinning #1045 (thanks @permosegaard)
 * Enhancement: Enable multiple ignored watch patterns #1041 (thanks @Buzzec)

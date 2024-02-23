@@ -862,11 +862,6 @@
 <a href="#860" id="860">860</a>
 <a href="#861" id="861">861</a>
 <a href="#862" id="862">862</a>
-<a href="#863" id="863">863</a>
-<a href="#864" id="864">864</a>
-<a href="#865" id="865">865</a>
-<a href="#866" id="866">866</a>
-<a href="#867" id="867">867</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # env
 //!
 //! Sets up the env vars before running the tasks.
@@ -889,15 +884,10 @@
     EnvValuePathGlob, EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 <span class="kw">use </span>ci_info::types::CiInfo;
-<span class="kw">use </span>duckscript;
-<span class="kw">use </span>duckscriptsdk;
-<span class="kw">use </span>envmnt;
 <span class="kw">use </span>envmnt::{ExpandOptions, ExpansionType};
 <span class="kw">use </span>fsio::path::from_path::FromPath;
-<span class="kw">use </span>git_info;
 <span class="kw">use </span>git_info::types::GitInfo;
 <span class="kw">use </span>indexmap::IndexMap;
-<span class="kw">use </span>rust_info;
 <span class="kw">use </span>rust_info::types::{RustChannel, RustInfo};
 <span class="kw">use </span>std::env;
 <span class="kw">use </span>std::path::{Path, PathBuf};

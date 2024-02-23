@@ -58,8 +58,6 @@
 <a href="#56" id="56">56</a>
 <a href="#57" id="57">57</a>
 <a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # profile
 //!
 //! Profile related utility functions
@@ -68,8 +66,6 @@
 </span><span class="attr">#[cfg(test)]
 #[path = <span class="string">"profile_test.rs"</span>]
 </span><span class="kw">mod </span>profile_test;
-
-<span class="kw">use </span>envmnt;
 
 <span class="kw">static </span>PROFILE_ENV_KEY: <span class="kw-2">&amp;</span>str = <span class="string">"CARGO_MAKE_PROFILE"</span>;
 <span class="kw">static </span>DEFAULT_PROFILE_ENV_KEY: <span class="kw-2">&amp;</span>str = <span class="string">"CARGO_MAKE_DEFAULT_PROFILE"</span>;

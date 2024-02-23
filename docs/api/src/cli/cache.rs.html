@@ -100,9 +100,6 @@
 <a href="#98" id="98">98</a>
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cache
 //!
 //! Manages internal cargo-make persistent cache.
@@ -114,11 +111,8 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::storage;
 <span class="kw">use </span><span class="kw">crate</span>::types::Cache;
-<span class="kw">use </span>dirs_next;
-<span class="kw">use </span>fsio;
 <span class="kw">use </span>fsio::file::{read_text_file, write_text_file};
 <span class="kw">use </span>std::path::{Path, PathBuf};
-<span class="kw">use </span>toml;
 
 <span class="kw">static </span>CACHE_FILE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"cache.toml"</span>;
 
