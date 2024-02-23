@@ -7,8 +7,6 @@
 #[path = "split_func_test.rs"]
 mod split_func_test;
 
-use envmnt;
-
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     let args_count = function_args.len();
     if args_count < 2 || args_count > 3 {

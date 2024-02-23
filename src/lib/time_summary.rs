@@ -4,7 +4,6 @@
 //!
 
 use crate::types::{CliArgs, Config};
-use envmnt;
 use std::cmp::Ordering;
 use std::time::SystemTime;
 

@@ -10,7 +10,6 @@ mod crateinfo_test;
 use crate::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
 use cargo_metadata::camino::Utf8PathBuf;
 use cargo_metadata::{Metadata, MetadataCommand};
-use fsio;
 use glob::glob;
 use indexmap::IndexMap;
 use itertools::Itertools;

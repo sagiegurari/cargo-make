@@ -10,8 +10,6 @@ mod command_test;
 use crate::logger;
 use crate::toolchain;
 use crate::types::{CommandSpec, Step, UnstableFeature};
-use envmnt;
-use run_script;
 use run_script::{IoOptions, ScriptError, ScriptOptions};
 use std::io;
 use std::io::{Error, ErrorKind, Read};

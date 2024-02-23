@@ -9,11 +9,8 @@ mod cache_test;
 
 use crate::storage;
 use crate::types::Cache;
-use dirs_next;
-use fsio;
 use fsio::file::{read_text_file, write_text_file};
 use std::path::{Path, PathBuf};
-use toml;
 
 static CACHE_FILE: &'static str = "cache.toml";
 

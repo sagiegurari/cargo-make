@@ -9,11 +9,9 @@ mod config_test;
 
 use crate::storage;
 use crate::types::GlobalConfig;
-use dirs_next;
 use fsio::file::read_text_file;
 use fsio::path::from_path::FromPath;
 use std::path::{Path, PathBuf};
-use toml;
 
 static CONFIG_FILE: &'static str = "config.toml";
 

@@ -8,7 +8,6 @@
 mod shell_to_batch_test;
 
 use crate::command;
-use shell2batch;
 
 pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) -> bool {
     let exit_code = if cfg!(windows) {

@@ -7,8 +7,6 @@
 mod descriptor_deserializer_test;
 
 use crate::types::{Config, ExternalConfig};
-use serde_ignored;
-use toml;
 
 pub(crate) fn load_config(descriptor_string: &str, validate: bool) -> Config {
     let config: Config = if validate {
