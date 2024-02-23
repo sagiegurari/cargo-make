@@ -1108,7 +1108,7 @@ fn create_watch_task_with_makefile_and_all_object_options_and_cli_args() {
     let watch_options = WatchOptions {
         version: Some("100.200.300.400".to_string()),
         postpone: Some(true),
-        ignore_pattern: Some("tools/*".to_string()),
+        ignore_pattern: Some(MaybeArray::Single("tools/*".to_string())),
         no_git_ignore: Some(true),
         why: Some(true),
         watch: Some(vec!["dir1".to_string(), "dir2".to_string()]),
@@ -1171,7 +1171,7 @@ fn create_watch_task_with_makefile_and_all_object_options() {
     let watch_options = WatchOptions {
         version: Some("100.200.300.400".to_string()),
         postpone: Some(true),
-        ignore_pattern: Some("tools/*".to_string()),
+        ignore_pattern: Some(MaybeArray::Single("tools/*".to_string())),
         no_git_ignore: Some(true),
         why: Some(true),
         watch: Some(vec!["dir1".to_string(), "dir2".to_string()]),
