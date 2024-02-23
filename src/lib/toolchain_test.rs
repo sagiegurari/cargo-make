@@ -1,6 +1,5 @@
 use super::*;
 use crate::types::ToolchainBoundedSpecifier;
-use envmnt;
 
 fn get_test_env_toolchain() -> ToolchainSpecifier {
     let channel = envmnt::get_or_panic("CARGO_MAKE_RUST_CHANNEL");

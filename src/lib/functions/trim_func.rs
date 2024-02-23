@@ -8,8 +8,6 @@
 #[path = "trim_func_test.rs"]
 mod trim_func_test;
 
-use envmnt;
-
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() > 2 {
         error!("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)");

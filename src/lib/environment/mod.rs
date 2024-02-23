@@ -20,15 +20,10 @@ use crate::types::{
     EnvValuePathGlob, EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
 use ci_info::types::CiInfo;
-use duckscript;
-use duckscriptsdk;
-use envmnt;
 use envmnt::{ExpandOptions, ExpansionType};
 use fsio::path::from_path::FromPath;
-use git_info;
 use git_info::types::GitInfo;
 use indexmap::IndexMap;
-use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::env;
 use std::path::{Path, PathBuf};

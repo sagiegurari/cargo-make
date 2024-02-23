@@ -15,12 +15,9 @@ use crate::types::{
     ConditionScriptValue, FlowInfo, RustVersionCondition, ScriptValue, Step, TaskCondition,
 };
 use crate::version::{is_newer, is_same};
-use envmnt;
-use fsio;
 use fsio::path::from_path::FromPath;
 use glob::glob;
 use indexmap::IndexMap;
-use rust_info;
 use rust_info::types::{RustChannel, RustInfo};
 use std::path::Path;
 

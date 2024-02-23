@@ -10,8 +10,6 @@ mod logger_test;
 use crate::recursion_level;
 use crate::types::FlowInfo;
 use colored::{ColoredString, Colorize};
-use envmnt;
-use fern;
 use log::{Level, LevelFilter};
 use std::io::stdout;
 use std::process::exit;

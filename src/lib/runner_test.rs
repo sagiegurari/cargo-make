@@ -1,12 +1,10 @@
 use super::*;
 use crate::test;
 use crate::types::{
-    ConditionScriptValue, ConfigSection, CrateInfo, DeprecationInfo, EnvFile, EnvInfo, EnvValue,
-    FlowInfo, RunTaskDetails, RunTaskInfo, ScriptValue, Step, Task, TaskCondition,
+    ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
+    TaskCondition,
 };
-use ci_info;
 use git_info::types::GitInfo;
-use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 
 #[cfg(target_os = "linux")]

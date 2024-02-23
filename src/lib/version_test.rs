@@ -1,5 +1,4 @@
 use super::*;
-use semver::Version;
 
 #[test]
 fn print_notification_simple() {

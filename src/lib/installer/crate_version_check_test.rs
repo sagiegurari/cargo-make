@@ -1,6 +1,4 @@
 use super::*;
-use ci_info;
-use envmnt;
 
 #[test]
 #[ignore]

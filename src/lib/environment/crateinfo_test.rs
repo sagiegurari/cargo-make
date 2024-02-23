@@ -1,8 +1,7 @@
 use super::*;
 use crate::test::is_min_rust_version;
-use crate::types::{CrateDependencyInfo, PackageInfo, Workspace};
+use crate::types::CrateDependencyInfo;
 use cargo_metadata::camino::Utf8Path;
-use indexmap::IndexMap;
 
 #[test]
 fn crate_info_load() {

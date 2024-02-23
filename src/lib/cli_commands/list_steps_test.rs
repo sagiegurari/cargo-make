@@ -1,6 +1,5 @@
 use super::*;
 
-use crate::io;
 use crate::types::{ConfigSection, EnvValue, Task};
 use expect_test::{expect, Expect};
 use indexmap::IndexMap;

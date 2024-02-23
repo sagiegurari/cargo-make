@@ -7,8 +7,6 @@
 #[path = "recursion_level_test.rs"]
 mod recursion_level_test;
 
-use envmnt;
-
 static RECURSION_ENV_VAR_NAME: &str = "CARGO_MAKE_INTERNAL_RECURSION_LEVEL";
 
 pub(crate) fn get() -> u32 {

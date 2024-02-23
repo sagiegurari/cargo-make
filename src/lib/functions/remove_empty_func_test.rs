@@ -1,7 +1,5 @@
 use super::*;
 
-use envmnt;
-
 #[test]
 #[should_panic]
 fn remove_empty_invoke_empty() {

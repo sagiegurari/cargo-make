@@ -11,7 +11,6 @@ mod version_test;
 use crate::cache;
 use crate::command;
 use crate::types::{Cache, CliArgs, GlobalConfig};
-use lenient_semver;
 use semver::Version;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};

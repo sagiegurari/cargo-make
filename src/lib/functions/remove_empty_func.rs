@@ -7,8 +7,6 @@
 #[path = "remove_empty_func_test.rs"]
 mod remove_empty_func_test;
 
-use envmnt;
-
 pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     if function_args.len() != 1 {
         error!("remove_empty expects only 1 argument (environment variable name)");

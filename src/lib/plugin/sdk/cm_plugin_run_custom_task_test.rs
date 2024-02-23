@@ -2,7 +2,7 @@ use super::*;
 use crate::plugin::runner;
 use crate::plugin::types::{Plugin, Plugins};
 use crate::test::create_empty_flow_info;
-use crate::types::{EnvValue, Task};
+use crate::types::EnvValue;
 use indexmap::IndexMap;
 
 #[test]

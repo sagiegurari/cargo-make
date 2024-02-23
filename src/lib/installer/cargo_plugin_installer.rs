@@ -11,7 +11,6 @@ use crate::command;
 use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
 use crate::types::ToolchainSpecifier;
-use envmnt;
 use std::process::Command;
 use strip_ansi_escapes::strip_str;
 
