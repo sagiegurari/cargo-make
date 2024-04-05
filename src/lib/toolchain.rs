@@ -148,5 +148,5 @@ pub(crate) fn get_cargo_binary_path(toolchain: &ToolchainSpecifier) -> Option<St
 }
 
 pub(crate) fn remove_rust_env_vars() {
-    envmnt::remove_all(&vec!["RUSTC", "RUSTDOC", "RUSTFLAGS"]);
+    envmnt::remove_all(&vec!["CARGO", "RUSTC", "RUSTDOC", "RUSTFLAGS"]);
 }
