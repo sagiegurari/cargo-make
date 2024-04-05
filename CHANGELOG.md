@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.11
+
+* Fix: reset CARGO env var to fix wrong CARGO in commands #1060 (thanks @wmmc88)
+
 ### v0.37.10 (2024-02-23)
 
 * Enhancement: Prevent wasteful busy cpu spinning #1045 (thanks @permosegaard)
