@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.37.10"
+version = "0.37.11"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -90,7 +90,3 @@ tls-native = ["duckscriptsdk/tls-native"]
 tls = ["tls-rustls"]                      # alias for backward compatibility
 default = ["tls-rustls"]
 
-[badges.codecov]
-branch = "master"
-repository = "sagiegurari/cargo-make"
-service = "github"
