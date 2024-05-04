@@ -1,8 +1,8 @@
 ## CHANGELOG
 
-### v0.37.12
+### v0.37.12 (2024-05-04)
 
-* Enhancement: support crates with invalid structure (fallback of cargo-metadata)
+* Enhancement: support crates with invalid structure (fallback of cargo-metadata) #1076
 
 ### v0.37.11 (2024-04-05)
 
