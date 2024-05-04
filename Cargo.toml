@@ -89,4 +89,3 @@ tls-rustls = ["duckscriptsdk/tls-rustls"]
 tls-native = ["duckscriptsdk/tls-native"]
 tls = ["tls-rustls"]                      # alias for backward compatibility
 default = ["tls-rustls"]
-
