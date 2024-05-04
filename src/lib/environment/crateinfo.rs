@@ -304,7 +304,22 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
 
                 crate_info
             }
-            Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
+            Err(error) => {
+                warn!(
+                    "Unable to parse Cargo.toml via cargo-metadata, fallbacking. {}",
+                    error
+                );
+
+                let crate_info_string = match fsio::file::read_text_file(&file_path) {
+                    Ok(content) => content,
+                    Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
+                };
+
+                match toml::from_str(&crate_info_string) {
+                    Ok(value) => value,
+                    Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
+                }
+            }
         }
     } else {
         CrateInfo::new()

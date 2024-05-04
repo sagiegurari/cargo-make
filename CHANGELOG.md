@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.12
+
+* Enhancement: support crates with invalid structure (fallback of cargo-metadata)
+
 ### v0.37.11 (2024-04-05)
 
 * Fix: reset CARGO env var to fix wrong CARGO in commands #1060 (thanks @wmmc88)
