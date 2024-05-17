@@ -1571,6 +1571,7 @@ fn run_sub_task_and_report_routing_no_condition() {
         cleanup_task: None,
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
     }]);
 
     let output = run_sub_task_and_report(
@@ -1639,6 +1640,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
             files_modified: None,
         }),
         condition_script: None,
+        condition_script_runner_args: None,
     }]);
 
     let output = run_sub_task_and_report(
@@ -1692,6 +1694,7 @@ fn run_sub_task_and_report_routing_not_found() {
         cleanup_task: None,
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
     }]);
 
     run_sub_task_and_report(
@@ -1838,6 +1841,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
                 files_modified: None,
             }),
             condition_script: None,
+            condition_script_runner_args: None,
         }],
     );
 
@@ -1899,6 +1903,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
                 files_modified: None,
             }),
             condition_script: None,
+            condition_script_runner_args: None,
         }],
     );
 
@@ -1960,6 +1965,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
                 files_modified: None,
             }),
             condition_script: None,
+            condition_script_runner_args: None,
         }],
     );
 
@@ -2005,6 +2011,7 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
             cleanup_task: None,
             condition: None,
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
+            condition_script_runner_args: None,
         }],
     );
 
@@ -2050,6 +2057,7 @@ fn get_sub_task_info_for_routing_info_script_found() {
             cleanup_task: None,
             condition: None,
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: None,
         }],
     );
 
@@ -2112,6 +2120,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                     files_modified: None,
                 }),
                 condition_script: None,
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
@@ -2120,6 +2129,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+                condition_script_runner_args: None,
             },
         ],
     );
@@ -2183,6 +2193,7 @@ fn get_sub_task_info_for_routing_info_default() {
                     files_modified: None,
                 }),
                 condition_script: None,
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
@@ -2191,6 +2202,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),
@@ -2199,6 +2211,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: None,
+                condition_script_runner_args: None,
             },
         ],
     );
@@ -2262,6 +2275,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                     files_modified: None,
                 }),
                 condition_script: None,
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test2".to_string()),
@@ -2270,6 +2284,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("test3".to_string()),
@@ -2278,6 +2293,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+                condition_script_runner_args: None,
             },
             RunTaskRoutingInfo {
                 name: RunTaskName::Single("default".to_string()),
@@ -2286,6 +2302,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 cleanup_task: None,
                 condition: None,
                 condition_script: None,
+                condition_script_runner_args: None,
             },
         ],
     );
@@ -2348,6 +2365,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
                 files_modified: None,
             }),
             condition_script: None,
+            condition_script_runner_args: None,
         }],
     );
 
@@ -2409,6 +2427,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
                 files_modified: None,
             }),
             condition_script: None,
+            condition_script_runner_args: None,
         }],
     );
 

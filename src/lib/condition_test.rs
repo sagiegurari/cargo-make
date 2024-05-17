@@ -852,7 +852,7 @@ fn validate_env_contains_invalid_partial_found() {
 
 #[test]
 fn validate_script_empty() {
-    let enabled = validate_script(&None, None);
+    let enabled = validate_script(&None, None, None);
 
     assert!(enabled);
 }
@@ -861,6 +861,7 @@ fn validate_script_empty() {
 fn validate_script_valid() {
     let enabled = validate_script(
         &Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        None,
         None,
     );
 
@@ -871,6 +872,7 @@ fn validate_script_valid() {
 fn validate_script_invalid() {
     let enabled = validate_script(
         &Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
+        None,
         None,
     );
 
@@ -884,6 +886,7 @@ fn validate_script_valid_with_duckscript_shebang() {
             "#!@duckscript\nexit 0".to_string()
         ])),
         None,
+        None,
     );
 
     assert!(enabled);
@@ -895,6 +898,7 @@ fn validate_script_invalid_with_duckscript_shebang() {
         &Some(ConditionScriptValue::Text(vec![
             "#!@duckscript\nexit 1".to_string()
         ])),
+        None,
         None,
     );
 

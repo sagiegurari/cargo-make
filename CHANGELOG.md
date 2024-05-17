@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.13
+
+* Enhancement: New condition_script_runner_args attribute #1081
+
 ### v0.37.12 (2024-05-04)
 
 * Enhancement: support crates with invalid structure (fallback of cargo-metadata) #1076
