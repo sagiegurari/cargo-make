@@ -397,6 +397,11 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
     env_options.separator = Some(",".to_string());
     envmnt::set_list_with_options("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", &members, &env_options);
 
+    if let Some(package) = workspace.package.as_ref() {
+        envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_NAME", &package.name);
+        envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_VERSION", &package.version);
+    }
+
     // check if Cargo.lock file exists in working directory
     let lock_file = Path::new("Cargo.lock");
     let lock_file_exists = lock_file.exists();

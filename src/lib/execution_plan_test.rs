@@ -163,6 +163,7 @@ fn create_workspace_task_no_members() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let task = create_workspace_task(&crate_info, "some_task");
@@ -189,6 +190,7 @@ fn create_workspace_task_with_members() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
@@ -235,6 +237,7 @@ fn create_workspace_task_with_members_no_workspace_profile() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", false);
@@ -278,6 +281,7 @@ fn create_workspace_task_with_members_and_arguments() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::remove("CARGO_MAKE_USE_WORKSPACE_PROFILE");
@@ -332,6 +336,7 @@ fn create_workspace_task_with_included_members() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::set_list(
@@ -385,6 +390,7 @@ fn create_workspace_task_with_included_and_skipped_members() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::set_list(
@@ -431,6 +437,7 @@ fn create_workspace_task_extend_workspace_makefile() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     envmnt::set("CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE", "true");
@@ -459,6 +466,7 @@ fn is_workspace_flow_true_default() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let task = Task::new();
@@ -486,6 +494,7 @@ fn is_workspace_flow_false_in_config() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let task = Task::new();
@@ -516,6 +525,7 @@ fn is_workspace_flow_true_in_config() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let task = Task::new();
@@ -546,6 +556,7 @@ fn is_workspace_flow_true_in_task() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let mut task = Task::new();
@@ -574,6 +585,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let task = Task::new();
@@ -601,6 +613,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let mut task = Task::new();
@@ -629,6 +642,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let mut task = Task::new();
@@ -657,6 +671,7 @@ fn is_workspace_flow_task_not_defined() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let config = Config {
@@ -703,6 +718,7 @@ fn is_workspace_flow_disabled_via_cli() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let mut task = Task::new();
@@ -731,6 +747,7 @@ fn is_workspace_flow_disabled_via_task() {
         members: Some(members),
         exclude: None,
         dependencies: None,
+        package: None,
     });
 
     let mut task = Task::new();
