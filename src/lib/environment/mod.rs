@@ -400,6 +400,20 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
     if let Some(package) = workspace.package.as_ref() {
         envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_NAME", &package.name);
         envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_VERSION", &package.version);
+        envmnt::set_optional(
+            "CARGO_MAKE_WORKSPACE_PACKAGE_DESCRIPTION",
+            &package.description,
+        );
+        envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_LICENSE", &package.license);
+        envmnt::set_optional(
+            "CARGO_MAKE_WORKSPACE_PACKAGE_DOCUMENTATION",
+            &package.documentation,
+        );
+        envmnt::set_optional("CARGO_MAKE_WORKSPACE_PACKAGE_HOMEPAGE", &package.homepage);
+        envmnt::set_optional(
+            "CARGO_MAKE_WORKSPACE_PACKAGE_REPOSITORY",
+            &package.repository,
+        );
     }
 
     // check if Cargo.lock file exists in working directory
