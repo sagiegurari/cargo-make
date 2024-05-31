@@ -223,6 +223,8 @@ pub struct Workspace {
     pub exclude: Option<Vec<String>>,
     /// workspace level dependencies
     pub dependencies: Option<IndexMap<String, CrateDependency>>,
+    /// root package
+    pub package: Option<PackageInfo>,
 }
 
 impl Workspace {
@@ -232,7 +234,7 @@ impl Workspace {
     }
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds crate package information loaded from the Cargo.toml file package section.
 pub struct PackageInfo {
     /// name

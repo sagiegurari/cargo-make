@@ -1764,6 +1764,14 @@ The following environment variables will be set by cargo-make if `Cargo.toml` fi
 * **`CARGO_MAKE_CRATE_HOMEPAGE`** - Holds the crate homepage link from the `Cargo.toml` file in the current working directory.
 * **`CARGO_MAKE_CRATE_REPOSITORY`** - Holds the crate repository link from the `Cargo.toml` file in the current working directory.
 
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_NAME`** - Holds the root package name of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_VERSION`** - Holds the root package version of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_DESCRIPTION`** - Holds the root package description of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_LICENSE`** - Holds the root package license of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_DOCUMENTATION`** - Holds the root package documentation link of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_HOMEPAGE`** - Holds the root package homepage link of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_REPOSITORY`** - Holds the root package repository link of the workspace from the `Cargo.toml` file in the current working directory.
+
 The following environment variables will be set by cargo-make if the project is part of a git repo:
 
 * **`CARGO_MAKE_GIT_BRANCH`** - The current branch name.
