@@ -442,6 +442,7 @@ pub(crate) fn get_script_text(script: &ConditionScriptValue) -> Vec<String> {
 fn validate_script(
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
 ) -> bool {
     match condition_script {
         Some(ref script) => {
@@ -451,7 +452,7 @@ fn validate_script(
             return scriptengine::invoke_script_pre_flow(
                 &ScriptValue::Text(script_text),
                 script_runner,
-                None,
+                script_runner_args,
                 None,
                 false,
                 &vec![],
@@ -470,9 +471,10 @@ pub(crate) fn validate_conditions(
     condition: &Option<TaskCondition>,
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
 ) -> bool {
     validate_criteria(Some(&flow_info), &condition)
-        && validate_script(&condition_script, script_runner)
+        && validate_script(&condition_script, script_runner, script_runner_args)
 }
 
 pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> bool {
@@ -481,5 +483,6 @@ pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> 
         &step.config.condition,
         &step.config.condition_script,
         step.config.script_runner.clone(),
+        step.config.condition_script_runner_args.clone(),
     )
 }

@@ -95,6 +95,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
             &routing_step.condition,
             &routing_step.condition_script,
             None,
+            routing_step.condition_script_runner_args.clone(),
         );
 
         if invoke {

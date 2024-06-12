@@ -473,6 +473,7 @@ fn run_task_invoked_valid() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: None,
         ignore_errors: Some(true),
         force: Some(true),
         env_files: Some(vec![EnvFile::Path("extended".to_string())]),
