@@ -34,6 +34,7 @@ fn setup_test_dir(subdir: &str) -> String {
 #[test]
 fn validate_env_set_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -51,7 +52,33 @@ fn validate_env_set_empty() {
         files_modified: None,
     };
 
-    let enabled = validate_env_set(&condition);
+    let enabled = validate_env_set(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_set_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_set(&condition, true);
 
     assert!(enabled);
 }
@@ -63,6 +90,7 @@ fn validate_env_set_valid() {
     envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -80,7 +108,40 @@ fn validate_env_set_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_set(&condition);
+    let enabled = validate_env_set(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_set_valid_with_any() {
+    envmnt::set("ENV_SET_WITH_ANY1", "");
+    envmnt::set("ENV_SET_WITH_ANY2", "value");
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec![
+            "ENV_SET_WITH_ANY1".to_string(),
+            "ENV_SET_WITH_ANY2".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_set(&condition, true);
 
     assert!(enabled);
 }
@@ -88,6 +149,7 @@ fn validate_env_set_valid() {
 #[test]
 fn validate_env_set_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -105,7 +167,33 @@ fn validate_env_set_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_set(&condition);
+    let enabled = validate_env_set(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_env_set_invalid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_set(&condition, true);
 
     assert!(!enabled);
 }
@@ -117,6 +205,7 @@ fn validate_env_set_invalid_partial_found() {
     envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -138,14 +227,49 @@ fn validate_env_set_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_set(&condition);
+    let enabled = validate_env_set(&condition, false);
 
     assert!(!enabled);
 }
 
 #[test]
+#[ignore]
+fn validate_env_set_invalid_partial_found_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec![
+            "ENV_SET1".to_string(),
+            "ENV_SET2".to_string(),
+            "BAD_ENV_SET1".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_set(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_env_not_set_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -163,7 +287,33 @@ fn validate_env_not_set_empty() {
         files_modified: None,
     };
 
-    let enabled = validate_env_not_set(&condition);
+    let enabled = validate_env_not_set(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_not_set_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not_set(&condition, true);
 
     assert!(enabled);
 }
@@ -172,6 +322,7 @@ fn validate_env_not_set_empty() {
 #[ignore]
 fn validate_env_not_set_valid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -189,7 +340,34 @@ fn validate_env_not_set_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_not_set(&condition);
+    let enabled = validate_env_not_set(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_set_valid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["BAD_ENV_SET1".to_string(), "BAD_ENV_SET2".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not_set(&condition, true);
 
     assert!(enabled);
 }
@@ -201,6 +379,7 @@ fn validate_env_not_set_invalid() {
     envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -218,7 +397,37 @@ fn validate_env_not_set_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_not_set(&condition);
+    let enabled = validate_env_not_set(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_set_invalid_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec!["ENV_SET1".to_string(), "ENV_SET2".to_string()]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not_set(&condition, true);
 
     assert!(!enabled);
 }
@@ -230,6 +439,7 @@ fn validate_env_not_set_invalid_partial_found() {
     envmnt::set("ENV_SET2", "value");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -251,14 +461,49 @@ fn validate_env_not_set_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_not_set(&condition);
+    let enabled = validate_env_not_set(&condition, false);
 
     assert!(!enabled);
 }
 
 #[test]
+#[ignore]
+fn validate_env_not_set_invalid_partial_found_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: Some(vec![
+            "ENV_SET1".to_string(),
+            "ENV_SET2".to_string(),
+            "BAD_ENV_SET1".to_string(),
+        ]),
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not_set(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_env_bool_true_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -276,7 +521,33 @@ fn validate_env_bool_true_empty() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, true);
+    let enabled = validate_env_bool(&condition, true, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_true_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true, true);
 
     assert!(enabled);
 }
@@ -288,6 +559,7 @@ fn validate_env_bool_true_valid() {
     envmnt::set_bool("ENV_TRUE2", true);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -305,7 +577,37 @@ fn validate_env_bool_true_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, true);
+    let enabled = validate_env_bool(&condition, true, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_true_valid_with_any() {
+    envmnt::set_bool("ENV_TRUE1", true);
+    envmnt::set_bool("ENV_TRUE2", true);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true, true);
 
     assert!(enabled);
 }
@@ -317,6 +619,7 @@ fn validate_env_bool_true_invalid() {
     envmnt::set_bool("ENV_TRUE2", false);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -334,7 +637,37 @@ fn validate_env_bool_true_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, true);
+    let enabled = validate_env_bool(&condition, true, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_true_invalid_with_any() {
+    envmnt::set_bool("ENV_TRUE1", false);
+    envmnt::set_bool("ENV_TRUE2", false);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true, true);
 
     assert!(!enabled);
 }
@@ -346,6 +679,7 @@ fn validate_env_bool_true_invalid_partial_found() {
     envmnt::set_bool("ENV_TRUE2", true);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -363,9 +697,39 @@ fn validate_env_bool_true_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, true);
+    let enabled = validate_env_bool(&condition, true, false);
 
     assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_true_invalid_partial_found_with_any() {
+    envmnt::remove("ENV_TRUE1");
+    envmnt::set_bool("ENV_TRUE2", true);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true, true);
+
+    assert!(enabled);
 }
 
 #[test]
@@ -375,6 +739,7 @@ fn validate_env_bool_true_invalid_partial_valid() {
     envmnt::set_bool("ENV_TRUE2", false);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -392,7 +757,37 @@ fn validate_env_bool_true_invalid_partial_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, true);
+    let enabled = validate_env_bool(&condition, true, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_true_invalid_partial_valid_with_any() {
+    envmnt::set_bool("ENV_TRUE2", true);
+    envmnt::set_bool("ENV_TRUE2", false);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, true, true);
 
     assert!(!enabled);
 }
@@ -400,6 +795,7 @@ fn validate_env_bool_true_invalid_partial_valid() {
 #[test]
 fn validate_env_bool_false_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -417,7 +813,33 @@ fn validate_env_bool_false_empty() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, false);
+    let enabled = validate_env_bool(&condition, false, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_bool_false_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false, true);
 
     assert!(enabled);
 }
@@ -429,6 +851,7 @@ fn validate_env_bool_false_valid() {
     envmnt::set_bool("ENV_FALSE2", false);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -446,7 +869,37 @@ fn validate_env_bool_false_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, false);
+    let enabled = validate_env_bool(&condition, false, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_false_valid_with_any() {
+    envmnt::set_bool("ENV_FALSE1", false);
+    envmnt::set_bool("ENV_FALSE2", false);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false, true);
 
     assert!(enabled);
 }
@@ -458,6 +911,7 @@ fn validate_env_bool_false_invalid() {
     envmnt::set_bool("ENV_FALSE2", true);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -475,7 +929,37 @@ fn validate_env_bool_false_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, false);
+    let enabled = validate_env_bool(&condition, false, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_false_invalid_with_any() {
+    envmnt::set_bool("ENV_FALSE1", true);
+    envmnt::set_bool("ENV_FALSE2", true);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false, true);
 
     assert!(!enabled);
 }
@@ -487,6 +971,7 @@ fn validate_env_bool_false_invalid_partial_found() {
     envmnt::set_bool("ENV_FALSE2", false);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -504,18 +989,19 @@ fn validate_env_bool_false_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, false);
+    let enabled = validate_env_bool(&condition, false, false);
 
     assert!(!enabled);
 }
 
 #[test]
 #[ignore]
-fn validate_env_bool_false_invalid_partial_valid() {
+fn validate_env_bool_false_invalid_partial_found_with_any() {
+    envmnt::remove("ENV_FALSE1");
     envmnt::set_bool("ENV_FALSE2", false);
-    envmnt::set_bool("ENV_FALSE2", true);
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -533,14 +1019,75 @@ fn validate_env_bool_false_invalid_partial_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_bool(&condition, false);
+    let enabled = validate_env_bool(&condition, false, true);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_bool_false_invalid_partial_valid() {
+    envmnt::set_bool("ENV_FALSE1", false);
+    envmnt::set_bool("ENV_FALSE2", true);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false, false);
 
     assert!(!enabled);
 }
 
 #[test]
+#[ignore]
+fn validate_env_bool_false_invalid_partial_valid_with_any() {
+    envmnt::set_bool("ENV_FALSE1", false);
+    envmnt::set_bool("ENV_FALSE2", true);
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_bool(&condition, false, true);
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_env_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -558,7 +1105,33 @@ fn validate_env_empty() {
         files_modified: None,
     };
 
-    let enabled = validate_env(&condition);
+    let enabled = validate_env(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env(&condition, true);
 
     assert!(enabled);
 }
@@ -574,6 +1147,7 @@ fn validate_env_valid() {
     env_values.insert("ENV_SET2".to_string(), "value".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -591,7 +1165,41 @@ fn validate_env_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env(&condition);
+    let enabled = validate_env(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_valid_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "".to_string());
+    env_values.insert("ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env(&condition, true);
 
     assert!(enabled);
 }
@@ -604,6 +1212,7 @@ fn validate_env_invalid_not_found() {
     env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -621,7 +1230,38 @@ fn validate_env_invalid_not_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env(&condition);
+    let enabled = validate_env(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_invalid_not_found_with_any() {
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
+    env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env(&condition, true);
 
     assert!(!enabled);
 }
@@ -635,6 +1275,7 @@ fn validate_env_invalid_not_equal() {
     env_values.insert("ENV_SET2".to_string(), "value2".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -652,7 +1293,39 @@ fn validate_env_invalid_not_equal() {
         files_modified: None,
     };
 
-    let enabled = validate_env(&condition);
+    let enabled = validate_env(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_invalid_not_equal_with_any() {
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET2".to_string(), "value2".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env(&condition, true);
 
     assert!(!enabled);
 }
@@ -668,6 +1341,7 @@ fn validate_env_invalid_partial_found() {
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -685,9 +1359,43 @@ fn validate_env_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env(&condition);
+    let enabled = validate_env(&condition, false);
 
     assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_invalid_partial_found_with_any() {
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env(&condition, true);
+
+    assert!(enabled);
 }
 
 #[test]
@@ -701,6 +1409,7 @@ fn validate_env_contains_valid_same() {
     env_values.insert("ENV_SET2".to_string(), "value".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -718,7 +1427,41 @@ fn validate_env_contains_valid_same() {
         files_modified: None,
     };
 
-    let enabled = validate_env_contains(&condition);
+    let enabled = validate_env_contains(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_contains_valid_same_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "".to_string());
+    env_values.insert("ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: Some(env_values),
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_contains(&condition, true);
 
     assert!(enabled);
 }
@@ -734,6 +1477,7 @@ fn validate_env_contains_valid() {
     env_values.insert("ENV_SET2".to_string(), "val".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -751,7 +1495,41 @@ fn validate_env_contains_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_env_contains(&condition);
+    let enabled = validate_env_contains(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_contains_valid_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "".to_string());
+    env_values.insert("ENV_SET2".to_string(), "val".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: Some(env_values),
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_contains(&condition, true);
 
     assert!(enabled);
 }
@@ -764,6 +1542,7 @@ fn validate_env_contains_invalid_not_found() {
     env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -781,7 +1560,38 @@ fn validate_env_contains_invalid_not_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_contains(&condition);
+    let enabled = validate_env_contains(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_contains_invalid_not_found_with_any() {
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
+    env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: Some(env_values),
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_contains(&condition, true);
 
     assert!(!enabled);
 }
@@ -795,6 +1605,7 @@ fn validate_env_contains_invalid_not_equal() {
     env_values.insert("ENV_SET2".to_string(), "value2".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -812,7 +1623,39 @@ fn validate_env_contains_invalid_not_equal() {
         files_modified: None,
     };
 
-    let enabled = validate_env_contains(&condition);
+    let enabled = validate_env_contains(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_contains_invalid_not_equal_with_any() {
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET2".to_string(), "value2".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: Some(env_values),
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_contains(&condition, true);
 
     assert!(!enabled);
 }
@@ -828,6 +1671,7 @@ fn validate_env_contains_invalid_partial_found() {
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -845,9 +1689,43 @@ fn validate_env_contains_invalid_partial_found() {
         files_modified: None,
     };
 
-    let enabled = validate_env_contains(&condition);
+    let enabled = validate_env_contains(&condition, false);
 
     assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_contains_invalid_partial_found_with_any() {
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: Some(env_values),
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_contains(&condition, true);
+
+    assert!(enabled);
 }
 
 #[test]
@@ -911,6 +1789,7 @@ fn validate_profile_valid() {
     profile::set("my_profile");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: Some(vec![
             "bad1".to_string(),
@@ -943,6 +1822,7 @@ fn validate_profile_invalid() {
     profile::set("my_profile");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: Some(vec!["bad1".to_string(), "bad2".to_string()]),
         os: None,
@@ -968,6 +1848,7 @@ fn validate_profile_invalid() {
 #[test]
 fn validate_os_valid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: Some(vec![
@@ -997,6 +1878,7 @@ fn validate_os_valid() {
 #[test]
 fn validate_os_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: Some(vec!["bad1".to_string(), "bad2".to_string()]),
@@ -1022,6 +1904,7 @@ fn validate_os_invalid() {
 #[test]
 fn validate_platform_valid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1051,6 +1934,7 @@ fn validate_platform_valid() {
 #[test]
 fn validate_platform_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1102,6 +1986,7 @@ fn validate_channel_valid() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     let mut condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1127,6 +2012,7 @@ fn validate_channel_valid() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Beta);
     condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1153,6 +2039,7 @@ fn validate_channel_valid() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Nightly);
     condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1207,6 +2094,7 @@ fn validate_channel_invalid() {
 
     flow_info.env_info.rust_info.channel = Some(RustChannel::Stable);
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1231,6 +2119,7 @@ fn validate_channel_invalid() {
 #[test]
 fn validate_file_exists_valid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1250,7 +2139,35 @@ fn validate_file_exists_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_exist(&condition);
+    let enabled = validate_files_exist(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_file_exists_valid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+        ]),
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_files_exist(&condition, true);
 
     assert!(enabled);
 }
@@ -1258,6 +2175,7 @@ fn validate_file_exists_valid() {
 #[test]
 fn validate_file_exists_partial_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1278,14 +2196,44 @@ fn validate_file_exists_partial_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_exist(&condition);
+    let enabled = validate_files_exist(&condition, false);
 
     assert!(!enabled);
 }
 
 #[test]
+fn validate_file_exists_partial_invalid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string(),
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string(),
+        ]),
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_files_exist(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_file_exists_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1305,7 +2253,35 @@ fn validate_file_exists_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_exist(&condition);
+    let enabled = validate_files_exist(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_exists_invalid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+        ]),
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_files_exist(&condition, true);
 
     assert!(!enabled);
 }
@@ -1313,6 +2289,7 @@ fn validate_file_exists_invalid() {
 #[test]
 fn validate_file_not_exists_valid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1332,7 +2309,35 @@ fn validate_file_not_exists_valid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_not_exist(&condition);
+    let enabled = validate_files_not_exist(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_file_not_exists_valid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string()
+        ]),
+        files_modified: None,
+    };
+
+    let enabled = validate_files_not_exist(&condition, true);
 
     assert!(enabled);
 }
@@ -1340,6 +2345,7 @@ fn validate_file_not_exists_valid() {
 #[test]
 fn validate_file_not_exists_partial_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1360,14 +2366,44 @@ fn validate_file_not_exists_partial_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_not_exist(&condition);
+    let enabled = validate_files_not_exist(&condition, false);
 
     assert!(!enabled);
 }
 
 #[test]
+fn validate_file_not_exists_partial_invalid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string(),
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo2.toml".to_string(),
+        ]),
+        files_modified: None,
+    };
+
+    let enabled = validate_files_not_exist(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
 fn validate_file_not_exists_invalid() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1387,7 +2423,35 @@ fn validate_file_not_exists_invalid() {
         files_modified: None,
     };
 
-    let enabled = validate_files_not_exist(&condition);
+    let enabled = validate_files_not_exist(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_file_not_exists_invalid_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: Some(vec![
+            "${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml".to_string()
+        ]),
+        files_modified: None,
+    };
+
+    let enabled = validate_files_not_exist(&condition, true);
 
     assert!(!enabled);
 }
@@ -1395,6 +2459,7 @@ fn validate_file_not_exists_invalid() {
 #[test]
 fn validate_files_modified_all_empty() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1423,6 +2488,7 @@ fn validate_files_modified_all_empty() {
 #[test]
 fn validate_files_modified_only_input() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1451,6 +2517,7 @@ fn validate_files_modified_only_input() {
 #[test]
 fn validate_files_modified_only_output() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1479,6 +2546,7 @@ fn validate_files_modified_only_output() {
 #[test]
 fn validate_files_modified_same_timestamp() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -1515,6 +2583,7 @@ fn validate_files_modified_output_newer() {
         target_glob.push_str("/target/**/*");
 
         let condition = TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1552,6 +2621,7 @@ fn validate_files_modified_input_newer() {
         target_glob.push_str("/target/**/*");
 
         let condition = TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1586,6 +2656,7 @@ fn validate_files_modified_output_newer_env() {
         envmnt::set("DIR", directory);
 
         let condition = TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1620,6 +2691,7 @@ fn validate_files_modified_input_newer_env() {
         envmnt::set("DIR", directory);
 
         let condition = TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1676,6 +2748,7 @@ fn validate_criteria_empty() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1727,6 +2800,7 @@ fn validate_criteria_valid_os() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: Some(vec![
@@ -1782,6 +2856,7 @@ fn validate_criteria_invalid_os() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: Some(vec!["bad1".to_string(), "bad2".to_string()]),
@@ -1833,6 +2908,7 @@ fn validate_criteria_valid_platform() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1888,6 +2964,7 @@ fn validate_criteria_invalid_platform() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1940,6 +3017,7 @@ fn validate_criteria_valid_profile() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), profile::get(), "bad2".to_string()]),
             os: None,
@@ -1992,6 +3070,7 @@ fn validate_criteria_invalid_profile() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["bad1".to_string(), "bad2".to_string()]),
             os: None,
@@ -2044,6 +3123,7 @@ fn validate_criteria_valid_channel() {
     let mut enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2072,6 +3152,7 @@ fn validate_criteria_valid_channel() {
     enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2100,6 +3181,7 @@ fn validate_criteria_valid_channel() {
     enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2156,6 +3238,7 @@ fn validate_criteria_invalid_channel() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2207,6 +3290,7 @@ fn validate_criteria_valid_file_exists() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2260,6 +3344,7 @@ fn validate_criteria_invalid_file_exists() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2313,6 +3398,7 @@ fn validate_criteria_valid_file_not_exists() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2366,6 +3452,7 @@ fn validate_criteria_invalid_file_not_exists() {
     let enabled = validate_criteria(
         Some(&flow_info),
         &Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -2422,6 +3509,7 @@ fn validate_condition_for_step_both_valid() {
     };
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2482,6 +3570,7 @@ fn validate_condition_for_step_valid_script_invalid() {
     };
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2507,6 +3596,67 @@ fn validate_condition_for_step_valid_script_invalid() {
     let enabled = validate_condition_for_step(&flow_info, &step);
 
     assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_for_step_valid_script_invalid_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::Or),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 1".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
 }
 
 #[test]
@@ -2542,6 +3692,7 @@ fn validate_condition_for_step_invalid_script_valid() {
     };
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2599,6 +3750,7 @@ fn validate_condition_for_step_invalid_env_set() {
     };
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2658,6 +3810,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
     envmnt::set("ENV_SET1", "bad");
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2722,6 +3875,7 @@ fn validate_condition_for_step_valid_env() {
     env_values.insert("ENV_SET2".to_string(), "good2".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2783,6 +3937,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
     env_values.insert("BAD_ENV_SET2".to_string(), "bad".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2847,6 +4002,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2911,6 +4067,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
     env_values.insert("ENV_SET2".to_string(), "good2".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -2975,6 +4132,7 @@ fn validate_condition_for_step_valid_env_contains() {
     env_values.insert("ENV_SET2".to_string(), "good".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3036,6 +4194,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
     env_values.insert("BAD_ENV_SET2".to_string(), "bad".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3100,6 +4259,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
     env_values.insert("ENV_SET2".to_string(), "bad".to_string());
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3159,6 +4319,7 @@ fn validate_condition_for_step_valid_rust_version() {
     let version = rustinfo.version.unwrap();
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3222,6 +4383,7 @@ fn validate_condition_for_step_invalid_rust_version() {
     version.push_str("1");
 
     step.config.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3238,6 +4400,562 @@ fn validate_condition_for_step_invalid_rust_version() {
             max: None,
             equal: Some(version),
         }),
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_for_step_both_valid_and() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::And),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec!["CARGO_MAKE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_value_partial_valid_and() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::And),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec![
+            "CARGO_MAKE".to_string(),
+            "BAD_ENV_NOT_SET".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_for_step_group_partial_valid_and() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::And),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec!["BAD_ENV_NOT_SET".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(!enabled);
+}
+
+#[test]
+fn validate_condition_for_step_both_valid_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::Or),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec!["CARGO_MAKE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_value_partial_valid_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::Or),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec![
+            "CARGO_MAKE".to_string(),
+            "BAD_ENV_NOT_SET".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_group_partial_valid_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::Or),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec!["BAD_ENV_NOT_SET".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_both_valid_group_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::GroupOr),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec!["CARGO_MAKE".to_string()]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_value_partial_valid_group_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::GroupOr),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: Some(vec![
+            "bad1".to_string(),
+            types::get_platform_name(),
+            "bad2".to_string(),
+        ]),
+        channels: None,
+        env_set: Some(vec![
+            "CARGO_MAKE".to_string(),
+            "BAD_ENV_NOT_SET".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_condition_for_step_group_partial_valid_group_or() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: Some(ConditionType::GroupOr),
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: Some(vec![
+            "CARGO_MAKE".to_string(),
+            "BAD_ENV_NOT_SET".to_string(),
+        ]),
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_contains: None,
+        rust_version: None,
         files_exist: None,
         files_not_exist: None,
         files_modified: None,
@@ -3641,6 +5359,7 @@ fn validate_rust_version_condition_all_enabled() {
 #[test]
 fn validate_rust_version_no_condition() {
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3669,6 +5388,7 @@ fn validate_rust_version_with_valid_condition() {
     let version = rustinfo.version.unwrap();
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -3702,6 +5422,7 @@ fn validate_rust_version_with_invalid_condition() {
     version.push_str("1");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,

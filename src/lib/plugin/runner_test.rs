@@ -456,6 +456,7 @@ fn run_task_invoked_valid() {
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: None,

@@ -1770,6 +1770,32 @@ command = "echo"
 args = ["condition was met"]
 ```
 
+<a name="usage-conditions-and-or"></a>
+#### And/Or/Group Or
+
+By default all conditions groups and all conditions inside each group are evaluated and an 'AND' is used to validate everything is as requested.<br>
+However, there are other condition types available:
+
+* Or - All groups and all conditions inside each group are searched for a single condition that is met
+* GroupOr - All conditions in each group are searched for a single condition that is met but all condition groups must pass.
+
+Simply add the condition_type with any of these values inside the condition object.<br>
+For example:
+
+```
+[tasks.test-or-condition]
+condition = { condition_type = "Or", env_true = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+], env_false = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+] }
+script = '''
+echo "condition was met"
+'''
+```
+
 <a name="usage-conditions-and-subtasks"></a>
 #### Combining Conditions and Sub Tasks
 

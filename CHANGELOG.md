@@ -4,6 +4,7 @@
 
 * Enhancement: New condition_script_runner_args attribute #1081
 * Enhancement: Add workspace level package info to global environment variables #1092 (thanks @varphone)
+* Enhancement: New condition type: And, Or, GroupOr to enable to fine tune conditions #432
 
 ### v0.37.12 (2024-05-04)
 

@@ -134,3 +134,36 @@ exit 0
 script = '''
 echo "duckscript condition was met"
 '''
+
+[tasks.test-and-condition]
+condition = { condition_type = "And", env_true = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+], env_false = [
+  "TRUE_ENV",
+] }
+script = '''
+echo "condition was met"
+'''
+
+[tasks.test-or-condition]
+condition = { condition_type = "Or", env_true = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+], env_false = [
+  "TRUE_ENV",
+] }
+script = '''
+echo "condition was met"
+'''
+
+[tasks.test-group-or-condition]
+condition = { condition_type = "GroupOr", env_true = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+], env_false = [
+  "TRUE_ENV",
+] }
+script = '''
+echo "condition was met"
+'''

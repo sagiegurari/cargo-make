@@ -1623,6 +1623,7 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         parallel: None,
         cleanup_task: None,
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,
@@ -1824,6 +1825,7 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
             parallel: None,
             cleanup_task: None,
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: None,
                 os: None,
@@ -1886,6 +1888,7 @@ fn get_sub_task_info_for_routing_info_condition_found() {
             parallel: None,
             cleanup_task: None,
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: None,
                 os: None,
@@ -1948,6 +1951,7 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
             parallel: None,
             cleanup_task: None,
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: None,
                 os: None,
@@ -2103,6 +2107,7 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 parallel: None,
                 cleanup_task: None,
                 condition: Some(TaskCondition {
+                    condition_type: None,
                     fail_message: None,
                     profiles: None,
                     os: None,
@@ -2176,6 +2181,7 @@ fn get_sub_task_info_for_routing_info_default() {
                 parallel: None,
                 cleanup_task: None,
                 condition: Some(TaskCondition {
+                    condition_type: None,
                     fail_message: None,
                     profiles: None,
                     os: None,
@@ -2258,6 +2264,7 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 parallel: None,
                 cleanup_task: None,
                 condition: Some(TaskCondition {
+                    condition_type: None,
                     fail_message: None,
                     profiles: None,
                     os: None,
@@ -2348,6 +2355,7 @@ fn get_sub_task_info_for_routing_info_fork_false() {
             parallel: None,
             cleanup_task: None,
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: None,
                 os: None,
@@ -2410,6 +2418,7 @@ fn get_sub_task_info_for_routing_info_fork_true() {
             parallel: None,
             cleanup_task: None,
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: None,
                 os: None,

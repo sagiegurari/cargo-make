@@ -367,9 +367,22 @@ pub struct FilesFilesModifiedCondition {
     pub output: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// Control how condition checks are evaluated
+pub enum ConditionType {
+    /// All conditions must pass
+    And,
+    /// Any condition must pass
+    Or,
+    /// Any condition group must pass, but each group will be validated as an AND
+    GroupOr,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds condition attributes
 pub struct TaskCondition {
+    /// condition type (AND/OR) by default AND
+    pub condition_type: Option<ConditionType>,
     /// Failure message
     pub fail_message: Option<String>,
     /// Profile names (development, ...)
@@ -400,6 +413,15 @@ pub struct TaskCondition {
     pub files_not_exist: Option<Vec<String>>,
     /// Files modified since last execution
     pub files_modified: Option<FilesFilesModifiedCondition>,
+}
+
+impl TaskCondition {
+    pub fn get_condition_type(&self) -> ConditionType {
+        match self.condition_type {
+            Some(ref value) => value.clone(),
+            None => ConditionType::And,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

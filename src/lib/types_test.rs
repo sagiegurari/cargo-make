@@ -1958,6 +1958,7 @@ fn task_extend_extended_have_all_fields() {
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2010,6 +2011,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2059,6 +2061,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2108,6 +2111,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2258,6 +2262,7 @@ fn task_extend_clear_with_no_data() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2310,6 +2315,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2359,6 +2365,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2408,6 +2415,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2511,6 +2519,7 @@ fn task_extend_clear_with_all_data() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2563,6 +2572,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2612,6 +2622,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2661,6 +2672,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2928,6 +2940,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2976,6 +2989,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3150,6 +3164,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3197,6 +3212,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string()]),
@@ -3372,6 +3388,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3544,6 +3561,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -4727,4 +4745,39 @@ fn unstable_feature_is_env_set_none() {
     let output = UnstableFeature::CtrlCHandling.is_env_set();
 
     assert!(!output);
+}
+
+#[test]
+fn get_condition_type_none() {
+    let task_condition = TaskCondition::default();
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::And);
+}
+
+#[test]
+fn get_condition_type_and() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::And);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::And);
+}
+
+#[test]
+fn get_condition_type_or() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::Or);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::Or);
+}
+
+#[test]
+fn get_condition_type_group_or() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::GroupOr);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::GroupOr);
 }
