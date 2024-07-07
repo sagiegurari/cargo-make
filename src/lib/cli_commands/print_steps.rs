@@ -7,7 +7,7 @@
 #[path = "print_steps_test.rs"]
 mod print_steps_test;
 
-use crate::execution_plan::create as create_execution_plan;
+use crate::execution_plan::ExecutionPlanBuilder;
 use crate::types::{Config, CrateInfo, ExecutionPlan};
 use regex::Regex;
 
@@ -80,15 +80,13 @@ pub(crate) fn print(
         None => None,
     };
 
-    let execution_plan = create_execution_plan(
-        &config,
-        &task,
-        crateinfo,
+    let execution_plan = ExecutionPlanBuilder {
+        crate_info: Some(crateinfo),
         disable_workspace,
-        false,
-        false,
-        &skip_tasks_pattern_regex,
-    );
+        skip_tasks_pattern: skip_tasks_pattern_regex.as_ref(),
+        ..ExecutionPlanBuilder::new(&config, &task)
+    }
+    .build();
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     let print_format = get_format_type(&output_format);

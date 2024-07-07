@@ -336,7 +336,7 @@ fn create_for_step(
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
-    skip_tasks_pattern: &Option<Regex>,
+    skip_tasks_pattern: Option<&Regex>,
 ) {
     if let Some(skip_tasks_pattern_regex) = skip_tasks_pattern {
         if skip_tasks_pattern_regex.is_match(&task.name) {
@@ -432,68 +432,95 @@ fn add_predefined_step(config: &Config, task: &str, steps: &mut Vec<Step>) {
     }
 }
 
-/// Creates the full execution plan
-pub(crate) fn create(
-    config: &Config,
-    task: &str,
-    crate_info: &CrateInfo,
-    disable_workspace: bool,
-    allow_private: bool,
-    sub_flow: bool,
-    skip_tasks_pattern: &Option<Regex>,
-) -> ExecutionPlan {
-    let mut task_names = HashSet::new();
-    let mut steps = Vec::new();
+#[derive(Clone, Debug)]
+pub(crate) struct ExecutionPlanBuilder<'a> {
+    pub config: &'a Config,
+    pub task: &'a str,
+    pub crate_info: Option<&'a CrateInfo>,
+    pub disable_workspace: bool,
+    pub allow_private: bool,
+    pub sub_flow: bool,
+    pub skip_tasks_pattern: Option<&'a Regex>,
+}
 
-    if !sub_flow {
-        match config.config.legacy_migration_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Legacy migration task not defined."),
-        };
-        match config.config.init_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Init task not defined."),
-        };
-    }
-
-    let skip = match skip_tasks_pattern {
-        Some(ref pattern) => pattern.is_match(task),
-        None => false,
-    };
-
-    if !skip {
-        let workspace_flow =
-            is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
-
-        if workspace_flow {
-            let workspace_task = create_workspace_task(crate_info, task);
-
-            steps.push(Step {
-                name: "workspace".to_string(),
-                config: workspace_task,
-            });
-        } else {
-            create_for_step(
-                &config,
-                &TaskIdentifier::from_name(task),
-                &mut steps,
-                &mut task_names,
-                true,
-                allow_private,
-                &skip_tasks_pattern,
-            );
+impl<'a> ExecutionPlanBuilder<'a> {
+    pub fn new(config: &'a Config, task: &'a str) -> Self {
+        Self {
+            config,
+            task,
+            crate_info: None,
+            disable_workspace: false,
+            allow_private: false,
+            sub_flow: false,
+            skip_tasks_pattern: None,
         }
-    } else {
-        debug!("Skipping task: {} due to skip pattern.", &task);
     }
 
-    if !sub_flow {
-        // always add end task even if already executed due to some dependency
-        match config.config.end_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Ent task not defined."),
+    pub fn build(&self) -> ExecutionPlan {
+        let Self {
+            config,
+            task,
+            crate_info,
+            disable_workspace,
+            allow_private,
+            sub_flow,
+            skip_tasks_pattern,
+        } = *self;
+        let mut task_names = HashSet::new();
+        let mut steps = Vec::new();
+        let default_crate_info = CrateInfo::new();
+        let crate_info = crate_info.unwrap_or(&default_crate_info);
+
+        if !sub_flow {
+            match config.config.legacy_migration_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps),
+                None => debug!("Legacy migration task not defined."),
+            };
+            match config.config.init_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps),
+                None => debug!("Init task not defined."),
+            };
+        }
+
+        let skip = match skip_tasks_pattern {
+            Some(pattern) => pattern.is_match(task),
+            None => false,
         };
-    }
 
-    ExecutionPlan { steps }
+        if !skip {
+            let workspace_flow =
+                is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
+
+            if workspace_flow {
+                let workspace_task = create_workspace_task(crate_info, task);
+
+                steps.push(Step {
+                    name: "workspace".to_string(),
+                    config: workspace_task,
+                });
+            } else {
+                create_for_step(
+                    &config,
+                    &TaskIdentifier::from_name(task),
+                    &mut steps,
+                    &mut task_names,
+                    true,
+                    allow_private,
+                    skip_tasks_pattern,
+                );
+            }
+        } else {
+            debug!("Skipping task: {} due to skip pattern.", &task);
+        }
+
+        if !sub_flow {
+            // always add end task even if already executed due to some dependency
+            match config.config.end_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps),
+                None => debug!("Ent task not defined."),
+            };
+        }
+
+        ExecutionPlan { steps }
+    }
 }
