@@ -32,6 +32,7 @@ fn run_valid() {
     let mut task = Task::new();
     task.plugin = Some("test".to_string());
     task.condition = Some(TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,

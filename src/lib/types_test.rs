@@ -1705,6 +1705,7 @@ fn task_new() {
     assert!(task.watch.is_none());
     assert!(task.condition.is_none());
     assert!(task.condition_script.is_none());
+    assert!(task.condition_script_runner_args.is_none());
     assert!(task.description.is_none());
     assert!(task.category.is_none());
     assert!(task.workspace.is_none());
@@ -1813,6 +1814,7 @@ fn task_extend_both_have_misc_data() {
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
         ignore_errors: Some(true),
         force: Some(true),
         env_files: Some(vec![]),
@@ -1853,6 +1855,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.watch.is_some());
     assert!(base.condition.is_none());
     assert!(base.condition_script.is_none());
+    assert!(base.condition_script_runner_args.is_none());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
     assert!(base.env_files.is_some());
@@ -1913,6 +1916,7 @@ fn task_extend_extended_have_all_fields() {
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
         ignore_errors: Some(true),
         force: Some(true),
         env_files: Some(vec![]),
@@ -1954,6 +1958,7 @@ fn task_extend_extended_have_all_fields() {
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -1971,6 +1976,7 @@ fn task_extend_extended_have_all_fields() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2005,6 +2011,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2022,6 +2029,7 @@ fn task_extend_extended_have_all_fields() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2053,6 +2061,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2070,6 +2079,7 @@ fn task_extend_extended_have_all_fields() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2101,6 +2111,7 @@ fn task_extend_extended_have_all_fields() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2118,6 +2129,7 @@ fn task_extend_extended_have_all_fields() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -2156,6 +2168,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
     assert!(base.condition_script.is_some());
+    assert!(base.condition_script_runner_args.is_some());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
     assert!(base.env_files.is_some());
@@ -2199,6 +2212,7 @@ fn task_extend_extended_have_all_fields() {
         _ => panic!("Invalid condition script value."),
     };
     assert_eq!(condition_script.len(), 1);
+    assert_eq!(base.condition_script_runner_args.unwrap().len(), 2);
     assert!(!base.ignore_errors.unwrap());
     assert!(!base.force.unwrap());
     assert_eq!(base.env_files.unwrap().len(), 1);
@@ -2248,6 +2262,7 @@ fn task_extend_clear_with_no_data() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2265,6 +2280,7 @@ fn task_extend_clear_with_no_data() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2299,6 +2315,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2316,6 +2333,7 @@ fn task_extend_clear_with_no_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2347,6 +2365,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2364,6 +2383,7 @@ fn task_extend_clear_with_no_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2395,6 +2415,7 @@ fn task_extend_clear_with_no_data() {
             plugin: Some("base".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2412,6 +2433,7 @@ fn task_extend_clear_with_no_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2452,6 +2474,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.watch.is_none());
     assert!(base.condition.is_none());
     assert!(base.condition_script.is_none());
+    assert!(base.condition_script_runner_args.is_none());
     assert!(base.ignore_errors.is_none());
     assert!(base.force.is_none());
     assert!(base.env_files.is_none());
@@ -2496,6 +2519,7 @@ fn task_extend_clear_with_all_data() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(false)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2513,6 +2537,7 @@ fn task_extend_clear_with_all_data() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2547,6 +2572,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2564,6 +2590,7 @@ fn task_extend_clear_with_all_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2595,6 +2622,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2612,6 +2640,7 @@ fn task_extend_clear_with_all_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2643,6 +2672,7 @@ fn task_extend_clear_with_all_data() {
             plugin: Some("plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2660,6 +2690,7 @@ fn task_extend_clear_with_all_data() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![]),
@@ -2697,6 +2728,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.watch.is_some());
     assert!(base.condition.is_some());
     assert!(base.condition_script.is_some());
+    assert!(base.condition_script_runner_args.is_some());
     assert!(base.ignore_errors.is_some());
     assert!(base.force.is_some());
     assert!(base.env_files.is_some());
@@ -2774,6 +2806,7 @@ fn task_get_normalized_task_undefined() {
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: None,
         condition_script: None,
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: None,
         force: None,
         env_files: None,
@@ -2814,6 +2847,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
+    assert!(normalized_task.condition_script_runner_args.is_some());
     assert!(normalized_task.ignore_errors.is_none());
     assert!(normalized_task.force.is_none());
     assert!(normalized_task.env_files.is_none());
@@ -2856,6 +2890,10 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(true)
+    );
+    assert_eq!(
+        normalized_task.condition_script_runner_args.unwrap().len(),
+        2
     );
     assert!(!normalized_task.ignore_errors.unwrap_or(false));
     assert!(!normalized_task.force.unwrap_or(false));
@@ -2902,6 +2940,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2919,6 +2958,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -2949,6 +2989,7 @@ fn task_get_normalized_task_with_override_no_clear() {
             plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -2966,6 +3007,11 @@ fn task_get_normalized_task_with_override_no_clear() {
                 files_modified: None,
             }),
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec![
+                "csr_a1".to_string(),
+                "csr_a2".to_string(),
+                "csr_a3".to_string(),
+            ]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -3015,6 +3061,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
+    assert!(normalized_task.condition_script_runner_args.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.env_files.is_some());
@@ -3064,6 +3111,10 @@ fn task_get_normalized_task_with_override_no_clear() {
         _ => panic!("Invalid condition script value."),
     };
     assert_eq!(condition_script.len(), 1);
+    assert_eq!(
+        normalized_task.condition_script_runner_args.unwrap().len(),
+        3
+    );
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.env_files.unwrap().len(), 1);
@@ -3113,6 +3164,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3130,6 +3182,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -3159,6 +3212,7 @@ fn task_get_normalized_task_with_override_clear_false() {
             plugin: Some("linux_plugin".to_string()),
             watch: Some(TaskWatchOptions::Boolean(false)),
             condition: Some(TaskCondition {
+                condition_type: None,
                 fail_message: None,
                 profiles: Some(vec!["development".to_string()]),
                 os: Some(vec!["os1".to_string()]),
@@ -3183,6 +3237,11 @@ fn task_get_normalized_task_with_override_clear_false() {
                 "echo test".to_string(),
                 "exit 1".to_string(),
             ])),
+            condition_script_runner_args: Some(vec![
+                "csr_a1".to_string(),
+                "csr_a2".to_string(),
+                "csr_a3".to_string(),
+            ]),
             ignore_errors: Some(true),
             force: Some(true),
             env_files: Some(vec![EnvFile::Path("extended".to_string())]),
@@ -3232,6 +3291,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
+    assert!(normalized_task.condition_script_runner_args.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.env_files.is_some());
@@ -3281,6 +3341,10 @@ fn task_get_normalized_task_with_override_clear_false() {
         _ => panic!("Invalid condition script value."),
     };
     assert_eq!(condition_script.len(), 2);
+    assert_eq!(
+        normalized_task.condition_script_runner_args.unwrap().len(),
+        3
+    );
     assert!(normalized_task.ignore_errors.unwrap());
     assert!(normalized_task.force.unwrap());
     assert_eq!(normalized_task.env_files.unwrap().len(), 1);
@@ -3324,6 +3388,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3341,6 +3406,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -3376,6 +3442,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
             watch: None,
             condition: None,
             condition_script: None,
+            condition_script_runner_args: None,
             ignore_errors: None,
             force: None,
             env_files: None,
@@ -3408,6 +3475,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.watch.is_some());
     assert!(normalized_task.condition.is_some());
     assert!(normalized_task.condition_script.is_some());
+    assert!(normalized_task.condition_script_runner_args.is_some());
     assert!(normalized_task.ignore_errors.is_some());
     assert!(normalized_task.force.is_some());
     assert!(normalized_task.env_files.is_some());
@@ -3451,6 +3519,10 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         normalized_task.watch.unwrap(),
         TaskWatchOptions::Boolean(true)
     );
+    assert_eq!(
+        normalized_task.condition_script_runner_args.unwrap().len(),
+        2
+    );
     assert!(!normalized_task.ignore_errors.unwrap());
     assert!(!normalized_task.force.unwrap());
     assert_eq!(normalized_task.env_files.unwrap().len(), 0);
@@ -3489,6 +3561,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         extend: Some("base".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: Some(vec!["os1".to_string(), "os2".to_string()]),
@@ -3506,6 +3579,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
         ignore_errors: Some(false),
         force: Some(false),
         env_files: Some(vec![]),
@@ -3541,6 +3615,7 @@ fn task_get_normalized_task_with_override_clear_true() {
             watch: None,
             condition: None,
             condition_script: None,
+            condition_script_runner_args: None,
             ignore_errors: None,
             force: None,
             env_files: None,
@@ -3574,6 +3649,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.watch.is_none());
     assert!(normalized_task.condition.is_none());
     assert!(normalized_task.condition_script.is_none());
+    assert!(normalized_task.condition_script_runner_args.is_none());
     assert!(normalized_task.ignore_errors.is_none());
     assert!(normalized_task.force.is_none());
     assert!(normalized_task.env_files.is_none());
@@ -4400,6 +4476,7 @@ fn task_apply_run_task_routing_info_single_modify_namespace() {
         cleanup_task: None,
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
     }]));
 
     task.apply(&modify_config);
@@ -4435,6 +4512,7 @@ fn task_apply_run_task_routing_info_multiple_modify_namespace() {
         cleanup_task: None,
         condition: None,
         condition_script: None,
+        condition_script_runner_args: None,
     }]));
 
     task.apply(&modify_config);
@@ -4667,4 +4745,39 @@ fn unstable_feature_is_env_set_none() {
     let output = UnstableFeature::CtrlCHandling.is_env_set();
 
     assert!(!output);
+}
+
+#[test]
+fn get_condition_type_none() {
+    let task_condition = TaskCondition::default();
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::And);
+}
+
+#[test]
+fn get_condition_type_and() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::And);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::And);
+}
+
+#[test]
+fn get_condition_type_or() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::Or);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::Or);
+}
+
+#[test]
+fn get_condition_type_group_or() {
+    let mut task_condition = TaskCondition::default();
+    task_condition.condition_type = Some(ConditionType::GroupOr);
+    let condition_type = task_condition.get_condition_type();
+
+    assert_eq!(condition_type, ConditionType::GroupOr);
 }

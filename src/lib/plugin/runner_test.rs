@@ -456,6 +456,7 @@ fn run_task_invoked_valid() {
         extend: Some("extended".to_string()),
         watch: Some(TaskWatchOptions::Boolean(true)),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: Some(vec!["development".to_string()]),
             os: None,
@@ -473,6 +474,7 @@ fn run_task_invoked_valid() {
             files_modified: None,
         }),
         condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+        condition_script_runner_args: None,
         ignore_errors: Some(true),
         force: Some(true),
         env_files: Some(vec![EnvFile::Path("extended".to_string())]),

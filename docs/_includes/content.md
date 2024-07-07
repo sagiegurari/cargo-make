@@ -1609,6 +1609,13 @@ In addition to manually setting environment variables, cargo-make will also auto
 * **`CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER`** - Holds the name of the current workspace member being built (only if flow started as a workspace level flow)
 * **`CARGO_MAKE_CRATE_LOCK_FILE_EXISTS`** - Holds `true`/`false` if a `Cargo.lock` file exists in the current working directory (in workspace projects, each member has a different working directory).
 * **`CARGO_MAKE_CRATE_TARGET_TRIPLE`** - Gets target triple that will be build with by default, respects `.cargo/config.toml` and `${CARGO_HOME}/config.toml`.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_NAME`** - Holds the root package name of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_VERSION`** - Holds the root package version of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_DESCRIPTION`** - Holds the root package description of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_LICENSE`** - Holds the root package license of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_DOCUMENTATION`** - Holds the root package documentation link of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_HOMEPAGE`** - Holds the root package homepage link of the workspace from the `Cargo.toml` file in the current working directory.
+* **`CARGO_MAKE_WORKSPACE_PACKAGE_REPOSITORY`** - Holds the root package repository link of the workspace from the `Cargo.toml` file in the current working directory.
 * **`CARGO_MAKE_CI`** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI).
 * **`CARGO_MAKE_PR`** - Holds `true`/`false` if the task runs in a continuous integration system (such as Travis CI) as part of a pull request build (unknown is set as false).
 * **`CARGO_MAKE_CI_BRANCH_NAME`** - Holds the continuous integration branch name (if available).
@@ -1761,6 +1768,32 @@ condition_script = [
 ]
 command = "echo"
 args = ["condition was met"]
+```
+
+<a name="usage-conditions-and-or"></a>
+#### And/Or/Group Or
+
+By default all conditions groups and all conditions inside each group are evaluated and an 'AND' is used to validate everything is as requested.<br>
+However, there are other condition types available:
+
+* Or - All groups and all conditions inside each group are searched for a single condition that is met
+* GroupOr - All conditions in each group are searched for a single condition that is met but all condition groups must pass.
+
+Simply add the condition_type with any of these values inside the condition object.<br>
+For example:
+
+```
+[tasks.test-or-condition]
+condition = { condition_type = "Or", env_true = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+], env_false = [
+  "TRUE_ENV",
+  "FALSE_ENV",
+] }
+script = '''
+echo "condition was met"
+'''
 ```
 
 <a name="usage-conditions-and-subtasks"></a>

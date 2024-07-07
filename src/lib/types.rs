@@ -367,9 +367,22 @@ pub struct FilesFilesModifiedCondition {
     pub output: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// Control how condition checks are evaluated
+pub enum ConditionType {
+    /// All conditions must pass
+    And,
+    /// Any condition must pass
+    Or,
+    /// Any condition group must pass, but each group will be validated as an AND
+    GroupOr,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds condition attributes
 pub struct TaskCondition {
+    /// condition type (AND/OR) by default AND
+    pub condition_type: Option<ConditionType>,
     /// Failure message
     pub fail_message: Option<String>,
     /// Profile names (development, ...)
@@ -400,6 +413,15 @@ pub struct TaskCondition {
     pub files_not_exist: Option<Vec<String>>,
     /// Files modified since last execution
     pub files_modified: Option<FilesFilesModifiedCondition>,
+}
+
+impl TaskCondition {
+    pub fn get_condition_type(&self) -> ConditionType {
+        match self.condition_type {
+            Some(ref value) => value.clone(),
+            None => ConditionType::And,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -872,6 +894,8 @@ pub struct RunTaskRoutingInfo {
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the task will not be invoked
     pub condition_script: Option<ConditionScriptValue>,
+    /// The script runner arguments before the script file path
+    pub condition_script_runner_args: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1109,6 +1133,8 @@ pub struct Task {
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<ConditionScriptValue>,
+    /// The script runner arguments before the script file path
+    pub condition_script_runner_args: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors
@@ -1509,6 +1535,12 @@ impl Task {
             self.condition_script = None;
         }
 
+        if task.condition_script_runner_args.is_some() {
+            self.condition_script_runner_args = task.condition_script_runner_args.clone();
+        } else if override_values {
+            self.condition_script_runner_args = None;
+        }
+
         if task.ignore_errors.is_some() {
             self.ignore_errors = task.ignore_errors.clone();
         } else if override_values {
@@ -1710,6 +1742,9 @@ impl Task {
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
+                    condition_script_runner_args: override_task
+                        .condition_script_runner_args
+                        .clone(),
                     ignore_errors: override_task.ignore_errors.clone(),
                     force: override_task.force.clone(),
                     env_files: override_task.env_files.clone(),
@@ -1869,6 +1904,8 @@ pub struct PlatformOverrideTask {
     pub condition: Option<TaskCondition>,
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     pub condition_script: Option<ConditionScriptValue>,
+    /// The script runner arguments before the script file path
+    pub condition_script_runner_args: Option<Vec<String>>,
     /// if true, any error while executing the task will be printed but will not break the build
     pub ignore_errors: Option<bool>,
     /// DEPRECATED, replaced with ignore_errors
@@ -1948,6 +1985,12 @@ impl PlatformOverrideTask {
 
             if self.condition_script.is_none() && task.condition_script.is_some() {
                 self.condition_script = task.condition_script.clone();
+            }
+
+            if self.condition_script_runner_args.is_none()
+                && task.condition_script_runner_args.is_some()
+            {
+                self.condition_script_runner_args = task.condition_script_runner_args.clone();
             }
 
             if self.ignore_errors.is_none() && task.ignore_errors.is_some() {

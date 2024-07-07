@@ -40,6 +40,7 @@
     * [Conditions](#usage-conditions)
         * [Criteria](#usage-conditions-structure)
         * [Scripts](#usage-conditions-script)
+        * [And/Or/Group Or](#usage-conditions-and-or)
         * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
         * [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed)
     * [Installing Dependencies](#usage-installing-dependencies)

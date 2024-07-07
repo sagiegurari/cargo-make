@@ -5,11 +5,11 @@ env_scripts = []
 [config]
 init_task = "init"
 end_task = "end"
-legacy_migration_task = "legacy-migration"
 skip_core_tasks = false
 default_to_workspace = true
 additional_profiles = []
 load_cargo_aliases = false
+# legacy_migration_task = "legacy-migration"
 
 [env]
 RUST_BACKTRACE = "full"

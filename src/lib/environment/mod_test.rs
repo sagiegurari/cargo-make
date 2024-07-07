@@ -313,48 +313,7 @@ fn set_env_script_with_condition_true() {
     envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
 
     let condition = TaskCondition {
-        fail_message: None,
-        profiles: None,
-        os: None,
-        platforms: None,
-        channels: None,
-        env_set: None,
-        env_not_set: Some(vec!["SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string()]),
-        env_true: None,
-        env_false: None,
-        env: None,
-        env_contains: None,
-        rust_version: None,
-        files_exist: None,
-        files_not_exist: None,
-        files_modified: None,
-    };
-
-    let mut env = IndexMap::new();
-    env.insert(
-        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE".to_string(),
-        EnvValue::Script(EnvValueScript {
-            script: vec!["echo script_condition".to_string()],
-            multi_line: None,
-            condition: Some(condition),
-            depends_on: None,
-        }),
-    );
-
-    set_env(env);
-
-    assert!(envmnt::is_equal(
-        "SET_ENV_SCRIPT_WITH_CONDITION_TRUE",
-        "script_condition"
-    ));
-    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_TRUE");
-}
-
-#[test]
-fn set_env_script_with_condition_false() {
-    envmnt::remove("SET_ENV_SCRIPT_WITH_CONDITION_FALSE");
-
-    let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -474,6 +433,7 @@ fn set_env_for_decode_info_condition_true() {
     mapping.insert("key3".to_string(), "value3".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -513,6 +473,7 @@ fn set_env_for_decode_info_condition_false() {
     mapping.insert("key3".to_string(), "value3".to_string());
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -566,6 +527,7 @@ fn set_env_for_conditional_value_condition_true() {
     envmnt::remove("ENV_CONDITIONAL_CONDITION_TRUE");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -602,6 +564,7 @@ fn set_env_for_conditional_value_condition_false() {
     envmnt::remove("ENV_CONDITIONAL_CONDITION_FALSE");
 
     let condition = TaskCondition {
+        condition_type: None,
         fail_message: None,
         profiles: None,
         os: None,
@@ -747,6 +710,7 @@ fn set_env_for_config_conditional() {
     let conditional = EnvValueConditioned {
         value: "test value".to_string(),
         condition: Some(TaskCondition {
+            condition_type: None,
             fail_message: None,
             profiles: None,
             os: None,

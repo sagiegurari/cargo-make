@@ -12,7 +12,8 @@ use crate::profile;
 use crate::scriptengine;
 use crate::types;
 use crate::types::{
-    ConditionScriptValue, FlowInfo, RustVersionCondition, ScriptValue, Step, TaskCondition,
+    ConditionScriptValue, ConditionType, FlowInfo, RustVersionCondition, ScriptValue, Step,
+    TaskCondition,
 };
 use crate::version::{is_newer, is_same};
 use fsio::path::from_path::FromPath;
@@ -21,75 +22,99 @@ use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
 use std::path::Path;
 
-fn validate_env_map(env: Option<IndexMap<String, String>>, equal: bool) -> bool {
+fn validate_env_map(
+    env: Option<IndexMap<String, String>>,
+    equal: bool,
+    validate_any: bool,
+) -> bool {
     match env {
         Some(env_vars) => {
-            let mut all_valid = true;
+            let mut found_any = env_vars.is_empty();
 
             for (key, current_value) in env_vars.iter() {
-                if (equal && !envmnt::is_equal(key, current_value))
-                    || (!equal && !envmnt::contains_ignore_case(key, current_value))
-                {
-                    all_valid = false;
-                    break;
+                let valid = if equal {
+                    envmnt::is_equal(key, current_value)
+                } else {
+                    envmnt::contains_ignore_case(key, current_value)
+                };
+
+                if valid {
+                    if validate_any {
+                        return true;
+                    }
+
+                    found_any = true;
+                } else if !valid && !validate_any {
+                    return false;
                 }
             }
 
-            all_valid
+            found_any
         }
         None => true,
     }
 }
 
-fn validate_env(condition: &TaskCondition) -> bool {
-    validate_env_map(condition.env.clone(), true)
+fn validate_env(condition: &TaskCondition, validate_any: bool) -> bool {
+    validate_env_map(condition.env.clone(), true, validate_any)
 }
 
-fn validate_env_contains(condition: &TaskCondition) -> bool {
-    validate_env_map(condition.env_contains.clone(), false)
+fn validate_env_contains(condition: &TaskCondition, validate_any: bool) -> bool {
+    validate_env_map(condition.env_contains.clone(), false, validate_any)
 }
 
-fn validate_env_set(condition: &TaskCondition) -> bool {
+fn validate_env_set(condition: &TaskCondition, validate_any: bool) -> bool {
     let env = condition.env_set.clone();
-
     match env {
         Some(env_vars) => {
-            let mut all_valid = true;
+            let mut found_any = env_vars.is_empty();
 
             for key in env_vars.iter() {
-                if !envmnt::exists(key) {
-                    all_valid = false;
-                    break;
+                let exists = envmnt::exists(key);
+                if exists {
+                    if validate_any {
+                        return true;
+                    }
+
+                    found_any = true;
+                } else if !exists && !validate_any {
+                    return false;
                 }
             }
 
-            all_valid
+            found_any
         }
         None => true,
     }
 }
 
-fn validate_env_not_set(condition: &TaskCondition) -> bool {
+fn validate_env_not_set(condition: &TaskCondition, validate_any: bool) -> bool {
     let env = condition.env_not_set.clone();
 
     match env {
         Some(env_vars) => {
-            let mut all_valid = true;
+            let mut found_any = env_vars.is_empty();
 
             for key in env_vars.iter() {
-                if envmnt::exists(key) {
-                    all_valid = false;
-                    break;
+                let exists = envmnt::exists(key);
+                if !exists {
+                    if validate_any {
+                        return true;
+                    }
+
+                    found_any = true;
+                } else if exists && !validate_any {
+                    return false;
                 }
             }
 
-            all_valid
+            found_any
         }
         None => true,
     }
 }
 
-fn validate_env_bool(condition: &TaskCondition, truthy: bool) -> bool {
+fn validate_env_bool(condition: &TaskCondition, truthy: bool, validate_any: bool) -> bool {
     let env = if truthy {
         condition.env_true.clone()
     } else {
@@ -98,18 +123,24 @@ fn validate_env_bool(condition: &TaskCondition, truthy: bool) -> bool {
 
     match env {
         Some(env_vars) => {
-            let mut all_valid = true;
+            let mut found_any = env_vars.is_empty();
 
             for key in env_vars.iter() {
                 let is_true = envmnt::is_or(key, !truthy);
+                let is_equal = is_true == truthy;
 
-                if is_true != truthy {
-                    all_valid = false;
-                    break;
+                if is_equal {
+                    if validate_any {
+                        return true;
+                    }
+
+                    found_any = true;
+                } else if !is_equal && !validate_any {
+                    return false;
                 }
             }
 
-            all_valid
+            found_any
         }
         None => true,
     }
@@ -267,31 +298,42 @@ fn validate_rust_version(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_files(file_paths: &Vec<String>, exist: bool) -> bool {
+fn validate_files(file_paths: &Vec<String>, exist: bool, validate_any: bool) -> bool {
+    let mut found_any = file_paths.is_empty();
+
     for file_path in file_paths.iter() {
         let expanded_file_path = environment::expand_value(file_path);
         let path = Path::new(&expanded_file_path);
 
-        if path.exists() != exist {
+        let path_exists = path.exists();
+        let valid = path_exists == exist;
+
+        if valid {
+            if validate_any {
+                return true;
+            }
+
+            found_any = true;
+        } else if !valid && !validate_any {
             return false;
         }
     }
 
-    true
+    found_any
 }
 
-fn validate_files_exist(condition: &TaskCondition) -> bool {
+fn validate_files_exist(condition: &TaskCondition, validate_any: bool) -> bool {
     let files = condition.files_exist.clone();
     match files {
-        Some(ref file_paths) => validate_files(file_paths, true),
+        Some(ref file_paths) => validate_files(file_paths, true, validate_any),
         None => true,
     }
 }
 
-fn validate_files_not_exist(condition: &TaskCondition) -> bool {
+fn validate_files_not_exist(condition: &TaskCondition, validate_any: bool) -> bool {
     let files = condition.files_not_exist.clone();
     match files {
-        Some(ref file_paths) => validate_files(file_paths, false),
+        Some(ref file_paths) => validate_files(file_paths, false, validate_any),
         None => true,
     }
 }
@@ -413,20 +455,134 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
         Some(ref condition_struct) => {
             debug!("Checking task condition structure.");
 
-            validate_os(&condition_struct)
-                && validate_platform(&condition_struct)
-                && validate_profile(&condition_struct)
-                && validate_channel(&condition_struct, flow_info)
-                && validate_env(&condition_struct)
-                && validate_env_set(&condition_struct)
-                && validate_env_not_set(&condition_struct)
-                && validate_env_bool(&condition_struct, true)
-                && validate_env_bool(&condition_struct, false)
-                && validate_env_contains(&condition_struct)
-                && validate_rust_version(&condition_struct)
-                && validate_files_exist(&condition_struct)
-                && validate_files_not_exist(&condition_struct)
-                && validate_files_modified(&condition_struct)
+            let condition_type = condition_struct.get_condition_type();
+            let validate_any = condition_type == ConditionType::Or;
+            let group_or_condition = condition_type == ConditionType::GroupOr || validate_any;
+            let mut not_valid_found = false;
+
+            let mut valid = validate_os(&condition_struct);
+            if group_or_condition && valid && condition_struct.os.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_platform(&condition_struct);
+            if group_or_condition && valid && condition_struct.platforms.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_profile(&condition_struct);
+            if group_or_condition && valid && condition_struct.profiles.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_channel(&condition_struct, flow_info);
+            if group_or_condition && valid && condition_struct.channels.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.env.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env_set(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.env_set.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env_not_set(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.env_not_set.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env_bool(&condition_struct, true, validate_any);
+            if group_or_condition && valid && condition_struct.env_true.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env_bool(&condition_struct, false, validate_any);
+            if group_or_condition && valid && condition_struct.env_false.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_env_contains(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.env_contains.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_rust_version(&condition_struct);
+            if group_or_condition && valid && condition_struct.rust_version.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_files_exist(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.files_exist.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_files_not_exist(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.files_not_exist.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+
+            valid = validate_files_modified(&condition_struct);
+            if !valid {
+                return false;
+            }
+
+            !not_valid_found || !group_or_condition || condition_struct.files_modified.is_some()
         }
         None => true,
     }
@@ -442,6 +598,7 @@ pub(crate) fn get_script_text(script: &ConditionScriptValue) -> Vec<String> {
 fn validate_script(
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
 ) -> bool {
     match condition_script {
         Some(ref script) => {
@@ -451,7 +608,7 @@ fn validate_script(
             return scriptengine::invoke_script_pre_flow(
                 &ScriptValue::Text(script_text),
                 script_runner,
-                None,
+                script_runner_args,
                 None,
                 false,
                 &vec![],
@@ -470,9 +627,25 @@ pub(crate) fn validate_conditions(
     condition: &Option<TaskCondition>,
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
+    script_runner_args: Option<Vec<String>>,
 ) -> bool {
-    validate_criteria(Some(&flow_info), &condition)
-        && validate_script(&condition_script, script_runner)
+    let condition_type = match condition {
+        Some(ref value) => value.get_condition_type(),
+        None => ConditionType::And,
+    };
+
+    let criteria_passed = validate_criteria(Some(&flow_info), &condition);
+    if !criteria_passed && condition_type == ConditionType::And {
+        false
+    } else if criteria_passed && condition.is_some() && condition_type != ConditionType::And {
+        true
+    } else {
+        if condition_script.is_none() && !criteria_passed {
+            false
+        } else {
+            validate_script(&condition_script, script_runner, script_runner_args)
+        }
+    }
 }
 
 pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> bool {
@@ -481,5 +654,6 @@ pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> 
         &step.config.condition,
         &step.config.condition_script,
         step.config.script_runner.clone(),
+        step.config.condition_script_runner_args.clone(),
     )
 }
