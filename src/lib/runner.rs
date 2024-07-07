@@ -569,6 +569,7 @@ pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>,
         allow_private,
         sub_flow,
         skip_tasks_pattern: flow_info.skip_tasks_pattern.as_ref(),
+        skip_init_end_tasks: flow_info.skip_init_end_tasks,
         ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
     }
     .build();

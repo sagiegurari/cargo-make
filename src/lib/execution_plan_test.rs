@@ -1584,3 +1584,34 @@ fn get_normalized_task_simple() {
     assert_eq!(task.command.unwrap(), "echo");
     assert_eq!(task.args.unwrap(), vec!["1".to_string()]);
 }
+
+#[test]
+fn respect_skip_init_end_tasks() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        skip_init_end_tasks: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "test");
+}

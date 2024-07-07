@@ -441,6 +441,7 @@ pub(crate) struct ExecutionPlanBuilder<'a> {
     pub allow_private: bool,
     pub sub_flow: bool,
     pub skip_tasks_pattern: Option<&'a Regex>,
+    pub skip_init_end_tasks: bool,
 }
 
 impl<'a> ExecutionPlanBuilder<'a> {
@@ -453,6 +454,7 @@ impl<'a> ExecutionPlanBuilder<'a> {
             allow_private: false,
             sub_flow: false,
             skip_tasks_pattern: None,
+            skip_init_end_tasks: false,
         }
     }
 
@@ -465,13 +467,15 @@ impl<'a> ExecutionPlanBuilder<'a> {
             allow_private,
             sub_flow,
             skip_tasks_pattern,
+            skip_init_end_tasks,
         } = *self;
         let mut task_names = HashSet::new();
         let mut steps = Vec::new();
         let default_crate_info = CrateInfo::new();
         let crate_info = crate_info.unwrap_or(&default_crate_info);
+        let skip_init_end_tasks = skip_init_end_tasks || sub_flow;
 
-        if !sub_flow {
+        if !skip_init_end_tasks {
             match config.config.legacy_migration_task {
                 Some(ref task) => add_predefined_step(config, task, &mut steps),
                 None => debug!("Legacy migration task not defined."),
@@ -513,7 +517,7 @@ impl<'a> ExecutionPlanBuilder<'a> {
             debug!("Skipping task: {} due to skip pattern.", &task);
         }
 
-        if !sub_flow {
+        if !skip_init_end_tasks {
             // always add end task even if already executed due to some dependency
             match config.config.end_task {
                 Some(ref task) => add_predefined_step(config, task, &mut steps),

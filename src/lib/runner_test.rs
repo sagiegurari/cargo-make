@@ -2501,3 +2501,71 @@ fn create_fork_step_valid() {
     assert_eq!(args[8], makefile);
     assert_eq!(args[9], "test".to_string());
 }
+
+#[test]
+#[ignore]
+fn run_flow_skip_init_end_tasks() {
+    // Init logger to panic at error.
+    crate::test::on_test_startup();
+
+    let fail_task = Task {
+        // Use duckscript, so that the behavior of the script is the same on all platforms.
+        script_runner: Some("@duckscript".to_string()),
+        script: Some(ScriptValue::Text(vec!["exit 1".to_string()])),
+        ..Task::new()
+    };
+
+    let entry_task = Task {
+        script_runner: Some("@duckscript".to_string()),
+        script: Some(ScriptValue::Text(vec!["echo test".to_string()])),
+        ..Task::new()
+    };
+
+    let tasks = IndexMap::from([
+        ("fail".to_string(), fail_task),
+        ("entry".to_string(), entry_task),
+    ]);
+
+    // Test with only init_task existing.
+    let config = Config {
+        config: ConfigSection {
+            init_task: Some("fail".to_string()),
+            ..ConfigSection::new()
+        },
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks,
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "entry".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: true,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+
+    // Test with only end_task existing.
+    let flow_info = {
+        let mut flow_info = flow_info;
+        flow_info.config.config = ConfigSection {
+            end_task: Some("fail".to_string()),
+            ..ConfigSection::new()
+        };
+        flow_info
+    };
+
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+}
