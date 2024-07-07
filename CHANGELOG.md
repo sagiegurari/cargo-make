@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.13
+### v0.37.13 (2024-07-07)
 
 * Enhancement: New condition_script_runner_args attribute #1081
 * Enhancement: Add workspace level package info to global environment variables #1092 (thanks @varphone)

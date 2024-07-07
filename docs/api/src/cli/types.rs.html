@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-0000000007da4a04.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-0000000084b1ad12.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-0000000066e2bc86.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-0000000004ddb02d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-00000000f27a569e.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-000000005f7541b6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (2319be8e2 2024-01-12)" data-channel="nightly" data-search-js="search-000000006d902bd2.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-00000000b6b6e7c2.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0000000015700b57.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000c3ec0cbe.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-000000008fbf5349.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../cli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-00000000304d111d.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/types.rs`."><title>types.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-0000000007da4a04.ttf.woff2,FiraSans-Regular-0000000084b1ad12.woff2,FiraSans-Medium-0000000066e2bc86.woff2,SourceCodePro-Regular-0000000004ddb02d.ttf.woff2,SourceCodePro-Semibold-00000000f27a569e.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-0000000094d0019d.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (ada5e2c7b 2024-05-31)" data-channel="nightly" data-search-js="search-00000000033a9c87.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-0000000036c0a5b4.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-00000000ff7d71c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000626a34ad.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2408,6 +2406,51 @@
 <a href="#2406" id="2406">2406</a>
 <a href="#2407" id="2407">2407</a>
 <a href="#2408" id="2408">2408</a>
+<a href="#2409" id="2409">2409</a>
+<a href="#2410" id="2410">2410</a>
+<a href="#2411" id="2411">2411</a>
+<a href="#2412" id="2412">2412</a>
+<a href="#2413" id="2413">2413</a>
+<a href="#2414" id="2414">2414</a>
+<a href="#2415" id="2415">2415</a>
+<a href="#2416" id="2416">2416</a>
+<a href="#2417" id="2417">2417</a>
+<a href="#2418" id="2418">2418</a>
+<a href="#2419" id="2419">2419</a>
+<a href="#2420" id="2420">2420</a>
+<a href="#2421" id="2421">2421</a>
+<a href="#2422" id="2422">2422</a>
+<a href="#2423" id="2423">2423</a>
+<a href="#2424" id="2424">2424</a>
+<a href="#2425" id="2425">2425</a>
+<a href="#2426" id="2426">2426</a>
+<a href="#2427" id="2427">2427</a>
+<a href="#2428" id="2428">2428</a>
+<a href="#2429" id="2429">2429</a>
+<a href="#2430" id="2430">2430</a>
+<a href="#2431" id="2431">2431</a>
+<a href="#2432" id="2432">2432</a>
+<a href="#2433" id="2433">2433</a>
+<a href="#2434" id="2434">2434</a>
+<a href="#2435" id="2435">2435</a>
+<a href="#2436" id="2436">2436</a>
+<a href="#2437" id="2437">2437</a>
+<a href="#2438" id="2438">2438</a>
+<a href="#2439" id="2439">2439</a>
+<a href="#2440" id="2440">2440</a>
+<a href="#2441" id="2441">2441</a>
+<a href="#2442" id="2442">2442</a>
+<a href="#2443" id="2443">2443</a>
+<a href="#2444" id="2444">2444</a>
+<a href="#2445" id="2445">2445</a>
+<a href="#2446" id="2446">2446</a>
+<a href="#2447" id="2447">2447</a>
+<a href="#2448" id="2448">2448</a>
+<a href="#2449" id="2449">2449</a>
+<a href="#2450" id="2450">2450</a>
+<a href="#2451" id="2451">2451</a>
+<a href="#2452" id="2452">2452</a>
+<a href="#2453" id="2453">2453</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -2633,6 +2676,8 @@
     </span><span class="kw">pub </span>exclude: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// workspace level dependencies
     </span><span class="kw">pub </span>dependencies: <span class="prelude-ty">Option</span>&lt;IndexMap&lt;String, CrateDependency&gt;&gt;,
+    <span class="doccomment">/// root package
+    </span><span class="kw">pub </span>package: <span class="prelude-ty">Option</span>&lt;PackageInfo&gt;,
 }
 
 <span class="kw">impl </span>Workspace {
@@ -2642,7 +2687,7 @@
     }
 }
 
-<span class="attr">#[derive(Deserialize, Debug, Clone, Default)]
+<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 </span><span class="doccomment">/// Holds crate package information loaded from the Cargo.toml file package section.
 </span><span class="kw">pub struct </span>PackageInfo {
     <span class="doccomment">/// name
@@ -2775,9 +2820,22 @@
     </span><span class="kw">pub </span>output: Vec&lt;String&gt;,
 }
 
-<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
+<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+</span><span class="doccomment">/// Control how condition checks are evaluated
+</span><span class="kw">pub enum </span>ConditionType {
+    <span class="doccomment">/// All conditions must pass
+    </span>And,
+    <span class="doccomment">/// Any condition must pass
+    </span>Or,
+    <span class="doccomment">/// Any condition group must pass, but each group will be validated as an AND
+    </span>GroupOr,
+}
+
+<span class="attr">#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 </span><span class="doccomment">/// Holds condition attributes
 </span><span class="kw">pub struct </span>TaskCondition {
+    <span class="doccomment">/// condition type (AND/OR) by default AND
+    </span><span class="kw">pub </span>condition_type: <span class="prelude-ty">Option</span>&lt;ConditionType&gt;,
     <span class="doccomment">/// Failure message
     </span><span class="kw">pub </span>fail_message: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Profile names (development, ...)
@@ -2808,6 +2866,15 @@
     </span><span class="kw">pub </span>files_not_exist: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// Files modified since last execution
     </span><span class="kw">pub </span>files_modified: <span class="prelude-ty">Option</span>&lt;FilesFilesModifiedCondition&gt;,
+}
+
+<span class="kw">impl </span>TaskCondition {
+    <span class="kw">pub fn </span>get_condition_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConditionType {
+        <span class="kw">match </span><span class="self">self</span>.condition_type {
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.clone(),
+            <span class="prelude-val">None </span>=&gt; ConditionType::And,
+        }
+    }
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3280,6 +3347,8 @@
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the task will not be invoked
     </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
+    <span class="doccomment">/// The script runner arguments before the script file path
+    </span><span class="kw">pub </span>condition_script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3517,6 +3586,8 @@
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
+    <span class="doccomment">/// The script runner arguments before the script file path
+    </span><span class="kw">pub </span>condition_script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build
     </span><span class="kw">pub </span>ignore_errors: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors
@@ -3917,6 +3988,12 @@
             <span class="self">self</span>.condition_script = <span class="prelude-val">None</span>;
         }
 
+        <span class="kw">if </span>task.condition_script_runner_args.is_some() {
+            <span class="self">self</span>.condition_script_runner_args = task.condition_script_runner_args.clone();
+        } <span class="kw">else if </span>override_values {
+            <span class="self">self</span>.condition_script_runner_args = <span class="prelude-val">None</span>;
+        }
+
         <span class="kw">if </span>task.ignore_errors.is_some() {
             <span class="self">self</span>.ignore_errors = task.ignore_errors.clone();
         } <span class="kw">else if </span>override_values {
@@ -4118,6 +4195,9 @@
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
                     condition_script: override_task.condition_script.clone(),
+                    condition_script_runner_args: override_task
+                        .condition_script_runner_args
+                        .clone(),
                     ignore_errors: override_task.ignore_errors.clone(),
                     force: override_task.force.clone(),
                     env_files: override_task.env_files.clone(),
@@ -4277,6 +4357,8 @@
     </span><span class="kw">pub </span>condition: <span class="prelude-ty">Option</span>&lt;TaskCondition&gt;,
     <span class="doccomment">/// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     </span><span class="kw">pub </span>condition_script: <span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
+    <span class="doccomment">/// The script runner arguments before the script file path
+    </span><span class="kw">pub </span>condition_script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     <span class="doccomment">/// if true, any error while executing the task will be printed but will not break the build
     </span><span class="kw">pub </span>ignore_errors: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// DEPRECATED, replaced with ignore_errors
@@ -4356,6 +4438,12 @@
 
             <span class="kw">if </span><span class="self">self</span>.condition_script.is_none() &amp;&amp; task.condition_script.is_some() {
                 <span class="self">self</span>.condition_script = task.condition_script.clone();
+            }
+
+            <span class="kw">if </span><span class="self">self</span>.condition_script_runner_args.is_none()
+                &amp;&amp; task.condition_script_runner_args.is_some()
+            {
+                <span class="self">self</span>.condition_script_runner_args = task.condition_script_runner_args.clone();
             }
 
             <span class="kw">if </span><span class="self">self</span>.ignore_errors.is_none() &amp;&amp; task.ignore_errors.is_some() {
