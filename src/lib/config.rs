@@ -13,14 +13,14 @@ use fsio::file::read_text_file;
 use fsio::path::from_path::FromPath;
 use std::path::{Path, PathBuf};
 
-static CONFIG_FILE: &'static str = "config.toml";
+pub static CONFIG_FILE: &'static str = "config.toml";
 
-fn get_config_directory() -> Option<PathBuf> {
+pub fn get_config_directory() -> Option<PathBuf> {
     let os_directory = dirs_next::config_dir();
     storage::get_storage_directory(os_directory, CONFIG_FILE, true)
 }
 
-fn load_from_path(directory: PathBuf) -> GlobalConfig {
+pub fn load_from_path(directory: PathBuf) -> GlobalConfig {
     let file_path = Path::new(&directory).join(CONFIG_FILE);
     debug!("Loading config from: {:#?}", &file_path);
 
@@ -47,7 +47,7 @@ fn load_from_path(directory: PathBuf) -> GlobalConfig {
 }
 
 /// Returns the configuration
-pub(crate) fn load() -> GlobalConfig {
+pub fn load() -> GlobalConfig {
     match get_config_directory() {
         Some(directory) => load_from_path(directory),
         None => GlobalConfig::new(),

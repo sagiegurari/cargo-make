@@ -61,7 +61,7 @@ fn print_default(execution_plan: &ExecutionPlan) {
 }
 
 /// Only prints the execution plan
-pub(crate) fn print(
+pub fn print(
     config: &Config,
     task: &str,
     output_format: &str,

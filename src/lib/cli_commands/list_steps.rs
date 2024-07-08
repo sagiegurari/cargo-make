@@ -13,7 +13,7 @@ use crate::io;
 use crate::types::{Config, DeprecationInfo};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub(crate) fn run(
+pub fn run(
     config: &Config,
     output_format: &str,
     output_file: &Option<String>,
@@ -186,7 +186,7 @@ pub(crate) fn create_list(
         }
 
         if !just_task_name {
-            buffer.push_str(&format!("\n"));
+            buffer.push('\n');
         }
     }
 

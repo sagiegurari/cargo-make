@@ -50,12 +50,12 @@ mod test;
 pub mod types;
 
 mod cache;
-mod cli;
-mod cli_commands;
-mod cli_parser;
+pub mod cli;
+pub mod cli_commands;
+pub mod cli_parser;
 mod command;
 mod condition;
-mod config;
+pub mod config;
 mod descriptor;
 mod environment;
 mod execution_plan;

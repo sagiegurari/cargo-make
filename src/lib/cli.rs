@@ -31,7 +31,7 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
+pub fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let start_time = SystemTime::now();
 
     recursion_level::increment();

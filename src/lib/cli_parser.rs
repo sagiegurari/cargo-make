@@ -146,7 +146,7 @@ fn get_args(
     cli_args
 }
 
-fn create_cli(global_config: &GlobalConfig) -> CliSpec {
+pub fn create_cli(global_config: &GlobalConfig) -> CliSpec {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -468,7 +468,7 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
     spec
 }
 
-pub(crate) fn parse_args(
+pub fn parse_args(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
@@ -505,7 +505,7 @@ pub(crate) fn parse_args(
     }
 }
 
-pub(crate) fn parse(
+pub fn parse(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,

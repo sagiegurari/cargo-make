@@ -4,5 +4,5 @@
 //!
 
 pub(crate) mod diff_steps;
-pub(crate) mod list_steps;
-pub(crate) mod print_steps;
+pub mod list_steps;
+pub mod print_steps;
