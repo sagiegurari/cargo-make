@@ -609,7 +609,7 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) 
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(
+pub fn run(
     config: Config,
     task: &str,
     env_info: EnvInfo,

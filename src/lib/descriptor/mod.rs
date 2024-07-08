@@ -578,7 +578,7 @@ fn load_cargo_aliases(config: &mut Config) {
 /// the default descriptor. <br> If one of the descriptor requires a newer
 /// version of cargo-make, returns an error with the minimum version required by
 /// the descriptor.
-pub(crate) fn load(
+pub fn load(
     file_name: &str,
     force: bool,
     env_map: Option<Vec<String>>,

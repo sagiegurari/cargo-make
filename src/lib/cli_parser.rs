@@ -500,7 +500,7 @@ pub(crate) fn parse_args(
         Err(error) => {
             let help_text = cliparser::help(&spec);
             println!("{}\n{}", &error, help_text);
-            exit();
+            exit()
         }
     }
 }

@@ -68,7 +68,7 @@ mod plugin;
 mod profile;
 mod proxy_task;
 mod recursion_level;
-mod runner;
+pub mod runner;
 mod scriptengine;
 mod storage;
 mod time_summary;
