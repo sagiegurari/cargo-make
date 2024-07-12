@@ -36,7 +36,7 @@ pub(crate) fn get_level(level_name: &str) -> LogLevel {
         "verbose" => LogLevel::VERBOSE,
         "error" => LogLevel::ERROR,
         "off" => LogLevel::OFF,
-        _ =>  LogLevel::INFO
+        _ => LogLevel::INFO,
     }
 }
 

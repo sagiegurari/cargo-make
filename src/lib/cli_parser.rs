@@ -17,7 +17,6 @@ use cliparser::types::{
     CliSpecMetaInfo, PositionalArgument,
 };
 
-
 use either::Either;
 
 fn get_args(
@@ -462,7 +461,7 @@ pub fn parse_args(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
-    args: Option<Vec<&str>>
+    args: Option<Vec<&str>>,
 ) -> Either<CliArgs, std::process::ExitCode> {
     let spec = create_cli(&global_config);
 
@@ -477,20 +476,27 @@ pub fn parse_args(
                 // generate help text
                 let help_text = cliparser::help(&spec);
                 println!("{}", help_text);
-                return Either::Right(std::process::ExitCode::from(std::process::ExitCode::SUCCESS))
+                return Either::Right(std::process::ExitCode::from(
+                    std::process::ExitCode::SUCCESS,
+                ));
             } else if cli_parsed.arguments.contains("version") {
                 // generate version text
                 let version_text = cliparser::version(&spec);
                 println!("{}", version_text);
-                return Either::Right(std::process::ExitCode::SUCCESS)
+                return Either::Right(std::process::ExitCode::SUCCESS);
             }
 
-            return Either::Left(get_args(&cli_parsed, &global_config, command_name, sub_command))
+            return Either::Left(get_args(
+                &cli_parsed,
+                &global_config,
+                command_name,
+                sub_command,
+            ));
         }
         Err(error) => {
             let help_text = cliparser::help(&spec);
             println!("{}\n{}", &error, help_text);
-            return Either::Right(std::process::ExitCode::FAILURE)
+            return Either::Right(std::process::ExitCode::FAILURE);
         }
     }
 }

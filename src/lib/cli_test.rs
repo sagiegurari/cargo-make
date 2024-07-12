@@ -393,7 +393,6 @@ fn run_bad_subcommand() {
     let cli_args =
         cli_parser::parse_args(&global_config, &"make".to_string(), true, Some(vec!["bad"]));
 
-
     assert_eq!(
         format!("{:?}", &cli_args.clone().right().unwrap()),
         format!("{:?}", std::process::ExitCode::FAILURE)
@@ -425,7 +424,12 @@ fn run_valid() {
     );
 
     assert_eq!(
-        format!("{:?}", run(cli_args.left().unwrap(), &global_config).right().unwrap()),
+        format!(
+            "{:?}",
+            run(cli_args.left().unwrap(), &global_config)
+                .right()
+                .unwrap()
+        ),
         format!("{:?}", std::process::ExitCode::FAILURE)
     );
 }
@@ -442,7 +446,9 @@ fn run_with_global_config() {
         &"make".to_string(),
         true,
         Some(vec!["cargo", "make"]),
-    ).left().unwrap();
+    )
+    .left()
+    .unwrap();
 
     run(cli_args, &global_config);
 }
@@ -466,7 +472,9 @@ fn run_log_level_override() {
             "error",
             "-v",
         ]),
-    ).left().unwrap();
+    )
+    .left()
+    .unwrap();
 
     run(cli_args, &global_config);
 }
@@ -493,7 +501,9 @@ fn run_set_env_values() {
             "-t",
             "empty",
         ]),
-    ).left().unwrap();
+    )
+    .left()
+    .unwrap();
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");

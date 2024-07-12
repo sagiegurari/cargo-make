@@ -74,27 +74,41 @@ fn parse_args_cargo_make() {
 }
 
 #[test]
-#[should_panic]
 fn parse_args_help_long() {
-    default_parse_cli_args(vec!["--help"]);
+    assert_eq!(
+        format!("{:?}", std::process::ExitCode::SUCCESS),
+        format!(
+            "{:?}",
+            default_parse_cli_args(vec!["--help"]).right().unwrap()
+        )
+    );
 }
 
 #[test]
-#[should_panic]
 fn parse_args_help_short() {
-    default_parse_cli_args(vec!["-h"]);
+    assert_eq!(
+        format!("{:?}", std::process::ExitCode::SUCCESS),
+        format!("{:?}", default_parse_cli_args(vec!["-h"]).right().unwrap())
+    );
 }
 
 #[test]
-#[should_panic]
 fn parse_args_version_long() {
-    default_parse_cli_args(vec!["--version"]);
+    assert_eq!(
+        format!("{:?}", std::process::ExitCode::SUCCESS),
+        format!(
+            "{:?}",
+            default_parse_cli_args(vec!["--version"]).right().unwrap()
+        )
+    );
 }
 
 #[test]
-#[should_panic]
 fn parse_args_version_short() {
-    default_parse_cli_args(vec!["-V"]);
+    assert_eq!(
+        format!("{:?}", std::process::ExitCode::SUCCESS),
+        format!("{:?}", default_parse_cli_args(vec!["-V"]).right().unwrap())
+    );
 }
 
 #[test]
@@ -114,14 +128,18 @@ fn parse_args_makefile() {
 
 #[test]
 fn parse_args_task() {
-    let mut cli_args = default_parse_cli_args(vec!["--task", "sometask"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--task", "sometask"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.task = "sometask".to_string();
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["-t", "sometask"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["-t", "sometask"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 
     cli_args = default_parse_cli_args(vec!["sometask"]).left().unwrap();
@@ -131,17 +149,23 @@ fn parse_args_task() {
 
 #[test]
 fn parse_args_profile() {
-    let mut cli_args = default_parse_cli_args(vec!["--profile", "someprofile"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--profile", "someprofile"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.profile = Some("someprofile".to_string());
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["-p", "someprofile"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["-p", "someprofile"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--profile", "someprofile", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--profile", "someprofile", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -149,7 +173,9 @@ fn parse_args_profile() {
 
 #[test]
 fn parse_args_cwd() {
-    let cli_args = default_parse_cli_args(vec!["--cwd", "./mydir/subdir/"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--cwd", "./mydir/subdir/"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.cwd = Some("./mydir/subdir/".to_string());
@@ -159,7 +185,9 @@ fn parse_args_cwd() {
 
 #[test]
 fn parse_args_no_workspace() {
-    let cli_args = default_parse_cli_args(vec!["--no-workspace"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--no-workspace"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.disable_workspace = true;
@@ -169,7 +197,9 @@ fn parse_args_no_workspace() {
 
 #[test]
 fn parse_args_allow_private() {
-    let cli_args = default_parse_cli_args(vec!["--allow-private"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--allow-private"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.allow_private = true;
@@ -179,7 +209,9 @@ fn parse_args_allow_private() {
 
 #[test]
 fn parse_args_skip_init_end_tasks() {
-    let cli_args = default_parse_cli_args(vec!["--skip-init-end-tasks"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--skip-init-end-tasks"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.skip_init_end_tasks = true;
@@ -189,14 +221,18 @@ fn parse_args_skip_init_end_tasks() {
 
 #[test]
 fn parse_args_skip_tasks() {
-    let mut cli_args = default_parse_cli_args(vec!["--skip-tasks", "pre-.*"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--skip-tasks", "pre-.*"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.skip_tasks_pattern = Some("pre-.*".to_string());
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--skip-tasks", "pre-.*", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--skip-tasks", "pre-.*", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -204,22 +240,30 @@ fn parse_args_skip_tasks() {
 
 #[test]
 fn parse_args_env_file() {
-    let mut cli_args = default_parse_cli_args(vec!["--env-file", "./.env"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--env-file", "./.env"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.env_file = Some("./.env".to_string());
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--env-file=./.env"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--env-file=./.env"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--env-file", "./.env", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--env-file", "./.env", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--env-file=./.env", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--env-file=./.env", "taskname"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 }
 
@@ -235,7 +279,9 @@ fn parse_args_env() {
     cli_args = default_parse_cli_args(vec!["-e", "K=V"]).left().unwrap();
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["-e", "K1=V1", "-e", "K2=V2", "--env", "K3=V3"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["-e", "K1=V1", "-e", "K2=V2", "--env", "K3=V3"])
+        .left()
+        .unwrap();
     expected.env = Some(vec![
         "K1=V1".to_string(),
         "K2=V2".to_string(),
@@ -245,7 +291,9 @@ fn parse_args_env() {
 
     cli_args = default_parse_cli_args(vec![
         "-e", "K1=V1", "-e", "K2=V2", "--env", "K3=V3", "taskname",
-    ]).left().unwrap();
+    ])
+    .left()
+    .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -253,17 +301,23 @@ fn parse_args_env() {
 
 #[test]
 fn parse_args_loglevel() {
-    let mut cli_args = default_parse_cli_args(vec!["--loglevel", "verbose"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--loglevel", "verbose"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.log_level = "verbose".to_string();
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["-l", "verbose"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["-l", "verbose"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--loglevel", "verbose", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--loglevel", "verbose", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -304,7 +358,9 @@ fn parse_args_no_color() {
 
 #[test]
 fn parse_args_time_summary() {
-    let cli_args = default_parse_cli_args(vec!["--time-summary"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--time-summary"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.print_time_summary = true;
@@ -314,7 +370,9 @@ fn parse_args_time_summary() {
 
 #[test]
 fn parse_args_experimental() {
-    let cli_args = default_parse_cli_args(vec!["--experimental"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--experimental"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.experimental = true;
@@ -324,7 +382,9 @@ fn parse_args_experimental() {
 
 #[test]
 fn parse_args_disable_check_for_updates() {
-    let cli_args = default_parse_cli_args(vec!["--disable-check-for-updates"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--disable-check-for-updates"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.disable_check_for_updates = true;
@@ -334,14 +394,18 @@ fn parse_args_disable_check_for_updates() {
 
 #[test]
 fn parse_args_output_format() {
-    let mut cli_args = default_parse_cli_args(vec!["--output-format", "autocomplete"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--output-format", "autocomplete"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.output_format = "autocomplete".to_string();
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--output-format", "autocomplete", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--output-format", "autocomplete", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -349,14 +413,18 @@ fn parse_args_output_format() {
 
 #[test]
 fn parse_args_output_file() {
-    let mut cli_args = default_parse_cli_args(vec!["--output-file", "./out"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--output-file", "./out"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.output_file = Some("./out".to_string());
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--output-file", "./out", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--output-file", "./out", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -364,7 +432,9 @@ fn parse_args_output_file() {
 
 #[test]
 fn parse_args_print_steps() {
-    let cli_args = default_parse_cli_args(vec!["--print-steps"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--print-steps"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.print_only = true;
@@ -374,7 +444,9 @@ fn parse_args_print_steps() {
 
 #[test]
 fn parse_args_list_all_steps() {
-    let cli_args = default_parse_cli_args(vec!["--list-all-steps"]).left().unwrap();
+    let cli_args = default_parse_cli_args(vec!["--list-all-steps"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.list_all_steps = true;
@@ -384,14 +456,18 @@ fn parse_args_list_all_steps() {
 
 #[test]
 fn parse_args_list_category_steps() {
-    let mut cli_args = default_parse_cli_args(vec!["--list-category-steps", "build"]).left().unwrap();
+    let mut cli_args = default_parse_cli_args(vec!["--list-category-steps", "build"])
+        .left()
+        .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.list_category_steps = Some("build".to_string());
 
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--list-category-steps", "build", "taskname"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--list-category-steps", "build", "taskname"])
+        .left()
+        .unwrap();
     expected.task = "taskname".to_string();
     expected.arguments = Some(vec![]);
     assert_cli_args(&cli_args, &expected);
@@ -420,10 +496,14 @@ fn parse_args_task_cmd() {
     cli_args = default_parse_cli_args(vec!["--", "task1"]).left().unwrap();
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["task1", "arg1", "arg2"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["task1", "arg1", "arg2"])
+        .left()
+        .unwrap();
     expected.arguments = Some(vec!["arg1".to_string(), "arg2".to_string()]);
     assert_cli_args(&cli_args, &expected);
 
-    cli_args = default_parse_cli_args(vec!["--", "task1", "arg1", "arg2"]).left().unwrap();
+    cli_args = default_parse_cli_args(vec!["--", "task1", "arg1", "arg2"])
+        .left()
+        .unwrap();
     assert_cli_args(&cli_args, &expected);
 }

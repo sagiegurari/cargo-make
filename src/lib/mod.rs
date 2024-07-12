@@ -36,9 +36,9 @@
 
 use either::Either;
 // Dependencies used in the binary `makers`:
+use crate::types::CliArgs;
 #[cfg(windows)]
 use nu_ansi_term as _;
-use crate::types::CliArgs;
 
 #[macro_use]
 extern crate log;
