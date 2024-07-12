@@ -10,6 +10,7 @@ mod types_test;
 use crate::legacy;
 use crate::plugin::types::Plugins;
 use ci_info::types::CiInfo;
+use either::Either;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
 use regex::Regex;
@@ -2450,4 +2451,11 @@ pub struct CommandSpec {
     pub command: String,
     /// The command args
     pub args: Option<Vec<String>>,
+}
+
+pub fn either_to_result<L, R>(either: Either<L, R>) -> Result<L, R> {
+    match either {
+        Either::Left(lhs) => Ok(lhs),
+        Either::Right(rhs) => Err(rhs),
+    }
 }
