@@ -20,9 +20,11 @@ fn get_name() -> String {
     "makers".to_string()
 }
 
-fn main() {
+fn main() -> std::process::ExitCode {
     #[cfg(windows)]
     let _ = nu_ansi_term::enable_ansi_support();
     let name = get_name();
-    cli::run_cli(name, false);
+    cli::run_cli(name, false)
+        .right()
+        .unwrap_or(std::process::ExitCode::SUCCESS)
 }

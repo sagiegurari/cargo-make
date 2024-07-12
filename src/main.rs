@@ -33,7 +33,9 @@ fn get_name() -> String {
     "make".to_string()
 }
 
-fn main() {
+fn main() -> std::process::ExitCode {
     let name = get_name();
-    cli::run_cli(name, true);
+    cli::run_cli(name, true)
+        .right()
+        .unwrap_or(std::process::ExitCode::SUCCESS)
 }
