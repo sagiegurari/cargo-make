@@ -33,7 +33,7 @@ pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
 pub fn run(
-    cli_args: CliArgs,
+    cli_args: &CliArgs,
     global_config: &GlobalConfig,
 ) -> Either<CliArgs, std::process::ExitCode> {
     let start_time = SystemTime::now();
@@ -140,7 +140,7 @@ pub fn run(
             &config,
             &cli_args.output_format,
             &cli_args.output_file,
-            cli_args.list_category_steps,
+            &cli_args.list_category_steps,
             cli_args.hide_uninteresting,
         );
     } else if cli_args.diff_execution_plan {
@@ -158,7 +158,7 @@ pub fn run(
             &task,
             &cli_args.output_format,
             cli_args.disable_workspace,
-            cli_args.skip_tasks_pattern,
+            &cli_args.skip_tasks_pattern,
             &env_info.crate_info,
         );
     } else {
@@ -184,6 +184,6 @@ pub fn run_cli(command_name: String, sub_command: bool) -> Either<CliArgs, std::
         sub_command
     ));
 
-    run(cli_args.clone(), &global_config);
+    run(&cli_args, &global_config);
     Either::Left(cli_args)
 }

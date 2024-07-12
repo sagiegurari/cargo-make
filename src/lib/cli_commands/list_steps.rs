@@ -17,7 +17,7 @@ pub fn run(
     config: &Config,
     output_format: &str,
     output_file: &Option<String>,
-    category: Option<String>,
+    category: &Option<String>,
     hide_uninteresting: bool,
 ) {
     let output = create_list(&config, output_format, category, hide_uninteresting);
@@ -35,7 +35,7 @@ pub fn run(
 pub(crate) fn create_list(
     config: &Config,
     output_format: &str,
-    category_filter: Option<String>,
+    category_filter: &Option<String>,
     hide_uninteresting: bool,
 ) -> String {
     // category -> actual_task -> description

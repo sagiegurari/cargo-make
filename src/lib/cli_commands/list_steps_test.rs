@@ -19,7 +19,7 @@ fn check(
                 &config,
                 output_format,
                 output_file,
-                category,
+                &category,
                 hide_uninteresting,
             );
 
@@ -32,7 +32,7 @@ fn check(
             expect.assert_eq(&actual);
         }
         None => {
-            let actual = create_list(&config, output_format, category, hide_uninteresting);
+            let actual = create_list(&config, output_format, &category, hide_uninteresting);
             expect.assert_eq(&actual);
         }
     }

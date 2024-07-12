@@ -66,7 +66,7 @@ pub fn print(
     task: &str,
     output_format: &str,
     disable_workspace: bool,
-    skip_tasks_pattern: Option<String>,
+    skip_tasks_pattern: &Option<String>,
     crateinfo: &CrateInfo,
 ) {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {

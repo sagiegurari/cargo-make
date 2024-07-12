@@ -35,7 +35,7 @@ fn print_default_format() {
     config.tasks.insert("end".to_string(), Task::new());
     config.tasks.insert("test".to_string(), Task::new());
 
-    print(&config, "test", "default", false, None, &CrateInfo::new());
+    print(&config, "test", "default", false, &None, &CrateInfo::new());
 }
 
 #[test]
@@ -53,7 +53,7 @@ fn print_task_not_found() {
     config.tasks.insert("init".to_string(), Task::new());
     config.tasks.insert("end".to_string(), Task::new());
 
-    print(&config, "test", "default", false, None, &CrateInfo::new());
+    print(&config, "test", "default", false, &None, &CrateInfo::new());
 }
 
 #[test]
@@ -75,7 +75,7 @@ fn print_task_not_found_but_skipped() {
         "test",
         "default",
         false,
-        Some("test".to_string()),
+        &Some("test".to_string()),
         &CrateInfo::new(),
     );
 }

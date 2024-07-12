@@ -9,7 +9,7 @@ fn run_makefile_not_found() {
     let global_config = GlobalConfig::new();
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("bad.toml".to_string()),
             task: "empty".to_string(),
@@ -46,7 +46,7 @@ fn run_empty_task() {
     let global_config = GlobalConfig::new();
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: None,
             task: "empty".to_string(),
@@ -83,7 +83,7 @@ fn print_empty_task() {
     let global_config = GlobalConfig::new();
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: None,
             task: "empty".to_string(),
@@ -120,7 +120,7 @@ fn list_empty_task() {
     let global_config = GlobalConfig::new();
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: None,
             task: "empty".to_string(),
@@ -157,7 +157,7 @@ fn run_file_and_task() {
     let global_config = GlobalConfig::new();
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -197,7 +197,7 @@ fn run_cwd_with_file() {
     assert!(env::set_current_dir(&directory).is_ok());
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -235,7 +235,7 @@ fn run_file_not_go_to_project_root() {
     global_config.search_project_root = Some(false);
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -273,7 +273,7 @@ fn run_cwd_go_to_project_root_current_dir() {
     global_config.search_project_root = Some(true);
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -314,7 +314,7 @@ fn run_cwd_go_to_project_root_child_dir() {
     assert!(env::set_current_dir(&directory).is_ok());
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./examples/dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -355,7 +355,7 @@ fn run_cwd_task_not_found() {
     assert!(env::set_current_dir(&directory).is_ok());
 
     run(
-        CliArgs {
+        &CliArgs {
             command: "cargo make".to_string(),
             build_file: Some("./dependencies.toml".to_string()),
             task: "A".to_string(),
@@ -398,7 +398,7 @@ fn run_bad_subcommand() {
         format!("{:?}", std::process::ExitCode::FAILURE)
     );
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -426,7 +426,7 @@ fn run_valid() {
     assert_eq!(
         format!(
             "{:?}",
-            run(cli_args.left().unwrap(), &global_config)
+            run(&cli_args.left().unwrap(), &global_config)
                 .right()
                 .unwrap()
         ),
@@ -450,7 +450,7 @@ fn run_with_global_config() {
     .left()
     .unwrap();
 
-    run(cli_args, &global_config);
+    run(&cli_args, &global_config);
 }
 
 #[test]
@@ -476,7 +476,7 @@ fn run_log_level_override() {
     .left()
     .unwrap();
 
-    run(cli_args, &global_config);
+    run(&cli_args, &global_config);
 }
 
 #[test]
@@ -509,7 +509,7 @@ fn run_set_env_values() {
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(&cli_args, &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2a=TEST2b");
@@ -539,7 +539,7 @@ fn run_set_env_via_file() {
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -578,7 +578,7 @@ fn run_set_env_both() {
     envmnt::set("ENV5_TEST", "EMPTY");
     envmnt::set("ENV6_TEST", "EMPTY");
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -614,7 +614,7 @@ fn run_print_only() {
         ]),
     );
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -639,7 +639,7 @@ fn run_diff_steps() {
         ]),
     );
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -659,7 +659,7 @@ fn run_protected_flow_example() {
         ]),
     );
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -680,7 +680,7 @@ fn run_no_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"), "");
 }
@@ -706,7 +706,7 @@ fn run_set_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
@@ -729,7 +729,7 @@ fn run_set_task_var_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args.left().unwrap(), &global_config);
+    run(&cli_args.left().unwrap(), &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
