@@ -22,6 +22,7 @@ use crate::toolchain;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
 use std::time::SystemTime;
+use either::{Either, try_left};
 
 pub(crate) static VERSION: &str = env!("CARGO_PKG_VERSION");
 pub(crate) static AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
@@ -31,7 +32,7 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-pub fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
+pub fn run(cli_args: CliArgs, global_config: &GlobalConfig) -> Either<CliArgs, std::process::ExitCode> {
     let start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -167,13 +168,15 @@ pub fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             time_summary_vec,
         );
     }
+    Either::Right(std::process::ExitCode::SUCCESS)
 }
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli(command_name: String, sub_command: bool) {
+pub fn run_cli(command_name: String, sub_command: bool) -> Either<CliArgs, std::process::ExitCode> {
     let global_config = config::load();
 
-    let cli_args = cli_parser::parse(&global_config, &command_name, sub_command);
+    let cli_args = try_left!(cli_parser::parse(&global_config, &command_name, sub_command));
 
-    run(cli_args, &global_config);
+    run(cli_args.clone(), &global_config);
+    Either::Left(cli_args)
 }

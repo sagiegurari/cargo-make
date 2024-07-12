@@ -393,7 +393,13 @@ fn run_bad_subcommand() {
     let cli_args =
         cli_parser::parse_args(&global_config, &"make".to_string(), true, Some(vec!["bad"]));
 
-    run(cli_args, &global_config);
+
+    assert_eq!(
+        format!("{:?}", &cli_args.clone().right().unwrap()),
+        format!("{:?}", std::process::ExitCode::FAILURE)
+    );
+
+    run(cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -418,7 +424,10 @@ fn run_valid() {
         ]),
     );
 
-    run(cli_args, &global_config);
+    assert_eq!(
+        format!("{:?}", run(cli_args.left().unwrap(), &global_config).right().unwrap()),
+        format!("{:?}", std::process::ExitCode::FAILURE)
+    );
 }
 
 #[test]
@@ -433,7 +442,7 @@ fn run_with_global_config() {
         &"make".to_string(),
         true,
         Some(vec!["cargo", "make"]),
-    );
+    ).left().unwrap();
 
     run(cli_args, &global_config);
 }
@@ -457,7 +466,7 @@ fn run_log_level_override() {
             "error",
             "-v",
         ]),
-    );
+    ).left().unwrap();
 
     run(cli_args, &global_config);
 }
@@ -484,7 +493,7 @@ fn run_set_env_values() {
             "-t",
             "empty",
         ]),
-    );
+    ).left().unwrap();
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");
@@ -520,7 +529,7 @@ fn run_set_env_via_file() {
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -559,7 +568,7 @@ fn run_set_env_both() {
     envmnt::set("ENV5_TEST", "EMPTY");
     envmnt::set("ENV6_TEST", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -595,7 +604,7 @@ fn run_print_only() {
         ]),
     );
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -620,7 +629,7 @@ fn run_diff_steps() {
         ]),
     );
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -640,7 +649,7 @@ fn run_protected_flow_example() {
         ]),
     );
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 }
 
 #[test]
@@ -661,7 +670,7 @@ fn run_no_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"), "");
 }
@@ -687,7 +696,7 @@ fn run_set_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
@@ -710,7 +719,7 @@ fn run_set_task_var_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(cli_args, &global_config);
+    run(cli_args.left().unwrap(), &global_config);
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),

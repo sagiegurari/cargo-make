@@ -32,17 +32,12 @@ pub(crate) struct LoggerOptions {
 }
 
 pub(crate) fn get_level(level_name: &str) -> LogLevel {
-    let mut level = LogLevel::INFO;
-
-    if level_name == "verbose" {
-        level = LogLevel::VERBOSE;
-    } else if level_name == "error" {
-        level = LogLevel::ERROR;
-    } else if level_name == "off" {
-        level = LogLevel::OFF;
+    match level_name {
+        "verbose" => LogLevel::VERBOSE,
+        "error" => LogLevel::ERROR,
+        "off" => LogLevel::OFF,
+        _ =>  LogLevel::INFO
     }
-
-    level
 }
 
 /// Returns the current logger level name

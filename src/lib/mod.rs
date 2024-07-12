@@ -34,9 +34,11 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
+use either::Either;
 // Dependencies used in the binary `makers`:
 #[cfg(windows)]
 use nu_ansi_term as _;
+use crate::types::CliArgs;
 
 #[macro_use]
 extern crate log;
@@ -76,6 +78,6 @@ mod toolchain;
 mod version;
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli(command_name: String, sub_command: bool) {
+pub fn run_cli(command_name: String, sub_command: bool) -> Either<CliArgs, std::process::ExitCode> {
     cli::run_cli(command_name, sub_command)
 }
