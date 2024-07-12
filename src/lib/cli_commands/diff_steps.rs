@@ -8,6 +8,7 @@
 mod diff_steps_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::execution_plan::create as create_execution_plan;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
@@ -28,7 +29,7 @@ pub(crate) fn run(
     task: &str,
     cli_args: &CliArgs,
     crateinfo: &CrateInfo,
-) {
+) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
             Ok(reg) => Some(reg),
@@ -48,7 +49,7 @@ pub(crate) fn run(
         true,
         false,
         &skip_tasks_pattern,
-    );
+    )?;
 
     let external_execution_plan = create_execution_plan(
         external_config,
@@ -58,7 +59,7 @@ pub(crate) fn run(
         true,
         false,
         &skip_tasks_pattern,
-    );
+    )?;
 
     let internal_file = create_file(
         &move |file: &mut File| write_as_string(&internal_execution_plan, &file),
@@ -80,10 +81,12 @@ pub(crate) fn run(
             external_file.to_string(),
         ]),
         false,
-    );
+    )?;
 
     delete_file(&internal_file);
     delete_file(&external_file);
 
     info!("Done");
+
+    Ok(())
 }

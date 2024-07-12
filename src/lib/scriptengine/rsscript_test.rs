@@ -61,7 +61,8 @@ fn execute_default_valid() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
         assert!(valid);
     }
 }
@@ -78,7 +79,8 @@ fn execute_default_not_compile() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -96,7 +98,8 @@ fn execute_default_runtime_panic() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -113,7 +116,8 @@ fn execute_default_runtime_panic_no_validate() {
             None,
             &vec![],
             false,
-        );
+        )
+        .unwrap();
         assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
@@ -131,7 +135,8 @@ fn execute_rust_script_valid() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
         assert!(valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
@@ -150,7 +155,8 @@ fn execute_rust_script_not_compile() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -168,7 +174,8 @@ fn execute_rust_script_runtime_panic() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -185,7 +192,8 @@ fn execute_rust_script_runtime_panic_no_validate() {
             None,
             &vec![],
             false,
-        );
+        )
+        .unwrap();
         assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
@@ -204,7 +212,8 @@ fn execute_cargo_play_not_compile() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -222,7 +231,8 @@ fn execute_cargo_play_runtime_panic() {
             None,
             &vec![],
             true,
-        );
+        )
+        .unwrap();
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");
     }
@@ -239,7 +249,8 @@ fn execute_cargo_play_runtime_panic_no_validate() {
             None,
             &vec![],
             false,
-        );
+        )
+        .unwrap();
         assert!(!valid);
 
         envmnt::remove("CARGO_MAKE_RUST_SCRIPT_PROVIDER");

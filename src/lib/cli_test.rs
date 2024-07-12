@@ -37,7 +37,8 @@ fn run_makefile_not_found() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -74,7 +75,8 @@ fn run_empty_task() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -111,7 +113,8 @@ fn print_empty_task() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -148,7 +151,8 @@ fn list_empty_task() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -185,7 +189,8 @@ fn run_file_and_task() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -225,7 +230,8 @@ fn run_cwd_with_file() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -263,7 +269,8 @@ fn run_file_not_go_to_project_root() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -301,7 +308,8 @@ fn run_cwd_go_to_project_root_current_dir() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -342,7 +350,8 @@ fn run_cwd_go_to_project_root_child_dir() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -383,22 +392,22 @@ fn run_cwd_task_not_found() {
             hide_uninteresting: false,
         },
         &global_config,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
-#[should_panic]
 fn run_bad_subcommand() {
     let global_config = GlobalConfig::new();
     let cli_args =
         cli_parser::parse_args(&global_config, &"make".to_string(), true, Some(vec!["bad"]));
 
     assert_eq!(
-        format!("{:?}", &cli_args.clone().right().unwrap()),
-        format!("{:?}", std::process::ExitCode::FAILURE)
+        format!("{:?}", &cli_args.err().unwrap()),
+        "ParserError { error: InvalidCommandLine(\"Command does not match spec, command line: [\\\"bad\\\"]\") }"
     );
 
-    run(&cli_args.left().unwrap(), &global_config);
+    // run(&cli_args.unwrap(), &global_config).unwrap();
 }
 
 #[test]
@@ -426,9 +435,7 @@ fn run_valid() {
     assert_eq!(
         format!(
             "{:?}",
-            run(&cli_args.left().unwrap(), &global_config)
-                .right()
-                .unwrap()
+            run(&cli_args.unwrap(), &global_config).err().unwrap()
         ),
         format!("{:?}", std::process::ExitCode::FAILURE)
     );
@@ -447,10 +454,9 @@ fn run_with_global_config() {
         true,
         Some(vec!["cargo", "make"]),
     )
-    .left()
     .unwrap();
 
-    run(&cli_args, &global_config);
+    run(&cli_args, &global_config).unwrap();
 }
 
 #[test]
@@ -473,10 +479,9 @@ fn run_log_level_override() {
             "-v",
         ]),
     )
-    .left()
     .unwrap();
 
-    run(&cli_args, &global_config);
+    run(&cli_args, &global_config).unwrap();
 }
 
 #[test]
@@ -502,14 +507,13 @@ fn run_set_env_values() {
             "empty",
         ]),
     )
-    .left()
     .unwrap();
 
     envmnt::set("ENV1_TEST", "EMPTY");
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    run(&cli_args, &global_config);
+    run(&cli_args, &global_config).unwrap();
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2a=TEST2b");
@@ -539,7 +543,7 @@ fn run_set_env_via_file() {
     envmnt::set("ENV2_TEST", "EMPTY");
     envmnt::set("ENV3_TEST", "EMPTY");
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -578,7 +582,7 @@ fn run_set_env_both() {
     envmnt::set("ENV5_TEST", "EMPTY");
     envmnt::set("ENV6_TEST", "EMPTY");
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 
     assert_eq!(envmnt::get_or_panic("ENV1_TEST"), "TEST1");
     assert_eq!(envmnt::get_or_panic("ENV2_TEST"), "TEST2");
@@ -614,7 +618,7 @@ fn run_print_only() {
         ]),
     );
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 }
 
 #[test]
@@ -639,7 +643,7 @@ fn run_diff_steps() {
         ]),
     );
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 }
 
 #[test]
@@ -659,7 +663,7 @@ fn run_protected_flow_example() {
         ]),
     );
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 }
 
 #[test]
@@ -680,7 +684,7 @@ fn run_no_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"), "");
 }
@@ -706,7 +710,7 @@ fn run_set_task_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),
@@ -729,7 +733,7 @@ fn run_set_task_var_args() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    run(&cli_args.left().unwrap(), &global_config);
+    run(&cli_args.unwrap(), &global_config).unwrap();
 
     assert_eq!(
         envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS"),

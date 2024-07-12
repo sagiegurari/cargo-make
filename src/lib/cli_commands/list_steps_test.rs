@@ -21,7 +21,8 @@ fn check(
                 output_file,
                 &category,
                 hide_uninteresting,
-            );
+            )
+            .unwrap();
 
             let mut path = PathBuf::new();
             path.push(&file);
@@ -32,7 +33,8 @@ fn check(
             expect.assert_eq(&actual);
         }
         None => {
-            let actual = create_list(&config, output_format, &category, hide_uninteresting);
+            let actual =
+                create_list(&config, output_format, &category, hide_uninteresting).unwrap();
             expect.assert_eq(&actual);
         }
     }

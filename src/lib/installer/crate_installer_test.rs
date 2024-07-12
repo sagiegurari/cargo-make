@@ -97,7 +97,7 @@ fn invoke_cargo_install_test() {
         force: None,
     };
 
-    invoke_cargo_install(&None, &info, &None, false);
+    invoke_cargo_install(&None, &info, &None, false).unwrap();
 }
 
 #[test]
@@ -117,7 +117,7 @@ fn invoke_cargo_install_with_toolchain_test() {
         force: None,
     };
 
-    invoke_cargo_install(&Some(toolchain), &info, &None, false);
+    invoke_cargo_install(&Some(toolchain), &info, &None, false).unwrap();
 }
 
 #[test]
@@ -135,7 +135,7 @@ fn install_test_test() {
         force: None,
     };
 
-    install(&None, &info, &None, false);
+    install(&None, &info, &None, false).unwrap();
 }
 
 #[test]
@@ -155,7 +155,7 @@ fn install_test_with_toolchain_test() {
         force: None,
     };
 
-    install(&Some(toolchain), &info, &None, false);
+    install(&Some(toolchain), &info, &None, false).unwrap();
 }
 
 #[test]
@@ -173,7 +173,7 @@ fn install_already_installed_crate_only() {
         force: None,
     };
 
-    install(&None, &info, &None, false);
+    install(&None, &info, &None, false).unwrap();
 }
 
 #[test]
@@ -199,7 +199,7 @@ fn install_already_installed_crate_only_min_version_equal() {
         force: None,
     };
 
-    install(&None, &info, &None, false);
+    install(&None, &info, &None, false).unwrap();
 }
 
 #[test]
@@ -233,7 +233,7 @@ fn install_already_installed_crate_only_min_version_smaller() {
         force: None,
     };
 
-    install(&None, &info, &None, false);
+    install(&None, &info, &None, false).unwrap();
 }
 
 #[test]
@@ -259,7 +259,7 @@ fn install_already_installed_crate_only_version_equal() {
         force: None,
     };
 
-    install(&None, &info, &None, false);
+    install(&None, &info, &None, false).unwrap();
 }
 
 #[test]

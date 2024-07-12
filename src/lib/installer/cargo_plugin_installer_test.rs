@@ -3,19 +3,19 @@ use crate::test;
 
 #[test]
 fn is_crate_installed_true_core() {
-    let output = is_crate_installed(&None, "test");
+    let output = is_crate_installed(&None, "test").unwrap();
     assert!(output);
 }
 
 #[test]
 fn is_crate_installed_true_plugin() {
-    let output = is_crate_installed(&None, "make");
+    let output = is_crate_installed(&None, "make").unwrap();
     assert!(output);
 }
 
 #[test]
 fn is_crate_installed_false() {
-    let output = is_crate_installed(&None, "badbadbad");
+    let output = is_crate_installed(&None, "badbadbad").unwrap();
     assert!(!output);
 }
 
@@ -24,7 +24,7 @@ fn is_crate_installed_with_toolchain_true() {
     if test::is_not_rust_stable() {
         let toolchain = test::get_toolchain();
 
-        let output = is_crate_installed(&Some(toolchain), "test");
+        let output = is_crate_installed(&Some(toolchain), "test").unwrap();
         assert!(output);
     }
 }
@@ -34,7 +34,7 @@ fn is_crate_installed_with_toolchain_false() {
     if test::is_not_rust_stable() {
         let toolchain = test::get_toolchain();
 
-        let output = is_crate_installed(&Some(toolchain), "badbadbad");
+        let output = is_crate_installed(&Some(toolchain), "badbadbad").unwrap();
         assert!(!output);
     }
 }
@@ -235,7 +235,7 @@ fn should_skip_crate_name_git() {
 
 #[test]
 fn install_crate_already_installed_test() {
-    install_crate(&None, Some("test"), "bad", &None, true, &None, &None, &None);
+    install_crate(&None, Some("test"), "bad", &None, true, &None, &None, &None).unwrap();
 }
 
 #[test]
@@ -249,12 +249,13 @@ fn install_crate_already_installed_cargo_make() {
         &None,
         &None,
         &None,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
 fn install_crate_already_installed_cargo_make_without_check() {
-    install_crate(&None, None, "cargo-make", &None, true, &None, &None, &None);
+    install_crate(&None, None, "cargo-make", &None, true, &None, &None, &None).unwrap();
 }
 
 #[test]
@@ -277,7 +278,8 @@ fn install_crate_already_installed_min_version_equal() {
         &Some(version_string),
         &None,
         &None,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -308,5 +310,6 @@ fn install_crate_already_installed_min_version_smaller() {
         &Some(version_string),
         &None,
         &None,
-    );
+    )
+    .unwrap();
 }

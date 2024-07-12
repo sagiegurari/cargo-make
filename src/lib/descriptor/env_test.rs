@@ -162,7 +162,9 @@ fn merge_env_cycle() {
     let mut map2 = IndexMap::new();
     map2.insert("env1".to_owned(), EnvValue::Value("${env2}".to_owned()));
 
-    let output = merge_env(&map1, &map2).expect_err("should have cycle");
+    let output = merge_env(&map1, &map2)
+        .expect_err("should have cycle")
+        .to_string();
     assert!(output.ends_with("env2 -> env1 -> env2.") || output.ends_with("env1 -> env2 -> env1."));
 }
 
@@ -173,7 +175,9 @@ fn merge_env_no_cycle_if_pointing_to_self_not_external() {
 
     map2.insert("test".to_string(), EnvValue::Value("${test}".to_string()));
 
-    let output = merge_env(&map1, &map2).expect_err("should have cycle");
+    let output = merge_env(&map1, &map2)
+        .expect_err("should have cycle")
+        .to_string();
     assert!(output.ends_with("test -> test."));
 }
 

@@ -193,7 +193,8 @@ fn invoke_no_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -206,7 +207,8 @@ fn invoke_no_script_no_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -220,7 +222,8 @@ fn invoke_no_script() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -235,7 +238,8 @@ fn invoke_os_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -251,7 +255,8 @@ fn invoke_duckscript_runner() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -269,7 +274,8 @@ fn invoke_duckscript_runner_error() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -288,7 +294,8 @@ fn invoke_rust_runner() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -308,7 +315,8 @@ fn invoke_rust_runner_error() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -324,7 +332,8 @@ fn invoke_shell_to_batch_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -340,7 +349,8 @@ fn invoke_shell_to_batch_runner_error() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -356,7 +366,8 @@ fn invoke_generic_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -373,7 +384,8 @@ fn invoke_generic_runner_error() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }

@@ -3,20 +3,24 @@ use crate::test;
 use crate::types::Task;
 
 #[test]
-#[should_panic]
 fn validate_exit_code_unable_to_fetch() {
-    validate_exit_code(-1);
+    assert_eq!(
+        format!("{:?}", validate_exit_code(-1).err().unwrap()),
+        format!("{:?}", CargoMakeError::ExitCodeValidation)
+    );
 }
 
 #[test]
-#[should_panic]
 fn validate_exit_code_not_zero() {
-    validate_exit_code(1);
+    assert_eq!(
+        format!("{:?}", validate_exit_code(1).err().unwrap()),
+        format!("{:?}", CargoMakeError::ExitCodeError(1))
+    );
 }
 
 #[test]
 fn validate_exit_code_zero() {
-    validate_exit_code(0);
+    validate_exit_code(0).unwrap();
 }
 
 #[test]
@@ -84,7 +88,7 @@ fn run_no_command() {
         config: task,
     };
 
-    run(&step);
+    run(&step).unwrap();
 }
 
 #[test]
@@ -98,7 +102,7 @@ fn run_command() {
         config: task,
     };
 
-    run(&step);
+    run(&step).unwrap();
 }
 
 #[test]
@@ -116,7 +120,7 @@ fn run_command_for_toolchain() {
             config: task,
         };
 
-        run(&step);
+        run(&step).unwrap();
     }
 }
 
@@ -133,7 +137,7 @@ fn run_command_error() {
         config: task,
     };
 
-    run(&step);
+    run(&step).unwrap();
 }
 
 #[test]
@@ -147,23 +151,23 @@ fn run_command_error_ignore_errors() {
         config: task,
     };
 
-    run(&step);
+    run(&step).unwrap();
 }
 
 #[test]
 fn run_script_get_exit_code_valid() {
-    run_script_get_exit_code(&vec!["echo 1".to_string()], None, &vec![], true);
+    run_script_get_exit_code(&vec!["echo 1".to_string()], None, &vec![], true).unwrap();
 }
 
 #[test]
 #[should_panic]
 fn run_script_get_exit_code_error() {
-    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], true);
+    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], true).unwrap();
 }
 
 #[test]
 fn run_script_get_exit_code_error_force() {
-    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], false);
+    run_script_get_exit_code(&vec!["exit 1".to_string()], None, &vec![], false).unwrap();
 }
 
 #[test]
@@ -174,7 +178,8 @@ fn run_script_get_exit_code_custom_runner() {
         Some("bash".to_string()),
         &vec![],
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -185,7 +190,8 @@ fn run_script_get_exit_code_cli_args_valid() {
         None,
         &vec!["0".to_string()],
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -197,5 +203,6 @@ fn run_script_get_exit_code_cli_args_error() {
         None,
         &vec!["1".to_string()],
         true,
-    );
+    )
+    .unwrap();
 }

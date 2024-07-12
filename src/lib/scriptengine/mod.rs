@@ -16,6 +16,7 @@ mod shell_to_batch;
 mod mod_test;
 
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::io;
 use crate::toolchain;
 use crate::types::{FlowInfo, FlowState, ScriptValue, Task};
@@ -160,7 +161,7 @@ pub(crate) fn invoke(
     task: &Task,
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     match task.script {
         Some(ref script) => {
             let validate = !task.should_ignore_errors();
@@ -193,7 +194,7 @@ pub(crate) fn invoke(
 
             output
         }
-        None => false,
+        None => Ok(false),
     }
 }
 
@@ -205,7 +206,7 @@ pub(crate) fn invoke_script_in_flow_context(
     validate: bool,
     flow_info: Option<&FlowInfo>,
     flow_state: Option<Rc<RefCell<FlowState>>>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let cli_arguments = match flow_info {
         Some(info) => match info.cli_arguments {
             Some(ref args) => args.clone(),
@@ -233,7 +234,7 @@ pub(crate) fn invoke_script_pre_flow(
     script_extension: Option<String>,
     validate: bool,
     cli_arguments: &Vec<String>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     invoke_script(
         script,
         script_runner,
@@ -255,7 +256,7 @@ fn invoke_script(
     flow_info: Option<&FlowInfo>,
     flow_state: Option<Rc<RefCell<FlowState>>>,
     cli_arguments: &Vec<String>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let engine_type = get_engine_type(script, &script_runner, &script_extension);
 
     match engine_type {
@@ -297,6 +298,6 @@ fn invoke_script(
             let extension = script_extension.clone();
             shebang_script::execute(&script_text, &extension, cli_arguments, validate)
         }
-        EngineType::Unsupported => false,
+        EngineType::Unsupported => Ok(false),
     }
 }

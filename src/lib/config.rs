@@ -7,6 +7,7 @@
 #[path = "config_test.rs"]
 mod config_test;
 
+use crate::error::CargoMakeError;
 use crate::storage;
 use crate::types::GlobalConfig;
 use fsio::file::read_text_file;
@@ -20,36 +21,26 @@ pub fn get_config_directory() -> Option<PathBuf> {
     storage::get_storage_directory(os_directory, CONFIG_FILE, true)
 }
 
-pub fn load_from_path(directory: PathBuf) -> GlobalConfig {
+pub fn load_from_path(directory: PathBuf) -> Result<GlobalConfig, CargoMakeError> {
     let file_path = Path::new(&directory).join(CONFIG_FILE);
     debug!("Loading config from: {:#?}", &file_path);
 
     if file_path.exists() {
-        match read_text_file(&file_path) {
-            Ok(config_str) => {
-                let mut global_config: GlobalConfig = match toml::from_str(&config_str) {
-                    Ok(value) => value,
-                    Err(error) => panic!("Unable to parse global configuration file, {}", error),
-                };
+        let config_str = read_text_file(&file_path)?;
+        let mut global_config: GlobalConfig = toml::from_str(&config_str)?;
 
-                global_config.file_name = Some(FromPath::from_path(&file_path));
+        global_config.file_name = Some(FromPath::from_path(&file_path));
 
-                global_config
-            }
-            Err(error) => panic!(
-                "Unable to read config file: {:?} error: {}",
-                &file_path, error
-            ),
-        }
+        Ok(global_config)
     } else {
-        GlobalConfig::new()
+        Ok(GlobalConfig::new())
     }
 }
 
 /// Returns the configuration
-pub fn load() -> GlobalConfig {
+pub fn load() -> Result<GlobalConfig, CargoMakeError> {
     match get_config_directory() {
         Some(directory) => load_from_path(directory),
-        None => GlobalConfig::new(),
+        None => Ok(GlobalConfig::new()),
     }
 }

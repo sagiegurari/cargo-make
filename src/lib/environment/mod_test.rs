@@ -1030,7 +1030,7 @@ fn initialize_env_all() {
         plugins: None,
     };
 
-    initialize_env(&config, &vec![]);
+    initialize_env(&config, &vec![]).unwrap();
 
     assert!(envmnt::exists("initialize_env_all_test"));
     assert!(envmnt::exists("CARGO_MAKE_ENV_FILE_TEST1"));
@@ -1065,12 +1065,12 @@ fn setup_env_empty() {
         plugins: None,
     };
 
-    setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]);
+    setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]).unwrap();
 
     let mut value = envmnt::get_or_panic("CARGO_MAKE_TASK");
     assert_eq!(value, "setup_env_empty1");
 
-    setup_env(&cli_args, &config, "setup_env_empty2", None, &mut vec![]);
+    setup_env(&cli_args, &config, "setup_env_empty2", None, &mut vec![]).unwrap();
 
     let delay = time::Duration::from_millis(10);
     thread::sleep(delay);
@@ -1096,7 +1096,7 @@ fn setup_env_skip_git() {
         plugins: None,
     };
 
-    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]);
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]).unwrap();
     assert!(env_info.git_info.user_name.is_none());
 }
 
@@ -1117,7 +1117,7 @@ fn setup_env_skip_rust() {
         plugins: None,
     };
 
-    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]);
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]).unwrap();
     assert!(env_info.rust_info.channel.is_none());
 }
 
@@ -1138,7 +1138,7 @@ fn setup_env_skip_crate() {
         plugins: None,
     };
 
-    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]);
+    let env_info = setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]).unwrap();
     assert!(env_info.crate_info.dependencies.is_none());
 }
 
@@ -1188,7 +1188,7 @@ fn setup_env_cli_arguments() {
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 
-    setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]);
+    setup_env(&cli_args, &config, "setup_env_empty1", None, &mut vec![]).unwrap();
 
     let value = envmnt::get_or_panic("CARGO_MAKE_TASK_ARGS");
     assert_eq!(value, "arg1;arg2");
@@ -1219,7 +1219,7 @@ fn setup_env_values() {
     assert_eq!(envmnt::get_or("MY_ENV_KEY", "NONE"), "NONE".to_string());
     assert_eq!(envmnt::get_or("MY_ENV_KEY2", "NONE"), "NONE".to_string());
 
-    setup_env(&cli_args, &config, "set_env_values", None, &mut vec![]);
+    setup_env(&cli_args, &config, "set_env_values", None, &mut vec![]).unwrap();
 
     assert_eq!(envmnt::get_or_panic("MY_ENV_KEY"), "MY_ENV_VALUE");
     assert_eq!(envmnt::get_or_panic("MY_ENV_KEY2"), "MY_ENV_VALUE2");
@@ -1261,7 +1261,7 @@ fn setup_env_script() {
         "NONE".to_string()
     );
 
-    setup_env(&cli_args, &config, "set_env_values", None, &mut vec![]);
+    setup_env(&cli_args, &config, "set_env_values", None, &mut vec![]).unwrap();
 
     assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY"), "MY_ENV_VALUE");
     assert_eq!(envmnt::get_or_panic("MY_ENV_SCRIPT_KEY2"), "script1");

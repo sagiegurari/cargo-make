@@ -15,7 +15,13 @@ fn get_actual_task_name_not_found() {
 
     let name = get_actual_task_name(&config, "test");
 
-    assert!(name.is_none());
+    assert_eq!(
+        format!("{:?}", name.err().unwrap()),
+        format!(
+            "{:?}",
+            CargoMakeError::NotFound(String::from("Task \"test\" not found"))
+        )
+    );
 }
 
 #[test]
@@ -74,7 +80,7 @@ fn get_actual_task_name_alias_self_referential() {
     task.alias = Some("rec".to_string());
     config.tasks.insert("rec".to_string(), task);
 
-    get_actual_task_name(&config, "rec");
+    get_actual_task_name(&config, "rec").unwrap();
 }
 
 #[test]
@@ -98,7 +104,7 @@ fn get_actual_task_name_alias_circular() {
     config.tasks.insert("rec-mut-a".to_string(), task_a);
     config.tasks.insert("rec-mut-b".to_string(), task_b);
 
-    get_actual_task_name(&config, "rec-mut-a");
+    get_actual_task_name(&config, "rec-mut-a").unwrap();
 }
 
 #[test]
@@ -481,7 +487,7 @@ fn is_workspace_flow_true_default() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(workspace_flow);
 }
@@ -512,7 +518,7 @@ fn is_workspace_flow_false_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -543,7 +549,7 @@ fn is_workspace_flow_true_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(workspace_flow);
 }
@@ -572,7 +578,7 @@ fn is_workspace_flow_true_in_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(workspace_flow);
 }
@@ -600,7 +606,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -629,7 +635,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
 
     assert!(workspace_flow);
 }
@@ -658,7 +664,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -683,7 +689,7 @@ fn is_workspace_flow_task_not_defined() {
         plugins: None,
     };
 
-    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false).unwrap();
 
     assert!(workspace_flow);
 }
@@ -705,7 +711,7 @@ fn is_workspace_flow_no_workspace() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -734,7 +740,7 @@ fn is_workspace_flow_disabled_via_cli() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info, false).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -763,7 +769,7 @@ fn is_workspace_flow_disabled_via_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
 
     assert!(!workspace_flow);
 }
@@ -797,7 +803,8 @@ fn create_single() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -834,7 +841,8 @@ fn create_single_disabled() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -871,7 +879,8 @@ fn create_single_private() {
         false,
         false,
         &None,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -904,7 +913,8 @@ fn create_single_allow_private() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test-private");
@@ -946,7 +956,8 @@ fn create_with_dependencies() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -992,7 +1003,8 @@ fn create_with_foreign_dependencies_directory() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1043,7 +1055,8 @@ fn create_with_foreign_dependencies_filename() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1094,7 +1107,8 @@ fn create_with_foreign_dependencies_file_and_directory() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1134,7 +1148,8 @@ fn create_with_dependencies_sub_flow() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", &CrateInfo::new(), false, true, true, &None);
+    let execution_plan =
+        create(&config, "test", &CrateInfo::new(), false, true, true, &None).unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "task_dependency");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1176,7 +1191,8 @@ fn create_disabled_task_with_dependencies() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -1218,7 +1234,8 @@ fn create_with_dependencies_disabled() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1335,7 +1352,8 @@ fn create_platform_disabled() {
         true,
         false,
         &None,
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
@@ -1377,7 +1395,8 @@ fn create_with_dependencies_and_skip_filter() {
         true,
         false,
         &Some(skip_filter),
-    );
+    )
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -1403,7 +1422,7 @@ fn create_workspace() {
 
     env::set_current_dir("./examples/workspace").unwrap();
     let crateinfo = environment::crateinfo::load();
-    let execution_plan = create(&config, "test", &crateinfo, false, true, false, &None);
+    let execution_plan = create(&config, "test", &crateinfo, false, true, false, &None).unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -1427,7 +1446,7 @@ fn create_noworkspace() {
 
     env::set_current_dir("./examples/workspace").unwrap();
     let crateinfo = environment::crateinfo::load();
-    let execution_plan = create(&config, "test", &crateinfo, true, true, false, &None);
+    let execution_plan = create(&config, "test", &crateinfo, true, true, false, &None).unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
@@ -1452,7 +1471,8 @@ fn create_task_extends_empty_env_bug_verification() {
         false,
         false,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 3);
 
@@ -1588,7 +1608,7 @@ fn get_normalized_task_multi_extend() {
     config.tasks.insert("2".to_string(), task2);
     config.tasks.insert("3".to_string(), task3);
 
-    let task = get_normalized_task(&config, "3", true);
+    let task = get_normalized_task(&config, "3", true).unwrap();
 
     assert_eq!(task.category.unwrap(), "2");
     assert_eq!(task.description.unwrap(), "1");
@@ -1616,7 +1636,7 @@ fn get_normalized_task_simple() {
     };
     config.tasks.insert("1".to_string(), task1);
 
-    let task = get_normalized_task(&config, "1", true);
+    let task = get_normalized_task(&config, "1", true).unwrap();
 
     assert_eq!(task.category.unwrap(), "1");
     assert_eq!(task.description.unwrap(), "1");

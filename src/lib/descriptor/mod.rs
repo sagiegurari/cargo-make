@@ -22,6 +22,7 @@ use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
 
 use crate::descriptor::env::{merge_env, merge_env_files, merge_env_scripts};
+use crate::error::CargoMakeError;
 use crate::plugin::descriptor::merge_plugins_config;
 use crate::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
@@ -142,7 +143,7 @@ fn add_file_location_info(
     external_config
 }
 
-fn run_load_script(external_config: &ExternalConfig) -> bool {
+fn run_load_script(external_config: &ExternalConfig) -> Result<bool, CargoMakeError> {
     match external_config.config {
         Some(ref config) => {
             let load_script = config.get_load_script();
@@ -151,19 +152,19 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
                 Some(ref script) => {
                     debug!("Load script found.");
 
-                    scriptengine::invoke_script_pre_flow(script, None, None, None, true, &vec![]);
+                    scriptengine::invoke_script_pre_flow(script, None, None, None, true, &vec![])?;
 
-                    true
+                    Ok(true)
                 }
                 None => {
                     debug!("No load script defined.");
-                    false
+                    Ok(false)
                 }
             }
         }
         None => {
             debug!("No load script defined.");
-            false
+            Ok(false)
         }
     }
 }
@@ -171,7 +172,7 @@ fn run_load_script(external_config: &ExternalConfig) -> bool {
 fn merge_external_configs(
     config: ExternalConfig,
     parent_config: ExternalConfig,
-) -> Result<ExternalConfig, String> {
+) -> Result<ExternalConfig, CargoMakeError> {
     // merge env files
     let mut parent_env_files = match parent_config.env_files {
         Some(env_files) => env_files,
@@ -246,7 +247,7 @@ fn merge_external_configs(
 fn load_descriptor_extended_makefiles(
     parent_path: &str,
     extend_struct: &Extend,
-) -> Result<ExternalConfig, String> {
+) -> Result<ExternalConfig, CargoMakeError> {
     match extend_struct {
         Extend::Path(base_file) => load_external_descriptor(parent_path, &base_file, true, false),
         Extend::Options(extend_options) => {
@@ -274,7 +275,7 @@ fn load_descriptor_extended_makefiles(
 
 /// Ensure the Makefile's min_version, if present, is older than cargo-make's
 /// currently running version.
-fn check_makefile_min_version(external_descriptor: &str) -> Result<(), String> {
+fn check_makefile_min_version(external_descriptor: &str) -> Result<(), CargoMakeError> {
     let value: toml::Value = match toml::from_str(&external_descriptor) {
         Ok(value) => value,
         // If there's an error parsing the file, let the caller function figure
@@ -289,11 +290,7 @@ fn check_makefile_min_version(external_descriptor: &str) -> Result<(), String> {
 
     if let Some(ref min_version) = min_version {
         if version::is_newer_found(&min_version) {
-            return Err(format!(
-                "Unable to run, minimum required version is: {}",
-                &min_version
-            )
-            .to_string());
+            return Err(CargoMakeError::VersionTooOld(min_version.to_string()));
         }
     }
 
@@ -305,7 +302,7 @@ fn load_external_descriptor(
     file_name: &str,
     force: bool,
     set_env: bool,
-) -> Result<ExternalConfig, String> {
+) -> Result<ExternalConfig, CargoMakeError> {
     debug!(
         "Loading tasks from file: {} base directory: {}",
         &file_name, &base_path
@@ -331,7 +328,7 @@ fn load_external_descriptor(
 
         file_config = add_file_location_info(file_config, &absolute_file_path);
 
-        run_load_script(&file_config);
+        run_load_script(&file_config)?;
 
         match file_config.extend {
             Some(ref extend_struct) => {
@@ -420,7 +417,7 @@ fn merge_base_config_and_external_config(
     external_config: ExternalConfig,
     env_map: Option<Vec<String>>,
     late_merge: bool,
-) -> Result<Config, String> {
+) -> Result<Config, CargoMakeError> {
     let mut external_tasks = match external_config.tasks {
         Some(tasks) => tasks,
         None => IndexMap::new(),
@@ -512,7 +509,7 @@ fn load_descriptors(
     stable: bool,
     experimental: bool,
     modify_core_tasks: Option<ModifyConfig>,
-) -> Result<Config, String> {
+) -> Result<Config, CargoMakeError> {
     let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
 
     let mut external_config = load_external_descriptor(".", file_name, force, true)?;
@@ -583,7 +580,7 @@ pub fn load(
     force: bool,
     env_map: Option<Vec<String>>,
     experimental: bool,
-) -> Result<Config, String> {
+) -> Result<Config, CargoMakeError> {
     // load extended descriptor only
     let mut config = load_descriptors(&file_name, force, env_map.clone(), false, false, None)?;
 

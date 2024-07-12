@@ -25,7 +25,8 @@ fn run_same() {
         "test",
         &CliArgs::new(),
         &CrateInfo::new(),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -65,7 +66,8 @@ fn run_different() {
         "test",
         &CliArgs::new(),
         &CrateInfo::new(),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -102,7 +104,7 @@ fn run_different_with_skip() {
     let mut cli_args = CliArgs::new();
     cli_args.skip_tasks_pattern = Some("test".to_string());
 
-    run(&config1, &config2, "test", &cli_args, &CrateInfo::new());
+    run(&config1, &config2, "test", &cli_args, &CrateInfo::new()).unwrap();
 }
 
 #[test]
@@ -139,7 +141,8 @@ fn run_missing_task_in_first_config() {
         "test",
         &CliArgs::new(),
         &CrateInfo::new(),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -176,5 +179,6 @@ fn run_missing_task_in_second_config() {
         "test",
         &CliArgs::new(),
         &CrateInfo::new(),
-    );
+    )
+    .unwrap();
 }

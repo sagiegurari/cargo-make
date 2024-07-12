@@ -17,7 +17,7 @@ use cliparser::types::{
     CliSpecMetaInfo, PositionalArgument,
 };
 
-use either::Either;
+use crate::error::CargoMakeError;
 
 fn get_args(
     cli_parsed: &CliParsed,
@@ -462,50 +462,39 @@ pub fn parse_args(
     command_name: &str,
     sub_command: bool,
     args: Option<Vec<&str>>,
-) -> Either<CliArgs, std::process::ExitCode> {
+) -> Result<CliArgs, CargoMakeError> {
     let spec = create_cli(&global_config);
 
-    let parse_result = match args {
+    let cli_parsed = match args {
         Some(args_vec) => cliparser::parse(&args_vec, &spec),
         None => cliparser::parse_process(&spec),
-    };
+    }?;
 
-    match parse_result {
-        Ok(cli_parsed) => {
-            if cli_parsed.arguments.contains("help") {
-                // generate help text
-                let help_text = cliparser::help(&spec);
-                println!("{}", help_text);
-                return Either::Right(std::process::ExitCode::from(
-                    std::process::ExitCode::SUCCESS,
-                ));
-            } else if cli_parsed.arguments.contains("version") {
-                // generate version text
-                let version_text = cliparser::version(&spec);
-                println!("{}", version_text);
-                return Either::Right(std::process::ExitCode::SUCCESS);
-            }
-
-            return Either::Left(get_args(
-                &cli_parsed,
-                &global_config,
-                command_name,
-                sub_command,
-            ));
-        }
-        Err(error) => {
-            let help_text = cliparser::help(&spec);
-            println!("{}\n{}", &error, help_text);
-            return Either::Right(std::process::ExitCode::FAILURE);
-        }
+    if cli_parsed.arguments.contains("help") {
+        // generate help text
+        let help_text = cliparser::help(&spec);
+        println!("{}", help_text);
+        return Err(std::process::ExitCode::SUCCESS.into());
+    } else if cli_parsed.arguments.contains("version") {
+        // generate version text
+        let version_text = cliparser::version(&spec);
+        println!("{}", version_text);
+        return Err(std::process::ExitCode::SUCCESS.into());
     }
+
+    return Ok(get_args(
+        &cli_parsed,
+        &global_config,
+        command_name,
+        sub_command,
+    ));
 }
 
 pub fn parse(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
-) -> Either<CliArgs, std::process::ExitCode> {
+) -> Result<CliArgs, CargoMakeError> {
     parse_args(global_config, command_name, sub_command, None)
 }
 

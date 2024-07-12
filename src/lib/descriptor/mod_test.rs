@@ -597,8 +597,10 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
             false,
             false
         )
-        .err(),
-        Some("Unable to run, minimum required version is: 999.999.999".into())
+        .err()
+        .unwrap()
+        .to_string(),
+        String::from("Unable to run, minimum required version is: 999.999.999")
     );
 }
 
@@ -621,7 +623,7 @@ fn load_external_descriptor_broken_makefile_panic() {
 fn run_load_script_no_config_section() {
     let external_config = ExternalConfig::new();
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(!invoked);
 }
 
@@ -630,7 +632,7 @@ fn run_load_script_no_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(ConfigSection::new());
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(!invoked);
 }
 
@@ -642,7 +644,7 @@ fn run_load_script_valid_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(invoked);
 }
 
@@ -655,7 +657,7 @@ fn run_load_script_invalid_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    run_load_script(&external_config);
+    run_load_script(&external_config).unwrap();
 }
 
 #[test]
@@ -674,7 +676,7 @@ fn run_load_script_valid_load_script_duckscript() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(invoked);
 
     assert!(envmnt::exists(
@@ -927,8 +929,8 @@ fn check_makefile_min_version_bigger_min_version() {
 
     assert!(result.is_err());
     assert_eq!(
-        result.err().unwrap(),
-        "Unable to run, minimum required version is: 999.999.999"
+        result.err().unwrap().to_string(),
+        String::from("Unable to run, minimum required version is: 999.999.999")
     );
 }
 

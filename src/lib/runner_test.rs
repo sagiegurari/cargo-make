@@ -45,7 +45,7 @@ fn run_flow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 }
 
 #[test]
@@ -82,7 +82,7 @@ fn run_flow_private_skipped() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 }
 
 #[test]
@@ -119,7 +119,7 @@ fn run_flow_private_sub_task() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), true);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), true).unwrap();
 }
 
 #[test]
@@ -156,7 +156,7 @@ fn run_flow_allow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 }
 
 #[test]
@@ -195,7 +195,7 @@ fn run_task_bad_script() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -235,7 +235,7 @@ fn run_task_script_with_args_error() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -274,7 +274,7 @@ fn run_task_script_with_args_valid() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -313,7 +313,7 @@ fn run_task_command() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -353,7 +353,7 @@ fn run_task_bad_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -391,7 +391,7 @@ fn run_task_no_command_valid_script() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -438,7 +438,7 @@ fn run_task_bad_run_task_valid_command() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -482,7 +482,7 @@ fn run_task_valid_run_task() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -522,7 +522,7 @@ fn run_task_invalid_task() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -571,7 +571,7 @@ fn run_task_set_env_file() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_ENV_FILE_TEST1"), "1");
 
@@ -625,7 +625,7 @@ fn run_task_set_env() {
 
     envmnt::set("TEST_RUN_TASK_SET_ENV", "EMPTY");
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 
     assert_eq!(envmnt::get_or_panic("TEST_RUN_TASK_SET_ENV"), "VALID");
 }
@@ -667,7 +667,7 @@ fn run_task_cwd_no_such_dir() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -706,7 +706,7 @@ fn run_task_cwd_dir_exists() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -745,7 +745,7 @@ fn run_task_cwd_env_expansion() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -785,7 +785,7 @@ fn run_task_deprecated_message() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -825,7 +825,7 @@ fn run_task_deprecated_flag() {
         config: task,
     };
 
-    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }
 
 #[test]
@@ -1335,7 +1335,8 @@ fn run_sub_task_and_report_for_name() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -1381,7 +1382,8 @@ fn run_sub_task_and_report_for_name_not_found() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -1429,7 +1431,8 @@ fn run_sub_task_and_report_for_details_single() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -1480,7 +1483,8 @@ fn run_sub_task_and_report_for_details_multiple() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -1525,7 +1529,8 @@ fn run_sub_task_and_report_routing_empty() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -1578,7 +1583,8 @@ fn run_sub_task_and_report_routing_no_condition() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -1648,7 +1654,8 @@ fn run_sub_task_and_report_routing_condition_not_met() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -1702,7 +1709,8 @@ fn run_sub_task_and_report_routing_not_found() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -1751,7 +1759,8 @@ fn run_sub_task_and_report_with_cleanup_task_but_no_fork() {
         &flow_info,
         Rc::new(RefCell::new(FlowState::new())),
         &sub_task,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -1782,7 +1791,7 @@ fn get_sub_task_info_for_routing_info_empty() {
     };
 
     let (task_name, fork, parallel, cleanup_task) =
-        get_sub_task_info_for_routing_info(&flow_info, &vec![]);
+        get_sub_task_info_for_routing_info(&flow_info, &vec![]).unwrap();
 
     assert!(task_name.is_none());
     assert!(!fork);
@@ -1845,7 +1854,8 @@ fn get_sub_task_info_for_routing_info_condition_not_met() {
             condition_script: None,
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert!(task_name.is_none());
     assert!(!fork);
@@ -1908,7 +1918,8 @@ fn get_sub_task_info_for_routing_info_condition_found() {
             condition_script: None,
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
@@ -1971,7 +1982,8 @@ fn get_sub_task_info_for_routing_info_condition_found_multiple_tasks() {
             condition_script: None,
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test1", "test2"]);
     assert!(!fork);
@@ -2017,7 +2029,8 @@ fn get_sub_task_info_for_routing_info_script_not_met() {
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert!(task_name.is_none());
     assert!(!fork);
@@ -2063,7 +2076,8 @@ fn get_sub_task_info_for_routing_info_script_found() {
             condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
@@ -2137,7 +2151,8 @@ fn get_sub_task_info_for_routing_info_multiple_found() {
                 condition_script_runner_args: None,
             },
         ],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test1"]);
     assert!(!fork);
@@ -2220,7 +2235,8 @@ fn get_sub_task_info_for_routing_info_default() {
                 condition_script_runner_args: None,
             },
         ],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["default"]);
     assert!(!fork);
@@ -2312,7 +2328,8 @@ fn get_sub_task_info_for_routing_info_multiple() {
                 condition_script_runner_args: None,
             },
         ],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test3"]);
     assert!(!fork);
@@ -2375,7 +2392,8 @@ fn get_sub_task_info_for_routing_info_fork_false() {
             condition_script: None,
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(!fork);
@@ -2438,7 +2456,8 @@ fn get_sub_task_info_for_routing_info_fork_true() {
             condition_script: None,
             condition_script_runner_args: None,
         }],
-    );
+    )
+    .unwrap();
 
     assert_eq!(task_name.unwrap(), vec!["test"]);
     assert!(fork);

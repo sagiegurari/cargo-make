@@ -2459,3 +2459,10 @@ pub fn either_to_result<L, R>(either: Either<L, R>) -> Result<L, R> {
         Either::Right(rhs) => Err(rhs),
     }
 }
+
+pub fn result_to_either<V, E>(result: Result<V, E>) -> Either<V, E> {
+    match result {
+        Ok(lhs) => Either::Left(lhs),
+        Err(rhs) => Either::Right(rhs),
+    }
+}

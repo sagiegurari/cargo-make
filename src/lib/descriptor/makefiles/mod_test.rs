@@ -50,7 +50,7 @@ fn makefile_task_condition_test(name: &str, expect_enabled: bool, linux_only: bo
             config: task,
         };
 
-        let enabled = condition::validate_condition_for_step(&flow_info, &step);
+        let enabled = condition::validate_condition_for_step(&flow_info, &step).unwrap();
 
         let should_be_enabled = if expect_enabled {
             if ci_only {
@@ -98,7 +98,7 @@ fn makefile_coverage_test() {
             RunTaskInfo::Routing(ref routing_info) => {
                 let flow_info = create_flow_info(&config);
                 let (task_name, fork, parallel, cleanup_task) =
-                    runner::get_sub_task_info_for_routing_info(&flow_info, routing_info);
+                    runner::get_sub_task_info_for_routing_info(&flow_info, routing_info).unwrap();
                 let names = task_name.unwrap();
                 assert_eq!(names.len(), 1);
                 assert_eq!(names[0], "coverage-kcov");
@@ -176,7 +176,7 @@ fn makefile_build_file_increment_no_file_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -208,9 +208,9 @@ fn makefile_build_file_increment_file_exists_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
-    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
-    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 
     envmnt::remove("CARGO_MAKE_BUILD_NUMBER_FILE");
 
@@ -245,5 +245,5 @@ fn makefile_build_file_increment_panic_invalid_data_test() {
         config: task,
     };
 
-    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step);
+    runner::run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 }

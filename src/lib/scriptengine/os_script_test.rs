@@ -3,7 +3,7 @@ use crate::test;
 
 #[test]
 fn execute_shell() {
-    execute(&vec!["exit 0".to_string()], None, &vec![], true);
+    execute(&vec!["exit 0".to_string()], None, &vec![], true).unwrap();
 }
 
 #[test]
@@ -13,18 +13,19 @@ fn execute_shell_with_runner() {
         Some(test::get_os_runner()),
         &vec![],
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
 #[test]
 #[should_panic]
 fn execute_shell_error() {
-    execute(&vec!["exit 1".to_string()], None, &vec![], true);
+    execute(&vec!["exit 1".to_string()], None, &vec![], true).unwrap();
 }
 
 #[test]
 fn execute_shell_error_no_validate() {
-    let valid = execute(&vec!["exit 1".to_string()], None, &vec![], false);
+    let valid = execute(&vec!["exit 1".to_string()], None, &vec![], false).unwrap();
     assert!(!valid);
 }

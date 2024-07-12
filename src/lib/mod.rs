@@ -34,8 +34,8 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
-use either::Either;
 // Dependencies used in the binary `makers`:
+use crate::error::CargoMakeError;
 use crate::types::CliArgs;
 #[cfg(windows)]
 use nu_ansi_term as _;
@@ -60,6 +60,7 @@ mod condition;
 pub mod config;
 mod descriptor;
 mod environment;
+pub mod error;
 mod execution_plan;
 mod functions;
 mod installer;
@@ -78,6 +79,6 @@ mod toolchain;
 mod version;
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli(command_name: String, sub_command: bool) -> Either<CliArgs, std::process::ExitCode> {
+pub fn run_cli(command_name: String, sub_command: bool) -> Result<CliArgs, CargoMakeError> {
     cli::run_cli(command_name, sub_command)
 }

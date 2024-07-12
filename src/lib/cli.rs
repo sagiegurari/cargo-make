@@ -12,6 +12,7 @@ use crate::cli_parser;
 use crate::config;
 use crate::descriptor;
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::logger;
 use crate::logger::LoggerOptions;
 use crate::profile;
@@ -21,7 +22,6 @@ use crate::time_summary;
 use crate::toolchain;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use either::{try_left, Either};
 use std::time::SystemTime;
 
 pub(crate) static VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -32,10 +32,7 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-pub fn run(
-    cli_args: &CliArgs,
-    global_config: &GlobalConfig,
-) -> Either<CliArgs, std::process::ExitCode> {
+pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), CargoMakeError> {
     let start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -121,7 +118,7 @@ pub fn run(
         None => profile::set_additional(&vec![]),
     };
 
-    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec);
+    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec)?;
     time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
@@ -142,7 +139,7 @@ pub fn run(
             &cli_args.output_file,
             &cli_args.list_category_steps,
             cli_args.hide_uninteresting,
-        );
+        )
     } else if cli_args.diff_execution_plan {
         let default_config = descriptor::load_internal_descriptors(true, experimental, None);
         cli_commands::diff_steps::run(
@@ -151,7 +148,7 @@ pub fn run(
             &task,
             &cli_args,
             &env_info.crate_info,
-        );
+        )
     } else if cli_args.print_only {
         cli_commands::print_steps::print(
             &config,
@@ -160,7 +157,7 @@ pub fn run(
             cli_args.disable_workspace,
             &cli_args.skip_tasks_pattern,
             &env_info.crate_info,
-        );
+        )
     } else {
         runner::run(
             config,
@@ -169,21 +166,18 @@ pub fn run(
             &cli_args,
             start_time,
             time_summary_vec,
-        );
-    }
-    Either::Right(std::process::ExitCode::SUCCESS)
+        )
+    }?;
+
+    Ok(())
 }
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli(command_name: String, sub_command: bool) -> Either<CliArgs, std::process::ExitCode> {
-    let global_config = config::load();
+pub fn run_cli(command_name: String, sub_command: bool) -> Result<CliArgs, CargoMakeError> {
+    let global_config = config::load()?;
 
-    let cli_args = try_left!(cli_parser::parse(
-        &global_config,
-        &command_name,
-        sub_command
-    ));
+    let cli_args = cli_parser::parse(&global_config, &command_name, sub_command)?;
 
-    run(&cli_args, &global_config);
-    Either::Left(cli_args)
+    run(&cli_args, &global_config)?;
+    Ok(cli_args)
 }

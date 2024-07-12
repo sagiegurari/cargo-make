@@ -7,6 +7,7 @@
 #[path = "print_steps_test.rs"]
 mod print_steps_test;
 
+use crate::error::CargoMakeError;
 use crate::execution_plan::create as create_execution_plan;
 use crate::types::{Config, CrateInfo, ExecutionPlan};
 use regex::Regex;
@@ -68,7 +69,7 @@ pub fn print(
     disable_workspace: bool,
     skip_tasks_pattern: &Option<String>,
     crateinfo: &CrateInfo,
-) {
+) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
             Ok(reg) => Some(reg),
@@ -88,7 +89,7 @@ pub fn print(
         false,
         false,
         &skip_tasks_pattern_regex,
-    );
+    )?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     let print_format = get_format_type(&output_format);
@@ -97,4 +98,6 @@ pub fn print(
         PrintFormat::ShortDescription => print_short_description(&execution_plan),
         PrintFormat::Default => print_default(&execution_plan),
     };
+
+    Ok(())
 }
