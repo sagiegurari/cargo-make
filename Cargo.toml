@@ -52,7 +52,6 @@ ctrlc = "^3"
 dirs-next = "^2"
 duckscript = "^0.8.0"
 duckscriptsdk = { version = "^0.9.3", default-features = false }
-either = "1.13.0"
 envmnt = "^0.10.4"
 fern = "^0.6"
 fsio = { version = "^0.4", features = ["temp-path"] }

@@ -430,15 +430,10 @@ fn run_valid() {
             "arg2",
             "arg3",
         ]),
-    );
+    )
+    .unwrap();
 
-    assert_eq!(
-        format!(
-            "{:?}",
-            run(&cli_args.unwrap(), &global_config).err().unwrap()
-        ),
-        format!("{:?}", std::process::ExitCode::FAILURE)
-    );
+    assert_eq!(run(&cli_args, &global_config).unwrap(), ());
 }
 
 #[test]

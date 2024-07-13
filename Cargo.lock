@@ -150,7 +150,6 @@ dependencies = [
  "dirs-next",
  "duckscript",
  "duckscriptsdk",
- "either",
  "envmnt",
  "expect-test",
  "fern",
