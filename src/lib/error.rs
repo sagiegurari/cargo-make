@@ -165,30 +165,3 @@ impl<T> std::process::Termination for SuccessOrCargoMakeError<T> {
         }
     }
 }
-
-/*
-// TODO: Get `Into<CargoMakeError>` syntax working
-impl std::ops::FromResidual<Result<std::convert::Infallible, CargoMakeError>>
-for SuccessOrCargoMakeError<std::process::ExitCode>
-{
-    fn from_residual(residual: Result<std::convert::Infallible, CargoMakeError>) -> Self {
-        if let Err(e) = residual {
-            SuccessOrCargoMakeError::Err(e)
-        } else {
-            SuccessOrCargoMakeError::Ok(std::process::ExitCode::SUCCESS)
-        }
-    }
-}
-
-impl std::ops::FromResidual<Result<std::convert::Infallible, std::io::Error>>
-for SuccessOrCargoMakeError<std::process::ExitCode>
-{
-    fn from_residual(residual: Result<std::convert::Infallible, std::io::Error>) -> Self {
-        if let Err(e) = residual {
-            SuccessOrCargoMakeError::Err(e.into())
-        } else {
-            SuccessOrCargoMakeError::Ok(std::process::ExitCode::SUCCESS)
-        }
-    }
-}
-*/
