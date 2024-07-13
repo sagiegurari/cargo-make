@@ -312,12 +312,21 @@ fn is_workspace_flow(
 ) -> Result<bool, CargoMakeError> {
     // determine if workspace flow is explicitly set and enabled in the requested task
     let (task_set_workspace, task_enable_workspace) =
-        match get_optional_normalized_task(config, task, true)? {
-            Some(normalized_task) => match normalized_task.workspace {
-                Some(enable_workspace) => (true, enable_workspace),
+        match get_optional_normalized_task(config, task, true) {
+            Ok(optional_task) => match optional_task {
+                Some(normalized_task) => match normalized_task.workspace {
+                    Some(enable_workspace) => (true, enable_workspace),
+                    None => (false, false),
+                },
                 None => (false, false),
             },
-            None => (false, false),
+            Err(e) => {
+                if let CargoMakeError::NotFound(_) = e {
+                    (false, false)
+                } else {
+                    return Err(e);
+                }
+            }
         };
 
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
@@ -428,7 +437,7 @@ fn create_for_step(
         }
     } else {
         error!("Task {} is private", &task);
-        panic!("Task {} is private", &task);
+        return Err(CargoMakeError::TaskIs(format!("{}", &task), "private"));
     }
     Ok(())
 }

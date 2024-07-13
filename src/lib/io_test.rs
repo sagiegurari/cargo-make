@@ -2,14 +2,14 @@ use super::*;
 
 #[test]
 fn create_text_file_read_and_delete() {
-    let file = create_text_file("test\nend", ".testfile");
+    let file = create_text_file("test\nend", ".testfile").unwrap();
     assert!(file.ends_with(".testfile"));
 
     let text = fsio::file::read_text_file(&file).unwrap();
 
     let mut file_path = PathBuf::new();
     file_path.push(&file);
-    let read_text = read_text_file(&file_path);
+    let read_text = read_text_file(&file_path).unwrap();
 
     delete_file(&file);
 
@@ -27,7 +27,7 @@ fn write_text_file_read_and_delete() {
 
     let mut file_path = PathBuf::new();
     file_path.push(&file);
-    let read_text = read_text_file(&file_path);
+    let read_text = read_text_file(&file_path).unwrap();
 
     delete_file(&file);
 

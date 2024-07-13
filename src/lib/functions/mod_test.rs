@@ -3,13 +3,13 @@ use super::*;
 #[test]
 #[should_panic]
 fn run_function_empty() {
-    run_function("", &vec![]);
+    run_function("", &vec![]).unwrap();
 }
 
 #[test]
 #[should_panic]
 fn run_function_not_exists() {
-    run_function("bad", &vec![]);
+    run_function("bad", &vec![]).unwrap();
 }
 
 #[test]
@@ -19,7 +19,8 @@ fn run_function_split() {
     let output = run_function(
         "split",
         &vec!["TEST_MOD_SPLIT_FUNC_MOD".to_string(), ",".to_string()],
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
@@ -35,7 +36,8 @@ fn run_function_getat() {
             ",".to_string(),
             "2".to_string(),
         ],
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, vec!["3"]);
 }
@@ -47,7 +49,8 @@ fn run_function_remove_empty() {
     let output = run_function(
         "remove-empty",
         &vec!["TEST_MOD_REMOVE_EMPTY_FUNC_MOD".to_string()],
-    );
+    )
+    .unwrap();
 
     assert_eq!(output.len(), 0);
 }
@@ -56,7 +59,7 @@ fn run_function_remove_empty() {
 fn run_function_trim() {
     envmnt::set("TEST_MOD_TRIM_FUNC_MOD", "    ");
 
-    let output = run_function("trim", &vec!["TEST_MOD_TRIM_FUNC_MOD".to_string()]);
+    let output = run_function("trim", &vec!["TEST_MOD_TRIM_FUNC_MOD".to_string()]).unwrap();
 
     assert_eq!(output.len(), 0);
 }
@@ -74,7 +77,8 @@ fn run_function_decode() {
             "ci".to_string(),
             "test".to_string(),
         ],
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, vec!["test"]);
 }
@@ -168,7 +172,7 @@ fn get_function_arguments_multiple_with_spaces() {
 fn evaluate_and_run_valid() {
     envmnt::set("TEST_MOD_RUN_FUNC_VALUE", "1 2 3 4");
 
-    let output = evaluate_and_run("@@split(TEST_MOD_RUN_FUNC_VALUE, )");
+    let output = evaluate_and_run("@@split(TEST_MOD_RUN_FUNC_VALUE, )").unwrap();
 
     assert_eq!(output, vec!["1", "2", "3", "4"]);
 }
@@ -176,12 +180,12 @@ fn evaluate_and_run_valid() {
 #[test]
 #[should_panic]
 fn evaluate_and_run_unknown_function() {
-    evaluate_and_run("@@bad()");
+    evaluate_and_run("@@bad()").unwrap();
 }
 
 #[test]
 fn evaluate_and_run_no_function() {
-    let output = evaluate_and_run("value");
+    let output = evaluate_and_run("value").unwrap();
 
     assert_eq!(output, vec!["value"]);
 }
@@ -197,7 +201,7 @@ fn modify_arguments_with_functions() {
         "end".to_string(),
     ]);
 
-    modify_arguments(&mut task);
+    modify_arguments(&mut task).unwrap();
 
     assert_eq!(task.args.unwrap(), vec!["start", "1", "2", "3", "4", "end"]);
 }
@@ -217,7 +221,7 @@ fn run_with_functions() {
         config: task,
     };
 
-    step = run(&step);
+    step = run(&step).unwrap();
 
     assert_eq!(
         step.config.args.unwrap(),

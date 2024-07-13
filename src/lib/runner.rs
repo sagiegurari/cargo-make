@@ -411,7 +411,7 @@ pub(crate) fn run_task_with_options(
             profile::set(&profile_name);
 
             // modify step using env and functions
-            let mut updated_step = functions::run(&step);
+            let mut updated_step = functions::run(&step)?;
             updated_step = environment::expand_env(&updated_step);
 
             let watch = should_watch(&step.config);

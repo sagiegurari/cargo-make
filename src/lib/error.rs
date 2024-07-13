@@ -28,7 +28,22 @@ pub enum CargoMakeError {
     #[strum(to_string = "Error while executing command, exit code: {0}")]
     ExitCodeError(i32) = 104,
 
-    #[strum(to_string = "Unable to run, minimum required version is: {0}")]
+    #[strum(to_string = "Unable to parse internal descriptor: {0}")]
+    DescriptorParseFailed(String) = 105,
+
+    #[strum(to_string = "Unable to parse external file: {0:#?}, {1}")]
+    ParseFileFailed(String, String) = 106,
+
+    #[strum(to_string = "{0}")]
+    Arity(&'static str) = 107,
+
+    #[strum(to_string = "{0}")]
+    MethodCallRestriction(&'static str) = 108,
+
+    #[strum(to_string = "Task {0:#?} is {1}")]
+    TaskIs(String, &'static str),
+
+    #[strum(to_string = "{0}")]
     NotFound(String) = 404,
 
     // ************************
@@ -36,6 +51,9 @@ pub enum CargoMakeError {
     // ************************
     #[strum(to_string = "`std::io::Error` error. {error:?}")]
     StdIoError { error: std::io::Error } = 700,
+
+    #[strum(to_string = "`std::fmt::Error` error. {error:?}")]
+    StdFmtError { error: std::fmt::Error } = 709,
 
     #[strum(to_string = "{0:?}")]
     ExitCode(std::process::ExitCode) = 710,
@@ -61,6 +79,12 @@ impl CargoMakeError {
 impl From<std::io::Error> for CargoMakeError {
     fn from(error: std::io::Error) -> Self {
         Self::StdIoError { error }
+    }
+}
+
+impl From<std::fmt::Error> for CargoMakeError {
+    fn from(error: std::fmt::Error) -> Self {
+        Self::StdFmtError { error }
     }
 }
 

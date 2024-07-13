@@ -58,7 +58,7 @@ set_env FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4 1
 '''
 "#;
 
-    let config = descriptor_deserializer::load_config(&makefile_string, false);
+    let config = descriptor_deserializer::load_config(&makefile_string, false).unwrap();
 
     let flow_info = FlowInfo {
         config,

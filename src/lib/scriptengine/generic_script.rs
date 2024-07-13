@@ -41,7 +41,7 @@ pub(crate) fn execute(
     cli_arguments: &Vec<String>,
     validate: bool,
 ) -> Result<bool, CargoMakeError> {
-    let file = create_script_file(script_text, &extension);
+    let file = create_script_file(script_text, &extension)?;
 
     let valid = run_file(&file, &runner, arguments, &mut cli_arguments.clone())?;
 

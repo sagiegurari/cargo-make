@@ -1421,7 +1421,7 @@ fn create_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
+    let crateinfo = environment::crateinfo::load().unwrap();
     let execution_plan = create(&config, "test", &crateinfo, false, true, false, &None).unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
@@ -1445,7 +1445,7 @@ fn create_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
+    let crateinfo = environment::crateinfo::load().unwrap();
     let execution_plan = create(&config, "test", &crateinfo, true, true, false, &None).unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);

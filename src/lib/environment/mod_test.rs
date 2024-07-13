@@ -1376,7 +1376,7 @@ fn setup_env_for_crate_load_toml_found() {
     envmnt::set("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", "EMPTY");
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
-    setup_env_for_crate(None);
+    setup_env_for_crate(None).unwrap();
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
@@ -1440,7 +1440,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
     assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") == "EMPTY");
 
     setup_cwd(Some("examples"));
-    setup_env_for_crate(None);
+    setup_env_for_crate(None).unwrap();
     setup_cwd(Some(".."));
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_WORKING_DIRECTORY") != "EMPTY");
@@ -1472,7 +1472,7 @@ fn setup_env_for_crate_load_toml_not_found_and_cwd() {
         ""
     );
 
-    setup_env_for_crate(None);
+    setup_env_for_crate(None).unwrap();
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "cargo-make");
     assert_eq!(
@@ -1533,7 +1533,7 @@ fn setup_env_for_crate_workspace() {
     envmnt::set("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS", "EMPTY");
 
     setup_cwd(Some("examples/workspace"));
-    setup_env_for_crate(None);
+    setup_env_for_crate(None).unwrap();
     setup_cwd(Some("../.."));
 
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_CRATE_NAME"), "EMPTY");
@@ -1900,12 +1900,12 @@ fn setup_env_for_project_crate() {
         plugins: None,
     };
 
-    let crate_info = crateinfo::load();
+    let crate_info = crateinfo::load().unwrap();
 
     envmnt::remove("CARGO_MAKE_PROJECT_NAME");
     envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
 
-    setup_env_for_project(&config, &crate_info);
+    setup_env_for_project(&config, &crate_info).unwrap();
 
     assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "cargo-make"));
     assert!(envmnt::is_equal(
@@ -1933,8 +1933,8 @@ fn setup_env_for_project_workspace_with_main_crate() {
     envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
 
     setup_cwd(Some("src/lib/test/workspace1"));
-    let crate_info = crateinfo::load();
-    setup_env_for_project(&config, &crate_info);
+    let crate_info = crateinfo::load().unwrap();
+    setup_env_for_project(&config, &crate_info).unwrap();
     setup_cwd(Some("../../../.."));
 
     assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));
@@ -1957,8 +1957,8 @@ fn setup_env_for_project_workspace_no_main_crate() {
     envmnt::remove("CARGO_MAKE_PROJECT_VERSION");
 
     setup_cwd(Some("src/lib/test/workspace1"));
-    let crate_info = crateinfo::load();
-    setup_env_for_project(&config, &crate_info);
+    let crate_info = crateinfo::load().unwrap();
+    setup_env_for_project(&config, &crate_info).unwrap();
     setup_cwd(Some("../../../.."));
 
     assert!(envmnt::is_equal("CARGO_MAKE_PROJECT_NAME", "workspace1"));

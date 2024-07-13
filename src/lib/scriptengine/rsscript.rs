@@ -74,7 +74,7 @@ fn install_crate(provider: &ScriptRunner) -> Result<(), CargoMakeError> {
     Ok(())
 }
 
-fn create_rust_file(rust_script: &Vec<String>) -> String {
+fn create_rust_file(rust_script: &Vec<String>) -> Result<String, CargoMakeError> {
     create_persisted_script_file(rust_script, "rs")
 }
 
@@ -121,7 +121,7 @@ pub(crate) fn execute(
 
     install_crate(&provider)?;
 
-    let file = create_rust_file(rust_script);
+    let file = create_rust_file(rust_script)?;
 
     let valid = run_file(&file, runner_arguments, &cli_arguments, &provider)?;
 

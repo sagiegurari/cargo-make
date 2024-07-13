@@ -318,12 +318,12 @@ fn load_external_descriptor(
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
 
-        let external_descriptor = io::read_text_file(&file_path);
+        let external_descriptor = io::read_text_file(&file_path)?;
 
         check_makefile_min_version(&external_descriptor)?;
 
         let mut file_config =
-            descriptor_deserializer::load_external_config(&external_descriptor, &file_path_string);
+            descriptor_deserializer::load_external_config(&external_descriptor, &file_path_string)?;
         debug!("Loaded external config: {:#?}", &file_config);
 
         file_config = add_file_location_info(file_config, &absolute_file_path);
@@ -349,7 +349,10 @@ fn load_external_descriptor(
         }
     } else if force {
         error!("Descriptor file: {:#?} not found.", &file_path);
-        panic!("Descriptor file: {:#?} not found.", &file_path);
+        Err(CargoMakeError::NotFound(format!(
+            "Descriptor file: {:#?} not found.",
+            &file_path
+        )))
     } else {
         debug!("External file not found or is not a file, skipping.");
 
@@ -361,7 +364,7 @@ pub(crate) fn load_internal_descriptors(
     stable: bool,
     experimental: bool,
     modify_config: Option<ModifyConfig>,
-) -> Config {
+) -> Result<Config, CargoMakeError> {
     debug!("Loading base tasks.");
 
     let base_descriptor = if stable {
@@ -370,7 +373,7 @@ pub(crate) fn load_internal_descriptors(
         makefiles::BASE
     };
 
-    let mut base_config = descriptor_deserializer::load_config(&base_descriptor, false);
+    let mut base_config = descriptor_deserializer::load_config(&base_descriptor, false)?;
     debug!("Loaded base config: {:#?}", &base_config);
 
     if experimental {
@@ -378,7 +381,7 @@ pub(crate) fn load_internal_descriptors(
         let experimental_descriptor = makefiles::BETA;
 
         let experimental_config =
-            descriptor_deserializer::load_config(&experimental_descriptor, false);
+            descriptor_deserializer::load_config(&experimental_descriptor, false)?;
         debug!("Loaded experimental config: {:#?}", &experimental_config);
 
         let mut base_tasks = base_config.tasks;
@@ -409,7 +412,7 @@ pub(crate) fn load_internal_descriptors(
         None => (),
     };
 
-    base_config
+    Ok(base_config)
 }
 
 fn merge_base_config_and_external_config(
@@ -510,7 +513,7 @@ fn load_descriptors(
     experimental: bool,
     modify_core_tasks: Option<ModifyConfig>,
 ) -> Result<Config, CargoMakeError> {
-    let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
+    let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks)?;
 
     let mut external_config = load_external_descriptor(".", file_name, force, true)?;
 
@@ -551,10 +554,10 @@ fn load_descriptors(
     Ok(config)
 }
 
-fn load_cargo_aliases(config: &mut Config) {
+fn load_cargo_aliases(config: &mut Config) -> Result<(), CargoMakeError> {
     if let Some(load_cargo_aliases) = config.config.load_cargo_aliases {
         if load_cargo_aliases {
-            let alias_tasks = cargo_alias::load();
+            let alias_tasks = cargo_alias::load()?;
             for (name, task) in alias_tasks {
                 match config.tasks.get(&name) {
                     None => {
@@ -566,6 +569,7 @@ fn load_cargo_aliases(config: &mut Config) {
             }
         }
     }
+    Ok(())
 }
 
 /// Loads the tasks descriptor.<br>
@@ -603,7 +607,7 @@ pub fn load(
                 }
             }
             None => {
-                let core_config = load_internal_descriptors(true, experimental, modify_core_tasks);
+                let core_config = load_internal_descriptors(true, experimental, modify_core_tasks)?;
                 let external_config = ExternalConfig {
                     extend: None,
                     config: Some(config.config),
@@ -624,7 +628,7 @@ pub fn load(
         };
     }
 
-    load_cargo_aliases(&mut config);
+    load_cargo_aliases(&mut config)?;
 
     if let Some(unstable_features) = &config.config.unstable_features {
         for feature in unstable_features {

@@ -352,8 +352,8 @@ fn setup_env_for_duckscript() {
     envmnt::set("CARGO_MAKE_DUCKSCRIPT_SDK_VERSION", version);
 }
 
-fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
-    let crate_info = crateinfo::load();
+fn setup_env_for_crate(home: Option<PathBuf>) -> Result<CrateInfo, CargoMakeError> {
+    let crate_info = crateinfo::load()?;
     let crate_info_clone = crate_info.clone();
 
     let package_info = crate_info.package.unwrap_or(PackageInfo::new());
@@ -436,7 +436,7 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
         ),
     }
 
-    crate_info_clone
+    Ok(crate_info_clone)
 }
 
 fn setup_env_for_git_repo() -> GitInfo {
@@ -526,7 +526,7 @@ fn get_base_directory_name() -> Option<String> {
     }
 }
 
-fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
+fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) -> Result<(), CargoMakeError> {
     let project_name = match crate_info.package {
         Some(ref package) => match package.name {
             Some(ref name) => Some(name.to_string()),
@@ -554,7 +554,7 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
                     let mut path = PathBuf::new();
                     path.push(member);
                     path.push("Cargo.toml");
-                    let member_crate_info = crateinfo::load_from(path);
+                    let member_crate_info = crateinfo::load_from(path)?;
 
                     match member_crate_info.package {
                         Some(package) => package.version,
@@ -571,6 +571,8 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
     };
 
     envmnt::set_or_remove("CARGO_MAKE_PROJECT_VERSION", &project_version);
+
+    Ok(())
 }
 
 /// Sets up the env before the tasks execution.
@@ -602,7 +604,7 @@ pub(crate) fn setup_env(
     let crate_info = if config.config.skip_crate_env_info.unwrap_or(false) {
         CrateInfo::new()
     } else {
-        setup_env_for_crate(home.clone())
+        setup_env_for_crate(home.clone())?
     };
     time_summary::add(time_summary_vec, "[Setup Env - Crate Info]", now);
 
@@ -631,7 +633,7 @@ pub(crate) fn setup_env(
 
     // setup project info
     now = SystemTime::now();
-    setup_env_for_project(config, &crate_info);
+    setup_env_for_project(config, &crate_info)?;
     time_summary::add(time_summary_vec, "[Setup Env - Project]", now);
 
     // load env vars

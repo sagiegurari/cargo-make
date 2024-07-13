@@ -1,5 +1,6 @@
 use crate::condition;
 use crate::descriptor;
+use crate::error::CargoMakeError;
 use crate::runner;
 use crate::scriptengine;
 use crate::scriptengine::EngineType;
@@ -10,7 +11,7 @@ use rust_info::types::RustInfo;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-fn load_descriptor() -> Config {
+fn load_descriptor() -> Result<Config, CargoMakeError> {
     descriptor::load_internal_descriptors(true, false, None)
 }
 
@@ -42,7 +43,7 @@ fn create_flow_info(config: &Config) -> FlowInfo {
 
 fn makefile_task_condition_test(name: &str, expect_enabled: bool, linux_only: bool, ci_only: bool) {
     if !linux_only || test::is_linux() {
-        let config = load_descriptor();
+        let config = load_descriptor().unwrap();
         let task = get_task(name, &config);
         let flow_info = create_flow_info(&config);
         let step = Step {
@@ -75,14 +76,15 @@ fn makefile_task_disabled_test(name: &str, linux_only: bool) {
 }
 
 fn makefile_task_script_engine_test(name: &str, engine: EngineType) {
-    let config = load_descriptor();
+    let config = load_descriptor().unwrap();
     let task = get_task(name, &config);
 
     let output = scriptengine::get_engine_type(
         &task.script.unwrap(),
         &task.script_runner,
         &task.script_extension,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, engine);
 }
@@ -90,7 +92,7 @@ fn makefile_task_script_engine_test(name: &str, engine: EngineType) {
 #[test]
 fn makefile_coverage_test() {
     if test::is_linux() {
-        let config = load_descriptor();
+        let config = load_descriptor().unwrap();
         let task = get_task("coverage", &config);
         let run_task_info = task.run_task.unwrap();
 
@@ -167,7 +169,7 @@ fn makefile_build_file_increment_no_file_test() {
 
     let name = "build-file-increment";
 
-    let config = load_descriptor();
+    let config = load_descriptor().unwrap();
     let task = get_task(name, &config);
 
     let flow_info = create_flow_info(&config);
@@ -199,7 +201,7 @@ fn makefile_build_file_increment_file_exists_test() {
 
     let name = "build-file-increment";
 
-    let config = load_descriptor();
+    let config = load_descriptor().unwrap();
     let task = get_task(name, &config);
 
     let flow_info = create_flow_info(&config);
@@ -236,7 +238,7 @@ fn makefile_build_file_increment_panic_invalid_data_test() {
 
     let name = "build-file-increment";
 
-    let config = load_descriptor();
+    let config = load_descriptor().unwrap();
     let task = get_task(name, &config);
 
     let flow_info = create_flow_info(&config);

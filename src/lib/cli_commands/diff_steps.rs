@@ -64,11 +64,11 @@ pub(crate) fn run(
     let internal_file = create_file(
         &move |file: &mut File| write_as_string(&internal_execution_plan, &file),
         "toml",
-    );
+    )?;
     let external_file = create_file(
         &move |file: &mut File| write_as_string(&external_execution_plan, &file),
         "toml",
-    );
+    )?;
 
     info!("Printing diff...");
     command::run_command(

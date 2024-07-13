@@ -116,7 +116,9 @@ pub(crate) fn install(
                                 Some(ref crate_name) => (arg, crate_name.to_string()),
                                 None => {
                                     error!("Missing crate name to invoke.");
-                                    panic!("Missing crate name to invoke.");
+                                    return Err(CargoMakeError::NotFound(String::from(
+                                        "Missing crate name to invoke.",
+                                    )));
                                 }
                             },
                             None => match install_info.crate_name {
@@ -125,7 +127,9 @@ pub(crate) fn install(
                                 }
                                 None => {
                                     error!("Missing cargo command to invoke.");
-                                    panic!("Missing crate command to invoke.");
+                                    return Err(CargoMakeError::NotFound(String::from(
+                                        "Missing crate command to invoke.",
+                                    )));
                                 }
                             },
                         },

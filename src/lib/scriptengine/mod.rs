@@ -43,10 +43,10 @@ pub(crate) enum EngineType {
     Unsupported,
 }
 
-pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
+pub(crate) fn get_script_text(script: &ScriptValue) -> Result<Vec<String>, CargoMakeError> {
     match script {
-        ScriptValue::SingleLine(text) => vec![text.clone()],
-        ScriptValue::Text(text) => text.clone(),
+        ScriptValue::SingleLine(text) => Ok(vec![text.clone()]),
+        ScriptValue::Text(text) => Ok(text.clone()),
         ScriptValue::File(info) => {
             let mut file_path_string = String::new();
             if !info.absolute_path.unwrap_or(false) {
@@ -60,7 +60,7 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
             let mut file_path = PathBuf::new();
             file_path.push(expanded_value);
 
-            let script_text = io::read_text_file(&file_path);
+            let script_text = io::read_text_file(&file_path)?;
             let lines: Vec<&str> = script_text.split('\n').collect();
 
             let mut script_lines: Vec<String> = vec![];
@@ -69,7 +69,7 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
                 script_lines.push(line.to_string());
             }
 
-            script_lines
+            Ok(script_lines)
         }
         ScriptValue::Sections(sections) => {
             let mut script_lines = vec![];
@@ -84,7 +84,7 @@ pub(crate) fn get_script_text(script: &ScriptValue) -> Vec<String> {
                 script_lines.push(text.to_string());
             }
 
-            script_lines
+            Ok(script_lines)
         }
     }
 }
@@ -108,7 +108,7 @@ pub(crate) fn get_engine_type(
     script: &ScriptValue,
     script_runner: &Option<String>,
     script_extension: &Option<String>,
-) -> EngineType {
+) -> Result<EngineType, CargoMakeError> {
     match script_runner {
         Some(ref runner) => {
             debug!("Checking script runner: {}", runner);
@@ -120,19 +120,19 @@ pub(crate) fn get_engine_type(
                     if script_extension.is_some() {
                         // if both script runner and extension is defined, we use generic script runner
                         debug!("Generic script detected.");
-                        EngineType::Generic
+                        Ok(EngineType::Generic)
                     } else {
                         // use default OS extension with custom runner
                         debug!("OS script with custom runner detected.");
-                        EngineType::OS
+                        Ok(EngineType::OS)
                     }
                 }
-                _ => engine_type,
+                _ => Ok(engine_type),
             }
         }
         None => {
             // if no runner specified, try to extract it from script content
-            let script_text = get_script_text(&script);
+            let script_text = get_script_text(&script)?;
 
             let shebang = shebang_script::get_shebang(&script_text);
             match shebang.runner {
@@ -143,15 +143,15 @@ pub(crate) fn get_engine_type(
                         match engine_type {
                             EngineType::Unsupported => {
                                 debug!("Shebang line does not point to an internal engine, using normal shebang script runner.");
-                                EngineType::Shebang
+                                Ok(EngineType::Shebang)
                             }
-                            _ => engine_type,
+                            _ => Ok(engine_type),
                         }
                     } else {
-                        EngineType::Shebang
+                        Ok(EngineType::Shebang)
                     }
                 }
-                None => EngineType::OS,
+                None => Ok(EngineType::OS),
             }
         }
     }
@@ -257,19 +257,19 @@ fn invoke_script(
     flow_state: Option<Rc<RefCell<FlowState>>>,
     cli_arguments: &Vec<String>,
 ) -> Result<bool, CargoMakeError> {
-    let engine_type = get_engine_type(script, &script_runner, &script_extension);
+    let engine_type = get_engine_type(script, &script_runner, &script_extension)?;
 
     match engine_type {
         EngineType::OS => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             os_script::execute(&script_text, script_runner, cli_arguments, validate)
         }
         EngineType::Duckscript => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             duck_script::execute(&script_text, cli_arguments, flow_info, flow_state, validate)
         }
         EngineType::Rust => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             rsscript::execute(
                 &script_text,
                 script_runner_args.clone(),
@@ -278,11 +278,11 @@ fn invoke_script(
             )
         }
         EngineType::Shell2Batch => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             shell_to_batch::execute(&script_text, cli_arguments, validate)
         }
         EngineType::Generic => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             let extension = script_extension.clone().unwrap();
             generic_script::execute(
                 &script_text,
@@ -294,7 +294,7 @@ fn invoke_script(
             )
         }
         EngineType::Shebang => {
-            let script_text = get_script_text(script);
+            let script_text = get_script_text(script)?;
             let extension = script_extension.clone();
             shebang_script::execute(&script_text, &extension, cli_arguments, validate)
         }

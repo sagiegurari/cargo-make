@@ -27,7 +27,7 @@ fn check(
             let mut path = PathBuf::new();
             path.push(&file);
 
-            let actual = io::read_text_file(&path);
+            let actual = io::read_text_file(&path).unwrap();
             io::delete_file(&file);
 
             expect.assert_eq(&actual);

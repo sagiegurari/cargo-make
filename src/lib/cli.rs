@@ -96,15 +96,8 @@ pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), Cargo
     let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
-    let descriptor_load_result = descriptor::load(&build_file, force_makefile, env, experimental);
+    let config = descriptor::load(&build_file, force_makefile, env, experimental)?;
 
-    let config = match descriptor_load_result {
-        Ok(config) => config,
-        Err(ref error) => {
-            error!("{}", error);
-            panic!("{}", error);
-        }
-    };
     let mut time_summary_vec = vec![];
     time_summary::add(
         &mut time_summary_vec,
@@ -141,7 +134,7 @@ pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), Cargo
             cli_args.hide_uninteresting,
         )
     } else if cli_args.diff_execution_plan {
-        let default_config = descriptor::load_internal_descriptors(true, experimental, None);
+        let default_config = descriptor::load_internal_descriptors(true, experimental, None)?;
         cli_commands::diff_steps::run(
             &default_config,
             &config,
