@@ -2,7 +2,7 @@
 
 ### v0.37.14
 
-* Fix: fix the --skip-init-end-tasks argument #1108
+* Fix: fix the --skip-init-end-tasks argument #1108 (thanks @06393993)
 
 ### v0.37.13 (2024-07-07)
 
