@@ -17,6 +17,7 @@ use crate::condition;
 use crate::environment;
 use crate::error::CargoMakeError;
 use crate::execution_plan::create as create_execution_plan;
+use crate::execution_plan::ExecutionPlanBuilder;
 use crate::functions;
 use crate::installer;
 use crate::logger;
@@ -39,7 +40,6 @@ use std::time::SystemTime;
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
 where
-    // fn() -> Result<(), CargoMakeError>
     F: FnMut() -> Result<bool, CargoMakeError>,
 {
     let revert_directory = match step.config.cwd {
@@ -597,15 +597,16 @@ pub(crate) fn run_flow(
 ) -> Result<(), CargoMakeError> {
     let allow_private = sub_flow || flow_info.allow_private;
 
-    let execution_plan = create_execution_plan(
-        &flow_info.config,
-        &flow_info.task,
-        &flow_info.env_info.crate_info,
-        flow_info.disable_workspace,
+    let execution_plan = ExecutionPlanBuilder {
+        crate_info: Some(&flow_info.env_info.crate_info),
+        disable_workspace: flow_info.disable_workspace,
         allow_private,
         sub_flow,
-        &flow_info.skip_tasks_pattern,
-    )?;
+        skip_tasks_pattern: flow_info.skip_tasks_pattern.as_ref(),
+        skip_init_end_tasks: flow_info.skip_init_end_tasks,
+        ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
+    }
+    .build();
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     run_task_flow(&flow_info, flow_state, &execution_plan)?;

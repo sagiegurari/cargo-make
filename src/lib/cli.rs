@@ -144,12 +144,14 @@ pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), Cargo
         )
     } else if cli_args.print_only {
         cli_commands::print_steps::print(
+            &mut std::io::stdout(),
             &config,
             &task,
             &cli_args.output_format,
             cli_args.disable_workspace,
             &cli_args.skip_tasks_pattern,
             &env_info.crate_info,
+            cli_args.skip_init_end_tasks,
         )
     } else {
         runner::run(
