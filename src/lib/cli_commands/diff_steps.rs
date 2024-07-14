@@ -8,7 +8,7 @@
 mod diff_steps_test;
 
 use crate::command;
-use crate::execution_plan::create as create_execution_plan;
+use crate::execution_plan::ExecutionPlanBuilder;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
 use regex::Regex;
@@ -40,25 +40,23 @@ pub(crate) fn run(
         None => None,
     };
 
-    let internal_execution_plan = create_execution_plan(
-        internal_config,
-        &task,
-        crateinfo,
-        cli_args.disable_workspace,
-        true,
-        false,
-        &skip_tasks_pattern,
-    );
+    let internal_execution_plan = ExecutionPlanBuilder {
+        crate_info: Some(crateinfo),
+        disable_workspace: cli_args.disable_workspace,
+        allow_private: true,
+        skip_tasks_pattern: skip_tasks_pattern.as_ref(),
+        ..ExecutionPlanBuilder::new(internal_config, &task)
+    }
+    .build();
 
-    let external_execution_plan = create_execution_plan(
-        external_config,
-        &task,
-        crateinfo,
-        cli_args.disable_workspace,
-        true,
-        false,
-        &skip_tasks_pattern,
-    );
+    let external_execution_plan = ExecutionPlanBuilder {
+        crate_info: Some(crateinfo),
+        disable_workspace: cli_args.disable_workspace,
+        allow_private: true,
+        skip_tasks_pattern: skip_tasks_pattern.as_ref(),
+        ..ExecutionPlanBuilder::new(external_config, &task)
+    }
+    .build();
 
     let internal_file = create_file(
         &move |file: &mut File| write_as_string(&internal_execution_plan, &file),

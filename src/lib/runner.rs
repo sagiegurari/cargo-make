@@ -15,7 +15,7 @@ mod runner_test;
 use crate::command;
 use crate::condition;
 use crate::environment;
-use crate::execution_plan::create as create_execution_plan;
+use crate::execution_plan::ExecutionPlanBuilder;
 use crate::functions;
 use crate::installer;
 use crate::logger;
@@ -563,15 +563,16 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
 pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, sub_flow: bool) {
     let allow_private = sub_flow || flow_info.allow_private;
 
-    let execution_plan = create_execution_plan(
-        &flow_info.config,
-        &flow_info.task,
-        &flow_info.env_info.crate_info,
-        flow_info.disable_workspace,
+    let execution_plan = ExecutionPlanBuilder {
+        crate_info: Some(&flow_info.env_info.crate_info),
+        disable_workspace: flow_info.disable_workspace,
         allow_private,
         sub_flow,
-        &flow_info.skip_tasks_pattern,
-    );
+        skip_tasks_pattern: flow_info.skip_tasks_pattern.as_ref(),
+        skip_init_end_tasks: flow_info.skip_init_end_tasks,
+        ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
+    }
+    .build();
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     run_task_flow(&flow_info, flow_state, &execution_plan);
