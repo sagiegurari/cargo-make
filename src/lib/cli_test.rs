@@ -724,7 +724,8 @@ fn run_set_task_var_args() {
         Some(vec![
             "cargo", "make", "empty", "abc", "-p", "foo/bar/", "def",
         ]),
-    ).unwrap();
+    )
+    .unwrap();
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
 

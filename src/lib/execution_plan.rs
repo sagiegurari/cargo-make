@@ -491,17 +491,17 @@ impl<'a> ExecutionPlanBuilder<'a> {
             match config.config.legacy_migration_task {
                 Some(ref task) => add_predefined_step(config, task, &mut steps)?,
                 None => {
-                    return Err(CargoMakeError::NotFound(String::from(
+                    /* return Err(CargoMakeError::NotFound(String::from(
                         "Legacy migration task not defined.",
-                    )))
+                    ))) */
                 }
             };
             match config.config.init_task {
                 Some(ref task) => add_predefined_step(config, task, &mut steps)?,
                 None => {
-                    return Err(CargoMakeError::NotFound(String::from(
+                    /* return Err(CargoMakeError::NotFound(String::from(
                         "Init task not defined.",
-                    )))
+                    ))) */
                 }
             };
         }
@@ -542,9 +542,9 @@ impl<'a> ExecutionPlanBuilder<'a> {
             match config.config.end_task {
                 Some(ref task) => add_predefined_step(config, task, &mut steps)?,
                 None => {
-                    return Err(CargoMakeError::NotFound(String::from(
+                    /* return Err(CargoMakeError::NotFound(String::from(
                         "Ent task not defined.",
-                    )))
+                    ))) */
                 }
             };
         }
