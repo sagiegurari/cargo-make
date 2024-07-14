@@ -2574,7 +2574,7 @@ fn run_flow_skip_init_end_tasks() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 
     // Test with only end_task existing.
     let flow_info = {
@@ -2586,5 +2586,5 @@ fn run_flow_skip_init_end_tasks() {
         flow_info
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 }

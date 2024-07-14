@@ -12,11 +12,18 @@
 #[path = "runner_test.rs"]
 mod runner_test;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::thread;
+use std::time::SystemTime;
+
+use indexmap::IndexMap;
+use regex::Regex;
+
 use crate::command;
 use crate::condition;
 use crate::environment;
 use crate::error::CargoMakeError;
-use crate::execution_plan::create as create_execution_plan;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::functions;
 use crate::installer;
@@ -31,12 +38,6 @@ use crate::types::{
     MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
     TaskWatchOptions,
 };
-use indexmap::IndexMap;
-use regex::Regex;
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::thread;
-use std::time::SystemTime;
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
 where
@@ -606,7 +607,7 @@ pub(crate) fn run_flow(
         skip_init_end_tasks: flow_info.skip_init_end_tasks,
         ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
     }
-    .build();
+    .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     run_task_flow(&flow_info, flow_state, &execution_plan)?;

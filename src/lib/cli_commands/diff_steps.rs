@@ -9,7 +9,6 @@ mod diff_steps_test;
 
 use crate::command;
 use crate::error::CargoMakeError;
-use crate::execution_plan::create as create_execution_plan;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
@@ -49,7 +48,7 @@ pub(crate) fn run(
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
         ..ExecutionPlanBuilder::new(internal_config, &task)
     }
-    .build();
+    .build()?;
 
     let external_execution_plan = ExecutionPlanBuilder {
         crate_info: Some(crateinfo),
@@ -58,7 +57,7 @@ pub(crate) fn run(
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
         ..ExecutionPlanBuilder::new(external_config, &task)
     }
-    .build();
+    .build()?;
 
     let internal_file = create_file(
         &move |file: &mut File| write_as_string(&internal_execution_plan, &file),

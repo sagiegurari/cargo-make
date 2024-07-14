@@ -19,29 +19,32 @@ pub enum CargoMakeError {
     #[strum(to_string = "Detected cycle while resolving alias {0}: {1}")]
     AliasCycle(String, String) = 101,
 
+    #[strum(to_string = "Circular reference found for task: {0:#?}")]
+    CircularReference(String) = 102,
+
     #[strum(to_string = "Unable to run, minimum required version is: {0}")]
-    VersionTooOld(String) = 102,
+    VersionTooOld(String) = 103,
 
     #[strum(to_string = "Error while executing command, unable to extract exit code.")]
-    ExitCodeValidation = 103,
+    ExitCodeValidation = 104,
 
     #[strum(to_string = "Error while executing command, exit code: {0}")]
-    ExitCodeError(i32) = 104,
+    ExitCodeError(i32) = 105,
 
     #[strum(to_string = "Unable to parse internal descriptor: {0}")]
-    DescriptorParseFailed(String) = 105,
+    DescriptorParseFailed(String) = 106,
 
     #[strum(to_string = "Unable to parse external file: {0:#?}, {1}")]
-    ParseFileFailed(String, String) = 106,
+    ParseFileFailed(String, String) = 107,
 
     #[strum(to_string = "{0}")]
-    Arity(&'static str) = 107,
+    Arity(&'static str) = 108,
 
     #[strum(to_string = "{0}")]
-    MethodCallRestriction(&'static str) = 108,
+    MethodCallRestriction(&'static str) = 109,
 
     #[strum(to_string = "Task {0:#?} is {1}")]
-    TaskIs(String, &'static str),
+    TaskIs(String, &'static str) = 110,
 
     #[strum(to_string = "{0}")]
     NotFound(String) = 404,

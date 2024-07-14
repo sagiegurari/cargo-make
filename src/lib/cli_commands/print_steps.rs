@@ -8,7 +8,6 @@
 mod print_steps_test;
 
 use crate::error::CargoMakeError;
-use crate::execution_plan::create as create_execution_plan;
 use std::io;
 
 use crate::execution_plan::ExecutionPlanBuilder;
@@ -104,7 +103,7 @@ pub fn print(
         skip_init_end_tasks,
         ..ExecutionPlanBuilder::new(&config, &task)
     }
-    .build();
+    .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     let print_format = get_format_type(&output_format);

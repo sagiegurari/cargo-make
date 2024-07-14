@@ -487,7 +487,7 @@ fn is_workspace_flow_true_default() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -518,7 +518,7 @@ fn is_workspace_flow_false_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -549,7 +549,7 @@ fn is_workspace_flow_true_in_config() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -578,7 +578,7 @@ fn is_workspace_flow_true_in_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -606,7 +606,7 @@ fn is_workspace_flow_default_false_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
 
     assert!(!workspace_flow);
 }
@@ -635,7 +635,7 @@ fn is_workspace_flow_true_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
 
     assert!(workspace_flow);
 }
@@ -664,7 +664,7 @@ fn is_workspace_flow_false_in_task_and_sub_flow() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, true);
 
     assert!(!workspace_flow);
 }
@@ -689,7 +689,7 @@ fn is_workspace_flow_task_not_defined() {
         plugins: None,
     };
 
-    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "notfound", false, &crate_info, false);
 
     assert!(workspace_flow);
 }
@@ -711,7 +711,7 @@ fn is_workspace_flow_no_workspace() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -740,7 +740,7 @@ fn is_workspace_flow_disabled_via_cli() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", true, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -769,7 +769,7 @@ fn is_workspace_flow_disabled_via_task() {
     };
     config.tasks.insert("test".to_string(), task);
 
-    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false).unwrap();
+    let workspace_flow = is_workspace_flow(&config, "test", false, &crate_info, false);
 
     assert!(!workspace_flow);
 }
@@ -799,7 +799,8 @@ fn create_single() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -832,7 +833,8 @@ fn create_single_disabled() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -861,7 +863,9 @@ fn create_single_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    ExecutionPlanBuilder::new(&config, "test-private").build();
+    ExecutionPlanBuilder::new(&config, "test-private")
+        .build()
+        .unwrap();
 }
 
 #[test]
@@ -890,7 +894,8 @@ fn create_single_allow_private() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test-private")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test-private");
@@ -928,7 +933,8 @@ fn create_with_dependencies() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -970,7 +976,8 @@ fn create_with_foreign_dependencies_directory() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1017,7 +1024,8 @@ fn create_with_foreign_dependencies_filename() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1064,7 +1072,8 @@ fn create_with_foreign_dependencies_file_and_directory() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1109,7 +1118,8 @@ fn create_with_dependencies_sub_flow() {
         sub_flow: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "task_dependency");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1147,7 +1157,8 @@ fn create_disabled_task_with_dependencies() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -1185,7 +1196,8 @@ fn create_with_dependencies_disabled() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1298,7 +1310,8 @@ fn create_platform_disabled() {
         allow_private: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
@@ -1337,7 +1350,8 @@ fn create_with_dependencies_and_skip_filter() {
         skip_tasks_pattern: Some(&skip_filter),
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -1362,13 +1376,14 @@ fn create_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
+    let crateinfo = environment::crateinfo::load().unwrap();
     let execution_plan = ExecutionPlanBuilder {
         allow_private: true,
         crate_info: Some(&crateinfo),
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -1391,14 +1406,15 @@ fn create_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
+    let crateinfo = environment::crateinfo::load().unwrap();
     let execution_plan = ExecutionPlanBuilder {
         disable_workspace: true,
         allow_private: true,
         crate_info: Some(&crateinfo),
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
@@ -1419,7 +1435,8 @@ fn create_task_extends_empty_env_bug_verification() {
         disable_workspace: true,
         ..ExecutionPlanBuilder::new(&config, "task2")
     }
-    .build();
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 3);
 
@@ -1617,7 +1634,8 @@ fn respect_skip_init_end_tasks() {
         skip_init_end_tasks: true,
         ..ExecutionPlanBuilder::new(&config, "test")
     }
-    .build();
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
 }
