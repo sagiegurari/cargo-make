@@ -159,7 +159,12 @@ pub fn create_cli(global_config: &GlobalConfig) -> CliSpec {
         }))
         .add_command("makers")
         .add_subcommand(vec!["cargo", "make"])
-        .add_subcommand(vec!["cargo-make", "make"]) // done by cargo
+        .add_subcommand(vec!["cargo-make", "make"]); // done by cargo
+    add_arguments(spec, default_task_name, default_log_level)
+}
+
+fn add_arguments(spec: CliSpec, default_task_name: &str, default_log_level: &str) -> CliSpec {
+    spec
         .add_argument(Argument {
             name: "help".to_string(),
             key: vec!["--help".to_string(), "-h".to_string()],
@@ -452,9 +457,7 @@ pub fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             help: Some(ArgumentHelp::Text(
                 "The task to execute, potentially including arguments which can be accessed in the task itself.".to_string(),
             )),
-        }));
-
-    spec
+        }))
 }
 
 pub fn parse_args(
@@ -474,20 +477,20 @@ pub fn parse_args(
         // generate help text
         let help_text = cliparser::help(&spec);
         println!("{}", help_text);
-        return Err(std::process::ExitCode::SUCCESS.into());
+        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
     } else if cli_parsed.arguments.contains("version") {
         // generate version text
         let version_text = cliparser::version(&spec);
         println!("{}", version_text);
-        return Err(std::process::ExitCode::SUCCESS.into());
+        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } else {
+        Ok(get_args(
+            &cli_parsed,
+            &global_config,
+            command_name,
+            sub_command,
+        ))
     }
-
-    return Ok(get_args(
-        &cli_parsed,
-        &global_config,
-        command_name,
-        sub_command,
-    ));
 }
 
 pub fn parse(
