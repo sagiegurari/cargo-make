@@ -135,7 +135,7 @@ fn get_args(
     cli_args
 }
 
-pub fn create_cli(global_config: &GlobalConfig) -> CliSpec {
+pub fn create_cli(global_config: &GlobalConfig, mut spec: CliSpec, default_meta: bool) -> CliSpec {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -145,21 +145,21 @@ pub fn create_cli(global_config: &GlobalConfig) -> CliSpec {
         None => &DEFAULT_LOG_LEVEL,
     };
 
-    let mut spec = CliSpec::new();
-
-    spec = spec
-        .set_meta_info(Some(CliSpecMetaInfo {
-            author: Some(AUTHOR.to_string()),
-            version: Some(VERSION.to_string()),
-            description: Some(DESCRIPTION.to_string()),
-            project: Some("cargo-make".to_string()),
-            help_post_text: Some(
-                "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
-            ),
-        }))
-        .add_command("makers")
-        .add_subcommand(vec!["cargo", "make"])
-        .add_subcommand(vec!["cargo-make", "make"]); // done by cargo
+    if default_meta {
+        spec = spec
+            .set_meta_info(Some(CliSpecMetaInfo {
+                author: Some(AUTHOR.to_string()),
+                version: Some(VERSION.to_string()),
+                description: Some(DESCRIPTION.to_string()),
+                project: Some("cargo-make".to_string()),
+                help_post_text: Some(
+                    "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
+                ),
+            }))
+            .add_command("makers")
+            .add_subcommand(vec!["cargo", "make"])
+            .add_subcommand(vec!["cargo-make", "make"]); // done by cargo
+    }
     add_arguments(spec, default_task_name, default_log_level)
 }
 
@@ -465,9 +465,8 @@ pub fn parse_args(
     command_name: &str,
     sub_command: bool,
     args: Option<Vec<&str>>,
+    spec: CliSpec,
 ) -> Result<CliArgs, CargoMakeError> {
-    let spec = create_cli(&global_config);
-
     let cli_parsed = match args {
         Some(args_vec) => cliparser::parse(&args_vec, &spec),
         None => cliparser::parse_process(&spec),
@@ -498,7 +497,13 @@ pub fn parse(
     command_name: &str,
     sub_command: bool,
 ) -> Result<CliArgs, CargoMakeError> {
-    parse_args(global_config, command_name, sub_command, None)
+    parse_args(
+        global_config,
+        command_name,
+        sub_command,
+        None,
+        create_cli(&global_config, CliSpec::new(), true),
+    )
 }
 
 fn to_owned_vec(vec_option: Option<&Vec<String>>) -> Option<Vec<String>> {

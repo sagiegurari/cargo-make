@@ -3,7 +3,13 @@ use super::*;
 fn default_parse_cli_args(mut args: Vec<&str>) -> Result<CliArgs, CargoMakeError> {
     let global_config = GlobalConfig::new();
     args.insert(0, "makers");
-    parse_args(&global_config, "makers", false, Some(args))
+    parse_args(
+        &global_config,
+        "makers",
+        false,
+        Some(args),
+        create_cli(&global_config, CliSpec::new(), true),
+    )
 }
 
 fn default_parsed_cli_args() -> CliArgs {
@@ -55,7 +61,14 @@ fn assert_cli_args(cli_args_ref1: &CliArgs, cli_args_ref2: &CliArgs) {
 #[test]
 fn parse_args_makers() {
     let global_config = GlobalConfig::new();
-    let cli_args = parse_args(&global_config, "makers", false, Some(vec!["makers"])).unwrap();
+    let cli_args = parse_args(
+        &global_config,
+        "makers",
+        false,
+        Some(vec!["makers"]),
+        create_cli(&global_config, CliSpec::new(), true),
+    )
+    .unwrap();
 
     let expected = default_parsed_cli_args();
 
@@ -65,7 +78,14 @@ fn parse_args_makers() {
 #[test]
 fn parse_args_cargo_make() {
     let global_config = GlobalConfig::new();
-    let cli_args = parse_args(&global_config, "make", true, Some(vec!["cargo", "make"])).unwrap();
+    let cli_args = parse_args(
+        &global_config,
+        "make",
+        true,
+        Some(vec!["cargo", "make"]),
+        create_cli(&global_config, CliSpec::new(), true),
+    )
+    .unwrap();
 
     let mut expected = default_parsed_cli_args();
     expected.command = "cargo make".to_string();
