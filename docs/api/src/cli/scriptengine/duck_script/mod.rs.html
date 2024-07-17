@@ -109,6 +109,7 @@
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
 <a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # duck_script
 //!
 //! Compiles and runs duckscript code.
@@ -121,6 +122,7 @@
 <span class="kw">mod </span>sdk;
 
 <span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::logger::{get_level, get_log_level, LogLevel};
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState};
 <span class="kw">use </span>duckscript::runner;
@@ -136,7 +138,7 @@
     flow_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>FlowInfo&gt;,
     flow_state: <span class="prelude-ty">Option</span>&lt;Rc&lt;RefCell&lt;FlowState&gt;&gt;&gt;,
     validate: bool,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>array_command = <span class="string">"@ = array"</span>.to_string();
     <span class="kw">let </span><span class="kw-2">mut </span>index = <span class="number">0</span>;
     <span class="kw">for _ in </span>cli_arguments {
@@ -169,7 +171,7 @@
                         <span class="macro">error!</span>(<span class="string">"Error while running duckscript: {}"</span>, error);
                     }
 
-                    <span class="kw">return </span><span class="bool-val">false</span>;
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
                 }
             };
 
@@ -178,15 +180,15 @@
                 environment::setup_cwd(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>directory));
             }
 
-            <span class="bool-val">true
-        </span>}
+            <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+        }
         <span class="prelude-val">Err</span>(error) =&gt; {
             <span class="kw">if </span>validate {
                 <span class="macro">error!</span>(<span class="string">"Unable to load duckscript SDK: {}"</span>, error);
             }
 
-            <span class="bool-val">false
-        </span>}
+            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+        }
     }
 }
 

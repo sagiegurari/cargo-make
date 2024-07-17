@@ -63,6 +63,7 @@
 <a href="#63" id="63">63</a>
 <a href="#64" id="64">64</a>
 <a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cargo_alias
 //!
 //! Dynamically creates tasks based on alias information in the cargo config.
@@ -72,6 +73,7 @@
 #[path = <span class="string">"cargo_alias_test.rs"</span>]
 </span><span class="kw">mod </span>cargo_alias_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="kw">use </span><span class="kw">crate</span>::types::{InstallCrate, Task};
 <span class="kw">use </span>std::collections::HashMap;
@@ -89,13 +91,13 @@
     alias: <span class="prelude-ty">Option</span>&lt;HashMap&lt;String, AliasValue&gt;&gt;,
 }
 
-<span class="kw">fn </span>load_from_file(file: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;(String, Task)&gt; {
+<span class="kw">fn </span>load_from_file(file: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;(String, Task)&gt;, CargoMakeError&gt; {
     <span class="kw">let </span>file_path = Path::new(file);
 
     <span class="kw">let </span><span class="kw-2">mut </span>tasks = <span class="macro">vec!</span>[];
     <span class="kw">if </span>file_path.exists() {
         <span class="kw">if </span>file_path.is_file() {
-            <span class="kw">let </span>text = io::read_text_file(<span class="kw-2">&amp;</span>file_path.to_path_buf());
+            <span class="kw">let </span>text = io::read_text_file(<span class="kw-2">&amp;</span>file_path.to_path_buf())<span class="question-mark">?</span>;
 
             <span class="kw">if </span>!text.is_empty() {
                 <span class="kw">let </span>cargo_config: CargoConfig = <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>text) {
@@ -122,10 +124,10 @@
         }
     }
 
-    tasks
+    <span class="prelude-val">Ok</span>(tasks)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load() -&gt; Vec&lt;(String, Task)&gt; {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load() -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;(String, Task)&gt;, CargoMakeError&gt; {
     load_from_file(<span class="string">"./.cargo/config.toml"</span>)
 }
 </code></pre></div></section></main></body></html>

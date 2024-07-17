@@ -79,6 +79,9 @@
 <a href="#79" id="79">79</a>
 <a href="#80" id="80">80</a>
 <a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
 </pre></div><pre class="rust"><code><span class="attr">#![deny(
     future_incompatible,
     keyword_idents,
@@ -116,7 +119,9 @@
 //!
 
 </span><span class="comment">// Dependencies used in the binary `makers`:
-</span><span class="attr">#[cfg(windows)]
+</span><span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+<span class="kw">use </span><span class="kw">crate</span>::types::CliArgs;
+<span class="attr">#[cfg(windows)]
 </span><span class="kw">use </span>nu_ansi_term <span class="kw">as _</span>;
 
 <span class="attr">#[macro_use]
@@ -131,14 +136,15 @@
 </span><span class="kw">pub mod </span>types;
 
 <span class="kw">mod </span>cache;
-<span class="kw">mod </span>cli;
-<span class="kw">mod </span>cli_commands;
-<span class="kw">mod </span>cli_parser;
+<span class="kw">pub mod </span>cli;
+<span class="kw">pub mod </span>cli_commands;
+<span class="kw">pub mod </span>cli_parser;
 <span class="kw">mod </span>command;
 <span class="kw">mod </span>condition;
-<span class="kw">mod </span>config;
+<span class="kw">pub mod </span>config;
 <span class="kw">mod </span>descriptor;
 <span class="kw">mod </span>environment;
+<span class="kw">pub mod </span>error;
 <span class="kw">mod </span>execution_plan;
 <span class="kw">mod </span>functions;
 <span class="kw">mod </span>installer;
@@ -149,7 +155,7 @@
 <span class="kw">mod </span>profile;
 <span class="kw">mod </span>proxy_task;
 <span class="kw">mod </span>recursion_level;
-<span class="kw">mod </span>runner;
+<span class="kw">pub mod </span>runner;
 <span class="kw">mod </span>scriptengine;
 <span class="kw">mod </span>storage;
 <span class="kw">mod </span>time_summary;
@@ -157,7 +163,7 @@
 <span class="kw">mod </span>version;
 
 <span class="doccomment">/// Handles the command line arguments and executes the runner.
-</span><span class="kw">pub fn </span>run_cli(command_name: String, sub_command: bool) {
+</span><span class="kw">pub fn </span>run_cli(command_name: String, sub_command: bool) -&gt; <span class="prelude-ty">Result</span>&lt;CliArgs, CargoMakeError&gt; {
     cli::run_cli(command_name, sub_command)
 }
 </code></pre></div></section></main></body></html>

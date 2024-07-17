@@ -639,6 +639,7 @@
 <a href="#639" id="639">639</a>
 <a href="#640" id="640">640</a>
 <a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # descriptor
 //!
 //! Loads the tasks descriptor.&lt;br&gt;
@@ -663,6 +664,7 @@
 <span class="kw">use </span>indexmap::IndexMap;
 
 <span class="kw">use </span><span class="kw">crate</span>::descriptor::env::{merge_env, merge_env_files, merge_env_scripts};
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::plugin::descriptor::merge_plugins_config;
 <span class="kw">use </span><span class="kw">crate</span>::types::{
     Config, ConfigSection, EnvFile, EnvFileInfo, EnvValue, Extend, ExternalConfig, ModifyConfig,
@@ -783,7 +785,7 @@
     external_config
 }
 
-<span class="kw">fn </span>run_load_script(external_config: <span class="kw-2">&amp;</span>ExternalConfig) -&gt; bool {
+<span class="kw">fn </span>run_load_script(external_config: <span class="kw-2">&amp;</span>ExternalConfig) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">match </span>external_config.config {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>config) =&gt; {
             <span class="kw">let </span>load_script = config.get_load_script();
@@ -792,27 +794,27 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
                     <span class="macro">debug!</span>(<span class="string">"Load script found."</span>);
 
-                    scriptengine::invoke_script_pre_flow(script, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[]);
+                    scriptengine::invoke_script_pre_flow(script, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[])<span class="question-mark">?</span>;
 
-                    <span class="bool-val">true
-                </span>}
+                    <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+                }
                 <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">debug!</span>(<span class="string">"No load script defined."</span>);
-                    <span class="bool-val">false
-                </span>}
+                    <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+                }
             }
         }
         <span class="prelude-val">None </span>=&gt; {
             <span class="macro">debug!</span>(<span class="string">"No load script defined."</span>);
-            <span class="bool-val">false
-        </span>}
+            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+        }
     }
 }
 
 <span class="kw">fn </span>merge_external_configs(
     config: ExternalConfig,
     parent_config: ExternalConfig,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, String&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="comment">// merge env files
     </span><span class="kw">let </span><span class="kw-2">mut </span>parent_env_files = <span class="kw">match </span>parent_config.env_files {
         <span class="prelude-val">Some</span>(env_files) =&gt; env_files,
@@ -887,7 +889,7 @@
 <span class="kw">fn </span>load_descriptor_extended_makefiles(
     parent_path: <span class="kw-2">&amp;</span>str,
     extend_struct: <span class="kw-2">&amp;</span>Extend,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, String&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="kw">match </span>extend_struct {
         Extend::Path(base_file) =&gt; load_external_descriptor(parent_path, <span class="kw-2">&amp;</span>base_file, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
         Extend::Options(extend_options) =&gt; {
@@ -915,7 +917,7 @@
 
 <span class="doccomment">/// Ensure the Makefile's min_version, if present, is older than cargo-make's
 /// currently running version.
-</span><span class="kw">fn </span>check_makefile_min_version(external_descriptor: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+</span><span class="kw">fn </span>check_makefile_min_version(external_descriptor: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>value: toml::Value = <span class="kw">match </span>toml::from_str(<span class="kw-2">&amp;</span>external_descriptor) {
         <span class="prelude-val">Ok</span>(value) =&gt; value,
         <span class="comment">// If there's an error parsing the file, let the caller function figure
@@ -930,11 +932,7 @@
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>min_version) = min_version {
         <span class="kw">if </span>version::is_newer_found(<span class="kw-2">&amp;</span>min_version) {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
-                <span class="string">"Unable to run, minimum required version is: {}"</span>,
-                <span class="kw-2">&amp;</span>min_version
-            )
-            .to_string());
+            <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::VersionTooOld(min_version.to_string()));
         }
     }
 
@@ -946,7 +944,7 @@
     file_name: <span class="kw-2">&amp;</span>str,
     force: bool,
     set_env: bool,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, String&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="macro">debug!</span>(
         <span class="string">"Loading tasks from file: {} base directory: {}"</span>,
         <span class="kw-2">&amp;</span>file_name, <span class="kw-2">&amp;</span>base_path
@@ -962,17 +960,17 @@
             envmnt::set(<span class="string">"CARGO_MAKE_MAKEFILE_PATH"</span>, <span class="kw-2">&amp;</span>absolute_file_path);
         }
 
-        <span class="kw">let </span>external_descriptor = io::read_text_file(<span class="kw-2">&amp;</span>file_path);
+        <span class="kw">let </span>external_descriptor = io::read_text_file(<span class="kw-2">&amp;</span>file_path)<span class="question-mark">?</span>;
 
         check_makefile_min_version(<span class="kw-2">&amp;</span>external_descriptor)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>file_config =
-            descriptor_deserializer::load_external_config(<span class="kw-2">&amp;</span>external_descriptor, <span class="kw-2">&amp;</span>file_path_string);
+            descriptor_deserializer::load_external_config(<span class="kw-2">&amp;</span>external_descriptor, <span class="kw-2">&amp;</span>file_path_string)<span class="question-mark">?</span>;
         <span class="macro">debug!</span>(<span class="string">"Loaded external config: {:#?}"</span>, <span class="kw-2">&amp;</span>file_config);
 
         file_config = add_file_location_info(file_config, <span class="kw-2">&amp;</span>absolute_file_path);
 
-        run_load_script(<span class="kw-2">&amp;</span>file_config);
+        run_load_script(<span class="kw-2">&amp;</span>file_config)<span class="question-mark">?</span>;
 
         <span class="kw">match </span>file_config.extend {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extend_struct) =&gt; {
@@ -993,7 +991,10 @@
         }
     } <span class="kw">else if </span>force {
         <span class="macro">error!</span>(<span class="string">"Descriptor file: {:#?} not found."</span>, <span class="kw-2">&amp;</span>file_path);
-        <span class="macro">panic!</span>(<span class="string">"Descriptor file: {:#?} not found."</span>, <span class="kw-2">&amp;</span>file_path);
+        <span class="prelude-val">Err</span>(CargoMakeError::NotFound(<span class="macro">format!</span>(
+            <span class="string">"Descriptor file: {:#?} not found."</span>,
+            <span class="kw-2">&amp;</span>file_path
+        )))
     } <span class="kw">else </span>{
         <span class="macro">debug!</span>(<span class="string">"External file not found or is not a file, skipping."</span>);
 
@@ -1005,7 +1006,7 @@
     stable: bool,
     experimental: bool,
     modify_config: <span class="prelude-ty">Option</span>&lt;ModifyConfig&gt;,
-) -&gt; Config {
+) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
     <span class="macro">debug!</span>(<span class="string">"Loading base tasks."</span>);
 
     <span class="kw">let </span>base_descriptor = <span class="kw">if </span>stable {
@@ -1014,7 +1015,7 @@
         makefiles::BASE
     };
 
-    <span class="kw">let </span><span class="kw-2">mut </span>base_config = descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>base_descriptor, <span class="bool-val">false</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>base_config = descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>base_descriptor, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
     <span class="macro">debug!</span>(<span class="string">"Loaded base config: {:#?}"</span>, <span class="kw-2">&amp;</span>base_config);
 
     <span class="kw">if </span>experimental {
@@ -1022,7 +1023,7 @@
         <span class="kw">let </span>experimental_descriptor = makefiles::BETA;
 
         <span class="kw">let </span>experimental_config =
-            descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>experimental_descriptor, <span class="bool-val">false</span>);
+            descriptor_deserializer::load_config(<span class="kw-2">&amp;</span>experimental_descriptor, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
         <span class="macro">debug!</span>(<span class="string">"Loaded experimental config: {:#?}"</span>, <span class="kw-2">&amp;</span>experimental_config);
 
         <span class="kw">let </span><span class="kw-2">mut </span>base_tasks = base_config.tasks;
@@ -1053,7 +1054,7 @@
         <span class="prelude-val">None </span>=&gt; (),
     };
 
-    base_config
+    <span class="prelude-val">Ok</span>(base_config)
 }
 
 <span class="kw">fn </span>merge_base_config_and_external_config(
@@ -1061,7 +1062,7 @@
     external_config: ExternalConfig,
     env_map: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     late_merge: bool,
-) -&gt; <span class="prelude-ty">Result</span>&lt;Config, String&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>external_tasks = <span class="kw">match </span>external_config.tasks {
         <span class="prelude-val">Some</span>(tasks) =&gt; tasks,
         <span class="prelude-val">None </span>=&gt; IndexMap::new(),
@@ -1153,8 +1154,8 @@
     stable: bool,
     experimental: bool,
     modify_core_tasks: <span class="prelude-ty">Option</span>&lt;ModifyConfig&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;Config, String&gt; {
-    <span class="kw">let </span>default_config = load_internal_descriptors(stable, experimental, modify_core_tasks);
+) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
+    <span class="kw">let </span>default_config = load_internal_descriptors(stable, experimental, modify_core_tasks)<span class="question-mark">?</span>;
 
     <span class="kw">let </span><span class="kw-2">mut </span>external_config = load_external_descriptor(<span class="string">"."</span>, file_name, force, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
@@ -1195,10 +1196,10 @@
     <span class="prelude-val">Ok</span>(config)
 }
 
-<span class="kw">fn </span>load_cargo_aliases(config: <span class="kw-2">&amp;mut </span>Config) {
+<span class="kw">fn </span>load_cargo_aliases(config: <span class="kw-2">&amp;mut </span>Config) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(load_cargo_aliases) = config.config.load_cargo_aliases {
         <span class="kw">if </span>load_cargo_aliases {
-            <span class="kw">let </span>alias_tasks = cargo_alias::load();
+            <span class="kw">let </span>alias_tasks = cargo_alias::load()<span class="question-mark">?</span>;
             <span class="kw">for </span>(name, task) <span class="kw">in </span>alias_tasks {
                 <span class="kw">match </span>config.tasks.get(<span class="kw-2">&amp;</span>name) {
                     <span class="prelude-val">None </span>=&gt; {
@@ -1210,6 +1211,7 @@
             }
         }
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Loads the tasks descriptor.&lt;br&gt;
@@ -1219,12 +1221,12 @@
 /// the default descriptor. &lt;br&gt; If one of the descriptor requires a newer
 /// version of cargo-make, returns an error with the minimum version required by
 /// the descriptor.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load(
+</span><span class="kw">pub fn </span>load(
     file_name: <span class="kw-2">&amp;</span>str,
     force: bool,
     env_map: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     experimental: bool,
-) -&gt; <span class="prelude-ty">Result</span>&lt;Config, String&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
     <span class="comment">// load extended descriptor only
     </span><span class="kw">let </span><span class="kw-2">mut </span>config = load_descriptors(<span class="kw-2">&amp;</span>file_name, force, env_map.clone(), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
 
@@ -1247,7 +1249,7 @@
                 }
             }
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">let </span>core_config = load_internal_descriptors(<span class="bool-val">true</span>, experimental, modify_core_tasks);
+                <span class="kw">let </span>core_config = load_internal_descriptors(<span class="bool-val">true</span>, experimental, modify_core_tasks)<span class="question-mark">?</span>;
                 <span class="kw">let </span>external_config = ExternalConfig {
                     extend: <span class="prelude-val">None</span>,
                     config: <span class="prelude-val">Some</span>(config.config),
@@ -1268,7 +1270,7 @@
         };
     }
 
-    load_cargo_aliases(<span class="kw-2">&amp;mut </span>config);
+    load_cargo_aliases(<span class="kw-2">&amp;mut </span>config)<span class="question-mark">?</span>;
 
     <span class="kw">if let </span><span class="prelude-val">Some</span>(unstable_features) = <span class="kw-2">&amp;</span>config.config.unstable_features {
         <span class="kw">for </span>feature <span class="kw">in </span>unstable_features {

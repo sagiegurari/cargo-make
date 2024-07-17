@@ -512,13 +512,6 @@
 <a href="#512" id="512">512</a>
 <a href="#513" id="513">513</a>
 <a href="#514" id="514">514</a>
-<a href="#515" id="515">515</a>
-<a href="#516" id="516">516</a>
-<a href="#517" id="517">517</a>
-<a href="#518" id="518">518</a>
-<a href="#519" id="519">519</a>
-<a href="#520" id="520">520</a>
-<a href="#521" id="521">521</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cli_parser
 //!
 //! Defines the cli args and parsers them.
@@ -538,18 +531,7 @@
     CliSpecMetaInfo, PositionalArgument,
 };
 
-<span class="attr">#[cfg(test)]
-</span><span class="kw">fn </span>exit() -&gt; ! {
-    <span class="macro">panic!</span>(<span class="string">"{}"</span>, <span class="string">"exit test"</span>);
-}
-
-<span class="attr">#[cfg(not(test))]
-</span><span class="kw">use </span>std::process;
-
-<span class="attr">#[cfg(not(test))]
-</span><span class="kw">fn </span>exit() -&gt; ! {
-    process::exit(<span class="number">0</span>);
-}
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 
 <span class="kw">fn </span>get_args(
     cli_parsed: <span class="kw-2">&amp;</span>CliParsed,
@@ -667,7 +649,7 @@
     cli_args
 }
 
-<span class="kw">fn </span>create_cli(global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; CliSpec {
+<span class="kw">pub fn </span>create_cli(global_config: <span class="kw-2">&amp;</span>GlobalConfig, <span class="kw-2">mut </span>spec: CliSpec, default_meta: bool) -&gt; CliSpec {
     <span class="kw">let </span>default_task_name = <span class="kw">match </span>global_config.default_task_name {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.as_str(),
         <span class="prelude-val">None </span>=&gt; <span class="kw-2">&amp;</span>DEFAULT_TASK_NAME,
@@ -677,22 +659,27 @@
         <span class="prelude-val">None </span>=&gt; <span class="kw-2">&amp;</span>DEFAULT_LOG_LEVEL,
     };
 
-    <span class="kw">let </span><span class="kw-2">mut </span>spec = CliSpec::new();
+    <span class="kw">if </span>default_meta {
+        spec = spec
+            .set_meta_info(<span class="prelude-val">Some</span>(CliSpecMetaInfo {
+                author: <span class="prelude-val">Some</span>(AUTHOR.to_string()),
+                version: <span class="prelude-val">Some</span>(VERSION.to_string()),
+                description: <span class="prelude-val">Some</span>(DESCRIPTION.to_string()),
+                project: <span class="prelude-val">Some</span>(<span class="string">"cargo-make"</span>.to_string()),
+                help_post_text: <span class="prelude-val">Some</span>(
+                    <span class="string">"See more info at: https://github.com/sagiegurari/cargo-make"</span>.to_string(),
+                ),
+            }))
+            .add_command(<span class="string">"makers"</span>)
+            .add_subcommand(<span class="macro">vec!</span>[<span class="string">"cargo"</span>, <span class="string">"make"</span>])
+            .add_subcommand(<span class="macro">vec!</span>[<span class="string">"cargo-make"</span>, <span class="string">"make"</span>]); <span class="comment">// done by cargo
+    </span>}
+    add_arguments(spec, default_task_name, default_log_level)
+}
 
-    spec = spec
-        .set_meta_info(<span class="prelude-val">Some</span>(CliSpecMetaInfo {
-            author: <span class="prelude-val">Some</span>(AUTHOR.to_string()),
-            version: <span class="prelude-val">Some</span>(VERSION.to_string()),
-            description: <span class="prelude-val">Some</span>(DESCRIPTION.to_string()),
-            project: <span class="prelude-val">Some</span>(<span class="string">"cargo-make"</span>.to_string()),
-            help_post_text: <span class="prelude-val">Some</span>(
-                <span class="string">"See more info at: https://github.com/sagiegurari/cargo-make"</span>.to_string(),
-            ),
-        }))
-        .add_command(<span class="string">"makers"</span>)
-        .add_subcommand(<span class="macro">vec!</span>[<span class="string">"cargo"</span>, <span class="string">"make"</span>])
-        .add_subcommand(<span class="macro">vec!</span>[<span class="string">"cargo-make"</span>, <span class="string">"make"</span>]) <span class="comment">// done by cargo
-        </span>.add_argument(Argument {
+<span class="kw">fn </span>add_arguments(spec: CliSpec, default_task_name: <span class="kw-2">&amp;</span>str, default_log_level: <span class="kw-2">&amp;</span>str) -&gt; CliSpec {
+    spec
+        .add_argument(Argument {
             name: <span class="string">"help"</span>.to_string(),
             key: <span class="macro">vec!</span>[<span class="string">"--help"</span>.to_string(), <span class="string">"-h"</span>.to_string()],
             argument_occurrence: ArgumentOccurrence::Single,
@@ -984,54 +971,53 @@
             help: <span class="prelude-val">Some</span>(ArgumentHelp::Text(
                 <span class="string">"The task to execute, potentially including arguments which can be accessed in the task itself."</span>.to_string(),
             )),
-        }));
-
-    spec
+        }))
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_args(
+<span class="kw">pub fn </span>parse_args(
     global_config: <span class="kw-2">&amp;</span>GlobalConfig,
     command_name: <span class="kw-2">&amp;</span>str,
     sub_command: bool,
     args: <span class="prelude-ty">Option</span>&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;,
-) -&gt; CliArgs {
-    <span class="kw">let </span>spec = create_cli(<span class="kw-2">&amp;</span>global_config);
-
-    <span class="kw">let </span>parse_result = <span class="kw">match </span>args {
+    spec: CliSpec,
+) -&gt; <span class="prelude-ty">Result</span>&lt;CliArgs, CargoMakeError&gt; {
+    <span class="kw">let </span>cli_parsed = <span class="kw">match </span>args {
         <span class="prelude-val">Some</span>(args_vec) =&gt; cliparser::parse(<span class="kw-2">&amp;</span>args_vec, <span class="kw-2">&amp;</span>spec),
         <span class="prelude-val">None </span>=&gt; cliparser::parse_process(<span class="kw-2">&amp;</span>spec),
-    };
+    }<span class="question-mark">?</span>;
 
-    <span class="kw">match </span>parse_result {
-        <span class="prelude-val">Ok</span>(cli_parsed) =&gt; {
-            <span class="kw">if </span>cli_parsed.arguments.contains(<span class="string">"help"</span>) {
-                <span class="comment">// generate help text
-                </span><span class="kw">let </span>help_text = cliparser::help(<span class="kw-2">&amp;</span>spec);
-                <span class="macro">println!</span>(<span class="string">"{}"</span>, help_text);
-                exit();
-            } <span class="kw">else if </span>cli_parsed.arguments.contains(<span class="string">"version"</span>) {
-                <span class="comment">// generate version text
-                </span><span class="kw">let </span>version_text = cliparser::version(<span class="kw-2">&amp;</span>spec);
-                <span class="macro">println!</span>(<span class="string">"{}"</span>, version_text);
-                exit();
-            }
-
-            get_args(<span class="kw-2">&amp;</span>cli_parsed, <span class="kw-2">&amp;</span>global_config, command_name, sub_command)
-        }
-        <span class="prelude-val">Err</span>(error) =&gt; {
-            <span class="kw">let </span>help_text = cliparser::help(<span class="kw-2">&amp;</span>spec);
-            <span class="macro">println!</span>(<span class="string">"{}\n{}"</span>, <span class="kw-2">&amp;</span>error, help_text);
-            exit();
-        }
+    <span class="kw">if </span>cli_parsed.arguments.contains(<span class="string">"help"</span>) {
+        <span class="comment">// generate help text
+        </span><span class="kw">let </span>help_text = cliparser::help(<span class="kw-2">&amp;</span>spec);
+        <span class="macro">println!</span>(<span class="string">"{}"</span>, help_text);
+        <span class="prelude-val">Err</span>(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } <span class="kw">else if </span>cli_parsed.arguments.contains(<span class="string">"version"</span>) {
+        <span class="comment">// generate version text
+        </span><span class="kw">let </span>version_text = cliparser::version(<span class="kw-2">&amp;</span>spec);
+        <span class="macro">println!</span>(<span class="string">"{}"</span>, version_text);
+        <span class="prelude-val">Err</span>(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Ok</span>(get_args(
+            <span class="kw-2">&amp;</span>cli_parsed,
+            <span class="kw-2">&amp;</span>global_config,
+            command_name,
+            sub_command,
+        ))
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse(
+<span class="kw">pub fn </span>parse(
     global_config: <span class="kw-2">&amp;</span>GlobalConfig,
     command_name: <span class="kw-2">&amp;</span>str,
     sub_command: bool,
-) -&gt; CliArgs {
-    parse_args(global_config, command_name, sub_command, <span class="prelude-val">None</span>)
+) -&gt; <span class="prelude-ty">Result</span>&lt;CliArgs, CargoMakeError&gt; {
+    parse_args(
+        global_config,
+        command_name,
+        sub_command,
+        <span class="prelude-val">None</span>,
+        create_cli(<span class="kw-2">&amp;</span>global_config, CliSpec::new(), <span class="bool-val">true</span>),
+    )
 }
 
 <span class="kw">fn </span>to_owned_vec(vec_option: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;String&gt;&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt; {

@@ -49,6 +49,14 @@
 <a href="#49" id="49">49</a>
 <a href="#50" id="50">50</a>
 <a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # descriptor_deserializer
 //!
 //! Deserializes and validates the configs.
@@ -57,9 +65,13 @@
 #[path = <span class="string">"descriptor_deserializer_test.rs"</span>]
 </span><span class="kw">mod </span>descriptor_deserializer_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::types::{Config, ExternalConfig};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load_config(descriptor_string: <span class="kw-2">&amp;</span>str, validate: bool) -&gt; Config {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load_config(
+    descriptor_string: <span class="kw-2">&amp;</span>str,
+    validate: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
     <span class="kw">let </span>config: Config = <span class="kw">if </span>validate {
         <span class="kw">let </span>deserializer = toml::de::Deserializer::new(descriptor_string);
 
@@ -69,7 +81,7 @@
             <span class="prelude-val">Ok</span>(value) =&gt; value,
             <span class="prelude-val">Err</span>(error) =&gt; {
                 <span class="macro">error!</span>(<span class="string">"Unable to parse internal descriptor: {}"</span>, error);
-                <span class="macro">panic!</span>(<span class="string">"Unable to parse internal descriptor: {}"</span>, error);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::DescriptorParseFailed(error.to_string()));
             }
         }
     } <span class="kw">else </span>{
@@ -77,27 +89,31 @@
             <span class="prelude-val">Ok</span>(value) =&gt; value,
             <span class="prelude-val">Err</span>(error) =&gt; {
                 <span class="macro">error!</span>(<span class="string">"Unable to parse internal descriptor: {}"</span>, error);
-                <span class="macro">panic!</span>(<span class="string">"Unable to parse internal descriptor: {}"</span>, error);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::DescriptorParseFailed(error.to_string()));
             }
         }
     };
 
-    config
+    <span class="prelude-val">Ok</span>(config)
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load_external_config(descriptor_string: <span class="kw-2">&amp;</span>str, file: <span class="kw-2">&amp;</span>str) -&gt; ExternalConfig {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>load_external_config(
+    descriptor_string: <span class="kw-2">&amp;</span>str,
+    file: <span class="kw-2">&amp;</span>str,
+) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="kw">let </span>deserializer = toml::de::Deserializer::new(descriptor_string);
 
-    <span class="kw">let </span>config: ExternalConfig = <span class="kw">match </span>serde_ignored::deserialize(deserializer, |path| {
+    <span class="kw">match </span>serde_ignored::deserialize(deserializer, |path| {
         <span class="macro">warn!</span>(<span class="string">"Found unknown key: {} in file: {}"</span>, path, file);
     }) {
-        <span class="prelude-val">Ok</span>(value) =&gt; value,
+        <span class="prelude-val">Ok</span>(value) =&gt; <span class="prelude-val">Ok</span>(value),
         <span class="prelude-val">Err</span>(error) =&gt; {
             <span class="macro">error!</span>(<span class="string">"Unable to parse external file: {:#?}, {}"</span>, <span class="kw-2">&amp;</span>file, error);
-            <span class="macro">panic!</span>(<span class="string">"Unable to parse external file: {:#?}, {}"</span>, <span class="kw-2">&amp;</span>file, error);
+            <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::ParseFileFailed(
+                String::from(file),
+                error.to_string(),
+            ));
         }
-    };
-
-    config
+    }
 }
 </code></pre></div></section></main></body></html>

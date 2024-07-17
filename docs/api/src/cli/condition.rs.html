@@ -657,6 +657,10 @@
 <a href="#657" id="657">657</a>
 <a href="#658" id="658">658</a>
 <a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # condition
 //!
 //! Evaluates conditions based on task configuration and current env.
@@ -667,6 +671,7 @@
 </span><span class="kw">mod </span>condition_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::profile;
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine;
 <span class="kw">use </span><span class="kw">crate</span>::types;
@@ -1258,7 +1263,7 @@
     condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
     script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">match </span>condition_script {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>script) =&gt; {
             <span class="macro">debug!</span>(<span class="string">"Checking task condition script."</span>);
@@ -1273,7 +1278,7 @@
                 <span class="kw-2">&amp;</span><span class="macro">vec!</span>[],
             );
         }
-        <span class="prelude-val">None </span>=&gt; <span class="bool-val">true</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>),
     }
 }
 
@@ -1287,7 +1292,7 @@
     condition_script: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ConditionScriptValue&gt;,
     script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     script_runner_args: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>condition_type = <span class="kw">match </span>condition {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; value.get_condition_type(),
         <span class="prelude-val">None </span>=&gt; ConditionType::And,
@@ -1295,19 +1300,22 @@
 
     <span class="kw">let </span>criteria_passed = validate_criteria(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>flow_info), <span class="kw-2">&amp;</span>condition);
     <span class="kw">if </span>!criteria_passed &amp;&amp; condition_type == ConditionType::And {
-        <span class="bool-val">false
-    </span>} <span class="kw">else if </span>criteria_passed &amp;&amp; condition.is_some() &amp;&amp; condition_type != ConditionType::And {
-        <span class="bool-val">true
-    </span>} <span class="kw">else </span>{
+        <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+    } <span class="kw">else if </span>criteria_passed &amp;&amp; condition.is_some() &amp;&amp; condition_type != ConditionType::And {
+        <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+    } <span class="kw">else </span>{
         <span class="kw">if </span>condition_script.is_none() &amp;&amp; !criteria_passed {
-            <span class="bool-val">false
-        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+        } <span class="kw">else </span>{
             validate_script(<span class="kw-2">&amp;</span>condition_script, script_runner, script_runner_args)
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_condition_for_step(flow_info: <span class="kw-2">&amp;</span>FlowInfo, step: <span class="kw-2">&amp;</span>Step) -&gt; bool {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_condition_for_step(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    step: <span class="kw-2">&amp;</span>Step,
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     validate_conditions(
         <span class="kw-2">&amp;</span>flow_info,
         <span class="kw-2">&amp;</span>step.config.condition,

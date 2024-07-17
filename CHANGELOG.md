@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.14
+### v0.37.14 (2024-07-17)
 
 * Fix: fix the --skip-init-end-tasks argument #1108 (thanks @06393993)
 * Enhancement: Support using cargo make as library #1112 (thanks @SamuelMarks)

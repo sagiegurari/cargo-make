@@ -314,6 +314,14 @@
 <a href="#314" id="314">314</a>
 <a href="#315" id="315">315</a>
 <a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # command
 //!
 //! Runs task commands/scripts.
@@ -323,6 +331,7 @@
 #[path = <span class="string">"command_test.rs"</span>]
 </span><span class="kw">mod </span>command_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::logger;
 <span class="kw">use </span><span class="kw">crate</span>::toolchain;
 <span class="kw">use </span><span class="kw">crate</span>::types::{CommandSpec, Step, UnstableFeature};
@@ -369,12 +378,14 @@
     }
 }
 
-<span class="doccomment">/// Validates the exit code code and if not 0 or unable to validate it, panic.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_exit_code(code: i32) {
+<span class="doccomment">/// Validates the exit code and if not 0 or unable to validate it, err
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_exit_code(code: i32) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">if </span>code == -<span class="number">1 </span>{
-        <span class="macro">error!</span>(<span class="string">"Error while executing command, unable to extract exit code."</span>);
+        <span class="prelude-val">Err</span>(CargoMakeError::ExitCodeValidation)
     } <span class="kw">else if </span>code != <span class="number">0 </span>{
-        <span class="macro">error!</span>(<span class="string">"Error while executing command, exit code: {}"</span>, code);
+        <span class="prelude-val">Err</span>(CargoMakeError::ExitCodeError(code))
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -461,7 +472,7 @@
     script_runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) -&gt; i32 {
+) -&gt; <span class="prelude-ty">Result</span>&lt;i32, CargoMakeError&gt; {
     <span class="kw">let </span>output = run_script_get_output(<span class="kw-2">&amp;</span>script_lines, script_runner, cli_arguments, <span class="bool-val">false</span>, <span class="prelude-val">None</span>);
 
     <span class="kw">let </span>exit_code = <span class="kw">match </span>output {
@@ -470,10 +481,10 @@
     };
 
     <span class="kw">if </span>validate {
-        validate_exit_code(exit_code);
+        validate_exit_code(exit_code)<span class="question-mark">?</span>;
     }
 
-    exit_code
+    <span class="prelude-val">Ok</span>(exit_code)
 }
 
 <span class="doccomment">/// Runs the requested command and return its output.
@@ -575,16 +586,20 @@
 }
 
 <span class="doccomment">/// Runs the requested command and panics in case of any error.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_command(command_string: <span class="kw-2">&amp;</span>str, args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, validate: bool) -&gt; i32 {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_command(
+    command_string: <span class="kw-2">&amp;</span>str,
+    args: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
+    validate: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;i32, CargoMakeError&gt; {
     <span class="kw">let </span>output = run_command_get_output(<span class="kw-2">&amp;</span>command_string, <span class="kw-2">&amp;</span>args, <span class="bool-val">false</span>);
 
     <span class="kw">let </span>exit_code = get_exit_code_from_output(<span class="kw-2">&amp;</span>output, !validate);
 
     <span class="kw">if </span>validate {
-        validate_exit_code(exit_code);
+        validate_exit_code(exit_code)<span class="question-mark">?</span>;
     }
 
-    exit_code
+    <span class="prelude-val">Ok</span>(exit_code)
 }
 
 <span class="doccomment">/// Runs the requested command and returns the stdout if exit code is valid.
@@ -610,7 +625,7 @@
 }
 
 <span class="doccomment">/// Runs the given task command.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>validate = !step.config.should_ignore_errors();
 
     <span class="kw">match </span>step.config.command {
@@ -625,9 +640,10 @@
                 },
             };
 
-            run_command(<span class="kw-2">&amp;</span>command_spec.command, <span class="kw-2">&amp;</span>command_spec.args, validate);
+            run_command(<span class="kw-2">&amp;</span>command_spec.command, <span class="kw-2">&amp;</span>command_spec.args, validate)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">"No command defined."</span>),
     };
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>

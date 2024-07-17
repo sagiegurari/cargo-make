@@ -125,6 +125,14 @@
 <a href="#125" id="125">125</a>
 <a href="#126" id="126">126</a>
 <a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # functions
 //!
 //! Custom operations which can be invoked in makefiles.
@@ -140,23 +148,30 @@
 <span class="kw">mod </span>split_func;
 <span class="kw">mod </span>trim_func;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::types::{Step, Task};
 
-<span class="kw">fn </span>run_function(function_name: <span class="kw-2">&amp;</span>str, function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
+<span class="kw">fn </span>run_function(
+    function_name: <span class="kw-2">&amp;</span>str,
+    function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;, CargoMakeError&gt; {
     <span class="macro">debug!</span>(
         <span class="string">"Running function: {} arguments: {:#?}"</span>,
         <span class="kw-2">&amp;</span>function_name, <span class="kw-2">&amp;</span>function_args
     );
 
     <span class="kw">match </span>function_name {
-        <span class="string">"split" </span>=&gt; split_func::invoke(function_args),
-        <span class="string">"remove-empty" </span>=&gt; remove_empty_func::invoke(function_args),
+        <span class="string">"split" </span>=&gt; <span class="prelude-val">Ok</span>(split_func::invoke(function_args)),
+        <span class="string">"remove-empty" </span>=&gt; <span class="prelude-val">Ok</span>(remove_empty_func::invoke(function_args)),
         <span class="string">"trim" </span>=&gt; trim_func::invoke(function_args),
-        <span class="string">"getat" </span>=&gt; getat_func::invoke(function_args),
-        <span class="string">"decode" </span>=&gt; decode_func::invoke(function_args),
+        <span class="string">"getat" </span>=&gt; <span class="prelude-val">Ok</span>(getat_func::invoke(function_args)),
+        <span class="string">"decode" </span>=&gt; <span class="prelude-val">Ok</span>(decode_func::invoke(function_args)),
         <span class="kw">_ </span>=&gt; {
             <span class="macro">error!</span>(<span class="string">"Unknown function: {}"</span>, <span class="kw-2">&amp;</span>function_name);
-            <span class="macro">panic!</span>(<span class="string">"Unknown function: {}"</span>, <span class="kw-2">&amp;</span>function_name);
+            <span class="prelude-val">Err</span>(CargoMakeError::NotFound(<span class="macro">format!</span>(
+                <span class="string">"Unknown function: {}"</span>,
+                <span class="kw-2">&amp;</span>function_name
+            )))
         }
     }
 }
@@ -197,7 +212,7 @@
     </span>}
 }
 
-<span class="kw">fn </span>evaluate_and_run(value: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;String&gt; {
+<span class="kw">fn </span>evaluate_and_run(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;, CargoMakeError&gt; {
     <span class="kw">let </span>value_string = value.to_string();
 
     <span class="kw">if </span>value_string.starts_with(<span class="string">"@@"</span>) {
@@ -211,23 +226,23 @@
 
                 <span class="kw">match </span>func_args_option {
                     <span class="prelude-val">Some</span>(function_args) =&gt; run_function(<span class="kw-2">&amp;</span>function_name, <span class="kw-2">&amp;</span>function_args),
-                    <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[value_string],
+                    <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[value_string]),
                 }
             }
-            <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[value_string],
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[value_string]),
         }
     } <span class="kw">else </span>{
-        <span class="macro">vec!</span>[value_string]
+        <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[value_string])
     }
 }
 
-<span class="kw">fn </span>modify_arguments(task: <span class="kw-2">&amp;mut </span>Task) {
+<span class="kw">fn </span>modify_arguments(task: <span class="kw-2">&amp;mut </span>Task) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     task.args = <span class="kw">match </span>task.args {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>args) =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>new_args = <span class="macro">vec!</span>[];
 
             <span class="kw">for </span>index <span class="kw">in </span><span class="number">0</span>..args.len() {
-                <span class="kw">let </span>result_args = evaluate_and_run(<span class="kw-2">&amp;</span>args[index]);
+                <span class="kw">let </span>result_args = evaluate_and_run(<span class="kw-2">&amp;</span>args[index])<span class="question-mark">?</span>;
 
                 <span class="kw">for </span>result_index <span class="kw">in </span><span class="number">0</span>..result_args.len() {
                     new_args.push(result_args[result_index].clone());
@@ -238,18 +253,19 @@
         }
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) -&gt; Step {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(step: <span class="kw-2">&amp;</span>Step) -&gt; <span class="prelude-ty">Result</span>&lt;Step, CargoMakeError&gt; {
     <span class="comment">//clone data before modify
     </span><span class="kw">let </span><span class="kw-2">mut </span>config = step.config.clone();
 
     <span class="comment">//update args by running any needed function
-    </span>modify_arguments(<span class="kw-2">&amp;mut </span>config);
+    </span>modify_arguments(<span class="kw-2">&amp;mut </span>config)<span class="question-mark">?</span>;
 
-    Step {
+    <span class="prelude-val">Ok</span>(Step {
         name: step.name.clone(),
         config,
-    }
+    })
 }
 </code></pre></div></section></main></body></html>

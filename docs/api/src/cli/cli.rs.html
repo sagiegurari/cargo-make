@@ -176,7 +176,6 @@
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cli
 //!
 //! The cargo-make cli
@@ -191,6 +190,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::config;
 <span class="kw">use </span><span class="kw">crate</span>::descriptor;
 <span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::logger;
 <span class="kw">use </span><span class="kw">crate</span>::logger::LoggerOptions;
 <span class="kw">use </span><span class="kw">crate</span>::profile;
@@ -210,7 +210,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_TASK_NAME: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_OUTPUT_FORMAT: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 
-<span class="kw">fn </span>run(&cli_args: CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) {
+<span class="kw">pub fn </span>run(cli_args: <span class="kw-2">&amp;</span>CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -274,15 +274,8 @@
     <span class="kw">let </span>env = cli_args.env.clone();
 
     <span class="kw">let </span>experimental = cli_args.experimental;
-    <span class="kw">let </span>descriptor_load_result = descriptor::load(<span class="kw-2">&amp;</span>build_file, force_makefile, env, experimental);
+    <span class="kw">let </span>config = descriptor::load(<span class="kw-2">&amp;</span>build_file, force_makefile, env, experimental)<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>config = <span class="kw">match </span>descriptor_load_result {
-        <span class="prelude-val">Ok</span>(config) =&gt; config,
-        <span class="prelude-val">Err</span>(<span class="kw-2">ref </span>error) =&gt; {
-            <span class="macro">error!</span>(<span class="string">"{}"</span>, error);
-            <span class="macro">panic!</span>(<span class="string">"{}"</span>, error);
-        }
-    };
     <span class="kw">let </span><span class="kw-2">mut </span>time_summary_vec = <span class="macro">vec!</span>[];
     time_summary::add(
         <span class="kw-2">&amp;mut </span>time_summary_vec,
@@ -296,7 +289,7 @@
         <span class="prelude-val">None </span>=&gt; profile::set_additional(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[]),
     };
 
-    <span class="kw">let </span>env_info = environment::setup_env(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, home, <span class="kw-2">&amp;mut </span>time_summary_vec);
+    <span class="kw">let </span>env_info = environment::setup_env(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, home, <span class="kw-2">&amp;mut </span>time_summary_vec)<span class="question-mark">?</span>;
     time_summary::add(<span class="kw-2">&amp;mut </span>time_summary_vec, <span class="string">"[Setup Env]"</span>, step_time);
 
     <span class="kw">let </span>crate_name = envmnt::get_or(<span class="string">"CARGO_MAKE_CRATE_NAME"</span>, <span class="string">""</span>);
@@ -315,27 +308,29 @@
             <span class="kw-2">&amp;</span>config,
             <span class="kw-2">&amp;</span>cli_args.output_format,
             <span class="kw-2">&amp;</span>cli_args.output_file,
-            cli_args.list_category_steps,
+            <span class="kw-2">&amp;</span>cli_args.list_category_steps,
             cli_args.hide_uninteresting,
-        );
+        )
     } <span class="kw">else if </span>cli_args.diff_execution_plan {
-        <span class="kw">let </span>default_config = descriptor::load_internal_descriptors(<span class="bool-val">true</span>, experimental, <span class="prelude-val">None</span>);
+        <span class="kw">let </span>default_config = descriptor::load_internal_descriptors(<span class="bool-val">true</span>, experimental, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         cli_commands::diff_steps::run(
             <span class="kw-2">&amp;</span>default_config,
             <span class="kw-2">&amp;</span>config,
             <span class="kw-2">&amp;</span>task,
             <span class="kw-2">&amp;</span>cli_args,
             <span class="kw-2">&amp;</span>env_info.crate_info,
-        );
+        )
     } <span class="kw">else if </span>cli_args.print_only {
         cli_commands::print_steps::print(
+            <span class="kw-2">&amp;mut </span>std::io::stdout(),
             <span class="kw-2">&amp;</span>config,
             <span class="kw-2">&amp;</span>task,
             <span class="kw-2">&amp;</span>cli_args.output_format,
             cli_args.disable_workspace,
-            cli_args.skip_tasks_pattern,
+            <span class="kw-2">&amp;</span>cli_args.skip_tasks_pattern,
             <span class="kw-2">&amp;</span>env_info.crate_info,
-        );
+            cli_args.skip_init_end_tasks,
+        )
     } <span class="kw">else </span>{
         runner::run(
             config,
@@ -344,16 +339,19 @@
             <span class="kw-2">&amp;</span>cli_args,
             start_time,
             time_summary_vec,
-        );
-    }
+        )
+    }<span class="question-mark">?</span>;
+
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Handles the command line arguments and executes the runner.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_cli(command_name: String, sub_command: bool) {
-    <span class="kw">let </span>global_config = config::load();
+</span><span class="kw">pub fn </span>run_cli(command_name: String, sub_command: bool) -&gt; <span class="prelude-ty">Result</span>&lt;CliArgs, CargoMakeError&gt; {
+    <span class="kw">let </span>global_config = config::load()<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>cli_args = cli_parser::parse(<span class="kw-2">&amp;</span>global_config, <span class="kw-2">&amp;</span>command_name, sub_command);
+    <span class="kw">let </span>cli_args = cli_parser::parse(<span class="kw-2">&amp;</span>global_config, <span class="kw-2">&amp;</span>command_name, sub_command)<span class="question-mark">?</span>;
 
-    run(&cli_args, <span class="kw-2">&amp;</span>global_config);
+    run(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>global_config)<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(cli_args)
 }
 </code></pre></div></section></main></body></html>

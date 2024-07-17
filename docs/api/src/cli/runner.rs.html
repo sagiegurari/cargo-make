@@ -664,6 +664,50 @@
 <a href="#664" id="664">664</a>
 <a href="#665" id="665">665</a>
 <a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # runner
 //!
 //! Runs the requested tasks.&lt;br&gt;
@@ -678,10 +722,19 @@
 #[path = <span class="string">"runner_test.rs"</span>]
 </span><span class="kw">mod </span>runner_test;
 
+<span class="kw">use </span>std::cell::RefCell;
+<span class="kw">use </span>std::rc::Rc;
+<span class="kw">use </span>std::thread;
+<span class="kw">use </span>std::time::SystemTime;
+
+<span class="kw">use </span>indexmap::IndexMap;
+<span class="kw">use </span>regex::Regex;
+
 <span class="kw">use </span><span class="kw">crate</span>::command;
 <span class="kw">use </span><span class="kw">crate</span>::condition;
 <span class="kw">use </span><span class="kw">crate</span>::environment;
-<span class="kw">use </span><span class="kw">crate</span>::execution_plan::create <span class="kw">as </span>create_execution_plan;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+<span class="kw">use </span><span class="kw">crate</span>::execution_plan::ExecutionPlanBuilder;
 <span class="kw">use </span><span class="kw">crate</span>::functions;
 <span class="kw">use </span><span class="kw">crate</span>::installer;
 <span class="kw">use </span><span class="kw">crate</span>::logger;
@@ -695,16 +748,10 @@
     MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
     TaskWatchOptions,
 };
-<span class="kw">use </span>indexmap::IndexMap;
-<span class="kw">use </span>regex::Regex;
-<span class="kw">use </span>std::cell::RefCell;
-<span class="kw">use </span>std::rc::Rc;
-<span class="kw">use </span>std::thread;
-<span class="kw">use </span>std::time::SystemTime;
 
-<span class="kw">fn </span>do_in_task_working_directory&lt;F&gt;(step: <span class="kw-2">&amp;</span>Step, <span class="kw-2">mut </span>action: F)
+<span class="kw">fn </span>do_in_task_working_directory&lt;F&gt;(step: <span class="kw-2">&amp;</span>Step, <span class="kw-2">mut </span>action: F) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt;
 <span class="kw">where
-    </span>F: FnMut(),
+    </span>F: FnMut() -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt;,
 {
     <span class="kw">let </span>revert_directory = <span class="kw">match </span>step.config.cwd {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>cwd) =&gt; {
@@ -723,7 +770,7 @@
         <span class="prelude-val">None </span>=&gt; <span class="string">""</span>.to_string(),
     };
 
-    action();
+    action()<span class="question-mark">?</span>;
 
     <span class="comment">// revert to original cwd
     </span><span class="kw">match </span>step.config.cwd {
@@ -732,24 +779,29 @@
         }
         <span class="kw">_ </span>=&gt; (),
     };
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_condition(flow_info: <span class="kw-2">&amp;</span>FlowInfo, step: <span class="kw-2">&amp;</span>Step) -&gt; bool {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>validate_condition(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    step: <span class="kw-2">&amp;</span>Step,
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>valid = <span class="bool-val">true</span>;
 
-    <span class="kw">let </span>do_validate = || {
-        valid = condition::validate_condition_for_step(<span class="kw-2">&amp;</span>flow_info, <span class="kw-2">&amp;</span>step);
+    <span class="kw">let </span>do_validate = || -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
+        valid = condition::validate_condition_for_step(<span class="kw-2">&amp;</span>flow_info, <span class="kw-2">&amp;</span>step)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(valid)
     };
 
-    do_in_task_working_directory(<span class="kw-2">&amp;</span>step, do_validate);
+    do_in_task_working_directory(<span class="kw-2">&amp;</span>step, do_validate)<span class="question-mark">?</span>;
 
-    valid
+    <span class="prelude-val">Ok</span>(valid)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_sub_task_info_for_routing_info(
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     routing_info: <span class="kw-2">&amp;</span>Vec&lt;RunTaskRoutingInfo&gt;,
-) -&gt; (<span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, bool, bool, <span class="prelude-ty">Option</span>&lt;String&gt;) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;, bool, bool, <span class="prelude-ty">Option</span>&lt;String&gt;), CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>task_name = <span class="prelude-val">None</span>;
 
     <span class="kw">let </span><span class="kw-2">mut </span>fork = <span class="bool-val">false</span>;
@@ -762,7 +814,7 @@
             <span class="kw-2">&amp;</span>routing_step.condition_script,
             <span class="prelude-val">None</span>,
             routing_step.condition_script_runner_args.clone(),
-        );
+        )<span class="question-mark">?</span>;
 
         <span class="kw">if </span>invoke {
             <span class="kw">let </span>task_name_values = <span class="kw">match </span>routing_step.name.clone() {
@@ -777,7 +829,7 @@
         }
     }
 
-    (task_name, fork, parallel, cleanup_task)
+    <span class="prelude-val">Ok</span>((task_name, fork, parallel, cleanup_task))
 }
 
 <span class="kw">fn </span>create_fork_step(flow_info: <span class="kw-2">&amp;</span>FlowInfo) -&gt; Step {
@@ -795,7 +847,11 @@
     }
 }
 
-<span class="kw">fn </span>run_cleanup_task(flow_info: <span class="kw-2">&amp;</span>FlowInfo, flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;, task: <span class="kw-2">&amp;</span>str) {
+<span class="kw">fn </span>run_cleanup_task(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    task: <span class="kw-2">&amp;</span>str,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">match </span>flow_info.config.tasks.get(task) {
         <span class="prelude-val">Some</span>(cleanup_task_info) =&gt; run_task(
             <span class="kw-2">&amp;</span>flow_info,
@@ -805,7 +861,10 @@
                 config: cleanup_task_info.clone(),
             },
         ),
-        <span class="prelude-val">None </span>=&gt; <span class="macro">error!</span>(<span class="string">"Cleanup task: {} not found."</span>, <span class="kw-2">&amp;</span>task),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(CargoMakeError::NotFound(<span class="macro">format!</span>(
+            <span class="string">"Cleanup task: {} not found."</span>,
+            <span class="kw-2">&amp;</span>task
+        ))),
     }
 }
 
@@ -813,7 +872,7 @@
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
     cleanup_task: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="comment">// run task as a sub process
     </span><span class="kw">let </span>step = create_fork_step(<span class="kw-2">&amp;</span>flow_info);
 
@@ -821,11 +880,13 @@
         <span class="prelude-val">Some</span>(cleanup_task_name) =&gt; {
             <span class="comment">// run the forked task (forked tasks only run a command + args)
             </span><span class="kw">let </span>exit_code =
-                command::run_command(<span class="kw-2">&amp;</span>step.config.command.unwrap(), <span class="kw-2">&amp;</span>step.config.args, <span class="bool-val">false</span>);
+                command::run_command(<span class="kw-2">&amp;</span>step.config.command.unwrap(), <span class="kw-2">&amp;</span>step.config.args, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 
             <span class="kw">if </span>exit_code != <span class="number">0 </span>{
-                run_cleanup_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>cleanup_task_name);
-                command::validate_exit_code(exit_code);
+                run_cleanup_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>cleanup_task_name)<span class="question-mark">?</span>;
+                command::validate_exit_code(exit_code)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(())
             }
         }
         <span class="prelude-val">None </span>=&gt; run_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>step),
@@ -837,7 +898,7 @@
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
     sub_task: <span class="kw-2">&amp;</span>RunTaskInfo,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>(task_names, fork, parallel, cleanup_task) = <span class="kw">match </span>sub_task {
         RunTaskInfo::Name(<span class="kw-2">ref </span>name) =&gt; (<span class="prelude-val">Some</span>(<span class="macro">vec!</span>[name.to_string()]), <span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="prelude-val">None</span>),
         RunTaskInfo::Details(<span class="kw-2">ref </span>details) =&gt; {
@@ -853,8 +914,8 @@
             )
         }
         RunTaskInfo::Routing(<span class="kw-2">ref </span>routing_info) =&gt; {
-            get_sub_task_info_for_routing_info(<span class="kw-2">&amp;</span>flow_info, routing_info)
-        }
+            get_sub_task_info_for_routing_info(<span class="kw-2">&amp;</span>flow_info, routing_info)<span class="question-mark">?
+        </span>}
     };
 
     <span class="kw">if </span>task_names.is_some() {
@@ -870,14 +931,15 @@
             <span class="kw">let </span>task_run_fn = <span class="kw">move </span>|flow_info: <span class="kw-2">&amp;</span>FlowInfo,
                                     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
                                     fork: bool,
-                                    cleanup_task: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;| {
+                                    cleanup_task: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;|
+                  -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>sub_flow_info = flow_info.clone();
                 sub_flow_info.task = name;
 
                 <span class="kw">if </span>fork {
-                    run_forked_task(<span class="kw-2">&amp;</span>sub_flow_info, flow_state, cleanup_task);
+                    run_forked_task(<span class="kw-2">&amp;</span>sub_flow_info, flow_state, cleanup_task)
                 } <span class="kw">else </span>{
-                    run_flow(<span class="kw-2">&amp;</span>sub_flow_info, flow_state, <span class="bool-val">true</span>);
+                    run_flow(<span class="kw-2">&amp;</span>sub_flow_info, flow_state, <span class="bool-val">true</span>)
                 }
             };
 
@@ -886,37 +948,41 @@
                 <span class="comment">// we do not support merging changes back to parent
                 </span><span class="kw">let </span>cloned_flow_state = flow_state.borrow().clone();
                 <span class="kw">let </span>cloned_cleanup_task = cleanup_task.clone();
-                threads.push(thread::spawn(<span class="kw">move </span>|| {
+                threads.push(thread::spawn(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
                     task_run_fn(
                         <span class="kw-2">&amp;</span>run_flow_info,
                         Rc::new(RefCell::new(cloned_flow_state)),
                         fork,
                         <span class="kw-2">&amp;</span>cloned_cleanup_task,
-                    );
+                    )
                 }));
             } <span class="kw">else </span>{
-                task_run_fn(<span class="kw-2">&amp;</span>flow_info, flow_state.clone(), fork, <span class="kw-2">&amp;</span>cleanup_task);
+                task_run_fn(<span class="kw-2">&amp;</span>flow_info, flow_state.clone(), fork, <span class="kw-2">&amp;</span>cleanup_task)<span class="question-mark">?</span>;
             }
         }
 
         <span class="kw">if </span>threads.len() &gt; <span class="number">0 </span>{
             <span class="kw">for </span>task_thread <span class="kw">in </span>threads {
-                task_thread.join().unwrap();
+                task_thread.join().unwrap()<span class="question-mark">?</span>;
             }
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(cleanup_task_name) = cleanup_task {
-            run_cleanup_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>cleanup_task_name);
+            run_cleanup_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>cleanup_task_name)<span class="question-mark">?</span>;
         }
 
-        <span class="bool-val">true
-    </span>} <span class="kw">else </span>{
-        <span class="bool-val">false
-    </span>}
+        <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+    }
 }
 
-<span class="kw">fn </span>run_sub_task(flow_info: <span class="kw-2">&amp;</span>FlowInfo, flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;, sub_task: <span class="kw-2">&amp;</span>RunTaskInfo) {
-    run_sub_task_and_report(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>sub_task);
+<span class="kw">fn </span>run_sub_task(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    sub_task: <span class="kw-2">&amp;</span>RunTaskInfo,
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
+    run_sub_task_and_report(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>sub_task)
 }
 
 <span class="kw">fn </span>create_watch_task_name(task: <span class="kw-2">&amp;</span>str) -&gt; String {
@@ -943,10 +1009,10 @@
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
     task: <span class="kw-2">&amp;</span>str,
     options: <span class="prelude-ty">Option</span>&lt;TaskWatchOptions&gt;,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>step = create_watch_step(<span class="kw-2">&amp;</span>task, options, flow_info);
 
-    run_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>step);
+    run_task(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>step)
 }
 
 <span class="kw">fn </span>is_watch_enabled() -&gt; bool {
@@ -969,12 +1035,16 @@
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_task(flow_info: <span class="kw-2">&amp;</span>FlowInfo, flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;, step: <span class="kw-2">&amp;</span>Step) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_task(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    step: <span class="kw-2">&amp;</span>Step,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>options = RunTaskOptions {
         plugins_enabled: <span class="bool-val">true</span>,
     };
 
-    run_task_with_options(flow_info, flow_state, step, <span class="kw-2">&amp;</span>options);
+    run_task_with_options(flow_info, flow_state, step, <span class="kw-2">&amp;</span>options)
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_task_with_options(
@@ -982,7 +1052,7 @@
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
     step: <span class="kw-2">&amp;</span>Step,
     options: <span class="kw-2">&amp;</span>RunTaskOptions,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>start_time = SystemTime::now();
 
     <span class="comment">// if a plugin is handling the task execution flow
@@ -992,7 +1062,7 @@
             <span class="kw-2">&amp;</span>step.name,
             start_time,
         );
-        <span class="kw">return</span>;
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     }
 
     <span class="kw">if </span>step.config.is_actionable() {
@@ -1001,7 +1071,7 @@
             <span class="prelude-val">None </span>=&gt; (),
         };
 
-        <span class="kw">if </span>validate_condition(<span class="kw-2">&amp;</span>flow_info, <span class="kw-2">&amp;</span>step) {
+        <span class="kw">if </span>validate_condition(<span class="kw-2">&amp;</span>flow_info, <span class="kw-2">&amp;</span>step)<span class="question-mark">? </span>{
             <span class="kw">if </span>logger::should_reduce_output(<span class="kw-2">&amp;</span>flow_info) &amp;&amp; step.config.script.is_none() {
                 <span class="macro">debug!</span>(<span class="string">"Running Task: {}"</span>, <span class="kw-2">&amp;</span>step.name);
             } <span class="kw">else </span>{
@@ -1052,7 +1122,7 @@
             </span>profile::set(<span class="kw-2">&amp;</span>profile_name);
 
             <span class="comment">// modify step using env and functions
-            </span><span class="kw">let </span><span class="kw-2">mut </span>updated_step = functions::run(<span class="kw-2">&amp;</span>step);
+            </span><span class="kw">let </span><span class="kw-2">mut </span>updated_step = functions::run(<span class="kw-2">&amp;</span>step)<span class="question-mark">?</span>;
             updated_step = environment::expand_env(<span class="kw-2">&amp;</span>updated_step);
 
             <span class="kw">let </span>watch = should_watch(<span class="kw-2">&amp;</span>step.config);
@@ -1063,11 +1133,12 @@
                     flow_state,
                     <span class="kw-2">&amp;</span>step.name,
                     step.config.watch.clone(),
-                );
+                )<span class="question-mark">?</span>;
             } <span class="kw">else </span>{
-                do_in_task_working_directory(<span class="kw-2">&amp;</span>step, || {
-                    installer::install(<span class="kw-2">&amp;</span>updated_step.config, flow_info, flow_state.clone());
-                });
+                do_in_task_working_directory(<span class="kw-2">&amp;</span>step, || -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
+                    installer::install(<span class="kw-2">&amp;</span>updated_step.config, flow_info, flow_state.clone())<span class="question-mark">?</span>;
+                    <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+                })<span class="question-mark">?</span>;
 
                 <span class="kw">match </span>step.config.run_task {
                     <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>sub_task) =&gt; {
@@ -1077,22 +1148,23 @@
                             start_time,
                         );
 
-                        run_sub_task(<span class="kw-2">&amp;</span>flow_info, flow_state, sub_task);
+                        run_sub_task(<span class="kw-2">&amp;</span>flow_info, flow_state, sub_task)<span class="question-mark">?</span>;
                     }
                     <span class="prelude-val">None </span>=&gt; {
-                        do_in_task_working_directory(<span class="kw-2">&amp;</span>step, || {
+                        do_in_task_working_directory(<span class="kw-2">&amp;</span>step, || -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
                             <span class="comment">// run script
                             </span><span class="kw">let </span>script_runner_done = scriptengine::invoke(
                                 <span class="kw-2">&amp;</span>updated_step.config,
                                 flow_info,
                                 flow_state.clone(),
-                            );
+                            )<span class="question-mark">?</span>;
 
                             <span class="comment">// run command
                             </span><span class="kw">if </span>!script_runner_done {
-                                command::run(<span class="kw-2">&amp;</span>updated_step);
+                                command::run(<span class="kw-2">&amp;</span>updated_step)<span class="question-mark">?</span>;
                             };
-                        });
+                            <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+                        })<span class="question-mark">?</span>;
 
                         time_summary::add(
                             <span class="kw-2">&amp;mut </span>flow_state.borrow_mut().time_summary,
@@ -1120,16 +1192,19 @@
     } <span class="kw">else </span>{
         <span class="macro">debug!</span>(<span class="string">"Ignoring Empty Task: {}"</span>, <span class="kw-2">&amp;</span>step.name);
     }
+
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="kw">fn </span>run_task_flow(
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
     execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">for </span>step <span class="kw">in </span><span class="kw-2">&amp;</span>execution_plan.steps {
-        run_task(<span class="kw-2">&amp;</span>flow_info, flow_state.clone(), <span class="kw-2">&amp;</span>step);
+        run_task(<span class="kw-2">&amp;</span>flow_info, flow_state.clone(), <span class="kw-2">&amp;</span>step)<span class="question-mark">?</span>;
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="kw">fn </span>create_watch_task(task: <span class="kw-2">&amp;</span>str, options: <span class="prelude-ty">Option</span>&lt;TaskWatchOptions&gt;, flow_info: <span class="kw-2">&amp;</span>FlowInfo) -&gt; Task {
@@ -1226,24 +1301,34 @@
     task_config
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_flow(flow_info: <span class="kw-2">&amp;</span>FlowInfo, flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;, sub_flow: bool) {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run_flow(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+    sub_flow: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>allow_private = sub_flow || flow_info.allow_private;
 
-    <span class="kw">let </span>execution_plan = create_execution_plan(
-        <span class="kw-2">&amp;</span>flow_info.config,
-        <span class="kw-2">&amp;</span>flow_info.task,
-        <span class="kw-2">&amp;</span>flow_info.env_info.crate_info,
-        flow_info.disable_workspace,
+    <span class="kw">let </span>execution_plan = ExecutionPlanBuilder {
+        crate_info: <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>flow_info.env_info.crate_info),
+        disable_workspace: flow_info.disable_workspace,
         allow_private,
         sub_flow,
-        <span class="kw-2">&amp;</span>flow_info.skip_tasks_pattern,
-    );
+        skip_tasks_pattern: flow_info.skip_tasks_pattern.as_ref(),
+        skip_init_end_tasks: flow_info.skip_init_end_tasks,
+        ..ExecutionPlanBuilder::new(<span class="kw-2">&amp;</span>flow_info.config, <span class="kw-2">&amp;</span>flow_info.task)
+    }
+    .build()<span class="question-mark">?</span>;
     <span class="macro">debug!</span>(<span class="string">"Created execution plan: {:#?}"</span>, <span class="kw-2">&amp;</span>execution_plan);
 
-    run_task_flow(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>execution_plan);
+    run_task_flow(<span class="kw-2">&amp;</span>flow_info, flow_state, <span class="kw-2">&amp;</span>execution_plan)<span class="question-mark">?</span>;
+
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn </span>run_protected_flow(flow_info: <span class="kw-2">&amp;</span>FlowInfo, flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;) {
+<span class="kw">fn </span>run_protected_flow(
+    flow_info: <span class="kw-2">&amp;</span>FlowInfo,
+    flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>proxy_task = create_proxy_task(
         <span class="kw-2">&amp;</span>flow_info.task,
         flow_info.allow_private,
@@ -1252,7 +1337,7 @@
         flow_info.cli_arguments.clone(),
     );
 
-    <span class="kw">let </span>exit_code = command::run_command(<span class="kw-2">&amp;</span>proxy_task.command.unwrap(), <span class="kw-2">&amp;</span>proxy_task.args, <span class="bool-val">false</span>);
+    <span class="kw">let </span>exit_code = command::run_command(<span class="kw-2">&amp;</span>proxy_task.command.unwrap(), <span class="kw-2">&amp;</span>proxy_task.args, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 
     <span class="kw">if </span>exit_code != <span class="number">0 </span>{
         <span class="kw">match </span>flow_info.config.config.on_error_task {
@@ -1261,13 +1346,14 @@
                 error_flow_info.disable_on_error = <span class="bool-val">true</span>;
                 error_flow_info.task = on_error_task.clone();
 
-                run_flow(<span class="kw-2">&amp;</span>error_flow_info, flow_state, <span class="bool-val">false</span>);
+                run_flow(<span class="kw-2">&amp;</span>error_flow_info, flow_state, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
             }
             <span class="kw">_ </span>=&gt; (),
         };
 
         <span class="macro">error!</span>(<span class="string">"Task error detected, exit code: {}"</span>, <span class="kw-2">&amp;</span>exit_code);
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Runs the requested tasks.&lt;br&gt;
@@ -1275,14 +1361,14 @@
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(
+</span><span class="kw">pub fn </span>run(
     config: Config,
     task: <span class="kw-2">&amp;</span>str,
     env_info: EnvInfo,
     cli_args: <span class="kw-2">&amp;</span>CliArgs,
     start_time: SystemTime,
     time_summary_vec: Vec&lt;(String, u128)&gt;,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     time_summary::init(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>cli_args);
 
     <span class="kw">let </span>skip_tasks_pattern = <span class="kw">match </span>cli_args.skip_tasks_pattern {
@@ -1313,9 +1399,9 @@
     <span class="kw">let </span>flow_state_rc = Rc::new(RefCell::new(flow_state));
 
     <span class="kw">if </span>flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(<span class="kw-2">&amp;</span>flow_info, flow_state_rc.clone(), <span class="bool-val">false</span>);
+        run_flow(<span class="kw-2">&amp;</span>flow_info, flow_state_rc.clone(), <span class="bool-val">false</span>)<span class="question-mark">?</span>;
     } <span class="kw">else </span>{
-        run_protected_flow(<span class="kw-2">&amp;</span>flow_info, flow_state_rc.clone());
+        run_protected_flow(<span class="kw-2">&amp;</span>flow_info, flow_state_rc.clone())<span class="question-mark">?</span>;
     }
 
     <span class="kw">let </span>time_string = <span class="kw">match </span>start_time.elapsed() {
@@ -1329,5 +1415,7 @@
     time_summary::print(<span class="kw-2">&amp;</span>flow_state_rc.borrow().time_summary);
 
     <span class="macro">info!</span>(<span class="string">"Build Done{}."</span>, <span class="kw-2">&amp;</span>time_string);
+
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>

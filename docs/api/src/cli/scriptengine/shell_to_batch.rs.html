@@ -26,6 +26,11 @@
 <a href="#26" id="26">26</a>
 <a href="#27" id="27">27</a>
 <a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # shell_to_batch
 //!
 //! Converts shell scripts to windows batch and invokes them.
@@ -36,8 +41,13 @@
 </span><span class="kw">mod </span>shell_to_batch_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;, validate: bool) -&gt; bool {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(
+    script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    validate: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>exit_code = <span class="kw">if </span><span class="macro">cfg!</span>(windows) {
         <span class="kw">let </span>shell_script = script.join(<span class="string">"\n"</span>);
         <span class="kw">let </span>windows_batch = shell2batch::convert(<span class="kw-2">&amp;</span>shell_script);
@@ -50,8 +60,8 @@
         command::run_script_get_exit_code(<span class="kw-2">&amp;</span>windows_script_lines, <span class="prelude-val">None</span>, cli_arguments, validate)
     } <span class="kw">else </span>{
         command::run_script_get_exit_code(script, <span class="prelude-val">None</span>, cli_arguments, validate)
-    };
+    }<span class="question-mark">?</span>;
 
-    exit_code == <span class="number">0
-</span>}
+    <span class="prelude-val">Ok</span>(exit_code == <span class="number">0</span>)
+}
 </code></pre></div></section></main></body></html>

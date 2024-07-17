@@ -133,6 +133,7 @@
 <a href="#133" id="133">133</a>
 <a href="#134" id="134">134</a>
 <a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # shebang_script
 //!
 //! Runs scripts using the executable defined in the shebang line.
@@ -142,6 +143,7 @@
 #[path = <span class="string">"shebang_script_test.rs"</span>]
 </span><span class="kw">mod </span>shebang_script_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine::generic_script;
 <span class="kw">use </span>std::path::Path;
 
@@ -240,7 +242,7 @@
     extension: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>shebang = get_shebang(<span class="kw-2">&amp;</span>script_text);
 
     <span class="kw">match </span>shebang.runner {
@@ -264,8 +266,8 @@
                 <span class="macro">error!</span>(<span class="string">"Unable to execute script using shebang."</span>);
             }
 
-            <span class="bool-val">false
-        </span>}
+            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+        }
     }
 }
 </code></pre></div></section></main></body></html>

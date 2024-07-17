@@ -70,6 +70,8 @@
 <a href="#70" id="70">70</a>
 <a href="#71" id="71">71</a>
 <a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cm_run_task
 //!
 //! Enables to run cargo-make tasks from within duckscript.
@@ -119,12 +121,14 @@
                 plugins_enabled: <span class="bool-val">false</span>,
             };
 
-            runner::run_task_with_options(
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = runner::run_task_with_options(
                 <span class="kw-2">&amp;</span><span class="self">self</span>.flow_info,
                 <span class="self">self</span>.flow_state.clone(),
                 <span class="kw-2">&amp;</span>custom_step,
                 <span class="kw-2">&amp;</span>options,
-            );
+            ) {
+                <span class="kw">return </span>CommandResult::Error(e.to_string());
+            }
 
             CommandResult::Continue(<span class="prelude-val">Some</span>(<span class="string">"true"</span>.to_string()))
         }

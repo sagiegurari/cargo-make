@@ -189,9 +189,6 @@
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
 <a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # list_steps
 //!
 //! Lists all known tasks in multiple formats.
@@ -202,19 +199,20 @@
 #[path = <span class="string">"list_steps_test.rs"</span>]
 </span><span class="kw">mod </span>list_steps_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::execution_plan;
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="kw">use </span><span class="kw">crate</span>::types::{Config, DeprecationInfo};
 <span class="kw">use </span>std::collections::{BTreeMap, BTreeSet};
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>run(
+<span class="kw">pub fn </span>run(
     config: <span class="kw-2">&amp;</span>Config,
     output_format: <span class="kw-2">&amp;</span>str,
     output_file: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
-    category: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    category: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     hide_uninteresting: bool,
-) {
-    <span class="kw">let </span>output = create_list(<span class="kw-2">&amp;</span>config, output_format, category, hide_uninteresting);
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
+    <span class="kw">let </span>output = create_list(<span class="kw-2">&amp;</span>config, output_format, category, hide_uninteresting)<span class="question-mark">?</span>;
 
     <span class="kw">match </span>output_file {
         <span class="prelude-val">Some</span>(file) =&gt; {
@@ -222,16 +220,16 @@
             ()
         }
         <span class="prelude-val">None </span>=&gt; <span class="macro">print!</span>(<span class="string">"{}"</span>, output),
-    }
+    };
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Panics if task does not exist.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_list(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_list(
     config: <span class="kw-2">&amp;</span>Config,
     output_format: <span class="kw-2">&amp;</span>str,
-    category_filter: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    category_filter: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     hide_uninteresting: bool,
-) -&gt; String {
+) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
     <span class="comment">// category -&gt; actual_task -&gt; description
     </span><span class="kw">let </span><span class="kw-2">mut </span>categories: BTreeMap&lt;String, BTreeMap&lt;String, String&gt;&gt; = BTreeMap::new();
     <span class="comment">// actual_task -&gt; aliases
@@ -239,13 +237,9 @@
 
     <span class="comment">// iterate over all tasks to build categories and aliases
     </span><span class="kw">for </span>key <span class="kw">in </span>config.tasks.keys() {
-        <span class="kw">let </span>actual_task_name =
-            execution_plan::get_actual_task_name(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>key).unwrap_or_else(|| {
-                <span class="macro">error!</span>(<span class="string">"Task {} not found"</span>, <span class="kw-2">&amp;</span>key);
-                <span class="macro">panic!</span>(<span class="string">"Task {} not found"</span>, <span class="kw-2">&amp;</span>key);
-            });
+        <span class="kw">let </span>actual_task_name = execution_plan::get_actual_task_name(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>key)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>task = execution_plan::get_normalized_task(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>actual_task_name, <span class="bool-val">true</span>);
+        <span class="kw">let </span>task = execution_plan::get_normalized_task(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>actual_task_name, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>is_private = <span class="kw">match </span>task.private {
             <span class="prelude-val">Some</span>(private) =&gt; private,
@@ -380,10 +374,10 @@
         }
 
         <span class="kw">if </span>!just_task_name {
-            buffer.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"\n"</span>));
+            buffer.push(<span class="string">'\n'</span>);
         }
     }
 
-    buffer
+    <span class="prelude-val">Ok</span>(buffer)
 }
 </code></pre></div></section></main></body></html>

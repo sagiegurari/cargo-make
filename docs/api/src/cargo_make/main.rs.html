@@ -37,6 +37,11 @@
 <a href="#37" id="37">37</a>
 <a href="#38" id="38">38</a>
 <a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cargo-make
 //!
 //! Rust task runner and build tool.&lt;br&gt;
@@ -64,7 +69,9 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
-</span><span class="attr">#[cfg(test)]
+</span><span class="kw">use </span>cli::error::SuccessOrCargoMakeError;
+
+<span class="attr">#[cfg(test)]
 #[path = <span class="string">"main_test.rs"</span>]
 </span><span class="kw">mod </span>main_test;
 
@@ -72,8 +79,11 @@
     <span class="string">"make"</span>.to_string()
 }
 
-<span class="kw">fn </span>main() {
+<span class="kw">fn </span>main() -&gt; SuccessOrCargoMakeError&lt;std::process::ExitCode&gt; {
     <span class="kw">let </span>name = get_name();
-    cli::run_cli(name, <span class="bool-val">true</span>);
+    <span class="kw">match </span>cli::run_cli(name, <span class="bool-val">true</span>) {
+        <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(std::process::ExitCode::SUCCESS).into(),
+        <span class="prelude-val">Err</span>(e) =&gt; SuccessOrCargoMakeError::Err(e),
+    }
 }
 </code></pre></div></section></main></body></html>

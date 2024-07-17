@@ -19,6 +19,7 @@
 <a href="#19" id="19">19</a>
 <a href="#20" id="20">20</a>
 <a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # os_script
 //!
 //! Runs OS scripts.
@@ -29,15 +30,16 @@
 </span><span class="kw">mod </span>os_script_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(
     script_text: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     runner: <span class="prelude-ty">Option</span>&lt;String&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>exit_code =
-        command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script_text, runner, <span class="kw-2">&amp;</span>cli_arguments, validate);
-    exit_code == <span class="number">0
-</span>}
+        command::run_script_get_exit_code(<span class="kw-2">&amp;</span>script_text, runner, <span class="kw-2">&amp;</span>cli_arguments, validate)<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(exit_code == <span class="number">0</span>)
+}
 </code></pre></div></section></main></body></html>

@@ -129,6 +129,8 @@
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # rsscript
 //!
 //! Compiles and runs rust code.
@@ -139,6 +141,7 @@
 </span><span class="kw">mod </span>rsscript_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::installer::{cargo_plugin_installer, crate_installer};
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine::script_utils::create_persisted_script_file;
 <span class="kw">use </span><span class="kw">crate</span>::types::{InstallCrateInfo, TestArg};
@@ -161,7 +164,7 @@
     }
 }
 
-<span class="kw">fn </span>install_crate(provider: <span class="kw-2">&amp;</span>ScriptRunner) {
+<span class="kw">fn </span>install_crate(provider: <span class="kw-2">&amp;</span>ScriptRunner) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="comment">// install dependencies
     </span><span class="kw">match </span>provider {
         ScriptRunner::RustScript =&gt; {
@@ -178,7 +181,7 @@
                 force: <span class="prelude-val">None</span>,
             };
 
-            crate_installer::install(<span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>info, <span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="bool-val">false</span>);
+            crate_installer::install(<span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="kw-2">&amp;</span>info, <span class="kw-2">&amp;</span><span class="prelude-val">None</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
         }
         ScriptRunner::CargoScript =&gt; cargo_plugin_installer::install_crate(
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
@@ -189,7 +192,7 @@
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-        ),
+        )<span class="question-mark">?</span>,
         ScriptRunner::CargoPlay =&gt; cargo_plugin_installer::install_crate(
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="prelude-val">Some</span>(<span class="string">"play"</span>),
@@ -199,11 +202,12 @@
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
             <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-        ),
+        )<span class="question-mark">?</span>,
     };
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn </span>create_rust_file(rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; String {
+<span class="kw">fn </span>create_rust_file(rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
     create_persisted_script_file(rust_script, <span class="string">"rs"</span>)
 }
 
@@ -212,7 +216,7 @@
     runner_arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     provider: <span class="kw-2">&amp;</span>ScriptRunner,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>(use_cargo, command) = <span class="kw">match </span>provider {
         ScriptRunner::RustScript =&gt; (<span class="bool-val">false</span>, <span class="string">"rust-script"</span>),
         ScriptRunner::CargoScript =&gt; (<span class="bool-val">true</span>, <span class="string">"script"</span>),
@@ -234,30 +238,30 @@
         command::run_command(<span class="string">"cargo"</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(args), <span class="bool-val">false</span>)
     } <span class="kw">else </span>{
         command::run_command(command, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(args), <span class="bool-val">false</span>)
-    };
+    }<span class="question-mark">?</span>;
     <span class="macro">debug!</span>(<span class="string">"Executed rust code, exit code: {}"</span>, exit_code);
 
-    exit_code == <span class="number">0
-</span>}
+    <span class="prelude-val">Ok</span>(exit_code == <span class="number">0</span>)
+}
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(
     rust_script: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     runner_arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span>provider = get_script_runner();
 
-    install_crate(<span class="kw-2">&amp;</span>provider);
+    install_crate(<span class="kw-2">&amp;</span>provider)<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>file = create_rust_file(rust_script);
+    <span class="kw">let </span>file = create_rust_file(rust_script)<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, runner_arguments, <span class="kw-2">&amp;</span>cli_arguments, <span class="kw-2">&amp;</span>provider);
+    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, runner_arguments, <span class="kw-2">&amp;</span>cli_arguments, <span class="kw-2">&amp;</span>provider)<span class="question-mark">?</span>;
 
     <span class="kw">if </span>validate &amp;&amp; !valid {
         <span class="macro">error!</span>(<span class="string">"Unable to execute rust code."</span>);
     }
 
-    <span class="kw">return </span>valid;
+    <span class="prelude-val">Ok</span>(valid)
 }
 </code></pre></div></section></main></body></html>

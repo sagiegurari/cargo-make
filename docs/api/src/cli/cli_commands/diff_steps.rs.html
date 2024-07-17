@@ -87,6 +87,7 @@
 <a href="#87" id="87">87</a>
 <a href="#88" id="88">88</a>
 <a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # diff_steps
 //!
 //! Prints a diff of execution plans.
@@ -97,7 +98,8 @@
 </span><span class="kw">mod </span>diff_steps_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
-<span class="kw">use </span><span class="kw">crate</span>::execution_plan::create <span class="kw">as </span>create_execution_plan;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+<span class="kw">use </span><span class="kw">crate</span>::execution_plan::ExecutionPlanBuilder;
 <span class="kw">use </span><span class="kw">crate</span>::io::{create_file, delete_file};
 <span class="kw">use </span><span class="kw">crate</span>::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
 <span class="kw">use </span>regex::Regex;
@@ -117,7 +119,7 @@
     task: <span class="kw-2">&amp;</span>str,
     cli_args: <span class="kw-2">&amp;</span>CliArgs,
     crateinfo: <span class="kw-2">&amp;</span>CrateInfo,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>skip_tasks_pattern = <span class="kw">match </span>cli_args.skip_tasks_pattern {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; <span class="kw">match </span>Regex::new(pattern) {
             <span class="prelude-val">Ok</span>(reg) =&gt; <span class="prelude-val">Some</span>(reg),
@@ -129,34 +131,32 @@
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let </span>internal_execution_plan = create_execution_plan(
-        internal_config,
-        <span class="kw-2">&amp;</span>task,
-        crateinfo,
-        cli_args.disable_workspace,
-        <span class="bool-val">true</span>,
-        <span class="bool-val">false</span>,
-        <span class="kw-2">&amp;</span>skip_tasks_pattern,
-    );
+    <span class="kw">let </span>internal_execution_plan = ExecutionPlanBuilder {
+        crate_info: <span class="prelude-val">Some</span>(crateinfo),
+        disable_workspace: cli_args.disable_workspace,
+        allow_private: <span class="bool-val">true</span>,
+        skip_tasks_pattern: skip_tasks_pattern.as_ref(),
+        ..ExecutionPlanBuilder::new(internal_config, <span class="kw-2">&amp;</span>task)
+    }
+    .build()<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>external_execution_plan = create_execution_plan(
-        external_config,
-        <span class="kw-2">&amp;</span>task,
-        crateinfo,
-        cli_args.disable_workspace,
-        <span class="bool-val">true</span>,
-        <span class="bool-val">false</span>,
-        <span class="kw-2">&amp;</span>skip_tasks_pattern,
-    );
+    <span class="kw">let </span>external_execution_plan = ExecutionPlanBuilder {
+        crate_info: <span class="prelude-val">Some</span>(crateinfo),
+        disable_workspace: cli_args.disable_workspace,
+        allow_private: <span class="bool-val">true</span>,
+        skip_tasks_pattern: skip_tasks_pattern.as_ref(),
+        ..ExecutionPlanBuilder::new(external_config, <span class="kw-2">&amp;</span>task)
+    }
+    .build()<span class="question-mark">?</span>;
 
     <span class="kw">let </span>internal_file = create_file(
         <span class="kw-2">&amp;</span><span class="kw">move </span>|file: <span class="kw-2">&amp;mut </span>File| write_as_string(<span class="kw-2">&amp;</span>internal_execution_plan, <span class="kw-2">&amp;</span>file),
         <span class="string">"toml"</span>,
-    );
+    )<span class="question-mark">?</span>;
     <span class="kw">let </span>external_file = create_file(
         <span class="kw-2">&amp;</span><span class="kw">move </span>|file: <span class="kw-2">&amp;mut </span>File| write_as_string(<span class="kw-2">&amp;</span>external_execution_plan, <span class="kw-2">&amp;</span>file),
         <span class="string">"toml"</span>,
-    );
+    )<span class="question-mark">?</span>;
 
     <span class="macro">info!</span>(<span class="string">"Printing diff..."</span>);
     command::run_command(
@@ -169,11 +169,13 @@
             external_file.to_string(),
         ]),
         <span class="bool-val">false</span>,
-    );
+    )<span class="question-mark">?</span>;
 
     delete_file(<span class="kw-2">&amp;</span>internal_file);
     delete_file(<span class="kw-2">&amp;</span>external_file);
 
     <span class="macro">info!</span>(<span class="string">"Done"</span>);
+
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>

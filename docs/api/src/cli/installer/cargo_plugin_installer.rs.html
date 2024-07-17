@@ -192,6 +192,11 @@
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cargo_plugin_installer
 //!
 //! Installs cargo plugins automatically if needed.
@@ -202,6 +207,7 @@
 </span><span class="kw">mod </span>cargo_plugin_installer_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::installer::crate_version_check;
 <span class="kw">use </span><span class="kw">crate</span>::toolchain::wrap_command;
 <span class="kw">use </span><span class="kw">crate</span>::types::ToolchainSpecifier;
@@ -253,7 +259,10 @@
     <span class="bool-val">false
 </span>}
 
-<span class="kw">fn </span>is_crate_installed(toolchain: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ToolchainSpecifier&gt;, crate_name: <span class="kw-2">&amp;</span>str) -&gt; bool {
+<span class="kw">fn </span>is_crate_installed(
+    toolchain: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;ToolchainSpecifier&gt;,
+    crate_name: <span class="kw-2">&amp;</span>str,
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="macro">debug!</span>(<span class="string">"Getting list of installed cargo commands."</span>);
 
     <span class="kw">let </span><span class="kw-2">mut </span>command_struct = <span class="kw">match </span>toolchain {
@@ -272,20 +281,20 @@
     <span class="kw">match </span>result {
         <span class="prelude-val">Ok</span>(output) =&gt; {
             <span class="kw">let </span>exit_code = command::get_exit_code(<span class="prelude-val">Ok</span>(output.status), <span class="bool-val">false</span>);
-            command::validate_exit_code(exit_code);
+            command::validate_exit_code(exit_code)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>stdout = strip_str(String::from_utf8_lossy(<span class="kw-2">&amp;</span>output.stdout));
             <span class="kw">let </span>crate_name_trimmed = crate_name.trim();
-            is_crate_in_list_output(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout)
-                || is_crate_in_list_output_legacy(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout)
+            <span class="prelude-val">Ok</span>(is_crate_in_list_output(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout)
+                || is_crate_in_list_output_legacy(<span class="kw-2">&amp;</span>crate_name_trimmed, <span class="kw-2">&amp;</span>stdout))
         }
         <span class="prelude-val">Err</span>(error) =&gt; {
             <span class="macro">error!</span>(
                 <span class="string">"Unable to check if crate is installed: {} {:#?}"</span>,
                 crate_name, <span class="kw-2">&amp;</span>error
             );
-            <span class="bool-val">false
-        </span>}
+            <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+        }
     }
 }
 
@@ -348,11 +357,11 @@
     min_version: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     install_command: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     allow_force: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;bool&gt;,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>installed = <span class="kw">match </span>cargo_command {
         <span class="prelude-val">Some</span>(cargo_command) =&gt; is_crate_installed(<span class="kw-2">&amp;</span>toolchain, cargo_command),
-        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
-    };
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
+    }<span class="question-mark">?</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>force = <span class="bool-val">false</span>;
     <span class="kw">let </span>allow_force_value = allow_force.unwrap_or(<span class="bool-val">true</span>);
     <span class="kw">let </span>run_installation = <span class="kw">if </span>!installed {
@@ -380,10 +389,11 @@
         <span class="kw">match </span>toolchain {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>toolchain_string) =&gt; {
                 <span class="kw">let </span>command_spec = wrap_command(<span class="kw-2">&amp;</span>toolchain_string, <span class="string">"cargo"</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(install_args));
-                command::run_command(<span class="kw-2">&amp;</span>command_spec.command, <span class="kw-2">&amp;</span>command_spec.args, validate)
-            }
-            <span class="prelude-val">None </span>=&gt; command::run_command(<span class="string">"cargo"</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(install_args), validate),
+                command::run_command(<span class="kw-2">&amp;</span>command_spec.command, <span class="kw-2">&amp;</span>command_spec.args, validate)<span class="question-mark">?
+            </span>}
+            <span class="prelude-val">None </span>=&gt; command::run_command(<span class="string">"cargo"</span>, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(install_args), validate)<span class="question-mark">?</span>,
         };
     }
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>

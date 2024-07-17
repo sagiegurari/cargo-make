@@ -497,6 +497,61 @@
 <a href="#497" id="497">497</a>
 <a href="#498" id="498">498</a>
 <a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # execution_plan
 //!
 //! Creates execution plan for a given task and makefile.
@@ -507,6 +562,7 @@
 </span><span class="kw">mod </span>execution_plan_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::environment;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::logger;
 <span class="kw">use </span><span class="kw">crate</span>::profile;
 <span class="kw">use </span><span class="kw">crate</span>::proxy_task::create_proxy_task;
@@ -522,10 +578,11 @@
 <span class="kw">use </span>std::path::Path;
 
 <span class="doccomment">/// Resolve aliases recursively until a task without alias is found.
-///
-/// # Panics
-/// if there is a cycle in the alias chain.
-</span><span class="kw">fn </span>get_task_name_recursive(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, seen: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+</span><span class="kw">fn </span>get_task_name_recursive(
+    config: <span class="kw-2">&amp;</span>Config,
+    name: <span class="kw-2">&amp;</span>str,
+    seen: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
     seen.push(name.to_string());
 
     <span class="kw">match </span>config.tasks.get(name) {
@@ -536,13 +593,16 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>alias) <span class="kw">if </span>seen.contains(alias) =&gt; {
                     <span class="kw">let </span>chain = seen.join(<span class="string">" -&gt; "</span>);
                     <span class="macro">error!</span>(<span class="string">"Detected cycle while resolving alias {}: {}"</span>, <span class="kw-2">&amp;</span>name, chain);
-                    <span class="macro">panic!</span>(<span class="string">"Detected cycle while resolving alias {}: {}"</span>, <span class="kw-2">&amp;</span>name, chain);
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::AliasCycle(name.to_string(), chain));
                 }
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>alias) =&gt; get_task_name_recursive(config, alias, seen),
-                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Some</span>(name.to_string()),
+                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(name.to_string()),
             }
         }
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(CargoMakeError::NotFound(<span class="macro">format!</span>(
+            <span class="string">"Task {:#?} not found"</span>,
+            name
+        ))),
     }
 }
 
@@ -550,7 +610,7 @@
 ///
 /// # Panics
 /// if there is a cycle in the alias chain.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_actual_task_name(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_actual_task_name(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>seen = Vec::new();
 
     get_task_name_recursive(config, name, <span class="kw-2">&amp;mut </span>seen)
@@ -560,60 +620,61 @@
 ///
 /// # Panics
 /// if task is not found or there is a cycle in the alias chain.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; Task {
-    <span class="kw">match </span>get_optional_normalized_task(config, name, support_alias) {
-        <span class="prelude-val">Some</span>(task) =&gt; task,
-        <span class="prelude-val">None </span>=&gt; {
-            <span class="macro">error!</span>(<span class="string">"Task {} not found"</span>, <span class="kw-2">&amp;</span>name);
-            <span class="macro">panic!</span>(<span class="string">"Task {} not found"</span>, <span class="kw-2">&amp;</span>name);
-        }
-    }
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_normalized_task(
+    config: <span class="kw-2">&amp;</span>Config,
+    name: <span class="kw-2">&amp;</span>str,
+    support_alias: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Task, CargoMakeError&gt; {
+    get_optional_normalized_task(config, name, support_alias)
 }
 
 <span class="doccomment">/// Resolves alias and normalizes task.
 ///
 /// # Panics
 /// if there is a cycle in the alias chain.
-</span><span class="kw">fn </span>get_optional_normalized_task(config: <span class="kw-2">&amp;</span>Config, name: <span class="kw-2">&amp;</span>str, support_alias: bool) -&gt; <span class="prelude-ty">Option</span>&lt;Task&gt; {
-    <span class="kw">let </span>actual_task_name_option = <span class="kw">if </span>support_alias {
+</span><span class="kw">fn </span>get_optional_normalized_task(
+    config: <span class="kw-2">&amp;</span>Config,
+    name: <span class="kw-2">&amp;</span>str,
+    support_alias: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Task, CargoMakeError&gt; {
+    <span class="kw">let </span>actual_task_name = <span class="kw">if </span>support_alias {
         get_actual_task_name(config, name)
     } <span class="kw">else </span>{
-        <span class="prelude-val">Some</span>(name.to_string())
-    };
+        <span class="prelude-val">Ok</span>(name.to_string())
+    }<span class="question-mark">?</span>;
 
-    <span class="kw">match </span>actual_task_name_option {
-        <span class="prelude-val">Some</span>(actual_task_name) =&gt; <span class="kw">match </span>config.tasks.get(<span class="kw-2">&amp;</span>actual_task_name) {
-            <span class="prelude-val">Some</span>(task_config) =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>clone_task = task_config.clone();
-                <span class="kw">let </span><span class="kw-2">mut </span>normalized_task = clone_task.get_normalized_task();
+    <span class="kw">match </span>config.tasks.get(<span class="kw-2">&amp;</span>actual_task_name) {
+        <span class="prelude-val">Some</span>(task_config) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>clone_task = task_config.clone();
+            <span class="kw">let </span><span class="kw-2">mut </span>normalized_task = clone_task.get_normalized_task();
 
-                normalized_task = <span class="kw">match </span>normalized_task.extend {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extended_task_name) =&gt; {
-                        <span class="kw">let </span><span class="kw-2">mut </span>extended_task =
-                            get_normalized_task(config, extended_task_name, support_alias);
+            normalized_task = <span class="kw">match </span>normalized_task.extend {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extended_task_name) =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>extended_task =
+                        get_normalized_task(config, extended_task_name, support_alias)<span class="question-mark">?</span>;
 
-                        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>env) = normalized_task.env {
-                            <span class="kw">if </span>env.len() == <span class="number">2
-                                </span>&amp;&amp; env.contains_key(<span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE"</span>)
-                                &amp;&amp; env.contains_key(
-                                    <span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY"</span>,
-                                )
-                            {
-                                normalized_task.env = <span class="prelude-val">None</span>;
-                            }
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>env) = normalized_task.env {
+                        <span class="kw">if </span>env.len() == <span class="number">2
+                            </span>&amp;&amp; env.contains_key(<span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE"</span>)
+                            &amp;&amp; env
+                                .contains_key(<span class="string">"CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY"</span>)
+                        {
+                            normalized_task.env = <span class="prelude-val">None</span>;
                         }
-                        extended_task.extend(<span class="kw-2">&amp;</span>normalized_task);
-
-                        extended_task
                     }
-                    <span class="prelude-val">None </span>=&gt; normalized_task,
-                };
+                    extended_task.extend(<span class="kw-2">&amp;</span>normalized_task);
 
-                <span class="prelude-val">Some</span>(normalized_task)
-            }
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
-        },
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+                    extended_task
+                }
+                <span class="prelude-val">None </span>=&gt; normalized_task,
+            };
+
+            <span class="prelude-val">Ok</span>(normalized_task)
+        }
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(CargoMakeError::NotFound(<span class="macro">format!</span>(
+            <span class="string">"Task {:#?} not found"</span>,
+            name
+        ))),
     }
 }
 
@@ -800,11 +861,11 @@
     <span class="comment">// determine if workspace flow is explicitly set and enabled in the requested task
     </span><span class="kw">let </span>(task_set_workspace, task_enable_workspace) =
         <span class="kw">match </span>get_optional_normalized_task(config, task, <span class="bool-val">true</span>) {
-            <span class="prelude-val">Some</span>(normalized_task) =&gt; <span class="kw">match </span>normalized_task.workspace {
+            <span class="prelude-val">Ok</span>(normalized_task) =&gt; <span class="kw">match </span>normalized_task.workspace {
                 <span class="prelude-val">Some</span>(enable_workspace) =&gt; (<span class="bool-val">true</span>, enable_workspace),
                 <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
             },
-            <span class="prelude-val">None </span>=&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
         };
 
     <span class="comment">// if project is not a workspace or if workspace is disabled via cli, return no workspace flow
@@ -835,12 +896,12 @@
     task_names: <span class="kw-2">&amp;mut </span>HashSet&lt;String&gt;,
     root: bool,
     allow_private: bool,
-    skip_tasks_pattern: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Regex&gt;,
-) {
+    skip_tasks_pattern: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Regex&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(skip_tasks_pattern_regex) = skip_tasks_pattern {
         <span class="kw">if </span>skip_tasks_pattern_regex.is_match(<span class="kw-2">&amp;</span>task.name) {
             <span class="macro">debug!</span>(<span class="string">"Skipping task: {} due to skip pattern."</span>, <span class="kw-2">&amp;</span>task.name);
-            <span class="kw">return</span>;
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
     }
 
@@ -870,10 +931,10 @@
 
         steps.push(step);
         task_names.insert(task.to_string());
-        <span class="kw">return</span>;
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     }
 
-    <span class="kw">let </span>task_config = get_normalized_task(config, <span class="kw-2">&amp;</span>task.name, <span class="bool-val">true</span>);
+    <span class="kw">let </span>task_config = get_normalized_task(config, <span class="kw-2">&amp;</span>task.name, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
     <span class="macro">debug!</span>(<span class="string">"Normalized Task: {} config: {:#?}"</span>, <span class="kw-2">&amp;</span>task, <span class="kw-2">&amp;</span>task_config);
 
@@ -897,7 +958,7 @@
                             <span class="bool-val">false</span>,
                             <span class="bool-val">true</span>,
                             skip_tasks_pattern,
-                        );
+                        )<span class="question-mark">?</span>;
                     }
                 }
                 <span class="kw">_ </span>=&gt; <span class="macro">debug!</span>(<span class="string">"No dependencies found for task: {}"</span>, <span class="kw-2">&amp;</span>task),
@@ -910,17 +971,22 @@
                 });
                 task_names.insert(task.to_string());
             } <span class="kw">else if </span>root {
-                <span class="macro">error!</span>(<span class="string">"Circular reference found for task: {}"</span>, <span class="kw-2">&amp;</span>task);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::CircularReference(<span class="macro">format!</span>(<span class="string">"{}"</span>, task)));
             }
         }
+        <span class="prelude-val">Ok</span>(())
     } <span class="kw">else </span>{
         <span class="macro">error!</span>(<span class="string">"Task {} is private"</span>, <span class="kw-2">&amp;</span>task);
-        <span class="macro">panic!</span>(<span class="string">"Task {} is private"</span>, <span class="kw-2">&amp;</span>task);
+        <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::TaskIs(<span class="macro">format!</span>(<span class="string">"{}"</span>, task), <span class="string">"private"</span>));
     }
 }
 
-<span class="kw">fn </span>add_predefined_step(config: <span class="kw-2">&amp;</span>Config, task: <span class="kw-2">&amp;</span>str, steps: <span class="kw-2">&amp;mut </span>Vec&lt;Step&gt;) {
-    <span class="kw">let </span>task_config = get_normalized_task(config, task, <span class="bool-val">false</span>);
+<span class="kw">fn </span>add_predefined_step(
+    config: <span class="kw-2">&amp;</span>Config,
+    task: <span class="kw-2">&amp;</span>str,
+    steps: <span class="kw-2">&amp;mut </span>Vec&lt;Step&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
+    <span class="kw">let </span>task_config = get_normalized_task(config, task, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
     <span class="kw">let </span>add = !task_config.disabled.unwrap_or(<span class="bool-val">false</span>);
 
     <span class="kw">if </span>add {
@@ -929,71 +995,115 @@
             config: task_config,
         });
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Creates the full execution plan
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create(
-    config: <span class="kw-2">&amp;</span>Config,
-    task: <span class="kw-2">&amp;</span>str,
-    crate_info: <span class="kw-2">&amp;</span>CrateInfo,
-    disable_workspace: bool,
-    allow_private: bool,
-    sub_flow: bool,
-    skip_tasks_pattern: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;Regex&gt;,
-) -&gt; ExecutionPlan {
-    <span class="kw">let </span><span class="kw-2">mut </span>task_names = HashSet::new();
-    <span class="kw">let </span><span class="kw-2">mut </span>steps = Vec::new();
+<span class="attr">#[derive(Clone, Debug)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ExecutionPlanBuilder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub </span>config: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Config,
+    <span class="kw">pub </span>task: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str,
+    <span class="kw">pub </span>crate_info: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>CrateInfo&gt;,
+    <span class="kw">pub </span>disable_workspace: bool,
+    <span class="kw">pub </span>allow_private: bool,
+    <span class="kw">pub </span>sub_flow: bool,
+    <span class="kw">pub </span>skip_tasks_pattern: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Regex&gt;,
+    <span class="kw">pub </span>skip_init_end_tasks: bool,
+}
 
-    <span class="kw">if </span>!sub_flow {
-        <span class="kw">match </span>config.config.legacy_migration_task {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">"Legacy migration task not defined."</span>),
-        };
-        <span class="kw">match </span>config.config.init_task {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">"Init task not defined."</span>),
-        };
-    }
-
-    <span class="kw">let </span>skip = <span class="kw">match </span>skip_tasks_pattern {
-        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; pattern.is_match(task),
-        <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
-    };
-
-    <span class="kw">if </span>!skip {
-        <span class="kw">let </span>workspace_flow =
-            is_workspace_flow(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, disable_workspace, <span class="kw-2">&amp;</span>crate_info, sub_flow);
-
-        <span class="kw">if </span>workspace_flow {
-            <span class="kw">let </span>workspace_task = create_workspace_task(crate_info, task);
-
-            steps.push(Step {
-                name: <span class="string">"workspace"</span>.to_string(),
-                config: workspace_task,
-            });
-        } <span class="kw">else </span>{
-            create_for_step(
-                <span class="kw-2">&amp;</span>config,
-                <span class="kw-2">&amp;</span>TaskIdentifier::from_name(task),
-                <span class="kw-2">&amp;mut </span>steps,
-                <span class="kw-2">&amp;mut </span>task_names,
-                <span class="bool-val">true</span>,
-                allow_private,
-                <span class="kw-2">&amp;</span>skip_tasks_pattern,
-            );
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ExecutionPlanBuilder&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub fn </span>new(config: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Config, task: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            config,
+            task,
+            crate_info: <span class="prelude-val">None</span>,
+            disable_workspace: <span class="bool-val">false</span>,
+            allow_private: <span class="bool-val">false</span>,
+            sub_flow: <span class="bool-val">false</span>,
+            skip_tasks_pattern: <span class="prelude-val">None</span>,
+            skip_init_end_tasks: <span class="bool-val">false</span>,
         }
-    } <span class="kw">else </span>{
-        <span class="macro">debug!</span>(<span class="string">"Skipping task: {} due to skip pattern."</span>, <span class="kw-2">&amp;</span>task);
     }
 
-    <span class="kw">if </span>!sub_flow {
-        <span class="comment">// always add end task even if already executed due to some dependency
-        </span><span class="kw">match </span>config.config.end_task {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps),
-            <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">"Ent task not defined."</span>),
+    <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ExecutionPlan, CargoMakeError&gt; {
+        <span class="kw">let </span><span class="self">Self </span>{
+            config,
+            task,
+            crate_info,
+            disable_workspace,
+            allow_private,
+            sub_flow,
+            skip_tasks_pattern,
+            skip_init_end_tasks,
+        } = <span class="kw-2">*</span><span class="self">self</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>task_names = HashSet::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>steps = Vec::new();
+        <span class="kw">let </span>default_crate_info = CrateInfo::new();
+        <span class="kw">let </span>crate_info = crate_info.unwrap_or(<span class="kw-2">&amp;</span>default_crate_info);
+        <span class="kw">let </span>skip_init_end_tasks = skip_init_end_tasks || sub_flow;
+
+        <span class="kw">if </span>!skip_init_end_tasks {
+            <span class="kw">match </span>config.config.legacy_migration_task {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps)<span class="question-mark">?</span>,
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="comment">/* return Err(CargoMakeError::NotFound(String::from(
+                        "Legacy migration task not defined.",
+                    ))) */
+                </span>}
+            };
+            <span class="kw">match </span>config.config.init_task {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps)<span class="question-mark">?</span>,
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="comment">/* return Err(CargoMakeError::NotFound(String::from(
+                        "Init task not defined.",
+                    ))) */
+                </span>}
+            };
+        }
+
+        <span class="kw">let </span>skip = <span class="kw">match </span>skip_tasks_pattern {
+            <span class="prelude-val">Some</span>(pattern) =&gt; pattern.is_match(task),
+            <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
         };
-    }
 
-    ExecutionPlan { steps }
+        <span class="kw">if </span>!skip {
+            <span class="kw">let </span>workspace_flow =
+                is_workspace_flow(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task, disable_workspace, <span class="kw-2">&amp;</span>crate_info, sub_flow);
+
+            <span class="kw">if </span>workspace_flow {
+                <span class="kw">let </span>workspace_task = create_workspace_task(crate_info, task);
+
+                steps.push(Step {
+                    name: <span class="string">"workspace"</span>.to_string(),
+                    config: workspace_task,
+                });
+            } <span class="kw">else </span>{
+                create_for_step(
+                    <span class="kw-2">&amp;</span>config,
+                    <span class="kw-2">&amp;</span>TaskIdentifier::from_name(task),
+                    <span class="kw-2">&amp;mut </span>steps,
+                    <span class="kw-2">&amp;mut </span>task_names,
+                    <span class="bool-val">true</span>,
+                    allow_private,
+                    skip_tasks_pattern,
+                )<span class="question-mark">?</span>;
+            }
+        } <span class="kw">else </span>{
+            <span class="macro">debug!</span>(<span class="string">"Skipping task: {} due to skip pattern."</span>, <span class="kw-2">&amp;</span>task);
+        }
+
+        <span class="kw">if </span>!skip_init_end_tasks {
+            <span class="comment">// always add end task even if already executed due to some dependency
+            </span><span class="kw">match </span>config.config.end_task {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>task) =&gt; add_predefined_step(config, task, <span class="kw-2">&amp;mut </span>steps)<span class="question-mark">?</span>,
+                <span class="prelude-val">None </span>=&gt; {
+                    <span class="comment">/* return Err(CargoMakeError::NotFound(String::from(
+                        "Ent task not defined.",
+                    ))) */
+                </span>}
+            };
+        }
+
+        <span class="prelude-val">Ok</span>(ExecutionPlan { steps })
+    }
 }
 </code></pre></div></section></main></body></html>

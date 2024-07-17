@@ -879,6 +879,13 @@
 <a href="#879" id="879">879</a>
 <a href="#880" id="880">880</a>
 <a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # env
 //!
 //! Sets up the env vars before running the tasks.
@@ -892,6 +899,7 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
 <span class="kw">use </span><span class="kw">crate</span>::condition;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::io;
 <span class="kw">use </span><span class="kw">crate</span>::profile;
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine;
@@ -1174,7 +1182,10 @@
     all_loaded
 }
 
-<span class="kw">fn </span>set_env_scripts(env_scripts: Vec&lt;String&gt;, cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) {
+<span class="kw">fn </span>set_env_scripts(
+    env_scripts: Vec&lt;String&gt;,
+    cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">for </span>env_script <span class="kw">in </span>env_scripts {
         <span class="kw">if </span>!env_script.is_empty() {
             scriptengine::invoke_script_pre_flow(
@@ -1184,9 +1195,10 @@
                 <span class="prelude-val">None</span>,
                 <span class="bool-val">true</span>,
                 cli_arguments,
-            );
+            )<span class="question-mark">?</span>;
         }
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_current_task_meta_info_env(env: IndexMap&lt;String, EnvValue&gt;) {
@@ -1205,7 +1217,7 @@
 }
 
 <span class="doccomment">/// Updates the env for the current execution based on the descriptor.
-</span><span class="kw">fn </span>initialize_env(config: <span class="kw-2">&amp;</span>Config, cli_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) {
+</span><span class="kw">fn </span>initialize_env(config: <span class="kw-2">&amp;</span>Config, cli_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="macro">debug!</span>(<span class="string">"Initializing Env."</span>);
 
     <span class="kw">let </span>additional_profiles = <span class="kw">match </span>config.config.additional_profiles {
@@ -1217,7 +1229,7 @@
 
     set_env_for_config(config.env.clone(), additional_profiles, <span class="bool-val">true</span>);
 
-    set_env_scripts(config.env_scripts.clone(), cli_args);
+    set_env_scripts(config.env_scripts.clone(), cli_args)
 }
 
 <span class="kw">fn </span>setup_env_for_duckscript() {
@@ -1228,8 +1240,8 @@
     envmnt::set(<span class="string">"CARGO_MAKE_DUCKSCRIPT_SDK_VERSION"</span>, version);
 }
 
-<span class="kw">fn </span>setup_env_for_crate(home: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; CrateInfo {
-    <span class="kw">let </span>crate_info = crateinfo::load();
+<span class="kw">fn </span>setup_env_for_crate(home: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;CrateInfo, CargoMakeError&gt; {
+    <span class="kw">let </span>crate_info = crateinfo::load()<span class="question-mark">?</span>;
     <span class="kw">let </span>crate_info_clone = crate_info.clone();
 
     <span class="kw">let </span>package_info = crate_info.package.unwrap_or(PackageInfo::new());
@@ -1312,7 +1324,7 @@
         ),
     }
 
-    crate_info_clone
+    <span class="prelude-val">Ok</span>(crate_info_clone)
 }
 
 <span class="kw">fn </span>setup_env_for_git_repo() -&gt; GitInfo {
@@ -1402,7 +1414,7 @@
     }
 }
 
-<span class="kw">fn </span>setup_env_for_project(config: <span class="kw-2">&amp;</span>Config, crate_info: <span class="kw-2">&amp;</span>CrateInfo) {
+<span class="kw">fn </span>setup_env_for_project(config: <span class="kw-2">&amp;</span>Config, crate_info: <span class="kw-2">&amp;</span>CrateInfo) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>project_name = <span class="kw">match </span>crate_info.package {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>package) =&gt; <span class="kw">match </span>package.name {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>name) =&gt; <span class="prelude-val">Some</span>(name.to_string()),
@@ -1430,7 +1442,7 @@
                     <span class="kw">let </span><span class="kw-2">mut </span>path = PathBuf::new();
                     path.push(member);
                     path.push(<span class="string">"Cargo.toml"</span>);
-                    <span class="kw">let </span>member_crate_info = crateinfo::load_from(path);
+                    <span class="kw">let </span>member_crate_info = crateinfo::load_from(path)<span class="question-mark">?</span>;
 
                     <span class="kw">match </span>member_crate_info.package {
                         <span class="prelude-val">Some</span>(package) =&gt; package.version,
@@ -1447,6 +1459,8 @@
     };
 
     envmnt::set_or_remove(<span class="string">"CARGO_MAKE_PROJECT_VERSION"</span>, <span class="kw-2">&amp;</span>project_version);
+
+    <span class="prelude-val">Ok</span>(())
 }
 
 <span class="doccomment">/// Sets up the env before the tasks execution.
@@ -1456,7 +1470,7 @@
     task: <span class="kw-2">&amp;</span>str,
     home: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
     time_summary_vec: <span class="kw-2">&amp;mut </span>Vec&lt;(String, u128)&gt;,
-) -&gt; EnvInfo {
+) -&gt; <span class="prelude-ty">Result</span>&lt;EnvInfo, CargoMakeError&gt; {
     envmnt::set_bool(<span class="string">"CARGO_MAKE"</span>, <span class="bool-val">true</span>);
     envmnt::set(<span class="string">"CARGO_MAKE_TASK"</span>, <span class="kw-2">&amp;</span>task);
 
@@ -1478,8 +1492,8 @@
     <span class="kw">let </span>crate_info = <span class="kw">if </span>config.config.skip_crate_env_info.unwrap_or(<span class="bool-val">false</span>) {
         CrateInfo::new()
     } <span class="kw">else </span>{
-        setup_env_for_crate(home.clone())
-    };
+        setup_env_for_crate(home.clone())<span class="question-mark">?
+    </span>};
     time_summary::add(time_summary_vec, <span class="string">"[Setup Env - Crate Info]"</span>, now);
 
     <span class="comment">// load git info
@@ -1507,20 +1521,20 @@
 
     <span class="comment">// setup project info
     </span>now = SystemTime::now();
-    setup_env_for_project(config, <span class="kw-2">&amp;</span>crate_info);
+    setup_env_for_project(config, <span class="kw-2">&amp;</span>crate_info)<span class="question-mark">?</span>;
     time_summary::add(time_summary_vec, <span class="string">"[Setup Env - Project]"</span>, now);
 
     <span class="comment">// load env vars
     </span>now = SystemTime::now();
-    initialize_env(config, <span class="kw-2">&amp;</span>cli_args.arguments.clone().unwrap_or(<span class="macro">vec!</span>[]));
+    initialize_env(config, <span class="kw-2">&amp;</span>cli_args.arguments.clone().unwrap_or(<span class="macro">vec!</span>[]))<span class="question-mark">?</span>;
     time_summary::add(time_summary_vec, <span class="string">"[Setup Env - Vars]"</span>, now);
 
-    EnvInfo {
+    <span class="prelude-val">Ok</span>(EnvInfo {
         rust_info: rustinfo,
         crate_info,
         git_info: gitinfo,
         ci_info: ci_info_struct,
-    }
+    })
 }
 
 <span class="kw">fn </span>set_workspace_cwd(directory_path: <span class="kw-2">&amp;</span>Path, force: bool) {

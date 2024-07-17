@@ -67,12 +67,19 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cm_run_task
 //!
 //! Enables to run cargo-make tasks from within duckscript.
 //!
 
-</span><span class="kw">use </span><span class="kw">crate</span>::runner;
+</span><span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+<span class="kw">use </span><span class="kw">crate</span>::runner;
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState};
 <span class="kw">use </span>duckscript::types::command::{Command, CommandResult};
 <span class="kw">use </span>std::cell::RefCell;
@@ -96,7 +103,9 @@
 
     <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, arguments: Vec&lt;String&gt;) -&gt; CommandResult {
         <span class="kw">if </span>arguments.is_empty() {
-            CommandResult::Error(<span class="string">"No task name provided."</span>.to_string())
+            CommandResult::Error(
+                CargoMakeError::NotFound(String::from(<span class="string">"No task name provided."</span>)).to_string(),
+            )
         } <span class="kw">else </span>{
             <span class="kw">let </span>(task_name, async_run) = <span class="kw">if </span>arguments.len() &gt; <span class="number">0 </span>&amp;&amp; arguments[<span class="number">0</span>] == <span class="string">"--async" </span>{
                 (arguments[<span class="number">1</span>].clone(), <span class="bool-val">true</span>)
@@ -111,15 +120,18 @@
                 <span class="kw">if </span>async_run {
                     <span class="kw">let </span>cloned_flow_state = <span class="self">self</span>.flow_state.borrow().clone();
 
-                    thread::spawn(<span class="kw">move </span>|| {
+                    thread::spawn(<span class="kw">move </span>|| -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
                         runner::run_flow(
                             <span class="kw-2">&amp;</span>sub_flow_info,
                             Rc::new(RefCell::new(cloned_flow_state)),
                             <span class="bool-val">true</span>,
-                        );
+                        )
                     });
                 } <span class="kw">else </span>{
-                    runner::run_flow(<span class="kw-2">&amp;</span>sub_flow_info, <span class="self">self</span>.flow_state.clone(), <span class="bool-val">true</span>);
+                    <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = runner::run_flow(<span class="kw-2">&amp;</span>sub_flow_info, <span class="self">self</span>.flow_state.clone(), <span class="bool-val">true</span>)
+                    {
+                        <span class="kw">return </span>CommandResult::Error(e.to_string());
+                    }
                 }
 
                 CommandResult::Continue(<span class="prelude-val">Some</span>(<span class="string">"true"</span>.to_string()))

@@ -52,6 +52,7 @@
 <a href="#52" id="52">52</a>
 <a href="#53" id="53">53</a>
 <a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # generic_script
 //!
 //! Runs generic scripts for other languages based on provided config.
@@ -62,6 +63,7 @@
 </span><span class="kw">mod </span>generic_script_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::command;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::io::delete_file;
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine::script_utils::create_script_file;
 
@@ -70,7 +72,7 @@
     runner: <span class="kw-2">&amp;</span>String,
     arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;mut </span>Vec&lt;String&gt;,
-) -&gt; bool {
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="kw">match </span>arguments {
         <span class="prelude-val">Some</span>(values) =&gt; values,
         <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
@@ -80,11 +82,11 @@
 
     args.append(cli_arguments);
 
-    <span class="kw">let </span>exit_code = command::run_command(runner, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(args), <span class="bool-val">false</span>);
+    <span class="kw">let </span>exit_code = command::run_command(runner, <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(args), <span class="bool-val">false</span>)<span class="question-mark">?</span>;
     <span class="macro">debug!</span>(<span class="string">"Executed script, exit code: {}"</span>, exit_code);
 
-    exit_code == <span class="number">0
-</span>}
+    <span class="prelude-val">Ok</span>(exit_code == <span class="number">0</span>)
+}
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>execute(
     script_text: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
@@ -93,10 +95,10 @@
     arguments: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     validate: bool,
-) -&gt; bool {
-    <span class="kw">let </span>file = create_script_file(script_text, <span class="kw-2">&amp;</span>extension);
+) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
+    <span class="kw">let </span>file = create_script_file(script_text, <span class="kw-2">&amp;</span>extension)<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, <span class="kw-2">&amp;</span>runner, arguments, <span class="kw-2">&amp;mut </span>cli_arguments.clone());
+    <span class="kw">let </span>valid = run_file(<span class="kw-2">&amp;</span>file, <span class="kw-2">&amp;</span>runner, arguments, <span class="kw-2">&amp;mut </span>cli_arguments.clone())<span class="question-mark">?</span>;
 
     delete_file(<span class="kw-2">&amp;</span>file);
 
@@ -104,6 +106,6 @@
         <span class="macro">error!</span>(<span class="string">"Unable to execute script."</span>);
     }
 
-    <span class="kw">return </span>valid;
+    <span class="prelude-val">Ok</span>(valid)
 }
 </code></pre></div></section></main></body></html>

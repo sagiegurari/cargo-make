@@ -182,6 +182,12 @@
 <a href="#182" id="182">182</a>
 <a href="#183" id="183">183</a>
 <a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # installer
 //!
 //! Installs external dependencies for tasks.&lt;br&gt;
@@ -199,6 +205,7 @@
 #[path = <span class="string">"mod_test.rs"</span>]
 </span><span class="kw">mod </span>mod_test;
 
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::scriptengine;
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState, InstallCrate, Task};
 <span class="kw">use </span>std::cell::RefCell;
@@ -247,7 +254,7 @@
     task_config: <span class="kw-2">&amp;</span>Task,
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
-) {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>validate = !task_config.should_ignore_errors();
 
     <span class="kw">let </span>toolchain = task_config.toolchain.clone();
@@ -288,7 +295,7 @@
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                         <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="bool-val">false</span>), <span class="comment">// we can't validate, so we do not allow force
                     </span>),
-                };
+                }<span class="question-mark">?</span>;
             }
             InstallCrate::CargoPluginInfo(<span class="kw-2">ref </span>install_info) =&gt; {
                 <span class="kw">let </span>(cargo_command, crate_name) =
@@ -299,7 +306,9 @@
                                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>crate_name) =&gt; (arg, crate_name.to_string()),
                                 <span class="prelude-val">None </span>=&gt; {
                                     <span class="macro">error!</span>(<span class="string">"Missing crate name to invoke."</span>);
-                                    <span class="macro">panic!</span>(<span class="string">"Missing crate name to invoke."</span>);
+                                    <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::NotFound(String::from(
+                                        <span class="string">"Missing crate name to invoke."</span>,
+                                    )));
                                 }
                             },
                             <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>install_info.crate_name {
@@ -308,7 +317,9 @@
                                 }
                                 <span class="prelude-val">None </span>=&gt; {
                                     <span class="macro">error!</span>(<span class="string">"Missing cargo command to invoke."</span>);
-                                    <span class="macro">panic!</span>(<span class="string">"Missing crate command to invoke."</span>);
+                                    <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::NotFound(String::from(
+                                        <span class="string">"Missing crate command to invoke."</span>,
+                                    )));
                                 }
                             },
                         },
@@ -323,14 +334,14 @@
                     <span class="kw-2">&amp;</span>install_info.min_version,
                     <span class="kw-2">&amp;</span>install_info.install_command,
                     <span class="kw-2">&amp;</span>install_info.force,
-                );
+                )<span class="question-mark">?</span>;
             }
             InstallCrate::CrateInfo(<span class="kw-2">ref </span>install_info) =&gt; crate_installer::install(
                 <span class="kw-2">&amp;</span>toolchain,
                 install_info,
                 <span class="kw-2">&amp;</span>task_config.install_crate_args,
                 validate,
-            ),
+            )<span class="question-mark">?</span>,
             InstallCrate::RustupComponentInfo(<span class="kw-2">ref </span>install_info) =&gt; {
                 rustup_component_installer::install(<span class="kw-2">&amp;</span>toolchain, install_info, validate);
             }
@@ -345,7 +356,7 @@
                     validate,
                     <span class="prelude-val">Some</span>(flow_info),
                     <span class="prelude-val">Some</span>(flow_state),
-                );
+                )<span class="question-mark">?</span>;
                 ()
             }
             <span class="prelude-val">None </span>=&gt; <span class="kw">match </span>get_cargo_plugin_info_from_command(<span class="kw-2">&amp;</span>task_config) {
@@ -359,11 +370,12 @@
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
                         <span class="kw-2">&amp;</span><span class="prelude-val">None</span>,
-                    );
+                    )<span class="question-mark">?</span>;
                 }
                 <span class="prelude-val">None </span>=&gt; <span class="macro">debug!</span>(<span class="string">"No installation script defined."</span>),
             },
         },
-    }
+    };
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>

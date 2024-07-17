@@ -38,19 +38,25 @@
 <a href="#38" id="38">38</a>
 <a href="#39" id="39">39</a>
 <a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # trim_func
 //!
 //! Takes an environment variable name and returns its value trimmed.
 //! The value will be removed if empty.
 //!
 
-</span><span class="attr">#[cfg(test)]
+</span><span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+
+<span class="attr">#[cfg(test)]
 #[path = <span class="string">"trim_func_test.rs"</span>]
 </span><span class="kw">mod </span>trim_func_test;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke(function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; Vec&lt;String&gt; {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invoke(function_args: <span class="kw-2">&amp;</span>Vec&lt;String&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;String&gt;, CargoMakeError&gt; {
     <span class="kw">if </span>function_args.len() &gt; <span class="number">2 </span>{
-        <span class="macro">error!</span>(<span class="string">"trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)"</span>);
+        <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::Arity(<span class="string">"trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)"</span>));
     }
 
     <span class="kw">let </span>env_key = function_args[<span class="number">0</span>].clone();
@@ -67,15 +73,17 @@
             <span class="string">"end" </span>=&gt; value.trim_end().to_string(),
             <span class="kw">_ </span>=&gt; {
                 <span class="macro">error!</span>(<span class="string">"Invalid trim type provided, only start or end are supported."</span>);
-                <span class="macro">panic!</span>(<span class="string">"Invalid trim type provided, only start or end are supported."</span>);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(CargoMakeError::MethodCallRestriction(
+                    <span class="string">"Invalid trim type provided, only start or end are supported."</span>,
+                ));
             }
         }
     };
 
     <span class="kw">if </span>trimmed_value.len() &gt; <span class="number">0 </span>{
-        <span class="macro">vec!</span>[trimmed_value]
+        <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[trimmed_value])
     } <span class="kw">else </span>{
-        <span class="macro">vec!</span>[]
+        <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[])
     }
 }
 </code></pre></div></section></main></body></html>

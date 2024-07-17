@@ -98,6 +98,22 @@
 <a href="#98" id="98">98</a>
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # print_steps
 //!
 //! Prints the execution plan in multiple formats.
@@ -107,7 +123,10 @@
 #[path = <span class="string">"print_steps_test.rs"</span>]
 </span><span class="kw">mod </span>print_steps_test;
 
-<span class="kw">use </span><span class="kw">crate</span>::execution_plan::create <span class="kw">as </span>create_execution_plan;
+<span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
+<span class="kw">use </span>std::io;
+
+<span class="kw">use </span><span class="kw">crate</span>::execution_plan::ExecutionPlanBuilder;
 <span class="kw">use </span><span class="kw">crate</span>::types::{Config, CrateInfo, ExecutionPlan};
 <span class="kw">use </span>regex::Regex;
 
@@ -142,7 +161,10 @@
     }
 }
 
-<span class="kw">fn </span>print_short_description(execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan) {
+<span class="kw">fn </span>print_short_description(
+    output_buffer: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>io::Write,
+    execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan,
+) -&gt; io::Result&lt;()&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>counter = <span class="number">1</span>;
     <span class="kw">for </span>step <span class="kw">in </span><span class="kw-2">&amp;</span>execution_plan.steps {
         <span class="kw">let </span>task = <span class="kw-2">&amp;</span>step.config;
@@ -150,25 +172,35 @@
             <span class="prelude-val">Some</span>(value) =&gt; value,
             <span class="prelude-val">None </span>=&gt; <span class="string">"no description"</span>,
         };
-        <span class="macro">println!</span>(<span class="string">"{}. {} - {}"</span>, counter, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>description);
+        <span class="macro">writeln!</span>(
+            output_buffer,
+            <span class="string">"{}. {} - {}"</span>,
+            counter, <span class="kw-2">&amp;</span>step.name, <span class="kw-2">&amp;</span>description
+        )<span class="question-mark">?</span>;
 
         counter = counter + <span class="number">1</span>;
     }
+    <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">fn </span>print_default(execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan) {
-    <span class="macro">println!</span>(<span class="string">"{:#?}"</span>, <span class="kw-2">&amp;</span>execution_plan);
+<span class="kw">fn </span>print_default(
+    output_buffer: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>io::Write,
+    execution_plan: <span class="kw-2">&amp;</span>ExecutionPlan,
+) -&gt; io::Result&lt;()&gt; {
+    <span class="macro">writeln!</span>(output_buffer, <span class="string">"{:#?}"</span>, <span class="kw-2">&amp;</span>execution_plan)
 }
 
 <span class="doccomment">/// Only prints the execution plan
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>print(
+</span><span class="kw">pub fn </span>print(
+    output_buffer: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>io::Write,
     config: <span class="kw-2">&amp;</span>Config,
     task: <span class="kw-2">&amp;</span>str,
     output_format: <span class="kw-2">&amp;</span>str,
     disable_workspace: bool,
-    skip_tasks_pattern: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    skip_tasks_pattern: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
     crateinfo: <span class="kw-2">&amp;</span>CrateInfo,
-) {
+    skip_init_end_tasks: bool,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>skip_tasks_pattern_regex = <span class="kw">match </span>skip_tasks_pattern {
         <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>pattern) =&gt; <span class="kw">match </span>Regex::new(pattern) {
             <span class="prelude-val">Ok</span>(reg) =&gt; <span class="prelude-val">Some</span>(reg),
@@ -180,22 +212,22 @@
         <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let </span>execution_plan = create_execution_plan(
-        <span class="kw-2">&amp;</span>config,
-        <span class="kw-2">&amp;</span>task,
-        crateinfo,
+    <span class="kw">let </span>execution_plan = ExecutionPlanBuilder {
+        crate_info: <span class="prelude-val">Some</span>(crateinfo),
         disable_workspace,
-        <span class="bool-val">false</span>,
-        <span class="bool-val">false</span>,
-        <span class="kw-2">&amp;</span>skip_tasks_pattern_regex,
-    );
+        skip_tasks_pattern: skip_tasks_pattern_regex.as_ref(),
+        skip_init_end_tasks,
+        ..ExecutionPlanBuilder::new(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>task)
+    }
+    .build()<span class="question-mark">?</span>;
     <span class="macro">debug!</span>(<span class="string">"Created execution plan: {:#?}"</span>, <span class="kw-2">&amp;</span>execution_plan);
 
     <span class="kw">let </span>print_format = get_format_type(<span class="kw-2">&amp;</span>output_format);
 
     <span class="kw">match </span>print_format {
-        PrintFormat::ShortDescription =&gt; print_short_description(<span class="kw-2">&amp;</span>execution_plan),
-        PrintFormat::Default =&gt; print_default(<span class="kw-2">&amp;</span>execution_plan),
+        PrintFormat::ShortDescription =&gt; print_short_description(output_buffer, <span class="kw-2">&amp;</span>execution_plan)<span class="question-mark">?</span>,
+        PrintFormat::Default =&gt; print_default(output_buffer, <span class="kw-2">&amp;</span>execution_plan)<span class="question-mark">?</span>,
     };
+    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>
