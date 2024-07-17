@@ -75,7 +75,7 @@ pub enum CargoMakeError {
 
 impl CargoMakeError {
     fn discriminant(&self) -> u16 {
-        unsafe { *<*const _>::from(self).cast::<u16>() }
+        unsafe { *(self as *const Self as *const u16) }
     }
 }
 
