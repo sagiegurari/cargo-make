@@ -7,6 +7,7 @@
 #[path = "shebang_script_test.rs"]
 mod shebang_script_test;
 
+use crate::error::CargoMakeError;
 use crate::scriptengine::generic_script;
 use std::path::Path;
 
@@ -105,7 +106,7 @@ pub(crate) fn execute(
     extension: &Option<String>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let shebang = get_shebang(&script_text);
 
     match shebang.runner {
@@ -129,7 +130,7 @@ pub(crate) fn execute(
                 error!("Unable to execute script using shebang.");
             }
 
-            false
+            Ok(false)
         }
     }
 }

@@ -12,6 +12,7 @@ use crate::cli_parser;
 use crate::config;
 use crate::descriptor;
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::logger;
 use crate::logger::LoggerOptions;
 use crate::profile;
@@ -31,7 +32,7 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
+pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), CargoMakeError> {
     let start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -95,15 +96,8 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
     let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
-    let descriptor_load_result = descriptor::load(&build_file, force_makefile, env, experimental);
+    let config = descriptor::load(&build_file, force_makefile, env, experimental)?;
 
-    let config = match descriptor_load_result {
-        Ok(config) => config,
-        Err(ref error) => {
-            error!("{}", error);
-            panic!("{}", error);
-        }
-    };
     let mut time_summary_vec = vec![];
     time_summary::add(
         &mut time_summary_vec,
@@ -117,7 +111,7 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
         None => profile::set_additional(&vec![]),
     };
 
-    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec);
+    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec)?;
     time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
@@ -136,31 +130,29 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             &config,
             &cli_args.output_format,
             &cli_args.output_file,
-            cli_args.list_category_steps,
+            &cli_args.list_category_steps,
             cli_args.hide_uninteresting,
-        );
+        )
     } else if cli_args.diff_execution_plan {
-        let default_config = descriptor::load_internal_descriptors(true, experimental, None);
+        let default_config = descriptor::load_internal_descriptors(true, experimental, None)?;
         cli_commands::diff_steps::run(
             &default_config,
             &config,
             &task,
             &cli_args,
             &env_info.crate_info,
-        );
+        )
     } else if cli_args.print_only {
-        if let Err(e) = cli_commands::print_steps::print(
+        cli_commands::print_steps::print(
             &mut std::io::stdout(),
             &config,
             &task,
             &cli_args.output_format,
             cli_args.disable_workspace,
-            cli_args.skip_tasks_pattern,
+            &cli_args.skip_tasks_pattern,
             &env_info.crate_info,
             cli_args.skip_init_end_tasks,
-        ) {
-            error!("Failed to print steps: {}", e);
-        }
+        )
     } else {
         runner::run(
             config,
@@ -169,15 +161,18 @@ fn run(cli_args: CliArgs, global_config: &GlobalConfig) {
             &cli_args,
             start_time,
             time_summary_vec,
-        );
-    }
+        )
+    }?;
+
+    Ok(())
 }
 
 /// Handles the command line arguments and executes the runner.
-pub(crate) fn run_cli(command_name: String, sub_command: bool) {
-    let global_config = config::load();
+pub fn run_cli(command_name: String, sub_command: bool) -> Result<CliArgs, CargoMakeError> {
+    let global_config = config::load()?;
 
-    let cli_args = cli_parser::parse(&global_config, &command_name, sub_command);
+    let cli_args = cli_parser::parse(&global_config, &command_name, sub_command)?;
 
-    run(cli_args, &global_config);
+    run(&cli_args, &global_config)?;
+    Ok(cli_args)
 }

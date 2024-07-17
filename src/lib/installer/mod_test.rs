@@ -66,7 +66,8 @@ fn install_empty() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -80,7 +81,8 @@ fn install_disabled_bad_crate() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -95,7 +97,8 @@ fn install_empty_args() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -109,7 +112,8 @@ fn install_enabled_crate_already_installed() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -123,7 +127,8 @@ fn install_crate_already_installed() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -137,7 +142,8 @@ fn install_crate_missing_cargo_command() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -150,7 +156,8 @@ fn install_crate_auto_detect_already_installed() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -164,7 +171,8 @@ fn install_crate_auto_detect_unable_to_install() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -190,7 +198,8 @@ fn install_rustup_via_crate_info() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -211,7 +220,8 @@ fn install_rustup_via_rustup_info() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -223,7 +233,8 @@ fn install_script_ok() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -236,7 +247,8 @@ fn install_script_error() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -256,7 +268,8 @@ fn install_script_duckscript() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(envmnt::exists("install_script_duckscript"));
     assert!(envmnt::is_or("install_script_duckscript", false));
@@ -272,5 +285,6 @@ fn install_script_error_ignore_errors() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 }

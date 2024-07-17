@@ -12,9 +12,18 @@
 #[path = "runner_test.rs"]
 mod runner_test;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::thread;
+use std::time::SystemTime;
+
+use indexmap::IndexMap;
+use regex::Regex;
+
 use crate::command;
 use crate::condition;
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::functions;
 use crate::installer;
@@ -29,16 +38,10 @@ use crate::types::{
     MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
     TaskWatchOptions,
 };
-use indexmap::IndexMap;
-use regex::Regex;
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::thread;
-use std::time::SystemTime;
 
-fn do_in_task_working_directory<F>(step: &Step, mut action: F)
+fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
 where
-    F: FnMut(),
+    F: FnMut() -> Result<bool, CargoMakeError>,
 {
     let revert_directory = match step.config.cwd {
         Some(ref cwd) => {
@@ -57,7 +60,7 @@ where
         None => "".to_string(),
     };
 
-    action();
+    action()?;
 
     // revert to original cwd
     match step.config.cwd {
@@ -66,24 +69,29 @@ where
         }
         _ => (),
     };
+    Ok(())
 }
 
-pub(crate) fn validate_condition(flow_info: &FlowInfo, step: &Step) -> bool {
+pub(crate) fn validate_condition(
+    flow_info: &FlowInfo,
+    step: &Step,
+) -> Result<bool, CargoMakeError> {
     let mut valid = true;
 
-    let do_validate = || {
-        valid = condition::validate_condition_for_step(&flow_info, &step);
+    let do_validate = || -> Result<bool, CargoMakeError> {
+        valid = condition::validate_condition_for_step(&flow_info, &step)?;
+        Ok(valid)
     };
 
-    do_in_task_working_directory(&step, do_validate);
+    do_in_task_working_directory(&step, do_validate)?;
 
-    valid
+    Ok(valid)
 }
 
 pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
-) -> (Option<Vec<String>>, bool, bool, Option<String>) {
+) -> Result<(Option<Vec<String>>, bool, bool, Option<String>), CargoMakeError> {
     let mut task_name = None;
 
     let mut fork = false;
@@ -96,7 +104,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
             &routing_step.condition_script,
             None,
             routing_step.condition_script_runner_args.clone(),
-        );
+        )?;
 
         if invoke {
             let task_name_values = match routing_step.name.clone() {
@@ -111,7 +119,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
         }
     }
 
-    (task_name, fork, parallel, cleanup_task)
+    Ok((task_name, fork, parallel, cleanup_task))
 }
 
 fn create_fork_step(flow_info: &FlowInfo) -> Step {
@@ -129,7 +137,11 @@ fn create_fork_step(flow_info: &FlowInfo) -> Step {
     }
 }
 
-fn run_cleanup_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, task: &str) {
+fn run_cleanup_task(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    task: &str,
+) -> Result<(), CargoMakeError> {
     match flow_info.config.tasks.get(task) {
         Some(cleanup_task_info) => run_task(
             &flow_info,
@@ -139,7 +151,10 @@ fn run_cleanup_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, ta
                 config: cleanup_task_info.clone(),
             },
         ),
-        None => error!("Cleanup task: {} not found.", &task),
+        None => Err(CargoMakeError::NotFound(format!(
+            "Cleanup task: {} not found.",
+            &task
+        ))),
     }
 }
 
@@ -147,7 +162,7 @@ fn run_forked_task(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     cleanup_task: &Option<String>,
-) {
+) -> Result<(), CargoMakeError> {
     // run task as a sub process
     let step = create_fork_step(&flow_info);
 
@@ -155,11 +170,13 @@ fn run_forked_task(
         Some(cleanup_task_name) => {
             // run the forked task (forked tasks only run a command + args)
             let exit_code =
-                command::run_command(&step.config.command.unwrap(), &step.config.args, false);
+                command::run_command(&step.config.command.unwrap(), &step.config.args, false)?;
 
             if exit_code != 0 {
-                run_cleanup_task(&flow_info, flow_state, &cleanup_task_name);
-                command::validate_exit_code(exit_code);
+                run_cleanup_task(&flow_info, flow_state, &cleanup_task_name)?;
+                command::validate_exit_code(exit_code)
+            } else {
+                Ok(())
             }
         }
         None => run_task(&flow_info, flow_state, &step),
@@ -171,7 +188,7 @@ fn run_sub_task_and_report(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     sub_task: &RunTaskInfo,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let (task_names, fork, parallel, cleanup_task) = match sub_task {
         RunTaskInfo::Name(ref name) => (Some(vec![name.to_string()]), false, false, None),
         RunTaskInfo::Details(ref details) => {
@@ -187,7 +204,7 @@ fn run_sub_task_and_report(
             )
         }
         RunTaskInfo::Routing(ref routing_info) => {
-            get_sub_task_info_for_routing_info(&flow_info, routing_info)
+            get_sub_task_info_for_routing_info(&flow_info, routing_info)?
         }
     };
 
@@ -204,14 +221,15 @@ fn run_sub_task_and_report(
             let task_run_fn = move |flow_info: &FlowInfo,
                                     flow_state: Rc<RefCell<FlowState>>,
                                     fork: bool,
-                                    cleanup_task: &Option<String>| {
+                                    cleanup_task: &Option<String>|
+                  -> Result<(), CargoMakeError> {
                 let mut sub_flow_info = flow_info.clone();
                 sub_flow_info.task = name;
 
                 if fork {
-                    run_forked_task(&sub_flow_info, flow_state, cleanup_task);
+                    run_forked_task(&sub_flow_info, flow_state, cleanup_task)
                 } else {
-                    run_flow(&sub_flow_info, flow_state, true);
+                    run_flow(&sub_flow_info, flow_state, true)
                 }
             };
 
@@ -220,37 +238,41 @@ fn run_sub_task_and_report(
                 // we do not support merging changes back to parent
                 let cloned_flow_state = flow_state.borrow().clone();
                 let cloned_cleanup_task = cleanup_task.clone();
-                threads.push(thread::spawn(move || {
+                threads.push(thread::spawn(move || -> Result<(), CargoMakeError> {
                     task_run_fn(
                         &run_flow_info,
                         Rc::new(RefCell::new(cloned_flow_state)),
                         fork,
                         &cloned_cleanup_task,
-                    );
+                    )
                 }));
             } else {
-                task_run_fn(&flow_info, flow_state.clone(), fork, &cleanup_task);
+                task_run_fn(&flow_info, flow_state.clone(), fork, &cleanup_task)?;
             }
         }
 
         if threads.len() > 0 {
             for task_thread in threads {
-                task_thread.join().unwrap();
+                task_thread.join().unwrap()?;
             }
         }
 
         if let Some(cleanup_task_name) = cleanup_task {
-            run_cleanup_task(&flow_info, flow_state, &cleanup_task_name);
+            run_cleanup_task(&flow_info, flow_state, &cleanup_task_name)?;
         }
 
-        true
+        Ok(true)
     } else {
-        false
+        Ok(false)
     }
 }
 
-fn run_sub_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, sub_task: &RunTaskInfo) {
-    run_sub_task_and_report(&flow_info, flow_state, &sub_task);
+fn run_sub_task(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    sub_task: &RunTaskInfo,
+) -> Result<bool, CargoMakeError> {
+    run_sub_task_and_report(&flow_info, flow_state, &sub_task)
 }
 
 fn create_watch_task_name(task: &str) -> String {
@@ -277,10 +299,10 @@ fn watch_task(
     flow_state: Rc<RefCell<FlowState>>,
     task: &str,
     options: Option<TaskWatchOptions>,
-) {
+) -> Result<(), CargoMakeError> {
     let step = create_watch_step(&task, options, flow_info);
 
-    run_task(&flow_info, flow_state, &step);
+    run_task(&flow_info, flow_state, &step)
 }
 
 fn is_watch_enabled() -> bool {
@@ -303,12 +325,16 @@ fn should_watch(task: &Task) -> bool {
     }
 }
 
-pub(crate) fn run_task(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, step: &Step) {
+pub(crate) fn run_task(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    step: &Step,
+) -> Result<(), CargoMakeError> {
     let options = RunTaskOptions {
         plugins_enabled: true,
     };
 
-    run_task_with_options(flow_info, flow_state, step, &options);
+    run_task_with_options(flow_info, flow_state, step, &options)
 }
 
 pub(crate) fn run_task_with_options(
@@ -316,7 +342,7 @@ pub(crate) fn run_task_with_options(
     flow_state: Rc<RefCell<FlowState>>,
     step: &Step,
     options: &RunTaskOptions,
-) {
+) -> Result<(), CargoMakeError> {
     let start_time = SystemTime::now();
 
     // if a plugin is handling the task execution flow
@@ -326,7 +352,7 @@ pub(crate) fn run_task_with_options(
             &step.name,
             start_time,
         );
-        return;
+        return Ok(());
     }
 
     if step.config.is_actionable() {
@@ -335,7 +361,7 @@ pub(crate) fn run_task_with_options(
             None => (),
         };
 
-        if validate_condition(&flow_info, &step) {
+        if validate_condition(&flow_info, &step)? {
             if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
                 debug!("Running Task: {}", &step.name);
             } else {
@@ -386,7 +412,7 @@ pub(crate) fn run_task_with_options(
             profile::set(&profile_name);
 
             // modify step using env and functions
-            let mut updated_step = functions::run(&step);
+            let mut updated_step = functions::run(&step)?;
             updated_step = environment::expand_env(&updated_step);
 
             let watch = should_watch(&step.config);
@@ -397,11 +423,12 @@ pub(crate) fn run_task_with_options(
                     flow_state,
                     &step.name,
                     step.config.watch.clone(),
-                );
+                )?;
             } else {
-                do_in_task_working_directory(&step, || {
-                    installer::install(&updated_step.config, flow_info, flow_state.clone());
-                });
+                do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
+                    installer::install(&updated_step.config, flow_info, flow_state.clone())?;
+                    Ok(true)
+                })?;
 
                 match step.config.run_task {
                     Some(ref sub_task) => {
@@ -411,22 +438,23 @@ pub(crate) fn run_task_with_options(
                             start_time,
                         );
 
-                        run_sub_task(&flow_info, flow_state, sub_task);
+                        run_sub_task(&flow_info, flow_state, sub_task)?;
                     }
                     None => {
-                        do_in_task_working_directory(&step, || {
+                        do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
                             // run script
                             let script_runner_done = scriptengine::invoke(
                                 &updated_step.config,
                                 flow_info,
                                 flow_state.clone(),
-                            );
+                            )?;
 
                             // run command
                             if !script_runner_done {
-                                command::run(&updated_step);
+                                command::run(&updated_step)?;
                             };
-                        });
+                            Ok(true)
+                        })?;
 
                         time_summary::add(
                             &mut flow_state.borrow_mut().time_summary,
@@ -454,16 +482,19 @@ pub(crate) fn run_task_with_options(
     } else {
         debug!("Ignoring Empty Task: {}", &step.name);
     }
+
+    Ok(())
 }
 
 fn run_task_flow(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     execution_plan: &ExecutionPlan,
-) {
+) -> Result<(), CargoMakeError> {
     for step in &execution_plan.steps {
-        run_task(&flow_info, flow_state.clone(), &step);
+        run_task(&flow_info, flow_state.clone(), &step)?;
     }
+    Ok(())
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Task {
@@ -560,7 +591,11 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     task_config
 }
 
-pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>, sub_flow: bool) {
+pub(crate) fn run_flow(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    sub_flow: bool,
+) -> Result<(), CargoMakeError> {
     let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = ExecutionPlanBuilder {
@@ -572,13 +607,18 @@ pub(crate) fn run_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>,
         skip_init_end_tasks: flow_info.skip_init_end_tasks,
         ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
     }
-    .build();
+    .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
-    run_task_flow(&flow_info, flow_state, &execution_plan);
+    run_task_flow(&flow_info, flow_state, &execution_plan)?;
+
+    Ok(())
 }
 
-fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) {
+fn run_protected_flow(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+) -> Result<(), CargoMakeError> {
     let proxy_task = create_proxy_task(
         &flow_info.task,
         flow_info.allow_private,
@@ -587,7 +627,7 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) 
         flow_info.cli_arguments.clone(),
     );
 
-    let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false);
+    let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false)?;
 
     if exit_code != 0 {
         match flow_info.config.config.on_error_task {
@@ -596,13 +636,14 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) 
                 error_flow_info.disable_on_error = true;
                 error_flow_info.task = on_error_task.clone();
 
-                run_flow(&error_flow_info, flow_state, false);
+                run_flow(&error_flow_info, flow_state, false)?;
             }
             _ => (),
         };
 
         error!("Task error detected, exit code: {}", &exit_code);
     }
+    Ok(())
 }
 
 /// Runs the requested tasks.<br>
@@ -610,14 +651,14 @@ fn run_protected_flow(flow_info: &FlowInfo, flow_state: Rc<RefCell<FlowState>>) 
 ///
 /// * Create an execution plan based on the requested task and its dependencies
 /// * Run all tasks defined in the execution plan
-pub(crate) fn run(
+pub fn run(
     config: Config,
     task: &str,
     env_info: EnvInfo,
     cli_args: &CliArgs,
     start_time: SystemTime,
     time_summary_vec: Vec<(String, u128)>,
-) {
+) -> Result<(), CargoMakeError> {
     time_summary::init(&config, &cli_args);
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
@@ -648,9 +689,9 @@ pub(crate) fn run(
     let flow_state_rc = Rc::new(RefCell::new(flow_state));
 
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(&flow_info, flow_state_rc.clone(), false);
+        run_flow(&flow_info, flow_state_rc.clone(), false)?;
     } else {
-        run_protected_flow(&flow_info, flow_state_rc.clone());
+        run_protected_flow(&flow_info, flow_state_rc.clone())?;
     }
 
     let time_string = match start_time.elapsed() {
@@ -664,4 +705,6 @@ pub(crate) fn run(
     time_summary::print(&flow_state_rc.borrow().time_summary);
 
     info!("Build Done{}.", &time_string);
+
+    Ok(())
 }

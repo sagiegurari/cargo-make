@@ -2,28 +2,28 @@ use super::*;
 
 #[test]
 fn load_from_file_no_file() {
-    let tasks = load_from_file("./badfile.toml");
+    let tasks = load_from_file("./badfile.toml").unwrap();
 
     assert!(tasks.is_empty());
 }
 
 #[test]
 fn load_from_file_parse_error() {
-    let tasks = load_from_file("./src/lib/test/cargo/invalid_config.toml");
+    let tasks = load_from_file("./src/lib/test/cargo/invalid_config.toml").unwrap();
 
     assert!(tasks.is_empty());
 }
 
 #[test]
 fn load_from_file_no_alias_data() {
-    let tasks = load_from_file("./Cargo.toml");
+    let tasks = load_from_file("./Cargo.toml").unwrap();
 
     assert!(tasks.is_empty());
 }
 
 #[test]
 fn load_from_file_aliases_found() {
-    let tasks = load_from_file("./src/lib/test/cargo/config.toml");
+    let tasks = load_from_file("./src/lib/test/cargo/config.toml").unwrap();
 
     assert_eq!(tasks.len(), 4);
 

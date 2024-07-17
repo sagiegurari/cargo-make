@@ -7,6 +7,7 @@
 #[path = "crateinfo_test.rs"]
 mod crateinfo_test;
 
+use crate::error::CargoMakeError;
 use crate::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
 use cargo_metadata::camino::Utf8PathBuf;
 use cargo_metadata::{Metadata, MetadataCommand};
@@ -267,11 +268,11 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
 }
 
 /// Loads the crate info based on the Cargo.toml found in the current working directory.
-pub(crate) fn load() -> CrateInfo {
+pub(crate) fn load() -> Result<CrateInfo, CargoMakeError> {
     load_from(Path::new("Cargo.toml").to_path_buf())
 }
 
-pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
+pub(crate) fn load_from(file_path: PathBuf) -> Result<CrateInfo, CargoMakeError> {
     if file_path.exists() {
         info!("Calling cargo metadata to extract project info");
 
@@ -282,10 +283,7 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
                 let mut crate_info = convert_metadata_to_crate_info(&metadata);
 
                 debug!("Reading file: {:#?}", &file_path);
-                let crate_info_string = match fsio::file::read_text_file(&file_path) {
-                    Ok(content) => content,
-                    Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
-                };
+                let crate_info_string = fsio::file::read_text_file(&file_path)?;
 
                 let crate_info_deserialized: CrateInfoMinimal =
                     match toml::from_str(&crate_info_string) {
@@ -302,7 +300,7 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
 
                 debug!("Loaded Cargo.toml: {:#?}", &crate_info);
 
-                crate_info
+                Ok(crate_info)
             }
             Err(error) => {
                 warn!(
@@ -310,19 +308,13 @@ pub(crate) fn load_from(file_path: PathBuf) -> CrateInfo {
                     error
                 );
 
-                let crate_info_string = match fsio::file::read_text_file(&file_path) {
-                    Ok(content) => content,
-                    Err(error) => panic!("Unable to open Cargo.toml, error: {}", error),
-                };
+                let crate_info_string = fsio::file::read_text_file(&file_path)?;
 
-                match toml::from_str(&crate_info_string) {
-                    Ok(value) => value,
-                    Err(error) => panic!("Unable to parse Cargo.toml, {}", error),
-                }
+                toml::from_str(&crate_info_string).map_err(From::from)
             }
         }
     } else {
-        CrateInfo::new()
+        Ok(CrateInfo::new())
     }
 }
 

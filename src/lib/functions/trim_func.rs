@@ -4,13 +4,15 @@
 //! The value will be removed if empty.
 //!
 
+use crate::error::CargoMakeError;
+
 #[cfg(test)]
 #[path = "trim_func_test.rs"]
 mod trim_func_test;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
+pub(crate) fn invoke(function_args: &Vec<String>) -> Result<Vec<String>, CargoMakeError> {
     if function_args.len() > 2 {
-        error!("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)");
+        return Err(CargoMakeError::Arity("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)"));
     }
 
     let env_key = function_args[0].clone();
@@ -27,14 +29,16 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
             "end" => value.trim_end().to_string(),
             _ => {
                 error!("Invalid trim type provided, only start or end are supported.");
-                panic!("Invalid trim type provided, only start or end are supported.");
+                return Err(CargoMakeError::MethodCallRestriction(
+                    "Invalid trim type provided, only start or end are supported.",
+                ));
             }
         }
     };
 
     if trimmed_value.len() > 0 {
-        vec![trimmed_value]
+        Ok(vec![trimmed_value])
     } else {
-        vec![]
+        Ok(vec![])
     }
 }

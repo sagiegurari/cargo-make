@@ -7,6 +7,7 @@
 #[path = "print_steps_test.rs"]
 mod print_steps_test;
 
+use crate::error::CargoMakeError;
 use std::io;
 
 use crate::execution_plan::ExecutionPlanBuilder;
@@ -74,16 +75,16 @@ fn print_default(
 }
 
 /// Only prints the execution plan
-pub(crate) fn print(
+pub fn print(
     output_buffer: &mut impl io::Write,
     config: &Config,
     task: &str,
     output_format: &str,
     disable_workspace: bool,
-    skip_tasks_pattern: Option<String>,
+    skip_tasks_pattern: &Option<String>,
     crateinfo: &CrateInfo,
     skip_init_end_tasks: bool,
-) -> io::Result<()> {
+) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
             Ok(reg) => Some(reg),
@@ -102,7 +103,7 @@ pub(crate) fn print(
         skip_init_end_tasks,
         ..ExecutionPlanBuilder::new(&config, &task)
     }
-    .build();
+    .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
     let print_format = get_format_type(&output_format);

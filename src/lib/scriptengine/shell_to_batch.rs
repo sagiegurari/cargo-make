@@ -8,8 +8,13 @@
 mod shell_to_batch_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 
-pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validate: bool) -> bool {
+pub(crate) fn execute(
+    script: &Vec<String>,
+    cli_arguments: &Vec<String>,
+    validate: bool,
+) -> Result<bool, CargoMakeError> {
     let exit_code = if cfg!(windows) {
         let shell_script = script.join("\n");
         let windows_batch = shell2batch::convert(&shell_script);
@@ -22,7 +27,7 @@ pub(crate) fn execute(script: &Vec<String>, cli_arguments: &Vec<String>, validat
         command::run_script_get_exit_code(&windows_script_lines, None, cli_arguments, validate)
     } else {
         command::run_script_get_exit_code(script, None, cli_arguments, validate)
-    };
+    }?;
 
-    exit_code == 0
+    Ok(exit_code == 0)
 }

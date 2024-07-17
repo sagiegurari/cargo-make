@@ -91,7 +91,8 @@ fn execute_sh() {
         &None,
         &vec!["0".to_string()],
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -104,7 +105,8 @@ fn execute_sh_error() {
         &None,
         &vec!["1".to_string()],
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]

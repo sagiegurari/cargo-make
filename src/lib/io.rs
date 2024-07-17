@@ -7,6 +7,7 @@
 #[path = "io_test.rs"]
 mod io_test;
 
+use crate::error::CargoMakeError;
 use fsio::file::modify_file;
 use fsio::path as fsio_path;
 use fsio::path::from_path::FromPath;
@@ -17,14 +18,14 @@ use std::fs::File;
 use std::io;
 use std::path::PathBuf;
 
-pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
+pub(crate) fn create_text_file(text: &str, extension: &str) -> Result<String, CargoMakeError> {
     let file_path = fsio_path::get_temporary_file_path(extension);
 
     match fsio::file::write_text_file(&file_path, text) {
-        Ok(_) => file_path,
+        Ok(_) => Ok(file_path),
         Err(error) => {
             error!("Unable to create file: {} {:#?}", &file_path, &error);
-            panic!("Unable to create file, error: {}", error);
+            Err(error.into())
         }
     }
 }
@@ -32,14 +33,14 @@ pub(crate) fn create_text_file(text: &str, extension: &str) -> String {
 pub(crate) fn create_file(
     write_content: &dyn Fn(&mut File) -> io::Result<()>,
     extension: &str,
-) -> String {
+) -> Result<String, CargoMakeError> {
     let file_path = fsio_path::get_temporary_file_path(extension);
 
     match modify_file(&file_path, write_content, false) {
-        Ok(_) => file_path,
+        Ok(_) => Ok(file_path),
         Err(error) => {
             error!("Unable to write to file: {} {:#?}", &file_path, &error);
-            panic!("Unable to write to file, error: {}", error);
+            Err(error.into())
         }
     }
 }
@@ -58,13 +59,10 @@ pub(crate) fn write_text_file(file_path: &str, text: &str) -> bool {
     }
 }
 
-pub(crate) fn read_text_file(file_path: &PathBuf) -> String {
+pub(crate) fn read_text_file(file_path: &PathBuf) -> Result<String, CargoMakeError> {
     debug!("Opening file: {:#?}", &file_path);
 
-    match fsio::file::read_text_file(file_path) {
-        Ok(content) => content,
-        Err(error) => panic!("Unable to read file: {:?} error: {:#?}", file_path, error),
-    }
+    Ok(fsio::file::read_text_file(file_path)?)
 }
 
 pub(crate) fn get_path_list(

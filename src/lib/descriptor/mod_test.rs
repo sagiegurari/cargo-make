@@ -387,7 +387,7 @@ fn load_not_found() {
 
 #[test]
 fn load_internal_descriptors_no_stable() {
-    let config = load_internal_descriptors(false, false, None);
+    let config = load_internal_descriptors(false, false, None).unwrap();
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -397,7 +397,7 @@ fn load_internal_descriptors_no_stable() {
 
 #[test]
 fn load_internal_descriptors_with_stable() {
-    let config = load_internal_descriptors(true, false, None);
+    let config = load_internal_descriptors(true, false, None).unwrap();
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -407,7 +407,7 @@ fn load_internal_descriptors_with_stable() {
 
 #[test]
 fn load_internal_descriptors_no_experimental() {
-    let config = load_internal_descriptors(true, false, None);
+    let config = load_internal_descriptors(true, false, None).unwrap();
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -417,7 +417,7 @@ fn load_internal_descriptors_no_experimental() {
 
 #[test]
 fn load_internal_descriptors_with_experimental() {
-    let config = load_internal_descriptors(true, true, None);
+    let config = load_internal_descriptors(true, true, None).unwrap();
 
     let mut task = config.tasks.get("ci-flow");
     assert!(task.is_some());
@@ -434,7 +434,8 @@ fn load_internal_descriptors_modify_empty() {
             private: None,
             namespace: None,
         }),
-    );
+    )
+    .unwrap();
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -453,7 +454,8 @@ fn load_internal_descriptors_modify_private() {
             private: Some(true),
             namespace: None,
         }),
-    );
+    )
+    .unwrap();
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_some());
@@ -472,7 +474,8 @@ fn load_internal_descriptors_modify_namespace() {
             private: None,
             namespace: Some("default".to_string()),
         }),
-    );
+    )
+    .unwrap();
 
     let mut task = config.tasks.get("empty");
     assert!(task.is_none());
@@ -597,8 +600,10 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
             false,
             false
         )
-        .err(),
-        Some("Unable to run, minimum required version is: 999.999.999".into())
+        .err()
+        .unwrap()
+        .to_string(),
+        String::from("Unable to run, minimum required version is: 999.999.999")
     );
 }
 
@@ -621,7 +626,7 @@ fn load_external_descriptor_broken_makefile_panic() {
 fn run_load_script_no_config_section() {
     let external_config = ExternalConfig::new();
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(!invoked);
 }
 
@@ -630,7 +635,7 @@ fn run_load_script_no_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(ConfigSection::new());
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(!invoked);
 }
 
@@ -642,7 +647,7 @@ fn run_load_script_valid_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(invoked);
 }
 
@@ -655,7 +660,7 @@ fn run_load_script_invalid_load_script() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    run_load_script(&external_config);
+    run_load_script(&external_config).unwrap();
 }
 
 #[test]
@@ -674,7 +679,7 @@ fn run_load_script_valid_load_script_duckscript() {
     let mut external_config = ExternalConfig::new();
     external_config.config = Some(config);
 
-    let invoked = run_load_script(&external_config);
+    let invoked = run_load_script(&external_config).unwrap();
     assert!(invoked);
 
     assert!(envmnt::exists(
@@ -927,8 +932,8 @@ fn check_makefile_min_version_bigger_min_version() {
 
     assert!(result.is_err());
     assert_eq!(
-        result.err().unwrap(),
-        "Unable to run, minimum required version is: 999.999.999"
+        result.err().unwrap().to_string(),
+        String::from("Unable to run, minimum required version is: 999.999.999")
     );
 }
 
@@ -948,10 +953,10 @@ fn check_makefile_min_version_same_min_version() {
 
 #[test]
 fn load_cargo_aliases_no_file() {
-    let mut config = load_internal_descriptors(false, false, None);
+    let mut config = load_internal_descriptors(false, false, None).unwrap();
     let count = config.tasks.len();
 
-    load_cargo_aliases(&mut config);
+    load_cargo_aliases(&mut config).unwrap();
 
     assert_eq!(count, config.tasks.len());
 }
@@ -959,11 +964,11 @@ fn load_cargo_aliases_no_file() {
 #[test]
 #[ignore]
 fn load_cargo_aliases_found() {
-    let mut config = load_internal_descriptors(false, false, None);
+    let mut config = load_internal_descriptors(false, false, None).unwrap();
     let count = config.tasks.len();
 
     setup_cwd(Some("src/lib/test/workspace1/member1"));
-    load_cargo_aliases(&mut config);
+    load_cargo_aliases(&mut config).unwrap();
     setup_cwd(Some("../../../../.."));
 
     assert_eq!(count, config.tasks.len());
