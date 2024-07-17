@@ -210,7 +210,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_TASK_NAME: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_OUTPUT_FORMAT: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 
-<span class="kw">fn </span>run(cli_args: CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) {
+<span class="kw">fn </span>run(&cli_args: CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) {
     <span class="kw">let </span>start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -354,6 +354,6 @@
 
     <span class="kw">let </span>cli_args = cli_parser::parse(<span class="kw-2">&amp;</span>global_config, <span class="kw-2">&amp;</span>command_name, sub_command);
 
-    run(cli_args, <span class="kw-2">&amp;</span>global_config);
+    run(&cli_args, <span class="kw-2">&amp;</span>global_config);
 }
 </code></pre></div></section></main></body></html>

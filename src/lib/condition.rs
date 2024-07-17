@@ -8,6 +8,7 @@
 mod condition_test;
 
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::profile;
 use crate::scriptengine;
 use crate::types;
@@ -599,7 +600,7 @@ fn validate_script(
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
     script_runner_args: Option<Vec<String>>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     match condition_script {
         Some(ref script) => {
             debug!("Checking task condition script.");
@@ -614,7 +615,7 @@ fn validate_script(
                 &vec![],
             );
         }
-        None => true,
+        None => Ok(true),
     }
 }
 
@@ -628,7 +629,7 @@ pub(crate) fn validate_conditions(
     condition_script: &Option<ConditionScriptValue>,
     script_runner: Option<String>,
     script_runner_args: Option<Vec<String>>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let condition_type = match condition {
         Some(ref value) => value.get_condition_type(),
         None => ConditionType::And,
@@ -636,19 +637,22 @@ pub(crate) fn validate_conditions(
 
     let criteria_passed = validate_criteria(Some(&flow_info), &condition);
     if !criteria_passed && condition_type == ConditionType::And {
-        false
+        Ok(false)
     } else if criteria_passed && condition.is_some() && condition_type != ConditionType::And {
-        true
+        Ok(true)
     } else {
         if condition_script.is_none() && !criteria_passed {
-            false
+            Ok(false)
         } else {
             validate_script(&condition_script, script_runner, script_runner_args)
         }
     }
 }
 
-pub(crate) fn validate_condition_for_step(flow_info: &FlowInfo, step: &Step) -> bool {
+pub(crate) fn validate_condition_for_step(
+    flow_info: &FlowInfo,
+    step: &Step,
+) -> Result<bool, CargoMakeError> {
     validate_conditions(
         &flow_info,
         &step.config.condition,

@@ -5,7 +5,7 @@ use cargo_metadata::camino::Utf8Path;
 
 #[test]
 fn crate_info_load() {
-    let crate_info = load();
+    let crate_info = load().unwrap();
 
     assert!(crate_info.package.is_some());
     assert!(crate_info.workspace.is_none());
@@ -787,7 +787,8 @@ fn get_crate_target_dir() {
 fn load_from_inherit_from_workspace_toml() {
     if is_min_rust_version("1.64.0") {
         let crate_info =
-            load_from(Path::new("src/lib/test/workspace-inherit/member1/Cargo.toml").to_path_buf());
+            load_from(Path::new("src/lib/test/workspace-inherit/member1/Cargo.toml").to_path_buf())
+                .unwrap();
 
         let package_info = crate_info.package.unwrap();
         assert_eq!(package_info.name.unwrap(), "member1");

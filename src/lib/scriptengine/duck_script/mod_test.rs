@@ -10,7 +10,8 @@ fn execute_duckscript() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -22,7 +23,8 @@ fn execute_duckscript_error_no_validate() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         false,
-    );
+    )
+    .unwrap();
     assert!(!valid);
 }
 
@@ -35,7 +37,8 @@ fn execute_duckscript_error_with_validate() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -46,7 +49,8 @@ fn execute_duckscript_cli_arguments() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -59,7 +63,8 @@ fn execute_duckscript_cli_arguments2() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -71,7 +76,8 @@ fn execute_duckscript_crash() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -83,7 +89,8 @@ fn execute_duckscript_crash2() {
         Some(&test::create_empty_flow_info()),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -115,7 +122,8 @@ fn cm_run_task_valid() {
         Some(&flow_info),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 
     assert!(envmnt::is_equal("CM_RUN_TASK_VALID_TEST", "3"));
 }
@@ -136,5 +144,6 @@ fn cm_run_task_error() {
         Some(&flow_info),
         Some(Rc::new(RefCell::new(FlowState::new()))),
         true,
-    );
+    )
+    .unwrap();
 }

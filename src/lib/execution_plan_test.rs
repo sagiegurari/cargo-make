@@ -15,7 +15,13 @@ fn get_actual_task_name_not_found() {
 
     let name = get_actual_task_name(&config, "test");
 
-    assert!(name.is_none());
+    assert_eq!(
+        format!("{:?}", name.err().unwrap()),
+        format!(
+            "{:?}",
+            CargoMakeError::NotFound(String::from("Task \"test\" not found"))
+        )
+    );
 }
 
 #[test]
@@ -74,7 +80,7 @@ fn get_actual_task_name_alias_self_referential() {
     task.alias = Some("rec".to_string());
     config.tasks.insert("rec".to_string(), task);
 
-    get_actual_task_name(&config, "rec");
+    get_actual_task_name(&config, "rec").unwrap();
 }
 
 #[test]
@@ -98,7 +104,7 @@ fn get_actual_task_name_alias_circular() {
     config.tasks.insert("rec-mut-a".to_string(), task_a);
     config.tasks.insert("rec-mut-b".to_string(), task_b);
 
-    get_actual_task_name(&config, "rec-mut-a");
+    get_actual_task_name(&config, "rec-mut-a").unwrap();
 }
 
 #[test]
@@ -789,15 +795,12 @@ fn create_single() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -826,15 +829,12 @@ fn create_single_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -863,15 +863,9 @@ fn create_single_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    create(
-        &config,
-        "test-private",
-        &CrateInfo::new(),
-        false,
-        false,
-        false,
-        &None,
-    );
+    ExecutionPlanBuilder::new(&config, "test-private")
+        .build()
+        .unwrap();
 }
 
 #[test]
@@ -896,15 +890,12 @@ fn create_single_allow_private() {
 
     config.tasks.insert("test-private".to_string(), task);
 
-    let execution_plan = create(
-        &config,
-        "test-private",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test-private")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test-private");
@@ -938,15 +929,12 @@ fn create_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -984,15 +972,12 @@ fn create_with_foreign_dependencies_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1035,15 +1020,12 @@ fn create_with_foreign_dependencies_filename() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1086,15 +1068,12 @@ fn create_with_foreign_dependencies_file_and_directory() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
@@ -1134,7 +1113,13 @@ fn create_with_dependencies_sub_flow() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(&config, "test", &CrateInfo::new(), false, true, true, &None);
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        sub_flow: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "task_dependency");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1168,15 +1153,12 @@ fn create_disabled_task_with_dependencies() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 2);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "end");
@@ -1210,15 +1192,12 @@ fn create_with_dependencies_disabled() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 3);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "test");
@@ -1327,15 +1306,12 @@ fn create_platform_disabled() {
 
     config.tasks.insert("test".to_string(), task);
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 0);
 }
 
@@ -1369,15 +1345,13 @@ fn create_with_dependencies_and_skip_filter() {
 
     let skip_filter = Regex::new("filtered.*").unwrap();
 
-    let execution_plan = create(
-        &config,
-        "test",
-        &CrateInfo::new(),
-        false,
-        true,
-        false,
-        &Some(skip_filter),
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        skip_tasks_pattern: Some(&skip_filter),
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     assert_eq!(execution_plan.steps.len(), 4);
     assert_eq!(execution_plan.steps[0].name, "init");
     assert_eq!(execution_plan.steps[1].name, "task_dependency");
@@ -1402,8 +1376,14 @@ fn create_workspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
-    let execution_plan = create(&config, "test", &crateinfo, false, true, false, &None);
+    let crateinfo = environment::crateinfo::load().unwrap();
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        crate_info: Some(&crateinfo),
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "workspace");
@@ -1426,8 +1406,15 @@ fn create_noworkspace() {
     config.tasks.insert("test".to_string(), task);
 
     env::set_current_dir("./examples/workspace").unwrap();
-    let crateinfo = environment::crateinfo::load();
-    let execution_plan = create(&config, "test", &crateinfo, true, true, false, &None);
+    let crateinfo = environment::crateinfo::load().unwrap();
+    let execution_plan = ExecutionPlanBuilder {
+        disable_workspace: true,
+        allow_private: true,
+        crate_info: Some(&crateinfo),
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
     env::set_current_dir("../../").unwrap();
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
@@ -1444,15 +1431,12 @@ fn create_task_extends_empty_env_bug_verification() {
     )
     .unwrap();
 
-    let execution_plan = create(
-        &config,
-        "task2",
-        &CrateInfo::new(),
-        true,
-        false,
-        false,
-        &None,
-    );
+    let execution_plan = ExecutionPlanBuilder {
+        disable_workspace: true,
+        ..ExecutionPlanBuilder::new(&config, "task2")
+    }
+    .build()
+    .unwrap();
 
     assert_eq!(execution_plan.steps.len(), 3);
 
@@ -1588,7 +1572,7 @@ fn get_normalized_task_multi_extend() {
     config.tasks.insert("2".to_string(), task2);
     config.tasks.insert("3".to_string(), task3);
 
-    let task = get_normalized_task(&config, "3", true);
+    let task = get_normalized_task(&config, "3", true).unwrap();
 
     assert_eq!(task.category.unwrap(), "2");
     assert_eq!(task.description.unwrap(), "1");
@@ -1616,10 +1600,42 @@ fn get_normalized_task_simple() {
     };
     config.tasks.insert("1".to_string(), task1);
 
-    let task = get_normalized_task(&config, "1", true);
+    let task = get_normalized_task(&config, "1", true).unwrap();
 
     assert_eq!(task.category.unwrap(), "1");
     assert_eq!(task.description.unwrap(), "1");
     assert_eq!(task.command.unwrap(), "echo");
     assert_eq!(task.args.unwrap(), vec!["1".to_string()]);
+}
+
+#[test]
+fn respect_skip_init_end_tasks() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        skip_init_end_tasks: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
+    assert_eq!(execution_plan.steps.len(), 1);
+    assert_eq!(execution_plan.steps[0].name, "test");
 }

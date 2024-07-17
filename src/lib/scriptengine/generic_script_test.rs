@@ -10,7 +10,8 @@ fn execute_shell() {
         None,
         &vec![],
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -24,7 +25,8 @@ fn execute_shell_error() {
         None,
         &vec![],
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -36,7 +38,8 @@ fn execute_shell_error_no_validate() {
         None,
         &vec![],
         false,
-    );
+    )
+    .unwrap();
     assert!(!valid);
 }
 
@@ -49,7 +52,8 @@ fn execute_shell_empty_arguments() {
         Some(vec![]),
         &vec![],
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -63,7 +67,8 @@ fn execute_shell_cli_arguments() {
         Some(vec![]),
         &vec!["0".to_string()],
         true,
-    );
+    )
+    .unwrap();
     assert!(valid);
 }
 
@@ -78,5 +83,6 @@ fn execute_shell_cli_arguments_error() {
         Some(vec![]),
         &vec!["1".to_string()],
         true,
-    );
+    )
+    .unwrap();
 }

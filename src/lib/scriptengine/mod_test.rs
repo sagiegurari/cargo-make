@@ -4,7 +4,9 @@ use crate::types::{FileScriptValue, ScriptSections};
 
 #[test]
 fn get_script_text_single_line() {
-    let output = get_script_text(&ScriptValue::SingleLine("test".to_string())).join("\n");
+    let output = get_script_text(&ScriptValue::SingleLine("test".to_string()))
+        .unwrap()
+        .join("\n");
 
     assert_eq!(output, "test");
 }
@@ -15,6 +17,7 @@ fn get_script_text_vector() {
         "line 1".to_string(),
         "line 2".to_string(),
     ]))
+    .unwrap()
     .join("\n");
 
     assert_eq!(output, "line 1\nline 2");
@@ -27,6 +30,7 @@ fn get_script_text_file() {
         absolute_path: None,
     };
     let output = get_script_text(&ScriptValue::File(file_info))
+        .unwrap()
         .join("\n")
         .replace("\r", "");
 
@@ -40,6 +44,7 @@ fn get_script_text_file_relative() {
         absolute_path: Some(false),
     };
     let output = get_script_text(&ScriptValue::File(file_info))
+        .unwrap()
         .join("\n")
         .replace("\r", "");
 
@@ -53,6 +58,7 @@ fn get_script_text_file_absolute() {
         absolute_path: Some(true),
     };
     let output = get_script_text(&ScriptValue::File(file_info))
+        .unwrap()
         .join("\n")
         .replace("\r", "");
 
@@ -66,6 +72,7 @@ fn get_script_text_script_content_sections() {
         main: Some("main".to_string()),
         post: Some("post".to_string()),
     }))
+    .unwrap()
     .join("\n");
 
     assert_eq!(output, "pre\nmain\npost");
@@ -77,14 +84,16 @@ fn get_script_text_script_content_sections_empty() {
         pre: None,
         main: None,
         post: None,
-    }));
+    }))
+    .unwrap();
 
     assert!(output.is_empty());
 }
 
 #[test]
 fn get_engine_type_no_runner() {
-    let output = get_engine_type(&ScriptValue::Text(vec!["test".to_string()]), &None, &None);
+    let output =
+        get_engine_type(&ScriptValue::Text(vec!["test".to_string()]), &None, &None).unwrap();
 
     assert_eq!(output, EngineType::OS);
 }
@@ -95,7 +104,8 @@ fn get_engine_type_runner_no_extension() {
         &ScriptValue::Text(vec!["test".to_string()]),
         &Some("@bad".to_string()),
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::OS);
 }
@@ -106,7 +116,8 @@ fn get_engine_type_duckscript() {
         &ScriptValue::Text(vec!["test".to_string()]),
         &Some("@duckscript".to_string()),
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Duckscript);
 }
@@ -117,7 +128,8 @@ fn get_engine_type_rust() {
         &ScriptValue::Text(vec!["test".to_string()]),
         &Some("@rust".to_string()),
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Rust);
 }
@@ -128,7 +140,8 @@ fn get_engine_type_shell_to_batch() {
         &ScriptValue::Text(vec!["test".to_string()]),
         &Some("@shell".to_string()),
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Shell2Batch);
 }
@@ -139,14 +152,16 @@ fn get_engine_type_generic() {
         &ScriptValue::Text(vec!["test".to_string()]),
         &Some("test1".to_string()),
         &Some("test2".to_string()),
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Generic);
 }
 
 #[test]
 fn get_engine_type_shebang() {
-    let output = get_engine_type(&ScriptValue::Text(vec!["#!bash".to_string()]), &None, &None);
+    let output =
+        get_engine_type(&ScriptValue::Text(vec!["#!bash".to_string()]), &None, &None).unwrap();
 
     assert_eq!(output, EngineType::Shebang);
 }
@@ -157,7 +172,8 @@ fn get_engine_type_duckscript_from_shebang() {
         &ScriptValue::Text(vec!["#!@duckscript".to_string()]),
         &None,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Duckscript);
 }
@@ -168,7 +184,8 @@ fn get_engine_type_shell_to_batch_from_shebang() {
         &ScriptValue::Text(vec!["#!@shell".to_string()]),
         &None,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Shell2Batch);
 }
@@ -179,7 +196,8 @@ fn get_engine_type_rust_from_shebang() {
         &ScriptValue::Text(vec!["#!@rust".to_string()]),
         &None,
         &None,
-    );
+    )
+    .unwrap();
 
     assert_eq!(output, EngineType::Rust);
 }
@@ -193,7 +211,8 @@ fn invoke_no_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -206,7 +225,8 @@ fn invoke_no_script_no_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -220,7 +240,8 @@ fn invoke_no_script() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(!output);
 }
@@ -235,7 +256,8 @@ fn invoke_os_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -251,7 +273,8 @@ fn invoke_duckscript_runner() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -269,7 +292,8 @@ fn invoke_duckscript_runner_error() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -288,7 +312,8 @@ fn invoke_rust_runner() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -308,7 +333,8 @@ fn invoke_rust_runner_error() {
             &task,
             &test::create_empty_flow_info(),
             Rc::new(RefCell::new(FlowState::new())),
-        );
+        )
+        .unwrap();
 
         assert!(output);
     }
@@ -324,7 +350,8 @@ fn invoke_shell_to_batch_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -340,7 +367,8 @@ fn invoke_shell_to_batch_runner_error() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -356,7 +384,8 @@ fn invoke_generic_runner() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }
@@ -373,7 +402,8 @@ fn invoke_generic_runner_error() {
         &task,
         &test::create_empty_flow_info(),
         Rc::new(RefCell::new(FlowState::new())),
-    );
+    )
+    .unwrap();
 
     assert!(output);
 }

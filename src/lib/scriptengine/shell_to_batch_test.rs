@@ -6,7 +6,8 @@ fn execute_valid() {
         &vec!["echo test".to_string()],
         &vec!["test".to_string()],
         true,
-    );
+    )
+    .unwrap();
 
     assert!(valid);
 }
@@ -14,11 +15,11 @@ fn execute_valid() {
 #[test]
 #[should_panic]
 fn execute_error() {
-    execute(&vec!["exit 1".to_string()], &vec![], true);
+    execute(&vec!["exit 1".to_string()], &vec![], true).unwrap();
 }
 
 #[test]
 fn execute_error_no_validate() {
-    let valid = execute(&vec!["exit 1".to_string()], &vec![], false);
+    let valid = execute(&vec!["exit 1".to_string()], &vec![], false).unwrap();
     assert!(!valid);
 }

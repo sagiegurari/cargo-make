@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### v0.37.14
+
+* Fix: fix the --skip-init-end-tasks argument #1108 (thanks @06393993)
+* Enhancement: Support using cargo make as library #1112 (thanks @SamuelMarks)
+
 ### v0.37.13 (2024-07-07)
 
 * Enhancement: New condition_script_runner_args attribute #1081

@@ -8,6 +8,7 @@
 mod rsscript_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::installer::{cargo_plugin_installer, crate_installer};
 use crate::scriptengine::script_utils::create_persisted_script_file;
 use crate::types::{InstallCrateInfo, TestArg};
@@ -30,7 +31,7 @@ fn get_script_runner() -> ScriptRunner {
     }
 }
 
-fn install_crate(provider: &ScriptRunner) {
+fn install_crate(provider: &ScriptRunner) -> Result<(), CargoMakeError> {
     // install dependencies
     match provider {
         ScriptRunner::RustScript => {
@@ -47,7 +48,7 @@ fn install_crate(provider: &ScriptRunner) {
                 force: None,
             };
 
-            crate_installer::install(&None, &info, &None, false);
+            crate_installer::install(&None, &info, &None, false)?;
         }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
@@ -58,7 +59,7 @@ fn install_crate(provider: &ScriptRunner) {
             &None,
             &None,
             &None,
-        ),
+        )?,
         ScriptRunner::CargoPlay => cargo_plugin_installer::install_crate(
             &None,
             Some("play"),
@@ -68,11 +69,12 @@ fn install_crate(provider: &ScriptRunner) {
             &None,
             &None,
             &None,
-        ),
+        )?,
     };
+    Ok(())
 }
 
-fn create_rust_file(rust_script: &Vec<String>) -> String {
+fn create_rust_file(rust_script: &Vec<String>) -> Result<String, CargoMakeError> {
     create_persisted_script_file(rust_script, "rs")
 }
 
@@ -81,7 +83,7 @@ fn run_file(
     runner_arguments: Option<Vec<String>>,
     cli_arguments: &Vec<String>,
     provider: &ScriptRunner,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let (use_cargo, command) = match provider {
         ScriptRunner::RustScript => (false, "rust-script"),
         ScriptRunner::CargoScript => (true, "script"),
@@ -103,10 +105,10 @@ fn run_file(
         command::run_command("cargo", &Some(args), false)
     } else {
         command::run_command(command, &Some(args), false)
-    };
+    }?;
     debug!("Executed rust code, exit code: {}", exit_code);
 
-    exit_code == 0
+    Ok(exit_code == 0)
 }
 
 pub(crate) fn execute(
@@ -114,18 +116,18 @@ pub(crate) fn execute(
     runner_arguments: Option<Vec<String>>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let provider = get_script_runner();
 
-    install_crate(&provider);
+    install_crate(&provider)?;
 
-    let file = create_rust_file(rust_script);
+    let file = create_rust_file(rust_script)?;
 
-    let valid = run_file(&file, runner_arguments, &cli_arguments, &provider);
+    let valid = run_file(&file, runner_arguments, &cli_arguments, &provider)?;
 
     if validate && !valid {
         error!("Unable to execute rust code.");
     }
 
-    return valid;
+    Ok(valid)
 }

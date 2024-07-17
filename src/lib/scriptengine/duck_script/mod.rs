@@ -10,6 +10,7 @@ mod mod_test;
 mod sdk;
 
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::logger::{get_level, get_log_level, LogLevel};
 use crate::types::{FlowInfo, FlowState};
 use duckscript::runner;
@@ -25,7 +26,7 @@ pub(crate) fn execute(
     flow_info: Option<&FlowInfo>,
     flow_state: Option<Rc<RefCell<FlowState>>>,
     validate: bool,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let mut array_command = "@ = array".to_string();
     let mut index = 0;
     for _ in cli_arguments {
@@ -58,7 +59,7 @@ pub(crate) fn execute(
                         error!("Error while running duckscript: {}", error);
                     }
 
-                    return false;
+                    return Ok(false);
                 }
             };
 
@@ -67,14 +68,14 @@ pub(crate) fn execute(
                 environment::setup_cwd(Some(&directory));
             }
 
-            true
+            Ok(true)
         }
         Err(error) => {
             if validate {
                 error!("Unable to load duckscript SDK: {}", error);
             }
 
-            false
+            Ok(false)
         }
     }
 }

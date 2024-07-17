@@ -17,18 +17,7 @@ use cliparser::types::{
     CliSpecMetaInfo, PositionalArgument,
 };
 
-#[cfg(test)]
-fn exit() -> ! {
-    panic!("{}", "exit test");
-}
-
-#[cfg(not(test))]
-use std::process;
-
-#[cfg(not(test))]
-fn exit() -> ! {
-    process::exit(0);
-}
+use crate::error::CargoMakeError;
 
 fn get_args(
     cli_parsed: &CliParsed,
@@ -146,7 +135,7 @@ fn get_args(
     cli_args
 }
 
-fn create_cli(global_config: &GlobalConfig) -> CliSpec {
+pub fn create_cli(global_config: &GlobalConfig, mut spec: CliSpec, default_meta: bool) -> CliSpec {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
         None => &DEFAULT_TASK_NAME,
@@ -156,21 +145,26 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
         None => &DEFAULT_LOG_LEVEL,
     };
 
-    let mut spec = CliSpec::new();
+    if default_meta {
+        spec = spec
+            .set_meta_info(Some(CliSpecMetaInfo {
+                author: Some(AUTHOR.to_string()),
+                version: Some(VERSION.to_string()),
+                description: Some(DESCRIPTION.to_string()),
+                project: Some("cargo-make".to_string()),
+                help_post_text: Some(
+                    "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
+                ),
+            }))
+            .add_command("makers")
+            .add_subcommand(vec!["cargo", "make"])
+            .add_subcommand(vec!["cargo-make", "make"]); // done by cargo
+    }
+    add_arguments(spec, default_task_name, default_log_level)
+}
 
-    spec = spec
-        .set_meta_info(Some(CliSpecMetaInfo {
-            author: Some(AUTHOR.to_string()),
-            version: Some(VERSION.to_string()),
-            description: Some(DESCRIPTION.to_string()),
-            project: Some("cargo-make".to_string()),
-            help_post_text: Some(
-                "See more info at: https://github.com/sagiegurari/cargo-make".to_string(),
-            ),
-        }))
-        .add_command("makers")
-        .add_subcommand(vec!["cargo", "make"])
-        .add_subcommand(vec!["cargo-make", "make"]) // done by cargo
+fn add_arguments(spec: CliSpec, default_task_name: &str, default_log_level: &str) -> CliSpec {
+    spec
         .add_argument(Argument {
             name: "help".to_string(),
             key: vec!["--help".to_string(), "-h".to_string()],
@@ -463,54 +457,53 @@ fn create_cli(global_config: &GlobalConfig) -> CliSpec {
             help: Some(ArgumentHelp::Text(
                 "The task to execute, potentially including arguments which can be accessed in the task itself.".to_string(),
             )),
-        }));
-
-    spec
+        }))
 }
 
-pub(crate) fn parse_args(
+pub fn parse_args(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
     args: Option<Vec<&str>>,
-) -> CliArgs {
-    let spec = create_cli(&global_config);
-
-    let parse_result = match args {
+    spec: CliSpec,
+) -> Result<CliArgs, CargoMakeError> {
+    let cli_parsed = match args {
         Some(args_vec) => cliparser::parse(&args_vec, &spec),
         None => cliparser::parse_process(&spec),
-    };
+    }?;
 
-    match parse_result {
-        Ok(cli_parsed) => {
-            if cli_parsed.arguments.contains("help") {
-                // generate help text
-                let help_text = cliparser::help(&spec);
-                println!("{}", help_text);
-                exit();
-            } else if cli_parsed.arguments.contains("version") {
-                // generate version text
-                let version_text = cliparser::version(&spec);
-                println!("{}", version_text);
-                exit();
-            }
-
-            get_args(&cli_parsed, &global_config, command_name, sub_command)
-        }
-        Err(error) => {
-            let help_text = cliparser::help(&spec);
-            println!("{}\n{}", &error, help_text);
-            exit();
-        }
+    if cli_parsed.arguments.contains("help") {
+        // generate help text
+        let help_text = cliparser::help(&spec);
+        println!("{}", help_text);
+        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } else if cli_parsed.arguments.contains("version") {
+        // generate version text
+        let version_text = cliparser::version(&spec);
+        println!("{}", version_text);
+        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } else {
+        Ok(get_args(
+            &cli_parsed,
+            &global_config,
+            command_name,
+            sub_command,
+        ))
     }
 }
 
-pub(crate) fn parse(
+pub fn parse(
     global_config: &GlobalConfig,
     command_name: &str,
     sub_command: bool,
-) -> CliArgs {
-    parse_args(global_config, command_name, sub_command, None)
+) -> Result<CliArgs, CargoMakeError> {
+    parse_args(
+        global_config,
+        command_name,
+        sub_command,
+        None,
+        create_cli(&global_config, CliSpec::new(), true),
+    )
 }
 
 fn to_owned_vec(vec_option: Option<&Vec<String>>) -> Option<Vec<String>> {

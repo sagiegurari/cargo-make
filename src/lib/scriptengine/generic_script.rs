@@ -8,6 +8,7 @@
 mod generic_script_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::io::delete_file;
 use crate::scriptengine::script_utils::create_script_file;
 
@@ -16,7 +17,7 @@ fn run_file(
     runner: &String,
     arguments: Option<Vec<String>>,
     cli_arguments: &mut Vec<String>,
-) -> bool {
+) -> Result<bool, CargoMakeError> {
     let mut args = match arguments {
         Some(values) => values,
         None => vec![],
@@ -26,10 +27,10 @@ fn run_file(
 
     args.append(cli_arguments);
 
-    let exit_code = command::run_command(runner, &Some(args), false);
+    let exit_code = command::run_command(runner, &Some(args), false)?;
     debug!("Executed script, exit code: {}", exit_code);
 
-    exit_code == 0
+    Ok(exit_code == 0)
 }
 
 pub(crate) fn execute(
@@ -39,10 +40,10 @@ pub(crate) fn execute(
     arguments: Option<Vec<String>>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) -> bool {
-    let file = create_script_file(script_text, &extension);
+) -> Result<bool, CargoMakeError> {
+    let file = create_script_file(script_text, &extension)?;
 
-    let valid = run_file(&file, &runner, arguments, &mut cli_arguments.clone());
+    let valid = run_file(&file, &runner, arguments, &mut cli_arguments.clone())?;
 
     delete_file(&file);
 
@@ -50,5 +51,5 @@ pub(crate) fn execute(
         error!("Unable to execute script.");
     }
 
-    return valid;
+    Ok(valid)
 }

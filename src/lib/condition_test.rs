@@ -1730,7 +1730,7 @@ fn validate_env_contains_invalid_partial_found_with_any() {
 
 #[test]
 fn validate_script_empty() {
-    let enabled = validate_script(&None, None, None);
+    let enabled = validate_script(&None, None, None).unwrap();
 
     assert!(enabled);
 }
@@ -1741,7 +1741,8 @@ fn validate_script_valid() {
         &Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
         None,
         None,
-    );
+    )
+    .unwrap();
 
     assert!(enabled);
 }
@@ -1752,7 +1753,8 @@ fn validate_script_invalid() {
         &Some(ConditionScriptValue::Text(vec!["exit 1".to_string()])),
         None,
         None,
-    );
+    )
+    .unwrap();
 
     assert!(!enabled);
 }
@@ -1765,7 +1767,8 @@ fn validate_script_valid_with_duckscript_shebang() {
         ])),
         None,
         None,
-    );
+    )
+    .unwrap();
 
     assert!(enabled);
 }
@@ -1778,7 +1781,8 @@ fn validate_script_invalid_with_duckscript_shebang() {
         ])),
         None,
         None,
-    );
+    )
+    .unwrap();
 
     assert!(!enabled);
 }
@@ -3532,7 +3536,7 @@ fn validate_condition_for_step_both_valid() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -3593,7 +3597,7 @@ fn validate_condition_for_step_valid_script_invalid() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 1".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -3654,7 +3658,7 @@ fn validate_condition_for_step_valid_script_invalid_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 1".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -3711,7 +3715,7 @@ fn validate_condition_for_step_invalid_script_valid() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -3769,7 +3773,7 @@ fn validate_condition_for_step_invalid_env_set() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -3829,7 +3833,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -3894,7 +3898,7 @@ fn validate_condition_for_step_valid_env() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -3956,7 +3960,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4021,7 +4025,7 @@ fn validate_condition_for_step_invalid_env_not_equal() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4086,7 +4090,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4151,7 +4155,7 @@ fn validate_condition_for_step_valid_env_contains() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4213,7 +4217,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4278,7 +4282,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4341,7 +4345,7 @@ fn validate_condition_for_step_valid_rust_version() {
         files_modified: None,
     });
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4405,7 +4409,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         files_modified: None,
     });
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4466,7 +4470,7 @@ fn validate_condition_for_step_both_valid_and() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4530,7 +4534,7 @@ fn validate_condition_for_step_value_partial_valid_and() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4591,7 +4595,7 @@ fn validate_condition_for_step_group_partial_valid_and() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }
@@ -4652,7 +4656,7 @@ fn validate_condition_for_step_both_valid_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4716,7 +4720,7 @@ fn validate_condition_for_step_value_partial_valid_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4777,7 +4781,7 @@ fn validate_condition_for_step_group_partial_valid_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4838,7 +4842,7 @@ fn validate_condition_for_step_both_valid_group_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4902,7 +4906,7 @@ fn validate_condition_for_step_value_partial_valid_group_or() {
     });
     step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(enabled);
 }
@@ -4961,7 +4965,7 @@ fn validate_condition_for_step_group_partial_valid_group_or() {
         files_modified: None,
     });
 
-    let enabled = validate_condition_for_step(&flow_info, &step);
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
 
     assert!(!enabled);
 }

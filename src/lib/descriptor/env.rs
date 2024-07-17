@@ -1,3 +1,4 @@
+use crate::error::CargoMakeError;
 use crate::types::{
     EnvFile, EnvValue, EnvValueConditioned, EnvValueDecode, EnvValuePathGlob, EnvValueScript,
 };
@@ -124,7 +125,7 @@ fn env_depends_on(val: &EnvValue) -> Vec<&str> {
 pub(crate) fn merge_env(
     base: &IndexMap<String, EnvValue>,
     ext: &IndexMap<String, EnvValue>,
-) -> Result<IndexMap<String, EnvValue>, String> {
+) -> Result<IndexMap<String, EnvValue>, CargoMakeError> {
     let combined = [base, ext];
     let combined: Vec<_> = env_unique(&combined);
 
@@ -161,9 +162,6 @@ pub(crate) fn merge_env(
             // (node) is reachable from every other node.
             // This means that there **must** be a cycle.
             // This isn't strictly necessary, but aids when debugging.
-            let mut err =
-                "A cycle between different env variables has been detected (E001, see: https://github.com/sagiegurari/cargo-make#e001 for more information)."
-                    .to_owned();
             for scc in kosaraju_scc(&graph) {
                 let render = scc
                     .iter()
@@ -172,11 +170,11 @@ pub(crate) fn merge_env(
                     .reduce(|acc, name| format!("{} -> {}", acc, name));
 
                 if let Some(render) = render {
-                    err.push_str(&format!(" Cycle: {}.", render));
+                    return Err(CargoMakeError::EnvVarCycle(format!(" Cycle: {}.", render)));
                 }
             }
 
-            return Err(err);
+            return Err(CargoMakeError::EnvVarCycle(String::new()));
         }
     };
 

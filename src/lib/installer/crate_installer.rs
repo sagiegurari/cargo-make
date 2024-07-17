@@ -8,6 +8,7 @@
 mod crate_installer_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::installer::crate_version_check;
 use crate::installer::{cargo_plugin_installer, rustup_component_installer};
 use crate::toolchain::wrap_command;
@@ -32,7 +33,7 @@ fn invoke_cargo_install(
     info: &InstallCrateInfo,
     args: &Option<Vec<String>>,
     validate: bool,
-) {
+) -> Result<(), CargoMakeError> {
     let (automatic_lock_version, version_option) = if info.min_version.is_some() {
         (false, &info.min_version)
     } else {
@@ -63,11 +64,13 @@ fn invoke_cargo_install(
         },
     };
 
-    command::run_command(&command_spec.command, &command_spec.args, validate);
+    command::run_command(&command_spec.command, &command_spec.args, validate)?;
 
     if remove_lock {
         envmnt::remove("CARGO_MAKE_CRATE_INSTALLATION_LOCKED");
     }
+
+    Ok(())
 }
 
 fn is_crate_only_info(info: &InstallCrateInfo) -> bool {
@@ -82,7 +85,7 @@ pub(crate) fn install(
     info: &InstallCrateInfo,
     args: &Option<Vec<String>>,
     validate: bool,
-) {
+) -> Result<(), CargoMakeError> {
     let installed =
         rustup_component_installer::is_installed(&toolchain, &info.binary, &info.test_arg);
     let crate_only_info = is_crate_only_info(&info);
@@ -112,7 +115,8 @@ pub(crate) fn install(
         debug!("Crate: {} not installed.", &info.crate_name);
 
         if !invoke_rustup_install(&toolchain, &info) {
-            invoke_cargo_install(&toolchain, &info, &args, validate);
+            invoke_cargo_install(&toolchain, &info, &args, validate)?;
         }
     }
+    Ok(())
 }

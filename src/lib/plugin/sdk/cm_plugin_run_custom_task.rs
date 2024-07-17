@@ -47,12 +47,14 @@ impl Command for CommandImpl {
                 plugins_enabled: false,
             };
 
-            runner::run_task_with_options(
+            if let Err(e) = runner::run_task_with_options(
                 &self.flow_info,
                 self.flow_state.clone(),
                 &custom_step,
                 &options,
-            );
+            ) {
+                return CommandResult::Error(e.to_string());
+            }
 
             CommandResult::Continue(Some("true".to_string()))
         }

@@ -8,6 +8,7 @@
 mod execution_plan_test;
 
 use crate::environment;
+use crate::error::CargoMakeError;
 use crate::logger;
 use crate::profile;
 use crate::proxy_task::create_proxy_task;
@@ -23,10 +24,11 @@ use std::env;
 use std::path::Path;
 
 /// Resolve aliases recursively until a task without alias is found.
-///
-/// # Panics
-/// if there is a cycle in the alias chain.
-fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) -> Option<String> {
+fn get_task_name_recursive(
+    config: &Config,
+    name: &str,
+    seen: &mut Vec<String>,
+) -> Result<String, CargoMakeError> {
     seen.push(name.to_string());
 
     match config.tasks.get(name) {
@@ -37,13 +39,16 @@ fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) 
                 Some(ref alias) if seen.contains(alias) => {
                     let chain = seen.join(" -> ");
                     error!("Detected cycle while resolving alias {}: {}", &name, chain);
-                    panic!("Detected cycle while resolving alias {}: {}", &name, chain);
+                    return Err(CargoMakeError::AliasCycle(name.to_string(), chain));
                 }
                 Some(ref alias) => get_task_name_recursive(config, alias, seen),
-                None => Some(name.to_string()),
+                None => Ok(name.to_string()),
             }
         }
-        None => None,
+        None => Err(CargoMakeError::NotFound(format!(
+            "Task {:#?} not found",
+            name
+        ))),
     }
 }
 
@@ -51,7 +56,7 @@ fn get_task_name_recursive(config: &Config, name: &str, seen: &mut Vec<String>) 
 ///
 /// # Panics
 /// if there is a cycle in the alias chain.
-pub(crate) fn get_actual_task_name(config: &Config, name: &str) -> Option<String> {
+pub(crate) fn get_actual_task_name(config: &Config, name: &str) -> Result<String, CargoMakeError> {
     let mut seen = Vec::new();
 
     get_task_name_recursive(config, name, &mut seen)
@@ -61,60 +66,61 @@ pub(crate) fn get_actual_task_name(config: &Config, name: &str) -> Option<String
 ///
 /// # Panics
 /// if task is not found or there is a cycle in the alias chain.
-pub(crate) fn get_normalized_task(config: &Config, name: &str, support_alias: bool) -> Task {
-    match get_optional_normalized_task(config, name, support_alias) {
-        Some(task) => task,
-        None => {
-            error!("Task {} not found", &name);
-            panic!("Task {} not found", &name);
-        }
-    }
+pub(crate) fn get_normalized_task(
+    config: &Config,
+    name: &str,
+    support_alias: bool,
+) -> Result<Task, CargoMakeError> {
+    get_optional_normalized_task(config, name, support_alias)
 }
 
 /// Resolves alias and normalizes task.
 ///
 /// # Panics
 /// if there is a cycle in the alias chain.
-fn get_optional_normalized_task(config: &Config, name: &str, support_alias: bool) -> Option<Task> {
-    let actual_task_name_option = if support_alias {
+fn get_optional_normalized_task(
+    config: &Config,
+    name: &str,
+    support_alias: bool,
+) -> Result<Task, CargoMakeError> {
+    let actual_task_name = if support_alias {
         get_actual_task_name(config, name)
     } else {
-        Some(name.to_string())
-    };
+        Ok(name.to_string())
+    }?;
 
-    match actual_task_name_option {
-        Some(actual_task_name) => match config.tasks.get(&actual_task_name) {
-            Some(task_config) => {
-                let mut clone_task = task_config.clone();
-                let mut normalized_task = clone_task.get_normalized_task();
+    match config.tasks.get(&actual_task_name) {
+        Some(task_config) => {
+            let mut clone_task = task_config.clone();
+            let mut normalized_task = clone_task.get_normalized_task();
 
-                normalized_task = match normalized_task.extend {
-                    Some(ref extended_task_name) => {
-                        let mut extended_task =
-                            get_normalized_task(config, extended_task_name, support_alias);
+            normalized_task = match normalized_task.extend {
+                Some(ref extended_task_name) => {
+                    let mut extended_task =
+                        get_normalized_task(config, extended_task_name, support_alias)?;
 
-                        if let Some(ref env) = normalized_task.env {
-                            if env.len() == 2
-                                && env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
-                                && env.contains_key(
-                                    "CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY",
-                                )
-                            {
-                                normalized_task.env = None;
-                            }
+                    if let Some(ref env) = normalized_task.env {
+                        if env.len() == 2
+                            && env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
+                            && env
+                                .contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY")
+                        {
+                            normalized_task.env = None;
                         }
-                        extended_task.extend(&normalized_task);
-
-                        extended_task
                     }
-                    None => normalized_task,
-                };
+                    extended_task.extend(&normalized_task);
 
-                Some(normalized_task)
-            }
-            None => None,
-        },
-        None => None,
+                    extended_task
+                }
+                None => normalized_task,
+            };
+
+            Ok(normalized_task)
+        }
+        None => Err(CargoMakeError::NotFound(format!(
+            "Task {:#?} not found",
+            name
+        ))),
     }
 }
 
@@ -301,11 +307,11 @@ fn is_workspace_flow(
     // determine if workspace flow is explicitly set and enabled in the requested task
     let (task_set_workspace, task_enable_workspace) =
         match get_optional_normalized_task(config, task, true) {
-            Some(normalized_task) => match normalized_task.workspace {
+            Ok(normalized_task) => match normalized_task.workspace {
                 Some(enable_workspace) => (true, enable_workspace),
                 None => (false, false),
             },
-            None => (false, false),
+            Err(_) => (false, false),
         };
 
     // if project is not a workspace or if workspace is disabled via cli, return no workspace flow
@@ -336,12 +342,12 @@ fn create_for_step(
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
-    skip_tasks_pattern: &Option<Regex>,
-) {
+    skip_tasks_pattern: Option<&Regex>,
+) -> Result<(), CargoMakeError> {
     if let Some(skip_tasks_pattern_regex) = skip_tasks_pattern {
         if skip_tasks_pattern_regex.is_match(&task.name) {
             debug!("Skipping task: {} due to skip pattern.", &task.name);
-            return;
+            return Ok(());
         }
     }
 
@@ -371,10 +377,10 @@ fn create_for_step(
 
         steps.push(step);
         task_names.insert(task.to_string());
-        return;
+        return Ok(());
     }
 
-    let task_config = get_normalized_task(config, &task.name, true);
+    let task_config = get_normalized_task(config, &task.name, true)?;
 
     debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
 
@@ -398,7 +404,7 @@ fn create_for_step(
                             false,
                             true,
                             skip_tasks_pattern,
-                        );
+                        )?;
                     }
                 }
                 _ => debug!("No dependencies found for task: {}", &task),
@@ -411,17 +417,22 @@ fn create_for_step(
                 });
                 task_names.insert(task.to_string());
             } else if root {
-                error!("Circular reference found for task: {}", &task);
+                return Err(CargoMakeError::CircularReference(format!("{}", task)));
             }
         }
+        Ok(())
     } else {
         error!("Task {} is private", &task);
-        panic!("Task {} is private", &task);
+        return Err(CargoMakeError::TaskIs(format!("{}", task), "private"));
     }
 }
 
-fn add_predefined_step(config: &Config, task: &str, steps: &mut Vec<Step>) {
-    let task_config = get_normalized_task(config, task, false);
+fn add_predefined_step(
+    config: &Config,
+    task: &str,
+    steps: &mut Vec<Step>,
+) -> Result<(), CargoMakeError> {
+    let task_config = get_normalized_task(config, task, false)?;
     let add = !task_config.disabled.unwrap_or(false);
 
     if add {
@@ -430,70 +441,114 @@ fn add_predefined_step(config: &Config, task: &str, steps: &mut Vec<Step>) {
             config: task_config,
         });
     }
+    Ok(())
 }
 
-/// Creates the full execution plan
-pub(crate) fn create(
-    config: &Config,
-    task: &str,
-    crate_info: &CrateInfo,
-    disable_workspace: bool,
-    allow_private: bool,
-    sub_flow: bool,
-    skip_tasks_pattern: &Option<Regex>,
-) -> ExecutionPlan {
-    let mut task_names = HashSet::new();
-    let mut steps = Vec::new();
+#[derive(Clone, Debug)]
+pub(crate) struct ExecutionPlanBuilder<'a> {
+    pub config: &'a Config,
+    pub task: &'a str,
+    pub crate_info: Option<&'a CrateInfo>,
+    pub disable_workspace: bool,
+    pub allow_private: bool,
+    pub sub_flow: bool,
+    pub skip_tasks_pattern: Option<&'a Regex>,
+    pub skip_init_end_tasks: bool,
+}
 
-    if !sub_flow {
-        match config.config.legacy_migration_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Legacy migration task not defined."),
-        };
-        match config.config.init_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Init task not defined."),
-        };
-    }
-
-    let skip = match skip_tasks_pattern {
-        Some(ref pattern) => pattern.is_match(task),
-        None => false,
-    };
-
-    if !skip {
-        let workspace_flow =
-            is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
-
-        if workspace_flow {
-            let workspace_task = create_workspace_task(crate_info, task);
-
-            steps.push(Step {
-                name: "workspace".to_string(),
-                config: workspace_task,
-            });
-        } else {
-            create_for_step(
-                &config,
-                &TaskIdentifier::from_name(task),
-                &mut steps,
-                &mut task_names,
-                true,
-                allow_private,
-                &skip_tasks_pattern,
-            );
+impl<'a> ExecutionPlanBuilder<'a> {
+    pub fn new(config: &'a Config, task: &'a str) -> Self {
+        Self {
+            config,
+            task,
+            crate_info: None,
+            disable_workspace: false,
+            allow_private: false,
+            sub_flow: false,
+            skip_tasks_pattern: None,
+            skip_init_end_tasks: false,
         }
-    } else {
-        debug!("Skipping task: {} due to skip pattern.", &task);
     }
 
-    if !sub_flow {
-        // always add end task even if already executed due to some dependency
-        match config.config.end_task {
-            Some(ref task) => add_predefined_step(config, task, &mut steps),
-            None => debug!("Ent task not defined."),
+    pub fn build(&self) -> Result<ExecutionPlan, CargoMakeError> {
+        let Self {
+            config,
+            task,
+            crate_info,
+            disable_workspace,
+            allow_private,
+            sub_flow,
+            skip_tasks_pattern,
+            skip_init_end_tasks,
+        } = *self;
+        let mut task_names = HashSet::new();
+        let mut steps = Vec::new();
+        let default_crate_info = CrateInfo::new();
+        let crate_info = crate_info.unwrap_or(&default_crate_info);
+        let skip_init_end_tasks = skip_init_end_tasks || sub_flow;
+
+        if !skip_init_end_tasks {
+            match config.config.legacy_migration_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps)?,
+                None => {
+                    /* return Err(CargoMakeError::NotFound(String::from(
+                        "Legacy migration task not defined.",
+                    ))) */
+                }
+            };
+            match config.config.init_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps)?,
+                None => {
+                    /* return Err(CargoMakeError::NotFound(String::from(
+                        "Init task not defined.",
+                    ))) */
+                }
+            };
+        }
+
+        let skip = match skip_tasks_pattern {
+            Some(pattern) => pattern.is_match(task),
+            None => false,
         };
-    }
 
-    ExecutionPlan { steps }
+        if !skip {
+            let workspace_flow =
+                is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
+
+            if workspace_flow {
+                let workspace_task = create_workspace_task(crate_info, task);
+
+                steps.push(Step {
+                    name: "workspace".to_string(),
+                    config: workspace_task,
+                });
+            } else {
+                create_for_step(
+                    &config,
+                    &TaskIdentifier::from_name(task),
+                    &mut steps,
+                    &mut task_names,
+                    true,
+                    allow_private,
+                    skip_tasks_pattern,
+                )?;
+            }
+        } else {
+            debug!("Skipping task: {} due to skip pattern.", &task);
+        }
+
+        if !skip_init_end_tasks {
+            // always add end task even if already executed due to some dependency
+            match config.config.end_task {
+                Some(ref task) => add_predefined_step(config, task, &mut steps)?,
+                None => {
+                    /* return Err(CargoMakeError::NotFound(String::from(
+                        "Ent task not defined.",
+                    ))) */
+                }
+            };
+        }
+
+        Ok(ExecutionPlan { steps })
+    }
 }

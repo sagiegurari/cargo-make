@@ -3,8 +3,8 @@ use std::env;
 
 #[test]
 fn load_from_path_exists() {
-    let path = PathBuf::from("examples/cargo-make");
-    let global_config = load_from_path(path);
+    let path: PathBuf = ["examples", "cargo-make"].iter().collect();
+    let global_config = load_from_path(path).unwrap();
 
     assert!(global_config.file_name.is_some());
     assert_eq!(global_config.log_level.unwrap(), "error".to_string());
@@ -21,8 +21,8 @@ fn load_from_path_exists() {
 
 #[test]
 fn load_from_path_not_exists() {
-    let path = PathBuf::from("examples2/.cargo-make");
-    let global_config = load_from_path(path);
+    let path: PathBuf = ["examples2", ".cargo-make"].iter().collect();
+    let global_config = load_from_path(path).unwrap();
 
     assert!(global_config.file_name.is_none());
     assert!(global_config.log_level.is_none());
@@ -34,10 +34,15 @@ fn load_from_path_not_exists() {
 #[test]
 #[ignore]
 fn load_with_cargo_home() {
-    let path = env::current_dir().unwrap();
-    let directory = path.join("examples/cargo-make");
+    let directory: PathBuf = [
+        env::current_dir().unwrap(),
+        "examples".into(),
+        "cargo-make".into(),
+    ]
+    .iter()
+    .collect();
     envmnt::set("CARGO_MAKE_HOME", directory.to_str().unwrap());
-    let global_config = load();
+    let global_config = load().unwrap();
 
     assert!(global_config.file_name.is_some());
     assert_eq!(global_config.log_level.unwrap(), "error".to_string());
@@ -56,7 +61,7 @@ fn load_with_cargo_home() {
 #[ignore]
 fn load_without_cargo_home() {
     envmnt::remove("CARGO_MAKE_HOME");
-    let global_config = load();
+    let global_config = load().unwrap();
 
     assert!(global_config.search_project_root.is_some());
 }
