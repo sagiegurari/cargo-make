@@ -8,6 +8,7 @@
 mod diff_steps_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
@@ -28,7 +29,7 @@ pub(crate) fn run(
     task: &str,
     cli_args: &CliArgs,
     crateinfo: &CrateInfo,
-) {
+) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
             Ok(reg) => Some(reg),
@@ -47,7 +48,7 @@ pub(crate) fn run(
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
         ..ExecutionPlanBuilder::new(internal_config, &task)
     }
-    .build();
+    .build()?;
 
     let external_execution_plan = ExecutionPlanBuilder {
         crate_info: Some(crateinfo),
@@ -56,16 +57,16 @@ pub(crate) fn run(
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
         ..ExecutionPlanBuilder::new(external_config, &task)
     }
-    .build();
+    .build()?;
 
     let internal_file = create_file(
         &move |file: &mut File| write_as_string(&internal_execution_plan, &file),
         "toml",
-    );
+    )?;
     let external_file = create_file(
         &move |file: &mut File| write_as_string(&external_execution_plan, &file),
         "toml",
-    );
+    )?;
 
     info!("Printing diff...");
     command::run_command(
@@ -78,10 +79,12 @@ pub(crate) fn run(
             external_file.to_string(),
         ]),
         false,
-    );
+    )?;
 
     delete_file(&internal_file);
     delete_file(&external_file);
 
     info!("Done");
+
+    Ok(())
 }

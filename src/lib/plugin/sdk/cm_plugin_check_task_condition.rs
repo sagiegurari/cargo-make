@@ -29,7 +29,10 @@ impl Command for CommandImpl {
     fn run(&self, _arguments: Vec<String>) -> CommandResult {
         let passed = runner::validate_condition(&self.flow_info, &self.step);
 
-        CommandResult::Continue(Some(passed.to_string()))
+        match passed {
+            Ok(r) => CommandResult::Continue(Some(r.to_string())),
+            Err(e) => CommandResult::Error(e.to_string()),
+        }
     }
 }
 

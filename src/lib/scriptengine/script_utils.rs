@@ -7,6 +7,7 @@
 #[path = "script_utils_test.rs"]
 mod script_utils_test;
 
+use crate::error::CargoMakeError;
 use crate::io::create_text_file;
 use fsio::file::write_text_file;
 use fsio::path::as_path::AsPath;
@@ -14,18 +15,24 @@ use sha2::{Digest, Sha256};
 use std::fmt::Write;
 use std::path::PathBuf;
 
-pub(crate) fn create_script_file(script_text: &Vec<String>, extension: &str) -> String {
+pub(crate) fn create_script_file(
+    script_text: &Vec<String>,
+    extension: &str,
+) -> Result<String, CargoMakeError> {
     let text = script_text.join("\n");
 
     create_text_file(&text, &extension)
 }
 
-pub(crate) fn create_persisted_script_file(script_text: &Vec<String>, extension: &str) -> String {
+pub(crate) fn create_persisted_script_file(
+    script_text: &Vec<String>,
+    extension: &str,
+) -> Result<String, CargoMakeError> {
     let text = script_text.join("\n");
 
     let string_bytes = text.as_bytes();
     let bytes = Sha256::digest(string_bytes);
-    let file_name = bytes_to_hex(&bytes[..]);
+    let file_name = bytes_to_hex(&bytes[..])?;
 
     let default_target_directory = envmnt::get_or("CARGO_MAKE_CRATE_TARGET_DIRECTORY", "target");
     let directory = envmnt::get_or(
@@ -43,35 +50,23 @@ pub(crate) fn create_persisted_script_file(script_text: &Vec<String>, extension:
 
     let file_path = file_path_string.as_path();
     if file_path.exists() {
-        file_path_string
+        Ok(file_path_string)
     } else {
         match write_text_file(&file_path_string, &text) {
-            Ok(_) => file_path_string,
+            Ok(_) => Ok(file_path_string),
             Err(error) => {
                 error!("Unable to create file: {} {:#?}", &file_path_string, &error);
-                panic!("Unable to create file, error: {}", error);
+                Err(error.into())
             }
         }
     }
 }
 
-fn bytes_to_hex(bytes: &[u8]) -> String {
+fn bytes_to_hex(bytes: &[u8]) -> Result<String, CargoMakeError> {
     let mut hex_string = String::with_capacity(2 * bytes.len());
     for byte in bytes {
-        match write!(hex_string, "{:02X}", byte) {
-            Err(error) => {
-                error!(
-                    "Unable to convert script hash to hex string, error: {}",
-                    &error
-                );
-                panic!(
-                    "Unable to convert script hash to hex string, error: {}",
-                    &error
-                );
-            }
-            _ => (),
-        }
+        write!(hex_string, "{:02X}", byte)?;
     }
 
-    hex_string
+    Ok(hex_string)
 }

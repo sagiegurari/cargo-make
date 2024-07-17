@@ -7,6 +7,7 @@
 #[path = "cargo_alias_test.rs"]
 mod cargo_alias_test;
 
+use crate::error::CargoMakeError;
 use crate::io;
 use crate::types::{InstallCrate, Task};
 use std::collections::HashMap;
@@ -24,13 +25,13 @@ struct CargoConfig {
     alias: Option<HashMap<String, AliasValue>>,
 }
 
-fn load_from_file(file: &str) -> Vec<(String, Task)> {
+fn load_from_file(file: &str) -> Result<Vec<(String, Task)>, CargoMakeError> {
     let file_path = Path::new(file);
 
     let mut tasks = vec![];
     if file_path.exists() {
         if file_path.is_file() {
-            let text = io::read_text_file(&file_path.to_path_buf());
+            let text = io::read_text_file(&file_path.to_path_buf())?;
 
             if !text.is_empty() {
                 let cargo_config: CargoConfig = match toml::from_str(&text) {
@@ -57,9 +58,9 @@ fn load_from_file(file: &str) -> Vec<(String, Task)> {
         }
     }
 
-    tasks
+    Ok(tasks)
 }
 
-pub(crate) fn load() -> Vec<(String, Task)> {
+pub(crate) fn load() -> Result<Vec<(String, Task)>, CargoMakeError> {
     load_from_file("./.cargo/config.toml")
 }

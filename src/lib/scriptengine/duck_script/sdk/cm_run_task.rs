@@ -3,6 +3,7 @@
 //! Enables to run cargo-make tasks from within duckscript.
 //!
 
+use crate::error::CargoMakeError;
 use crate::runner;
 use crate::types::{FlowInfo, FlowState};
 use duckscript::types::command::{Command, CommandResult};
@@ -27,7 +28,9 @@ impl Command for CommandImpl {
 
     fn run(&self, arguments: Vec<String>) -> CommandResult {
         if arguments.is_empty() {
-            CommandResult::Error("No task name provided.".to_string())
+            CommandResult::Error(
+                CargoMakeError::NotFound(String::from("No task name provided.")).to_string(),
+            )
         } else {
             let (task_name, async_run) = if arguments.len() > 0 && arguments[0] == "--async" {
                 (arguments[1].clone(), true)
@@ -42,15 +45,18 @@ impl Command for CommandImpl {
                 if async_run {
                     let cloned_flow_state = self.flow_state.borrow().clone();
 
-                    thread::spawn(move || {
+                    thread::spawn(move || -> Result<(), CargoMakeError> {
                         runner::run_flow(
                             &sub_flow_info,
                             Rc::new(RefCell::new(cloned_flow_state)),
                             true,
-                        );
+                        )
                     });
                 } else {
-                    runner::run_flow(&sub_flow_info, self.flow_state.clone(), true);
+                    if let Err(e) = runner::run_flow(&sub_flow_info, self.flow_state.clone(), true)
+                    {
+                        return CommandResult::Error(e.to_string());
+                    }
                 }
 
                 CommandResult::Continue(Some("true".to_string()))

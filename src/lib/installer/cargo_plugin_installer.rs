@@ -8,6 +8,7 @@
 mod cargo_plugin_installer_test;
 
 use crate::command;
+use crate::error::CargoMakeError;
 use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
 use crate::types::ToolchainSpecifier;
@@ -59,7 +60,10 @@ fn is_crate_in_list_output(crate_name: &str, output: &str) -> bool {
     false
 }
 
-fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) -> bool {
+fn is_crate_installed(
+    toolchain: &Option<ToolchainSpecifier>,
+    crate_name: &str,
+) -> Result<bool, CargoMakeError> {
     debug!("Getting list of installed cargo commands.");
 
     let mut command_struct = match toolchain {
@@ -78,19 +82,19 @@ fn is_crate_installed(toolchain: &Option<ToolchainSpecifier>, crate_name: &str) 
     match result {
         Ok(output) => {
             let exit_code = command::get_exit_code(Ok(output.status), false);
-            command::validate_exit_code(exit_code);
+            command::validate_exit_code(exit_code)?;
 
             let stdout = strip_str(String::from_utf8_lossy(&output.stdout));
             let crate_name_trimmed = crate_name.trim();
-            is_crate_in_list_output(&crate_name_trimmed, &stdout)
-                || is_crate_in_list_output_legacy(&crate_name_trimmed, &stdout)
+            Ok(is_crate_in_list_output(&crate_name_trimmed, &stdout)
+                || is_crate_in_list_output_legacy(&crate_name_trimmed, &stdout))
         }
         Err(error) => {
             error!(
                 "Unable to check if crate is installed: {} {:#?}",
                 crate_name, &error
             );
-            false
+            Ok(false)
         }
     }
 }
@@ -154,11 +158,11 @@ pub(crate) fn install_crate(
     min_version: &Option<String>,
     install_command: &Option<String>,
     allow_force: &Option<bool>,
-) {
+) -> Result<(), CargoMakeError> {
     let installed = match cargo_command {
         Some(cargo_command) => is_crate_installed(&toolchain, cargo_command),
-        None => false,
-    };
+        None => Ok(false),
+    }?;
     let mut force = false;
     let allow_force_value = allow_force.unwrap_or(true);
     let run_installation = if !installed {
@@ -186,9 +190,10 @@ pub(crate) fn install_crate(
         match toolchain {
             Some(ref toolchain_string) => {
                 let command_spec = wrap_command(&toolchain_string, "cargo", &Some(install_args));
-                command::run_command(&command_spec.command, &command_spec.args, validate)
+                command::run_command(&command_spec.command, &command_spec.args, validate)?
             }
-            None => command::run_command("cargo", &Some(install_args), validate),
+            None => command::run_command("cargo", &Some(install_args), validate)?,
         };
     }
+    Ok(())
 }

@@ -11,6 +11,7 @@ mod mod_test;
 
 use crate::command;
 use crate::condition;
+use crate::error::CargoMakeError;
 use crate::io;
 use crate::profile;
 use crate::scriptengine;
@@ -293,7 +294,10 @@ fn set_env_files_for_config(
     all_loaded
 }
 
-fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
+fn set_env_scripts(
+    env_scripts: Vec<String>,
+    cli_arguments: &Vec<String>,
+) -> Result<(), CargoMakeError> {
     for env_script in env_scripts {
         if !env_script.is_empty() {
             scriptengine::invoke_script_pre_flow(
@@ -303,9 +307,10 @@ fn set_env_scripts(env_scripts: Vec<String>, cli_arguments: &Vec<String>) {
                 None,
                 true,
                 cli_arguments,
-            );
+            )?;
         }
     }
+    Ok(())
 }
 
 pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
@@ -324,7 +329,7 @@ pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
 }
 
 /// Updates the env for the current execution based on the descriptor.
-fn initialize_env(config: &Config, cli_args: &Vec<String>) {
+fn initialize_env(config: &Config, cli_args: &Vec<String>) -> Result<(), CargoMakeError> {
     debug!("Initializing Env.");
 
     let additional_profiles = match config.config.additional_profiles {
@@ -336,7 +341,7 @@ fn initialize_env(config: &Config, cli_args: &Vec<String>) {
 
     set_env_for_config(config.env.clone(), additional_profiles, true);
 
-    set_env_scripts(config.env_scripts.clone(), cli_args);
+    set_env_scripts(config.env_scripts.clone(), cli_args)
 }
 
 fn setup_env_for_duckscript() {
@@ -347,8 +352,8 @@ fn setup_env_for_duckscript() {
     envmnt::set("CARGO_MAKE_DUCKSCRIPT_SDK_VERSION", version);
 }
 
-fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
-    let crate_info = crateinfo::load();
+fn setup_env_for_crate(home: Option<PathBuf>) -> Result<CrateInfo, CargoMakeError> {
+    let crate_info = crateinfo::load()?;
     let crate_info_clone = crate_info.clone();
 
     let package_info = crate_info.package.unwrap_or(PackageInfo::new());
@@ -431,7 +436,7 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> CrateInfo {
         ),
     }
 
-    crate_info_clone
+    Ok(crate_info_clone)
 }
 
 fn setup_env_for_git_repo() -> GitInfo {
@@ -521,7 +526,7 @@ fn get_base_directory_name() -> Option<String> {
     }
 }
 
-fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
+fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) -> Result<(), CargoMakeError> {
     let project_name = match crate_info.package {
         Some(ref package) => match package.name {
             Some(ref name) => Some(name.to_string()),
@@ -549,7 +554,7 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
                     let mut path = PathBuf::new();
                     path.push(member);
                     path.push("Cargo.toml");
-                    let member_crate_info = crateinfo::load_from(path);
+                    let member_crate_info = crateinfo::load_from(path)?;
 
                     match member_crate_info.package {
                         Some(package) => package.version,
@@ -566,6 +571,8 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) {
     };
 
     envmnt::set_or_remove("CARGO_MAKE_PROJECT_VERSION", &project_version);
+
+    Ok(())
 }
 
 /// Sets up the env before the tasks execution.
@@ -575,7 +582,7 @@ pub(crate) fn setup_env(
     task: &str,
     home: Option<PathBuf>,
     time_summary_vec: &mut Vec<(String, u128)>,
-) -> EnvInfo {
+) -> Result<EnvInfo, CargoMakeError> {
     envmnt::set_bool("CARGO_MAKE", true);
     envmnt::set("CARGO_MAKE_TASK", &task);
 
@@ -597,7 +604,7 @@ pub(crate) fn setup_env(
     let crate_info = if config.config.skip_crate_env_info.unwrap_or(false) {
         CrateInfo::new()
     } else {
-        setup_env_for_crate(home.clone())
+        setup_env_for_crate(home.clone())?
     };
     time_summary::add(time_summary_vec, "[Setup Env - Crate Info]", now);
 
@@ -626,20 +633,20 @@ pub(crate) fn setup_env(
 
     // setup project info
     now = SystemTime::now();
-    setup_env_for_project(config, &crate_info);
+    setup_env_for_project(config, &crate_info)?;
     time_summary::add(time_summary_vec, "[Setup Env - Project]", now);
 
     // load env vars
     now = SystemTime::now();
-    initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]));
+    initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]))?;
     time_summary::add(time_summary_vec, "[Setup Env - Vars]", now);
 
-    EnvInfo {
+    Ok(EnvInfo {
         rust_info: rustinfo,
         crate_info,
         git_info: gitinfo,
         ci_info: ci_info_struct,
-    }
+    })
 }
 
 fn set_workspace_cwd(directory_path: &Path, force: bool) {

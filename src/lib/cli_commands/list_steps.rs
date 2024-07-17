@@ -8,19 +8,20 @@
 #[path = "list_steps_test.rs"]
 mod list_steps_test;
 
+use crate::error::CargoMakeError;
 use crate::execution_plan;
 use crate::io;
 use crate::types::{Config, DeprecationInfo};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub(crate) fn run(
+pub fn run(
     config: &Config,
     output_format: &str,
     output_file: &Option<String>,
-    category: Option<String>,
+    category: &Option<String>,
     hide_uninteresting: bool,
-) {
-    let output = create_list(&config, output_format, category, hide_uninteresting);
+) -> Result<(), CargoMakeError> {
+    let output = create_list(&config, output_format, category, hide_uninteresting)?;
 
     match output_file {
         Some(file) => {
@@ -28,16 +29,16 @@ pub(crate) fn run(
             ()
         }
         None => print!("{}", output),
-    }
+    };
+    Ok(())
 }
 
-/// Panics if task does not exist.
 pub(crate) fn create_list(
     config: &Config,
     output_format: &str,
-    category_filter: Option<String>,
+    category_filter: &Option<String>,
     hide_uninteresting: bool,
-) -> String {
+) -> Result<String, CargoMakeError> {
     // category -> actual_task -> description
     let mut categories: BTreeMap<String, BTreeMap<String, String>> = BTreeMap::new();
     // actual_task -> aliases
@@ -45,13 +46,9 @@ pub(crate) fn create_list(
 
     // iterate over all tasks to build categories and aliases
     for key in config.tasks.keys() {
-        let actual_task_name =
-            execution_plan::get_actual_task_name(&config, &key).unwrap_or_else(|| {
-                error!("Task {} not found", &key);
-                panic!("Task {} not found", &key);
-            });
+        let actual_task_name = execution_plan::get_actual_task_name(&config, &key)?;
 
-        let task = execution_plan::get_normalized_task(&config, &actual_task_name, true);
+        let task = execution_plan::get_normalized_task(&config, &actual_task_name, true)?;
 
         let is_private = match task.private {
             Some(private) => private,
@@ -186,9 +183,9 @@ pub(crate) fn create_list(
         }
 
         if !just_task_name {
-            buffer.push_str(&format!("\n"));
+            buffer.push('\n');
         }
     }
 
-    buffer
+    Ok(buffer)
 }

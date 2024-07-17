@@ -35,6 +35,8 @@
 //!
 
 // Dependencies used in the binary `makers`:
+use crate::error::CargoMakeError;
+use crate::types::CliArgs;
 #[cfg(windows)]
 use nu_ansi_term as _;
 
@@ -50,14 +52,15 @@ mod test;
 pub mod types;
 
 mod cache;
-mod cli;
-mod cli_commands;
-mod cli_parser;
+pub mod cli;
+pub mod cli_commands;
+pub mod cli_parser;
 mod command;
 mod condition;
-mod config;
+pub mod config;
 mod descriptor;
 mod environment;
+pub mod error;
 mod execution_plan;
 mod functions;
 mod installer;
@@ -68,7 +71,7 @@ mod plugin;
 mod profile;
 mod proxy_task;
 mod recursion_level;
-mod runner;
+pub mod runner;
 mod scriptengine;
 mod storage;
 mod time_summary;
@@ -76,6 +79,6 @@ mod toolchain;
 mod version;
 
 /// Handles the command line arguments and executes the runner.
-pub fn run_cli(command_name: String, sub_command: bool) {
+pub fn run_cli(command_name: String, sub_command: bool) -> Result<CliArgs, CargoMakeError> {
     cli::run_cli(command_name, sub_command)
 }

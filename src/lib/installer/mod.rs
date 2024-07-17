@@ -15,6 +15,7 @@ pub(crate) mod rustup_component_installer;
 #[path = "mod_test.rs"]
 mod mod_test;
 
+use crate::error::CargoMakeError;
 use crate::scriptengine;
 use crate::types::{FlowInfo, FlowState, InstallCrate, Task};
 use std::cell::RefCell;
@@ -63,7 +64,7 @@ pub(crate) fn install(
     task_config: &Task,
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
-) {
+) -> Result<(), CargoMakeError> {
     let validate = !task_config.should_ignore_errors();
 
     let toolchain = task_config.toolchain.clone();
@@ -104,7 +105,7 @@ pub(crate) fn install(
                         &None,
                         &Some(false), // we can't validate, so we do not allow force
                     ),
-                };
+                }?;
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
                 let (cargo_command, crate_name) =
@@ -115,7 +116,9 @@ pub(crate) fn install(
                                 Some(ref crate_name) => (arg, crate_name.to_string()),
                                 None => {
                                     error!("Missing crate name to invoke.");
-                                    panic!("Missing crate name to invoke.");
+                                    return Err(CargoMakeError::NotFound(String::from(
+                                        "Missing crate name to invoke.",
+                                    )));
                                 }
                             },
                             None => match install_info.crate_name {
@@ -124,7 +127,9 @@ pub(crate) fn install(
                                 }
                                 None => {
                                     error!("Missing cargo command to invoke.");
-                                    panic!("Missing crate command to invoke.");
+                                    return Err(CargoMakeError::NotFound(String::from(
+                                        "Missing crate command to invoke.",
+                                    )));
                                 }
                             },
                         },
@@ -139,14 +144,14 @@ pub(crate) fn install(
                     &install_info.min_version,
                     &install_info.install_command,
                     &install_info.force,
-                );
+                )?;
             }
             InstallCrate::CrateInfo(ref install_info) => crate_installer::install(
                 &toolchain,
                 install_info,
                 &task_config.install_crate_args,
                 validate,
-            ),
+            )?,
             InstallCrate::RustupComponentInfo(ref install_info) => {
                 rustup_component_installer::install(&toolchain, install_info, validate);
             }
@@ -161,7 +166,7 @@ pub(crate) fn install(
                     validate,
                     Some(flow_info),
                     Some(flow_state),
-                );
+                )?;
                 ()
             }
             None => match get_cargo_plugin_info_from_command(&task_config) {
@@ -175,10 +180,11 @@ pub(crate) fn install(
                         &None,
                         &None,
                         &None,
-                    );
+                    )?;
                 }
                 None => debug!("No installation script defined."),
             },
         },
-    }
+    };
+    Ok(())
 }

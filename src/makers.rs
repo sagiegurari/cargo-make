@@ -12,6 +12,8 @@
 //! [Apache 2](https://github.com/sagiegurari/cargo-make/blob/master/LICENSE) open source license.
 //!
 
+use cli::error::SuccessOrCargoMakeError;
+
 #[cfg(test)]
 #[path = "makers_test.rs"]
 mod makers_test;
@@ -20,9 +22,12 @@ fn get_name() -> String {
     "makers".to_string()
 }
 
-fn main() {
+fn main() -> SuccessOrCargoMakeError<std::process::ExitCode> {
     #[cfg(windows)]
     let _ = nu_ansi_term::enable_ansi_support();
     let name = get_name();
-    cli::run_cli(name, false);
+    match cli::run_cli(name, false) {
+        Ok(_) => Ok(std::process::ExitCode::SUCCESS).into(),
+        Err(e) => SuccessOrCargoMakeError::Err(e),
+    }
 }

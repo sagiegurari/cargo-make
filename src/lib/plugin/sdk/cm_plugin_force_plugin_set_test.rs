@@ -58,7 +58,7 @@ set_env FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4 1
 '''
 "#;
 
-    let config = descriptor_deserializer::load_config(&makefile_string, false);
+    let config = descriptor_deserializer::load_config(&makefile_string, false).unwrap();
 
     let flow_info = FlowInfo {
         config,
@@ -85,7 +85,7 @@ set_env FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4 1
         "FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4"
     ));
 
-    runner::run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false);
+    runner::run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
 
     assert!(envmnt::is_equal(
         "FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET",

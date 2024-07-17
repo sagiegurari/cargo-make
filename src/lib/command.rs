@@ -7,6 +7,7 @@
 #[path = "command_test.rs"]
 mod command_test;
 
+use crate::error::CargoMakeError;
 use crate::logger;
 use crate::toolchain;
 use crate::types::{CommandSpec, Step, UnstableFeature};
@@ -53,12 +54,14 @@ pub(crate) fn get_exit_code_from_output(output: &io::Result<Output>, force: bool
     }
 }
 
-/// Validates the exit code code and if not 0 or unable to validate it, panic.
-pub(crate) fn validate_exit_code(code: i32) {
+/// Validates the exit code and if not 0 or unable to validate it, err
+pub(crate) fn validate_exit_code(code: i32) -> Result<(), CargoMakeError> {
     if code == -1 {
-        error!("Error while executing command, unable to extract exit code.");
+        Err(CargoMakeError::ExitCodeValidation)
     } else if code != 0 {
-        error!("Error while executing command, exit code: {}", code);
+        Err(CargoMakeError::ExitCodeError(code))
+    } else {
+        Ok(())
     }
 }
 
@@ -145,7 +148,7 @@ pub(crate) fn run_script_get_exit_code(
     script_runner: Option<String>,
     cli_arguments: &Vec<String>,
     validate: bool,
-) -> i32 {
+) -> Result<i32, CargoMakeError> {
     let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false, None);
 
     let exit_code = match output {
@@ -154,10 +157,10 @@ pub(crate) fn run_script_get_exit_code(
     };
 
     if validate {
-        validate_exit_code(exit_code);
+        validate_exit_code(exit_code)?;
     }
 
-    exit_code
+    Ok(exit_code)
 }
 
 /// Runs the requested command and return its output.
@@ -259,16 +262,20 @@ fn spawn_command(mut command: Command) -> io::Result<Output> {
 }
 
 /// Runs the requested command and panics in case of any error.
-pub(crate) fn run_command(command_string: &str, args: &Option<Vec<String>>, validate: bool) -> i32 {
+pub(crate) fn run_command(
+    command_string: &str,
+    args: &Option<Vec<String>>,
+    validate: bool,
+) -> Result<i32, CargoMakeError> {
     let output = run_command_get_output(&command_string, &args, false);
 
     let exit_code = get_exit_code_from_output(&output, !validate);
 
     if validate {
-        validate_exit_code(exit_code);
+        validate_exit_code(exit_code)?;
     }
 
-    exit_code
+    Ok(exit_code)
 }
 
 /// Runs the requested command and returns the stdout if exit code is valid.
@@ -294,7 +301,7 @@ pub(crate) fn run_command_get_output_string(
 }
 
 /// Runs the given task command.
-pub(crate) fn run(step: &Step) {
+pub(crate) fn run(step: &Step) -> Result<(), CargoMakeError> {
     let validate = !step.config.should_ignore_errors();
 
     match step.config.command {
@@ -309,8 +316,9 @@ pub(crate) fn run(step: &Step) {
                 },
             };
 
-            run_command(&command_spec.command, &command_spec.args, validate);
+            run_command(&command_spec.command, &command_spec.args, validate)?;
         }
         None => debug!("No command defined."),
     };
+    Ok(())
 }

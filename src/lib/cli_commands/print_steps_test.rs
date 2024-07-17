@@ -41,7 +41,7 @@ fn print_default_format() {
         "test",
         "default",
         false,
-        None,
+        &None,
         &CrateInfo::new(),
         false,
     )
@@ -69,7 +69,7 @@ fn print_task_not_found() {
         "test",
         "default",
         false,
-        None,
+        &None,
         &CrateInfo::new(),
         false,
     )
@@ -96,7 +96,7 @@ fn print_task_not_found_but_skipped() {
         "test",
         "default",
         false,
-        Some("test".to_string()),
+        &Some("test".to_string()),
         &CrateInfo::new(),
         false,
     )
@@ -160,7 +160,7 @@ fn print_skip_init_end_tasks() {
         "entry",
         "default",
         false,
-        None,
+        &None,
         &CrateInfo::new(),
         true,
     )

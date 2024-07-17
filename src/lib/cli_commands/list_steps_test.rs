@@ -19,20 +19,22 @@ fn check(
                 &config,
                 output_format,
                 output_file,
-                category,
+                &category,
                 hide_uninteresting,
-            );
+            )
+            .unwrap();
 
             let mut path = PathBuf::new();
             path.push(&file);
 
-            let actual = io::read_text_file(&path);
+            let actual = io::read_text_file(&path).unwrap();
             io::delete_file(&file);
 
             expect.assert_eq(&actual);
         }
         None => {
-            let actual = create_list(&config, output_format, category, hide_uninteresting);
+            let actual =
+                create_list(&config, output_format, &category, hide_uninteresting).unwrap();
             expect.assert_eq(&actual);
         }
     }

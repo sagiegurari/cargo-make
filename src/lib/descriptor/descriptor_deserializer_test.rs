@@ -3,17 +3,17 @@ use crate::descriptor::makefiles;
 
 #[test]
 fn load_config_base() {
-    load_config(makefiles::BASE, true);
+    load_config(makefiles::BASE, true).unwrap();
 }
 
 #[test]
 fn load_config_stable() {
-    load_config(makefiles::STABLE, true);
+    load_config(makefiles::STABLE, true).unwrap();
 }
 
 #[test]
 fn load_config_beta() {
-    load_config(makefiles::BETA, true);
+    load_config(makefiles::BETA, true).unwrap();
 }
 
 #[test]
@@ -35,7 +35,8 @@ description = "Empty Task"
 category2 = "Tools"
     "#,
         true,
-    );
+    )
+    .unwrap();
 }
 
 #[test]
@@ -56,7 +57,8 @@ description = "Empty Task"
 category2 = "Tools"
     "#,
         false,
-    );
+    )
+    .unwrap();
 
     assert!(config.tasks.contains_key("empty"));
 }
@@ -70,7 +72,8 @@ description = "Empty Task"
 category2 = "Tools"
     "#,
         "somefile",
-    );
+    )
+    .unwrap();
 
     assert!(config.tasks.unwrap().contains_key("empty"));
 }

@@ -13,23 +13,30 @@ mod remove_empty_func;
 mod split_func;
 mod trim_func;
 
+use crate::error::CargoMakeError;
 use crate::types::{Step, Task};
 
-fn run_function(function_name: &str, function_args: &Vec<String>) -> Vec<String> {
+fn run_function(
+    function_name: &str,
+    function_args: &Vec<String>,
+) -> Result<Vec<String>, CargoMakeError> {
     debug!(
         "Running function: {} arguments: {:#?}",
         &function_name, &function_args
     );
 
     match function_name {
-        "split" => split_func::invoke(function_args),
-        "remove-empty" => remove_empty_func::invoke(function_args),
+        "split" => Ok(split_func::invoke(function_args)),
+        "remove-empty" => Ok(remove_empty_func::invoke(function_args)),
         "trim" => trim_func::invoke(function_args),
-        "getat" => getat_func::invoke(function_args),
-        "decode" => decode_func::invoke(function_args),
+        "getat" => Ok(getat_func::invoke(function_args)),
+        "decode" => Ok(decode_func::invoke(function_args)),
         _ => {
             error!("Unknown function: {}", &function_name);
-            panic!("Unknown function: {}", &function_name);
+            Err(CargoMakeError::NotFound(format!(
+                "Unknown function: {}",
+                &function_name
+            )))
         }
     }
 }
@@ -70,7 +77,7 @@ fn get_function_arguments(function_string: &str) -> Option<Vec<String>> {
     }
 }
 
-fn evaluate_and_run(value: &str) -> Vec<String> {
+fn evaluate_and_run(value: &str) -> Result<Vec<String>, CargoMakeError> {
     let value_string = value.to_string();
 
     if value_string.starts_with("@@") {
@@ -84,23 +91,23 @@ fn evaluate_and_run(value: &str) -> Vec<String> {
 
                 match func_args_option {
                     Some(function_args) => run_function(&function_name, &function_args),
-                    None => vec![value_string],
+                    None => Ok(vec![value_string]),
                 }
             }
-            None => vec![value_string],
+            None => Ok(vec![value_string]),
         }
     } else {
-        vec![value_string]
+        Ok(vec![value_string])
     }
 }
 
-fn modify_arguments(task: &mut Task) {
+fn modify_arguments(task: &mut Task) -> Result<(), CargoMakeError> {
     task.args = match task.args {
         Some(ref args) => {
             let mut new_args = vec![];
 
             for index in 0..args.len() {
-                let result_args = evaluate_and_run(&args[index]);
+                let result_args = evaluate_and_run(&args[index])?;
 
                 for result_index in 0..result_args.len() {
                     new_args.push(result_args[result_index].clone());
@@ -111,17 +118,18 @@ fn modify_arguments(task: &mut Task) {
         }
         None => None,
     };
+    Ok(())
 }
 
-pub(crate) fn run(step: &Step) -> Step {
+pub(crate) fn run(step: &Step) -> Result<Step, CargoMakeError> {
     //clone data before modify
     let mut config = step.config.clone();
 
     //update args by running any needed function
-    modify_arguments(&mut config);
+    modify_arguments(&mut config)?;
 
-    Step {
+    Ok(Step {
         name: step.name.clone(),
         config,
-    }
+    })
 }
