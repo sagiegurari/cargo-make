@@ -146,25 +146,39 @@ impl<T> From<Result<T, CargoMakeError>> for SuccessOrCargoMakeError<T> {
 
 // Can't use `Result` because
 // [E0117] Only traits defined in the current crate can be implemented for arbitrary types
-impl<T> std::process::Termination for SuccessOrCargoMakeError<T> {
+impl<T: std::any::Any> std::process::Termination for SuccessOrCargoMakeError<T> {
     fn report(self) -> std::process::ExitCode {
-        match self {
-            SuccessOrCargoMakeError::Ok(_) => std::process::ExitCode::SUCCESS,
-            SuccessOrCargoMakeError::Err(error) => {
-                if let CargoMakeError::StdIoError { ref error } = error {
-                    if let Some(e) = error.raw_os_error() {
-                        eprintln!("{}", e.to_string());
-                        return if e > u8::MAX as i32 {
-                            eprintln!("exit code {}", e);
-                            std::process::ExitCode::FAILURE
-                        } else {
-                            std::process::ExitCode::from(e as u8)
-                        };
-                    }
-                }
-                eprintln!("{}", error.to_string());
-                error.report()
+        const PROCESS_EXIT_CODE: fn(i32) -> std::process::ExitCode = |e: i32| {
+            if e > u8::MAX as i32 {
+                eprintln!("exit code {}", e);
+                std::process::ExitCode::FAILURE
+            } else {
+                std::process::ExitCode::from(e as u8)
             }
+        };
+
+        match self {
+            SuccessOrCargoMakeError::Ok(e)
+                if std::any::TypeId::of::<T>()
+                    == std::any::TypeId::of::<std::process::ExitCode>() =>
+            {
+                *(&e as &dyn std::any::Any)
+                    .downcast_ref::<std::process::ExitCode>()
+                    .unwrap()
+            }
+            SuccessOrCargoMakeError::Ok(_) => std::process::ExitCode::SUCCESS,
+            SuccessOrCargoMakeError::Err(err) => match err {
+                CargoMakeError::StdIoError { error } if error.raw_os_error().is_some() => {
+                    let e = unsafe { error.raw_os_error().unwrap_unchecked() };
+                    eprintln!("{}", e.to_string());
+                    PROCESS_EXIT_CODE(e)
+                }
+                CargoMakeError::ExitCode(error) => error,
+                _ => {
+                    eprintln!("{}", err.to_string());
+                    PROCESS_EXIT_CODE(err.discriminant() as i32)
+                }
+            },
         }
     }
 }
