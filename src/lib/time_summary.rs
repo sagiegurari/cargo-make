@@ -3,9 +3,10 @@
 //! Prints out the time summary for the flow.
 //!
 
-use crate::types::{CliArgs, Config};
 use std::cmp::Ordering;
 use std::time::SystemTime;
+
+use crate::types::{CliArgs, Config};
 
 pub(crate) fn is_time_summary_enabled() -> bool {
     envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY")

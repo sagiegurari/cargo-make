@@ -7,11 +7,13 @@
 #[path = "crate_version_check_test.rs"]
 mod crate_version_check_test;
 
-use crate::command;
-use semver::Version;
 use std::collections::HashMap;
 use std::env;
 use std::path::Path;
+
+use semver::Version;
+
+use crate::command;
 
 #[derive(Deserialize, Debug)]
 struct CratesRegistryInfo {

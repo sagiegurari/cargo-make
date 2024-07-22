@@ -7,14 +7,16 @@
 #[path = "types_test.rs"]
 mod types_test;
 
-use crate::legacy;
-use crate::plugin::types::Plugins;
+use std::collections::HashMap;
+
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
 use regex::Regex;
 use rust_info::types::RustInfo;
-use std::collections::HashMap;
+
+use crate::legacy;
+use crate::plugin::types::Plugins;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {

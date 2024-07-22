@@ -1,8 +1,9 @@
-use super::*;
-use crate::cli_parser::create_cli;
-use cliparser::types::CliSpec;
 use std::env;
 use std::path::Path;
+
+use super::*;
+use crate::cli_parser::create_cli;
+
 
 #[test]
 #[ignore]
@@ -437,7 +438,7 @@ fn run_valid() {
             "arg2",
             "arg3",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     )
     .unwrap();
 
@@ -456,7 +457,7 @@ fn run_with_global_config() {
         &"make".to_string(),
         true,
         Some(vec!["cargo", "make"]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     )
     .unwrap();
 
@@ -482,7 +483,7 @@ fn run_log_level_override() {
             "error",
             "-v",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     )
     .unwrap();
 
@@ -511,7 +512,7 @@ fn run_set_env_values() {
             "-t",
             "empty",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     )
     .unwrap();
 
@@ -543,7 +544,7 @@ fn run_set_env_via_file() {
             "-t",
             "empty",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     envmnt::set("ENV1_TEST", "EMPTY");
@@ -580,7 +581,7 @@ fn run_set_env_both() {
             "-t",
             "empty",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     envmnt::set("ENV1_TEST", "EMPTY");
@@ -624,7 +625,7 @@ fn run_print_only() {
             "--print-steps",
             "--experimental",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     run(&cli_args.unwrap(), &global_config).unwrap();
@@ -650,7 +651,7 @@ fn run_diff_steps() {
             "--no-workspace",
             "--diff-steps",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     run(&cli_args.unwrap(), &global_config).unwrap();
@@ -671,7 +672,7 @@ fn run_protected_flow_example() {
             "--makefile",
             "./examples/on_error.toml",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     run(&cli_args.unwrap(), &global_config).unwrap();
@@ -691,7 +692,7 @@ fn run_no_task_args() {
             "--disable-check-for-updates",
             "empty",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
@@ -718,7 +719,7 @@ fn run_set_task_args() {
             "arg2",
             "arg3",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     );
 
     envmnt::set("CARGO_MAKE_TASK_ARGS", "EMPTY");
@@ -742,7 +743,7 @@ fn run_set_task_var_args() {
         Some(vec![
             "cargo", "make", "empty", "abc", "-p", "foo/bar/", "def",
         ]),
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(&global_config, cliparser::types::CliSpec::new(), true),
     )
     .unwrap();
 

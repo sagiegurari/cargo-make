@@ -7,16 +7,18 @@
 #[path = "crateinfo_test.rs"]
 mod crateinfo_test;
 
-use crate::error::CargoMakeError;
-use crate::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
+use std::env;
+use std::ffi::OsStr;
+use std::path::{Path, PathBuf};
+
 use cargo_metadata::camino::Utf8PathBuf;
 use cargo_metadata::{Metadata, MetadataCommand};
 use glob::glob;
 use indexmap::IndexMap;
 use itertools::Itertools;
-use std::env;
-use std::ffi::OsStr;
-use std::path::{Path, PathBuf};
+
+use crate::error::CargoMakeError;
+use crate::types::{CrateDependency, CrateInfo, PackageInfo, Workspace};
 
 #[derive(Debug, Deserialize)]
 struct CargoConfig {

@@ -1,8 +1,10 @@
+use std::{thread, time::Duration};
+
+use git_info::types::GitInfo;
+
 use super::*;
 use crate::test::{get_temp_test_directory, should_test_unstable};
 use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FilesFilesModifiedCondition, Task};
-use git_info::types::GitInfo;
-use std::{thread, time::Duration};
 
 fn setup_test_dir(subdir: &str) -> String {
     let pathbuf = get_temp_test_directory(subdir);

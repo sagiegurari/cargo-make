@@ -7,9 +7,10 @@
 #[path = "shebang_script_test.rs"]
 mod shebang_script_test;
 
+use std::path::Path;
+
 use crate::error::CargoMakeError;
 use crate::scriptengine::generic_script;
-use std::path::Path;
 
 #[cfg(target_os = "windows")]
 const DEFAULT_EXTENSION: &'static str = "cmd.exe";

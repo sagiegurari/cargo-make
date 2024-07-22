@@ -9,6 +9,17 @@ pub(crate) mod crateinfo;
 #[path = "mod_test.rs"]
 mod mod_test;
 
+use std::env;
+use std::path::{Path, PathBuf};
+use std::time::SystemTime;
+
+use ci_info::types::CiInfo;
+use envmnt::{ExpandOptions, ExpansionType};
+use fsio::path::from_path::FromPath;
+use git_info::types::GitInfo;
+use indexmap::IndexMap;
+use rust_info::types::{RustChannel, RustInfo};
+
 use crate::command;
 use crate::condition;
 use crate::error::CargoMakeError;
@@ -20,15 +31,6 @@ use crate::types::{
     CliArgs, Config, CrateInfo, EnvFile, EnvInfo, EnvValue, EnvValueConditioned, EnvValueDecode,
     EnvValuePathGlob, EnvValueScript, PackageInfo, ScriptValue, Step, Task, Workspace,
 };
-use ci_info::types::CiInfo;
-use envmnt::{ExpandOptions, ExpansionType};
-use fsio::path::from_path::FromPath;
-use git_info::types::GitInfo;
-use indexmap::IndexMap;
-use rust_info::types::{RustChannel, RustInfo};
-use std::env;
-use std::path::{Path, PathBuf};
-use std::time::SystemTime;
 
 fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
     match command::run_script_get_output(&env_value.script, None, &vec![], true, Some(false)) {

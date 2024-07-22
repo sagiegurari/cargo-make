@@ -467,10 +467,11 @@ pub fn parse_args(
     args: Option<Vec<&str>>,
     spec: CliSpec,
 ) -> Result<CliArgs, CargoMakeError> {
-    let cli_parsed = match args {
+    let cli_parsed_result = match args {
         Some(args_vec) => cliparser::parse(&args_vec, &spec),
         None => cliparser::parse_process(&spec),
-    }?;
+    };
+    let cli_parsed = cli_parsed_result?;
 
     if cli_parsed.arguments.contains("help") {
         // generate help text

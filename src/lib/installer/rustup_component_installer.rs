@@ -7,10 +7,11 @@
 #[path = "rustup_component_installer_test.rs"]
 mod rustup_component_installer_test;
 
+use std::process::Command;
+
 use crate::command;
 use crate::toolchain::{get_channel, wrap_command};
 use crate::types::{InstallRustupComponentInfo, ToolchainSpecifier};
-use std::process::Command;
 
 pub(crate) fn is_installed(
     toolchain: &Option<ToolchainSpecifier>,

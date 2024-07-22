@@ -1,11 +1,14 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use indexmap::IndexMap;
+
 use super::*;
+
 use crate::plugin::runner;
 use crate::plugin::types::{Plugin, Plugins};
 use crate::test::create_empty_flow_info;
 use crate::types::{FlowState, RunTaskOptions, Task, TaskCondition};
-use indexmap::IndexMap;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 #[test]
 fn run_valid() {
