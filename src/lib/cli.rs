@@ -38,6 +38,7 @@ pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), Cargo
     recursion_level::increment();
 
     logger::init(&LoggerOptions {
+        name: String::from(env!("CARGO_PKG_NAME")),
         level: cli_args.log_level.clone(),
         color: !cli_args.disable_color,
     });
