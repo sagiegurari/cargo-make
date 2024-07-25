@@ -52,7 +52,8 @@ pub(crate) fn get_log_level() -> String {
         "info"
     } else {
         "error"
-    }.to_string()
+    }
+    .to_string()
 }
 
 fn get_name_for_filter(filter: &LevelFilter) -> String {
