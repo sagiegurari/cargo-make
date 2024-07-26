@@ -19,6 +19,7 @@ use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
 use regex::Regex;
+use std::borrow::Cow;
 use std::collections::HashSet;
 use std::env;
 use std::path::Path;
@@ -481,8 +482,8 @@ impl<'a> ExecutionPlanBuilder<'a> {
             skip_tasks_pattern,
             skip_init_end_tasks,
         } = *self;
-        let mut task_names = HashSet::new();
-        let mut steps = Vec::new();
+        let mut task_names = HashSet::<String>::new();
+        let mut steps = Vec::<Step>::new();
         let default_crate_info = CrateInfo::new();
         let crate_info = crate_info.unwrap_or(&default_crate_info);
         let skip_init_end_tasks = skip_init_end_tasks || sub_flow;
@@ -549,6 +550,53 @@ impl<'a> ExecutionPlanBuilder<'a> {
             };
         }
 
-        Ok(ExecutionPlan { steps })
+        Ok(ExecutionPlan {
+            steps: Self::handle_before_each_and_after_each_tasks(&config, &steps)?.into_owned(),
+        })
+    }
+
+    /// `before_each` and `after_each` interspersal for the steps vector
+    fn handle_before_each_and_after_each_tasks<'b>(
+        config: &Config,
+        steps: &'b Vec<Step>,
+    ) -> Result<Cow<'b, Vec<Step>>, CargoMakeError> {
+        let mut before_and_after_each = Vec::<Step>::with_capacity(2);
+        let scale = {
+            let mut handle_some = |name: &String| -> Result<u8, CargoMakeError> {
+                let task_config = get_normalized_task(config, name, false)?;
+                if !task_config.disabled.unwrap_or(false) {
+                    before_and_after_each.push(Step {
+                        name: name.to_string(),
+                        config: task_config,
+                    });
+                    Ok(1)
+                } else {
+                    Ok(0)
+                }
+            };
+            let _has_after_each: u8 = match &config.config.after_each_task {
+                None => 0,
+                Some(after_each) => handle_some(after_each)?,
+            };
+            let _has_before_each: u8 = match &config.config.before_each_task {
+                None => 0,
+                Some(before_each) => handle_some(before_each)?,
+            };
+            _has_before_each + _has_after_each
+        };
+        if scale > 0 {
+            let before_and_after_each_len = scale as usize + 1;
+            let mut interspersed_steps =
+                Vec::<Step>::with_capacity(steps.len() * before_and_after_each_len);
+            interspersed_steps.extend(steps.into_iter().flat_map(|e| -> Vec<Step> {
+                let mut _steps = Vec::<Step>::with_capacity(before_and_after_each_len + 1);
+                _steps.clone_from_slice(&before_and_after_each);
+                _steps.push(e.to_owned());
+                _steps
+            }));
+            Ok(Cow::Owned(interspersed_steps))
+        } else {
+            Ok(Cow::Borrowed(&steps))
+        }
     }
 }

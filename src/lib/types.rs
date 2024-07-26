@@ -2150,6 +2150,10 @@ pub struct ConfigSection {
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
     pub end_task: Option<String>,
+    /// before_each task name which will be invoked before each task (except `init_task`)
+    pub before_each_task: Option<String>,
+    /// after_each task name which will be invoked after each task (except `end_task`)
+    pub after_each_task: Option<String>,
     /// The name of the task to run in case of any error during the invocation of the flow
     pub on_error_task: Option<String>,
     /// The name of the task which runs legacy migration flows
