@@ -2214,6 +2214,20 @@ impl ConfigSection {
                     ));
                 }
 
+                if self.before_each_task.is_some() {
+                    self.before_each_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.before_each_task.clone().unwrap(),
+                    ));
+                }
+
+                if self.after_each_task.is_some() {
+                    self.after_each_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.after_each_task.clone().unwrap(),
+                    ));
+                }
+
                 if self.on_error_task.is_some() {
                     self.on_error_task = Some(get_namespaced_task_name(
                         namespace,
@@ -2252,6 +2266,14 @@ impl ConfigSection {
 
         if extended.end_task.is_some() {
             self.end_task = extended.end_task.clone();
+        }
+
+        if let Some(before_each_task) = &extended.before_each_task {
+            self.before_each_task = Some(before_each_task.clone());
+        }
+
+        if let Some(after_each_task) = &extended.after_each_task {
+            self.after_each_task = Some(after_each_task.clone());
         }
 
         if extended.on_error_task.is_some() {

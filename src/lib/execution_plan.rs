@@ -549,15 +549,32 @@ impl<'a> ExecutionPlanBuilder<'a> {
                 }
             };
         }
+        let mut before_each_task: Option<String> = None;
+        let mut after_each_task: Option<String> = None;
+        for step in steps.iter() {
+            match step.name.as_str() {
+                "before_each" => before_each_task = Some(step.name.clone()),
+                "after_each" => after_each_task = Some(step.name.clone()),
+                _ => {}
+            }
+        }
 
         Ok(ExecutionPlan {
-            steps: Self::handle_before_each_and_after_each_tasks(&config, &steps)?.into_owned(),
+            steps: Self::handle_before_each_and_after_each_tasks(
+                &config,
+                before_each_task,
+                after_each_task,
+                &steps,
+            )?
+            .into_owned(),
         })
     }
 
     /// `before_each` and `after_each` interspersal for the steps vector
     fn handle_before_each_and_after_each_tasks<'b>(
         config: &Config,
+        before_each_task: Option<String>,
+        after_each_task: Option<String>,
         steps: &'b Vec<Step>,
     ) -> Result<Cow<'b, Vec<Step>>, CargoMakeError> {
         let mut before_and_after_each = Vec::<Step>::with_capacity(2);
@@ -574,13 +591,13 @@ impl<'a> ExecutionPlanBuilder<'a> {
                     Ok(0)
                 }
             };
-            let _has_after_each: u8 = match &config.config.after_each_task {
+            let _has_after_each: u8 = match after_each_task {
                 None => 0,
-                Some(after_each) => handle_some(after_each)?,
+                Some(after_each) => handle_some(&after_each)?,
             };
-            let _has_before_each: u8 = match &config.config.before_each_task {
+            let _has_before_each: u8 = match before_each_task {
                 None => 0,
-                Some(before_each) => handle_some(before_each)?,
+                Some(before_each) => handle_some(&before_each)?,
             };
             _has_before_each + _has_after_each
         };
