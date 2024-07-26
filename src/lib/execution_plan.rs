@@ -560,37 +560,51 @@ impl<'a> ExecutionPlanBuilder<'a> {
         config: &Config,
         steps: &'b Vec<Step>,
     ) -> Result<Cow<'b, Vec<Step>>, CargoMakeError> {
-        let mut before_and_after_each = Vec::<Step>::with_capacity(2);
-        let scale = {
-            let mut handle_some = |name: &String| -> Result<u8, CargoMakeError> {
-                let task_config = get_normalized_task(config, name, false)?;
-                if !task_config.disabled.unwrap_or(false) {
-                    before_and_after_each.push(Step {
-                        name: name.to_string(),
-                        config: task_config,
-                    });
-                    Ok(1)
-                } else {
-                    Ok(0)
-                }
-            };
-            let _has_after_each: u8 = match &config.config.after_each_task {
-                None => 0,
-                Some(after_each) => handle_some(&after_each)?,
-            };
-            let _has_before_each: u8 = match &config.config.before_each_task {
-                None => 0,
-                Some(before_each) => handle_some(&before_each)?,
-            };
-            _has_before_each + _has_after_each
+        let mut after_and_before_each = Vec::<Step>::with_capacity(2);
+        let mut handle_some = |name: &String| -> Result<u8, CargoMakeError> {
+            let task_config = get_normalized_task(config, name, false)?;
+            if !task_config.disabled.unwrap_or(false) {
+                after_and_before_each.push(Step {
+                    name: name.to_string(),
+                    config: task_config,
+                });
+                Ok(1)
+            } else {
+                Ok(0)
+            }
         };
+        let has_after_each: u8 = match &config.config.after_each_task {
+            None => 0,
+            Some(after_each) => handle_some(&after_each)?,
+        };
+        let has_before_each: u8 = match &config.config.before_each_task {
+            None => 0,
+            Some(before_each) => handle_some(&before_each)?,
+        };
+        let scale: u8 = has_before_each + has_after_each;
         if scale > 0 {
             let before_and_after_each_len = scale as usize + 1;
             let mut interspersed_steps =
                 Vec::<Step>::with_capacity(steps.len() * before_and_after_each_len);
+            let before_special = HashSet::from(["init", "init_task"]);
+            let end_special = HashSet::from(["end", "end_task"]);
             interspersed_steps.extend(steps.into_iter().flat_map(|e| -> Vec<Step> {
                 let mut _steps = Vec::<Step>::with_capacity(before_and_after_each_len + 1);
-                _steps.extend(before_and_after_each.clone());
+                if before_special.contains(e.name.as_str()) {
+                    if has_after_each == 1 {
+                        _steps.push(
+                            unsafe { after_and_before_each.last().unwrap_unchecked() }.to_owned(),
+                        );
+                    }
+                } else if end_special.contains(e.name.as_str()) {
+                    if has_before_each == 1 {
+                        _steps.push(
+                            unsafe { after_and_before_each.first().unwrap_unchecked() }.to_owned(),
+                        );
+                    }
+                } else {
+                    _steps.extend(after_and_before_each.clone());
+                }
                 _steps.push(e.to_owned());
                 _steps
             }));
