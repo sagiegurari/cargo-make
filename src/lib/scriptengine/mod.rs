@@ -257,12 +257,21 @@ fn invoke_script(
     flow_state: Option<Rc<RefCell<FlowState>>>,
     cli_arguments: &Vec<String>,
 ) -> Result<bool, CargoMakeError> {
-    let engine_type = get_engine_type(script, &script_runner, &script_extension)?;
+    let expanded_script_runner = match script_runner {
+        Some(ref value) => Some(environment::expand_value(value)),
+        None => None,
+    };
+    let engine_type = get_engine_type(script, &expanded_script_runner, &script_extension)?;
 
     match engine_type {
         EngineType::OS => {
             let script_text = get_script_text(script)?;
-            os_script::execute(&script_text, script_runner, cli_arguments, validate)
+            os_script::execute(
+                &script_text,
+                expanded_script_runner,
+                cli_arguments,
+                validate,
+            )
         }
         EngineType::Duckscript => {
             let script_text = get_script_text(script)?;
@@ -286,7 +295,7 @@ fn invoke_script(
             let extension = script_extension.clone().unwrap();
             generic_script::execute(
                 &script_text,
-                script_runner.unwrap(),
+                expanded_script_runner.unwrap(),
                 extension,
                 script_runner_args.clone(),
                 cli_arguments,
