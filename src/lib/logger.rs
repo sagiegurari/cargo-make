@@ -24,11 +24,13 @@ pub(crate) enum LogLevel {
 }
 
 /// The logger options used to initialize the logger
-pub(crate) struct LoggerOptions {
+pub struct LoggerOptions {
+    /// Name to prefix each log message: "[name] %s"
+    pub name: String,
     /// The logger level name (verbose, info, error, off)
-    pub(crate) level: String,
+    pub level: String,
     /// True to printout colorful output
-    pub(crate) color: bool,
+    pub color: bool,
 }
 
 pub(crate) fn get_level(level_name: &str) -> LogLevel {
@@ -42,7 +44,7 @@ pub(crate) fn get_level(level_name: &str) -> LogLevel {
 
 /// Returns the current logger level name
 pub(crate) fn get_log_level() -> String {
-    let level = if envmnt::is_equal("CARGO_MAKE_LOG_LEVEL", "off") {
+    if envmnt::is_equal("CARGO_MAKE_LOG_LEVEL", "off") {
         "off"
     } else if log_enabled!(Level::Debug) {
         "verbose"
@@ -50,9 +52,8 @@ pub(crate) fn get_log_level() -> String {
         "info"
     } else {
         "error"
-    };
-
-    level.to_string()
+    }
+    .to_string()
 }
 
 fn get_name_for_filter(filter: &LevelFilter) -> String {
@@ -139,10 +140,10 @@ pub(crate) fn init(options: &LoggerOptions) {
         format!("[{}]", recursion_lvl)
     };
 
+    let name_fmt = get_formatted_name(&options.name, color);
+
     let result = fern::Dispatch::new()
         .format(move |out, message, record| {
-            let name = env!("CARGO_PKG_NAME");
-
             let record_level = record.level();
 
             if cfg!(test) {
@@ -150,8 +151,6 @@ pub(crate) fn init(options: &LoggerOptions) {
                     panic!("test error flow: {}", message);
                 }
             }
-
-            let name_fmt = get_formatted_name(&name, color);
 
             let record_level_fmt = get_formatted_log_level(&record_level, color);
 

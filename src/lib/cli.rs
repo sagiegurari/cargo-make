@@ -32,15 +32,20 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-pub fn run(cli_args: &CliArgs, global_config: &GlobalConfig) -> Result<(), CargoMakeError> {
+pub fn run(
+    cli_args: &CliArgs,
+    global_config: &GlobalConfig,
+    logger_options: Option<LoggerOptions>,
+) -> Result<(), CargoMakeError> {
     let start_time = SystemTime::now();
 
     recursion_level::increment();
 
-    logger::init(&LoggerOptions {
+    logger::init(&logger_options.unwrap_or(LoggerOptions {
+        name: String::from(env!("CARGO_PKG_NAME")),
         level: cli_args.log_level.clone(),
         color: !cli_args.disable_color,
-    });
+    }));
 
     if recursion_level::is_top() {
         info!("{} {}", &cli_args.command, &VERSION);
@@ -173,6 +178,6 @@ pub fn run_cli(command_name: String, sub_command: bool) -> Result<CliArgs, Cargo
 
     let cli_args = cli_parser::parse(&global_config, &command_name, sub_command)?;
 
-    run(&cli_args, &global_config)?;
+    run(&cli_args, &global_config, None)?;
     Ok(cli_args)
 }
