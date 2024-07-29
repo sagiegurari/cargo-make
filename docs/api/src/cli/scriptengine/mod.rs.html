@@ -301,6 +301,15 @@
 <a href="#301" id="301">301</a>
 <a href="#302" id="302">302</a>
 <a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # scriptengine
 //!
 //! Facade for all different non OS scripts.
@@ -560,12 +569,21 @@
     flow_state: <span class="prelude-ty">Option</span>&lt;Rc&lt;RefCell&lt;FlowState&gt;&gt;&gt;,
     cli_arguments: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;bool, CargoMakeError&gt; {
-    <span class="kw">let </span>engine_type = get_engine_type(script, <span class="kw-2">&amp;</span>script_runner, <span class="kw-2">&amp;</span>script_extension)<span class="question-mark">?</span>;
+    <span class="kw">let </span>expanded_script_runner = <span class="kw">match </span>script_runner {
+        <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>value) =&gt; <span class="prelude-val">Some</span>(environment::expand_value(value)),
+        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+    };
+    <span class="kw">let </span>engine_type = get_engine_type(script, <span class="kw-2">&amp;</span>expanded_script_runner, <span class="kw-2">&amp;</span>script_extension)<span class="question-mark">?</span>;
 
     <span class="kw">match </span>engine_type {
         EngineType::OS =&gt; {
             <span class="kw">let </span>script_text = get_script_text(script)<span class="question-mark">?</span>;
-            os_script::execute(<span class="kw-2">&amp;</span>script_text, script_runner, cli_arguments, validate)
+            os_script::execute(
+                <span class="kw-2">&amp;</span>script_text,
+                expanded_script_runner,
+                cli_arguments,
+                validate,
+            )
         }
         EngineType::Duckscript =&gt; {
             <span class="kw">let </span>script_text = get_script_text(script)<span class="question-mark">?</span>;
@@ -589,7 +607,7 @@
             <span class="kw">let </span>extension = script_extension.clone().unwrap();
             generic_script::execute(
                 <span class="kw-2">&amp;</span>script_text,
-                script_runner.unwrap(),
+                expanded_script_runner.unwrap(),
                 extension,
                 script_runner_args.clone(),
                 cli_arguments,

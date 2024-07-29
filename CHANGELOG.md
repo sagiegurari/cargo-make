@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.15
+### v0.37.15 (2024-07-29)
 
 * Enhancement: Support env expansion for script runner #1125
 * Enhancement: Make LoggerOptions public + add name field #1124 (thanks @SamuelMarks)

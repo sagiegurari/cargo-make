@@ -176,6 +176,11 @@
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cli
 //!
 //! The cargo-make cli
@@ -210,15 +215,20 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_TASK_NAME: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">static </span>DEFAULT_OUTPUT_FORMAT: <span class="kw-2">&amp;</span>str = <span class="string">"default"</span>;
 
-<span class="kw">pub fn </span>run(cli_args: <span class="kw-2">&amp;</span>CliArgs, global_config: <span class="kw-2">&amp;</span>GlobalConfig) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
+<span class="kw">pub fn </span>run(
+    cli_args: <span class="kw-2">&amp;</span>CliArgs,
+    global_config: <span class="kw-2">&amp;</span>GlobalConfig,
+    logger_options: <span class="prelude-ty">Option</span>&lt;LoggerOptions&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
     <span class="kw">let </span>start_time = SystemTime::now();
 
     recursion_level::increment();
 
-    logger::init(<span class="kw-2">&amp;</span>LoggerOptions {
+    logger::init(<span class="kw-2">&amp;</span>logger_options.unwrap_or(LoggerOptions {
+        name: String::from(<span class="macro">env!</span>(<span class="string">"CARGO_PKG_NAME"</span>)),
         level: cli_args.log_level.clone(),
         color: !cli_args.disable_color,
-    });
+    }));
 
     <span class="kw">if </span>recursion_level::is_top() {
         <span class="macro">info!</span>(<span class="string">"{} {}"</span>, <span class="kw-2">&amp;</span>cli_args.command, <span class="kw-2">&amp;</span>VERSION);
@@ -351,7 +361,7 @@
 
     <span class="kw">let </span>cli_args = cli_parser::parse(<span class="kw-2">&amp;</span>global_config, <span class="kw-2">&amp;</span>command_name, sub_command)<span class="question-mark">?</span>;
 
-    run(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>global_config)<span class="question-mark">?</span>;
+    run(<span class="kw-2">&amp;</span>cli_args, <span class="kw-2">&amp;</span>global_config, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(cli_args)
 }
 </code></pre></div></section></main></body></html>
