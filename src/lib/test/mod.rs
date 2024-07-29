@@ -12,6 +12,7 @@ use std::path::PathBuf;
 
 pub(crate) fn on_test_startup() {
     logger::init(&LoggerOptions {
+        name: String::from(env!("CARGO_PKG_NAME")),
         level: "error".to_string(),
         color: true,
     });

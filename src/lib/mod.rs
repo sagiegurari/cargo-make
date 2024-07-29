@@ -66,7 +66,7 @@ mod functions;
 mod installer;
 mod io;
 mod legacy;
-mod logger;
+pub mod logger;
 mod plugin;
 mod profile;
 mod proxy_task;
