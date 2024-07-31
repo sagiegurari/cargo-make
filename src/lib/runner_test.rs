@@ -4,6 +4,7 @@ use crate::types::{
     ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
     TaskCondition,
 };
+use cfg_if::cfg_if;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
 
@@ -306,8 +307,30 @@ fn run_task_command() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -777,8 +800,30 @@ fn run_task_deprecated_message() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     task.deprecated = Some(DeprecationInfo::Message("test message".to_string()));
     let step = Step {
         name: "test".to_string(),
@@ -817,8 +862,30 @@ fn run_task_deprecated_flag() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     task.deprecated = Some(DeprecationInfo::Boolean(true));
     let step = Step {
         name: "test".to_string(),

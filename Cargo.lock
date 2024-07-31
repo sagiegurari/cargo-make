@@ -143,6 +143,7 @@ name = "cargo-make"
 version = "0.37.15"
 dependencies = [
  "cargo_metadata",
+ "cfg-if",
  "ci_info",
  "cliparser",
  "colored",

@@ -81,6 +81,7 @@ toml = "^0.8"
 
 [dev-dependencies]
 expect-test = "^1"
+cfg-if = "^1.0.0"
 
 [target.'cfg(windows)'.dependencies]
 nu-ansi-term = "^0.50"
