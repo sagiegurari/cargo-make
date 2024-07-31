@@ -1738,6 +1738,11 @@ fn expand_env_with_env_vars() {
         "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
         "sr3".to_string(),
     ]);
+    task.condition_script_runner_args = Some(vec![
+        "sr1".to_string(),
+        "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
+        "sr3".to_string(),
+    ]);
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -1763,6 +1768,14 @@ fn expand_env_with_env_vars() {
     );
     assert_eq!(
         updated_step.config.script_runner_args.unwrap(),
+        vec![
+            "sr1".to_string(),
+            "sr2-ENV2-end".to_string(),
+            "sr3".to_string(),
+        ]
+    );
+    assert_eq!(
+        updated_step.config.condition_script_runner_args.unwrap(),
         vec![
             "sr1".to_string(),
             "sr2-ENV2-end".to_string(),

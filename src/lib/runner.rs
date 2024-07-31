@@ -361,6 +361,28 @@ pub(crate) fn run_task_with_options(
             None => (),
         };
 
+        let step = {
+            //get profile
+            let profile_name = profile::get();
+
+            match step.config.env_files {
+                Some(ref env_files) => environment::set_env_files(env_files.clone()),
+                None => (),
+            };
+            match step.config.env {
+                Some(ref env) => environment::set_env(env.clone()),
+                None => (),
+            };
+
+            envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
+
+            //make sure profile env is not overwritten
+            profile::set(&profile_name);
+
+            // modify step using env and functions
+            environment::expand_env(&functions::run(&step)?)
+        };
+
         if validate_condition(&flow_info, &step)? {
             if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
                 debug!("Running Task: {}", &step.name);
@@ -394,27 +416,6 @@ pub(crate) fn run_task_with_options(
                 None => (),
             };
 
-            //get profile
-            let profile_name = profile::get();
-
-            match step.config.env_files {
-                Some(ref env_files) => environment::set_env_files(env_files.clone()),
-                None => (),
-            };
-            match step.config.env {
-                Some(ref env) => environment::set_env(env.clone()),
-                None => (),
-            };
-
-            envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
-
-            //make sure profile env is not overwritten
-            profile::set(&profile_name);
-
-            // modify step using env and functions
-            let mut updated_step = functions::run(&step)?;
-            updated_step = environment::expand_env(&updated_step);
-
             let watch = should_watch(&step.config);
 
             if watch {
@@ -426,7 +427,7 @@ pub(crate) fn run_task_with_options(
                 )?;
             } else {
                 do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
-                    installer::install(&updated_step.config, flow_info, flow_state.clone())?;
+                    installer::install(&step.config, flow_info, flow_state.clone())?;
                     Ok(true)
                 })?;
 
@@ -444,14 +445,14 @@ pub(crate) fn run_task_with_options(
                         do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
                             // run script
                             let script_runner_done = scriptengine::invoke(
-                                &updated_step.config,
+                                &step.config,
                                 flow_info,
                                 flow_state.clone(),
                             )?;
 
                             // run command
                             if !script_runner_done {
-                                command::run(&updated_step)?;
+                                command::run(&step)?;
                             };
                             Ok(true)
                         })?;
