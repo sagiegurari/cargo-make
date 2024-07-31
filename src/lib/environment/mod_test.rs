@@ -1157,7 +1157,7 @@ fn setup_cargo_home() {
 #[ignore]
 fn setup_cargo_home_overwrite() {
     let path = Path::new("path");
-    envmnt::set("CARGO_HOME", path);
+    let old_cargo_home = envmnt::get_set("CARGO_HOME", path);
 
     setup_cwd(None);
 
@@ -1168,7 +1168,8 @@ fn setup_cargo_home_overwrite() {
         cargo_home
     );
 
-    envmnt::remove("CARGO_HOME");
+    // Restore old CARGO_HOME value to avoid breaking other tests
+    envmnt::set_or_remove("CARGO_HOME", &old_cargo_home);
 }
 
 #[test]
