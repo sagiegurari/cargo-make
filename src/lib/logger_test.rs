@@ -170,6 +170,7 @@ fn get_formatted_log_level_error_no_color() {
 #[should_panic]
 fn create_error() {
     init(&LoggerOptions {
+        name: String::from(env!("CARGO_PKG_NAME")),
         level: "error".to_string(),
         color: false,
     });
@@ -183,6 +184,7 @@ fn update_disable_color_env_var() {
     envmnt::remove("CARGO_MAKE_DISABLE_COLOR");
 
     init(&LoggerOptions {
+        name: String::from(env!("CARGO_PKG_NAME")),
         level: "info".to_string(),
         color: false,
     });

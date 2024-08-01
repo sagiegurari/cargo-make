@@ -29,8 +29,10 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
     - name: Run CI
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       if: matrix.rust == 'stable' || matrix.rust == 'beta' || matrix.rust == 'nightly'
-      run: cargo run --bin cargo-make --target-dir target/ci -- make ci-flow
+      run: cargo run --bin cargo-make --target-dir target/ci -- make --env "CODECOV_TOKEN=${CODECOV_TOKEN}" ci-flow
     - name: Run CI (Minimal Supported Rust Version)
       if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
       run: cargo make ci-flow

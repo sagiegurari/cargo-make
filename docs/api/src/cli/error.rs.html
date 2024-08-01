@@ -168,6 +168,20 @@
 <a href="#168" id="168">168</a>
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::cmp::PartialEq;
 <span class="kw">use </span>std::string::ToString;
 
@@ -316,25 +330,39 @@
 
 <span class="comment">// Can't use `Result` because
 // [E0117] Only traits defined in the current crate can be implemented for arbitrary types
-</span><span class="kw">impl</span>&lt;T&gt; std::process::Termination <span class="kw">for </span>SuccessOrCargoMakeError&lt;T&gt; {
+</span><span class="kw">impl</span>&lt;T: std::any::Any&gt; std::process::Termination <span class="kw">for </span>SuccessOrCargoMakeError&lt;T&gt; {
     <span class="kw">fn </span>report(<span class="self">self</span>) -&gt; std::process::ExitCode {
-        <span class="kw">match </span><span class="self">self </span>{
-            SuccessOrCargoMakeError::Ok(<span class="kw">_</span>) =&gt; std::process::ExitCode::SUCCESS,
-            SuccessOrCargoMakeError::Err(error) =&gt; {
-                <span class="kw">if let </span>CargoMakeError::StdIoError { <span class="kw-2">ref </span>error } = error {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(e) = error.raw_os_error() {
-                        <span class="macro">eprintln!</span>(<span class="string">"{}"</span>, e.to_string());
-                        <span class="kw">return if </span>e &gt; u8::MAX <span class="kw">as </span>i32 {
-                            <span class="macro">eprintln!</span>(<span class="string">"exit code {}"</span>, e);
-                            std::process::ExitCode::FAILURE
-                        } <span class="kw">else </span>{
-                            std::process::ExitCode::from(e <span class="kw">as </span>u8)
-                        };
-                    }
-                }
-                <span class="macro">eprintln!</span>(<span class="string">"{}"</span>, error.to_string());
-                error.report()
+        <span class="kw">const </span>PROCESS_EXIT_CODE: <span class="kw">fn</span>(i32) -&gt; std::process::ExitCode = |e: i32| {
+            <span class="kw">if </span>e &gt; u8::MAX <span class="kw">as </span>i32 {
+                <span class="macro">eprintln!</span>(<span class="string">"exit code {}"</span>, e);
+                std::process::ExitCode::FAILURE
+            } <span class="kw">else </span>{
+                std::process::ExitCode::from(e <span class="kw">as </span>u8)
             }
+        };
+
+        <span class="kw">match </span><span class="self">self </span>{
+            SuccessOrCargoMakeError::Ok(e)
+                <span class="kw">if </span>std::any::TypeId::of::&lt;T&gt;()
+                    == std::any::TypeId::of::&lt;std::process::ExitCode&gt;() =&gt;
+            {
+                <span class="kw-2">*</span>(<span class="kw-2">&amp;</span>e <span class="kw">as </span><span class="kw-2">&amp;</span><span class="kw">dyn </span>std::any::Any)
+                    .downcast_ref::&lt;std::process::ExitCode&gt;()
+                    .unwrap()
+            }
+            SuccessOrCargoMakeError::Ok(<span class="kw">_</span>) =&gt; std::process::ExitCode::SUCCESS,
+            SuccessOrCargoMakeError::Err(err) =&gt; <span class="kw">match </span>err {
+                CargoMakeError::StdIoError { error } <span class="kw">if </span>error.raw_os_error().is_some() =&gt; {
+                    <span class="kw">let </span>e = <span class="kw">unsafe </span>{ error.raw_os_error().unwrap_unchecked() };
+                    <span class="macro">eprintln!</span>(<span class="string">"{}"</span>, e.to_string());
+                    PROCESS_EXIT_CODE(e)
+                }
+                CargoMakeError::ExitCode(error) =&gt; error,
+                <span class="kw">_ </span>=&gt; {
+                    <span class="macro">eprintln!</span>(<span class="string">"{}"</span>, err.to_string());
+                    PROCESS_EXIT_CODE(err.discriminant() <span class="kw">as </span>i32)
+                }
+            },
         }
     }
 }

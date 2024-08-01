@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.37.14"
+version = "0.37.15"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"

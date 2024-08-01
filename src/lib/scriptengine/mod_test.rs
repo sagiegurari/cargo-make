@@ -407,3 +407,38 @@ fn invoke_generic_runner_error() {
 
     assert!(output);
 }
+
+#[test]
+fn invoke_shell_to_batch_runner_with_env_expansion() {
+    envmnt::set("invoke_shell_to_batch_runner_with_env_expansion", "@shell");
+    let mut task = Task::new();
+    task.script_runner = Some("${invoke_shell_to_batch_runner_with_env_expansion}".to_string());
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
+
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    )
+    .unwrap();
+
+    assert!(output);
+}
+
+#[test]
+#[should_panic]
+fn invoke_shell_to_batch_runner_with_env_expansion_no_env() {
+    let mut task = Task::new();
+    task.script_runner =
+        Some("${invoke_shell_to_batch_runner_with_env_expansion_no_env}".to_string());
+    task.script = Some(ScriptValue::Text(vec!["echo test".to_string()]));
+
+    let output = invoke(
+        &task,
+        &test::create_empty_flow_info(),
+        Rc::new(RefCell::new(FlowState::new())),
+    )
+    .unwrap();
+
+    assert!(output);
+}
