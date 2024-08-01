@@ -607,10 +607,14 @@ impl<'a> ExecutionPlanBuilder<'a> {
                 _steps.push(step.to_owned());
                 _steps
             }));
-            if !interspersed_steps.is_empty() && has_after_each == 1 {
-                let after_each = after_and_before_each.first().unwrap().to_owned();
-                if interspersed_steps[interspersed_steps.len() - 1].name != after_each.name {
-                    interspersed_steps.push(after_each);
+            if let Some(last_step) = interspersed_steps.last() {
+                if has_after_each == 1 {
+                    let after_each = after_and_before_each.first().unwrap().to_owned();
+                    if last_step.name != after_each.name
+                        && Some(&last_step.name) != Option::from(end_task_opt)
+                    {
+                        interspersed_steps.push(after_each);
+                    }
                 }
             }
             Ok(Cow::Owned(interspersed_steps))
