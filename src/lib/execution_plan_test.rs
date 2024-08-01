@@ -1639,3 +1639,123 @@ fn respect_skip_init_end_tasks() {
     assert_eq!(execution_plan.steps.len(), 1);
     assert_eq!(execution_plan.steps[0].name, "test");
 }
+
+#[test]
+fn respect_before_each_and_after_each_tasks() {
+    let config = Config {
+        config: ConfigSection {
+            init_task: None,
+            before_each_task: Some("before_each".to_string()),
+            after_each_task: Some("after_each".to_string()),
+            end_task: None,
+            ..ConfigSection::default()
+        },
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: indexmap::indexmap! {
+            "before_each".to_string() => Task::new(),
+            "test2".to_string() => Task {
+                dependencies: Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+                    name: "test1".to_string(),
+                    path: Some("./examples/workspace".to_string()),
+                })]),
+                ..Task::default()
+            },
+            "test1".to_string() => Task {
+                dependencies: Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+                    name: "test0".to_string(),
+                    path: Some("./examples/workspace".to_string()),
+                })]),
+                ..Task::default()
+            },
+            "test0".to_string() => Task::new(),
+            "after_each".to_string() => Task::new(),
+        },
+        plugins: None,
+    };
+
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        skip_init_end_tasks: true,
+        ..ExecutionPlanBuilder::new(&config, "test2")
+    }
+    .build()
+    .unwrap();
+    assert_eq!(execution_plan.steps.len(), 5);
+    assert_eq!(
+        execution_plan
+            .steps
+            .iter()
+            .map(|step| step.name.as_str())
+            .collect::<Vec<&str>>(),
+        vec![
+            "test1_proxy",
+            "after_each",
+            "before_each",
+            "test2",
+            "after_each"
+        ]
+    );
+}
+
+#[test]
+fn respect_init_and_end_and_before_each_and_after_each_tasks() {
+    let config = Config {
+        config: ConfigSection {
+            init_task: Some("init".to_string()),
+            before_each_task: Some("before_each".to_string()),
+            after_each_task: Some("after_each".to_string()),
+            end_task: Some("end".to_string()),
+            ..ConfigSection::default()
+        },
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: indexmap::indexmap! {
+            "init".to_string() => Task::new(),
+            "before_each".to_string() => Task::new(),
+            "test2".to_string() => Task {
+                dependencies: Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+                    name: "test1".to_string(),
+                    path: Some("./examples/workspace".to_string()),
+                })]),
+                ..Task::default()
+            },
+            "test1".to_string() => Task {
+                dependencies: Some(vec![DependencyIdentifier::Definition(TaskIdentifier {
+                    name: "test0".to_string(),
+                    path: Some("./examples/workspace".to_string()),
+                })]),
+                ..Task::default()
+            },
+            "test0".to_string() => Task::new(),
+            "after_each".to_string() => Task::new(),
+            "end".to_string() => Task::new(),
+        },
+        plugins: None,
+    };
+
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        skip_init_end_tasks: true,
+        ..ExecutionPlanBuilder::new(&config, "test2")
+    }
+    .build()
+    .unwrap();
+    assert_eq!(execution_plan.steps.len(), 5);
+    assert_eq!(
+        execution_plan
+            .steps
+            .iter()
+            .map(|step| step.name.as_str())
+            .collect::<Vec<&str>>(),
+        vec![
+            "test1_proxy",
+            "after_each",
+            "before_each",
+            "test2",
+            "after_each"
+        ]
+    );
+}

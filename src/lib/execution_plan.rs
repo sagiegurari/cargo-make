@@ -581,33 +581,35 @@ impl<'a> ExecutionPlanBuilder<'a> {
             None => 0,
             Some(before_each) => handle_some(&before_each)?,
         };
+        let init_task_opt = &config.config.init_task;
+        let end_task_opt = &config.config.end_task;
         let scale: u8 = has_before_each + has_after_each;
         if scale > 0 {
             let before_and_after_each_len = scale as usize + 1;
             let mut interspersed_steps =
                 Vec::<Step>::with_capacity(steps.len() * before_and_after_each_len);
-            let before_special = HashSet::from(["init", "init_task"]);
-            let end_special = HashSet::from(["end", "end_task"]);
-            interspersed_steps.extend(steps.into_iter().flat_map(|e| -> Vec<Step> {
+            let mut zeroth = true;
+            interspersed_steps.extend(steps.into_iter().flat_map(|step| -> Vec<Step> {
                 let mut _steps = Vec::<Step>::with_capacity(before_and_after_each_len + 1);
-                if before_special.contains(e.name.as_str()) {
+                if zeroth {
+                    zeroth = false;
+                } else if init_task_opt == &Some(step.name.to_string()) {
                     if has_after_each == 1 {
-                        _steps.push(
-                            unsafe { after_and_before_each.last().unwrap_unchecked() }.to_owned(),
-                        );
+                        _steps.push(after_and_before_each.last().unwrap().to_owned());
                     }
-                } else if end_special.contains(e.name.as_str()) {
+                } else if end_task_opt == &Some(step.name.to_string()) {
                     if has_before_each == 1 {
-                        _steps.push(
-                            unsafe { after_and_before_each.first().unwrap_unchecked() }.to_owned(),
-                        );
+                        _steps.push(after_and_before_each.first().unwrap().to_owned());
                     }
                 } else {
                     _steps.extend(after_and_before_each.clone());
                 }
-                _steps.push(e.to_owned());
+                _steps.push(step.to_owned());
                 _steps
             }));
+            if !interspersed_steps.is_empty() && has_after_each == 1 {
+                interspersed_steps.push(after_and_before_each.first().unwrap().to_owned());
+            }
             Ok(Cow::Owned(interspersed_steps))
         } else {
             Ok(Cow::Borrowed(&steps))
