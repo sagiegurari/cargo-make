@@ -80,8 +80,9 @@ strum_macros = "0.26.4"
 toml = "^0.8"
 
 [dev-dependencies]
-expect-test = "^1"
 cfg-if = "^1.0.0"
+expect-test = "^1"
+tempfile = "^3.10.1"
 
 [target.'cfg(windows)'.dependencies]
 nu-ansi-term = "^0.50"
