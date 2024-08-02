@@ -1,9 +1,10 @@
-use super::*;
+use std::path::PathBuf;
 
-use crate::types::{ConfigSection, EnvValue, Task};
 use expect_test::{expect, Expect};
 use indexmap::IndexMap;
-use std::path::PathBuf;
+
+use super::*;
+use crate::types::{ConfigSection, EnvValue, Task};
 
 fn check(
     config: &Config,

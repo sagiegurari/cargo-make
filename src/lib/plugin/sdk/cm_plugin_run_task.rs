@@ -7,11 +7,13 @@
 #[path = "cm_plugin_run_task_test.rs"]
 mod cm_plugin_run_task_test;
 
-use crate::runner;
-use crate::types::{FlowInfo, FlowState, RunTaskOptions, Step};
-use duckscript::types::command::{Command, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use duckscript::types::command::{Command, CommandResult};
+
+use crate::runner;
+use crate::types::{FlowInfo, FlowState, RunTaskOptions, Step};
 
 #[derive(Clone)]
 pub(crate) struct CommandImpl {

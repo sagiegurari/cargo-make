@@ -7,10 +7,12 @@
 #[path = "cache_test.rs"]
 mod cache_test;
 
+use std::path::{Path, PathBuf};
+
+use fsio::file::{read_text_file, write_text_file};
+
 use crate::storage;
 use crate::types::Cache;
-use fsio::file::{read_text_file, write_text_file};
-use std::path::{Path, PathBuf};
 
 static CACHE_FILE: &'static str = "cache.toml";
 

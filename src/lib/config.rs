@@ -7,12 +7,14 @@
 #[path = "config_test.rs"]
 mod config_test;
 
+use std::path::{Path, PathBuf};
+
+use fsio::file::read_text_file;
+use fsio::path::from_path::FromPath;
+
 use crate::error::CargoMakeError;
 use crate::storage;
 use crate::types::GlobalConfig;
-use fsio::file::read_text_file;
-use fsio::path::from_path::FromPath;
-use std::path::{Path, PathBuf};
 
 pub static CONFIG_FILE: &'static str = "config.toml";
 

@@ -15,11 +15,12 @@ pub(crate) mod rustup_component_installer;
 #[path = "mod_test.rs"]
 mod mod_test;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use crate::error::CargoMakeError;
 use crate::scriptengine;
 use crate::types::{FlowInfo, FlowState, InstallCrate, Task};
-use std::cell::RefCell;
-use std::rc::Rc;
 
 fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, String)> {
     match task_config.command {

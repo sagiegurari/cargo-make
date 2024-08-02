@@ -309,7 +309,7 @@ fn install_cargo_plugin_info_eq_different_crate_name_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -327,7 +327,7 @@ fn install_cargo_plugin_info_eq_different_crate_name_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -345,7 +345,7 @@ fn install_cargo_plugin_info_eq_different_install_command_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -363,7 +363,7 @@ fn install_cargo_plugin_info_eq_different_install_command_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -381,7 +381,7 @@ fn install_cargo_plugin_info_eq_different_min_version_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -399,7 +399,7 @@ fn install_cargo_plugin_info_eq_different_force_value() {
         force: Some(false),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -609,7 +609,7 @@ fn install_crate_info_eq_different_crate_name() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -639,7 +639,7 @@ fn install_crate_info_eq_different_binary() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -669,7 +669,7 @@ fn install_crate_info_eq_different_test_arg() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -699,7 +699,7 @@ fn install_crate_info_eq_different_component_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -729,7 +729,7 @@ fn install_crate_info_eq_different_component_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -759,7 +759,7 @@ fn install_crate_info_eq_different_min_version_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -789,7 +789,7 @@ fn install_crate_info_eq_different_min_version_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -819,7 +819,7 @@ fn install_crate_info_eq_different_version_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -849,7 +849,7 @@ fn install_crate_info_eq_different_version_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -879,7 +879,7 @@ fn install_crate_info_eq_different_install_command_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -909,7 +909,7 @@ fn install_crate_info_eq_different_install_command_value() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -939,7 +939,7 @@ fn install_crate_info_eq_different_force_type() {
         force: None,
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -969,7 +969,7 @@ fn install_crate_info_eq_different_force_value() {
         force: Some(false),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1045,7 +1045,7 @@ fn install_rustup_component_info_eq_different_component() {
         }),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1065,7 +1065,7 @@ fn install_rustup_component_info_eq_different_binary() {
         }),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1085,7 +1085,7 @@ fn install_rustup_component_info_eq_different_binary_type() {
         }),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1105,7 +1105,7 @@ fn install_rustup_component_info_eq_different_test_arg() {
         }),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1123,7 +1123,7 @@ fn install_rustup_component_info_eq_different_test_arg_type() {
         }),
     };
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1204,7 +1204,7 @@ fn install_crate_eq_different_enabled_value() {
     let first = InstallCrate::Enabled(true);
     let second = InstallCrate::Enabled(false);
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1212,7 +1212,7 @@ fn install_crate_eq_different_value() {
     let first = InstallCrate::Value("crate1".to_string());
     let second = InstallCrate::Value("crate2".to_string());
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1230,7 +1230,7 @@ fn install_crate_eq_different_cargo_plugin_info() {
         force: None,
     });
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1260,7 +1260,7 @@ fn install_crate_eq_different_crate_info() {
         force: None,
     });
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -1280,7 +1280,7 @@ fn install_crate_eq_different_rustup_component_info() {
         }),
     });
 
-    assert!(first != second);
+    assert_ne!(first, second);
 }
 
 #[test]
@@ -4692,7 +4692,7 @@ fn deprecation_info_partial_eq_diff_bool() {
     let value1 = DeprecationInfo::Boolean(true);
     let value2 = DeprecationInfo::Boolean(false);
 
-    assert!(value1 != value2);
+    assert_ne!(value1, value2);
 }
 
 #[test]
@@ -4700,7 +4700,7 @@ fn deprecation_info_partial_eq_diff_message() {
     let value1 = DeprecationInfo::Message("test1".to_string());
     let value2 = DeprecationInfo::Message("test2".to_string());
 
-    assert!(value1 != value2);
+    assert_ne!(value1, value2);
 }
 
 #[test]
@@ -4708,7 +4708,7 @@ fn deprecation_info_partial_eq_diff_type() {
     let value1 = DeprecationInfo::Boolean(true);
     let value2 = DeprecationInfo::Message("test2".to_string());
 
-    assert!(value1 != value2);
+    assert_ne!(value1, value2);
 }
 
 #[test]

@@ -3,10 +3,12 @@
 //! Enables to run cargo-make tasks from within duckscript.
 //!
 
-use crate::types::FlowState;
-use duckscript::types::command::{Command, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use duckscript::types::command::{Command, CommandResult};
+
+use crate::types::FlowState;
 
 #[derive(Clone)]
 pub(crate) struct CommandImpl {

@@ -1,5 +1,6 @@
-use super::*;
 use std::env;
+
+use super::*;
 
 #[test]
 fn load_from_path_exists() {

@@ -8,11 +8,12 @@
 #[path = "list_steps_test.rs"]
 mod list_steps_test;
 
+use std::collections::{BTreeMap, BTreeSet};
+
 use crate::error::CargoMakeError;
 use crate::execution_plan;
 use crate::io;
 use crate::types::{Config, DeprecationInfo};
-use std::collections::{BTreeMap, BTreeSet};
 
 pub fn run(
     config: &Config,

@@ -9,11 +9,13 @@ mod cm_plugin_force_plugin_set;
 mod cm_plugin_run_custom_task;
 mod cm_plugin_run_task;
 
-use crate::types::{FlowInfo, FlowState, Step};
-use duckscript::types::command::Commands;
-use duckscript::types::error::ScriptError;
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use duckscript::types::command::Commands;
+use duckscript::types::error::ScriptError;
+
+use crate::types::{FlowInfo, FlowState, Step};
 
 /// Loads all core commands
 pub(crate) fn load(

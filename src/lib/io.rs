@@ -7,16 +7,18 @@
 #[path = "io_test.rs"]
 mod io_test;
 
-use crate::error::CargoMakeError;
+use std::collections::HashSet;
+use std::fs::File;
+use std::io;
+use std::path::PathBuf;
+
 use fsio::file::modify_file;
 use fsio::path as fsio_path;
 use fsio::path::from_path::FromPath;
 use glob::glob;
 use ignore::WalkBuilder;
-use std::collections::HashSet;
-use std::fs::File;
-use std::io;
-use std::path::PathBuf;
+
+use crate::error::CargoMakeError;
 
 pub(crate) fn create_text_file(text: &str, extension: &str) -> Result<String, CargoMakeError> {
     let file_path = fsio_path::get_temporary_file_path(extension);

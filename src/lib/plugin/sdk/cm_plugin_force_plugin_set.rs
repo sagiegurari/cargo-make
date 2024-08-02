@@ -7,10 +7,12 @@
 #[path = "cm_plugin_force_plugin_set_test.rs"]
 mod cm_plugin_force_plugin_set_test;
 
-use crate::types::{FlowState, Step};
-use duckscript::types::command::{Command, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use duckscript::types::command::{Command, CommandResult};
+
+use crate::types::{FlowState, Step};
 
 #[derive(Clone)]
 pub(crate) struct CommandImpl {

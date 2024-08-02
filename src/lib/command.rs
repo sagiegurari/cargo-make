@@ -7,16 +7,18 @@
 #[path = "command_test.rs"]
 mod command_test;
 
-use crate::error::CargoMakeError;
-use crate::logger;
-use crate::toolchain;
-use crate::types::{CommandSpec, Step, UnstableFeature};
-use run_script::{IoOptions, ScriptError, ScriptOptions};
 use std::io;
 use std::io::{Error, ErrorKind, Read};
 use std::process::{Command, ExitStatus, Output, Stdio};
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Once;
+
+use run_script::{IoOptions, ScriptError, ScriptOptions};
+
+use crate::error::CargoMakeError;
+use crate::logger;
+use crate::toolchain;
+use crate::types::{CommandSpec, Step, UnstableFeature};
 
 /// Returns the exit code (-1 if no exit code found)
 pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool) -> i32 {

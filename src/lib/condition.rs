@@ -7,6 +7,13 @@
 #[path = "condition_test.rs"]
 mod condition_test;
 
+use std::path::Path;
+
+use fsio::path::from_path::FromPath;
+use glob::glob;
+use indexmap::IndexMap;
+use rust_info::types::{RustChannel, RustInfo};
+
 use crate::environment;
 use crate::error::CargoMakeError;
 use crate::profile;
@@ -17,11 +24,6 @@ use crate::types::{
     TaskCondition,
 };
 use crate::version::{is_newer, is_same};
-use fsio::path::from_path::FromPath;
-use glob::glob;
-use indexmap::IndexMap;
-use rust_info::types::{RustChannel, RustInfo};
-use std::path::Path;
 
 fn validate_env_map(
     env: Option<IndexMap<String, String>>,

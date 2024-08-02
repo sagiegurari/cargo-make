@@ -1,3 +1,9 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use git_info::types::GitInfo;
+use rust_info::types::RustInfo;
+
 use crate::condition;
 use crate::descriptor;
 use crate::error::CargoMakeError;
@@ -6,10 +12,6 @@ use crate::scriptengine;
 use crate::scriptengine::EngineType;
 use crate::test;
 use crate::types::{Config, CrateInfo, EnvInfo, FlowInfo, FlowState, RunTaskInfo, Step, Task};
-use git_info::types::GitInfo;
-use rust_info::types::RustInfo;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 fn load_descriptor() -> Result<Config, CargoMakeError> {
     descriptor::load_internal_descriptors(true, false, None)

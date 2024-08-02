@@ -7,9 +7,10 @@
 #[path = "storage_test.rs"]
 mod storage_test;
 
-use crate::legacy;
 use std::env;
 use std::path::{Path, PathBuf};
+
+use crate::legacy;
 
 fn get_legacy_directory() -> Option<PathBuf> {
     legacy::get_cargo_make_home()

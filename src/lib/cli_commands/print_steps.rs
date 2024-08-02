@@ -7,12 +7,13 @@
 #[path = "print_steps_test.rs"]
 mod print_steps_test;
 
-use crate::error::CargoMakeError;
 use std::io;
 
+use regex::Regex;
+
+use crate::error::CargoMakeError;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::types::{Config, CrateInfo, ExecutionPlan};
-use regex::Regex;
 
 #[derive(Debug)]
 enum PrintFormat {
