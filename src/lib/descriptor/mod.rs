@@ -638,5 +638,13 @@ pub fn load(
         }
     }
 
+    for (name, _) in config.tasks.iter() {
+        match name.as_str() {
+            "before_each" => config.config.before_each_task = Some(name.to_string()),
+            "after_each" => config.config.after_each_task = Some(name.to_string()),
+            _ => {}
+        }
+    }
+
     Ok(config)
 }
