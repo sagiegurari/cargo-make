@@ -1418,9 +1418,9 @@ We run task **3** the output would be:
 
 <a name="usage-env"></a>
 ### Environment Variables
-`cargo-make` enabled the definition of environmental variables in several ways, which can later be accessed throughout task execution.
+`cargo-make` enabled the definition of environment variables in several ways, which can later be accessed throughout task execution.
 
-Because environmental variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
+Because environment variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
 
 * [Declaration](#env-declaration)
 * [Global Configuration](#usage-env-config)
@@ -1435,7 +1435,7 @@ Because environmental variables play a significant role in `cargo-make`, it prov
 <a name="env-declaration"></a>
 #### Declaration
 
-There are multiple ways to declare environmental variables, all of which are suited for specific suitcases.
+There are multiple ways to declare environment variables, all of which are suited for specific suitcases.
 
 ##### Simple
 
@@ -1458,9 +1458,9 @@ LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 
 ##### Script
 
-`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environmental variable.
+`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environment variable.
 
-The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environmental variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
+The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environment variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
 
 > **Note:** This uses the default OS command runner (`cmd` on Windows, `sh` on UNIX systems), other runners like `duckscript`, `rust`, etc. are **not** supported.
 
@@ -1470,7 +1470,7 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 
 ##### Decode Map
 
-`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environmental variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
+`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environment variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
 
 ```toml
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
@@ -1499,7 +1499,7 @@ VARIABLE = {unset = true}
 <a name="usage-env-config"></a>
 #### Global Configuration
 
-Environmental variables can be set globally using the top level `[env]` key, with the ability to provide multiple profiles, which can be selected using `--profile <name>` when executing `cargo make`.
+Environment variables can be set globally using the top level `[env]` key, with the ability to provide multiple profiles, which can be selected using `--profile <name>` when executing `cargo make`.
 
 Environment variables set in the global `[env]` block [and default `Makefile.toml`](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running any tasks.
 
@@ -1535,7 +1535,7 @@ PROD = true
 <a name="usage-env-task"></a>
 #### Task
 
-Environmental variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run, but _before_ the task itself runs.
+Environment variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environment variables takes place after all dependencies have run, but _before_ the task itself runs.
 
 > **Note:** Reordering of task variables with global variables will **not** take place. Tasks simply overwrite previously declared variables.
 
@@ -1571,7 +1571,7 @@ It is also possible to provide an env file path as part of the CLI args as follo
 cargo make --env-file=./env/production.env
 ```
 
-This allows using the same `Makefile.toml`, but with a different set of environmental variables loaded from the env file.
+This allows using the same `Makefile.toml`, but with a different set of environment variables loaded from the env file.
 
 The env file is a simple `key=value`, which is similar to [dotenv](https://www.npmjs.com/package/dotenv), but only supports variable interpolation using the `${}` syntax.
 
@@ -1593,7 +1593,7 @@ env_files = [
 ]
 ```
 
-To only load environmental variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
+To only load environment variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
 
 ```toml
 env_files = [
@@ -1602,7 +1602,7 @@ env_files = [
 ]
 ```
 
-Use the `profile` property to only load environmental variables whenever a specific profile is active.
+Use the `profile` property to only load environment variables whenever a specific profile is active.
 
 > To learn more about profiles, check the [profiles section](#usage-profiles).
 
@@ -1668,12 +1668,12 @@ These scripts use that value to create a new environment variable **`COMPOSITE_2
   * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
   * Load environment variables defined in the **env** block (same behavior as global env block).
 
-During each step, variables can be reordered to ensure all dependencies are specified. The environmental variables will be interpolated before every task run.
+During each step, variables can be reordered to ensure all dependencies are specified. The environment variables will be interpolated before every task run.
 
 <a name="env-note-about-ordering"></a>
 #### Note about Ordering
 
-The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
+The ordering of environment variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
 
 This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
 
@@ -1726,7 +1726,7 @@ This is an extended example, which would not work using the naive implementation
 
 <a name="usage-env-global"></a>
 #### Global
-In addition to manually setting environment variables, cargo-make will also automatically add a few environmental variables, which can be helpful when running task scripts, commands, conditions, and more.
+In addition to manually setting environment variables, cargo-make will also automatically add a few environment variables, which can be helpful when running task scripts, commands, conditions, and more.
 
 * **`CARGO_MAKE`** - Set to "true" to help sub-processes identify they are running from `cargo` make.
 * **`CARGO_MAKE_TASK`** - Holds the name of the main task being executed.
@@ -4194,7 +4194,7 @@ install_crate = { rustup_component_name = "rust-src" }
 <a name="e001"></a>
 ### E001: Environment Variables Cycle Detected
 
-A cycle between different environmental variables has been detected;
+A cycle between different environment variables has been detected;
 This can happen during the merging of environments (at every loading step).
 Due to reordering and to make sure that no circular references exist,
 this error is emitted.
@@ -4202,7 +4202,7 @@ this error is emitted.
 You can fix this issue, by looking at your env config, and seeing if at any point a circular reference could have occurred.
 The error message mentions the environment variables that are likely candidates for the cause of the cycle.
 
-Your best bet is to try to break the cycle, by creating a new environmental variable or use a static value multiple times.
+Your best bet is to try to break the cycle, by creating a new environment variable or use a static value multiple times.
 Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems,
 even without cycle detection or no reordering this would likely cause hidden issues during
 execution, as `cargo-make` would need to otherwise set instances to an empty value instead.
@@ -4211,7 +4211,7 @@ hidden and hard to debug issue.
 
 > **Note:** Scripts are known to sometimes cause false-positives.
 > In that case use the `depends_on` property, to explicitly tell `cargo-make`, which
-> environmental variables should be considered a dependency instead of trying to guess from the script.
+> environment variables should be considered a dependency instead of trying to guess from the script.
 
 
 <a name="articles"></a>
