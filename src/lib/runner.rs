@@ -6,37 +6,30 @@
 //! * Load env variables
 //! * Create an execution plan based on the requested task and its dependencies
 //! * Run all tasks defined in the execution plan
-//!
 
 #[cfg(test)]
 #[path = "runner_test.rs"]
 mod runner_test;
 
-use std::cell::RefCell;
-use std::rc::Rc;
-use std::thread;
-use std::time::SystemTime;
+use std::{cell::RefCell, rc::Rc, thread, time::SystemTime};
 
 use indexmap::IndexMap;
 use regex::Regex;
 
-use crate::command;
-use crate::condition;
-use crate::environment;
-use crate::error::CargoMakeError;
-use crate::execution_plan::ExecutionPlanBuilder;
-use crate::functions;
-use crate::installer;
-use crate::logger;
-use crate::plugin::runner::run_task as run_task_plugin;
-use crate::profile;
-use crate::proxy_task::create_proxy_task;
-use crate::scriptengine;
-use crate::time_summary;
-use crate::types::{
-    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
-    MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
-    TaskWatchOptions,
+use crate::{
+    command, condition, environment,
+    error::CargoMakeError,
+    execution_plan::ExecutionPlanBuilder,
+    functions, installer, logger,
+    plugin::runner::run_task as run_task_plugin,
+    profile,
+    proxy_task::create_proxy_task,
+    scriptengine, time_summary,
+    types::{
+        CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
+        MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
+        TaskWatchOptions,
+    },
 };
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
@@ -183,7 +176,8 @@ fn run_forked_task(
     }
 }
 
-/// runs a sub task and returns true/false based if a sub task was actually invoked
+/// runs a sub task and returns true/false based if a sub task was actually
+/// invoked
 fn run_sub_task_and_report(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
@@ -361,8 +355,11 @@ pub(crate) fn run_task_with_options(
             None => (),
         };
 
+        let env_before_current_task_env_expansion = std::env::vars();
+        // expand env now in case condition_script_runner_args has a value that needs to
+        // be expanded
         let step = {
-            //get profile
+            // get profile
             let profile_name = profile::get();
 
             match step.config.env_files {
@@ -376,7 +373,7 @@ pub(crate) fn run_task_with_options(
 
             envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
-            //make sure profile env is not overwritten
+            // make sure profile env is not overwritten
             profile::set(&profile_name);
 
             // modify step using env and functions
@@ -444,11 +441,8 @@ pub(crate) fn run_task_with_options(
                     None => {
                         do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
                             // run script
-                            let script_runner_done = scriptengine::invoke(
-                                &step.config,
-                                flow_info,
-                                flow_state.clone(),
-                            )?;
+                            let script_runner_done =
+                                scriptengine::invoke(&step.config, flow_info, flow_state.clone())?;
 
                             // run command
                             if !script_runner_done {
@@ -466,6 +460,11 @@ pub(crate) fn run_task_with_options(
                 };
             }
         } else {
+            // Restore env to state before expansion for condition evaluation
+            for (key, value) in env_before_current_task_env_expansion {
+                envmnt::set(key, value);
+            }
+
             let fail_message = match step.config.condition {
                 Some(ref condition) => match condition.fail_message {
                     Some(ref value) => value.to_string(),

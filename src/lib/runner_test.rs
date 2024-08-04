@@ -11,12 +11,7 @@ use crate::types::WatchOptions;
 use crate::{
     test,
     types::{
-        ConditionScriptValue,
-        ConfigSection,
-        CrateInfo,
-        EnvFile,
-        RunTaskDetails,
-        ScriptValue,
+        ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
         TaskCondition,
     },
 };
