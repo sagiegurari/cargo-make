@@ -1,17 +1,15 @@
+use super::*;
+use crate::test;
+use crate::types::{
+    ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
+    TaskCondition,
+};
 use cfg_if::cfg_if;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
 
-use super::*;
 #[cfg(target_os = "linux")]
 use crate::types::WatchOptions;
-use crate::{
-    test,
-    types::{
-        ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
-        TaskCondition,
-    },
-};
 
 #[test]
 #[ignore]
@@ -1113,8 +1111,7 @@ fn create_watch_task_with_makefile_with_spaces_in_path() {
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
     make_command_line.push_str(
-        " --allow-private --skip-init-end-tasks --makefile \"/path with spaces/mymakefile.toml\" \
-         some_task",
+        " --allow-private --skip-init-end-tasks --makefile \"/path with spaces/mymakefile.toml\" some_task",
     );
 
     let args = task.args.unwrap();

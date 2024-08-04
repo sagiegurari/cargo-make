@@ -6,30 +6,37 @@
 //! * Load env variables
 //! * Create an execution plan based on the requested task and its dependencies
 //! * Run all tasks defined in the execution plan
+//!
 
 #[cfg(test)]
 #[path = "runner_test.rs"]
 mod runner_test;
 
-use std::{cell::RefCell, rc::Rc, thread, time::SystemTime};
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::thread;
+use std::time::SystemTime;
 
 use indexmap::IndexMap;
 use regex::Regex;
 
-use crate::{
-    command, condition, environment,
-    error::CargoMakeError,
-    execution_plan::ExecutionPlanBuilder,
-    functions, installer, logger,
-    plugin::runner::run_task as run_task_plugin,
-    profile,
-    proxy_task::create_proxy_task,
-    scriptengine, time_summary,
-    types::{
-        CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
-        MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
-        TaskWatchOptions,
-    },
+use crate::command;
+use crate::condition;
+use crate::environment;
+use crate::error::CargoMakeError;
+use crate::execution_plan::ExecutionPlanBuilder;
+use crate::functions;
+use crate::installer;
+use crate::logger;
+use crate::plugin::runner::run_task as run_task_plugin;
+use crate::profile;
+use crate::proxy_task::create_proxy_task;
+use crate::scriptengine;
+use crate::time_summary;
+use crate::types::{
+    CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
+    MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
+    TaskWatchOptions,
 };
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
@@ -176,8 +183,7 @@ fn run_forked_task(
     }
 }
 
-/// runs a sub task and returns true/false based if a sub task was actually
-/// invoked
+/// runs a sub task and returns true/false based if a sub task was actually invoked
 fn run_sub_task_and_report(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
