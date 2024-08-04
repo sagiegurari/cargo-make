@@ -1157,7 +1157,7 @@ fn setup_cargo_home() {
 #[ignore]
 fn setup_cargo_home_overwrite() {
     let path = Path::new("path");
-    envmnt::set("CARGO_HOME", path);
+    let old_cargo_home = envmnt::get_set("CARGO_HOME", path);
 
     setup_cwd(None);
 
@@ -1168,7 +1168,8 @@ fn setup_cargo_home_overwrite() {
         cargo_home
     );
 
-    envmnt::remove("CARGO_HOME");
+    // Restore old CARGO_HOME value to avoid breaking other tests
+    envmnt::set_or_remove("CARGO_HOME", &old_cargo_home);
 }
 
 #[test]
@@ -1737,6 +1738,11 @@ fn expand_env_with_env_vars() {
         "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
         "sr3".to_string(),
     ]);
+    task.condition_script_runner_args = Some(vec![
+        "sr1".to_string(),
+        "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
+        "sr3".to_string(),
+    ]);
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -1762,6 +1768,14 @@ fn expand_env_with_env_vars() {
     );
     assert_eq!(
         updated_step.config.script_runner_args.unwrap(),
+        vec![
+            "sr1".to_string(),
+            "sr2-ENV2-end".to_string(),
+            "sr3".to_string(),
+        ]
+    );
+    assert_eq!(
+        updated_step.config.condition_script_runner_args.unwrap(),
         vec![
             "sr1".to_string(),
             "sr2-ENV2-end".to_string(),

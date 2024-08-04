@@ -805,6 +805,13 @@ pub(crate) fn get_project_root() -> Option<String> {
     }
 }
 
+fn expand_env_for_condition_script_runner_arguments(task: &mut Task) {
+    task.condition_script_runner_args = task
+        .condition_script_runner_args
+        .as_mut()
+        .map(|args| args.iter().map(|arg| expand_value(arg)).collect());
+}
+
 fn expand_env_for_script_runner_arguments(task: &mut Task) {
     let updated_args = match task.script_runner_args {
         Some(ref args) => {
@@ -880,6 +887,7 @@ pub(crate) fn expand_env(step: &Step) -> Step {
     //update args by replacing any env vars
     expand_env_for_arguments(&mut config);
     expand_env_for_script_runner_arguments(&mut config);
+    expand_env_for_condition_script_runner_arguments(&mut config);
 
     Step {
         name: step.name.clone(),

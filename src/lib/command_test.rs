@@ -1,6 +1,7 @@
 use super::*;
 use crate::test;
 use crate::types::Task;
+use cfg_if::cfg_if;
 
 #[test]
 fn validate_exit_code_unable_to_fetch() {
@@ -94,8 +95,29 @@ fn run_no_command() {
 #[test]
 fn run_command() {
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
 
     let step = Step {
         name: "test_command_output_env".to_string(),
@@ -111,8 +133,30 @@ fn run_command_for_toolchain() {
         let toolchain = test::get_toolchain();
 
         let mut task = Task::new();
-        task.command = Some("echo".to_string());
-        task.args = Some(vec!["test".to_string()]);
+
+        // echo is not a binary on windows, so cmd.exe's echo command is used
+        task.command = Some({
+            cfg_if! {
+                if #[cfg(target_os = "windows")] {
+                    "cmd.exe".to_string()
+                } else {
+                    "echo".to_string()
+                }
+            }
+        });
+        task.args = Some({
+            cfg_if! {
+                if #[cfg(target_os = "windows")] {
+                    ["/c", "echo", "test"]
+                        .iter()
+                        .map(ToString::to_string)
+                        .collect()
+                } else {
+                    vec!["test".to_string()]
+                }
+            }
+        });
+
         task.toolchain = Some(toolchain.into());
 
         let step = Step {

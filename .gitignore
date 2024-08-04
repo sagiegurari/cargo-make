@@ -10,3 +10,4 @@ dump.rdb
 /core
 /src/**/Cargo.lock
 /examples/**/Cargo.lock
+*.rustc_info.json
