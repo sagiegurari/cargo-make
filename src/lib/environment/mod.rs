@@ -823,7 +823,7 @@ fn expand_env_for_script_runner_arguments(task: &mut Task) {
 }
 
 fn expand_env_for_arguments(task: &mut Task) {
-    //update args by replacing any env vars
+    // update args by replacing any env vars
     let updated_args = match task.args {
         Some(ref args) => {
             let mut expanded_args = vec![];
@@ -885,4 +885,15 @@ pub(crate) fn expand_env(step: &Step) -> Step {
         name: step.name.clone(),
         config,
     }
+}
+
+pub(crate) fn expand_condition_script_runner_arguments(step: &Step) -> Step {
+    let mut modified_step = step.clone();
+
+    modified_step.config.condition_script_runner_args = step
+        .config
+        .condition_script_runner_args
+        .as_ref()
+        .map(|args| args.iter().map(|arg| expand_value(arg)).collect());
+    modified_step
 }

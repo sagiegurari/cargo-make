@@ -361,7 +361,10 @@ pub(crate) fn run_task_with_options(
             None => (),
         };
 
-        if validate_condition(&flow_info, &step)? {
+        if validate_condition(
+            &flow_info,
+            &environment::expand_condition_script_runner_arguments(&step),
+        )? {
             if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
                 debug!("Running Task: {}", &step.name);
             } else {

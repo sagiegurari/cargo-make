@@ -1,9 +1,12 @@
+use std::env::VarError;
+
 use super::*;
 use crate::test;
 use crate::types::{
     ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
     TaskCondition,
 };
+use cfg_if::cfg_if;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
 
@@ -306,8 +309,30 @@ fn run_task_command() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -777,8 +802,30 @@ fn run_task_deprecated_message() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     task.deprecated = Some(DeprecationInfo::Message("test message".to_string()));
     let step = Step {
         name: "test".to_string(),
@@ -817,8 +864,30 @@ fn run_task_deprecated_flag() {
     };
 
     let mut task = Task::new();
-    task.command = Some("echo".to_string());
-    task.args = Some(vec!["test".to_string()]);
+
+    // echo is not a binary on windows, so cmd.exe's echo command is used
+    task.command = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                "cmd.exe".to_string()
+            } else {
+                "echo".to_string()
+            }
+        }
+    });
+    task.args = Some({
+        cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                ["/c", "echo", "test"]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect()
+            } else {
+                vec!["test".to_string()]
+            }
+        }
+    });
+
     task.deprecated = Some(DeprecationInfo::Boolean(true));
     let step = Step {
         name: "test".to_string(),
@@ -826,6 +895,70 @@ fn run_task_deprecated_flag() {
     };
 
     run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
+}
+
+#[test]
+#[ignore]
+fn run_task_failed_condition_script_doesnt_change_env() {
+    const NEW_ENV_VAR: &str = "NEW_VAR";
+    const EXISTING_ENV_VAR: &str = "TEST_VAR";
+    const INITIAL_ENV_VAR_VALUE: &str = "ORIGINAL-VALUE";
+    std::env::set_var(EXISTING_ENV_VAR, INITIAL_ENV_VAR_VALUE);
+
+    let flow_info = FlowInfo {
+        config: Config::default(),
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    let step = Step {
+        name: "test".to_string(),
+        config: Task {
+            // condition for this task always evaluates to false
+            condition_script: Some(ConditionScriptValue::SingleLine("exit 1".to_string())),
+            script_runner: Some("@duckscript".to_string()),
+            // this scripts should never run since the condition fails
+            script: Some(ScriptValue::SingleLine(format!(
+                "set_env {EXISTING_ENV_VAR} NEW-VALUE-FROM-SCRIPT"
+            ))),
+            // the env should not get updated since the condition fails
+            env: Some(
+                [
+                    (
+                        EXISTING_ENV_VAR.to_string(),
+                        EnvValue::Value("NEW-VALUE-FROM-ENV".to_string()),
+                    ),
+                    (
+                        NEW_ENV_VAR.to_string(),
+                        EnvValue::Value("VALUE-FOR-VAR-THAT-SHOULD-NOT-EXIST".to_string()),
+                    ),
+                ]
+                .into(),
+            ),
+            ..Default::default()
+        },
+    };
+
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
+
+    // var should not change since the condition failed
+    assert_eq!(
+        std::env::var(EXISTING_ENV_VAR).unwrap(),
+        INITIAL_ENV_VAR_VALUE
+    );
+    // var should not exist since the condition failed
+    assert_eq!(std::env::var(NEW_ENV_VAR), Err(VarError::NotPresent));
 }
 
 #[test]
@@ -995,7 +1128,7 @@ fn create_watch_task_with_makefile_with_spaces_in_path() {
     make_command_line.push_str(" --profile=");
     make_command_line.push_str(&profile::get());
     make_command_line.push_str(
-        " --allow-private --skip-init-end-tasks --makefile \"/path with spaces/mymakefile.toml\" some_task"
+        " --allow-private --skip-init-end-tasks --makefile \"/path with spaces/mymakefile.toml\" some_task",
     );
 
     let args = task.args.unwrap();

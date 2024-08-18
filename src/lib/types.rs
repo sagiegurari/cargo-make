@@ -2359,7 +2359,7 @@ impl ConfigSection {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the entire configuration such as task definitions and env vars
 pub struct Config {
     /// Runtime config
