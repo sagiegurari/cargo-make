@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.16
+
+* Enhancement: Expand condition_script_runner_args #1132 (thanks @wmmc88)
+
 ### v0.37.15 (2024-07-29)
 
 * Enhancement: Support env expansion for script runner #1125
