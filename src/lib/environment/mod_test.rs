@@ -1738,11 +1738,6 @@ fn expand_env_with_env_vars() {
         "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
         "sr3".to_string(),
     ]);
-    task.condition_script_runner_args = Some(vec![
-        "sr1".to_string(),
-        "sr2-${TEST_ENV_EXPAND2}-end".to_string(),
-        "sr3".to_string(),
-    ]);
     let step = Step {
         name: "test".to_string(),
         config: task,
@@ -1768,14 +1763,6 @@ fn expand_env_with_env_vars() {
     );
     assert_eq!(
         updated_step.config.script_runner_args.unwrap(),
-        vec![
-            "sr1".to_string(),
-            "sr2-ENV2-end".to_string(),
-            "sr3".to_string(),
-        ]
-    );
-    assert_eq!(
-        updated_step.config.condition_script_runner_args.unwrap(),
         vec![
             "sr1".to_string(),
             "sr2-ENV2-end".to_string(),
@@ -1858,6 +1845,34 @@ fn expand_env_with_env_vars_and_empty_task_args() {
     let args = updated_step.config.args.unwrap();
     assert_eq!(args.len(), 5);
     assert_eq!(args[3], "arg3-ENV1-ENV2".to_string());
+}
+
+#[test]
+#[ignore]
+fn expand_condition_script_runner_args() {
+    envmnt::set("TEST_ENV_EXPAND", "ENV_VALUE");
+
+    let mut task = Task::new();
+    task.condition_script_runner_args = Some(vec![
+        "sr1".to_string(),
+        "sr2-${TEST_ENV_EXPAND}-end".to_string(),
+        "sr3".to_string(),
+    ]);
+    let step: Step = Step {
+        name: "test".to_string(),
+        config: task,
+    };
+    let updated_step = expand_condition_script_runner_arguments(&step);
+
+    assert_eq!(updated_step.name, "test".to_string());
+    assert_eq!(
+        updated_step.config.condition_script_runner_args.unwrap(),
+        vec![
+            "sr1".to_string(),
+            "sr2-ENV_VALUE-end".to_string(),
+            "sr3".to_string(),
+        ]
+    );
 }
 
 #[test]
