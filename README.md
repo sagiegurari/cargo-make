@@ -10,144 +10,132 @@
 
 > [Rust](https://www.rust-lang.org/) task runner and build tool.
 
-- [cargo-make](#cargo-make)
-  - [Overview](#overview)
-  - [Installation](#installation)
-    - [Arch Linux](#arch-linux)
-    - [Binary Release](#binary-release)
-  - [Usage](#usage)
-    - [Simple Example](#simple-example)
-    - [Tasks, Dependencies, and Aliases](#tasks-dependencies-and-aliases)
-    - [Commands, Scripts, and Sub Tasks](#commands-scripts-and-sub-tasks)
-      - [Sub Task](#sub-task)
-      - [Command](#command)
-      - [Script](#script)
-      - [Duckscript](#duckscript)
-      - [Rust Code](#rust-code)
-      - [Cross Platform Shell](#cross-platform-shell)
-      - [Other Programming Languages](#other-programming-languages)
-      - [Shebang Support](#shebang-support)
-    - [Default Tasks and Extending](#default-tasks-and-extending)
-      - [Extending External Makefiles](#extending-external-makefiles)
-      - [Automatically Extend Workspace Makefile](#automatically-extend-workspace-makefile)
-      - [Load Scripts](#load-scripts)
-      - [Predefined Makefiles](#predefined-makefiles)
-      - [The Default Task](#the-default-task)
-    - [Extending Tasks](#extending-tasks)
-      - [Task Override](#task-override)
-      - [Platform Override](#platform-override)
-      - [Extend Attribute](#extend-attribute)
-    - [Environment Variables](#environment-variables)
-      - [Declaration](#declaration)
-        - [Simple](#simple)
-        - [List](#list)
-        - [Script](#script-1)
-        - [Decode Map](#decode-map)
-        - [Path](#path)
-        - [Conditional](#conditional)
-        - [Unset](#unset)
-      - [Global Configuration](#global-configuration)
-        - [Example](#example)
-      - [Task](#task)
-      - [Command Line](#command-line)
-      - [Env File](#env-file)
-      - [Env Setup Scripts](#env-setup-scripts)
-      - [Loading Order](#loading-order)
-      - [Note about Ordering](#note-about-ordering)
-          - [Naive Implementation](#naive-implementation)
-          - [`cargo-make` Implementation](#cargo-make-implementation)
-      - [Global](#global)
-    - [Setting Up Working Directory](#setting-up-working-directory)
-    - [Ignoring Errors](#ignoring-errors)
-    - [Conditions](#conditions)
-      - [Criteria](#criteria)
-      - [Scripts](#scripts)
-      - [And/Or/Group Or](#andorgroup-or)
-      - [Combining Conditions and Sub Tasks](#combining-conditions-and-sub-tasks)
-      - [Running Tasks Only If Sources Changed](#running-tasks-only-if-sources-changed)
-    - [Installing Dependencies](#installing-dependencies)
-      - [Cargo Plugins](#cargo-plugins)
-      - [Crates](#crates)
-      - [Rustup Components](#rustup-components)
-      - [Native Dependencies](#native-dependencies)
-      - [Defining Version](#defining-version)
-      - [Global Lock Of Versions](#global-lock-of-versions)
-      - [Alternate Cargo Install Commands](#alternate-cargo-install-commands)
-    - [Installation Priorities](#installation-priorities)
-    - [Multiple Installations](#multiple-installations)
-    - [Workspace Support](#workspace-support)
-      - [Disabling Workspace Support](#disabling-workspace-support)
-      - [Composite Flow](#composite-flow)
-      - [Profiles](#profiles)
-      - [Skipping/Including Specific Members](#skippingincluding-specific-members)
-      - [Workspace Emulation](#workspace-emulation)
-    - [Toolchain](#toolchain)
-    - [Init and End tasks](#init-and-end-tasks)
-    - [Catching Errors](#catching-errors)
-    - [Cargo Alias Tasks](#cargo-alias-tasks)
-    - [Profiles](#profiles-1)
-      - [Environment Variables](#environment-variables-1)
-      - [Conditions](#conditions-1)
-      - [Built In Profiles](#built-in-profiles)
-    - [Private Tasks](#private-tasks)
-    - [Deprecated Tasks](#deprecated-tasks)
-    - [Watch](#watch)
-      - [Running Multiple Blocking Watches](#running-multiple-blocking-watches)
-    - [Functions](#functions)
-      - [Split](#split)
-      - [GetAt](#getat)
-      - [Remove Empty](#remove-empty)
-      - [Trim](#trim)
-      - [Decode](#decode)
-    - [Continuous Integration](#continuous-integration)
-      - [Github Actions](#github-actions)
-      - [Travis](#travis)
-      - [AppVeyor](#appveyor)
-      - [GitLab CI](#gitlab-ci)
-      - [CircleCI](#circleci)
-      - [Azure Pipelines](#azure-pipelines)
-      - [drone.io](#droneio)
-      - [Cirrus CI](#cirrus-ci)
-    - [Predefined Flows](#predefined-flows)
-      - [Coverage](#coverage)
-      - [Full List](#full-list)
-      - [Disabling Predefined Tasks/Flows](#disabling-predefined-tasksflows)
-      - [Modifying Predefined Tasks/Flows](#modifying-predefined-tasksflows)
-    - [Minimal Version](#minimal-version)
-    - [Performance Tuning](#performance-tuning)
-    - [Command Groups (Subcommands)](#command-groups-subcommands)
-      - [Local tasks](#local-tasks)
-      - [External subcommand file](#external-subcommand-file)
-    - [Diff Changes](#diff-changes)
-    - [Unstable Features](#unstable-features)
-    - [CLI Options](#cli-options)
-    - [Plugins](#plugins)
-    - [Defining Plugins](#defining-plugins)
-    - [Plugin SDK](#plugin-sdk)
-    - [Plugin Example - Docker Integration](#plugin-example---docker-integration)
-    - [Plugin Example - Run workspace members in parallel](#plugin-example---run-workspace-members-in-parallel)
-    - [Plugin Example - Load Env From Rust Script](#plugin-example---load-env-from-rust-script)
-    - [Plugin Example - Adding Simpler Windows Powershell Support](#plugin-example---adding-simpler-windows-powershell-support)
-    - [Shell Completion](#shell-completion)
-      - [Bash](#bash)
-      - [zsh](#zsh)
-      - [Fig / Amazon CodeWhisperer for command line](#fig--amazon-codewhisperer-for-command-line)
-    - [Global Configuration](#global-configuration-1)
-  - [Makefile Definition](#makefile-definition)
-  - [Task Naming Conventions](#task-naming-conventions)
-  - [Error Codes](#error-codes)
-    - [E001: Environment Variables Cycle Detected](#e001-environment-variables-cycle-detected)
-  - [Articles](#articles)
-  - [Badge](#badge)
-    - [Markdown](#markdown)
-    - [HTML](#html)
-  - [Roadmap](#roadmap)
-  - [Editor Support](#editor-support)
-    - [Vim](#vim)
-    - [VSCode](#vscode)
-  - [Contributing](#contributing)
-  - [Release History](#release-history)
-  - [License](#license)
+* [Overview](#overview)
+* [Installation](#installation)
+    * [Arch Linux](#installation-arch-linux)
+    * [Binary Release](#installation-binary-release)
+* [Usage](#usage)
+    * [Simple Example](#usage-simple)
+    * [Tasks, Dependencies, and Aliases](#usage-task-dependencies-alias)
+    * [Commands, Scripts, and Sub Tasks](#usage-task-command-script-task)
+        * [Sub Task](#usage-task-command-script-task-examplesubtask)
+        * [Command](#usage-task-command-script-task-examplecommand)
+        * [Script](#usage-task-command-script-task-examplescript)
+        * [Duckscript](#usage-task-command-script-task-exampleduckscript)
+        * [Rust Code](#usage-task-command-script-task-examplerust)
+        * [Cross Platform Shell](#usage-task-command-script-task-exampleshell2batch)
+        * [Other Programming Languages](#usage-task-command-script-task-examplegeneric)
+        * [Shebang Support](#usage-task-command-script-task-exampleshebang)
+    * [Default Tasks and Extending](#usage-default-tasks)
+        * [Extending External Makefiles](#usage-workspace-extending-external-makefile)
+        * [Automatically Extend Workspace Makefile](#usage-workspace-extend)
+        * [Load Scripts](#usage-load-scripts)
+        * [Predefined Makefiles](#usage-predefined-makefiles)
+        * [The Default Task](#usage-default-task)
+    * [Extending Tasks](#usage-extending-tasks)
+        * [Task Override](#usage-task-override)
+        * [Platform Override](#usage-platform-override)
+        * [Extend Attribute](#usage-task-extend-attribute)
+    * [Environment Variables](#usage-env)
+        * [Declaration](#env-declaration)
+        * [Global Configuration](#usage-env-config)
+        * [Task](#usage-env-task)
+        * [Command Line](#usage-env-cli)
+        * [Env File](#usage-env-file)
+        * [Env Setup Scripts](#usage-env-setup-scripts)
+        * [Loading Order](#usage-env-vars-loading-order)
+        * [Note about Ordering](#env-note-about-ordering)
+        * [Global](#usage-env-global)
+    * [Setting Up Working Directory](#usage-setting-up-working-directory)
+    * [Ignoring Errors](#usage-ignoring-errors)
+    * [Conditions](#usage-conditions)
+        * [Criteria](#usage-conditions-structure)
+        * [Scripts](#usage-conditions-script)
+        * [And/Or/Group Or](#usage-conditions-and-or)
+        * [Combining Conditions and Sub Tasks](#usage-conditions-and-subtasks)
+        * [Running Tasks Only If Sources Changed](#usage-running-tasks-only-if-sources-changed)
+    * [Installing Dependencies](#usage-installing-dependencies)
+        * [Cargo Plugins](#usage-installing-cargo-plugins)
+        * [Crates](#usage-installing-crates)
+        * [Rustup Components](#usage-installing-rustup-components)
+        * [Native Dependencies](#usage-installing-native-dependencies)
+        * [Defining Version](#usage-installing-version)
+        * [Global Lock Of Versions](#usage-installing-locked)
+        * [Alternate Cargo Install Commands](#usage-installing-alternate-cargo-install-commands)
+        * [Installation Priorities](#usage-installing-dependencies-priorities)
+        * [Multiple Installations](#usage-installing-dependencies-multiple)
+    * [Workspace Support](#usage-workspace-support)
+        * [Disabling Workspace Support](#usage-workspace-disabling-workspace-support)
+        * [Composite Flow](#usage-workspace-composite-flow)
+        * [Profiles](#usage-workspace-profiles)
+        * [Skipping/Including Specific Members](#usage-workspace-support-skip-include-members)
+        * [Workspace Emulation](#usage-workspace-emulation)
+    * [Toolchain](#usage-toolchain)
+    * [Init and End tasks](#usage-init-end-tasks)
+    * [Catching Errors](#usage-catching-errors)
+    * [Cargo Alias Tasks](#usage-cargo-alias-tasks)
+    * [Profiles](#usage-profiles)
+        * [Environment Variables](#usage-profiles-env)
+        * [Conditions](#usage-profiles-conditions)
+        * [Built In Profiles](#usage-profiles-built-in)
+    * [Private Tasks](#usage-private-tasks)
+    * [Deprecated Tasks](#usage-deprecated-tasks)
+    * [Watch](#usage-watch)
+        * [Running Multiple Blocking Watches](#usage-watch-running-multiple-blocking-watches)
+    * [Functions](#usage-functions)
+        * [Split](#usage-functions-split)
+        * [GetAt](#usage-functions-getat)
+        * [Remove Empty](#usage-functions-remove-empty)
+        * [Trim](#usage-functions-trim)
+        * [Decode](#usage-functions-decode)
+    * [Continuous Integration](#usage-ci)
+        * [Github Actions](#usage-ci-github-actions)
+        * [Travis](#usage-ci-travis)
+        * [AppVeyor](#usage-ci-appveyor)
+        * [GitLab](#usage-ci-gitlab)
+        * [CircleCI](#usage-ci-circleci)
+        * [Azure Pipelines](#usage-ci-azure-pipelines)
+        * [drone.io](#usage-ci-drone-io)
+        * [Cirrus CI](#usage-ci-cirrus)
+    * [Predefined Flows](#usage-predefined-flows)
+        * [Coverage](#usage-predefined-flows-coverage)
+        * [Full List](https://github.com/sagiegurari/cargo-make/blob/master/docs/cargo_make_task_list.md)
+        * [Disabling Predefined Tasks/Flows](#usage-predefined-flows-disable)
+        * [Modifying Predefined Tasks/Flows](#usage-predefined-flows-modify)
+    * [Minimal Version](#usage-min-version)
+    * [Performance Tuning](#usage-performance-tuning)
+    * [Command Groups (Subcommands)](#usage-command-groups)
+    * [Diff Changes](#usage-diff-changes)
+    * [Unstable Features](#usage-unstable-features)
+    * [CLI Options](#usage-cli)
+    * [Plugins](#usage-plugins)
+        * [Defining Plugins](#usage-plugins-defining-plugins)
+        * [Plugin SDK](#usage-plugins-plugin-sdk)
+        * [Plugin Example - Docker Integration](#usage-plugins-plugin-example-dockerize)
+        * [Plugin Example - Run workspace members in parallel](#usage-plugins-plugin-example-parallel-workspace-members)
+        * [Plugin Example - load Env From Rust Script](#usage-plugins-plugin-example-rustenv)
+        * [Plugin Example - Adding Simpler Windows Powershell Support](#usage-plugins-plugin-example-powershell)
+    * [Shell Completion](#usage-shell-completion)
+        * [Bash](#usage-shell-completion-bash)
+        * [zsh](#usage-shell-completion-zsh)
+        * [Fig / Amazon CodeWhisperer for command line](#usage-shell-completion-fig)
+    * [Global Configuration](#cargo-make-global-config)
+* [Makefile Definition](#descriptor-definition)
+* [Task Naming Conventions](#task-name-conventions)
+* [Articles](#articles)
+    * [Introduction and Basics](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-1-of-5-introduction-and-basics-b19ced7e7057)
+    * [Extending Tasks, Platform Overrides, and Aliases](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-2-of-5-extending-tasks-platform-overrides-1527386dcf87)
+    * [Environment Variables, Conditions, Sub Tasks, and Mixing](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-3-of-5-environment-variables-conditions-3c740a837a01)
+    * [Workspace Support, Init/End Tasks, and Makefiles](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-4-of-5-workspace-support-init-end-tasks-c3e738699421)
+    * [Predefined Tasks, CI Support, and Conventions](https://medium.com/@sagiegurari/automating-your-rust-workflows-with-cargo-make-part-5-final-predefined-tasks-ci-support-and-4594812e57da)
+* [Badge](#badge)
+* [Roadmap](#roadmap)
+* [Editor Support](#editor-support)
+    * [vim](#editor-support-vim)
+    * [vs-code](#editor-support-vs-code)
+* [Contributing](.github/CONTRIBUTING.md)
+* [Release History](https://github.com/sagiegurari/cargo-make/blob/master/CHANGELOG.md)
+* [License](#license)
 
 <a name="overview"></a>
 ## Overview
@@ -1418,9 +1406,9 @@ We run task **3** the output would be:
 
 <a name="usage-env"></a>
 ### Environment Variables
-`cargo-make` enabled the definition of environment variables in several ways, which can later be accessed throughout task execution.
+`cargo-make` enabled the definition of environmental variables in several ways, which can later be accessed throughout task execution.
 
-Because environment variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
+Because environmental variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
 
 * [Declaration](#env-declaration)
 * [Global Configuration](#usage-env-config)
@@ -1435,7 +1423,7 @@ Because environment variables play a significant role in `cargo-make`, it provid
 <a name="env-declaration"></a>
 #### Declaration
 
-There are multiple ways to declare environment variables, all of which are suited for specific suitcases.
+There are multiple ways to declare environmental variables, all of which are suited for specific suitcases.
 
 ##### Simple
 
@@ -1458,9 +1446,9 @@ LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 
 ##### Script
 
-`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environment variable.
+`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environmental variable.
 
-The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environment variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
+The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environmental variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
 
 > **Note:** This uses the default OS command runner (`cmd` on Windows, `sh` on UNIX systems), other runners like `duckscript`, `rust`, etc. are **not** supported.
 
@@ -1470,7 +1458,7 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 
 ##### Decode Map
 
-`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environment variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
+`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environmental variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
 
 ```toml
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
@@ -1499,7 +1487,7 @@ VARIABLE = {unset = true}
 <a name="usage-env-config"></a>
 #### Global Configuration
 
-Environment variables can be set globally using the top level `[env]` key, with the ability to provide multiple profiles, which can be selected using `--profile <name>` when executing `cargo make`.
+Environmental variables can be set globally using the top level `[env]` key, with the ability to provide multiple profiles, which can be selected using `--profile <name>` when executing `cargo make`.
 
 Environment variables set in the global `[env]` block [and default `Makefile.toml`](https://github.com/sagiegurari/cargo-make/blob/master/src/lib/descriptor/makefiles/stable.toml) will be set before running any tasks.
 
@@ -1535,7 +1523,7 @@ PROD = true
 <a name="usage-env-task"></a>
 #### Task
 
-Environment variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environment variables takes place after all dependencies have run, but _before_ the task itself runs.
+Environmental variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run, but _before_ the task itself runs.
 
 > **Note:** Reordering of task variables with global variables will **not** take place. Tasks simply overwrite previously declared variables.
 
@@ -1571,7 +1559,7 @@ It is also possible to provide an env file path as part of the CLI args as follo
 cargo make --env-file=./env/production.env
 ```
 
-This allows using the same `Makefile.toml`, but with a different set of environment variables loaded from the env file.
+This allows using the same `Makefile.toml`, but with a different set of environmental variables loaded from the env file.
 
 The env file is a simple `key=value`, which is similar to [dotenv](https://www.npmjs.com/package/dotenv), but only supports variable interpolation using the `${}` syntax.
 
@@ -1593,7 +1581,7 @@ env_files = [
 ]
 ```
 
-To only load environment variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
+To only load environmental variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
 
 ```toml
 env_files = [
@@ -1602,7 +1590,7 @@ env_files = [
 ]
 ```
 
-Use the `profile` property to only load environment variables whenever a specific profile is active.
+Use the `profile` property to only load environmental variables whenever a specific profile is active.
 
 > To learn more about profiles, check the [profiles section](#usage-profiles).
 
@@ -1664,16 +1652,16 @@ These scripts use that value to create a new environment variable **`COMPOSITE_2
 * Load global environment variables defined in the **env.\[current profile\]** block.
 * Load global environment setup scripts defined in the **env_scripts** attribute.
 * **Per Task**
-  * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
   * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
+  * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
   * Load environment variables defined in the **env** block (same behavior as global env block).
 
-During each step, variables can be reordered to ensure all dependencies are specified. The environment variables will be interpolated before every task run.
+During each step, variables can be reordered to ensure all dependencies are specified. The environmental variables will be interpolated before every task run.
 
 <a name="env-note-about-ordering"></a>
 #### Note about Ordering
 
-The ordering of environment variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
+The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
 
 This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
 
@@ -1726,7 +1714,7 @@ This is an extended example, which would not work using the naive implementation
 
 <a name="usage-env-global"></a>
 #### Global
-In addition to manually setting environment variables, cargo-make will also automatically add a few environment variables, which can be helpful when running task scripts, commands, conditions, and more.
+In addition to manually setting environment variables, cargo-make will also automatically add a few environmental variables, which can be helpful when running task scripts, commands, conditions, and more.
 
 * **`CARGO_MAKE`** - Set to "true" to help sub-processes identify they are running from `cargo` make.
 * **`CARGO_MAKE_TASK`** - Holds the name of the main task being executed.
@@ -4194,7 +4182,7 @@ install_crate = { rustup_component_name = "rust-src" }
 <a name="e001"></a>
 ### E001: Environment Variables Cycle Detected
 
-A cycle between different environment variables has been detected;
+A cycle between different environmental variables has been detected;
 This can happen during the merging of environments (at every loading step).
 Due to reordering and to make sure that no circular references exist,
 this error is emitted.
@@ -4202,7 +4190,7 @@ this error is emitted.
 You can fix this issue, by looking at your env config, and seeing if at any point a circular reference could have occurred.
 The error message mentions the environment variables that are likely candidates for the cause of the cycle.
 
-Your best bet is to try to break the cycle, by creating a new environment variable or use a static value multiple times.
+Your best bet is to try to break the cycle, by creating a new environmental variable or use a static value multiple times.
 Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems,
 even without cycle detection or no reordering this would likely cause hidden issues during
 execution, as `cargo-make` would need to otherwise set instances to an empty value instead.
@@ -4211,7 +4199,7 @@ hidden and hard to debug issue.
 
 > **Note:** Scripts are known to sometimes cause false-positives.
 > In that case use the `depends_on` property, to explicitly tell `cargo-make`, which
-> environment variables should be considered a dependency instead of trying to guess from the script.
+> environmental variables should be considered a dependency instead of trying to guess from the script.
 
 
 <a name="articles"></a>
