@@ -277,7 +277,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Deserialize, Serialize, Debug, Clone, Default)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
@@ -295,7 +295,7 @@ impl CrateInfo {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds env information
 pub struct EnvInfo {
     /// Rust info
@@ -308,7 +308,8 @@ pub struct EnvInfo {
     pub ci_info: CiInfo,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Holds flow information
 pub struct FlowInfo {
     /// The flow config object
@@ -332,6 +333,7 @@ pub struct FlowInfo {
 }
 
 #[derive(Debug, Clone, Default)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Holds mutable flow state
 pub struct FlowState {
     /// timing info for summary
@@ -1107,6 +1109,7 @@ pub enum ConditionScriptValue {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -2427,7 +2430,8 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Serialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name
