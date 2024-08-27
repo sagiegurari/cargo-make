@@ -12,7 +12,6 @@ use crate::plugin::types::Plugins;
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
-use regex::Regex;
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
 
@@ -308,6 +307,31 @@ pub struct EnvInfo {
     pub ci_info: CiInfo,
 }
 
+#[derive(Clone, Debug)]
+pub struct SerdeRegex(pub regex::Regex);
+
+impl serde::Serialize for SerdeRegex {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let s = format!("{}", self.0);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for SerdeRegex {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(SerdeRegex(
+            regex::Regex::new(s.as_str()).map_err(serde::de::Error::custom)?,
+        ))
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Holds flow information
@@ -327,7 +351,7 @@ pub struct FlowInfo {
     /// If true, the init and end tasks are skipped
     pub skip_init_end_tasks: bool,
     /// Skip tasks that match the provided pattern
-    pub skip_tasks_pattern: Option<Regex>,
+    pub skip_tasks_pattern: Option<SerdeRegex>,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
 }

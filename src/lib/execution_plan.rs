@@ -13,12 +13,12 @@ use crate::logger;
 use crate::profile;
 use crate::proxy_task::create_proxy_task;
 use crate::types::{
-    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, SerdeRegex, Step, Task,
+    TaskIdentifier, Workspace,
 };
 use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
 use indexmap::IndexMap;
-use regex::Regex;
 use std::collections::HashSet;
 use std::env;
 use std::path::Path;
@@ -342,10 +342,10 @@ fn create_for_step(
     task_names: &mut HashSet<String>,
     root: bool,
     allow_private: bool,
-    skip_tasks_pattern: Option<&Regex>,
+    skip_tasks_pattern: Option<&SerdeRegex>,
 ) -> Result<(), CargoMakeError> {
     if let Some(skip_tasks_pattern_regex) = skip_tasks_pattern {
-        if skip_tasks_pattern_regex.is_match(&task.name) {
+        if skip_tasks_pattern_regex.0.is_match(&task.name) {
             debug!("Skipping task: {} due to skip pattern.", &task.name);
             return Ok(());
         }
@@ -452,7 +452,7 @@ pub(crate) struct ExecutionPlanBuilder<'a> {
     pub disable_workspace: bool,
     pub allow_private: bool,
     pub sub_flow: bool,
-    pub skip_tasks_pattern: Option<&'a Regex>,
+    pub skip_tasks_pattern: Option<&'a SerdeRegex>,
     pub skip_init_end_tasks: bool,
 }
 
@@ -507,7 +507,7 @@ impl<'a> ExecutionPlanBuilder<'a> {
         }
 
         let skip = match skip_tasks_pattern {
-            Some(pattern) => pattern.is_match(task),
+            Some(pattern) => pattern.0.is_match(task),
             None => false,
         };
 

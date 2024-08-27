@@ -11,7 +11,7 @@ use crate::command;
 use crate::error::CargoMakeError;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::io::{create_file, delete_file};
-use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
+use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan, SerdeRegex};
 use regex::Regex;
 use std::fs::File;
 use std::io;
@@ -32,7 +32,7 @@ pub(crate) fn run(
 ) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
-            Ok(reg) => Some(reg),
+            Ok(reg) => Some(SerdeRegex(reg)),
             Err(_) => {
                 warn!("Invalid skip tasks pattern provided: {}", pattern);
                 None

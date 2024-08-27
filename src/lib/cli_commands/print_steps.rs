@@ -11,7 +11,7 @@ use crate::error::CargoMakeError;
 use std::io;
 
 use crate::execution_plan::ExecutionPlanBuilder;
-use crate::types::{Config, CrateInfo, ExecutionPlan};
+use crate::types::{Config, CrateInfo, ExecutionPlan, SerdeRegex};
 use regex::Regex;
 
 #[derive(Debug)]
@@ -87,7 +87,7 @@ pub fn print(
 ) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
-            Ok(reg) => Some(reg),
+            Ok(reg) => Some(SerdeRegex(reg)),
             Err(_) => {
                 warn!("Invalid skip tasks pattern provided: {}", pattern);
                 None

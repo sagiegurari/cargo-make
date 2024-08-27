@@ -4,7 +4,7 @@ use super::*;
 use crate::test;
 use crate::types::{
     ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
-    TaskCondition,
+    SerdeRegex, TaskCondition,
 };
 use cfg_if::cfg_if;
 use git_info::types::GitInfo;
@@ -81,7 +81,7 @@ fn run_flow_private_skipped() {
         disable_on_error: false,
         allow_private: false,
         skip_init_end_tasks: false,
-        skip_tasks_pattern: Some(Regex::new("test").unwrap()),
+        skip_tasks_pattern: Some(SerdeRegex(Regex::new("test").unwrap())),
         cli_arguments: None,
     };
 

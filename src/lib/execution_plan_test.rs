@@ -1,6 +1,8 @@
 use super::*;
 use crate::descriptor;
-use crate::types::{ConfigSection, DependencyIdentifier, PlatformOverrideTask, TaskWatchOptions};
+use crate::types::{
+    ConfigSection, DependencyIdentifier, PlatformOverrideTask, SerdeRegex, TaskWatchOptions,
+};
 
 #[test]
 fn get_actual_task_name_not_found() {
@@ -1343,11 +1345,11 @@ fn create_with_dependencies_and_skip_filter() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let skip_filter = Regex::new("filtered.*").unwrap();
+    let skip_filter = regex::Regex::new("filtered.*").unwrap();
 
     let execution_plan = ExecutionPlanBuilder {
         allow_private: true,
-        skip_tasks_pattern: Some(&skip_filter),
+        skip_tasks_pattern: Some(&SerdeRegex(skip_filter)),
         ..ExecutionPlanBuilder::new(&config, "test")
     }
     .build()

@@ -35,8 +35,8 @@ use crate::scriptengine;
 use crate::time_summary;
 use crate::types::{
     CliArgs, Config, DeprecationInfo, EnvInfo, EnvValue, ExecutionPlan, FlowInfo, FlowState,
-    MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, Step, Task,
-    TaskWatchOptions,
+    MaybeArray, RunTaskInfo, RunTaskName, RunTaskOptions, RunTaskRoutingInfo, SerdeRegex, Step,
+    Task, TaskWatchOptions,
 };
 
 fn do_in_task_working_directory<F>(step: &Step, mut action: F) -> Result<(), CargoMakeError>
@@ -666,7 +666,7 @@ pub fn run(
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
-            Ok(reg) => Some(reg),
+            Ok(reg) => Some(SerdeRegex(reg)),
             Err(_) => {
                 warn!("Invalid skip tasks pattern provided: {}", pattern);
                 None
