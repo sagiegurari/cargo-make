@@ -325,7 +325,7 @@ fn should_watch(task: &Task) -> bool {
     }
 }
 
-pub(crate) fn run_task(
+pub fn run_task(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     step: &Step,
@@ -337,7 +337,7 @@ pub(crate) fn run_task(
     run_task_with_options(flow_info, flow_state, step, &options)
 }
 
-pub(crate) fn run_task_with_options(
+pub fn run_task_with_options(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     step: &Step,
@@ -489,7 +489,7 @@ pub(crate) fn run_task_with_options(
     Ok(())
 }
 
-fn run_task_flow(
+pub fn run_task_flow(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     execution_plan: &ExecutionPlan,
@@ -594,7 +594,7 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     task_config
 }
 
-pub(crate) fn run_flow(
+pub fn run_flow(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     sub_flow: bool,

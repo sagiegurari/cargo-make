@@ -55,6 +55,24 @@ pub enum CargoMakeError {
     #[strum(to_string = "`std::io::Error` error. {error:?}")]
     StdIoError { error: std::io::Error } = 700,
 
+    #[cfg(feature = "diesel")]
+    #[strum(to_string = "`diesel::result::Error` error. {error:?}")]
+    DieselError { error: diesel::result::Error } = 705,
+
+    #[cfg(feature = "diesel")]
+    #[strum(to_string = "`diesel::r2d2::Error` error. {error:?}")]
+    DieselR2d2Error { error: diesel::r2d2::Error } = 706,
+
+    #[cfg(feature = "diesel_migrations")]
+    #[strum(to_string = "`diesel_migrations::MigrationError` error. {error:?}")]
+    DieselMigrationError {
+        error: diesel_migrations::MigrationError,
+    } = 707,
+
+    #[cfg(feature = "diesel")]
+    #[strum(to_string = "`r2d2::Error` error. {error:?}")]
+    R2d2Error { error: diesel::r2d2::PoolError } = 708,
+
     #[strum(to_string = "`std::fmt::Error` error. {error:?}")]
     StdFmtError { error: std::fmt::Error } = 709,
 
@@ -127,6 +145,34 @@ impl std::process::Termination for CargoMakeError {
         } else {
             std::process::ExitCode::from(status_code as u8)
         }
+    }
+}
+
+#[cfg(feature = "diesel")]
+impl From<diesel::result::Error> for CargoMakeError {
+    fn from(error: diesel::result::Error) -> Self {
+        Self::DieselError { error }
+    }
+}
+
+#[cfg(feature = "diesel")]
+impl From<diesel::r2d2::Error> for CargoMakeError {
+    fn from(error: diesel::r2d2::Error) -> Self {
+        Self::DieselR2d2Error { error }
+    }
+}
+
+#[cfg(feature = "diesel")]
+impl From<diesel::r2d2::PoolError> for CargoMakeError {
+    fn from(error: diesel::r2d2::PoolError) -> Self {
+        Self::R2d2Error { error }
+    }
+}
+
+#[cfg(feature = "diesel_migrations")]
+impl From<diesel_migrations::MigrationError> for CargoMakeError {
+    fn from(error: diesel_migrations::MigrationError) -> Self {
+        Self::DieselMigrationError { error }
     }
 }
 

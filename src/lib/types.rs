@@ -332,8 +332,8 @@ impl<'de> serde::Deserialize<'de> for SerdeRegex {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds flow information
 pub struct FlowInfo {
     /// The flow config object
@@ -1132,8 +1132,8 @@ pub enum ConditionScriptValue {
     Text(Vec<String>),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 #[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
     /// if true, it should ignore all data in base task
@@ -2454,8 +2454,8 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
 #[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name
