@@ -713,8 +713,9 @@ dependencies = [
 
 [[package]]
 name = "git_info"
-version = "0.1.2"
-source = "git+https://github.com/SamuelMarks/git_info?branch=serde#6538c9d12b83c2a2ca9f6b5285f1c3bfb002b572"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9525474359e360de19580a77590f3491c94d57b1ef2b8bd468877a83cbc7f4cb"
 dependencies = [
  "serde",
 ]
@@ -1359,8 +1360,9 @@ dependencies = [
 
 [[package]]
 name = "rust_info"
-version = "0.3.2"
-source = "git+https://github.com/SamuelMarks/rust_info?branch=serde#62a8e08a0b848f27d67748b268f9e83779734ed1"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "99a6143e57e2d16a1dc652aa61664e8a1044d88e4b62470bde0a759800895c8d"
 dependencies = [
  "serde",
 ]

@@ -636,7 +636,7 @@ fn prepare_protected_execution_plan(flow_info: &FlowInfo) -> Result<ExecutionPla
     }
 }
 
-fn run_protected_flow(
+pub fn run_protected_flow(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
     execution_plan: &ExecutionPlan,

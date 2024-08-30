@@ -7,18 +7,18 @@ use crate::types::{CliArgs, Config};
 use std::cmp::Ordering;
 use std::time::SystemTime;
 
-pub(crate) fn is_time_summary_enabled() -> bool {
+pub fn is_time_summary_enabled() -> bool {
     envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY")
 }
 
-pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time: SystemTime) {
+pub fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time: SystemTime) {
     match start_time.elapsed() {
         Ok(elapsed) => time_summary.push((name.to_string(), elapsed.as_millis())),
         _ => (),
     };
 }
 
-pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
+pub fn print(time_summary: &Vec<(String, u128)>) {
     if is_time_summary_enabled() {
         let mut time_summary_sorted = time_summary.clone();
         time_summary_sorted
@@ -62,7 +62,7 @@ pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
     }
 }
 
-pub(crate) fn init(config: &Config, cli_args: &CliArgs) {
+pub fn init(config: &Config, cli_args: &CliArgs) {
     if config.config.time_summary.unwrap_or(false)
         || cli_args.print_time_summary
         || envmnt::is("CARGO_MAKE_CI")

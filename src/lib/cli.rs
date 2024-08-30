@@ -141,8 +141,6 @@ pub fn run(
     let (env_info, config, task, time_summary_vec, start_time) =
         prepare_for_execution_plan(cli_args, global_config, logger_options)?;
 
-    // let execution_plan: ExecutionPlan;
-
     if cli_args.list_all_steps || cli_args.list_category_steps.is_some() {
         cli_commands::list_steps::run(
             &config,

@@ -74,7 +74,7 @@ mod recursion_level;
 pub mod runner;
 mod scriptengine;
 mod storage;
-mod time_summary;
+pub mod time_summary;
 mod toolchain;
 mod version;
 
