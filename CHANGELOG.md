@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.16
+### v0.37.16 (2024-08-30)
 
 * Enhancement: Expand condition_script_runner_args #1132 (thanks @wmmc88)
 

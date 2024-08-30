@@ -242,7 +242,7 @@ cargo make my-flow
 The output would look something like this:
 
 ```console
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: my-flow
 [cargo-make] INFO - Setting Up Env.
@@ -665,7 +665,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -682,7 +682,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make varargs
 
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -709,7 +709,7 @@ Would output:
 ```console
 > cargo make varargs arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: varargs
 [cargo-make] INFO - Setting Up Env.
@@ -760,7 +760,7 @@ Invoking cargo-make with additional arguments would result in the following:
 ```console
 > cargo make cli-args arg1 arg2 arg3
 
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -777,7 +777,7 @@ Invoking cargo-make without any additional arguments would result in the followi
 ```console
 > cargo make cli-args
 
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: Makefile.toml
 [cargo-make] INFO - Task: cli-args
 [cargo-make] INFO - Setting Up Env.
@@ -1039,7 +1039,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-sh
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-sh
 [cargo-make] INFO - Profile: development
@@ -1066,7 +1066,7 @@ Output:
 
 ```console
 > cargo make --cwd ./examples --makefile ./shebang.toml shebang-python
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: ./shebang.toml
 [cargo-make] INFO - Task: shebang-python
 [cargo-make] INFO - Profile: development
@@ -1391,7 +1391,7 @@ args = ["3"]
 We run task **3** the output would be:
 
 ```console
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: task_extend.toml
 [cargo-make] INFO - Task: 3
 [cargo-make] INFO - Profile: development
@@ -1406,9 +1406,9 @@ We run task **3** the output would be:
 
 <a name="usage-env"></a>
 ### Environment Variables
-`cargo-make` enabled the definition of environmental variables in several ways, which can later be accessed throughout task execution.
+`cargo-make` enabled the definition of environment variables in several ways, which can later be accessed throughout task execution.
 
-Because environmental variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
+Because environment variables play a significant role in `cargo-make`, it provides multiple declarative ways to provide them at different levels of granularity.
 
 * [Declaration](#env-declaration)
 * [Global Configuration](#usage-env-config)
@@ -1423,7 +1423,7 @@ Because environmental variables play a significant role in `cargo-make`, it prov
 <a name="env-declaration"></a>
 #### Declaration
 
-There are multiple ways to declare environmental variables, all of which are suited for specific suitcases.
+There are multiple ways to declare environment variables, all of which are suited for specific suitcases.
 
 ##### Simple
 
@@ -1446,9 +1446,9 @@ LIST_VALUE = [ "VALUE1", "VALUE2", "VALUE3" ]
 
 ##### Script
 
-`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environmental variable.
+`cargo-make` supports the use of simple scripts. The output of the said script will then determine the value of the environment variable.
 
-The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environmental variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
+The script's object has two additional arguments: `multiline` and `depends_on`. If `multiple` is set to `true`, the supplied script will be evaluated as a script with multiple lines. `depends_on` is a list of environment variables this script depends on, which is taken into account during reordering if unset `cargo-make` will try to guess the variables used during reordering.
 
 > **Note:** This uses the default OS command runner (`cmd` on Windows, `sh` on UNIX systems), other runners like `duckscript`, `rust`, etc. are **not** supported.
 
@@ -1458,7 +1458,7 @@ EVALUATED_VAR = { script = ["echo SOME VALUE"] }
 
 ##### Decode Map
 
-`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environmental variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
+`cargo-make` supports the use of mappings where a `source` is matched against a dictionary of possible `mapping`s, where each key of the `mapping` is compared against the evaluated `source` value. Should the key and `source` be the same, the corresponding value to the key will be the value of the environment variable. If no key is matched, the `default_value` is used if provided. Otherwise, it will default to an empty string instead.
 
 ```toml
 LIBRARY_EXTENSION = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "unknown", mapping = {"linux" = "so", "macos" = "dylib", "windows" = "dll", "openbsd" = "so" } }
@@ -1523,7 +1523,7 @@ PROD = true
 <a name="usage-env-task"></a>
 #### Task
 
-Environmental variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environmental variables takes place after all dependencies have run, but _before_ the task itself runs.
+Environmental variables can be set in a task's scope, and will be merged with the global environment when that task gets executed. This means that the evaluation of environment variables takes place after all dependencies have run, but _before_ the task itself runs.
 
 > **Note:** Reordering of task variables with global variables will **not** take place. Tasks simply overwrite previously declared variables.
 
@@ -1559,7 +1559,7 @@ It is also possible to provide an env file path as part of the CLI args as follo
 cargo make --env-file=./env/production.env
 ```
 
-This allows using the same `Makefile.toml`, but with a different set of environmental variables loaded from the env file.
+This allows using the same `Makefile.toml`, but with a different set of environment variables loaded from the env file.
 
 The env file is a simple `key=value`, which is similar to [dotenv](https://www.npmjs.com/package/dotenv), but only supports variable interpolation using the `${}` syntax.
 
@@ -1581,7 +1581,7 @@ env_files = [
 ]
 ```
 
-To only load environmental variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
+To only load environment variables whenever a variable hasn't been defined yet, use the `defaults_only` property.
 
 ```toml
 env_files = [
@@ -1590,7 +1590,7 @@ env_files = [
 ]
 ```
 
-Use the `profile` property to only load environmental variables whenever a specific profile is active.
+Use the `profile` property to only load environment variables whenever a specific profile is active.
 
 > To learn more about profiles, check the [profiles section](#usage-profiles).
 
@@ -1652,16 +1652,16 @@ These scripts use that value to create a new environment variable **`COMPOSITE_2
 * Load global environment variables defined in the **env.\[current profile\]** block.
 * Load global environment setup scripts defined in the **env_scripts** attribute.
 * **Per Task**
-  * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
   * Setup **per task** internal environment variables (see [Global](#usage-env-global) section).
+  * Load environment files defined in the **env_files** attribute (relative paths are treated differently than global env_files).
   * Load environment variables defined in the **env** block (same behavior as global env block).
 
-During each step, variables can be reordered to ensure all dependencies are specified. The environmental variables will be interpolated before every task run.
+During each step, variables can be reordered to ensure all dependencies are specified. The environment variables will be interpolated before every task run.
 
 <a name="env-note-about-ordering"></a>
 #### Note about Ordering
 
-The ordering of environmental variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
+The ordering of environment variables in `cargo-make` is not necessarily the same between definition and evaluation. `cargo-make` instead looks at the values and reorders variables depending on the variables they mention.
 
 This behavior has many benefits, like the ability to reference other variables freely or redefine them, in different scopes.
 
@@ -1714,7 +1714,7 @@ This is an extended example, which would not work using the naive implementation
 
 <a name="usage-env-global"></a>
 #### Global
-In addition to manually setting environment variables, cargo-make will also automatically add a few environmental variables, which can be helpful when running task scripts, commands, conditions, and more.
+In addition to manually setting environment variables, cargo-make will also automatically add a few environment variables, which can be helpful when running task scripts, commands, conditions, and more.
 
 * **`CARGO_MAKE`** - Set to "true" to help sub-processes identify they are running from `cargo` make.
 * **`CARGO_MAKE_TASK`** - Holds the name of the main task being executed.
@@ -2630,7 +2630,7 @@ cargo make --cwd ./examples --makefile profile.toml --profile production echo
 Output:
 
 ```console
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: profile.toml
 [cargo-make] INFO - Task: echo
 [cargo-make] INFO - Profile: production
@@ -2750,7 +2750,7 @@ deprecated = true
 When invoking **legacy** task for example, the output is:
 
 ```console
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: deprecated.toml
 [cargo-make] INFO - Task: legacy
 [cargo-make] INFO - Profile: development
@@ -2791,7 +2791,7 @@ watch = true
 Below is a sample output of invoking the task:
 
 ```console
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: ./examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2799,7 +2799,7 @@ Below is a sample output of invoking the task:
 [cargo-make] INFO - Running Task: watch-example
 [cargo-make] INFO - Running Task: watch-example-watch
 [cargo-make] INFO - Execute Command: "cargo" "watch" "-q" "-x" "make --disable-check-for-updates --no-on-error --loglevel=info --makefile=/projects/rust/cargo-make/examples/watch.toml watch-example"
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: /projects/rust/cargo-make/examples/watch.toml
 [cargo-make] INFO - Task: watch-example
 [cargo-make] INFO - Setting Up Env.
@@ -2883,7 +2883,7 @@ args = ["${MULTIPLE_VALUES}"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml split
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: split
 [cargo-make] INFO - Profile: development
@@ -2895,7 +2895,7 @@ args = ["${MULTIPLE_VALUES}"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml no-split
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: no-split
 [cargo-make] INFO - Profile: development
@@ -2933,7 +2933,7 @@ args = ["@@getat(MULTIPLE_VALUES,|,3)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml getat
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: getat
 [cargo-make] INFO - Profile: development
@@ -2960,7 +2960,7 @@ args = ["1", "@@remove-empty(DOES_NOT_EXIST)", "2"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: remove-empty
 [cargo-make] INFO - Profile: development
@@ -2993,7 +2993,7 @@ args = ["@@trim(TRIM_VALUE)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml remove-empty
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim
 [cargo-make] INFO - Profile: development
@@ -3022,7 +3022,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 
 ```console
 > cargo make --cwd ./examples --makefile functions.toml trim-start
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-start
 [cargo-make] INFO - Profile: development
@@ -3034,7 +3034,7 @@ args = ["@@trim(TRIM_VALUE,end)"]
 [cargo-make] INFO - Build Done  in 0 seconds.
 
 > cargo make --cwd ./examples --makefile functions.toml trim-end
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: trim-end
 [cargo-make] INFO - Profile: development
@@ -3072,7 +3072,7 @@ Sample run for a mapping that was found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=development decode
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -3088,7 +3088,7 @@ Another sample run for a mapping that was not found:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode
 [cargo-make] INFO - Profile: development
@@ -3113,7 +3113,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=unmapped decode-with-default
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-default
 [cargo-make] INFO - Profile: development
@@ -3137,7 +3137,7 @@ Sample run:
 
 ```console
 cargo make --cwd ./examples --makefile functions.toml -e DECODE_ENV_VAR=test decode-with-eval
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: functions.toml
 [cargo-make] INFO - Task: decode-with-eval
 [cargo-make] INFO - Profile: development
@@ -3511,7 +3511,7 @@ In order to specify the minimal version, use the **min_version** in the config s
 
 ```toml
 [config]
-min_version = "0.37.15"
+min_version = "0.37.16"
 ```
 
 <a name="usage-performance-tuning"></a>
@@ -3641,7 +3641,7 @@ Example Usage:
 
 ```console
 cargo make --diff-steps --makefile ./examples/override_core.toml post-build
-[cargo-make] INFO - cargo make 0.37.15
+[cargo-make] INFO - cargo make 0.37.16
 [cargo-make] INFO - Build File: ./examples/override_core.toml
 [cargo-make] INFO - Task: post-build
 [cargo-make] INFO - Setting Up Env.
@@ -4182,7 +4182,7 @@ install_crate = { rustup_component_name = "rust-src" }
 <a name="e001"></a>
 ### E001: Environment Variables Cycle Detected
 
-A cycle between different environmental variables has been detected;
+A cycle between different environment variables has been detected;
 This can happen during the merging of environments (at every loading step).
 Due to reordering and to make sure that no circular references exist,
 this error is emitted.
@@ -4190,7 +4190,7 @@ this error is emitted.
 You can fix this issue, by looking at your env config, and seeing if at any point a circular reference could have occurred.
 The error message mentions the environment variables that are likely candidates for the cause of the cycle.
 
-Your best bet is to try to break the cycle, by creating a new environmental variable or use a static value multiple times.
+Your best bet is to try to break the cycle, by creating a new environment variable or use a static value multiple times.
 Cycles are usually caused by rapidly changing configs, forgotten and unused env variables or design problems,
 even without cycle detection or no reordering this would likely cause hidden issues during
 execution, as `cargo-make` would need to otherwise set instances to an empty value instead.
@@ -4199,7 +4199,7 @@ hidden and hard to debug issue.
 
 > **Note:** Scripts are known to sometimes cause false-positives.
 > In that case use the `depends_on` property, to explicitly tell `cargo-make`, which
-> environmental variables should be considered a dependency instead of trying to guess from the script.
+> environment variables should be considered a dependency instead of trying to guess from the script.
 
 
 <a name="articles"></a>
