@@ -164,8 +164,8 @@ impl CliArgs {
 }
 
 #[derive(Debug)]
-pub(crate) struct RunTaskOptions {
-    pub(crate) plugins_enabled: bool,
+pub struct RunTaskOptions {
+    pub plugins_enabled: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -2464,11 +2464,37 @@ pub struct Step {
     pub config: Task,
 }
 
-#[derive(Debug)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan which defines all steps to run and the order to run them
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>,
+
+    /// Which steps to execute
+    pub steps_to_run: std::ops::Range<usize>,
+
+    /// Execution plan name
+    pub name: String,
+}
+
+impl Default for ExecutionPlan {
+    fn default() -> Self {
+        Self {
+            steps: Vec::<Step>::new(),
+            steps_to_run: std::ops::Range::<usize>::default(),
+            name: String::from("default_name"),
+        }
+    }
+}
+
+impl ExecutionPlan {
+    pub fn new(steps: Vec<Step>) -> Self {
+        Self {
+            steps,
+            ..ExecutionPlan::default()
+        }
+    }
 }
 
 #[derive(Debug)]

@@ -19,7 +19,11 @@ use std::io::{BufWriter, Write};
 
 fn write_as_string(execution_plan: &ExecutionPlan, file: &File) -> io::Result<()> {
     let mut writer = BufWriter::new(file);
-    writeln!(&mut writer, "{:#?}", &execution_plan.steps)
+    writeln!(
+        &mut writer,
+        "{:#?}",
+        &execution_plan.steps[execution_plan.steps_to_run.clone()]
+    )
 }
 
 /// Runs the execution plan diff

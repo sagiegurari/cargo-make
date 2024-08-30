@@ -549,6 +549,6 @@ impl<'a> ExecutionPlanBuilder<'a> {
             };
         }
 
-        Ok(ExecutionPlan { steps })
+        Ok(ExecutionPlan::new(steps))
     }
 }

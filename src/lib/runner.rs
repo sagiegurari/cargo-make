@@ -229,7 +229,8 @@ fn run_sub_task_and_report(
                 if fork {
                     run_forked_task(&sub_flow_info, flow_state, cleanup_task)
                 } else {
-                    run_flow(&sub_flow_info, flow_state, true)
+                    let execution_plan = prepare_execution_plan(&flow_info, false)?;
+                    run_task_flow(&sub_flow_info, flow_state, &execution_plan)
                 }
             };
 
@@ -494,7 +495,7 @@ pub fn run_task_flow(
     flow_state: Rc<RefCell<FlowState>>,
     execution_plan: &ExecutionPlan,
 ) -> Result<(), CargoMakeError> {
-    for step in &execution_plan.steps {
+    for step in &execution_plan.steps[execution_plan.steps_to_run.clone()] {
         run_task(&flow_info, flow_state.clone(), &step)?;
     }
     Ok(())
@@ -594,11 +595,10 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     task_config
 }
 
-pub fn run_flow(
+pub fn prepare_execution_plan(
     flow_info: &FlowInfo,
-    flow_state: Rc<RefCell<FlowState>>,
     sub_flow: bool,
-) -> Result<(), CargoMakeError> {
+) -> Result<ExecutionPlan, CargoMakeError> {
     let allow_private = sub_flow || flow_info.allow_private;
 
     let execution_plan = ExecutionPlanBuilder {
@@ -611,17 +611,11 @@ pub fn run_flow(
         ..ExecutionPlanBuilder::new(&flow_info.config, &flow_info.task)
     }
     .build()?;
-    debug!("Created execution plan: {:#?}", &execution_plan);
-
-    run_task_flow(&flow_info, flow_state, &execution_plan)?;
-
-    Ok(())
+    debug!("Prepared execution plan: {:#?}", &execution_plan);
+    Ok(execution_plan)
 }
 
-fn run_protected_flow(
-    flow_info: &FlowInfo,
-    flow_state: Rc<RefCell<FlowState>>,
-) -> Result<(), CargoMakeError> {
+fn prepare_protected_execution_plan(flow_info: &FlowInfo) -> Result<ExecutionPlan, CargoMakeError> {
     let proxy_task = create_proxy_task(
         &flow_info.task,
         flow_info.allow_private,
@@ -633,35 +627,36 @@ fn run_protected_flow(
     let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false)?;
 
     if exit_code != 0 {
-        match flow_info.config.config.on_error_task {
-            Some(ref on_error_task) => {
-                let mut error_flow_info = flow_info.clone();
-                error_flow_info.disable_on_error = true;
-                error_flow_info.task = on_error_task.clone();
+        Err(CargoMakeError::TaskErrorExitCode(exit_code))
+    } else if flow_info.config.config.on_error_task.is_some() {
+        let execution_plan = prepare_execution_plan(&flow_info, false)?;
+        Ok(execution_plan)
+    } else {
+        Err(CargoMakeError::NotFound(String::from("ExecutionPlan")))
+    }
+}
 
-                run_flow(&error_flow_info, flow_state, false)?;
-            }
-            _ => (),
-        };
-
-        error!("Task error detected, exit code: {}", &exit_code);
+fn run_protected_flow(
+    flow_info: &FlowInfo,
+    flow_state: Rc<RefCell<FlowState>>,
+    execution_plan: &ExecutionPlan,
+) -> Result<(), CargoMakeError> {
+    if let Some(ref on_error_task) = flow_info.config.config.on_error_task {
+        let mut error_flow_info = flow_info.clone();
+        error_flow_info.disable_on_error = true;
+        error_flow_info.task = on_error_task.clone();
+        run_task_flow(&error_flow_info, flow_state, &execution_plan)?;
     }
     Ok(())
 }
 
-/// Runs the requested tasks.<br>
-/// The flow is as follows:
-///
-/// * Create an execution plan based on the requested task and its dependencies
-/// * Run all tasks defined in the execution plan
-pub fn run(
+pub fn prepare_for_run(
     config: Config,
     task: &str,
     env_info: EnvInfo,
     cli_args: &CliArgs,
-    start_time: SystemTime,
     time_summary_vec: Vec<(String, u128)>,
-) -> Result<(), CargoMakeError> {
+) -> Result<(FlowInfo, Rc<RefCell<FlowState>>, ExecutionPlan), CargoMakeError> {
     time_summary::init(&config, &cli_args);
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
@@ -691,10 +686,36 @@ pub fn run(
 
     let flow_state_rc = Rc::new(RefCell::new(flow_state));
 
+    let execution_plan =
+        if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
+            prepare_execution_plan(&flow_info, false)?
+        } else {
+            prepare_protected_execution_plan(&flow_info)?
+        };
+
+    Ok((flow_info, flow_state_rc, execution_plan))
+}
+
+/// Runs the requested tasks.<br>
+/// The flow is as follows:
+///
+/// * Create an execution plan based on the requested task and its dependencies
+/// * Run all tasks defined in the execution plan
+pub fn run(
+    config: Config,
+    task: &str,
+    env_info: EnvInfo,
+    cli_args: &CliArgs,
+    start_time: SystemTime,
+    time_summary_vec: Vec<(String, u128)>,
+) -> Result<(), CargoMakeError> {
+    let (flow_info, flow_state_rc, execution_plan) =
+        prepare_for_run(config, task, env_info, cli_args, time_summary_vec)?;
+
     if flow_info.disable_on_error || flow_info.config.config.on_error_task.is_none() {
-        run_flow(&flow_info, flow_state_rc.clone(), false)?;
+        run_task_flow(&flow_info, flow_state_rc.clone(), &execution_plan)?;
     } else {
-        run_protected_flow(&flow_info, flow_state_rc.clone())?;
+        run_protected_flow(&flow_info, flow_state_rc.clone(), &execution_plan)?;
     }
 
     let time_string = match start_time.elapsed() {

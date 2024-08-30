@@ -48,7 +48,13 @@ fn run_flow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, false).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 }
 
 #[test]
@@ -85,7 +91,13 @@ fn run_flow_private_skipped() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, false).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 }
 
 #[test]
@@ -122,7 +134,13 @@ fn run_flow_private_sub_task() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), true).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, true).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 }
 
 #[test]
@@ -159,7 +177,13 @@ fn run_flow_allow_private() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, false).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 }
 
 #[test]
@@ -2707,7 +2731,13 @@ fn run_flow_skip_init_end_tasks() {
         cli_arguments: None,
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, false).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 
     // Test with only end_task existing.
     let flow_info = {
@@ -2719,5 +2749,11 @@ fn run_flow_skip_init_end_tasks() {
         flow_info
     };
 
-    run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = prepare_execution_plan(&flow_info, false).unwrap();
+    run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 }

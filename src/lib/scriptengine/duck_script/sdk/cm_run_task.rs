@@ -46,16 +46,25 @@ impl Command for CommandImpl {
                     let cloned_flow_state = self.flow_state.borrow().clone();
 
                     thread::spawn(move || -> Result<(), CargoMakeError> {
-                        runner::run_flow(
+                        let execution_plan = runner::prepare_execution_plan(&sub_flow_info, true)?;
+                        runner::run_task_flow(
                             &sub_flow_info,
                             Rc::new(RefCell::new(cloned_flow_state)),
-                            true,
+                            &execution_plan,
                         )
                     });
                 } else {
-                    if let Err(e) = runner::run_flow(&sub_flow_info, self.flow_state.clone(), true)
-                    {
-                        return CommandResult::Error(e.to_string());
+                    match runner::prepare_execution_plan(&sub_flow_info, true) {
+                        Ok(execution_plan) => {
+                            if let Err(e) = runner::run_task_flow(
+                                &sub_flow_info,
+                                self.flow_state.clone(),
+                                &execution_plan,
+                            ) {
+                                return CommandResult::Error(e.to_string());
+                            }
+                        }
+                        Err(e) => return CommandResult::Error(e.to_string()),
                     }
                 }
 

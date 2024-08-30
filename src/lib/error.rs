@@ -46,6 +46,9 @@ pub enum CargoMakeError {
     #[strum(to_string = "Task {0:#?} is {1}")]
     TaskIs(String, &'static str) = 110,
 
+    #[strum(to_string = "Task error detected, exit code: {0}")]
+    TaskErrorExitCode(i32) = 111,
+
     #[strum(to_string = "{0}")]
     NotFound(String) = 404,
 
