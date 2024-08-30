@@ -110,7 +110,7 @@ fn print_default_valid() {
         config: Task::new(),
     };
     let steps = vec![step];
-    let execution_plan = ExecutionPlan { steps };
+    let execution_plan = ExecutionPlan::new(steps);
 
     print_default(&mut std::io::stdout(), &execution_plan).expect("print should succeed");
 }
@@ -122,7 +122,7 @@ fn print_short_description_valid() {
         config: Task::new(),
     };
     let steps = vec![step];
-    let execution_plan = ExecutionPlan { steps };
+    let execution_plan = ExecutionPlan::new(steps);
 
     print_short_description(&mut std::io::stdout(), &execution_plan).expect("print should succeed");
 }

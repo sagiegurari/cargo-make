@@ -85,7 +85,13 @@ set_env FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4 1
         "FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET_4"
     ));
 
-    runner::run_flow(&flow_info, Rc::new(RefCell::new(FlowState::new())), false).unwrap();
+    let execution_plan = runner::prepare_execution_plan(&flow_info, false).unwrap();
+    runner::run_task_flow(
+        &flow_info,
+        Rc::new(RefCell::new(FlowState::new())),
+        &execution_plan,
+    )
+    .unwrap();
 
     assert!(envmnt::is_equal(
         "FORCE_PLUGIN_SET_AND_CLEAR_FLOW_TEST_SET",

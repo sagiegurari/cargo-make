@@ -1,6 +1,8 @@
 use super::*;
 use crate::descriptor;
-use crate::types::{ConfigSection, DependencyIdentifier, PlatformOverrideTask, TaskWatchOptions};
+use crate::types::{
+    ConfigSection, DependencyIdentifier, PlatformOverrideTask, SerdeRegex, TaskWatchOptions,
+};
 
 #[test]
 fn get_actual_task_name_not_found() {
@@ -808,6 +810,39 @@ fn create_single() {
 }
 
 #[test]
+fn create_single_serde_json() {
+    let mut config_section = ConfigSection::new();
+    config_section.init_task = Some("init".to_string());
+    config_section.end_task = Some("end".to_string());
+    let mut config = Config {
+        config: config_section,
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+
+    config.tasks.insert("init".to_string(), Task::new());
+    config.tasks.insert("end".to_string(), Task::new());
+
+    let task = Task::new();
+
+    config.tasks.insert("test".to_string(), task);
+
+    let execution_plan = ExecutionPlanBuilder {
+        allow_private: true,
+        ..ExecutionPlanBuilder::new(&config, "test")
+    }
+    .build()
+    .unwrap();
+    assert_eq!(execution_plan.steps.len(), 3);
+    assert_eq!(execution_plan.steps[0].name, "init");
+    assert_eq!(execution_plan.steps[1].name, "test");
+    assert_eq!(execution_plan.steps[2].name, "end");
+}
+
+#[test]
 fn create_single_disabled() {
     let mut config_section = ConfigSection::new();
     config_section.init_task = Some("init".to_string());
@@ -1343,11 +1378,11 @@ fn create_with_dependencies_and_skip_filter() {
         .tasks
         .insert("task_dependency".to_string(), task_dependency);
 
-    let skip_filter = Regex::new("filtered.*").unwrap();
+    let skip_filter = regex::Regex::new("filtered.*").unwrap();
 
     let execution_plan = ExecutionPlanBuilder {
         allow_private: true,
-        skip_tasks_pattern: Some(&skip_filter),
+        skip_tasks_pattern: Some(&SerdeRegex(skip_filter)),
         ..ExecutionPlanBuilder::new(&config, "test")
     }
     .build()

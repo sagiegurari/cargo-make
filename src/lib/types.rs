@@ -12,7 +12,6 @@ use crate::plugin::types::Plugins;
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
-use regex::Regex;
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
 
@@ -165,8 +164,8 @@ impl CliArgs {
 }
 
 #[derive(Debug)]
-pub(crate) struct RunTaskOptions {
-    pub(crate) plugins_enabled: bool,
+pub struct RunTaskOptions {
+    pub plugins_enabled: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -277,7 +276,7 @@ pub enum CrateDependency {
     Info(CrateDependencyInfo),
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Deserialize, Serialize, Debug, Clone, Default)]
 /// Holds crate information loaded from the Cargo.toml file.
 pub struct CrateInfo {
     /// package info
@@ -295,7 +294,7 @@ impl CrateInfo {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds env information
 pub struct EnvInfo {
     /// Rust info
@@ -308,7 +307,33 @@ pub struct EnvInfo {
     pub ci_info: CiInfo,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
+pub struct SerdeRegex(pub regex::Regex);
+
+impl serde::Serialize for SerdeRegex {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let s = format!("{}", self.0);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for SerdeRegex {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(SerdeRegex(
+            regex::Regex::new(s.as_str()).map_err(serde::de::Error::custom)?,
+        ))
+    }
+}
+
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds flow information
 pub struct FlowInfo {
     /// The flow config object
@@ -326,12 +351,13 @@ pub struct FlowInfo {
     /// If true, the init and end tasks are skipped
     pub skip_init_end_tasks: bool,
     /// Skip tasks that match the provided pattern
-    pub skip_tasks_pattern: Option<Regex>,
+    pub skip_tasks_pattern: Option<SerdeRegex>,
     /// additional command line arguments
     pub cli_arguments: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Default)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 /// Holds mutable flow state
 pub struct FlowState {
     /// timing info for summary
@@ -1106,6 +1132,7 @@ pub enum ConditionScriptValue {
     Text(Vec<String>),
 }
 
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
@@ -2427,7 +2454,8 @@ impl ExternalConfig {
     }
 }
 
-#[derive(Serialize, Clone, Debug)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
     /// The task name
@@ -2436,11 +2464,37 @@ pub struct Step {
     pub config: Task,
 }
 
-#[derive(Debug)]
+#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan which defines all steps to run and the order to run them
 pub struct ExecutionPlan {
     /// A list of steps to execute
     pub steps: Vec<Step>,
+
+    /// Which steps to execute
+    pub steps_to_run: std::ops::Range<usize>,
+
+    /// Execution plan name
+    pub name: String,
+}
+
+impl Default for ExecutionPlan {
+    fn default() -> Self {
+        Self {
+            steps: Vec::<Step>::new(),
+            steps_to_run: std::ops::Range::<usize>::default(),
+            name: String::from("default_name"),
+        }
+    }
+}
+
+impl ExecutionPlan {
+    pub fn new(steps: Vec<Step>) -> Self {
+        Self {
+            steps,
+            ..ExecutionPlan::default()
+        }
+    }
 }
 
 #[derive(Debug)]

@@ -20,7 +20,7 @@ use crate::recursion_level;
 use crate::runner;
 use crate::time_summary;
 use crate::toolchain;
-use crate::types::{CliArgs, GlobalConfig};
+use crate::types::{CliArgs, Config, EnvInfo, GlobalConfig};
 use crate::version;
 use std::time::SystemTime;
 
@@ -32,11 +32,11 @@ pub(crate) static DEFAULT_LOG_LEVEL: &str = "info";
 pub(crate) static DEFAULT_TASK_NAME: &str = "default";
 pub(crate) static DEFAULT_OUTPUT_FORMAT: &str = "default";
 
-pub fn run(
-    cli_args: &CliArgs,
+pub fn prepare_for_execution_plan<'a>(
+    cli_args: &'a CliArgs,
     global_config: &GlobalConfig,
     logger_options: Option<LoggerOptions>,
-) -> Result<(), CargoMakeError> {
+) -> Result<(EnvInfo, Config, &'a String, Vec<(String, u128)>, SystemTime), CargoMakeError> {
     let start_time = SystemTime::now();
 
     recursion_level::increment();
@@ -103,7 +103,7 @@ pub fn run(
     let experimental = cli_args.experimental;
     let config = descriptor::load(&build_file, force_makefile, env, experimental)?;
 
-    let mut time_summary_vec = vec![];
+    let mut time_summary_vec = Vec::<(String, u128)>::new();
     time_summary::add(
         &mut time_summary_vec,
         "[Load Makefiles]",
@@ -130,6 +130,19 @@ pub fn run(
     // ensure profile env was not overridden
     profile::set(&normalized_profile_name);
 
+    Ok((env_info, config, task, time_summary_vec, start_time))
+}
+
+pub fn run(
+    cli_args: &CliArgs,
+    global_config: &GlobalConfig,
+    logger_options: Option<LoggerOptions>,
+) -> Result<(), CargoMakeError> {
+    let (env_info, config, task, time_summary_vec, start_time) =
+        prepare_for_execution_plan(cli_args, global_config, logger_options)?;
+
+    // let execution_plan: ExecutionPlan;
+
     if cli_args.list_all_steps || cli_args.list_category_steps.is_some() {
         cli_commands::list_steps::run(
             &config,
@@ -139,7 +152,8 @@ pub fn run(
             cli_args.hide_uninteresting,
         )
     } else if cli_args.diff_execution_plan {
-        let default_config = descriptor::load_internal_descriptors(true, experimental, None)?;
+        let default_config =
+            descriptor::load_internal_descriptors(true, cli_args.experimental, None)?;
         cli_commands::diff_steps::run(
             &default_config,
             &config,

@@ -11,7 +11,7 @@ use crate::error::CargoMakeError;
 use std::io;
 
 use crate::execution_plan::ExecutionPlanBuilder;
-use crate::types::{Config, CrateInfo, ExecutionPlan};
+use crate::types::{Config, CrateInfo, ExecutionPlan, SerdeRegex};
 use regex::Regex;
 
 #[derive(Debug)]
@@ -50,7 +50,7 @@ fn print_short_description(
     execution_plan: &ExecutionPlan,
 ) -> io::Result<()> {
     let mut counter = 1;
-    for step in &execution_plan.steps {
+    for step in &execution_plan.steps[execution_plan.steps_to_run.clone()] {
         let task = &step.config;
         let description = match &task.description {
             Some(value) => value,
@@ -62,7 +62,7 @@ fn print_short_description(
             counter, &step.name, &description
         )?;
 
-        counter = counter + 1;
+        counter += 1;
     }
     Ok(())
 }
@@ -71,7 +71,20 @@ fn print_default(
     output_buffer: &mut impl io::Write,
     execution_plan: &ExecutionPlan,
 ) -> io::Result<()> {
-    writeln!(output_buffer, "{:#?}", &execution_plan)
+    let steps: Vec<crate::types::Step> = {
+        let mut _steps =
+            Vec::<crate::types::Step>::with_capacity(execution_plan.steps_to_run.len());
+        execution_plan.steps[execution_plan.steps_to_run.clone()].clone_into(&mut _steps);
+        _steps
+    };
+    writeln!(
+        output_buffer,
+        "{:#?}",
+        ExecutionPlan {
+            steps,
+            ..ExecutionPlan::default()
+        }
+    )
 }
 
 /// Only prints the execution plan
@@ -87,7 +100,7 @@ pub fn print(
 ) -> Result<(), CargoMakeError> {
     let skip_tasks_pattern_regex = match skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {
-            Ok(reg) => Some(reg),
+            Ok(reg) => Some(SerdeRegex(reg)),
             Err(_) => {
                 warn!("Invalid skip tasks pattern provided: {}", pattern);
                 None
