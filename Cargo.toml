@@ -49,7 +49,12 @@ ci_info = { version = "^0.14.14", features = ["serde-1"] }
 cliparser = "^0.1.2"
 colored = "^2"
 ctrlc = "^3"
-diesel = { version = "^2", optional = true, features = ["serde_json", "r2d2"] }
+diesel = { version = "^2", optional = true, features = [
+  "serde_json",
+  "r2d2",
+  "postgres",
+  "64-column-tables",
+] }
 diesel_migrations = { version = "^2", optional = true }
 dirs-next = "^2"
 duckscript = "^0.8.0"

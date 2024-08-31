@@ -7,13 +7,19 @@
 #[path = "types_test.rs"]
 mod types_test;
 
-use crate::legacy;
 use crate::plugin::types::Plugins;
+use crate::{diesel_schemas, legacy};
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
 use rust_info::types::RustInfo;
 use std::collections::HashMap;
+
+#[cfg(feature = "diesel")]
+use diesel::dsl::*;
+
+#[cfg(feature = "diesel")]
+use diesel_schemas::*;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {
@@ -332,7 +338,8 @@ impl<'de> serde::Deserialize<'de> for SerdeRegex {
     }
 }
 
-#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = flow_info))]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds flow information
 pub struct FlowInfo {
@@ -357,7 +364,8 @@ pub struct FlowInfo {
 }
 
 #[derive(Debug, Clone, Default)]
-#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = flow_state))]
 /// Holds mutable flow state
 pub struct FlowState {
     /// timing info for summary
@@ -1132,7 +1140,8 @@ pub enum ConditionScriptValue {
     Text(Vec<String>),
 }
 
-#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = task))]
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
@@ -2113,6 +2122,8 @@ pub enum Extend {
     List(Vec<ExtendOptions>),
 }
 
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = modify_config))]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 /// Holds properties to modify the core tasks
 pub struct ModifyConfig {
@@ -2166,6 +2177,8 @@ impl UnstableFeature {
     }
 }
 
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = config_section))]
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds the configuration found in the makefile toml config section.
 pub struct ConfigSection {
@@ -2454,7 +2467,8 @@ impl ExternalConfig {
     }
 }
 
-#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = step))]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
@@ -2464,7 +2478,8 @@ pub struct Step {
     pub config: Task,
 }
 
-#[cfg_attr(feature = "diesel", derive(diesel::Insertable))]
+#[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
+// #[cfg_attr(feature = "diesel", diesel(table_name = execution_plan))]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan which defines all steps to run and the order to run them
 pub struct ExecutionPlan {
@@ -2472,6 +2487,7 @@ pub struct ExecutionPlan {
     pub steps: Vec<Step>,
 
     /// Which steps to execute
+    #[serde(flatten)]
     pub steps_to_run: std::ops::Range<usize>,
 
     /// Execution plan name

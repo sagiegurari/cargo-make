@@ -48,7 +48,6 @@ extern crate serde_derive;
 #[cfg(test)]
 mod test;
 
-// make types public for docs
 pub mod types;
 
 mod cache;
@@ -59,6 +58,8 @@ mod command;
 mod condition;
 pub mod config;
 mod descriptor;
+#[cfg(feature = "diesel")]
+pub mod diesel_schemas;
 mod environment;
 pub mod error;
 mod execution_plan;
