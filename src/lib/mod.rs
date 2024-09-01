@@ -58,8 +58,10 @@ mod command;
 mod condition;
 pub mod config;
 mod descriptor;
+
 #[cfg(feature = "diesel")]
-pub mod diesel_schemas;
+pub mod diesel_specific;
+
 mod environment;
 pub mod error;
 mod execution_plan;

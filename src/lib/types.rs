@@ -7,8 +7,8 @@
 #[path = "types_test.rs"]
 mod types_test;
 
+use crate::legacy;
 use crate::plugin::types::Plugins;
-use crate::{diesel_schemas, legacy};
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::{IndexMap, IndexSet};
@@ -17,9 +17,6 @@ use std::collections::HashMap;
 
 #[cfg(feature = "diesel")]
 use diesel::dsl::*;
-
-#[cfg(feature = "diesel")]
-use diesel_schemas::*;
 
 /// Returns the platform name
 pub fn get_platform_name() -> String {
@@ -1136,8 +1133,13 @@ pub enum ConditionScriptValue {
     Text(Vec<String>),
 }
 
+#[cfg(feature = "diesel")]
+fn foo() {
+    crate::diesel_specific::schema::execution_plans;
+}
+
 #[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
-#[cfg_attr(feature = "diesel", diesel(table_name = task))]
+#[cfg_attr(feature = "diesel", diesel(table_name = crate::diesel_specific::schema::task))]
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 /// Holds a single task configuration such as command and dependencies list
 pub struct Task {
@@ -1163,7 +1165,7 @@ pub struct Task {
 
     /// if not false, this task is defined as deprecated
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub deprecated: Option<DeprecationInfo>,
 
     /// Extend any task based on the defined name
@@ -1180,22 +1182,22 @@ pub struct Task {
 
     /// set to true to watch for file changes and invoke the task operation
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub watch: Option<TaskWatchOptions>,
 
     /// if provided all condition values must be met in order for the task to be invoked (will not stop dependencies)
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub condition: Option<TaskCondition>,
 
     /// if script exit code is not 0, the command/script of this task will not be invoked, dependencies however will be
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub condition_script: Option<ConditionScriptValue>,
 
     /// The script runner arguments before the script file path
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub condition_script_runner_args: Option<Vec<String>>,
 
     /// if true, any error while executing the task will be printed but will not break the build
@@ -1208,12 +1210,12 @@ pub struct Task {
 
     /// The env files to setup before running the task commands
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub env_files: Option<Vec<EnvFile>>,
 
     /// The env vars to setup before running the task commands
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub env: Option<IndexMap<String, EnvValue>>,
 
     /// The working directory for the task to execute its command/script
@@ -1238,7 +1240,7 @@ pub struct Task {
 
     /// if defined, the provided crate will be installed (if needed) before running the task
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub install_crate: Option<InstallCrate>,
 
     /// additional cargo install arguments
@@ -1259,7 +1261,7 @@ pub struct Task {
 
     /// If command is not defined, and script is defined, the provided script will be executed
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub script: Option<ScriptValue>,
 
     /// The script runner (defaults to cmd in windows and sh for other platforms)
@@ -1268,7 +1270,7 @@ pub struct Task {
 
     /// The script runner arguments before the script file path
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub script_runner_args: Option<Vec<String>>,
 
     /// The script file extension
@@ -1277,32 +1279,32 @@ pub struct Task {
 
     /// The task name to execute
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub run_task: Option<RunTaskInfo>,
 
     /// A list of tasks to execute before this task
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub dependencies: Option<Vec<DependencyIdentifier>>,
 
     /// The rust toolchain used to invoke the command or install the needed crates/components
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub toolchain: Option<ToolchainSpecifier>,
 
     /// override task if runtime OS is Linux (takes precedence over alias)
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub linux: Option<PlatformOverrideTask>,
 
     /// override task if runtime OS is Windows (takes precedence over alias)
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub windows: Option<PlatformOverrideTask>,
 
     /// override task if runtime OS is Mac (takes precedence over alias)
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::pg::types::sql_types::Jsonb))]
+    #[cfg_attr(feature = "diesel", diesel(deserialize_as = diesel::sql_types::Jsonb))]
     pub mac: Option<PlatformOverrideTask>,
 }
 
@@ -2549,7 +2551,7 @@ impl ExternalConfig {
 }
 
 #[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
-#[cfg_attr(feature = "diesel", diesel(table_name = step))]
+#[cfg_attr(feature = "diesel", diesel(table_name = crate::diesel_specific::schema::step))]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan step to execute
 pub struct Step {
@@ -2561,7 +2563,7 @@ pub struct Step {
 }
 
 #[cfg_attr(feature = "diesel", derive(diesel::Queryable, diesel::Insertable))]
-#[cfg_attr(feature = "diesel", diesel(table_name = execution_plan))]
+#[cfg_attr(feature = "diesel", diesel(table_name = crate::diesel_specific::schema::execution_plan))]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 /// Execution plan which defines all steps to run and the order to run them
 pub struct ExecutionPlan {
