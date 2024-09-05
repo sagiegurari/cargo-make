@@ -1042,6 +1042,8 @@ std::fs::write(r#"{}"#, base_path)?
 
     run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
 
+    dbg!(&condition_script_output_file, &script_output_file);
+
     // Check that condition_script_args are expanded
     let condition_script_output = fs::read_to_string(&condition_script_output_file)
         .expect("condition_script should have created this file");
