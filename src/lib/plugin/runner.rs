@@ -7,20 +7,22 @@
 #[path = "runner_test.rs"]
 mod runner_test;
 
-use crate::environment;
-use crate::plugin::sdk;
-use crate::plugin::types::Plugin;
-use crate::scriptengine::duck_script;
-use crate::types::{Config, DeprecationInfo, FlowInfo, FlowState, RunTaskOptions, Step};
+use std::cell::RefCell;
+use std::env;
+use std::rc::Rc;
+
 use duckscript::runner::run_script;
 use duckscript::types::command::Commands;
 use duckscript::types::error::ScriptError;
 use duckscript::types::runtime::Context;
 use indexmap::IndexMap;
 use serde_json::json;
-use std::cell::RefCell;
-use std::env;
-use std::rc::Rc;
+
+use crate::environment;
+use crate::plugin::sdk;
+use crate::plugin::types::Plugin;
+use crate::scriptengine::duck_script;
+use crate::types::{Config, DeprecationInfo, FlowInfo, FlowState, RunTaskOptions, Step};
 
 /// Resolve aliases to different plugins, checking for cycles
 fn get_plugin_name_recursive(

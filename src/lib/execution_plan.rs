@@ -7,6 +7,15 @@
 #[path = "execution_plan_test.rs"]
 mod execution_plan_test;
 
+use std::collections::HashSet;
+use std::env;
+use std::path::Path;
+
+use fsio::path::{get_basename, get_parent_directory};
+use glob::Pattern;
+use indexmap::IndexMap;
+use regex::Regex;
+
 use crate::environment;
 use crate::error::CargoMakeError;
 use crate::logger;
@@ -15,13 +24,6 @@ use crate::proxy_task::create_proxy_task;
 use crate::types::{
     Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
 };
-use fsio::path::{get_basename, get_parent_directory};
-use glob::Pattern;
-use indexmap::IndexMap;
-use regex::Regex;
-use std::collections::HashSet;
-use std::env;
-use std::path::Path;
 
 /// Resolve aliases recursively until a task without alias is found.
 fn get_task_name_recursive(

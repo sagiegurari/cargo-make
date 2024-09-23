@@ -9,16 +9,18 @@ mod mod_test;
 
 mod sdk;
 
-use crate::environment;
-use crate::error::CargoMakeError;
-use crate::logger::{get_level, get_log_level, LogLevel};
-use crate::types::{FlowInfo, FlowState};
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use duckscript::runner;
 use duckscript::types::command::Commands;
 use duckscript::types::error::ScriptError;
 use duckscript::types::runtime::Context;
-use std::cell::RefCell;
-use std::rc::Rc;
+
+use crate::environment;
+use crate::error::CargoMakeError;
+use crate::logger::{get_level, get_log_level, LogLevel};
+use crate::types::{FlowInfo, FlowState};
 
 pub(crate) fn execute(
     script: &Vec<String>,

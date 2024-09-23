@@ -11,8 +11,6 @@ use crate::recursion_level;
 use crate::types::FlowInfo;
 use colored::{ColoredString, Colorize};
 use log::{Level, LevelFilter};
-use std::io::stdout;
-use std::process::exit;
 
 #[derive(Debug, PartialEq)]
 /// The log levels
@@ -162,11 +160,11 @@ pub(crate) fn init(options: &LoggerOptions) {
             if record_level == Level::Error {
                 warn!("Build Failed.");
 
-                exit(1);
+                std::process::exit(1);
             }
         })
         .level(log_level)
-        .chain(stdout())
+        .chain(std::io::stdout())
         .apply();
 
     if result.is_err() {

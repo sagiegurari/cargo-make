@@ -5,11 +5,13 @@
 
 mod cm_run_task;
 
-use crate::types::{FlowInfo, FlowState};
-use duckscript::types::command::Commands;
-use duckscript::types::error::ScriptError;
 use std::cell::RefCell;
 use std::rc::Rc;
+
+use duckscript::types::command::Commands;
+use duckscript::types::error::ScriptError;
+
+use crate::types::{FlowInfo, FlowState};
 
 /// Loads all core commands
 pub(crate) fn load(

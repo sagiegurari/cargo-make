@@ -15,14 +15,15 @@ mod shell_to_batch;
 #[path = "mod_test.rs"]
 mod mod_test;
 
+use std::cell::RefCell;
+use std::path::PathBuf;
+use std::rc::Rc;
+
 use crate::environment;
 use crate::error::CargoMakeError;
 use crate::io;
 use crate::toolchain;
 use crate::types::{FlowInfo, FlowState, ScriptValue, Task};
-use std::cell::RefCell;
-use std::path::PathBuf;
-use std::rc::Rc;
 
 #[derive(Debug, Clone, PartialEq)]
 /// The currently supported engine types

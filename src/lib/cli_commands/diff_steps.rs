@@ -7,15 +7,17 @@
 #[path = "diff_steps_test.rs"]
 mod diff_steps_test;
 
+use std::fs::File;
+use std::io;
+use std::io::{BufWriter, Write};
+
+use regex::Regex;
+
 use crate::command;
 use crate::error::CargoMakeError;
 use crate::execution_plan::ExecutionPlanBuilder;
 use crate::io::{create_file, delete_file};
 use crate::types::{CliArgs, Config, CrateInfo, ExecutionPlan};
-use regex::Regex;
-use std::fs::File;
-use std::io;
-use std::io::{BufWriter, Write};
 
 fn write_as_string(execution_plan: &ExecutionPlan, file: &File) -> io::Result<()> {
     let mut writer = BufWriter::new(file);

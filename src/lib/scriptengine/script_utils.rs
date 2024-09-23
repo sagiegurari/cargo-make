@@ -7,13 +7,15 @@
 #[path = "script_utils_test.rs"]
 mod script_utils_test;
 
-use crate::error::CargoMakeError;
-use crate::io::create_text_file;
+use std::fmt::Write;
+use std::path::PathBuf;
+
 use fsio::file::write_text_file;
 use fsio::path::as_path::AsPath;
 use sha2::{Digest, Sha256};
-use std::fmt::Write;
-use std::path::PathBuf;
+
+use crate::error::CargoMakeError;
+use crate::io::create_text_file;
 
 pub(crate) fn create_script_file(
     script_text: &Vec<String>,

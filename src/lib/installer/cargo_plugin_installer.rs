@@ -7,13 +7,14 @@
 #[path = "cargo_plugin_installer_test.rs"]
 mod cargo_plugin_installer_test;
 
+use std::process::Command;
+use strip_ansi_escapes::strip_str;
+
 use crate::command;
 use crate::error::CargoMakeError;
 use crate::installer::crate_version_check;
 use crate::toolchain::wrap_command;
 use crate::types::ToolchainSpecifier;
-use std::process::Command;
-use strip_ansi_escapes::strip_str;
 
 fn is_crate_in_list_output_legacy(crate_name: &str, output: &str) -> bool {
     let lines: Vec<&str> = output.split(' ').collect();

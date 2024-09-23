@@ -7,10 +7,12 @@
 #[path = "toolchain_test.rs"]
 mod toolchain_test;
 
+use std::process::{Command, Stdio};
+
 use crate::environment::expand_value;
 use crate::types::{CommandSpec, ToolchainSpecifier};
+
 use semver::{Prerelease, Version};
-use std::process::{Command, Stdio};
 
 pub(crate) fn get_channel(toolchain: &ToolchainSpecifier) -> String {
     let channel = toolchain.channel().to_string();

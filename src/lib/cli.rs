@@ -7,6 +7,8 @@
 #[path = "cli_test.rs"]
 mod cli_test;
 
+use std::time::SystemTime;
+
 use crate::cli_commands;
 use crate::cli_parser;
 use crate::config;
@@ -22,7 +24,6 @@ use crate::time_summary;
 use crate::toolchain;
 use crate::types::{CliArgs, GlobalConfig};
 use crate::version;
-use std::time::SystemTime;
 
 pub(crate) static VERSION: &str = env!("CARGO_PKG_VERSION");
 pub(crate) static AUTHOR: &str = env!("CARGO_PKG_AUTHORS");

@@ -7,11 +7,12 @@
 #[path = "cargo_alias_test.rs"]
 mod cargo_alias_test;
 
+use std::collections::HashMap;
+use std::path::Path;
+
 use crate::error::CargoMakeError;
 use crate::io;
 use crate::types::{InstallCrate, Task};
-use std::collections::HashMap;
-use std::path::Path;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]

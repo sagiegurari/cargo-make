@@ -1,14 +1,16 @@
-use crate::installer::crate_version_check::is_min_version_valid_for_versions;
-use crate::logger;
-use crate::logger::LoggerOptions;
-use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, ToolchainSpecifier};
+use std::env;
+use std::path::PathBuf;
+
 use ci_info::types::CiInfo;
 use git_info::types::GitInfo;
 use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
 use semver::Version;
-use std::env;
-use std::path::PathBuf;
+
+use crate::installer::crate_version_check::is_min_version_valid_for_versions;
+use crate::logger;
+use crate::logger::LoggerOptions;
+use crate::types::{Config, ConfigSection, CrateInfo, EnvInfo, FlowInfo, ToolchainSpecifier};
 
 pub(crate) fn on_test_startup() {
     logger::init(&LoggerOptions {
