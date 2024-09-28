@@ -3,6 +3,7 @@
 ### v0.37.17
 
 * Fix: support encrypted drives (shorten script file names) #1150
+* Fix: setup musl failing on open ssl binary redirects
 
 ### v0.37.16 (2024-08-30)
 
