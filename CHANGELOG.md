@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.17
+### v0.37.17 (2024-09-28)
 
 * Fix: support encrypted drives (shorten script file names) #1150
 * Fix: setup musl failing on open ssl binary redirects
