@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.18
+### v0.37.18 (2024-09-29)
 
 * Enhancement: config to disable all installation steps #1147
 
