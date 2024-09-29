@@ -3899,6 +3899,7 @@ fn config_section_new() {
     assert!(config.reduce_output.is_none());
     assert!(config.time_summary.is_none());
     assert!(config.load_cargo_aliases.is_none());
+    assert!(config.disable_install.is_none());
     assert!(config.main_project_member.is_none());
     assert!(config.load_script.is_none());
     assert!(config.linux_load_script.is_none());
@@ -3929,6 +3930,7 @@ fn config_section_extend_all_values() {
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
+    base.disable_install = Some(true);
     base.load_script = Some(ScriptValue::Text(vec!["base_info".to_string()]));
     base.linux_load_script = Some(ScriptValue::Text(vec![
         "linux".to_string(),
@@ -3962,6 +3964,7 @@ fn config_section_extend_all_values() {
     extended.reduce_output = Some(false);
     extended.time_summary = Some(false);
     extended.load_cargo_aliases = Some(false);
+    extended.disable_install = Some(false);
     extended.load_script = Some(ScriptValue::Text(vec![
         "extended_info".to_string(),
         "arg2".to_string(),
@@ -3995,6 +3998,7 @@ fn config_section_extend_all_values() {
     assert!(!base.reduce_output.unwrap());
     assert!(!base.time_summary.unwrap());
     assert!(!base.load_cargo_aliases.unwrap());
+    assert!(!base.disable_install.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 1);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 1);
@@ -4024,6 +4028,7 @@ fn config_section_extend_no_values() {
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
+    base.disable_install = Some(true);
     base.load_script = Some(ScriptValue::Text(vec![
         "base_info".to_string(),
         "arg2".to_string(),
@@ -4066,6 +4071,7 @@ fn config_section_extend_no_values() {
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert!(base.load_cargo_aliases.unwrap());
+    assert!(base.disable_install.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
@@ -4095,6 +4101,7 @@ fn config_section_extend_some_values() {
     base.reduce_output = Some(true);
     base.time_summary = Some(true);
     base.load_cargo_aliases = Some(true);
+    base.disable_install = Some(true);
     base.load_script = Some(ScriptValue::Text(vec![
         "base_info".to_string(),
         "arg2".to_string(),
@@ -4140,6 +4147,7 @@ fn config_section_extend_some_values() {
     assert!(base.reduce_output.unwrap());
     assert!(base.time_summary.unwrap());
     assert!(base.load_cargo_aliases.unwrap());
+    assert!(base.disable_install.unwrap());
     assert_eq!(get_script_as_vec(base.load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);

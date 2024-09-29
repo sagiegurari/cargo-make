@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.18
+
+* Enhancement: config to disable all installation steps #1147
+
 ### v0.37.17 (2024-09-28)
 
 * Fix: support encrypted drives (shorten script file names) #1150
