@@ -102,6 +102,20 @@ fn install_empty_args() {
 }
 
 #[test]
+fn install_disabled() {
+    let mut task = Task::new();
+    task.install_crate = Some(InstallCrate::Value("test".to_string()));
+    task.command = Some("cargo".to_string());
+    task.args = Some(vec![]);
+
+    let mut flow_info = test::create_empty_flow_info();
+    flow_info.config.config.disable_install = Some(true);
+
+    // this should throw but since we disabled installation, we just return
+    install(&task, &flow_info, Rc::new(RefCell::new(FlowState::new()))).unwrap();
+}
+
+#[test]
 fn install_enabled_crate_already_installed() {
     let mut task = Task::new();
     task.install_crate = Some(InstallCrate::Enabled(true));

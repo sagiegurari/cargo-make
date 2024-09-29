@@ -2172,6 +2172,8 @@ pub struct ConfigSection {
     pub time_summary: Option<bool>,
     /// Automatically load cargo aliases as cargo-make tasks
     pub load_cargo_aliases: Option<bool>,
+    /// If true (default false) disable all automatic/defined installation instructions
+    pub disable_install: Option<bool>,
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
@@ -2292,6 +2294,10 @@ impl ConfigSection {
 
         if extended.load_cargo_aliases.is_some() {
             self.load_cargo_aliases = extended.load_cargo_aliases.clone();
+        }
+
+        if extended.disable_install.is_some() {
+            self.disable_install = extended.disable_install.clone();
         }
 
         if extended.main_project_member.is_some() {
