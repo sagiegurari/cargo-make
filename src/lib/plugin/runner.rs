@@ -93,7 +93,7 @@ fn run_plugin(
         Ok(_) => {
             let directory = env::current_dir();
 
-            match run_script(&script_text, context) {
+            match run_script(&script_text, context, None) {
                 Ok(_) => (),
                 Err(error) => error!("Error while running plugin: {}", error),
             };

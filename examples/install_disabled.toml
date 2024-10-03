@@ -10,4 +10,3 @@ args = ["somecrate"]
 
 [tasks.alt-command-example2]
 install_crate = { crate_name = "somecrate", install_command = "custom-install" }
-

@@ -52,7 +52,7 @@ pub(crate) fn execute(
         Ok(_) => {
             let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
-            match runner::run_script(&script_text, context) {
+            match runner::run_script(&script_text, context, None) {
                 Ok(_) => (),
                 Err(error) => {
                     if validate {

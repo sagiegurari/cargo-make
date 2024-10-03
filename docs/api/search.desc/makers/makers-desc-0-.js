@@ -1,1 +1,0 @@
-searchState.loadedDescShard("makers", 0, "makers")

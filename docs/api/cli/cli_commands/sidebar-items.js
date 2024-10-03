@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["list_steps","print_steps"]};

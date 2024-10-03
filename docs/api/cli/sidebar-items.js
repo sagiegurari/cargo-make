@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["run_cli"],"mod":["cli","cli_commands","cli_parser","config","error","logger","runner","types"]};

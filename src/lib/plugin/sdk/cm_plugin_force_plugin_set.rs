@@ -8,7 +8,7 @@
 mod cm_plugin_force_plugin_set_test;
 
 use crate::types::{FlowState, Step};
-use duckscript::types::command::{Command, CommandResult};
+use duckscript::types::command::{Command, CommandArgs, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -27,7 +27,7 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn run(&self, _arguments: Vec<String>) -> CommandResult {
+    fn run(&self, _arguments: CommandArgs) -> CommandResult {
         self.flow_state.borrow_mut().forced_plugin = self.step.config.plugin.clone();
 
         CommandResult::Continue(Some("true".to_string()))

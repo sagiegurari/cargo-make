@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.19 (2024-10-03)
+
+* Maintenance: upgrade duckscript
+
 ### v0.37.18 (2024-09-29)
 
 * Enhancement: config to disable all installation steps #1147
