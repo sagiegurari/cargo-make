@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.20 (2024-10-03)
+
+* Maintenance: upgrade dependencies
+
 ### v0.37.19 (2024-10-03)
 
 * Maintenance: upgrade duckscript

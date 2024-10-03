@@ -143,7 +143,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-make"
-version = "0.37.19"
+version = "0.37.20"
 dependencies = [
  "cargo_metadata",
  "cfg-if",
@@ -1211,9 +1211,9 @@ dependencies = [
 
 [[package]]
 name = "run_script"
-version = "0.10.1"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "829f98fdc58d78989dd9af83be28bc15c94a7d77f9ecdb54abbbc0b1829ba9c7"
+checksum = "f20d7c40e6d6fc2ff69ad8e8bac4d39a5fc1874402647ac92b620954d56d5c3e"
 dependencies = [
  "fsio",
 ]
