@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["cargo_make","cli","makers"];
