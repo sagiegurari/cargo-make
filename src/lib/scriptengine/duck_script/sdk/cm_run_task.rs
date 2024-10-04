@@ -6,7 +6,7 @@
 use crate::error::CargoMakeError;
 use crate::runner;
 use crate::types::{FlowInfo, FlowState};
-use duckscript::types::command::{Command, CommandArgs, CommandResult};
+use duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::thread;
@@ -26,17 +26,17 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn run(&self, arguments: CommandArgs) -> CommandResult {
-        if arguments.args.is_empty() {
+    fn run(&self, context: CommandInvocationContext) -> CommandResult {
+        if context.arguments.is_empty() {
             CommandResult::Error(
                 CargoMakeError::NotFound(String::from("No task name provided.")).to_string(),
             )
         } else {
             let (task_name, async_run) =
-                if arguments.args.len() > 0 && arguments.args[0] == "--async" {
-                    (arguments.args[1].clone(), true)
+                if context.arguments.len() > 0 && context.arguments[0] == "--async" {
+                    (context.arguments[1].clone(), true)
                 } else {
-                    (arguments.args[0].clone(), false)
+                    (context.arguments[0].clone(), false)
                 };
 
             if self.flow_info.config.tasks.contains_key(&task_name) {
@@ -62,7 +62,9 @@ impl Command for CommandImpl {
 
                 CommandResult::Continue(Some("true".to_string()))
             } else {
-                CommandResult::Error(format!("Task: {} not found.", &arguments.args[0]).to_string())
+                CommandResult::Error(
+                    format!("Task: {} not found.", &context.arguments[0]).to_string(),
+                )
             }
         }
     }

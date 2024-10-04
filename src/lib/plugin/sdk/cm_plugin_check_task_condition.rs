@@ -9,7 +9,7 @@ mod cm_plugin_check_task_condition_test;
 
 use crate::runner;
 use crate::types::{FlowInfo, Step};
-use duckscript::types::command::{Command, CommandArgs, CommandResult};
+use duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 
 #[derive(Clone)]
 pub(crate) struct CommandImpl {
@@ -26,7 +26,7 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn run(&self, _arguments: CommandArgs) -> CommandResult {
+    fn run(&self, _context: CommandInvocationContext) -> CommandResult {
         let passed = runner::validate_condition(&self.flow_info, &self.step);
 
         match passed {

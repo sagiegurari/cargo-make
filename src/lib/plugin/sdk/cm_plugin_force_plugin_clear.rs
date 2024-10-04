@@ -4,7 +4,7 @@
 //!
 
 use crate::types::FlowState;
-use duckscript::types::command::{Command, CommandArgs, CommandResult};
+use duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -22,7 +22,7 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn run(&self, _arguments: CommandArgs) -> CommandResult {
+    fn run(&self, _context: CommandInvocationContext) -> CommandResult {
         self.flow_state.borrow_mut().forced_plugin = None;
 
         CommandResult::Continue(Some("true".to_string()))

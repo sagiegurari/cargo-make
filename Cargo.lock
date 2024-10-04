@@ -414,18 +414,18 @@ checksum = "59f8e79d1fbf76bdfbde321e902714bf6c49df88a7dda6fc682fc2979226962d"
 
 [[package]]
 name = "duckscript"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ac2cc1d2db83c57b10b1780c916c2f92839f2da208e21b2c34043f9e0de75e1"
+checksum = "57cfc23abea2fe1fed7daab3cda7708a4cce9185794a2163a853c0d36a497e57"
 dependencies = [
  "fsio",
 ]
 
 [[package]]
 name = "duckscriptsdk"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24033e21d7137329b559bb113404dd410b48143bc254598e977a166ee53d728f"
+checksum = "45817ca2f227ffd723d5f55ce2a0a11fb7b70e7e1c87e6e66c9c3d4784fc94f5"
 dependencies = [
  "attohttpc",
  "base64",

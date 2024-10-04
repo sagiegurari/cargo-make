@@ -9,7 +9,7 @@ mod cm_plugin_run_custom_task_test;
 
 use crate::runner;
 use crate::types::{FlowInfo, FlowState, RunTaskOptions, Step, Task};
-use duckscript::types::command::{Command, CommandArgs, CommandResult};
+use duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -29,11 +29,11 @@ impl Command for CommandImpl {
         Box::new((*self).clone())
     }
 
-    fn run(&self, arguments: CommandArgs) -> CommandResult {
-        if arguments.args.is_empty() {
+    fn run(&self, context: CommandInvocationContext) -> CommandResult {
+        if context.arguments.is_empty() {
             CommandResult::Error("No task data provided.".to_string())
         } else {
-            let task: Task = match serde_json::from_str(&arguments.args[0]) {
+            let task: Task = match serde_json::from_str(&context.arguments[0]) {
                 Ok(value) => value,
                 Err(error) => return CommandResult::Error(error.to_string()),
             };

@@ -127,17 +127,14 @@ fn remove_rust_env_vars_existed() {
     envmnt::set("CARGO", "bad0");
     envmnt::set("RUSTC", "bad1");
     envmnt::set("RUSTDOC", "bad2");
-    envmnt::set("RUSTFLAGS", "bad3");
 
     assert!(envmnt::exists("CARGO"));
     assert!(envmnt::exists("RUSTC"));
     assert!(envmnt::exists("RUSTDOC"));
-    assert!(envmnt::exists("RUSTFLAGS"));
 
     remove_rust_env_vars();
 
     assert!(!envmnt::exists("CARGO"));
     assert!(!envmnt::exists("RUSTC"));
     assert!(!envmnt::exists("RUSTDOC"));
-    assert!(!envmnt::exists("RUSTFLAGS"));
 }
