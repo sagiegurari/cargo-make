@@ -50,7 +50,7 @@
 </span><span class="kw">mod </span>cm_plugin_force_plugin_set_test;
 
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowState, Step};
-<span class="kw">use </span>duckscript::types::command::{Command, CommandArgs, CommandResult};
+<span class="kw">use </span>duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 <span class="kw">use </span>std::cell::RefCell;
 <span class="kw">use </span>std::rc::Rc;
 
@@ -69,7 +69,7 @@
         Box::new((<span class="kw-2">*</span><span class="self">self</span>).clone())
     }
 
-    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, _arguments: CommandArgs) -&gt; CommandResult {
+    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, _context: CommandInvocationContext) -&gt; CommandResult {
         <span class="self">self</span>.flow_state.borrow_mut().forced_plugin = <span class="self">self</span>.step.config.plugin.clone();
 
         CommandResult::Continue(<span class="prelude-val">Some</span>(<span class="string">"true"</span>.to_string()))

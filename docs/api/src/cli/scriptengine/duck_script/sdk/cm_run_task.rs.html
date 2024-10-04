@@ -74,6 +74,8 @@
 <a href="#74" id="74">74</a>
 <a href="#75" id="75">75</a>
 <a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cm_run_task
 //!
 //! Enables to run cargo-make tasks from within duckscript.
@@ -82,7 +84,7 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::runner;
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState};
-<span class="kw">use </span>duckscript::types::command::{Command, CommandArgs, CommandResult};
+<span class="kw">use </span>duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 <span class="kw">use </span>std::cell::RefCell;
 <span class="kw">use </span>std::rc::Rc;
 <span class="kw">use </span>std::thread;
@@ -102,17 +104,17 @@
         Box::new((<span class="kw-2">*</span><span class="self">self</span>).clone())
     }
 
-    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, arguments: CommandArgs) -&gt; CommandResult {
-        <span class="kw">if </span>arguments.args.is_empty() {
+    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, context: CommandInvocationContext) -&gt; CommandResult {
+        <span class="kw">if </span>context.arguments.is_empty() {
             CommandResult::Error(
                 CargoMakeError::NotFound(String::from(<span class="string">"No task name provided."</span>)).to_string(),
             )
         } <span class="kw">else </span>{
             <span class="kw">let </span>(task_name, async_run) =
-                <span class="kw">if </span>arguments.args.len() &gt; <span class="number">0 </span>&amp;&amp; arguments.args[<span class="number">0</span>] == <span class="string">"--async" </span>{
-                    (arguments.args[<span class="number">1</span>].clone(), <span class="bool-val">true</span>)
+                <span class="kw">if </span>context.arguments.len() &gt; <span class="number">0 </span>&amp;&amp; context.arguments[<span class="number">0</span>] == <span class="string">"--async" </span>{
+                    (context.arguments[<span class="number">1</span>].clone(), <span class="bool-val">true</span>)
                 } <span class="kw">else </span>{
-                    (arguments.args[<span class="number">0</span>].clone(), <span class="bool-val">false</span>)
+                    (context.arguments[<span class="number">0</span>].clone(), <span class="bool-val">false</span>)
                 };
 
             <span class="kw">if </span><span class="self">self</span>.flow_info.config.tasks.contains_key(<span class="kw-2">&amp;</span>task_name) {
@@ -138,7 +140,9 @@
 
                 CommandResult::Continue(<span class="prelude-val">Some</span>(<span class="string">"true"</span>.to_string()))
             } <span class="kw">else </span>{
-                CommandResult::Error(<span class="macro">format!</span>(<span class="string">"Task: {} not found."</span>, <span class="kw-2">&amp;</span>arguments.args[<span class="number">0</span>]).to_string())
+                CommandResult::Error(
+                    <span class="macro">format!</span>(<span class="string">"Task: {} not found."</span>, <span class="kw-2">&amp;</span>context.arguments[<span class="number">0</span>]).to_string(),
+                )
             }
         }
     }

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.21
+### v0.37.21 (2024-10-04)
 
 * Fix: Remove RUSTFLAGS from workaround of rustup env issue when setting toolchain #1169
 * Maintenance: upgrade duckscript
