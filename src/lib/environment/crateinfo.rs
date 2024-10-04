@@ -274,15 +274,15 @@ pub(crate) fn load() -> Result<CrateInfo, CargoMakeError> {
 
 pub(crate) fn load_from(file_path: PathBuf) -> Result<CrateInfo, CargoMakeError> {
     if file_path.exists() {
-        info!("Calling cargo metadata to extract project info");
+        debug!("Calling cargo metadata to extract project info");
 
         match MetadataCommand::new().manifest_path(&file_path).exec() {
             Ok(metadata) => {
-                info!("Cargo metadata done");
-                debug!("Cargo metadata: {:#?}", &metadata);
+                debug!("Cargo metadata done");
+                trace!("Cargo metadata: {:#?}", &metadata);
                 let mut crate_info = convert_metadata_to_crate_info(&metadata);
 
-                debug!("Reading file: {:#?}", &file_path);
+                trace!("Reading file: {:#?}", &file_path);
                 let crate_info_string = fsio::file::read_text_file(&file_path)?;
 
                 let crate_info_deserialized: CrateInfoMinimal =
@@ -298,7 +298,7 @@ pub(crate) fn load_from(file_path: PathBuf) -> Result<CrateInfo, CargoMakeError>
 
                 load_workspace_members(&mut crate_info);
 
-                debug!("Loaded Cargo.toml: {:#?}", &crate_info);
+                trace!("Loaded Cargo.toml: {:#?}", &crate_info);
 
                 Ok(crate_info)
             }
