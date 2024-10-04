@@ -230,9 +230,7 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
 
         script_lines.push("workspace_directory = pwd".to_string());
         for member in &filtered_members {
-            let mut cd_line = "cd ./".to_string();
-            cd_line.push_str(&member.replace("\\", "/"));
-            script_lines.push(cd_line);
+            script_lines.push(format!("cd ./{}", member.replace("\\", "/")));
 
             //get member name
             let member_name = match Path::new(&member).file_name() {
