@@ -13,7 +13,7 @@ use crate::logger;
 use crate::profile;
 use crate::proxy_task::create_proxy_task;
 use crate::types::{
-    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier, Workspace,
+    Config, CrateInfo, EnvValue, ExecutionPlan, ScriptValue, Step, Task, TaskIdentifier,
 };
 use fsio::path::{get_basename, get_parent_directory};
 use glob::Pattern;
@@ -208,9 +208,7 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
         );
     }
 
-    let members = if crate_info.workspace.is_some() {
-        let workspace_clone = crate_info.workspace.clone();
-        let workspace = workspace_clone.unwrap_or(Workspace::new());
+    let members = if let Some(workspace) = crate_info.workspace.clone() {
         workspace.members.unwrap_or(vec![])
     } else {
         envmnt::get_list("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap_or(vec![])
