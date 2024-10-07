@@ -181,6 +181,7 @@ dependencies = [
  "shell2batch",
  "strip-ansi-escapes",
  "strum_macros",
+ "tempfile",
  "toml",
 ]
 
