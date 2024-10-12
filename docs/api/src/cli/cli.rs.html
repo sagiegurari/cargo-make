@@ -181,6 +181,7 @@
 <a href="#181" id="181">181</a>
 <a href="#182" id="182">182</a>
 <a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # cli
 //!
 //! The cargo-make cli
@@ -303,6 +304,7 @@
     time_summary::add(<span class="kw-2">&amp;mut </span>time_summary_vec, <span class="string">"[Setup Env]"</span>, step_time);
 
     <span class="kw">let </span>crate_name = envmnt::get_or(<span class="string">"CARGO_MAKE_CRATE_NAME"</span>, <span class="string">""</span>);
+    <span class="macro">info!</span>(<span class="string">""</span>);
     <span class="kw">if </span>crate_name.len() &gt; <span class="number">0 </span>{
         <span class="macro">info!</span>(<span class="string">"Project: {}"</span>, <span class="kw-2">&amp;</span>crate_name);
     }
