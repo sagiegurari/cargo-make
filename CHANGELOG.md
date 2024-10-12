@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.22
+
+* Fix: set env CARGO_MAKE_CURRENT_TASK_NAME before condition invocation #1173
+
 ### v0.37.21 (2024-10-04)
 
 * Fix: Remove RUSTFLAGS from workaround of rustup env issue when setting toolchain #1169
