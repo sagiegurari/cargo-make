@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.23 (2024-10-16)
+### v0.37.23
 
 * Maintenance: critical bug fix upgrade for duckscript
 
