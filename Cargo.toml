@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.37.22"
+version = "0.37.23"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -51,7 +51,7 @@ colored = "^2"
 ctrlc = "^3"
 dirs-next = "^2"
 duckscript = "^0.10"
-duckscriptsdk = { version = "^0.11", default-features = false }
+duckscriptsdk = { version = "^0.11.1", default-features = false }
 envmnt = "^0.10.4"
 fern = "^0.6"
 fsio = { version = "^0.4", features = ["temp-path"] }

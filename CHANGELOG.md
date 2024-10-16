@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.37.23 (2024-10-16)
+
+* Maintenance: critical bug fix upgrade for duckscript
+
 ### v0.37.22 (2024-10-12)
 
 * Fix: set env CARGO_MAKE_CURRENT_TASK_NAME before condition invocation #1173
