@@ -2072,6 +2072,9 @@ pub struct ExtendOptions {
     pub path: String,
     /// Enable optional extend (default to false)
     pub optional: Option<bool>,
+    /// Relative to option, sub as current makefile, crate root, workspace root, etc...
+    /// Possible values: (makefile, crate, workspace)
+    pub relative: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

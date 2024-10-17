@@ -2,6 +2,7 @@
 
 ### v0.37.23
 
+* Enhancement: support relative keyword for makefile extending to enable easy crate/workspace root extending #1175
 * Maintenance: critical bug fix upgrade for duckscript
 
 ### v0.37.22 (2024-10-12)

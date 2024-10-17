@@ -779,16 +779,25 @@ fn load_env_file_with_base_directory(
     }
 }
 
-fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
-    let file_path = Path::new(directory).join("Cargo.toml");
+pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
+    let from_dir = if directory.to_str().unwrap_or(".") == "." {
+        match env::current_dir() {
+            Ok(value) => &value.clone(),
+            _ => directory,
+        }
+    } else {
+        directory
+    };
+    debug!("Looking for project root from directory: {:?}", from_dir);
+    let file_path = Path::new(from_dir).join("Cargo.toml");
 
     if file_path.exists() {
-        match directory.to_str() {
+        match from_dir.to_str() {
             Some(directory_string) => Some(directory_string.to_string()),
             _ => None,
         }
     } else {
-        match directory.parent() {
+        match from_dir.parent() {
             Some(parent_directory) => {
                 let parent_directory_path = parent_directory.to_path_buf();
                 get_project_root_for_path(&parent_directory_path)

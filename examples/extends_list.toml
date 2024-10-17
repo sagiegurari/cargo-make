@@ -3,7 +3,14 @@ extend = [
   { path = "alias.toml" },
   { path = "optional_makefile.toml", optional = true },
   { path = "cwd.toml" },
+  { path = "./examples/python.toml", relative = "crate" },
 ]
+
+[config]
+skip_core_tasks = true
+skip_git_env_info = true
+skip_rust_env_info = true
+skip_crate_env_info = true
 
 [tasks.extended]
 alias = "D2"

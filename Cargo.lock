@@ -423,9 +423,9 @@ dependencies = [
 
 [[package]]
 name = "duckscriptsdk"
-version = "0.11.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45817ca2f227ffd723d5f55ce2a0a11fb7b70e7e1c87e6e66c9c3d4784fc94f5"
+checksum = "29c5669655efc2ef2293344a52bf4254d66026d703f8d89224e32f3de7ab6b46"
 dependencies = [
  "attohttpc",
  "base64",

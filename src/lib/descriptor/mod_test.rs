@@ -492,7 +492,9 @@ fn load_internal_descriptors_modify_namespace() {
 #[test]
 #[ignore]
 fn load_external_descriptor_no_file() {
-    let config = load_external_descriptor(".", "bad_file.toml2", false, false).unwrap();
+    let config =
+        load_external_descriptor(".", "bad_file.toml2", false, false, RelativeTo::Makefile)
+            .unwrap();
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -502,19 +504,33 @@ fn load_external_descriptor_no_file() {
 #[test]
 #[should_panic]
 fn load_external_descriptor_no_file_force() {
-    load_external_descriptor(".", "bad_file.toml2", true, false).unwrap();
+    load_external_descriptor(".", "bad_file.toml2", true, false, RelativeTo::Makefile).unwrap();
 }
 
 #[test]
 #[should_panic]
 fn load_external_descriptor_extended_not_found_force() {
-    load_external_descriptor(".", "./examples/extends_not_found.toml", true, false).unwrap();
+    load_external_descriptor(
+        ".",
+        "./examples/extends_not_found.toml",
+        true,
+        false,
+        RelativeTo::Makefile,
+    )
+    .unwrap();
 }
 
 #[test]
 #[ignore]
 fn load_external_descriptor_simple_file() {
-    let config = load_external_descriptor(".", "./examples/alias.toml", true, false).unwrap();
+    let config = load_external_descriptor(
+        ".",
+        "./examples/alias.toml",
+        true,
+        false,
+        RelativeTo::Makefile,
+    )
+    .unwrap();
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -529,7 +545,14 @@ fn load_external_descriptor_simple_file() {
 #[test]
 #[ignore]
 fn load_external_descriptor_extending_file() {
-    let config = load_external_descriptor(".", "examples/extending.toml", true, false).unwrap();
+    let config = load_external_descriptor(
+        ".",
+        "examples/extending.toml",
+        true,
+        false,
+        RelativeTo::Makefile,
+    )
+    .unwrap();
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -550,8 +573,14 @@ fn load_external_descriptor_extending_file() {
 #[test]
 #[ignore]
 fn load_external_descriptor_extending_file_sub_folder() {
-    let config =
-        load_external_descriptor(".", "examples/files/extending.toml", true, false).unwrap();
+    let config = load_external_descriptor(
+        ".",
+        "examples/files/extending.toml",
+        true,
+        false,
+        RelativeTo::Makefile,
+    )
+    .unwrap();
 
     assert!(config.config.is_some());
     assert!(config.env.is_some());
@@ -584,7 +613,14 @@ fn load_external_descriptor_set_env() {
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH"), "EMPTY");
 
-    load_external_descriptor(".", "./examples/alias.toml", true, true).unwrap();
+    load_external_descriptor(
+        ".",
+        "./examples/alias.toml",
+        true,
+        true,
+        RelativeTo::Makefile,
+    )
+    .unwrap();
 
     assert!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH").ends_with("alias.toml"));
 }
@@ -598,7 +634,8 @@ fn load_external_descriptor_min_version_broken_makefile_nopanic() {
             ".",
             "src/lib/test/makefiles/broken_makefile_minversion.toml",
             false,
-            false
+            false,
+            RelativeTo::Makefile
         )
         .err()
         .unwrap()
@@ -618,6 +655,7 @@ fn load_external_descriptor_broken_makefile_panic() {
         "src/lib/test/makefiles/broken_makefile.toml",
         false,
         false,
+        RelativeTo::Makefile,
     )
     .unwrap();
 }
@@ -726,6 +764,7 @@ fn load_descriptor_extended_makefiles_options_exists() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: None,
+            relative: None,
         }),
     )
     .unwrap();
@@ -744,6 +783,7 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: None,
+            relative: None,
         }),
     )
     .unwrap();
@@ -758,6 +798,7 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(true),
+            relative: None,
         }),
     )
     .unwrap();
@@ -775,6 +816,7 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
+            relative: None,
         }),
     )
     .unwrap();
@@ -793,6 +835,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(true),
+            relative: None,
         }),
     )
     .unwrap();
@@ -811,6 +854,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
         &Extend::Options(ExtendOptions {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(false),
+            relative: None,
         }),
     )
     .unwrap();
@@ -824,10 +868,12 @@ fn load_descriptor_extended_makefiles_list_exists() {
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
+            relative: None,
         },
         ExtendOptions {
             path: "src/lib/test/makefiles/test2.toml".to_string(),
             optional: Some(false),
+            relative: None,
         },
     ];
     let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
@@ -846,10 +892,12 @@ fn load_descriptor_extended_makefiles_list_not_exists() {
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
+            relative: None,
         },
         ExtendOptions {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(false),
+            relative: None,
         },
     ];
     load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
@@ -863,10 +911,12 @@ fn load_descriptor_extended_makefiles_list_exists_optional() {
         ExtendOptions {
             path: "src/lib/test/makefiles/test1.toml".to_string(),
             optional: Some(false),
+            relative: None,
         },
         ExtendOptions {
             path: "src/lib/test/makefiles/bad.toml".to_string(),
             optional: Some(true),
+            relative: None,
         },
     ];
     let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
