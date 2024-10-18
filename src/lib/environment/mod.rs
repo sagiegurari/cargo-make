@@ -779,17 +779,21 @@ fn load_env_file_with_base_directory(
     }
 }
 
+fn current_dir_or(fallback: &PathBuf) -> PathBuf {
+    match env::current_dir() {
+        Ok(value) => value.clone(),
+        _ => fallback.clone(),
+    }
+}
+
 pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
     let from_dir = if directory.to_str().unwrap_or(".") == "." {
-        match env::current_dir() {
-            Ok(value) => &value.clone(),
-            _ => directory,
-        }
+        current_dir_or(directory)
     } else {
-        directory
+        directory.to_path_buf()
     };
-    debug!("Looking for project root from directory: {:?}", from_dir);
-    let file_path = Path::new(from_dir).join("Cargo.toml");
+    debug!("Looking for project root from directory: {:?}", &from_dir);
+    let file_path = Path::new(&from_dir).join("Cargo.toml");
 
     if file_path.exists() {
         match from_dir.to_str() {
@@ -808,10 +812,8 @@ pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
 }
 
 pub(crate) fn get_project_root() -> Option<String> {
-    match env::current_dir() {
-        Ok(directory) => get_project_root_for_path(&directory),
-        _ => None,
-    }
+    let directory = PathBuf::from(".");
+    get_project_root_for_path(&directory)
 }
 
 fn expand_env_for_script_runner_arguments(task: &mut Task) {

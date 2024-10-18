@@ -328,13 +328,13 @@ fn load_external_descriptor(
     );
 
     let descriptor_dir = match relative_to {
-        RelativeTo::Makefile => base_path,
+        RelativeTo::Makefile => base_path.to_string(),
         RelativeTo::CrateRoot => {
             let project_root = environment::get_project_root_for_path(&PathBuf::from(base_path));
             debug!("project root: {:#?}", &project_root);
             match project_root {
-                Some(crate_dir) => &crate_dir.clone(),
-                None => base_path,
+                Some(crate_dir) => crate_dir.clone(),
+                None => base_path.to_string(),
             }
         }
         RelativeTo::WorkspaceRoot => {
@@ -347,15 +347,15 @@ fn load_external_descriptor(
                     let workspace_root = environment::get_project_root_for_path(&crate_parent_path);
                     debug!("workspace root: {:#?}", &workspace_root);
                     match workspace_root {
-                        Some(workspace_dir) => &workspace_dir.clone(),
-                        None => &crate_dir.clone(),
+                        Some(workspace_dir) => workspace_dir.clone(),
+                        None => crate_dir.clone(),
                     }
                 }
-                None => base_path,
+                None => base_path.to_string(),
             }
         }
     };
-    let file_path = Path::new(descriptor_dir).join(file_name);
+    let file_path = Path::new(&descriptor_dir).join(file_name);
 
     if file_path.exists() && file_path.is_file() {
         let file_path_string: String = FromPath::from_path(&file_path);
