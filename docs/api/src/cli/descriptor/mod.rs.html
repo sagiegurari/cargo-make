@@ -640,6 +640,71 @@
 <a href="#640" id="640">640</a>
 <a href="#641" id="641">641</a>
 <a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # descriptor
 //!
 //! Loads the tasks descriptor.&lt;br&gt;
@@ -657,13 +722,8 @@
 <span class="kw">mod </span>env;
 <span class="kw">mod </span>makefiles;
 
-<span class="kw">use </span>std::path::{Path, PathBuf};
-
-<span class="kw">use </span>fsio::path::as_path::AsPath;
-<span class="kw">use </span>fsio::path::from_path::FromPath;
-<span class="kw">use </span>indexmap::IndexMap;
-
 <span class="kw">use </span><span class="kw">crate</span>::descriptor::env::{merge_env, merge_env_files, merge_env_scripts};
+<span class="kw">use </span><span class="kw">crate</span>::environment;
 <span class="kw">use </span><span class="kw">crate</span>::error::CargoMakeError;
 <span class="kw">use </span><span class="kw">crate</span>::plugin::descriptor::merge_plugins_config;
 <span class="kw">use </span><span class="kw">crate</span>::types::{
@@ -671,6 +731,18 @@
     Task,
 };
 <span class="kw">use crate</span>::{io, scriptengine, version};
+<span class="kw">use </span>fsio::path::as_path::AsPath;
+<span class="kw">use </span>fsio::path::from_path::FromPath;
+<span class="kw">use </span>indexmap::IndexMap;
+<span class="kw">use </span>std::path::{Path, PathBuf};
+
+<span class="attr">#[derive(Debug)]
+</span><span class="kw">enum </span>RelativeTo {
+    Makefile,
+    GitRoot,
+    CrateRoot,
+    WorkspaceRoot,
+}
 
 <span class="kw">fn </span>merge_tasks(
     base: <span class="kw-2">&amp;mut </span>IndexMap&lt;String, Task&gt;,
@@ -891,10 +963,29 @@
     extend_struct: <span class="kw-2">&amp;</span>Extend,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="kw">match </span>extend_struct {
-        Extend::Path(base_file) =&gt; load_external_descriptor(parent_path, <span class="kw-2">&amp;</span>base_file, <span class="bool-val">true</span>, <span class="bool-val">false</span>),
+        Extend::Path(base_file) =&gt; {
+            load_external_descriptor(parent_path, <span class="kw-2">&amp;</span>base_file, <span class="bool-val">true</span>, <span class="bool-val">false</span>, RelativeTo::Makefile)
+        }
         Extend::Options(extend_options) =&gt; {
             <span class="kw">let </span>force = !extend_options.optional.unwrap_or(<span class="bool-val">false</span>);
-            load_external_descriptor(parent_path, <span class="kw-2">&amp;</span>extend_options.path, force, <span class="bool-val">false</span>)
+            <span class="kw">let </span>relative_to_str = extend_options
+                .relative
+                .clone()
+                .unwrap_or(<span class="string">"makefile"</span>.to_string());
+            <span class="kw">let </span>relative_to = <span class="kw">match </span>relative_to_str.as_str() {
+                <span class="string">"git" </span>=&gt; RelativeTo::GitRoot,
+                <span class="string">"crate" </span>=&gt; RelativeTo::CrateRoot,
+                <span class="string">"workspace" </span>=&gt; RelativeTo::WorkspaceRoot,
+                <span class="string">"makefile" </span>=&gt; RelativeTo::Makefile,
+                <span class="kw">_ </span>=&gt; {
+                    <span class="macro">warn!</span>(
+                        <span class="string">"Unknown relative-to value: {}, defaulting to makefile"</span>,
+                        <span class="kw-2">&amp;</span>relative_to_str
+                    );
+                    RelativeTo::Makefile
+                }
+            };
+            load_external_descriptor(parent_path, <span class="kw-2">&amp;</span>extend_options.path, force, <span class="bool-val">false</span>, relative_to)
         }
         Extend::List(extend_list) =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>ordered_list_config = ExternalConfig::new();
@@ -944,13 +1035,50 @@
     file_name: <span class="kw-2">&amp;</span>str,
     force: bool,
     set_env: bool,
+    relative_to: RelativeTo,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;ExternalConfig, CargoMakeError&gt; {
     <span class="macro">debug!</span>(
-        <span class="string">"Loading tasks from file: {} base directory: {}"</span>,
-        <span class="kw-2">&amp;</span>file_name, <span class="kw-2">&amp;</span>base_path
+        <span class="string">"Loading tasks from file: {} base directory: {}, relative to: {:#?}"</span>,
+        <span class="kw-2">&amp;</span>file_name, <span class="kw-2">&amp;</span>base_path, <span class="kw-2">&amp;</span>relative_to,
     );
 
-    <span class="kw">let </span>file_path = Path::new(base_path).join(file_name);
+    <span class="kw">let </span>descriptor_dir = <span class="kw">match </span>relative_to {
+        RelativeTo::Makefile =&gt; base_path.to_string(),
+        RelativeTo::GitRoot =&gt; {
+            <span class="kw">let </span>git_root = environment::find_git_root(<span class="kw-2">&amp;</span>PathBuf::from(base_path));
+            <span class="macro">debug!</span>(<span class="string">"git root: {:#?}"</span>, <span class="kw-2">&amp;</span>git_root);
+            <span class="kw">match </span>git_root {
+                <span class="prelude-val">Some</span>(git_root_dir) =&gt; git_root_dir.clone(),
+                <span class="prelude-val">None </span>=&gt; base_path.to_string(),
+            }
+        }
+        RelativeTo::CrateRoot =&gt; {
+            <span class="kw">let </span>project_root = environment::get_project_root_for_path(<span class="kw-2">&amp;</span>PathBuf::from(base_path));
+            <span class="macro">debug!</span>(<span class="string">"project root: {:#?}"</span>, <span class="kw-2">&amp;</span>project_root);
+            <span class="kw">match </span>project_root {
+                <span class="prelude-val">Some</span>(crate_dir) =&gt; crate_dir.clone(),
+                <span class="prelude-val">None </span>=&gt; base_path.to_string(),
+            }
+        }
+        RelativeTo::WorkspaceRoot =&gt; {
+            <span class="kw">let </span>base_path_buf = PathBuf::from(base_path);
+            <span class="kw">let </span>project_root = environment::get_project_root_for_path(<span class="kw-2">&amp;</span>base_path_buf);
+            <span class="macro">debug!</span>(<span class="string">"project root: {:#?}"</span>, <span class="kw-2">&amp;</span>project_root);
+            <span class="kw">match </span>project_root {
+                <span class="prelude-val">Some</span>(crate_dir) =&gt; {
+                    <span class="kw">let </span>crate_parent_path = PathBuf::from(<span class="kw-2">&amp;</span>crate_dir).join(<span class="string">".."</span>);
+                    <span class="kw">let </span>workspace_root = environment::get_project_root_for_path(<span class="kw-2">&amp;</span>crate_parent_path);
+                    <span class="macro">debug!</span>(<span class="string">"workspace root: {:#?}"</span>, <span class="kw-2">&amp;</span>workspace_root);
+                    <span class="kw">match </span>workspace_root {
+                        <span class="prelude-val">Some</span>(workspace_dir) =&gt; workspace_dir.clone(),
+                        <span class="prelude-val">None </span>=&gt; crate_dir.clone(),
+                    }
+                }
+                <span class="prelude-val">None </span>=&gt; base_path.to_string(),
+            }
+        }
+    };
+    <span class="kw">let </span>file_path = Path::new(<span class="kw-2">&amp;</span>descriptor_dir).join(file_name);
 
     <span class="kw">if </span>file_path.exists() &amp;&amp; file_path.is_file() {
         <span class="kw">let </span>file_path_string: String = FromPath::from_path(<span class="kw-2">&amp;</span>file_path);
@@ -974,7 +1102,7 @@
 
         <span class="kw">match </span>file_config.extend {
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extend_struct) =&gt; {
-                <span class="kw">let </span>parent_path_buf = Path::new(base_path).join(file_name).join(<span class="string">".."</span>);
+                <span class="kw">let </span>parent_path_buf = Path::new(<span class="kw-2">&amp;</span>file_path_string).join(<span class="string">".."</span>);
                 <span class="kw">let </span>parent_path = file_path
                     .parent()
                     .unwrap_or(<span class="kw-2">&amp;</span>parent_path_buf)
@@ -1157,7 +1285,8 @@
 ) -&gt; <span class="prelude-ty">Result</span>&lt;Config, CargoMakeError&gt; {
     <span class="kw">let </span>default_config = load_internal_descriptors(stable, experimental, modify_core_tasks)<span class="question-mark">?</span>;
 
-    <span class="kw">let </span><span class="kw-2">mut </span>external_config = load_external_descriptor(<span class="string">"."</span>, file_name, force, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>external_config =
+        load_external_descriptor(<span class="string">"."</span>, file_name, force, <span class="bool-val">true</span>, RelativeTo::Makefile)<span class="question-mark">?</span>;
 
     external_config = <span class="kw">match </span>std::env::var(<span class="string">"CARGO_MAKE_WORKSPACE_MAKEFILE"</span>) {
         <span class="prelude-val">Ok</span>(workspace_makefile) =&gt; {
@@ -1174,6 +1303,7 @@
                                     workspace_file_name_str,
                                     <span class="bool-val">false</span>,
                                     <span class="bool-val">false</span>,
+                                    RelativeTo::Makefile,
                                 )<span class="question-mark">?</span>;
                                 merge_external_configs(external_config, workspace_config)<span class="question-mark">?
                             </span>}

@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.37.23
+### v0.37.23 (2024-10-19)
 
 * Enhancement: support relative keyword for makefile extending to enable easy git/crate/workspace root extending #1175
 * Maintenance: critical bug fix upgrade for duckscript

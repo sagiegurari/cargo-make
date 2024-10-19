@@ -2457,6 +2457,9 @@
 <a href="#2457" id="2457">2457</a>
 <a href="#2458" id="2458">2458</a>
 <a href="#2459" id="2459">2459</a>
+<a href="#2460" id="2460">2460</a>
+<a href="#2461" id="2461">2461</a>
+<a href="#2462" id="2462">2462</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -4531,6 +4534,9 @@
     </span><span class="kw">pub </span>path: String,
     <span class="doccomment">/// Enable optional extend (default to false)
     </span><span class="kw">pub </span>optional: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="doccomment">/// Relative to option, sub as current makefile, git root, crate root, workspace root, etc...
+    /// Possible values: (makefile, git, crate, workspace)
+    </span><span class="kw">pub </span>relative: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
