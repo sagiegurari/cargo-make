@@ -3,7 +3,9 @@ extend = [
   { path = "alias.toml" },
   { path = "optional_makefile.toml", optional = true },
   { path = "cwd.toml" },
+  { path = "cwd.toml", relative = "bad" },
   { path = "./examples/python.toml", relative = "crate" },
+  { path = "./examples/javascript.toml", relative = "git" },
 ]
 
 [config]

@@ -32,6 +32,7 @@ use std::path::{Path, PathBuf};
 #[derive(Debug)]
 enum RelativeTo {
     Makefile,
+    GitRoot,
     CrateRoot,
     WorkspaceRoot,
 }
@@ -260,15 +261,22 @@ fn load_descriptor_extended_makefiles(
         }
         Extend::Options(extend_options) => {
             let force = !extend_options.optional.unwrap_or(false);
-            let relative_to = match extend_options
+            let relative_to_str = extend_options
                 .relative
                 .clone()
-                .unwrap_or("makefile".to_string())
-                .as_str()
-            {
+                .unwrap_or("makefile".to_string());
+            let relative_to = match relative_to_str.as_str() {
+                "git" => RelativeTo::GitRoot,
                 "crate" => RelativeTo::CrateRoot,
                 "workspace" => RelativeTo::WorkspaceRoot,
-                _ => RelativeTo::Makefile,
+                "makefile" => RelativeTo::Makefile,
+                _ => {
+                    warn!(
+                        "Unknown relative-to value: {}, defaulting to makefile",
+                        &relative_to_str
+                    );
+                    RelativeTo::Makefile
+                }
             };
             load_external_descriptor(parent_path, &extend_options.path, force, false, relative_to)
         }
@@ -329,6 +337,14 @@ fn load_external_descriptor(
 
     let descriptor_dir = match relative_to {
         RelativeTo::Makefile => base_path.to_string(),
+        RelativeTo::GitRoot => {
+            let git_root = environment::find_git_root(&PathBuf::from(base_path));
+            debug!("git root: {:#?}", &git_root);
+            match git_root {
+                Some(git_root_dir) => git_root_dir.clone(),
+                None => base_path.to_string(),
+            }
+        }
         RelativeTo::CrateRoot => {
             let project_root = environment::get_project_root_for_path(&PathBuf::from(base_path));
             debug!("project root: {:#?}", &project_root);

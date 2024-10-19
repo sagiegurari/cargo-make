@@ -609,6 +609,50 @@ fn load_external_descriptor_extending_file_sub_folder() {
 
 #[test]
 #[ignore]
+fn load_external_descriptor_simple_file_from_crate_root() {
+    let config = load_external_descriptor(
+        ".",
+        "./examples/alias.toml",
+        true,
+        false,
+        RelativeTo::CrateRoot,
+    )
+    .unwrap();
+
+    assert!(config.config.is_none());
+    assert!(config.env.is_none());
+    assert!(config.tasks.is_some());
+
+    let tasks = config.tasks.unwrap();
+    let test_task = tasks.get("D2").unwrap();
+    let alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D");
+}
+
+#[test]
+#[ignore]
+fn load_external_descriptor_simple_file_from_git_root() {
+    let config = load_external_descriptor(
+        ".",
+        "./examples/alias.toml",
+        true,
+        false,
+        RelativeTo::GitRoot,
+    )
+    .unwrap();
+
+    assert!(config.config.is_none());
+    assert!(config.env.is_none());
+    assert!(config.tasks.is_some());
+
+    let tasks = config.tasks.unwrap();
+    let test_task = tasks.get("D2").unwrap();
+    let alias = test_task.alias.clone();
+    assert_eq!(alias.unwrap(), "D");
+}
+
+#[test]
+#[ignore]
 fn load_external_descriptor_set_env() {
     envmnt::set("CARGO_MAKE_MAKEFILE_PATH", "EMPTY");
     assert_eq!(envmnt::get_or_panic("CARGO_MAKE_MAKEFILE_PATH"), "EMPTY");

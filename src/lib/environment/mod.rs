@@ -786,6 +786,31 @@ fn current_dir_or(fallback: &PathBuf) -> PathBuf {
     }
 }
 
+pub(crate) fn find_git_root(directory: &PathBuf) -> Option<String> {
+    let from_dir = if directory.to_str().unwrap_or(".") == "." {
+        current_dir_or(directory)
+    } else {
+        directory.to_path_buf()
+    };
+    debug!("Looking for git root from directory: {:?}", &from_dir);
+    let file_path = Path::new(&from_dir).join(".git");
+
+    if file_path.exists() {
+        match from_dir.to_str() {
+            Some(directory_string) => Some(directory_string.to_string()),
+            _ => None,
+        }
+    } else {
+        match from_dir.parent() {
+            Some(parent_directory) => {
+                let parent_directory_path = parent_directory.to_path_buf();
+                find_git_root(&parent_directory_path)
+            }
+            None => None,
+        }
+    }
+}
+
 pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
     let from_dir = if directory.to_str().unwrap_or(".") == "." {
         current_dir_or(directory)
