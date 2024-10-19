@@ -1,3 +1,5 @@
 
+extend = { path = "./common.toml", relative = "workspace" }
+
 [tasks.echo]
 script = ["echo hello from member2"]

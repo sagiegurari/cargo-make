@@ -1,0 +1,4 @@
+
+[tasks.common]
+command = "echo"
+args = ["common"]
