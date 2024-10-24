@@ -7,6 +7,8 @@
 #[path = "cli_parser_test.rs"]
 mod cli_parser_test;
 
+use crate::completion::generate_completions;
+
 use crate::cli::{
     AUTHOR, DEFAULT_LOG_LEVEL, DEFAULT_OUTPUT_FORMAT, DEFAULT_TASK_NAME, DESCRIPTION, VERSION,
 };
@@ -39,6 +41,11 @@ fn get_args(
 
     cli_args.build_file = match cli_parsed.get_first_value("makefile") {
         Some(value) => Some(value),
+        None => None,
+    };
+
+    cli_args.completion = match cli_parsed.get_first_value("completion") {
+        Some(value) => Some(value.to_string()),
         None => None,
     };
 
@@ -212,6 +219,17 @@ fn add_arguments(spec: CliSpec, default_task_name: &str, default_log_level: &str
             help: Some(ArgumentHelp::TextAndParam(
                 "The profile name (will be converted to lower case)".to_string(),
                 "PROFILE".to_string(),
+            )),
+        })
+        .add_argument(Argument {
+            name: "completion".to_string(),
+            key: vec!["--completion".to_string()],
+            argument_occurrence: ArgumentOccurrence::Single,
+            value_type: ArgumentValueType::Single,
+            default_value: None,
+            help: Some(ArgumentHelp::TextAndParam(
+                "Will enable completion for the defined tasks for a given shell".to_string(),
+                "COMPLETION".to_string(),
             )),
         })
         .add_argument(Argument {
@@ -482,6 +500,10 @@ pub fn parse_args(
         let version_text = cliparser::version(&spec);
         println!("{}", version_text);
         Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+    } else if let Some(shell) = cli_parsed.get_first_value("completion") {
+        // Call the function to generate completions
+        generate_completions(&shell);
+        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
     } else {
         Ok(get_args(
             &cli_parsed,
@@ -512,3 +534,4 @@ fn to_owned_vec(vec_option: Option<&Vec<String>>) -> Option<Vec<String>> {
         None => None,
     }
 }
+

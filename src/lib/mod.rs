@@ -55,6 +55,7 @@ mod cache;
 pub mod cli;
 pub mod cli_commands;
 pub mod cli_parser;
+pub mod completion;
 mod command;
 mod condition;
 pub mod config;
