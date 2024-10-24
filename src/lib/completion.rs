@@ -1,6 +1,6 @@
+use std::io::BufRead;
 use std::path::Path;
 use std::{fs, io};
-
 
 /// # Completions Module
 /// 
@@ -26,7 +26,7 @@ mod completion_test;
 pub fn generate_completions(shell: &str) {
     match shell {
         "zsh" => {
-            if let Err(e) = generate_completion_zsh() {
+            if let Err(e) = generate_completion_zsh(None) {
                 eprintln!("Error generating Zsh completions: {}", e);
             }
         }
@@ -36,7 +36,8 @@ pub fn generate_completions(shell: &str) {
     }
 }
 
-fn generate_completion_zsh() -> Result<(), Box<dyn std::error::Error>> {
+// Modify the function to accept an optional input stream
+fn generate_completion_zsh(input: Option<&mut dyn io::Read>) -> Result<(), Box<dyn std::error::Error>> {
     let home_dir = std::env::var("HOME")?;
     let zfunc_dir = format!("{}/.zfunc", home_dir);
     let completion_file = format!("{}/_cargo-make", zfunc_dir);
@@ -50,13 +51,18 @@ fn generate_completion_zsh() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if Path::new(&completion_file).exists() {
-        let mut input = String::new();
-        println!(
-            "File {} already exists. Overwrite? (y/n): ",
-            completion_file
-        );
-        io::stdin().read_line(&mut input)?;
-        if input.trim().to_lowercase() != "y" {
+        let mut input_str = String::new();
+        let reader: Box<dyn io::Read> = match input {
+            Some(input) => Box::new(input),
+            None => Box::new(io::stdin()),
+        };
+
+        // Create a BufReader to read from the provided input or stdin
+        let mut buf_reader = io::BufReader::new(reader);
+        println!("File {} already exists. Overwrite? (y/n): ", completion_file);
+        buf_reader.read_line(&mut input_str)?;
+
+        if input_str.trim().to_lowercase() != "y" {
             println!("Aborted overwriting the file.");
             return Ok(());
         }

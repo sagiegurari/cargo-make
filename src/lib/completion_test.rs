@@ -1,11 +1,13 @@
-use super::*;
 use std::fs;
 use std::path::Path;
+use std::io::Cursor;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::completion::generate_completion_zsh;
 
+    use super::*;
+    
     // Function to clean up test environment by removing the completion file
     fn cleanup() {
         let home_dir = std::env::var("HOME").expect("Failed to get HOME");
@@ -16,10 +18,33 @@ mod tests {
     }
 
     #[test]
+    fn test_generate_completion_zsh_overwrite_prompt_yes() {
+        cleanup(); // Clean up before the test
+        let input = b"y\n"; // Simulate user input of 'y'
+        let mut reader = Cursor::new(input);
+
+        let result = generate_completion_zsh(Some(&mut reader));
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_generate_completion_zsh_overwrite_prompt_no() {
+        cleanup(); // Clean up before the test
+        let input = b"n\n"; // Simulate user input of 'n'
+        let mut reader = Cursor::new(input);
+
+        let result = generate_completion_zsh(Some(&mut reader));
+        assert!(result.is_ok());
+    }
+
+    #[test]
     fn test_generate_completion_zsh_creates_directory() {
         cleanup(); // Clean up before the test
 
-        let result = generate_completion_zsh();
+        let input = b"y\n"; // Simulate user input of 'y'
+        let mut reader = Cursor::new(input);
+        
+        let result = generate_completion_zsh(Some(&mut reader));
         assert!(result.is_ok(), "Should succeed in generating completions");
 
         // Check if the directory was created
@@ -32,7 +57,10 @@ mod tests {
     fn test_generate_completion_zsh_creates_file() {
         cleanup(); // Clean up before the test
 
-        let result = generate_completion_zsh();
+        let input = b"y\n"; // Simulate user input of 'y'
+        let mut reader = Cursor::new(input);
+        
+        let result = generate_completion_zsh(Some(&mut reader));
         assert!(result.is_ok(), "Should succeed in generating completions");
 
         // Check if the completion file was created
@@ -46,16 +74,17 @@ mod tests {
         cleanup(); // Clean up before the test
 
         // Create the directory and file first
-        generate_completion_zsh().expect("Should succeed in generating completions");
+        let input = b"y\n"; // Simulate user input of 'y'
+        let mut reader = Cursor::new(input);
+        
+        generate_completion_zsh(Some(&mut reader)).expect("Should succeed in generating completions");
 
         // Simulate user input for overwrite.
-        // You might want to refactor the `generate_completion_zsh` function to take an input parameter
-        // for easier testing.
-        
-        // For now, let's just check that we can call it again
-        let result = generate_completion_zsh(); // This will prompt in the real environment
+        let input = b"y\n"; // Simulate user input of 'y' again
+        let mut reader = Cursor::new(input);
+
+        let result = generate_completion_zsh(Some(&mut reader));
         assert!(result.is_ok(), "Should handle overwrite prompt gracefully");
     }
 
-    // Additional tests can be added here for other scenarios
 }
