@@ -1,6 +1,7 @@
 use std::io::BufRead;
 use std::path::Path;
 use std::{fs, io};
+use log::{error,info};
 
 /// # Completions Module
 /// 
@@ -45,10 +46,10 @@ fn generate_completion_zsh(input: Option<&mut dyn io::Read>) -> Result<(), Box<d
 
     if !Path::new(&zfunc_dir).exists() {
         if let Err(e) = fs::create_dir_all(&zfunc_dir) {
-            eprintln!("Failed to create directory {}: {}", zfunc_dir, e);
+            error!("Failed to create directory {}: {}", zfunc_dir, e);
             return Err(Box::new(e));
         }
-        println!("Created directory: {}", zfunc_dir);
+        info!("Created directory: {}", zfunc_dir);
     }
 
     if Path::new(&completion_file).exists() {
