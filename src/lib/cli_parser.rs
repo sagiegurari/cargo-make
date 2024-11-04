@@ -502,8 +502,10 @@ pub fn parse_args(
         Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
     } else if let Some(shell) = cli_parsed.get_first_value("completion") {
         // Call the function to generate completions
-        generate_completions(&shell);
-        Err(CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+        if let Err(e) = generate_completions(&shell) {
+            eprintln!("Error generating completions: {}", e);
+        }
+        return Err(crate::error::CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS));
     } else {
         Ok(get_args(
             &cli_parsed,
@@ -534,4 +536,3 @@ fn to_owned_vec(vec_option: Option<&Vec<String>>) -> Option<Vec<String>> {
         None => None,
     }
 }
-

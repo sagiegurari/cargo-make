@@ -23,18 +23,19 @@ use std::{fs, io};
 #[path = "completion_test.rs"]
 mod completion_test;
 
-pub fn generate_completions(shell: &str) {
+pub fn generate_completions(shell: &str) -> Result<(), Box<dyn std::error::Error>> {
     match shell {
         "zsh" => {
-            if let Err(e) = generate_completion_zsh(None) {
-                eprintln!("Error generating Zsh completions: {}", e);
-            }
+            generate_completion_zsh(None)?; // Use the `?` operator to propagate errors
+            Ok(()) // Return Ok if no error occurred
         }
         _ => {
-            eprintln!("Unsupported shell for completion: {}", shell);
+            // Return an error for unsupported shell
+            Err(Box::from(format!("Unsupported shell for completion: {}", shell)))
         }
     }
 }
+
 
 // Modify the function to accept an optional input stream
 fn generate_completion_zsh(input: Option<&mut dyn io::Read>) -> Result<(), Box<dyn std::error::Error>> {
