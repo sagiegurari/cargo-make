@@ -506,7 +506,9 @@ pub fn parse_args(
             error!("Error generating completions: {}", e);
             return Err(CargoMakeError::ExitCode(std::process::ExitCode::FAILURE));
         }
-        Err(crate::error::CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
+        Err(crate::error::CargoMakeError::ExitCode(
+            std::process::ExitCode::SUCCESS,
+        ))
     } else {
         Ok(get_args(
             &cli_parsed,

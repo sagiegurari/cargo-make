@@ -1,20 +1,20 @@
+use log::{error, info};
 use std::io::BufRead;
 use std::path::Path;
 use std::{fs, io};
-use log::{error,info};
 
 /// # Completions Module
-/// 
+///
 /// This module handles the generation of shell completion scripts for the `cargo-make` tool.
-/// 
+///
 /// ## Functionality
-/// - `generate_completion_zsh`: Generates a Zsh completion script, creates the necessary directory, 
+/// - `generate_completion_zsh`: Generates a Zsh completion script, creates the necessary directory,
 ///   and prompts for overwriting existing files.
-/// 
+///
 /// ## Improvements to Consider
 /// 1. **Modularity**: Separate the completion logic into different modules for different shells
 ///    (e.g., Zsh, Bash, Fish) to improve code organization.
-/// 2. **Cross-Platform Support**: Abstract the completion generation into a trait or interface 
+/// 2. **Cross-Platform Support**: Abstract the completion generation into a trait or interface
 ///    to facilitate adding support for other shell types.
 /// 3. **Enhanced Error Handling**: Provide more informative error messages for file operations.
 /// 4. **User Input Handling**: Ensure user input is trimmed and handled correctly.
@@ -32,14 +32,18 @@ pub fn generate_completions(shell: &str) -> Result<(), Box<dyn std::error::Error
         }
         _ => {
             // Return an error for unsupported shell
-            Err(Box::from(format!("Unsupported shell for completion: {}", shell)))
+            Err(Box::from(format!(
+                "Unsupported shell for completion: {}",
+                shell
+            )))
         }
     }
 }
 
-
 // Modify the function to accept an optional input stream
-fn generate_completion_zsh(input: Option<&mut dyn io::Read>) -> Result<(), Box<dyn std::error::Error>> {
+fn generate_completion_zsh(
+    input: Option<&mut dyn io::Read>,
+) -> Result<(), Box<dyn std::error::Error>> {
     let home_dir = std::env::var("HOME")?;
     let zfunc_dir = format!("{}/.zfunc", home_dir);
     let completion_file = format!("{}/_cargo-make", zfunc_dir);
@@ -61,7 +65,10 @@ fn generate_completion_zsh(input: Option<&mut dyn io::Read>) -> Result<(), Box<d
 
         // Create a BufReader to read from the provided input or stdin
         let mut buf_reader = io::BufReader::new(reader);
-        println!("File {} already exists. Overwrite? (y/n): ", completion_file);
+        println!(
+            "File {} already exists. Overwrite? (y/n): ",
+            completion_file
+        );
         buf_reader.read_line(&mut input_str)?;
 
         if input_str.trim().to_lowercase() != "y" {
