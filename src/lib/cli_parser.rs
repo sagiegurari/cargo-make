@@ -503,9 +503,10 @@ pub fn parse_args(
     } else if let Some(shell) = cli_parsed.get_first_value("completion") {
         // Call the function to generate completions
         if let Err(e) = generate_completions(&shell) {
-            eprintln!("Error generating completions: {}", e);
+            error!("Error generating completions: {}", e);
+            return Err(CargoMakeError::ExitCode(std::process::ExitCode::FAILURE));
         }
-        return Err(crate::error::CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS));
+        Err(crate::error::CargoMakeError::ExitCode(std::process::ExitCode::SUCCESS))
     } else {
         Ok(get_args(
             &cli_parsed,
