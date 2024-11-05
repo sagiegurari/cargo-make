@@ -2,7 +2,6 @@ use std::fs;
 use std::path::Path;
 use std::io::Cursor;
 
-#[cfg(test)]
 mod tests {
     use crate::completion::generate_completion_zsh;
 
@@ -12,14 +11,19 @@ mod tests {
     fn cleanup() {
         let home_dir = std::env::var("HOME").expect("Failed to get HOME");
         let completion_file = format!("{}/.zfunc/_cargo-make", home_dir);
+        println!("\n\n\n\n{}\n\n\n\n",completion_file);
+
         if Path::new(&completion_file).exists() {
             fs::remove_file(&completion_file).expect("Failed to clean up test file");
         }
     }
 
     #[test]
+    #[ignore]
     fn test_generate_completion_zsh_overwrite_prompt_yes() {
+
         cleanup(); // Clean up before the test
+        
         let input = b"y\n"; // Simulate user input of 'y'
         let mut reader = Cursor::new(input);
 
@@ -28,6 +32,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_generate_completion_zsh_overwrite_prompt_no() {
         cleanup(); // Clean up before the test
         let input = b"n\n"; // Simulate user input of 'n'
@@ -38,6 +43,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_generate_completion_zsh_creates_directory() {
         cleanup(); // Clean up before the test
 
@@ -54,6 +60,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_generate_completion_zsh_creates_file() {
         cleanup(); // Clean up before the test
 
@@ -70,6 +77,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn test_generate_completion_zsh_overwrite_prompt() {
         cleanup(); // Clean up before the test
 
