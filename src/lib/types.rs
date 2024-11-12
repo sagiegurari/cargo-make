@@ -91,6 +91,8 @@ pub struct CliArgs {
     pub log_level: String,
     /// Disables colorful output
     pub disable_color: bool,
+    /// Task completion for given shell
+    pub completion: Option<String>,
     /// Current working directory
     pub cwd: Option<String>,
     /// Environment variables
@@ -141,6 +143,7 @@ impl CliArgs {
             profile: None,
             log_level: "info".to_string(),
             disable_color: false,
+            completion: None,
             cwd: None,
             env: None,
             env_file: None,
