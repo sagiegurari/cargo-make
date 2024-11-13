@@ -467,6 +467,7 @@ fn run_task_invoked_valid() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,

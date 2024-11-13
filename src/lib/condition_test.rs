@@ -45,6 +45,7 @@ fn validate_env_set_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -71,6 +72,7 @@ fn validate_env_set_empty_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -101,6 +103,7 @@ fn validate_env_set_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -134,6 +137,7 @@ fn validate_env_set_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -160,6 +164,7 @@ fn validate_env_set_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -186,6 +191,7 @@ fn validate_env_set_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -220,6 +226,7 @@ fn validate_env_set_invalid_partial_found() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -254,6 +261,7 @@ fn validate_env_set_invalid_partial_found_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -280,6 +288,7 @@ fn validate_env_not_set_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -306,6 +315,7 @@ fn validate_env_not_set_empty_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -333,6 +343,7 @@ fn validate_env_not_set_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -360,6 +371,7 @@ fn validate_env_not_set_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -390,6 +402,7 @@ fn validate_env_not_set_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -420,6 +433,7 @@ fn validate_env_not_set_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -454,6 +468,7 @@ fn validate_env_not_set_invalid_partial_found() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -488,6 +503,7 @@ fn validate_env_not_set_invalid_partial_found_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -514,6 +530,7 @@ fn validate_env_bool_true_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -540,6 +557,7 @@ fn validate_env_bool_true_empty_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -570,6 +588,7 @@ fn validate_env_bool_true_valid() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -600,6 +619,7 @@ fn validate_env_bool_true_valid_with_any() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -630,6 +650,7 @@ fn validate_env_bool_true_invalid() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -660,6 +681,7 @@ fn validate_env_bool_true_invalid_with_any() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -690,6 +712,7 @@ fn validate_env_bool_true_invalid_partial_found() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -720,6 +743,7 @@ fn validate_env_bool_true_invalid_partial_found_with_any() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -750,6 +774,7 @@ fn validate_env_bool_true_invalid_partial_valid() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -780,6 +805,7 @@ fn validate_env_bool_true_invalid_partial_valid_with_any() {
         env_true: Some(vec!["ENV_TRUE1".to_string(), "ENV_TRUE2".to_string()]),
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -806,6 +832,7 @@ fn validate_env_bool_false_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -832,6 +859,7 @@ fn validate_env_bool_false_empty_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -862,6 +890,7 @@ fn validate_env_bool_false_valid() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -892,6 +921,7 @@ fn validate_env_bool_false_valid_with_any() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -922,6 +952,7 @@ fn validate_env_bool_false_invalid() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -952,6 +983,7 @@ fn validate_env_bool_false_invalid_with_any() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -982,6 +1014,7 @@ fn validate_env_bool_false_invalid_partial_found() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1012,6 +1045,7 @@ fn validate_env_bool_false_invalid_partial_found_with_any() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1042,6 +1076,7 @@ fn validate_env_bool_false_invalid_partial_valid() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1072,6 +1107,7 @@ fn validate_env_bool_false_invalid_partial_valid_with_any() {
         env_true: None,
         env_false: Some(vec!["ENV_FALSE1".to_string(), "ENV_FALSE2".to_string()]),
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1098,6 +1134,7 @@ fn validate_env_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1124,6 +1161,7 @@ fn validate_env_empty_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1158,6 +1196,7 @@ fn validate_env_valid() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1192,6 +1231,7 @@ fn validate_env_valid_with_any() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1223,6 +1263,7 @@ fn validate_env_invalid_not_found() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1254,6 +1295,7 @@ fn validate_env_invalid_not_found_with_any() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1286,6 +1328,7 @@ fn validate_env_invalid_not_equal() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1318,6 +1361,7 @@ fn validate_env_invalid_not_equal_with_any() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1352,6 +1396,7 @@ fn validate_env_invalid_partial_found() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1386,6 +1431,7 @@ fn validate_env_invalid_partial_found_with_any() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1394,6 +1440,332 @@ fn validate_env_invalid_partial_found_with_any() {
     };
 
     let enabled = validate_env(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_not_empty() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+fn validate_env_not_empty_with_any() {
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_valid() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "Value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "NotEmpty".to_string());
+    env_values.insert("ENV_SET2".to_string(), "NotValue".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_valid_with_any() {
+    envmnt::set("ENV_SET1", "");
+    envmnt::set("ENV_SET2", "value");
+    envmnt::set("ENV_SET3", "anothervalue");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "NotEmpty".to_string());
+    env_values.insert("ENV_SET2".to_string(), "value".to_string());
+    env_values.insert("ENV_SET3".to_string(), "anothervalue".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not:  Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_valid_not_found() {
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
+    env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, false);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_valid_not_found_with_any() {
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("BAD_ENV_SET1".to_string(), "".to_string());
+    env_values.insert("BAD_ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, true);
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_invalid_not_equal() {
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_invalid_not_equal_with_any() {
+    envmnt::set("ENV_SET2", "value");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET2".to_string(), "value".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, true);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_invalid_partial_found() {
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, false);
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_env_not_invalid_partial_found_with_any() {
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad".to_string());
+
+    let condition = TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: Some(env_values),
+        env_not: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    };
+
+    let enabled = validate_env_not(&condition, true);
 
     assert!(enabled);
 }
@@ -1420,6 +1792,7 @@ fn validate_env_contains_valid_same() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1454,6 +1827,7 @@ fn validate_env_contains_valid_same_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1488,6 +1862,7 @@ fn validate_env_contains_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1522,6 +1897,7 @@ fn validate_env_contains_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1553,6 +1929,7 @@ fn validate_env_contains_invalid_not_found() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1584,6 +1961,7 @@ fn validate_env_contains_invalid_not_found_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1616,6 +1994,7 @@ fn validate_env_contains_invalid_not_equal() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1648,6 +2027,7 @@ fn validate_env_contains_invalid_not_equal_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1682,6 +2062,7 @@ fn validate_env_contains_invalid_partial_found() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1716,6 +2097,7 @@ fn validate_env_contains_invalid_partial_found_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -1808,6 +2190,7 @@ fn validate_profile_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1837,6 +2220,7 @@ fn validate_profile_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1867,6 +2251,7 @@ fn validate_os_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1893,6 +2278,7 @@ fn validate_os_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1923,6 +2309,7 @@ fn validate_platform_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -1949,6 +2336,7 @@ fn validate_platform_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2005,6 +2393,7 @@ fn validate_channel_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2031,6 +2420,7 @@ fn validate_channel_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2058,6 +2448,7 @@ fn validate_channel_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2109,6 +2500,7 @@ fn validate_channel_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2134,6 +2526,7 @@ fn validate_file_exists_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2162,6 +2555,7 @@ fn validate_file_exists_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2190,6 +2584,7 @@ fn validate_file_exists_partial_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2219,6 +2614,7 @@ fn validate_file_exists_partial_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2248,6 +2644,7 @@ fn validate_file_exists_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2276,6 +2673,7 @@ fn validate_file_exists_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: Some(vec![
@@ -2304,6 +2702,7 @@ fn validate_file_not_exists_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2332,6 +2731,7 @@ fn validate_file_not_exists_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2360,6 +2760,7 @@ fn validate_file_not_exists_partial_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2389,6 +2790,7 @@ fn validate_file_not_exists_partial_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2418,6 +2820,7 @@ fn validate_file_not_exists_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2446,6 +2849,7 @@ fn validate_file_not_exists_invalid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2474,6 +2878,7 @@ fn validate_files_modified_all_empty() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2503,6 +2908,7 @@ fn validate_files_modified_only_input() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2532,6 +2938,7 @@ fn validate_files_modified_only_output() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2561,6 +2968,7 @@ fn validate_files_modified_same_timestamp() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -2598,6 +3006,7 @@ fn validate_files_modified_output_newer() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2636,6 +3045,7 @@ fn validate_files_modified_input_newer() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2671,6 +3081,7 @@ fn validate_files_modified_output_newer_env() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2706,6 +3117,7 @@ fn validate_files_modified_input_newer_env() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2763,6 +3175,7 @@ fn validate_criteria_empty() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2819,6 +3232,7 @@ fn validate_criteria_valid_os() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2871,6 +3285,7 @@ fn validate_criteria_invalid_os() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2927,6 +3342,7 @@ fn validate_criteria_valid_platform() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -2979,6 +3395,7 @@ fn validate_criteria_invalid_platform() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3032,6 +3449,7 @@ fn validate_criteria_valid_profile() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3085,6 +3503,7 @@ fn validate_criteria_invalid_profile() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3142,6 +3561,7 @@ fn validate_criteria_valid_channel() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3171,6 +3591,7 @@ fn validate_criteria_valid_channel() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3200,6 +3621,7 @@ fn validate_criteria_valid_channel() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3253,6 +3675,7 @@ fn validate_criteria_invalid_channel() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3305,6 +3728,7 @@ fn validate_criteria_valid_file_exists() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: Some(vec![
@@ -3359,6 +3783,7 @@ fn validate_criteria_invalid_file_exists() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: Some(vec![
@@ -3413,6 +3838,7 @@ fn validate_criteria_valid_file_not_exists() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3467,6 +3893,7 @@ fn validate_criteria_invalid_file_not_exists() {
             env_true: None,
             env_false: None,
             env: None,
+            env_not: None,
             env_contains: None,
             rust_version: None,
             files_exist: None,
@@ -3528,6 +3955,7 @@ fn validate_condition_for_step_both_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3589,6 +4017,7 @@ fn validate_condition_for_step_valid_script_invalid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3650,6 +4079,7 @@ fn validate_condition_for_step_valid_script_invalid_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3707,6 +4137,7 @@ fn validate_condition_for_step_invalid_script_valid() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3765,6 +4196,7 @@ fn validate_condition_for_step_invalid_env_set() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3825,6 +4257,7 @@ fn validate_condition_for_step_invalid_env_not_set() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3890,6 +4323,7 @@ fn validate_condition_for_step_valid_env() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -3952,6 +4386,7 @@ fn validate_condition_for_step_invalid_env_not_found() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4017,6 +4452,202 @@ fn validate_condition_for_step_invalid_env_not_equal() {
         env_true: None,
         env_false: None,
         env: Some(env_values),
+        env_not: None,
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
+
+    assert!(!enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_condition_for_step_valid_env_not() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    envmnt::set("ENV_SET1", "good1");
+    envmnt::set("ENV_SET2", "good2");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "bad1".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad2".to_string());
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_condition_for_step_valid_env_not_not_found() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("BAD_ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("BAD_ENV_SET2".to_string(), "bad".to_string());
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
+        env_contains: None,
+        rust_version: None,
+        files_exist: None,
+        files_not_exist: None,
+        files_modified: None,
+    });
+    step.config.condition_script = Some(ConditionScriptValue::Text(vec!["exit 0".to_string()]));
+
+    let enabled = validate_condition_for_step(&flow_info, &step).unwrap();
+
+    assert!(enabled);
+}
+
+#[test]
+#[ignore]
+fn validate_condition_for_step_invalid_env_not_not_equal() {
+    let mut step = Step {
+        name: "test".to_string(),
+        config: Task::new(),
+    };
+
+    let config = Config {
+        config: ConfigSection::new(),
+        env_files: vec![],
+        env: IndexMap::new(),
+        env_scripts: vec![],
+        tasks: IndexMap::new(),
+        plugins: None,
+    };
+    let flow_info = FlowInfo {
+        config,
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    envmnt::set("ENV_SET1", "good");
+    envmnt::set("ENV_SET2", "good");
+
+    let mut env_values = IndexMap::<String, String>::new();
+    env_values.insert("ENV_SET1".to_string(), "good".to_string());
+    env_values.insert("ENV_SET2".to_string(), "bad".to_string());
+
+    step.config.condition = Some(TaskCondition {
+        condition_type: None,
+        fail_message: None,
+        profiles: None,
+        os: None,
+        platforms: None,
+        channels: None,
+        env_set: None,
+        env_not_set: None,
+        env_true: None,
+        env_false: None,
+        env: None,
+        env_not: Some(env_values),
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4082,6 +4713,7 @@ fn validate_condition_for_step_valid_env_contains_same() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -4147,6 +4779,7 @@ fn validate_condition_for_step_valid_env_contains() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -4209,6 +4842,7 @@ fn validate_condition_for_step_invalid_env_contains_not_found() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -4274,6 +4908,7 @@ fn validate_condition_for_step_invalid_env_contains_not_contains() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: Some(env_values),
         rust_version: None,
         files_exist: None,
@@ -4334,6 +4969,7 @@ fn validate_condition_for_step_valid_rust_version() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: Some(RustVersionCondition {
             min: None,
@@ -4398,6 +5034,7 @@ fn validate_condition_for_step_invalid_rust_version() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: Some(RustVersionCondition {
             min: None,
@@ -4462,6 +5099,7 @@ fn validate_condition_for_step_both_valid_and() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4526,6 +5164,7 @@ fn validate_condition_for_step_value_partial_valid_and() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4587,6 +5226,7 @@ fn validate_condition_for_step_group_partial_valid_and() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4648,6 +5288,7 @@ fn validate_condition_for_step_both_valid_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4712,6 +5353,7 @@ fn validate_condition_for_step_value_partial_valid_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4773,6 +5415,7 @@ fn validate_condition_for_step_group_partial_valid_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4834,6 +5477,7 @@ fn validate_condition_for_step_both_valid_group_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4898,6 +5542,7 @@ fn validate_condition_for_step_value_partial_valid_group_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -4958,6 +5603,7 @@ fn validate_condition_for_step_group_partial_valid_group_or() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -5374,6 +6020,7 @@ fn validate_rust_version_no_condition() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: None,
         files_exist: None,
@@ -5403,6 +6050,7 @@ fn validate_rust_version_with_valid_condition() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: Some(RustVersionCondition {
             min: Some(version.clone()),
@@ -5437,6 +6085,7 @@ fn validate_rust_version_with_invalid_condition() {
         env_true: None,
         env_false: None,
         env: None,
+        env_not: None,
         env_contains: None,
         rust_version: Some(RustVersionCondition {
             min: None,
