@@ -22,6 +22,8 @@ pub fn get_platform_name() -> String {
         "windows".to_string()
     } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         "mac".to_string()
+    } else if cfg!(target_os = "freebsd") {
+        "freebsd".to_string()
     } else {
         "linux".to_string()
     }
