@@ -60,7 +60,7 @@ glob = "^0.3.1"
 home = "^0.5"
 ignore = "^0.4"
 indexmap = { version = "^2", features = ["serde"] }
-itertools = "^0.13"
+itertools = "^0.14"
 lenient_semver = "^0.4.2"
 log = "^0.4"
 md5 = "^0.7"
