@@ -1732,6 +1732,7 @@ fn task_new() {
     assert!(task.linux.is_none());
     assert!(task.windows.is_none());
     assert!(task.mac.is_none());
+    assert!(task.freebsd.is_none());
 }
 
 #[test]
@@ -1882,6 +1883,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.linux.is_none());
     assert!(base.windows.is_none());
     assert!(base.mac.is_none());
+    assert!(base.freebsd.is_none());
 
     assert_eq!(get_script_vec(&base).len(), 2);
     assert_eq!(
@@ -2947,6 +2949,8 @@ fn task_get_alias_platform_defined() {
         assert_eq!(alias.unwrap(), "windows");
     } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         assert_eq!(alias.unwrap(), "mac");
+    } else if cfg!(target_os = "freebsd") {
+        assert_eq!(alias.unwrap(), "freebsd");
     } else {
         assert_eq!(alias.unwrap(), "linux");
     };
@@ -4085,6 +4089,7 @@ fn config_section_new() {
     assert!(config.linux_load_script.is_none());
     assert!(config.windows_load_script.is_none());
     assert!(config.mac_load_script.is_none());
+    assert!(config.freebsd_load_script.is_none());
 }
 
 #[test]
@@ -4124,6 +4129,10 @@ fn config_section_extend_all_values() {
         "mac".to_string(),
         "base_info".to_string(),
     ]));
+    base.freebsd_load_script = Some(ScriptValue::Text(vec![
+        "freebsd".to_string(),
+        "base_info".to_string(),
+    ]));
 
     extended.skip_core_tasks = Some(false);
     extended.modify_core_tasks = Some(ModifyConfig {
@@ -4152,6 +4161,7 @@ fn config_section_extend_all_values() {
     extended.linux_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
     extended.windows_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
     extended.mac_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
+    extended.freebsd_load_script = Some(ScriptValue::Text(vec!["extended_info".to_string()]));
 
     base.extend(&mut extended);
 
@@ -4183,6 +4193,8 @@ fn config_section_extend_all_values() {
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 1);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 1);
     assert_eq!(get_script_as_vec(base.mac_load_script).len(), 1);
+    println!("{:?}", base.freebsd_load_script);
+    assert_eq!(get_script_as_vec(base.freebsd_load_script).len(), 1);
 }
 
 #[test]
@@ -4226,6 +4238,11 @@ fn config_section_extend_no_values() {
         "base_info".to_string(),
     ]));
 
+    base.freebsd_load_script = Some(ScriptValue::Text(vec![
+        "freebsd".to_string(),
+        "base_info".to_string(),
+    ]));
+
     base.extend(&mut extended);
 
     assert!(base.skip_core_tasks.unwrap());
@@ -4256,6 +4273,7 @@ fn config_section_extend_no_values() {
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.mac_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.freebsd_load_script).len(), 2);
 }
 
 #[test]
@@ -4298,6 +4316,10 @@ fn config_section_extend_some_values() {
         "mac".to_string(),
         "base_info".to_string(),
     ]));
+    base.freebsd_load_script = Some(ScriptValue::Text(vec![
+        "freebsd".to_string(),
+        "base_info".to_string(),
+    ]));
 
     extended.skip_core_tasks = Some(false);
     extended.init_task = Some("extended_init".to_string());
@@ -4332,6 +4354,7 @@ fn config_section_extend_some_values() {
     assert_eq!(get_script_as_vec(base.linux_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.windows_load_script).len(), 2);
     assert_eq!(get_script_as_vec(base.mac_load_script).len(), 2);
+    assert_eq!(get_script_as_vec(base.freebsd_load_script).len(), 2);
 }
 
 #[test]
@@ -4357,6 +4380,7 @@ fn config_section_get_get_load_script_platform_some() {
     config.linux_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     config.windows_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
     config.mac_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
+    config.freebsd_load_script = Some(ScriptValue::Text(vec!["exit 0".to_string()]));
 
     let load_script = config.get_load_script();
     assert!(load_script.is_some());
@@ -4369,6 +4393,7 @@ fn config_section_get_get_load_script_all_defined() {
     config.linux_load_script = Some(ScriptValue::Text(vec!["linux".to_string()]));
     config.windows_load_script = Some(ScriptValue::Text(vec!["windows".to_string()]));
     config.mac_load_script = Some(ScriptValue::Text(vec!["mac".to_string()]));
+    config.freebsd_load_script = Some(ScriptValue::Text(vec!["freebsd".to_string()]));
 
     let load_script = config.get_load_script();
     assert!(load_script.is_some());

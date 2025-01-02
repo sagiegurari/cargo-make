@@ -2213,6 +2213,8 @@ pub struct ConfigSection {
     pub windows_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
     pub mac_load_script: Option<ScriptValue>,
+    /// acts like load_script if runtime OS is FreeBSD (takes precedence over load_script)
+    pub freebsd_load_script: Option<ScriptValue>,
     /// Enables unstable cargo-make features
     pub unstable_features: Option<IndexSet<UnstableFeature>>,
 }
@@ -2359,6 +2361,13 @@ impl ConfigSection {
             );
         }
 
+        if extended.freebsd_load_script.is_some() {
+            self.freebsd_load_script = extend_script_value(
+                self.freebsd_load_script.clone(),
+                extended.freebsd_load_script.clone(),
+            );
+        }
+
         if let Some(extended_unstable_features) = extended.unstable_features.clone() {
             if let Some(unstable_features) = &mut self.unstable_features {
                 unstable_features.extend(extended_unstable_features);
@@ -2381,6 +2390,12 @@ impl ConfigSection {
         } else if platform_name == "mac" {
             if self.mac_load_script.is_some() {
                 self.mac_load_script.clone()
+            } else {
+                self.load_script.clone()
+            }
+        } else if platform_name == "freebsd" {
+            if self.freebsd_load_script.is_some() {
+                self.freebsd_load_script.clone()
             } else {
                 self.load_script.clone()
             }
