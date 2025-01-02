@@ -125,6 +125,8 @@ fn get_actual_task_name_platform_alias() {
         task.windows_alias = Some("test2".to_string());
     } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         task.mac_alias = Some("test2".to_string());
+    } else if cfg!(target_os = "freebsd") {
+        task.freebsd_alias = Some("test2".to_string());
     } else {
         task.linux_alias = Some("test2".to_string());
     };

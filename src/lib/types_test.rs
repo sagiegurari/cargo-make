@@ -1719,6 +1719,7 @@ fn task_new() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.install_script.is_none());
     assert!(task.args.is_none());
     assert!(task.script.is_none());
@@ -1824,6 +1825,7 @@ fn task_extend_both_have_misc_data() {
         linux_alias: None,
         windows_alias: None,
         mac_alias: None,
+        freebsd_alias: None,
         install_crate_args: None,
         install_script: None,
         args: None,
@@ -1837,6 +1839,7 @@ fn task_extend_both_have_misc_data() {
         linux: None,
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     base.extend(&extended);
@@ -1865,6 +1868,7 @@ fn task_extend_both_have_misc_data() {
     assert!(base.linux_alias.is_none());
     assert!(base.windows_alias.is_none());
     assert!(base.mac_alias.is_none());
+    assert!(base.freebsd_alias.is_none());
     assert!(base.install_crate_args.is_none());
     assert!(base.install_script.is_none());
     assert!(base.script_runner.is_none());
@@ -1926,6 +1930,7 @@ fn task_extend_extended_have_all_fields() {
         linux_alias: None,
         windows_alias: None,
         mac_alias: None,
+        freebsd_alias: None,
         install_crate_args: None,
         install_script: None,
         args: None,
@@ -1939,6 +1944,7 @@ fn task_extend_extended_have_all_fields() {
         linux: None,
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let mut env = IndexMap::new();
@@ -1986,6 +1992,7 @@ fn task_extend_extended_have_all_fields() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
+        freebsd_alias: Some("freebsd".to_string()),
         install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
         script: Some(ScriptValue::Text(vec![
@@ -2149,6 +2156,56 @@ fn task_extend_extended_have_all_fields() {
             dependencies: Some(vec!["A".into()]),
             toolchain: Some("toolchain".into()),
         }),
+        freebsd: Some(PlatformOverrideTask {
+            clear: None,
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(false)),
+            extend: Some("extended".to_string()),
+            plugin: Some("plugin".to_string()),
+            watch: Some(TaskWatchOptions::Boolean(false)),
+            condition: Some(TaskCondition {
+                condition_type: None,
+                fail_message: None,
+                profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env_true: None,
+                env_false: None,
+                env: None,
+                env_contains: None,
+                rust_version: None,
+                files_exist: None,
+                files_not_exist: None,
+                files_modified: None,
+            }),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
+            ignore_errors: Some(true),
+            force: Some(true),
+            env_files: Some(vec![EnvFile::Path("extended".to_string())]),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
+            script_runner: Some("sh3".to_string()),
+            script_runner_args: Some(vec!["sr_a1".to_string(), "sr_a2".to_string()]),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
+            dependencies: Some(vec!["A".into()]),
+            toolchain: Some("toolchain".into()),
+        }),
     };
 
     base.extend(&extended);
@@ -2178,6 +2235,7 @@ fn task_extend_extended_have_all_fields() {
     assert!(base.linux_alias.is_some());
     assert!(base.windows_alias.is_some());
     assert!(base.mac_alias.is_some());
+    assert!(base.freebsd_alias.is_some());
     assert!(base.install_script.is_some());
     assert!(base.args.is_some());
     assert!(base.script.is_some());
@@ -2222,6 +2280,7 @@ fn task_extend_extended_have_all_fields() {
     assert_eq!(base.linux_alias.unwrap(), "linux");
     assert_eq!(base.windows_alias.unwrap(), "windows");
     assert_eq!(base.mac_alias.unwrap(), "mac");
+    assert_eq!(base.freebsd_alias.unwrap(), "freebsd");
     assert_eq!(get_script_as_vec(base.install_script).len(), 2);
     assert_eq!(base.args.unwrap().len(), 2);
     assert_eq!(base.script_runner.unwrap(), "sh2");
@@ -2290,6 +2349,7 @@ fn task_extend_clear_with_no_data() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
+        freebsd_alias: Some("freebsd".to_string()),
         install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
         script: Some(ScriptValue::Text(vec![
@@ -2404,6 +2464,56 @@ fn task_extend_clear_with_no_data() {
             toolchain: Some("toolchain".into()),
         }),
         mac: Some(PlatformOverrideTask {
+            clear: None,
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
+            extend: Some("base".to_string()),
+            plugin: Some("base".to_string()),
+            watch: Some(TaskWatchOptions::Boolean(false)),
+            condition: Some(TaskCondition {
+                condition_type: None,
+                fail_message: None,
+                profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env_true: None,
+                env_false: None,
+                env: None,
+                env_contains: None,
+                rust_version: None,
+                files_exist: None,
+                files_not_exist: None,
+                files_modified: None,
+            }),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
+            ignore_errors: Some(true),
+            force: Some(true),
+            env_files: Some(vec![]),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
+            script_runner: Some("sh3".to_string()),
+            script_runner_args: Some(vec!["sr_a1".to_string(), "sr_a2".to_string()]),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
+            dependencies: Some(vec!["A".into()]),
+            toolchain: Some("toolchain".into()),
+        }),
+        freebsd: Some(PlatformOverrideTask {
             clear: None,
             install_crate: Some(InstallCrate::Value("my crate2".to_string())),
             install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
@@ -2484,6 +2594,7 @@ fn task_extend_clear_with_no_data() {
     assert!(base.linux_alias.is_none());
     assert!(base.windows_alias.is_none());
     assert!(base.mac_alias.is_none());
+    assert!(base.freebsd_alias.is_none());
     assert!(base.install_crate_args.is_none());
     assert!(base.install_script.is_none());
     assert!(base.script_runner.is_none());
@@ -2547,6 +2658,7 @@ fn task_extend_clear_with_all_data() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
+        freebsd_alias: Some("freebsd".to_string()),
         install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
         script: Some(ScriptValue::Text(vec![
@@ -2710,6 +2822,56 @@ fn task_extend_clear_with_all_data() {
             dependencies: Some(vec!["A".into()]),
             toolchain: Some("toolchain".into()),
         }),
+        freebsd: Some(PlatformOverrideTask {
+            clear: None,
+            install_crate: Some(InstallCrate::Value("my crate2".to_string())),
+            install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
+            command: Some("test2".to_string()),
+            disabled: Some(true),
+            private: Some(false),
+            deprecated: Some(DeprecationInfo::Boolean(true)),
+            extend: Some("base".to_string()),
+            plugin: Some("plugin".to_string()),
+            watch: Some(TaskWatchOptions::Boolean(false)),
+            condition: Some(TaskCondition {
+                condition_type: None,
+                fail_message: None,
+                profiles: Some(vec!["development".to_string()]),
+                os: Some(vec!["os1".to_string(), "os2".to_string()]),
+                platforms: Some(vec!["linux".to_string(), "mac".to_string()]),
+                channels: Some(vec!["nightly".to_string(), "stable".to_string()]),
+                env_set: None,
+                env_not_set: None,
+                env_true: None,
+                env_false: None,
+                env: None,
+                env_contains: None,
+                rust_version: None,
+                files_exist: None,
+                files_not_exist: None,
+                files_modified: None,
+            }),
+            condition_script: Some(ConditionScriptValue::Text(vec!["exit 0".to_string()])),
+            condition_script_runner_args: Some(vec!["csr_a1".to_string(), "csr_a2".to_string()]),
+            ignore_errors: Some(true),
+            force: Some(true),
+            env_files: Some(vec![]),
+            env: Some(env.clone()),
+            cwd: Some("cwd".to_string()),
+            install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
+            args: Some(vec!["a1".to_string(), "a2".to_string()]),
+            script: Some(ScriptValue::Text(vec![
+                "1".to_string(),
+                "2".to_string(),
+                "3".to_string(),
+            ])),
+            script_runner: Some("sh3".to_string()),
+            script_runner_args: Some(vec!["sr_a1".to_string(), "sr_a2".to_string()]),
+            script_extension: Some("ext3".to_string()),
+            run_task: Some(RunTaskInfo::Name("task3".to_string())),
+            dependencies: Some(vec!["A".into()]),
+            toolchain: Some("toolchain".into()),
+        }),
     };
 
     base.extend(&extended);
@@ -2738,6 +2900,7 @@ fn task_extend_clear_with_all_data() {
     assert!(base.linux_alias.is_some());
     assert!(base.windows_alias.is_some());
     assert!(base.mac_alias.is_some());
+    assert!(base.freebsd_alias.is_some());
     assert!(base.install_crate_args.is_some());
     assert!(base.install_script.is_some());
     assert!(base.script_runner.is_some());
@@ -2777,6 +2940,7 @@ fn task_get_alias_platform_defined() {
     task.linux_alias = Some("linux".to_string());
     task.windows_alias = Some("windows".to_string());
     task.mac_alias = Some("mac".to_string());
+    task.freebsd_alias = Some("freebsd".to_string());
 
     let alias = task.get_alias();
     if cfg!(windows) {
@@ -2796,6 +2960,7 @@ fn task_get_normalized_task_undefined() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
+        freebsd_alias: Some("freebsd".to_string()),
         install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: None,
         command: Some("command".to_string()),
@@ -2832,6 +2997,7 @@ fn task_get_normalized_task_undefined() {
         linux: None,
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -2857,6 +3023,7 @@ fn task_get_normalized_task_undefined() {
     assert!(normalized_task.linux_alias.is_some());
     assert!(normalized_task.windows_alias.is_some());
     assert!(normalized_task.mac_alias.is_some());
+    assert!(normalized_task.freebsd_alias.is_some());
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
@@ -2901,6 +3068,7 @@ fn task_get_normalized_task_undefined() {
     assert_eq!(normalized_task.linux_alias.unwrap(), "linux");
     assert_eq!(normalized_task.windows_alias.unwrap(), "windows");
     assert_eq!(normalized_task.mac_alias.unwrap(), "mac");
+    assert_eq!(normalized_task.freebsd_alias.unwrap(), "freebsd");
     assert_eq!(get_script_as_vec(normalized_task.install_script).len(), 3);
     assert_eq!(normalized_task.args.unwrap().len(), 2);
     assert_eq!(normalized_task.script_runner.unwrap(), "sh1");
@@ -2927,6 +3095,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
+        freebsd_alias: Some("bad".to_string()),
         install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
@@ -3042,6 +3211,7 @@ fn task_get_normalized_task_with_override_no_clear() {
         }),
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -3071,6 +3241,7 @@ fn task_get_normalized_task_with_override_no_clear() {
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
     assert!(normalized_task.mac_alias.is_none());
+    assert!(normalized_task.freebsd_alias.is_none());
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
@@ -3151,6 +3322,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
+        freebsd_alias: Some("bad".to_string()),
         install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
@@ -3273,6 +3445,7 @@ fn task_get_normalized_task_with_override_clear_false() {
         }),
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -3301,6 +3474,7 @@ fn task_get_normalized_task_with_override_clear_false() {
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
     assert!(normalized_task.mac_alias.is_none());
+    assert!(normalized_task.freebsd_alias.is_none());
     assert!(normalized_task.install_crate_args.is_some());
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
@@ -3379,6 +3553,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
+        freebsd_alias: Some("bad".to_string()),
         install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
@@ -3460,6 +3635,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
         }),
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -3485,6 +3661,7 @@ fn task_get_normalized_task_with_override_clear_false_partial_override() {
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
     assert!(normalized_task.mac_alias.is_none());
+    assert!(normalized_task.freebsd_alias.is_none());
     assert!(normalized_task.install_script.is_some());
     assert!(normalized_task.args.is_some());
     assert!(normalized_task.script.is_some());
@@ -3552,6 +3729,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         linux_alias: Some("bad".to_string()),
         windows_alias: Some("bad".to_string()),
         mac_alias: Some("bad".to_string()),
+        freebsd_alias: Some("bad".to_string()),
         install_crate: Some(InstallCrate::Value("install_crate".to_string())),
         install_crate_args: Some(vec!["c1".to_string(), "c2".to_string()]),
         command: Some("command".to_string()),
@@ -3633,6 +3811,7 @@ fn task_get_normalized_task_with_override_clear_true() {
         }),
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let normalized_task = task.get_normalized_task();
@@ -3659,6 +3838,7 @@ fn task_get_normalized_task_with_override_clear_true() {
     assert!(normalized_task.linux_alias.is_none());
     assert!(normalized_task.windows_alias.is_none());
     assert!(normalized_task.mac_alias.is_none());
+    assert!(normalized_task.freebsd_alias.is_none());
     assert!(normalized_task.install_script.is_none());
     assert!(normalized_task.args.is_none());
     assert!(normalized_task.script.is_none());
@@ -4233,6 +4413,7 @@ fn task_apply_task_empty_modify_empty() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4251,6 +4432,7 @@ fn task_apply_task_empty_modify_private() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4269,6 +4451,7 @@ fn task_apply_task_empty_modify_not_private() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4288,6 +4471,7 @@ fn task_apply_modify_empty() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4307,6 +4491,7 @@ fn task_apply_modify_private() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4326,6 +4511,7 @@ fn task_apply_modify_not_private() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4344,6 +4530,7 @@ fn task_apply_task_empty_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     assert!(task.run_task.is_none());
     assert!(task.dependencies.is_none());
 }
@@ -4360,6 +4547,7 @@ fn task_apply_no_run_task_modify_namespace() {
     task.linux_alias = Some("linux_alias".to_string());
     task.windows_alias = Some("windows_alias".to_string());
     task.mac_alias = Some("mac_alias".to_string());
+    task.freebsd_alias = Some("freebsd_alias".to_string());
     task.dependencies = Some(vec!["dep1".into(), "dep2".into()]);
 
     task.apply(&modify_config);
@@ -4369,6 +4557,7 @@ fn task_apply_no_run_task_modify_namespace() {
     assert_eq!(task.linux_alias.unwrap(), "default::linux_alias");
     assert_eq!(task.windows_alias.unwrap(), "default::windows_alias");
     assert_eq!(task.mac_alias.unwrap(), "default::mac_alias");
+    assert_eq!(task.freebsd_alias.unwrap(), "default::freebsd_alias");
     assert!(task.run_task.is_none());
 
     let expected: Vec<DependencyIdentifier> = vec!["default::dep1".into(), "default::dep2".into()];
@@ -4392,6 +4581,7 @@ fn task_apply_run_task_name_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     let run_task_name = match task.run_task.unwrap() {
         RunTaskInfo::Name(name) => name,
         _ => panic!("Invalid run task value."),
@@ -4422,6 +4612,7 @@ fn task_apply_run_task_details_single_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     let details = match task.run_task.unwrap() {
         RunTaskInfo::Details(ref mut details) => details.clone(),
         _ => panic!("Invalid run task value."),
@@ -4455,6 +4646,7 @@ fn task_apply_run_task_details_multiple_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     let details = match task.run_task.unwrap() {
         RunTaskInfo::Details(ref mut details) => details.clone(),
         _ => panic!("Invalid run task value."),
@@ -4494,6 +4686,7 @@ fn task_apply_run_task_routing_info_single_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     let routing_info = match task.run_task.unwrap() {
         RunTaskInfo::Routing(ref mut info) => info.pop(),
         _ => panic!("Invalid run task value."),
@@ -4530,6 +4723,7 @@ fn task_apply_run_task_routing_info_multiple_modify_namespace() {
     assert!(task.linux_alias.is_none());
     assert!(task.windows_alias.is_none());
     assert!(task.mac_alias.is_none());
+    assert!(task.freebsd_alias.is_none());
     let routing_info = match task.run_task.unwrap() {
         RunTaskInfo::Routing(ref mut info) => info.pop(),
         _ => panic!("Invalid run task value."),

@@ -1155,6 +1155,8 @@ pub struct Task {
     pub windows_alias: Option<String>,
     /// acts like alias if runtime OS is Mac (takes precedence over alias)
     pub mac_alias: Option<String>,
+    /// acts like alias if runtime OS is FreeBSD (takes precedence over alias)
+    pub freebsd_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<InstallCrate>,
     /// additional cargo install arguments
@@ -1185,6 +1187,8 @@ pub struct Task {
     pub windows: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Mac (takes precedence over alias)
     pub mac: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is FreeBSD (takes precedence over alias)
+    pub freebsd: Option<PlatformOverrideTask>,
 }
 
 /// A toolchain, defined either as a string (following the rustup syntax)
@@ -1382,6 +1386,13 @@ impl Task {
                         self.mac_alias = Some(get_namespaced_task_name(
                             namespace,
                             &self.mac_alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.freebsd_alias.is_some() {
+                        self.freebsd_alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.freebsd_alias.clone().unwrap(),
                         ));
                     }
 
@@ -1597,6 +1608,12 @@ impl Task {
             self.mac_alias = None;
         }
 
+        if task.freebsd_alias.is_some() {
+            self.freebsd_alias = task.freebsd_alias.clone();
+        } else if override_values {
+            self.freebsd_alias = None;
+        }
+
         if task.install_crate.is_some() {
             self.install_crate = task.install_crate.clone();
         } else if override_values {
@@ -1756,6 +1773,7 @@ impl Task {
                     linux_alias: None,
                     windows_alias: None,
                     mac_alias: None,
+                    freebsd_alias: None,
                     install_crate: override_task.install_crate.clone(),
                     install_crate_args: override_task.install_crate_args.clone(),
                     install_script: override_task.install_script.clone(),
@@ -1771,6 +1789,7 @@ impl Task {
                     linux: None,
                     windows: None,
                     mac: None,
+                    freebsd: None,
                 }
             }
             None => self.clone(),
@@ -1786,6 +1805,11 @@ impl Task {
             }
         } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
             match self.mac_alias {
+                Some(ref value) => Some(value),
+                _ => None,
+            }
+        } else if cfg!(target_os = "freebsd") {
+            match self.freebsd_alias {
                 Some(ref value) => Some(value),
                 _ => None,
             }
