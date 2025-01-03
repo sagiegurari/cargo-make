@@ -1734,6 +1734,11 @@ impl Task {
                 Some(ref value) => Some(value.clone()),
                 _ => None,
             }
+        } else if platform_name == "freebsd" {
+            match self.freebsd {
+                Some(ref value) => Some(value.clone()),
+                _ => None,
+            }
         } else {
             match self.linux {
                 Some(ref value) => Some(value.clone()),

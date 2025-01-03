@@ -1307,6 +1307,35 @@ fn create_platform_disabled() {
         dependencies: None,
         toolchain: None,
     });
+    task.freebsd = Some(PlatformOverrideTask {
+        clear: Some(true),
+        disabled: Some(true),
+        private: Some(false),
+        deprecated: None,
+        extend: None,
+        plugin: None,
+        watch: Some(TaskWatchOptions::Boolean(false)),
+        condition: None,
+        condition_script: None,
+        condition_script_runner_args: None,
+        install_crate: None,
+        install_crate_args: None,
+        command: None,
+        ignore_errors: None,
+        force: None,
+        env_files: None,
+        env: None,
+        cwd: None,
+        install_script: None,
+        args: None,
+        script: None,
+        script_runner: None,
+        script_runner_args: None,
+        script_extension: None,
+        run_task: None,
+        dependencies: None,
+        toolchain: None,
+    });
 
     config.tasks.insert("test".to_string(), task);
 
@@ -1559,6 +1588,7 @@ fn get_normalized_task_multi_extend() {
     task2.linux = Some(platform_task.clone());
     task2.mac = Some(platform_task.clone());
     task2.windows = Some(platform_task.clone());
+    task2.freebsd = Some(platform_task.clone());
 
     let mut task3 = Task::new();
     task3.extend = Some("2".to_string());
