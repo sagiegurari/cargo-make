@@ -30,7 +30,7 @@ enum EnvMapType {
     /// Validate map for `env_contains` in `TaskCondition`.
     EnvContains,
     /// Validate map for `env_not` in `TaskCondition`.
-    EnvNot
+    EnvNot,
 }
 
 fn validate_env_map(
@@ -75,9 +75,12 @@ fn validate_env_not(condition: &TaskCondition, validate_any: bool) -> bool {
 }
 
 fn validate_env_contains(condition: &TaskCondition, validate_any: bool) -> bool {
-    validate_env_map(condition.env_contains.clone(), EnvMapType::EnvContains, validate_any)
+    validate_env_map(
+        condition.env_contains.clone(),
+        EnvMapType::EnvContains,
+        validate_any,
+    )
 }
-
 
 fn validate_env_set(condition: &TaskCondition, validate_any: bool) -> bool {
     let env = condition.env_set.clone();
@@ -520,7 +523,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
             } else if group_or_condition && !valid {
                 not_valid_found = true;
             }
-            
+
             valid = validate_env_not(&condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env_not.is_some() {
                 return true;

@@ -1,4 +1,3 @@
-use super::*;
 use crate::completion::generate_completion_zsh;
 use std::fs;
 use std::io::Cursor;

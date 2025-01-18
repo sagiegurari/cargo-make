@@ -1557,7 +1557,7 @@ fn validate_env_not_valid_with_any() {
         env_true: None,
         env_false: None,
         env: None,
-        env_not:  Some(env_values),
+        env_not: Some(env_values),
         env_contains: None,
         rust_version: None,
         files_exist: None,

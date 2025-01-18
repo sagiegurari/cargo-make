@@ -3634,7 +3634,6 @@ fn task_get_normalized_task_with_override_clear_true() {
             condition: None,
             condition_script: None,
             condition_script_runner_args: None,
-            env_not: None,
             ignore_errors: None,
             force: None,
             env_files: None,
