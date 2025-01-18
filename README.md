@@ -118,7 +118,7 @@
     * [Shell Completion](#usage-shell-completion)
         * [Bash](#usage-shell-completion-bash)
         * [zsh](#usage-shell-completion-zsh)
-        * [Zsh Task Completion](usage-task-completion-zsh)
+        * [Zsh Task Completion](#usage-task-completion-zsh)
         * [Fig / Amazon CodeWhisperer for command line](#usage-shell-completion-fig)
     * [Global Configuration](#cargo-make-global-config)
 * [Makefile Definition](#descriptor-definition)
@@ -4074,7 +4074,7 @@ It will enable auto completion for the **makers** executable.
 
 <a name="usage-task-completion-zsh"></a>
 #### Zsh Task Completion
-By executing `cargo make --completion zsh` the necesary components will be created to enable task autocompletion. A restart of the shell is needed, or `source ~/.zshrc`
+By executing `cargo make --completion zsh` the necessary components will be created to enable task autocompletion. A restart of the shell is needed, or `source ~/.zshrc`
 Then it will be possible to list the tasks defined in Makefile.toml using tab:  `cargo make <tab>`
 
 <a name="usage-shell-completion-fig"></a>

@@ -78,12 +78,12 @@ fn generate_completion_zsh(
     }
 
     let completion_script = r#"
-#compdef cargo make cargo-make
+#compdef 'cargo make' 'cargo-make make' makers
 
 _cargo_make() {
     local tasks
     local makefile="Makefile.toml"
-    
+
     if [[ ! -f $makefile ]]; then
         return 1
     fi
