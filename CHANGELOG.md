@@ -2,8 +2,11 @@
 
 ### v0.38.01
 
+* Enhancement: New env_not condition #1187 thanks (@ayodejiige)
+* Enhancement: Enable LTO and codegen-units = 1 optimization #1211 (thanks @zamazan4ik)
 * Maintenance: upgrade kcov default version to 43
 * Maintenance: Remove minimal rust version CI flow
+* Maintenance: Replacing unsecure md5 with sha256 (thanks @marxin)
 
 ### v0.37.23 (2024-10-19)
 

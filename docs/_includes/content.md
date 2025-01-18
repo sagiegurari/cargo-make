@@ -1284,7 +1284,6 @@ We run task **3** the output would be:
 [cargo-make] INFO - Build Done  in 0 seconds.
 ```
 
-
 <a name="usage-env"></a>
 ### Environment Variables
 `cargo-make` enabled the definition of environment variables in several ways, which can later be accessed throughout task execution.
@@ -3938,8 +3937,6 @@ It will enable auto completion for the **makers** executable.
 #### Zsh Task Completion
 By executing `cargo make --completion zsh` the necesary components will be created to enable task autocompletion. A restart of the shell is needed, or `source ~/.zshrc`
 Then it will be possible to list the tasks defined in Makefile.toml using tab:  `cargo make <tab>`
-
-
 
 <a name="usage-shell-completion-fig"></a>
 #### Fig / Amazon CodeWhisperer for command line
