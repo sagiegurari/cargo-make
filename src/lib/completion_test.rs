@@ -5,13 +5,20 @@ use std::path::Path;
 
 // Function to clean up test environment by removing the completion file
 fn cleanup() {
-    let home_dir = std::env::var("HOME").expect("Failed to get HOME");
-    let completion_file = format!("{}/.zfunc/_cargo-make", home_dir);
-    println!("\n\n\n\n{}\n\n\n\n", completion_file);
+    if let Ok(home_dir) = std::env::var("HOME") {
+        let completion_file = format!("{}/.zfunc/_cargo-make", home_dir);
+        println!("\n\n\n\n{}\n\n\n\n", completion_file);
 
-    if Path::new(&completion_file).exists() {
-        fs::remove_file(&completion_file).expect("Failed to clean up test file");
+        if Path::new(&completion_file).exists() {
+            fs::remove_file(&completion_file).expect("Failed to clean up test file");
+        }
     }
+}
+
+#[test]
+#[ignore]
+fn test_generate_completion_zsh_empty_test() {
+    cleanup();
 }
 
 #[test]
