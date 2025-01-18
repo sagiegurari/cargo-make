@@ -78,7 +78,7 @@ fn generate_completion_zsh(
     }
 
     let completion_script = r#"
-#compdef 'cargo make' 'cargo-make make' makers
+#compdef _cargo_make makers
 
 _cargo_make() {
     local tasks
