@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [stable, beta, nightly, 1.84.0]
+        rust: [stable, beta, nightly, 1.83.0]
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - name: Checkout

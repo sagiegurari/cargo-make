@@ -3,6 +3,7 @@
 ### v0.38.01
 
 * Maintenance: upgrade kcov default version to 43
+* Maintenance: update minimal CI env to rust 1.83
 
 ### v0.37.23 (2024-10-19)
 
