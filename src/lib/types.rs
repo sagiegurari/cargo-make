@@ -399,6 +399,8 @@ pub struct TaskCondition {
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
     pub env: Option<IndexMap<String, String>>,
+    /// Environment variables and the values which they must not be defined as
+    pub env_not: Option<IndexMap<String, String>>,
     /// Environment variables which are defined as true
     pub env_true: Option<Vec<String>>,
     /// Environment variables which are defined as false

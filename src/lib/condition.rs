@@ -23,9 +23,19 @@ use indexmap::IndexMap;
 use rust_info::types::{RustChannel, RustInfo};
 use std::path::Path;
 
+/// Enum indicates what kind of env map we are validating. Used in `validate_env_map` function.
+enum EnvMapType {
+    /// Validate map for `env` in `TaskCondition`.
+    Env,
+    /// Validate map for `env_contains` in `TaskCondition`.
+    EnvContains,
+    /// Validate map for `env_not` in `TaskCondition`.
+    EnvNot
+}
+
 fn validate_env_map(
     env: Option<IndexMap<String, String>>,
-    equal: bool,
+    env_map_type: EnvMapType,
     validate_any: bool,
 ) -> bool {
     match env {
@@ -33,10 +43,10 @@ fn validate_env_map(
             let mut found_any = env_vars.is_empty();
 
             for (key, current_value) in env_vars.iter() {
-                let valid = if equal {
-                    envmnt::is_equal(key, current_value)
-                } else {
-                    envmnt::contains_ignore_case(key, current_value)
+                let valid = match env_map_type {
+                    EnvMapType::Env => envmnt::is_equal(key, current_value),
+                    EnvMapType::EnvContains => envmnt::contains_ignore_case(key, current_value),
+                    EnvMapType::EnvNot => !envmnt::is_equal(key, current_value),
                 };
 
                 if valid {
@@ -57,12 +67,17 @@ fn validate_env_map(
 }
 
 fn validate_env(condition: &TaskCondition, validate_any: bool) -> bool {
-    validate_env_map(condition.env.clone(), true, validate_any)
+    validate_env_map(condition.env.clone(), EnvMapType::Env, validate_any)
+}
+
+fn validate_env_not(condition: &TaskCondition, validate_any: bool) -> bool {
+    validate_env_map(condition.env_not.clone(), EnvMapType::EnvNot, validate_any)
 }
 
 fn validate_env_contains(condition: &TaskCondition, validate_any: bool) -> bool {
-    validate_env_map(condition.env_contains.clone(), false, validate_any)
+    validate_env_map(condition.env_contains.clone(), EnvMapType::EnvContains, validate_any)
 }
+
 
 fn validate_env_set(condition: &TaskCondition, validate_any: bool) -> bool {
     let env = condition.env_set.clone();
@@ -499,6 +514,15 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
 
             valid = validate_env(&condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env.is_some() {
+                return true;
+            } else if !group_or_condition && !valid {
+                return false;
+            } else if group_or_condition && !valid {
+                not_valid_found = true;
+            }
+            
+            valid = validate_env_not(&condition_struct, validate_any);
+            if group_or_condition && valid && condition_struct.env_not.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
                 return false;
