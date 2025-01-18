@@ -56,6 +56,7 @@ pub mod cli;
 pub mod cli_commands;
 pub mod cli_parser;
 mod command;
+pub mod completion;
 mod condition;
 pub mod config;
 mod descriptor;
