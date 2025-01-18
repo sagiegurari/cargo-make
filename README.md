@@ -1859,6 +1859,7 @@ The following condition types are available:
 * **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
 * **env_contains** - Map of environment variables that must be defined and contain (case insensitive) the provided values
+* **env_not** - Map of environment variables that must not be equal to the provided values
 * **rust_version** - Optional definition of min, max, and/or specific rust version
 * **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
 * **files_not_exist** - List of absolute path files to check they do not exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**
