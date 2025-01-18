@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/condition.rs`."><title>condition.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-0000000007da4a04.ttf.woff2,FiraSans-Regular-0000000084b1ad12.woff2,FiraSans-Medium-0000000066e2bc86.woff2,SourceCodePro-Regular-0000000004ddb02d.ttf.woff2,SourceCodePro-Semibold-00000000f27a569e.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-0000000091fda82d.css"><link rel="stylesheet" href="../../static.files/rustdoc-0000000094d0019d.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (ada5e2c7b 2024-05-31)" data-channel="nightly" data-search-js="search-00000000033a9c87.js" data-settings-js="settings-000000000a4e6193.js" ><script src="../../static.files/storage-0000000036c0a5b4.js"></script><script defer src="../../static.files/src-script-00000000e6115c00.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-00000000ff7d71c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-00000000626a34ad.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-00000000d9d8501d.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-00000000a292be17.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib/condition.rs`."><title>condition.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-c579a84d.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0-nightly (6067b3631 2025-01-17)" data-channel="nightly" data-search-js="search-ccb196c1.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cli/</div>condition.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -661,7 +662,33 @@
 <a href="#661" id="661">661</a>
 <a href="#662" id="662">662</a>
 <a href="#663" id="663">663</a>
-</pre></div><pre class="rust"><code><span class="doccomment">//! # condition
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a></pre></div><pre class="rust"><code><span class="doccomment">//! # condition
 //!
 //! Evaluates conditions based on task configuration and current env.
 //!
@@ -686,9 +713,19 @@
 <span class="kw">use </span>rust_info::types::{RustChannel, RustInfo};
 <span class="kw">use </span>std::path::Path;
 
+<span class="doccomment">/// Enum indicates what kind of env map we are validating. Used in `validate_env_map` function.
+</span><span class="kw">enum </span>EnvMapType {
+    <span class="doccomment">/// Validate map for `env` in `TaskCondition`.
+    </span>Env,
+    <span class="doccomment">/// Validate map for `env_contains` in `TaskCondition`.
+    </span>EnvContains,
+    <span class="doccomment">/// Validate map for `env_not` in `TaskCondition`.
+    </span>EnvNot,
+}
+
 <span class="kw">fn </span>validate_env_map(
     env: <span class="prelude-ty">Option</span>&lt;IndexMap&lt;String, String&gt;&gt;,
-    equal: bool,
+    env_map_type: EnvMapType,
     validate_any: bool,
 ) -&gt; bool {
     <span class="kw">match </span>env {
@@ -696,10 +733,10 @@
             <span class="kw">let </span><span class="kw-2">mut </span>found_any = env_vars.is_empty();
 
             <span class="kw">for </span>(key, current_value) <span class="kw">in </span>env_vars.iter() {
-                <span class="kw">let </span>valid = <span class="kw">if </span>equal {
-                    envmnt::is_equal(key, current_value)
-                } <span class="kw">else </span>{
-                    envmnt::contains_ignore_case(key, current_value)
+                <span class="kw">let </span>valid = <span class="kw">match </span>env_map_type {
+                    EnvMapType::Env =&gt; envmnt::is_equal(key, current_value),
+                    EnvMapType::EnvContains =&gt; envmnt::contains_ignore_case(key, current_value),
+                    EnvMapType::EnvNot =&gt; !envmnt::is_equal(key, current_value),
                 };
 
                 <span class="kw">if </span>valid {
@@ -720,11 +757,19 @@
 }
 
 <span class="kw">fn </span>validate_env(condition: <span class="kw-2">&amp;</span>TaskCondition, validate_any: bool) -&gt; bool {
-    validate_env_map(condition.env.clone(), <span class="bool-val">true</span>, validate_any)
+    validate_env_map(condition.env.clone(), EnvMapType::Env, validate_any)
+}
+
+<span class="kw">fn </span>validate_env_not(condition: <span class="kw-2">&amp;</span>TaskCondition, validate_any: bool) -&gt; bool {
+    validate_env_map(condition.env_not.clone(), EnvMapType::EnvNot, validate_any)
 }
 
 <span class="kw">fn </span>validate_env_contains(condition: <span class="kw-2">&amp;</span>TaskCondition, validate_any: bool) -&gt; bool {
-    validate_env_map(condition.env_contains.clone(), <span class="bool-val">false</span>, validate_any)
+    validate_env_map(
+        condition.env_contains.clone(),
+        EnvMapType::EnvContains,
+        validate_any,
+    )
 }
 
 <span class="kw">fn </span>validate_env_set(condition: <span class="kw-2">&amp;</span>TaskCondition, validate_any: bool) -&gt; bool {
@@ -1162,6 +1207,15 @@
 
             valid = validate_env(<span class="kw-2">&amp;</span>condition_struct, validate_any);
             <span class="kw">if </span>group_or_condition &amp;&amp; valid &amp;&amp; condition_struct.env.is_some() {
+                <span class="kw">return </span><span class="bool-val">true</span>;
+            } <span class="kw">else if </span>!group_or_condition &amp;&amp; !valid {
+                <span class="kw">return </span><span class="bool-val">false</span>;
+            } <span class="kw">else if </span>group_or_condition &amp;&amp; !valid {
+                not_valid_found = <span class="bool-val">true</span>;
+            }
+
+            valid = validate_env_not(<span class="kw-2">&amp;</span>condition_struct, validate_any);
+            <span class="kw">if </span>group_or_condition &amp;&amp; valid &amp;&amp; condition_struct.env_not.is_some() {
                 <span class="kw">return </span><span class="bool-val">true</span>;
             } <span class="kw">else if </span>!group_or_condition &amp;&amp; !valid {
                 <span class="kw">return </span><span class="bool-val">false</span>;

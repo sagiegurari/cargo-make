@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.38.01
+### v0.37.24 (2025-01-18)
 
 * Enhancement: New env_not condition #1187 thanks (@ayodejiige)
 * Enhancement: Enable LTO and codegen-units = 1 optimization #1211 (thanks @zamazan4ik)
