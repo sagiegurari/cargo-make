@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.38.01
+
+* Maintenance: upgrade kcov default version to 43
+
 ### v0.37.23 (2024-10-19)
 
 * Enhancement: support relative keyword for makefile extending to enable easy git/crate/workspace root extending #1175
