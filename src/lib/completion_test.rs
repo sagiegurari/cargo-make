@@ -3,6 +3,8 @@ use std::path::Path;
 
 #[cfg(target_os = "linux")]
 use crate::completion::generate_completion_zsh;
+
+#[cfg(target_os = "linux")]
 use std::io::Cursor;
 
 // Function to clean up test environment by removing the completion file
