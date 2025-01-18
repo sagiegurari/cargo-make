@@ -11,7 +11,7 @@ use crate::error::CargoMakeError;
 use crate::io::create_text_file;
 use fsio::file::write_text_file;
 use fsio::path::as_path::AsPath;
-use md5;
+use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 
 pub(crate) fn create_script_file(
@@ -44,8 +44,9 @@ fn create_persisted_script_file_with_options(
     let text = script_text.join("\n");
 
     let string_bytes = text.as_bytes();
-    let bytes = md5::compute(string_bytes);
-    let mut file_name = format!("{:x}", bytes);
+    let mut hasher = Sha256::new();
+    hasher.update(string_bytes);
+    let mut file_name = hex::encode(hasher.finalize());
 
     let default_target_directory = envmnt::get_or("CARGO_MAKE_CRATE_TARGET_DIRECTORY", "target");
     let directory = envmnt::get_or(

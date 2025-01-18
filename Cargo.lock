@@ -160,13 +160,13 @@ dependencies = [
  "fsio",
  "git_info",
  "glob",
+ "hex",
  "home",
  "ignore",
  "indexmap 2.7.0",
  "itertools",
  "lenient_semver",
  "log",
- "md5",
  "nu-ansi-term",
  "once_cell",
  "petgraph",
@@ -178,6 +178,7 @@ dependencies = [
  "serde_derive",
  "serde_ignored",
  "serde_json",
+ "sha2",
  "shell2batch",
  "strip-ansi-escapes",
  "strum_macros",
@@ -698,6 +699,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
 
 [[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+
+[[package]]
 name = "home"
 version = "0.5.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -913,12 +920,6 @@ name = "log"
 version = "0.4.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04cbf5b083de1c7e0222a7a51dbfdba1cbe1c6ab0b15e29fff3f6c077fd9cd9f"
-
-[[package]]
-name = "md5"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
 
 [[package]]
 name = "memchr"
