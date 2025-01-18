@@ -15,13 +15,8 @@ pub(crate) mod descriptor_deserializer;
 mod env;
 mod makefiles;
 
-use std::path::{Path, PathBuf};
-
-use fsio::path::as_path::AsPath;
-use fsio::path::from_path::FromPath;
-use indexmap::IndexMap;
-
 use crate::descriptor::env::{merge_env, merge_env_files, merge_env_scripts};
+use crate::environment;
 use crate::error::CargoMakeError;
 use crate::plugin::descriptor::merge_plugins_config;
 use crate::types::{
@@ -29,6 +24,18 @@ use crate::types::{
     Task,
 };
 use crate::{io, scriptengine, version};
+use fsio::path::as_path::AsPath;
+use fsio::path::from_path::FromPath;
+use indexmap::IndexMap;
+use std::path::{Path, PathBuf};
+
+#[derive(Debug)]
+enum RelativeTo {
+    Makefile,
+    GitRoot,
+    CrateRoot,
+    WorkspaceRoot,
+}
 
 fn merge_tasks(
     base: &mut IndexMap<String, Task>,
@@ -249,10 +256,29 @@ fn load_descriptor_extended_makefiles(
     extend_struct: &Extend,
 ) -> Result<ExternalConfig, CargoMakeError> {
     match extend_struct {
-        Extend::Path(base_file) => load_external_descriptor(parent_path, &base_file, true, false),
+        Extend::Path(base_file) => {
+            load_external_descriptor(parent_path, &base_file, true, false, RelativeTo::Makefile)
+        }
         Extend::Options(extend_options) => {
             let force = !extend_options.optional.unwrap_or(false);
-            load_external_descriptor(parent_path, &extend_options.path, force, false)
+            let relative_to_str = extend_options
+                .relative
+                .clone()
+                .unwrap_or("makefile".to_string());
+            let relative_to = match relative_to_str.as_str() {
+                "git" => RelativeTo::GitRoot,
+                "crate" => RelativeTo::CrateRoot,
+                "workspace" => RelativeTo::WorkspaceRoot,
+                "makefile" => RelativeTo::Makefile,
+                _ => {
+                    warn!(
+                        "Unknown relative-to value: {}, defaulting to makefile",
+                        &relative_to_str
+                    );
+                    RelativeTo::Makefile
+                }
+            };
+            load_external_descriptor(parent_path, &extend_options.path, force, false, relative_to)
         }
         Extend::List(extend_list) => {
             let mut ordered_list_config = ExternalConfig::new();
@@ -302,13 +328,50 @@ fn load_external_descriptor(
     file_name: &str,
     force: bool,
     set_env: bool,
+    relative_to: RelativeTo,
 ) -> Result<ExternalConfig, CargoMakeError> {
     debug!(
-        "Loading tasks from file: {} base directory: {}",
-        &file_name, &base_path
+        "Loading tasks from file: {} base directory: {}, relative to: {:#?}",
+        &file_name, &base_path, &relative_to,
     );
 
-    let file_path = Path::new(base_path).join(file_name);
+    let descriptor_dir = match relative_to {
+        RelativeTo::Makefile => base_path.to_string(),
+        RelativeTo::GitRoot => {
+            let git_root = environment::find_git_root(&PathBuf::from(base_path));
+            debug!("git root: {:#?}", &git_root);
+            match git_root {
+                Some(git_root_dir) => git_root_dir.clone(),
+                None => base_path.to_string(),
+            }
+        }
+        RelativeTo::CrateRoot => {
+            let project_root = environment::get_project_root_for_path(&PathBuf::from(base_path));
+            debug!("project root: {:#?}", &project_root);
+            match project_root {
+                Some(crate_dir) => crate_dir.clone(),
+                None => base_path.to_string(),
+            }
+        }
+        RelativeTo::WorkspaceRoot => {
+            let base_path_buf = PathBuf::from(base_path);
+            let project_root = environment::get_project_root_for_path(&base_path_buf);
+            debug!("project root: {:#?}", &project_root);
+            match project_root {
+                Some(crate_dir) => {
+                    let crate_parent_path = PathBuf::from(&crate_dir).join("..");
+                    let workspace_root = environment::get_project_root_for_path(&crate_parent_path);
+                    debug!("workspace root: {:#?}", &workspace_root);
+                    match workspace_root {
+                        Some(workspace_dir) => workspace_dir.clone(),
+                        None => crate_dir.clone(),
+                    }
+                }
+                None => base_path.to_string(),
+            }
+        }
+    };
+    let file_path = Path::new(&descriptor_dir).join(file_name);
 
     if file_path.exists() && file_path.is_file() {
         let file_path_string: String = FromPath::from_path(&file_path);
@@ -332,7 +395,7 @@ fn load_external_descriptor(
 
         match file_config.extend {
             Some(ref extend_struct) => {
-                let parent_path_buf = Path::new(base_path).join(file_name).join("..");
+                let parent_path_buf = Path::new(&file_path_string).join("..");
                 let parent_path = file_path
                     .parent()
                     .unwrap_or(&parent_path_buf)
@@ -515,7 +578,8 @@ fn load_descriptors(
 ) -> Result<Config, CargoMakeError> {
     let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks)?;
 
-    let mut external_config = load_external_descriptor(".", file_name, force, true)?;
+    let mut external_config =
+        load_external_descriptor(".", file_name, force, true, RelativeTo::Makefile)?;
 
     external_config = match std::env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
         Ok(workspace_makefile) => {
@@ -532,6 +596,7 @@ fn load_descriptors(
                                     workspace_file_name_str,
                                     false,
                                     false,
+                                    RelativeTo::Makefile,
                                 )?;
                                 merge_external_configs(external_config, workspace_config)?
                             }

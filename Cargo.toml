@@ -1,6 +1,6 @@
 [package]
 name = "cargo-make"
-version = "0.37.16"
+version = "0.37.23"
 authors = ["Sagie Gur-Ari <sagiegurari@gmail.com>"]
 description = "Rust task runner and build tool."
 license = "Apache-2.0"
@@ -44,36 +44,37 @@ name = "makers"
 path = "src/makers.rs"
 
 [dependencies]
-cargo_metadata = "^0.18"
+cargo_metadata = "^0.19"
 ci_info = "^0.14.14"
 cliparser = "^0.1.2"
-colored = "^2"
+colored = "^3"
 ctrlc = "^3"
 dirs-next = "^2"
-duckscript = "^0.8.0"
-duckscriptsdk = { version = "^0.9.3", default-features = false }
+duckscript = "^0.10"
+duckscriptsdk = { version = "^0.11.1", default-features = false }
 envmnt = "^0.10.4"
-fern = "^0.6"
+fern = "^0.7"
 fsio = { version = "^0.4", features = ["temp-path"] }
 git_info = "^0.1.3"
-glob = "^0.3.1"
+glob = "^0.3.2"
+hex = "0.4.3"
 home = "^0.5"
 ignore = "^0.4"
 indexmap = { version = "^2", features = ["serde"] }
-itertools = "^0.13"
+itertools = "^0.14"
 lenient_semver = "^0.4.2"
 log = "^0.4"
-once_cell = "^1.19.0"
-petgraph = "^0.6.5"
-regex = "^1.10"
-run_script = "^0.10"
+once_cell = "^1.20.2"
+petgraph = "^0.7.1"
+regex = "^1.11"
+run_script = "^0.11"
 rust_info = "^0.3.3"
 semver = "^1"
 serde = "^1"
 serde_derive = "^1"
 serde_ignored = "^0.1"
 serde_json = "^1"
-sha2 = "^0.10"
+sha2 = "0.10.8"
 shell2batch = "^0.4.5"
 strip-ansi-escapes = "^0.2"
 strum_macros = "0.26.4"
@@ -92,3 +93,7 @@ tls-rustls = ["duckscriptsdk/tls-rustls"]
 tls-native = ["duckscriptsdk/tls-native"]
 tls = ["tls-rustls"]                      # alias for backward compatibility
 default = ["tls-rustls"]
+
+[profile.release]
+codegen-units = 1
+lto = true

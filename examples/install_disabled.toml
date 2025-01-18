@@ -1,0 +1,12 @@
+
+[config]
+skip_core_tasks = true
+disable_install = true
+
+[tasks.alt-command-example1]
+install_crate = { install_command = "custom-install" }
+command = "cargo"
+args = ["somecrate"]
+
+[tasks.alt-command-example2]
+install_crate = { crate_name = "somecrate", install_command = "custom-install" }

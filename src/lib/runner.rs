@@ -360,6 +360,7 @@ pub(crate) fn run_task_with_options(
             Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),
             None => (),
         };
+        envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
         if validate_condition(
             &flow_info,
@@ -408,8 +409,6 @@ pub(crate) fn run_task_with_options(
                 Some(ref env) => environment::set_env(env.clone()),
                 None => (),
             };
-
-            envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
             //make sure profile env is not overwritten
             profile::set(&profile_name);

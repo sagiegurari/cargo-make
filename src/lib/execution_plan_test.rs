@@ -1,6 +1,8 @@
 use super::*;
 use crate::descriptor;
-use crate::types::{ConfigSection, DependencyIdentifier, PlatformOverrideTask, TaskWatchOptions};
+use crate::types::{
+    ConfigSection, DependencyIdentifier, PlatformOverrideTask, TaskWatchOptions, Workspace,
+};
 
 #[test]
 fn get_actual_task_name_not_found() {

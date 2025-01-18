@@ -70,6 +70,26 @@
 <a href="#70" id="70">70</a>
 <a href="#71" id="71">71</a>
 <a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # script_utils
 //!
 //! Helper functions for script invocations.
@@ -83,8 +103,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::io::create_text_file;
 <span class="kw">use </span>fsio::file::write_text_file;
 <span class="kw">use </span>fsio::path::as_path::AsPath;
-<span class="kw">use </span>sha2::{Digest, Sha256};
-<span class="kw">use </span>std::fmt::Write;
+<span class="kw">use </span>md5;
 <span class="kw">use </span>std::path::PathBuf;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_script_file(
@@ -100,11 +119,25 @@
     script_text: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
     extension: <span class="kw-2">&amp;</span>str,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
+    <span class="kw">match </span>create_persisted_script_file_with_options(script_text, extension, <span class="prelude-val">None</span>) {
+        <span class="prelude-val">Ok</span>(value) =&gt; <span class="prelude-val">Ok</span>(value),
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
+            <span class="kw">let </span>limit = envmnt::get_usize(<span class="string">"CARGO_MAKE_SCRIPT_FILE_PATH_MAX_LENGTH"</span>, <span class="number">130</span>);
+            create_persisted_script_file_with_options(script_text, extension, <span class="prelude-val">Some</span>(limit))
+        }
+    }
+}
+
+<span class="kw">fn </span>create_persisted_script_file_with_options(
+    script_text: <span class="kw-2">&amp;</span>Vec&lt;String&gt;,
+    extension: <span class="kw-2">&amp;</span>str,
+    filename_limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
     <span class="kw">let </span>text = script_text.join(<span class="string">"\n"</span>);
 
     <span class="kw">let </span>string_bytes = text.as_bytes();
-    <span class="kw">let </span>bytes = Sha256::digest(string_bytes);
-    <span class="kw">let </span>file_name = bytes_to_hex(<span class="kw-2">&amp;</span>bytes[..])<span class="question-mark">?</span>;
+    <span class="kw">let </span>bytes = md5::compute(string_bytes);
+    <span class="kw">let </span><span class="kw-2">mut </span>file_name = <span class="macro">format!</span>(<span class="string">"{:x}"</span>, bytes);
 
     <span class="kw">let </span>default_target_directory = envmnt::get_or(<span class="string">"CARGO_MAKE_CRATE_TARGET_DIRECTORY"</span>, <span class="string">"target"</span>);
     <span class="kw">let </span>directory = envmnt::get_or(
@@ -115,10 +148,26 @@
     file_path_buf.push(<span class="kw-2">&amp;</span>directory);
     file_path_buf.push(<span class="string">"_cargo_make_temp"</span>);
     file_path_buf.push(<span class="string">"persisted_scripts"</span>);
-    file_path_buf.push(file_name);
+    file_path_buf.push(<span class="kw-2">&amp;</span>file_name);
     file_path_buf.set_extension(extension);
+    <span class="kw">let </span><span class="kw-2">mut </span>file_path_string: String = file_path_buf.to_string_lossy().into_owned();
 
-    <span class="kw">let </span>file_path_string: String = file_path_buf.to_string_lossy().into_owned();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(limit) = filename_limit {
+        <span class="kw">if </span>file_path_string.len() &gt; limit {
+            <span class="kw">let </span>reduce_size = file_path_string.len() - limit;
+            <span class="kw">if </span>reduce_size &lt; file_name.len() {
+                file_name = file_name[<span class="number">0</span>..file_name.len() - reduce_size].to_string();
+
+                file_path_buf = PathBuf::new();
+                file_path_buf.push(<span class="kw-2">&amp;</span>directory);
+                file_path_buf.push(<span class="string">"_cargo_make_temp"</span>);
+                file_path_buf.push(<span class="string">"persisted_scripts"</span>);
+                file_path_buf.push(file_name);
+                file_path_buf.set_extension(extension);
+                file_path_string = file_path_buf.to_string_lossy().into_owned();
+            }
+        }
+    }
 
     <span class="kw">let </span>file_path = file_path_string.as_path();
     <span class="kw">if </span>file_path.exists() {
@@ -132,14 +181,5 @@
             }
         }
     }
-}
-
-<span class="kw">fn </span>bytes_to_hex(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;String, CargoMakeError&gt; {
-    <span class="kw">let </span><span class="kw-2">mut </span>hex_string = String::with_capacity(<span class="number">2 </span>* bytes.len());
-    <span class="kw">for </span>byte <span class="kw">in </span>bytes {
-        <span class="macro">write!</span>(hex_string, <span class="string">"{:02X}"</span>, byte)<span class="question-mark">?</span>;
-    }
-
-    <span class="prelude-val">Ok</span>(hex_string)
 }
 </code></pre></div></section></main></body></html>

@@ -1,5 +1,41 @@
 ## CHANGELOG
 
+### v0.38.01
+
+* Maintenance: upgrade kcov default version to 43
+* Maintenance: Remove minimal rust version CI flow
+
+### v0.37.23 (2024-10-19)
+
+* Enhancement: support relative keyword for makefile extending to enable easy git/crate/workspace root extending #1175
+* Maintenance: critical bug fix upgrade for duckscript
+
+### v0.37.22 (2024-10-12)
+
+* Fix: set env CARGO_MAKE_CURRENT_TASK_NAME before condition invocation #1173
+
+### v0.37.21 (2024-10-04)
+
+* Fix: Remove RUSTFLAGS from workaround of rustup env issue when setting toolchain #1169
+* Maintenance: upgrade duckscript
+
+### v0.37.20 (2024-10-03)
+
+* Maintenance: upgrade dependencies
+
+### v0.37.19 (2024-10-03)
+
+* Maintenance: upgrade duckscript
+
+### v0.37.18 (2024-09-29)
+
+* Enhancement: config to disable all installation steps #1147
+
+### v0.37.17 (2024-09-28)
+
+* Fix: support encrypted drives (shorten script file names) #1150
+* Fix: setup musl failing on open ssl binary redirects
+
 ### v0.37.16 (2024-08-30)
 
 * Enhancement: Expand condition_script_runner_args #1132 (thanks @wmmc88)

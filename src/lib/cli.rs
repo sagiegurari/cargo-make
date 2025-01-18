@@ -120,6 +120,7 @@ pub fn run(
     time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
+    info!("");
     if crate_name.len() > 0 {
         info!("Project: {}", &crate_name);
     }

@@ -83,7 +83,7 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::runner;
 <span class="kw">use </span><span class="kw">crate</span>::types::{FlowInfo, FlowState, RunTaskOptions, Step, Task};
-<span class="kw">use </span>duckscript::types::command::{Command, CommandResult};
+<span class="kw">use </span>duckscript::types::command::{Command, CommandInvocationContext, CommandResult};
 <span class="kw">use </span>std::cell::RefCell;
 <span class="kw">use </span>std::rc::Rc;
 
@@ -103,11 +103,11 @@
         Box::new((<span class="kw-2">*</span><span class="self">self</span>).clone())
     }
 
-    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, arguments: Vec&lt;String&gt;) -&gt; CommandResult {
-        <span class="kw">if </span>arguments.is_empty() {
+    <span class="kw">fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>, context: CommandInvocationContext) -&gt; CommandResult {
+        <span class="kw">if </span>context.arguments.is_empty() {
             CommandResult::Error(<span class="string">"No task data provided."</span>.to_string())
         } <span class="kw">else </span>{
-            <span class="kw">let </span>task: Task = <span class="kw">match </span>serde_json::from_str(<span class="kw-2">&amp;</span>arguments[<span class="number">0</span>]) {
+            <span class="kw">let </span>task: Task = <span class="kw">match </span>serde_json::from_str(<span class="kw-2">&amp;</span>context.arguments[<span class="number">0</span>]) {
                 <span class="prelude-val">Ok</span>(value) =&gt; value,
                 <span class="prelude-val">Err</span>(error) =&gt; <span class="kw">return </span>CommandResult::Error(error.to_string()),
             };

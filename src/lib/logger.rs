@@ -25,7 +25,7 @@ pub(crate) enum LogLevel {
 
 /// The logger options used to initialize the logger
 pub struct LoggerOptions {
-    /// Name to prefix each log message: "[name] %s"
+    /// Name to prefix each log message
     pub name: String,
     /// The logger level name (verbose, info, error, off)
     pub level: String,

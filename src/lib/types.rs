@@ -399,6 +399,8 @@ pub struct TaskCondition {
     pub env_not_set: Option<Vec<String>>,
     /// Environment variables and their values
     pub env: Option<IndexMap<String, String>>,
+    /// Environment variables and the values which they must not be defined as
+    pub env_not: Option<IndexMap<String, String>>,
     /// Environment variables which are defined as true
     pub env_true: Option<Vec<String>>,
     /// Environment variables which are defined as false
@@ -2072,6 +2074,9 @@ pub struct ExtendOptions {
     pub path: String,
     /// Enable optional extend (default to false)
     pub optional: Option<bool>,
+    /// Relative to option, sub as current makefile, git root, crate root, workspace root, etc...
+    /// Possible values: (makefile, git, crate, workspace)
+    pub relative: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -2172,6 +2177,8 @@ pub struct ConfigSection {
     pub time_summary: Option<bool>,
     /// Automatically load cargo aliases as cargo-make tasks
     pub load_cargo_aliases: Option<bool>,
+    /// If true (default false) disable all automatic/defined installation instructions
+    pub disable_install: Option<bool>,
     /// The project information member (used by workspaces)
     pub main_project_member: Option<String>,
     /// Invoked while loading the descriptor file but before loading any extended descriptor
@@ -2292,6 +2299,10 @@ impl ConfigSection {
 
         if extended.load_cargo_aliases.is_some() {
             self.load_cargo_aliases = extended.load_cargo_aliases.clone();
+        }
+
+        if extended.disable_install.is_some() {
+            self.disable_install = extended.disable_install.clone();
         }
 
         if extended.main_project_member.is_some() {

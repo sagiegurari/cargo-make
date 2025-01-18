@@ -2451,6 +2451,15 @@
 <a href="#2451" id="2451">2451</a>
 <a href="#2452" id="2452">2452</a>
 <a href="#2453" id="2453">2453</a>
+<a href="#2454" id="2454">2454</a>
+<a href="#2455" id="2455">2455</a>
+<a href="#2456" id="2456">2456</a>
+<a href="#2457" id="2457">2457</a>
+<a href="#2458" id="2458">2458</a>
+<a href="#2459" id="2459">2459</a>
+<a href="#2460" id="2460">2460</a>
+<a href="#2461" id="2461">2461</a>
+<a href="#2462" id="2462">2462</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # types
 //!
 //! Defines the various types and aliases used by cargo-make.
@@ -4525,6 +4534,9 @@
     </span><span class="kw">pub </span>path: String,
     <span class="doccomment">/// Enable optional extend (default to false)
     </span><span class="kw">pub </span>optional: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="doccomment">/// Relative to option, sub as current makefile, git root, crate root, workspace root, etc...
+    /// Possible values: (makefile, git, crate, workspace)
+    </span><span class="kw">pub </span>relative: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
 <span class="attr">#[derive(Serialize, Deserialize, Debug, Clone)]
@@ -4625,6 +4637,8 @@
     </span><span class="kw">pub </span>time_summary: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// Automatically load cargo aliases as cargo-make tasks
     </span><span class="kw">pub </span>load_cargo_aliases: <span class="prelude-ty">Option</span>&lt;bool&gt;,
+    <span class="doccomment">/// If true (default false) disable all automatic/defined installation instructions
+    </span><span class="kw">pub </span>disable_install: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     <span class="doccomment">/// The project information member (used by workspaces)
     </span><span class="kw">pub </span>main_project_member: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="doccomment">/// Invoked while loading the descriptor file but before loading any extended descriptor
@@ -4745,6 +4759,10 @@
 
         <span class="kw">if </span>extended.load_cargo_aliases.is_some() {
             <span class="self">self</span>.load_cargo_aliases = extended.load_cargo_aliases.clone();
+        }
+
+        <span class="kw">if </span>extended.disable_install.is_some() {
+            <span class="self">self</span>.disable_install = extended.disable_install.clone();
         }
 
         <span class="kw">if </span>extended.main_project_member.is_some() {

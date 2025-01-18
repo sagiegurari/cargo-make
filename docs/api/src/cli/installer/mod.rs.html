@@ -188,6 +188,12 @@
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # installer
 //!
 //! Installs external dependencies for tasks.&lt;br&gt;
@@ -255,6 +261,12 @@
     flow_info: <span class="kw-2">&amp;</span>FlowInfo,
     flow_state: Rc&lt;RefCell&lt;FlowState&gt;&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(), CargoMakeError&gt; {
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(disable_install) = flow_info.config.config.disable_install {
+        <span class="kw">if </span>disable_install {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+        }
+    }
+
     <span class="kw">let </span>validate = !task_config.should_ignore_errors();
 
     <span class="kw">let </span>toolchain = task_config.toolchain.clone();

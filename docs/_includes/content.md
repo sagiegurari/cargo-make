@@ -1031,8 +1031,27 @@ All will be loaded in the order you define.<br>
 For example:
 
 ```toml
-extend = [ { path = "must_have_makefile.toml" }, { path = "optional_makefile.toml", optional = true }, { path = "another_must_have_makefile.toml" } ]
+extend = [
+  { path = "alias.toml" },
+  { path = "optional_makefile.toml", optional = true },
+  { path = "cwd.toml" },
+]
 ```
+
+You can also change the relative path from the current makefile location to the git root folder, crate root folder or workspace root folder by adding the relative keyword as follows:
+
+```toml
+extend = { path = "./examples/python.toml", relative = "crate" }
+```
+
+Where relative can have the following values:
+
+* git - For nearest (up) .git folder location.
+* crate - For crate root (based on first Cargo.toml file)
+* workspace - For workspace root (based on second top Cargo.toml file)
+
+Any other value defaults to the current makefile location.<br>
+Important to mention, all paths are relative from the currently parsed makefile.
 
 <a name="usage-workspace-extend"></a>
 #### Automatically Extend Workspace Makefile
@@ -1701,6 +1720,7 @@ The following condition types are available:
 * **env_true** - List of environment variables that must be defined and must not be set to any of the following (case insensitive): false, no, 0 or empty
 * **env_false** - List of environment variables that must be defined and set to any of the following (case insensitive): false, no, 0 or empty
 * **env** - Map of environment variables that must be defined and equal to the provided values
+* **env_not** - Map of environment variables that must not be equal to the provided values
 * **env_contains** - Map of environment variables that must be defined and contain (case insensitive) the provided values
 * **rust_version** - Optional definition of min, max, and/or specific rust version
 * **files_exist** - List of absolute path files to check they exist. Environment substitution is supported so you can define relative paths such as **`${CARGO_MAKE_WORKING_DIRECTORY}/Cargo.toml`**

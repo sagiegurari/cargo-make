@@ -65,6 +65,12 @@ pub(crate) fn install(
     flow_info: &FlowInfo,
     flow_state: Rc<RefCell<FlowState>>,
 ) -> Result<(), CargoMakeError> {
+    if let Some(disable_install) = flow_info.config.config.disable_install {
+        if disable_install {
+            return Ok(());
+        }
+    }
+
     let validate = !task_config.should_ignore_errors();
 
     let toolchain = task_config.toolchain.clone();

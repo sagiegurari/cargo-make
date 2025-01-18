@@ -710,7 +710,6 @@
 <a href="#710" id="710">710</a>
 <a href="#711" id="711">711</a>
 <a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # runner
 //!
 //! Runs the requested tasks.&lt;br&gt;
@@ -1073,6 +1072,7 @@
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>env) =&gt; environment::set_current_task_meta_info_env(env.clone()),
             <span class="prelude-val">None </span>=&gt; (),
         };
+        envmnt::set(<span class="string">"CARGO_MAKE_CURRENT_TASK_NAME"</span>, <span class="kw-2">&amp;</span>step.name);
 
         <span class="kw">if </span>validate_condition(
             <span class="kw-2">&amp;</span>flow_info,
@@ -1121,8 +1121,6 @@
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>env) =&gt; environment::set_env(env.clone()),
                 <span class="prelude-val">None </span>=&gt; (),
             };
-
-            envmnt::set(<span class="string">"CARGO_MAKE_CURRENT_TASK_NAME"</span>, <span class="kw-2">&amp;</span>step.name);
 
             <span class="comment">//make sure profile env is not overwritten
             </span>profile::set(<span class="kw-2">&amp;</span>profile_name);

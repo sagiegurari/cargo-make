@@ -1067,7 +1067,7 @@ env.OPENSSL_DIR = "${HOME}/openssl-musl"
 env.OPENSSL_PLATFORM = { source = "${CARGO_MAKE_BINARY_RELEASE_ENV_ARM_LINUX}", default_value = "x86_64", mapping = { "true" = "armv4" } }
 script = '''
 rustup target add "${CARGO_MAKE_RELEASE_FLOW_TARGET}"
-curl ${CARGO_MAKE_OPENSSL_DOWNLOAD_URL} | tar xzf -
+curl --location ${CARGO_MAKE_OPENSSL_DOWNLOAD_URL} | tar xzf -
 cd openssl-${CARGO_MAKE_OPENSSL_VERSION}
 CC=musl-gcc ./Configure --prefix="${OPENSSL_DIR}" no-dso no-ssl2 no-ssl3 linux-${OPENSSL_PLATFORM} -fPIC
 make -j"$(nproc)"
