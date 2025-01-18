@@ -1,7 +1,9 @@
-use crate::completion::generate_completion_zsh;
 use std::fs;
-use std::io::Cursor;
 use std::path::Path;
+
+#[cfg(target_os = "linux")]
+use crate::completion::generate_completion_zsh;
+use std::io::Cursor;
 
 // Function to clean up test environment by removing the completion file
 fn cleanup() {
