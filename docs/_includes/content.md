@@ -308,12 +308,15 @@ It is also possible to define platform specific aliases, for example:
 linux_alias = "linux_my_task"
 windows_alias = "windows_my_task"
 mac_alias = "mac_my_task"
+freebsd_alias = "freebsd_my_task"
 
 [tasks.linux_my_task]
 
 [tasks.mac_my_task]
 
 [tasks.windows_my_task]
+
+[tasks.freebsd_my_task]
 ```
 
 If platform specific alias is found and matches current platform it will take precedence over the non platform alias definition.<br>
@@ -330,7 +333,7 @@ script = "echo hello"
 [tasks.do_nothing]
 ```
 
-If you run task **my_task** on windows or mac, it will invoke the **do_nothing** task.<br>
+If you run task **my_task** on windows, mac or freebsd, it will invoke the **do_nothing** task.<br>
 However, if executed on a linux platform, it will invoke the **run** task.
 
 *As a side note, cargo-make will attempt to invoke the task dependencies in the order that they were defined, unless they are defined also as sub dependencies.*
@@ -394,7 +397,7 @@ args = ["running test-default"]
 [tasks.test-routing]
 run_task = [
     { name = "test1", condition = { platforms = ["windows", "linux"], channels = ["beta", "stable"] } },
-    { name = "test2", condition = { platforms = ["mac"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
+    { name = "test2", condition = { platforms = ["mac", "freebsd"], rust_version = { min = "1.20.0", max = "1.30.0" } } },
     { name = "test3", condition_script = [ "somecommand" ] },
     { name = "test-default" }
 ]
@@ -1179,7 +1182,7 @@ The same process can be used to override tasks from other makefiles loaded using
 
 <a name="usage-platform-override"></a>
 #### Platform Override
-If you want to override a task (or specific attributes in a task) for specific platforms, you can define an override task with the platform name (currently Linux, Windows, and macOS) under the specific task.<br>
+If you want to override a task (or specific attributes in a task) for specific platforms, you can define an override task with the platform name (currently Linux, Windows, macOS and FreeBSD) under the specific task.<br>
 For example:
 
 ```toml
@@ -1231,7 +1234,7 @@ echo "Hello World From Linux"
 
 This means, however, that you will have to redefine all attributes in the override task that you want to carry with you from the parent task.<br>
 **Important: alias comes before checking override task, so if the parent task has an alias, it will be redirected to that task instead of the override.**<br>
-**To have an alias redirect per-platform, use the linux_alias, windows_alias, mac_alias attributes.**<br>
+**To have an alias redirect per-platform, use the linux_alias, windows_alias, mac_alias, freebsd_alias attributes.**<br>
 **In addition, aliases cannot be defined in platform override tasks, only in parent tasks.**
 
 <a name="usage-task-extend-attribute"></a>
@@ -1698,7 +1701,7 @@ The task runner will evaluate any condition defined and a task definition may co
 The condition attribute may define multiple parameters to validate.<br>
 All defined parameters must be valid for the condition as a whole to be true and enable the task to run.
 
-Below is an example of a condition definition that checks that we are running on Windows or Linux (but not macOS) and that we are running on beta or nightly (but not stable):
+Below is an example of a condition definition that checks that we are running on Windows or Linux (but neither macOS nor FreeBSD) and that we are running on beta or nightly (but not stable):
 
 ```toml
 [tasks.test-condition]
@@ -1712,7 +1715,7 @@ The following condition types are available:
 
 * **profile** - See [profiles](#usage-profiles) for more info
 * **os** - List of OS names (Windows, macOS, iOS, Linux, Android, etc... as defined by cfg!(target_os))
-* **platforms** - List of platform names (windows, linux, mac)
+* **platforms** - List of platform names (windows, linux, mac, freebsd)
 * **channels** - List of rust channels (stable, beta, nightly)
 * **env_set** - List of environment variables that must be defined
 * **env_not_set** - List of environment variables that must not be defined
@@ -1954,7 +1957,7 @@ install_crate = { rustup_component_name = "rust-src" }
 Native dependencies can also be installed, however it is up to the Makefile author to write the script which checks the dependency exists and if
 not, to install it correctly.<br>
 This is done by setting up an installation script in the **install_script** attribute of the task.<br>
-It is possible to use platform overrides to specify different installation scripts for Linux/macOS/Windows platforms.<br>
+It is possible to use platform overrides to specify different installation scripts for Linux/macOS/FreeBSD/Windows platforms.<br>
 For example:
 
 ```toml
