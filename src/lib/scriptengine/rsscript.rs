@@ -48,7 +48,7 @@ fn install_crate(provider: &ScriptRunner) -> Result<(), CargoMakeError> {
                 force: None,
             };
 
-            crate_installer::install(&None, &info, &None, false)?;
+            crate_installer::install(&None, &info, &Some(vec!["--locked".to_string()]), true)?;
         }
         ScriptRunner::CargoScript => cargo_plugin_installer::install_crate(
             &None,
