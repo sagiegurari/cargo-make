@@ -1,14 +1,16 @@
 use std::env::VarError;
+use std::fs;
 
 use super::*;
 use crate::test;
 use crate::types::{
-    ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, RunTaskDetails, ScriptValue,
-    TaskCondition,
+    ConditionScriptValue, ConfigSection, CrateInfo, EnvFile, InstallCrate, InstallCrateInfo,
+    RunTaskDetails, ScriptValue, TaskCondition, TestArg,
 };
 use cfg_if::cfg_if;
 use git_info::types::GitInfo;
 use rust_info::types::RustInfo;
+use tempfile::tempdir;
 
 #[cfg(target_os = "linux")]
 use crate::types::WatchOptions;
@@ -959,6 +961,96 @@ fn run_task_failed_condition_script_doesnt_change_env() {
     );
     // var should not exist since the condition failed
     assert_eq!(std::env::var(NEW_ENV_VAR), Err(VarError::NotPresent));
+}
+
+#[test]
+#[ignore]
+fn run_task_rust_script_with_args_and_rust_condition_script_with_args() {
+    let dummy_path = "dummy/path";
+
+    // Create temporary directory to store outputs of condition script and script
+    let output_dir = tempdir().unwrap();
+    let condition_script_output_file = output_dir.path().join("condition-script-output.txt");
+    let script_output_file = output_dir.path().join("script-output.txt");
+
+    let flow_info = FlowInfo {
+        config: Config::default(),
+        task: "test".to_string(),
+        env_info: EnvInfo {
+            rust_info: RustInfo::new(),
+            crate_info: CrateInfo::new(),
+            git_info: GitInfo::new(),
+            ci_info: ci_info::get(),
+        },
+        disable_workspace: false,
+        disable_on_error: false,
+        allow_private: false,
+        skip_init_end_tasks: false,
+        skip_tasks_pattern: None,
+        cli_arguments: None,
+    };
+
+    let step = Step {
+        name: "test".to_string(),
+        config: Task {
+            install_crate: Some(InstallCrate::CrateInfo(InstallCrateInfo {
+                crate_name: "rust-script".to_string(),
+                rustup_component_name: None,
+                binary: "rust-script".to_string(),
+                test_arg: TestArg {
+                    inner: vec!["--version".to_string()],
+                },
+                // rust-script 0.35.0 introduced a fix required for this test to work: https://github.com/fornwall/rust-script/issues/135
+                min_version: Some("0.35.0".to_string()),
+                version: None,
+                install_command: None,
+                force: None,
+            })),
+            condition_script_runner_args: Some(
+                ["--base-path", &dummy_path]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect(),
+            ),
+            condition_script: Some(ConditionScriptValue::SingleLine(format!(
+                r##"#!@rust
+#![allow(unused_doc_comments)]
+
+let base_path = std::env::var("RUST_SCRIPT_BASE_PATH").expect("RUST_SCRIPT_BASE_PATH should always be set by rust-script");
+std::fs::write(r#"{}"#, base_path)?
+                "##,
+                condition_script_output_file.to_str().unwrap()
+            ))),
+            script_runner_args: Some(
+                ["--base-path", &dummy_path]
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect(),
+            ),
+            script: Some(ScriptValue::SingleLine(format!(
+                r##"#!@rust
+#![allow(unused_doc_comments)]
+
+let base_path = std::env::var("RUST_SCRIPT_BASE_PATH").expect("RUST_SCRIPT_BASE_PATH should always be set by rust-script");
+std::fs::write(r#"{}"#, base_path)?
+            "##,
+                script_output_file.to_str().unwrap()
+            ))),
+            ..Default::default()
+        },
+    };
+
+    run_task(&flow_info, Rc::new(RefCell::new(FlowState::new())), &step).unwrap();
+
+    // Check that condition_script_args are expanded
+    let condition_script_output = fs::read_to_string(&condition_script_output_file)
+        .expect("condition_script should have created this file");
+    assert_eq!(condition_script_output, dummy_path);
+
+    // Check that script_args are expanded
+    let script_output =
+        fs::read_to_string(&script_output_file).expect("script should have created this file");
+    assert_eq!(script_output, dummy_path);
 }
 
 #[test]
