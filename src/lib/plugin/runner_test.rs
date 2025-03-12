@@ -485,6 +485,7 @@ fn run_task_invoked_valid() {
         linux_alias: Some("linux".to_string()),
         windows_alias: Some("windows".to_string()),
         mac_alias: Some("mac".to_string()),
+        freebsd_alias: Some("freebsd".to_string()),
         install_script: Some(ScriptValue::Text(vec!["i1".to_string(), "i2".to_string()])),
         args: Some(vec!["a1".to_string(), "a2".to_string()]),
         script: Some(ScriptValue::Text(vec![
@@ -501,6 +502,7 @@ fn run_task_invoked_valid() {
         linux: None,
         windows: None,
         mac: None,
+        freebsd: None,
     };
 
     let mut flow_info = create_empty_flow_info();
