@@ -2158,6 +2158,10 @@ pub struct ConfigSection {
     pub init_task: Option<String>,
     /// End task name which will be invoked at the end of every run
     pub end_task: Option<String>,
+    /// before_each task name which will be invoked before each task (except `init_task`)
+    pub before_each_task: Option<String>,
+    /// after_each task name which will be invoked after each task (except `end_task`)
+    pub after_each_task: Option<String>,
     /// The name of the task to run in case of any error during the invocation of the flow
     pub on_error_task: Option<String>,
     /// The name of the task which runs legacy migration flows
@@ -2220,6 +2224,20 @@ impl ConfigSection {
                     ));
                 }
 
+                if self.before_each_task.is_some() {
+                    self.before_each_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.before_each_task.clone().unwrap(),
+                    ));
+                }
+
+                if self.after_each_task.is_some() {
+                    self.after_each_task = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.after_each_task.clone().unwrap(),
+                    ));
+                }
+
                 if self.on_error_task.is_some() {
                     self.on_error_task = Some(get_namespaced_task_name(
                         namespace,
@@ -2258,6 +2276,14 @@ impl ConfigSection {
 
         if extended.end_task.is_some() {
             self.end_task = extended.end_task.clone();
+        }
+
+        if let Some(before_each_task) = &extended.before_each_task {
+            self.before_each_task = Some(before_each_task.clone());
+        }
+
+        if let Some(after_each_task) = &extended.after_each_task {
+            self.after_each_task = Some(after_each_task.clone());
         }
 
         if extended.on_error_task.is_some() {
