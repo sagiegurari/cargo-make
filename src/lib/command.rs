@@ -184,7 +184,7 @@ pub(crate) fn run_command_get_output(
 
     command.stdin(Stdio::inherit());
 
-    if silent {
+    if silent && !envmnt::is("CARGO_MAKE_COMMAND_FORCE_OUTPUT") {
         command.stdout(Stdio::null()).stderr(Stdio::null());
     } else if ctrl_c_handling {
         if capture_output {
