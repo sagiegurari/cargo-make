@@ -46,6 +46,10 @@ pub enum CargoMakeError {
     #[strum(to_string = "Task {0:#?} is {1}")]
     TaskIs(String, &'static str) = 110,
 
+    #[cfg(unix)]
+    #[strum(to_string = "Command was killed by signal {0}")]
+    CommandKilledBySignal(nix::sys::signal::Signal) = 111,
+
     #[strum(to_string = "{0}")]
     NotFound(String) = 404,
 
@@ -168,6 +172,24 @@ impl<T: std::any::Any> std::process::Termination for SuccessOrCargoMakeError<T> 
             }
             SuccessOrCargoMakeError::Ok(_) => std::process::ExitCode::SUCCESS,
             SuccessOrCargoMakeError::Err(err) => match err {
+                // If any command was killed by a signal, we should also kill ourselves by that signal
+                // to properly communicate the discontinue intention to the calling program.
+                #[cfg(unix)]
+                CargoMakeError::CommandKilledBySignal(sig) => {
+                    eprintln!("{}", err.to_string());
+
+                    use nix::sys::signal::{raise, signal, SigHandler, Signal};
+                    assert!(
+                        sig == Signal::SIGINT || sig == Signal::SIGQUIT,
+                        "unexpected signal {sig}",
+                    );
+                    // Restore the default signal handler so that we can be terminated.
+                    unsafe {
+                        signal(sig, SigHandler::SigDfl).expect("Failed to restore signal handler.");
+                    }
+                    raise(sig).expect("Failed to raise signal.");
+                    unreachable!("should already be terminated")
+                }
                 CargoMakeError::StdIoError { error } if error.raw_os_error().is_some() => {
                     let e = unsafe { error.raw_os_error().unwrap_unchecked() };
                     eprintln!("{}", e.to_string());

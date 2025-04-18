@@ -65,6 +65,29 @@ pub(crate) fn validate_exit_code(code: i32) -> Result<(), CargoMakeError> {
     }
 }
 
+/// For Unix systems, check if the command was terminated by SIGINT or SIGQUIT.
+/// If so, return a special error which will eventually kill us with the same signal,
+/// in order to properly communicate the discontinue intention to the calling program.
+fn cooperative_exit(output: &io::Result<Output>) -> Result<(), CargoMakeError> {
+    #[cfg(unix)]
+    {
+        use nix::sys::signal::Signal;
+        use std::os::unix::process::ExitStatusExt;
+
+        if let Ok(output) = &output {
+            if let Some(signal) = output.status.signal() {
+                if signal == Signal::SIGINT as i32 {
+                    return Err(CargoMakeError::CommandKilledBySignal(Signal::SIGINT));
+                } else if signal == Signal::SIGQUIT as i32 {
+                    return Err(CargoMakeError::CommandKilledBySignal(Signal::SIGQUIT));
+                }
+            }
+        }
+    }
+
+    return Ok(());
+}
+
 fn is_silent() -> bool {
     let log_level = logger::get_log_level();
     is_silent_for_level(log_level)
@@ -169,6 +192,27 @@ pub(crate) fn run_command_get_output(
     args: &Option<Vec<String>>,
     capture_output: bool,
 ) -> io::Result<Output> {
+    #[cfg(unix)]
+    {
+        use nix::libc;
+        use nix::sys::signal::{signal, SigHandler, Signal};
+
+        // Note: We avoid using `SigIgn` because it would be inherited by the child process,
+        // which is not what we want. Instead, the handler of child process will be reset
+        // if we use a custom handler here.
+        extern "C" fn empty_handler(_signal: libc::c_int) {}
+
+        // Register the handler for SIGINT and SIGQUIT to an empty ignoring handler.
+        // To achieve wait & cooperative exit, we should not be killed by these signals.
+        static REGISTER: Once = Once::new();
+        REGISTER.call_once(|| unsafe {
+            signal(Signal::SIGINT, SigHandler::Handler(empty_handler))
+                .expect("Failed to set SIGINT handler.");
+            signal(Signal::SIGQUIT, SigHandler::Handler(empty_handler))
+                .expect("Failed to set SIGQUIT handler.");
+        });
+    }
+
     let ctrl_c_handling = UnstableFeature::CtrlCHandling.is_env_set();
     let silent = is_silent();
 
@@ -268,6 +312,7 @@ pub(crate) fn run_command(
     validate: bool,
 ) -> Result<i32, CargoMakeError> {
     let output = run_command_get_output(&command_string, &args, false);
+    cooperative_exit(&output)?;
 
     let exit_code = get_exit_code_from_output(&output, !validate);
 
