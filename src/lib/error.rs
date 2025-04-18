@@ -184,6 +184,8 @@ impl<T: std::any::Any> std::process::Termination for SuccessOrCargoMakeError<T> 
                         "unexpected signal {sig}",
                     );
                     // Restore the default signal handler so that we can be terminated.
+                    // SAFETY: The handler is default and must be safe to run.
+                    //         We don't use the returned previous handler.
                     unsafe {
                         signal(sig, SigHandler::SigDfl).expect("Failed to restore signal handler.");
                     }

@@ -205,6 +205,8 @@ pub(crate) fn run_command_get_output(
         // Register the handler for SIGINT and SIGQUIT to an empty ignoring handler.
         // To achieve wait & cooperative exit, we should not be killed by these signals.
         static REGISTER: Once = Once::new();
+        // SAFETY: The handler is no-op and must be safe to run in a signal context.
+        //         We don't use the returned previous handler.
         REGISTER.call_once(|| unsafe {
             signal(Signal::SIGINT, SigHandler::Handler(empty_handler))
                 .expect("Failed to set SIGINT handler.");
