@@ -2021,7 +2021,7 @@ args = ["audit"]
 ```
 
 cargo-make will first check the command is available.<br>
-Only if the command is not available, it will attempt to install it by running **cargo install cargo-<first arg>**<br>
+Only if the command is not available, it will attempt to install it by running **cargo install cargo-\<first arg\>**<br>
 In case the cargo plugin has a different name, you can specify it manually via **install_crate** attribute.<br>
 You can specify additional installation arguments using the **install_crate_args** attribute (for example: version).
 
