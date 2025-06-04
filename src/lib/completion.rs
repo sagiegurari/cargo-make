@@ -78,23 +78,107 @@ fn generate_completion_zsh(
     }
 
     let completion_script = r#"
-#compdef cargo make cargo-make
+#compdef cargo-make
+
+_cargo_make_tasks() {
+  local -a tasks
+  local -a task_list
+  local task_name task_desc
+
+  task_list=(${(f)"$(cargo make --list-all-steps 2>/dev/null)"})
+
+  for line in $task_list; do
+    if [[ $line =~ "^([^ ]+) - (.+)$" ]] && [[ ! $line =~ "^\[cargo-make\]" ]]; then
+      task_name=$match[1]
+      task_desc=$match[2]
+
+      if [[ "$task_desc" == "No Description." ]]; then
+        tasks+=("$task_name")
+      else
+        tasks+=("$task_name:$task_desc")
+      fi
+    fi
+  done
+
+  _describe 'task' tasks
+}
+
+_cargo_make_options() {
+  local -a options
+  local -a help_lines
+  local line long_opt short_opt arg_type desc
+
+  help_lines=(${(f)"$(cargo make --help 2>/dev/null)"})
+
+  for line in $help_lines; do
+    [[ $line =~ "^    --" ]] || continue
+
+    # Format: "    --option, -o <ARG>          Description [default: value]"
+    if [[ $line =~ "^    (--[a-zA-Z0-9-]+)(, (-[a-zA-Z]))? ?(<([^>]+)>)?[[:space:]]+(.+)$" ]]; then
+      long_opt=${match[1]}
+      short_opt=${match[3]}  # Note: index 3 because match[2] is the full ", -o" part
+      arg_type=${match[5]}   # Note: index 5 because match[4] is the full "<ARG>" part
+      desc=${match[6]}
+
+      # Clean description - remove default value info
+      desc=${desc%% \[*}
+    else
+      continue
+    fi
+
+    if [[ -n $arg_type ]]; then
+      case $long_opt in
+        --makefile)
+          options+=("${long_opt}[${desc}]:file:_files -g \"*.toml\"")
+          ;;
+        --task)
+          options+=("${long_opt}[${desc}]:task:_cargo_make_tasks")
+          ;;
+        --profile)
+          options+=("${long_opt}[${desc}]:profile:(development production test)")
+          ;;
+        --completion)
+          options+=("${long_opt}[${desc}]:shell:(zsh bash fish powershell elvish)")
+          ;;
+        --loglevel)
+          options+=("${long_opt}[${desc}]:level:(verbose info error off)")
+          ;;
+        --output-format)
+          options+=("${long_opt}[${desc}]:format:(default short-description markdown markdown-single-page markdown-sub-section autocomplete)")
+          ;;
+        --cwd)
+          options+=("${long_opt}[${desc}]:directory:_files -/")
+          ;;
+        --env-file|--output-file)
+          options+=("${long_opt}[${desc}]:file:_files")
+          ;;
+        *)
+          # Generic argument completion - covers --skip-tasks, --env, --list-category-steps, etc.
+          options+=("${long_opt}[${desc}]::")
+          ;;
+      esac
+
+      if [[ -n $short_opt ]]; then
+        case $short_opt in
+          -t) options+=("-t[${desc}]:task:_cargo_make_tasks") ;;
+          -p) options+=("-p[${desc}]:profile:(development production test)") ;;
+          -l) options+=("-l[${desc}]:level:(verbose info error off)") ;;
+          *) options+=("${short_opt}[${desc}]::") ;;  # Generic for -e and others
+        esac
+      fi
+    else
+      options+=("${long_opt}[${desc}]")
+      if [[ -n $short_opt ]]; then
+        options+=("${short_opt}[${desc}]")
+      fi
+    fi
+  done
+
+  _arguments "${options[@]}" '*:task:_cargo_make_tasks'
+}
 
 _cargo_make() {
-    local tasks
-    local makefile="Makefile.toml"
-    
-    if [[ ! -f $makefile ]]; then
-        return 1
-    fi
-
-    tasks=($(awk -F'[\\[\\.\\]]' '/^\[tasks/ {print $3}' "$makefile"))
-
-    if [[ ${#tasks[@]} -eq 0 ]]; then
-        return 1
-    fi
-
-    _describe -t tasks 'cargo-make tasks' tasks
+  _cargo_make_options
 }
 
 _cargo_make "$@"
