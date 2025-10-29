@@ -81,7 +81,7 @@ strum_macros = "0.26.4"
 toml = "^0.8"
 
 [dev-dependencies]
-cfg-if = "^1.0.0"
+cfg-if = "^1.0.4"
 expect-test = "^1"
 
 [target.'cfg(windows)'.dependencies]
