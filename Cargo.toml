@@ -78,7 +78,7 @@ sha2 = "0.10.9"
 shell2batch = "^0.4.5"
 strip-ansi-escapes = "^0.2"
 strum_macros = "0.26.4"
-toml = "^0.8"
+toml = "^0.9"
 
 [dev-dependencies]
 cfg-if = "^1.0.4"
