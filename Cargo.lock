@@ -162,6 +162,7 @@ dependencies = [
  "itertools",
  "lenient_semver",
  "log",
+ "nix",
  "nu-ansi-term",
  "once_cell",
  "petgraph",

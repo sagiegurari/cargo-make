@@ -87,6 +87,9 @@ expect-test = "^1"
 [target.'cfg(windows)'.dependencies]
 nu-ansi-term = "^0.50"
 
+[target.'cfg(unix)'.dependencies]
+nix = { version = "0.29", features = ["signal"] }
+
 [features]
 tls-rustls = ["duckscriptsdk/tls-rustls"]
 tls-native = ["duckscriptsdk/tls-native"]
