@@ -22,6 +22,8 @@ pub fn get_platform_name() -> String {
         "windows".to_string()
     } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         "mac".to_string()
+    } else if cfg!(target_os = "freebsd") {
+        "freebsd".to_string()
     } else {
         "linux".to_string()
     }
@@ -1158,6 +1160,8 @@ pub struct Task {
     pub windows_alias: Option<String>,
     /// acts like alias if runtime OS is Mac (takes precedence over alias)
     pub mac_alias: Option<String>,
+    /// acts like alias if runtime OS is FreeBSD (takes precedence over alias)
+    pub freebsd_alias: Option<String>,
     /// if defined, the provided crate will be installed (if needed) before running the task
     pub install_crate: Option<InstallCrate>,
     /// additional cargo install arguments
@@ -1188,6 +1192,8 @@ pub struct Task {
     pub windows: Option<PlatformOverrideTask>,
     /// override task if runtime OS is Mac (takes precedence over alias)
     pub mac: Option<PlatformOverrideTask>,
+    /// override task if runtime OS is FreeBSD (takes precedence over alias)
+    pub freebsd: Option<PlatformOverrideTask>,
 }
 
 /// A toolchain, defined either as a string (following the rustup syntax)
@@ -1385,6 +1391,13 @@ impl Task {
                         self.mac_alias = Some(get_namespaced_task_name(
                             namespace,
                             &self.mac_alias.clone().unwrap(),
+                        ));
+                    }
+
+                    if self.freebsd_alias.is_some() {
+                        self.freebsd_alias = Some(get_namespaced_task_name(
+                            namespace,
+                            &self.freebsd_alias.clone().unwrap(),
                         ));
                     }
 
@@ -1600,6 +1613,12 @@ impl Task {
             self.mac_alias = None;
         }
 
+        if task.freebsd_alias.is_some() {
+            self.freebsd_alias = task.freebsd_alias.clone();
+        } else if override_values {
+            self.freebsd_alias = None;
+        }
+
         if task.install_crate.is_some() {
             self.install_crate = task.install_crate.clone();
         } else if override_values {
@@ -1720,6 +1739,11 @@ impl Task {
                 Some(ref value) => Some(value.clone()),
                 _ => None,
             }
+        } else if platform_name == "freebsd" {
+            match self.freebsd {
+                Some(ref value) => Some(value.clone()),
+                _ => None,
+            }
         } else {
             match self.linux {
                 Some(ref value) => Some(value.clone()),
@@ -1759,6 +1783,7 @@ impl Task {
                     linux_alias: None,
                     windows_alias: None,
                     mac_alias: None,
+                    freebsd_alias: None,
                     install_crate: override_task.install_crate.clone(),
                     install_crate_args: override_task.install_crate_args.clone(),
                     install_script: override_task.install_script.clone(),
@@ -1774,6 +1799,7 @@ impl Task {
                     linux: None,
                     windows: None,
                     mac: None,
+                    freebsd: None,
                 }
             }
             None => self.clone(),
@@ -1789,6 +1815,11 @@ impl Task {
             }
         } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
             match self.mac_alias {
+                Some(ref value) => Some(value),
+                _ => None,
+            }
+        } else if cfg!(target_os = "freebsd") {
+            match self.freebsd_alias {
                 Some(ref value) => Some(value),
                 _ => None,
             }
@@ -2192,6 +2223,8 @@ pub struct ConfigSection {
     pub windows_load_script: Option<ScriptValue>,
     /// acts like load_script if runtime OS is Mac (takes precedence over load_script)
     pub mac_load_script: Option<ScriptValue>,
+    /// acts like load_script if runtime OS is FreeBSD (takes precedence over load_script)
+    pub freebsd_load_script: Option<ScriptValue>,
     /// Enables unstable cargo-make features
     pub unstable_features: Option<IndexSet<UnstableFeature>>,
 }
@@ -2338,6 +2371,13 @@ impl ConfigSection {
             );
         }
 
+        if extended.freebsd_load_script.is_some() {
+            self.freebsd_load_script = extend_script_value(
+                self.freebsd_load_script.clone(),
+                extended.freebsd_load_script.clone(),
+            );
+        }
+
         if let Some(extended_unstable_features) = extended.unstable_features.clone() {
             if let Some(unstable_features) = &mut self.unstable_features {
                 unstable_features.extend(extended_unstable_features);
@@ -2360,6 +2400,12 @@ impl ConfigSection {
         } else if platform_name == "mac" {
             if self.mac_load_script.is_some() {
                 self.mac_load_script.clone()
+            } else {
+                self.load_script.clone()
+            }
+        } else if platform_name == "freebsd" {
+            if self.freebsd_load_script.is_some() {
+                self.freebsd_load_script.clone()
             } else {
                 self.load_script.clone()
             }

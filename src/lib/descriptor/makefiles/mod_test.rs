@@ -51,6 +51,8 @@ fn makefile_task_condition_test(name: &str, expect_enabled: bool, linux_only: bo
             config: task,
         };
 
+        println!("flow_info={flow_info:?}");
+        println!("step={step:?}");
         let enabled = condition::validate_condition_for_step(&flow_info, &step).unwrap();
 
         let should_be_enabled = if expect_enabled {

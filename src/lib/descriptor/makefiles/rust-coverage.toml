@@ -212,6 +212,7 @@ condition = { env_not_set = [
 ], platforms = [
   "linux",
   "mac",
+  "freebsd",
 ] }
 script_runner = "bash"
 script = '''
