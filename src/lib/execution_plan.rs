@@ -254,8 +254,15 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
 
             if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
                 for arg in args {
-                    make_line.push_str(" ");
-                    make_line.push_str(&arg);
+                    if arg.contains(char::is_whitespace) {
+                        // argument has whitespace, quote it
+                        make_line.push_str(" \"");
+                        make_line.push_str(&arg);
+                        make_line.push_str("\"");
+                    } else {
+                        make_line.push_str(" ");
+                        make_line.push_str(&arg);
+                    }
                 }
             }
 
