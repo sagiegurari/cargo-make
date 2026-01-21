@@ -492,9 +492,15 @@ fn load_internal_descriptors_modify_namespace() {
 #[test]
 #[ignore]
 fn load_external_descriptor_no_file() {
-    let config =
-        load_external_descriptor(".", "bad_file.toml2", false, false, RelativeTo::Makefile)
-            .unwrap();
+    let config = load_external_descriptor(
+        ".",
+        "bad_file.toml2",
+        false,
+        false,
+        RelativeTo::Makefile,
+        &mut HashSet::new(),
+    )
+    .unwrap();
 
     assert!(config.config.is_none());
     assert!(config.env.is_none());
@@ -504,7 +510,15 @@ fn load_external_descriptor_no_file() {
 #[test]
 #[should_panic]
 fn load_external_descriptor_no_file_force() {
-    load_external_descriptor(".", "bad_file.toml2", true, false, RelativeTo::Makefile).unwrap();
+    load_external_descriptor(
+        ".",
+        "bad_file.toml2",
+        true,
+        false,
+        RelativeTo::Makefile,
+        &mut HashSet::new(),
+    )
+    .unwrap();
 }
 
 #[test]
@@ -516,6 +530,7 @@ fn load_external_descriptor_extended_not_found_force() {
         true,
         false,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 }
@@ -529,6 +544,7 @@ fn load_external_descriptor_simple_file() {
         true,
         false,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -544,6 +560,34 @@ fn load_external_descriptor_simple_file() {
 
 #[test]
 #[ignore]
+fn load_external_descriptor_recursive_file() {
+    let result = load_external_descriptor(
+        ".",
+        "./examples/recursive.toml",
+        true,
+        false,
+        RelativeTo::Makefile,
+        &mut HashSet::new(),
+    );
+
+    let path_string: String = Path::new("./examples/recursive.toml")
+        .to_str()
+        .unwrap()
+        .to_owned();
+    let full_path = io::canonicalize_to_string(&path_string);
+
+    assert!(result.is_err());
+    match result.unwrap_err() {
+        CargoMakeError::RecursiveExtend(file_path) => assert_eq!(full_path, file_path),
+        other_error => panic!(
+            "Expected CargoMakeError::RecursiveExtend, found {:?}",
+            other_error
+        ),
+    }
+}
+
+#[test]
+#[ignore]
 fn load_external_descriptor_extending_file() {
     let config = load_external_descriptor(
         ".",
@@ -551,6 +595,7 @@ fn load_external_descriptor_extending_file() {
         true,
         false,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -579,6 +624,7 @@ fn load_external_descriptor_extending_file_sub_folder() {
         true,
         false,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -616,6 +662,7 @@ fn load_external_descriptor_simple_file_from_crate_root() {
         true,
         false,
         RelativeTo::CrateRoot,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -638,6 +685,7 @@ fn load_external_descriptor_simple_file_from_git_root() {
         true,
         false,
         RelativeTo::GitRoot,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -663,6 +711,7 @@ fn load_external_descriptor_set_env() {
         true,
         true,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -673,13 +722,15 @@ fn load_external_descriptor_set_env() {
 fn load_external_descriptor_min_version_broken_makefile_nopanic() {
     // Ensure that we can properly get the min_version of a descriptor that
     // doesn't match our internal data-structures.
+
     assert_eq!(
         load_external_descriptor(
             ".",
             "src/lib/test/makefiles/broken_makefile_minversion.toml",
             false,
             false,
-            RelativeTo::Makefile
+            RelativeTo::Makefile,
+            &mut HashSet::new(),
         )
         .err()
         .unwrap()
@@ -700,6 +751,7 @@ fn load_external_descriptor_broken_makefile_panic() {
         false,
         false,
         RelativeTo::Makefile,
+        &mut HashSet::new(),
     )
     .unwrap();
 }
@@ -780,6 +832,7 @@ fn load_descriptor_extended_makefiles_path_exists() {
     let descriptor = load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/test1.toml".to_string()),
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -795,6 +848,7 @@ fn load_descriptor_extended_makefiles_path_not_exists() {
     load_descriptor_extended_makefiles(
         &parent_path,
         &Extend::Path("src/lib/test/makefiles/bad.toml".to_string()),
+        &mut HashSet::new(),
     )
     .unwrap();
 }
@@ -810,6 +864,7 @@ fn load_descriptor_extended_makefiles_options_exists() {
             optional: None,
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -829,6 +884,7 @@ fn load_descriptor_extended_makefiles_options_not_exists() {
             optional: None,
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 }
@@ -844,6 +900,7 @@ fn load_descriptor_extended_makefiles_options_exists_optional() {
             optional: Some(true),
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -862,6 +919,7 @@ fn load_descriptor_extended_makefiles_options_exists_not_optional() {
             optional: Some(false),
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -881,6 +939,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_optional() {
             optional: Some(true),
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 
@@ -900,6 +959,7 @@ fn load_descriptor_extended_makefiles_options_not_exists_not_optional() {
             optional: Some(false),
             relative: None,
         }),
+        &mut HashSet::new(),
     )
     .unwrap();
 }
@@ -920,7 +980,9 @@ fn load_descriptor_extended_makefiles_list_exists() {
             relative: None,
         },
     ];
-    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
+    let descriptor =
+        load_descriptor_extended_makefiles(&parent_path, &Extend::List(list), &mut HashSet::new())
+            .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));
@@ -944,7 +1006,8 @@ fn load_descriptor_extended_makefiles_list_not_exists() {
             relative: None,
         },
     ];
-    load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
+    load_descriptor_extended_makefiles(&parent_path, &Extend::List(list), &mut HashSet::new())
+        .unwrap();
 }
 
 #[test]
@@ -963,7 +1026,9 @@ fn load_descriptor_extended_makefiles_list_exists_optional() {
             relative: None,
         },
     ];
-    let descriptor = load_descriptor_extended_makefiles(&parent_path, &Extend::List(list)).unwrap();
+    let descriptor =
+        load_descriptor_extended_makefiles(&parent_path, &Extend::List(list), &mut HashSet::new())
+            .unwrap();
 
     let tasks = descriptor.tasks.unwrap();
     assert!(tasks.contains_key("test1"));

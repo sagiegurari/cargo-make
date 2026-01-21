@@ -1,0 +1,4 @@
+extend = { path = "recursive.toml", optional = false }
+
+[tasks.ping]
+script = "echo ping"

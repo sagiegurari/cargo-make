@@ -27,6 +27,7 @@ use crate::{io, scriptengine, version};
 use fsio::path::as_path::AsPath;
 use fsio::path::from_path::FromPath;
 use indexmap::IndexMap;
+use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
@@ -254,11 +255,17 @@ fn merge_external_configs(
 fn load_descriptor_extended_makefiles(
     parent_path: &str,
     extend_struct: &Extend,
+    visited_files: &mut HashSet<String>,
 ) -> Result<ExternalConfig, CargoMakeError> {
     match extend_struct {
-        Extend::Path(base_file) => {
-            load_external_descriptor(parent_path, &base_file, true, false, RelativeTo::Makefile)
-        }
+        Extend::Path(base_file) => load_external_descriptor(
+            parent_path,
+            &base_file,
+            true,
+            false,
+            RelativeTo::Makefile,
+            visited_files,
+        ),
         Extend::Options(extend_options) => {
             let force = !extend_options.optional.unwrap_or(false);
             let relative_to_str = extend_options
@@ -278,7 +285,14 @@ fn load_descriptor_extended_makefiles(
                     RelativeTo::Makefile
                 }
             };
-            load_external_descriptor(parent_path, &extend_options.path, force, false, relative_to)
+            load_external_descriptor(
+                parent_path,
+                &extend_options.path,
+                force,
+                false,
+                relative_to,
+                visited_files,
+            )
         }
         Extend::List(extend_list) => {
             let mut ordered_list_config = ExternalConfig::new();
@@ -288,6 +302,7 @@ fn load_descriptor_extended_makefiles(
                 let entry_config = load_descriptor_extended_makefiles(
                     parent_path,
                     &Extend::Options(extend_options),
+                    visited_files,
                 )?;
 
                 // merge configs
@@ -329,6 +344,7 @@ fn load_external_descriptor(
     force: bool,
     set_env: bool,
     relative_to: RelativeTo,
+    visited_files: &mut HashSet<String>,
 ) -> Result<ExternalConfig, CargoMakeError> {
     debug!(
         "Loading tasks from file: {} base directory: {}, relative to: {:#?}",
@@ -377,6 +393,11 @@ fn load_external_descriptor(
         let file_path_string: String = FromPath::from_path(&file_path);
         let absolute_file_path = io::canonicalize_to_string(&file_path_string);
 
+        // Check if this file has been visited to detect recursive extends
+        if visited_files.contains(&absolute_file_path) {
+            return Err(CargoMakeError::RecursiveExtend(absolute_file_path));
+        }
+
         if set_env {
             envmnt::set("CARGO_MAKE_MAKEFILE_PATH", &absolute_file_path);
         }
@@ -393,6 +414,10 @@ fn load_external_descriptor(
 
         run_load_script(&file_config)?;
 
+        // Mark the file as visited so the next time we see it in the same extend tree
+        // we know that this is a recursive/circular extend
+        visited_files.insert(absolute_file_path.clone());
+
         match file_config.extend {
             Some(ref extend_struct) => {
                 let parent_path_buf = Path::new(&file_path_string).join("..");
@@ -404,7 +429,7 @@ fn load_external_descriptor(
                 debug!("External config parent path: {}", &parent_path);
 
                 let base_file_config =
-                    load_descriptor_extended_makefiles(&parent_path, extend_struct)?;
+                    load_descriptor_extended_makefiles(&parent_path, extend_struct, visited_files)?;
 
                 merge_external_configs(file_config.clone(), base_file_config)
             }
@@ -578,8 +603,14 @@ fn load_descriptors(
 ) -> Result<Config, CargoMakeError> {
     let default_config = load_internal_descriptors(stable, experimental, modify_core_tasks)?;
 
-    let mut external_config =
-        load_external_descriptor(".", file_name, force, true, RelativeTo::Makefile)?;
+    let mut external_config = load_external_descriptor(
+        ".",
+        file_name,
+        force,
+        true,
+        RelativeTo::Makefile,
+        &mut HashSet::new(),
+    )?;
 
     external_config = match std::env::var("CARGO_MAKE_WORKSPACE_MAKEFILE") {
         Ok(workspace_makefile) => {
@@ -597,6 +628,7 @@ fn load_descriptors(
                                     false,
                                     false,
                                     RelativeTo::Makefile,
+                                    &mut HashSet::new(),
                                 )?;
                                 merge_external_configs(external_config, workspace_config)?
                             }
