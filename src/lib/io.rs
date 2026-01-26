@@ -53,10 +53,7 @@ pub(crate) fn delete_file(file: &str) {
 }
 
 pub(crate) fn write_text_file(file_path: &str, text: &str) -> bool {
-    match fsio::file::write_text_file(file_path, text) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    fsio::file::write_text_file(file_path, text).is_ok()
 }
 
 pub(crate) fn read_text_file(file_path: &PathBuf) -> Result<String, CargoMakeError> {
@@ -121,7 +118,7 @@ pub(crate) fn get_path_list(
                     {
                         match entry {
                             Ok(path) => {
-                                let mut value_string: String = FromPath::from_path(&path.path());
+                                let mut value_string: String = FromPath::from_path(path.path());
                                 value_string = value_string.replace("\\", "/");
                                 included_paths.insert(value_string);
                             }

@@ -12,10 +12,7 @@ use std::fs::copy;
 use std::path::PathBuf;
 
 fn get_legacy_cargo_make_home() -> Option<PathBuf> {
-    match dirs_next::home_dir() {
-        Some(directory) => Some(directory.join(".cargo-make")),
-        None => None,
-    }
+    dirs_next::home_dir().map(|directory| directory.join(".cargo-make"))
 }
 
 pub(crate) fn get_cargo_make_home() -> Option<PathBuf> {
@@ -36,10 +33,7 @@ fn migrate_from_directory(
         let exists = if target_directory.exists() {
             true
         } else {
-            match fsio::directory::create(&target_directory) {
-                Ok(_) => true,
-                _ => false,
-            }
+            fsio::directory::create(&target_directory).is_ok()
         };
 
         if exists {
@@ -79,7 +73,7 @@ pub(crate) fn migrate(target_directory: PathBuf, file: &str) -> bool {
     );
 
     match get_legacy_cargo_make_home() {
-        Some(directory) => migrate_from_directory(target_directory, &file, &directory),
+        Some(directory) => migrate_from_directory(target_directory, file, &directory),
         None => true,
     }
 }

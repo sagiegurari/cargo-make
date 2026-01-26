@@ -74,30 +74,24 @@ fn expand_glob_members(glob_member: &str) -> Vec<String> {
         Ok(entries) => {
             let mut members = vec![];
 
-            for entry in entries {
-                match entry {
-                    Ok(path) => {
-                        let should_add = if emulation {
-                            // emulation may be used for non rust projects
-                            // so no extra validations
-                            true
-                        } else {
-                            // ensure Cargo.toml is found
-                            let mut cargo_path = path.clone();
-                            cargo_path.push("Cargo.toml");
-                            let exists = cargo_path.exists();
+            for path in entries.flatten() {
+                let should_add = if emulation {
+                    // emulation may be used for non rust projects
+                    // so no extra validations
+                    true
+                } else {
+                    // ensure Cargo.toml is found
+                    let mut cargo_path = path.clone();
+                    cargo_path.push("Cargo.toml");
 
-                            exists
-                        };
-
-                        if should_add {
-                            let mut updated_path = path.to_str().unwrap().to_string();
-                            updated_path = updated_path.replace("\\", "/");
-                            members.push(updated_path);
-                        }
-                    }
-                    _ => (),
+                    cargo_path.exists()
                 };
+
+                if should_add {
+                    let mut updated_path = path.to_str().unwrap().to_string();
+                    updated_path = updated_path.replace("\\", "/");
+                    members.push(updated_path);
+                }
             }
 
             members
@@ -107,26 +101,23 @@ fn expand_glob_members(glob_member: &str) -> Vec<String> {
 }
 
 fn normalize_members(crate_info: &mut CrateInfo) {
-    match crate_info.workspace {
-        Some(ref mut workspace) => {
-            if let Some(ref mut members) = workspace.members {
-                let existing_members = members.clone();
+    if let Some(ref mut workspace) = crate_info.workspace {
+        if let Some(ref mut members) = workspace.members {
+            let existing_members = members.clone();
 
-                let mut index = 0;
-                for member in existing_members.iter() {
-                    // glob
-                    if member.contains("*") {
-                        let mut expanded_members = expand_glob_members(&member);
+            let mut index = 0;
+            for member in existing_members.iter() {
+                // glob
+                if member.contains("*") {
+                    let mut expanded_members = expand_glob_members(member);
 
-                        members.remove(index);
-                        members.append(&mut expanded_members);
-                    } else {
-                        index = index + 1;
-                    }
+                    members.remove(index);
+                    members.append(&mut expanded_members);
+                } else {
+                    index += 1;
                 }
             }
         }
-        None => (), //not a workspace
     }
 }
 
@@ -149,53 +140,44 @@ fn get_members_from_dependencies_map(
     let mut members = vec![];
     debug!("Searching members in dependencies: {:#?}", &dependencies);
 
-    match dependencies {
-        Some(ref dependencies) => {
-            for value in dependencies.values() {
-                match *value {
-                    CrateDependency::Info(ref info) => match info.path {
-                        Some(ref path) => {
-                            // workspace dependencies are members only if inside the workspace
-                            // directory (this is a simple not accurate check for that)
-                            if ensure_inside_workspace && path.starts_with("..") {
-                                // skip
-                            } else if path.starts_with("./") {
-                                let member_path =
-                                    path.chars().skip(2).take(path.len() - 2).collect();
-                                members.push(member_path);
-                            } else if Path::new(path).is_relative() {
-                                members.push(path.to_string());
-                            }
-                        }
-                        None => (),
-                    },
-                    _ => (),
-                };
-            }
+    if let Some(ref dependencies) = dependencies {
+        for value in dependencies.values() {
+            if let CrateDependency::Info(ref info) = *value {
+                if let Some(ref path) = info.path {
+                    // workspace dependencies are members only if inside the workspace
+                    // directory (this is a simple not accurate check for that)
+                    if ensure_inside_workspace && path.starts_with("..") {
+                        // skip
+                    } else if path.starts_with("./") {
+                        let member_path = path.chars().skip(2).take(path.len() - 2).collect();
+                        members.push(member_path);
+                    } else if Path::new(path).is_relative() {
+                        members.push(path.to_string());
+                    }
+                }
+            };
         }
-        None => (),
     };
 
     members
 }
 
 fn add_members(crate_info: &mut CrateInfo, new_members: Vec<String>) {
-    if new_members.len() > 0 {
-        match crate_info.workspace {
-            Some(ref mut workspace) => match workspace.members {
-                Some(ref mut members) => {
-                    for new_member in new_members.iter() {
-                        let member_string = new_member.to_string();
+    if new_members.is_empty() {
+        return;
+    }
+    if let Some(ref mut workspace) = crate_info.workspace {
+        match workspace.members {
+            Some(ref mut members) => {
+                for new_member in new_members.iter() {
+                    let member_string = new_member.to_string();
 
-                        match members.iter().position(|member| *member == member_string) {
-                            None => members.push(member_string),
-                            _ => (),
-                        }
+                    if !members.contains(&member_string) {
+                        members.push(member_string)
                     }
                 }
-                None => workspace.members = Some(new_members),
-            },
-            None => (), //not a workspace
+            }
+            None => workspace.members = Some(new_members), //not a workspace
         }
     }
 }
@@ -205,7 +187,7 @@ fn dedup_members(crate_info: &mut CrateInfo) {
         if let Some(ref members) = workspace.members {
             workspace.members = Some(
                 members
-                    .into_iter()
+                    .iter()
                     .unique()
                     .map(|value| value.to_string())
                     .collect(),
@@ -217,32 +199,22 @@ fn dedup_members(crate_info: &mut CrateInfo) {
 fn remove_excludes(crate_info: &mut CrateInfo) -> bool {
     let mut removed = false;
 
-    match crate_info.workspace {
-        Some(ref mut workspace) => match workspace.exclude {
-            Some(ref excludes) => match workspace.members {
-                Some(ref mut members) => {
-                    for exclude in excludes.iter() {
-                        let exclude_string = exclude.to_string();
+    if let Some(ref mut workspace) = crate_info.workspace {
+        if let Some(ref excludes) = workspace.exclude {
+            if let Some(ref mut members) = workspace.members {
+                for exclude in excludes.iter() {
+                    let exclude_string = exclude.to_string();
 
-                        let result = members.iter().position(|member| *member == exclude_string);
-                        match result {
-                            Some(index) => {
-                                members.remove(index);
+                    let result = members.iter().position(|member| *member == exclude_string);
+                    if let Some(index) = result {
+                        members.remove(index);
 
-                                removed = true;
-
-                                ()
-                            }
-                            None => (),
-                        };
-                    }
+                        removed = true;
+                    };
                 }
-                None => (),
-            },
-            None => (),
-        },
-        None => (), //not a workspace
-    };
+            }
+        }
+    }
 
     removed
 }
@@ -251,9 +223,9 @@ fn load_workspace_members(crate_info: &mut CrateInfo) {
     if crate_info.workspace.is_some() {
         normalize_members(crate_info);
 
-        let dependencies = get_members_from_dependencies(&crate_info);
+        let dependencies = get_members_from_dependencies(crate_info);
         add_members(crate_info, dependencies);
-        let workspace_dependencies = get_members_from_workspace_dependencies(&crate_info);
+        let workspace_dependencies = get_members_from_workspace_dependencies(crate_info);
         add_members(crate_info, workspace_dependencies);
 
         if crate_info.package.is_some() {

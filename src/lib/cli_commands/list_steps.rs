@@ -21,12 +21,11 @@ pub fn run(
     category: &Option<String>,
     hide_uninteresting: bool,
 ) -> Result<(), CargoMakeError> {
-    let output = create_list(&config, output_format, category, hide_uninteresting)?;
+    let output = create_list(config, output_format, category, hide_uninteresting)?;
 
     match output_file {
         Some(file) => {
-            io::write_text_file(&file, &output);
-            ()
+            io::write_text_file(file, &output);
         }
         None => print!("{}", output),
     };
@@ -46,14 +45,11 @@ pub(crate) fn create_list(
 
     // iterate over all tasks to build categories and aliases
     for key in config.tasks.keys() {
-        let actual_task_name = execution_plan::get_actual_task_name(&config, &key)?;
+        let actual_task_name = execution_plan::get_actual_task_name(config, key)?;
 
-        let task = execution_plan::get_normalized_task(&config, &actual_task_name, true)?;
+        let task = execution_plan::get_normalized_task(config, &actual_task_name, true)?;
 
-        let is_private = match task.private {
-            Some(private) => private,
-            None => false,
-        };
+        let is_private = task.private.unwrap_or(false);
 
         let skip_task = if is_private {
             true
@@ -75,7 +71,7 @@ pub(crate) fn create_list(
 
             if category_filter
                 .as_ref()
-                .map_or(false, |value| value != &category)
+                .is_some_and(|value| value != &category)
             {
                 continue;
             }
@@ -105,7 +101,7 @@ pub(crate) fn create_list(
                     DeprecationInfo::Message(ref message) => {
                         let mut buffer = " (deprecated - ".to_string();
                         buffer.push_str(message);
-                        buffer.push_str(")");
+                        buffer.push(')');
 
                         buffer
                     }
@@ -113,7 +109,7 @@ pub(crate) fn create_list(
                 None => "".to_string(),
             };
 
-            let mut text = String::from(description);
+            let mut text = description;
             text.push_str(&deprecated_message);
 
             categories
@@ -132,14 +128,14 @@ pub(crate) fn create_list(
 
     let mut buffer = String::new();
     if single_page_markdown {
-        buffer.push_str(&format!("# Task List\n\n"));
+        buffer.push_str("# Task List\n\n");
     }
 
     let post_key = if markdown { "**" } else { "" };
     for (category, tasks) in &categories {
         if category_filter
             .as_ref()
-            .map_or(false, |value| value != category)
+            .is_some_and(|value| value != category)
         {
             continue;
         }
@@ -156,7 +152,7 @@ pub(crate) fn create_list(
 
         for (key, description) in tasks {
             if markdown {
-                buffer.push_str(&format!("* **"));
+                buffer.push_str("* **");
             }
 
             let aliases = if let Some(aliases) = aliases.remove(key) {

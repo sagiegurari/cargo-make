@@ -24,16 +24,11 @@ enum PrintFormat {
 
 impl PartialEq for PrintFormat {
     fn eq(&self, other: &PrintFormat) -> bool {
-        match self {
-            PrintFormat::Default => match other {
-                PrintFormat::Default => true,
-                _ => false,
-            },
-            PrintFormat::ShortDescription => match other {
-                PrintFormat::ShortDescription => true,
-                _ => false,
-            },
-        }
+        matches!(
+            (self, other),
+            (PrintFormat::Default, PrintFormat::Default)
+                | (PrintFormat::ShortDescription, PrintFormat::ShortDescription)
+        )
     }
 }
 
@@ -62,7 +57,7 @@ fn print_short_description(
             counter, &step.name, &description
         )?;
 
-        counter = counter + 1;
+        counter += 1;
     }
     Ok(())
 }
@@ -75,6 +70,7 @@ fn print_default(
 }
 
 /// Only prints the execution plan
+#[allow(clippy::too_many_arguments)]
 pub fn print(
     output_buffer: &mut impl io::Write,
     config: &Config,
@@ -101,12 +97,12 @@ pub fn print(
         disable_workspace,
         skip_tasks_pattern: skip_tasks_pattern_regex.as_ref(),
         skip_init_end_tasks,
-        ..ExecutionPlanBuilder::new(&config, &task)
+        ..ExecutionPlanBuilder::new(config, task)
     }
     .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
-    let print_format = get_format_type(&output_format);
+    let print_format = get_format_type(output_format);
 
     match print_format {
         PrintFormat::ShortDescription => print_short_description(output_buffer, &execution_plan)?,

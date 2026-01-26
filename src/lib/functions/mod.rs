@@ -42,10 +42,9 @@ fn run_function(
 }
 
 fn get_function_name(function_string: &str) -> Option<String> {
-    match function_string.find('(') {
-        Some(index) => Some(function_string[0..index].to_string()),
-        None => None,
-    }
+    function_string
+        .find('(')
+        .map(|index| function_string[0..index].to_string())
 }
 
 fn get_function_argument(value: &str) -> String {
@@ -62,11 +61,8 @@ fn get_function_arguments(function_string: &str) -> Option<Vec<String>> {
     if function_string.starts_with("(") && function_string.ends_with(")") {
         let args_string = function_string[1..(function_string.len() - 1)].to_string();
 
-        let arguments = if args_string.len() > 0 {
-            args_string
-                .split(",")
-                .map(|str_value| get_function_argument(&str_value))
-                .collect()
+        let arguments = if !args_string.is_empty() {
+            args_string.split(",").map(get_function_argument).collect()
         } else {
             vec![]
         };
@@ -106,11 +102,11 @@ fn modify_arguments(task: &mut Task) -> Result<(), CargoMakeError> {
         Some(ref args) => {
             let mut new_args = vec![];
 
-            for index in 0..args.len() {
-                let result_args = evaluate_and_run(&args[index])?;
+            for arg in args {
+                let result_args = evaluate_and_run(arg)?;
 
-                for result_index in 0..result_args.len() {
-                    new_args.push(result_args[result_index].clone());
+                for result in &result_args {
+                    new_args.push(result.to_owned());
                 }
             }
 

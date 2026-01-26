@@ -39,11 +39,7 @@ pub(crate) fn is_installed(
             let exit_code = command::get_exit_code(Ok(output.status), false);
             debug!("Installation validation test exit code: {}", exit_code);
 
-            if exit_code != 0 {
-                false
-            } else {
-                true
-            }
+            exit_code == 0
         }
         Err(error) => {
             debug!(
@@ -63,14 +59,11 @@ pub(crate) fn invoke_rustup_install(
     command_spec.arg("component");
     command_spec.arg("add");
 
-    match toolchain {
-        Some(ref toolchain) => {
-            let channel = get_channel(toolchain);
+    if let Some(ref toolchain) = toolchain {
+        let channel = get_channel(toolchain);
 
-            command_spec.arg("--toolchain");
-            command_spec.arg(&channel);
-        }
-        None => {}
+        command_spec.arg("--toolchain");
+        command_spec.arg(&channel);
     };
 
     let result = command_spec.arg(&info.rustup_component_name).output();
@@ -112,7 +105,7 @@ pub(crate) fn install(
 ) -> bool {
     let mut installed = match info.binary {
         Some(ref binary) => match info.test_arg {
-            Some(ref test_arg) => is_installed(&toolchain, binary, test_arg),
+            Some(ref test_arg) => is_installed(toolchain, binary, test_arg),
             None => false,
         },
         None => false,
@@ -124,7 +117,7 @@ pub(crate) fn install(
             &info.rustup_component_name
         );
 
-        installed = invoke_rustup_install(&toolchain, &info);
+        installed = invoke_rustup_install(toolchain, info);
 
         if validate && !installed {
             error!(

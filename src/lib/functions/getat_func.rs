@@ -7,7 +7,7 @@
 #[path = "getat_func_test.rs"]
 mod getat_func_test;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
+pub(crate) fn invoke(function_args: &[String]) -> Vec<String> {
     if function_args.len() != 3 {
         error!(
             "split expects only 3 arguments (environment variable name, split by character, index)"

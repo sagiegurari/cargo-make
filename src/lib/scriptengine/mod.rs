@@ -132,7 +132,7 @@ pub(crate) fn get_engine_type(
         }
         None => {
             // if no runner specified, try to extract it from script content
-            let script_text = get_script_text(&script)?;
+            let script_text = get_script_text(script)?;
 
             let shebang = shebang_script::get_shebang(&script_text);
             match shebang.runner {
@@ -247,6 +247,7 @@ pub(crate) fn invoke_script_pre_flow(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 fn invoke_script(
     script: &ScriptValue,
     script_runner: Option<String>,
@@ -257,10 +258,9 @@ fn invoke_script(
     flow_state: Option<Rc<RefCell<FlowState>>>,
     cli_arguments: &Vec<String>,
 ) -> Result<bool, CargoMakeError> {
-    let expanded_script_runner = match script_runner {
-        Some(ref value) => Some(environment::expand_value(value)),
-        None => None,
-    };
+    let expanded_script_runner = script_runner
+        .as_ref()
+        .map(|value| environment::expand_value(value));
     let engine_type = get_engine_type(script, &expanded_script_runner, &script_extension)?;
 
     match engine_type {

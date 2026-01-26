@@ -14,7 +14,7 @@ use std::path::Path;
 #[cfg(target_os = "windows")]
 const DEFAULT_EXTENSION: &'static str = "cmd.exe";
 #[cfg(not(target_os = "windows"))]
-const DEFAULT_EXTENSION: &'static str = "sh";
+const DEFAULT_EXTENSION: &str = "sh";
 
 #[derive(Debug, Clone)]
 /// Holds flow information
@@ -35,7 +35,7 @@ impl Shebang {
     }
 }
 
-pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
+pub(crate) fn get_shebang(script_text: &[String]) -> Shebang {
     match script_text.first() {
         Some(line) => {
             let trimmed_line = line.trim();
@@ -49,10 +49,7 @@ pub(crate) fn get_shebang(script_text: &Vec<String>) -> Shebang {
 
                         if !shebang_line.is_empty() {
                             let mut values = shebang_line.split_whitespace();
-                            let runner = match values.next() {
-                                Some(value) => Some(value.trim().to_string()),
-                                _ => None,
-                            };
+                            let runner = values.next().map(|value| value.trim().to_string());
 
                             let mut argument_values = vec![];
                             for arg in values {
@@ -102,12 +99,12 @@ fn get_extension_for_runner(runner: &str) -> String {
 }
 
 pub(crate) fn execute(
-    script_text: &Vec<String>,
+    script_text: &[String],
     extension: &Option<String>,
-    cli_arguments: &Vec<String>,
+    cli_arguments: &[String],
     validate: bool,
 ) -> Result<bool, CargoMakeError> {
-    let shebang = get_shebang(&script_text);
+    let shebang = get_shebang(script_text);
 
     match shebang.runner {
         Some(runner) => {
@@ -117,11 +114,11 @@ pub(crate) fn execute(
             };
 
             generic_script::execute(
-                &script_text,
+                script_text,
                 runner,
                 extension_str,
                 shebang.arguments,
-                &cli_arguments,
+                cli_arguments,
                 validate,
             )
         }

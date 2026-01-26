@@ -7,7 +7,7 @@
 #[path = "remove_empty_func_test.rs"]
 mod remove_empty_func_test;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
+pub(crate) fn invoke(function_args: &[String]) -> Vec<String> {
     if function_args.len() != 1 {
         error!("remove_empty expects only 1 argument (environment variable name)");
     }
@@ -16,7 +16,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     let value = envmnt::get_or(&env_key, "");
 
-    if value.len() > 0 {
+    if !value.is_empty() {
         vec![value]
     } else {
         vec![]

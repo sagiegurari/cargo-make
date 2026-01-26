@@ -21,8 +21,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub(crate) fn execute(
-    script: &Vec<String>,
-    cli_arguments: &Vec<String>,
+    script: &[String],
+    cli_arguments: &[String],
     flow_info: Option<&FlowInfo>,
     flow_state: Option<Rc<RefCell<FlowState>>>,
     validate: bool,
@@ -30,13 +30,13 @@ pub(crate) fn execute(
     let mut array_command = "@ = array".to_string();
     let mut index = 0;
     for _ in cli_arguments {
-        index = index + 1;
+        index += 1;
         array_command.push_str(format!(" ${{{}}}", index).as_str());
     }
 
     let log_level = get_log_level();
     let level = get_level(&log_level);
-    if level == LogLevel::OFF {
+    if level == LogLevel::Off {
         array_command.push_str("alias echo noop");
     }
 
@@ -80,11 +80,11 @@ pub(crate) fn execute(
     }
 }
 
-pub(crate) fn create_common_context(cli_arguments: &Vec<String>) -> Context {
+pub(crate) fn create_common_context(cli_arguments: &[String]) -> Context {
     let mut context = Context::new();
     let mut index = 0;
     for argument in cli_arguments {
-        index = index + 1;
+        index += 1;
 
         context
             .variables

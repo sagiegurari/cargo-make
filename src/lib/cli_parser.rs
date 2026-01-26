@@ -39,15 +39,11 @@ fn get_args(
 
     cli_args.env = to_owned_vec(cli_parsed.argument_values.get("env"));
 
-    cli_args.build_file = match cli_parsed.get_first_value("makefile") {
-        Some(value) => Some(value),
-        None => None,
-    };
+    cli_args.build_file = cli_parsed.get_first_value("makefile");
 
-    cli_args.completion = match cli_parsed.get_first_value("completion") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.completion = cli_parsed
+        .get_first_value("completion")
+        .map(|value| value.to_string());
 
     cli_args.cwd = cli_parsed.get_first_value("cwd");
 
@@ -68,10 +64,7 @@ fn get_args(
             .to_string()
     };
 
-    let default_disable_color = match global_config.disable_color {
-        Some(value) => value,
-        None => false,
-    };
+    let default_disable_color = global_config.disable_color.unwrap_or_default();
     cli_args.disable_color = cli_parsed.arguments.contains("no-color")
         || envmnt::is("CARGO_MAKE_DISABLE_COLOR")
         || default_disable_color;
@@ -79,25 +72,22 @@ fn get_args(
     cli_args.print_time_summary = cli_parsed.arguments.contains("time-summary")
         || envmnt::is("CARGO_MAKE_PRINT_TIME_SUMMARY");
 
-    cli_args.env_file = match cli_parsed.get_first_value("envfile") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.env_file = cli_parsed
+        .get_first_value("envfile")
+        .map(|value| value.to_string());
 
     cli_args.output_format = cli_parsed
         .get_first_value("output-format")
         .unwrap_or(DEFAULT_OUTPUT_FORMAT.to_string())
         .to_string();
 
-    cli_args.list_category_steps = match cli_parsed.get_first_value("list-category-steps") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.list_category_steps = cli_parsed
+        .get_first_value("list-category-steps")
+        .map(|value| value.to_string());
 
-    cli_args.output_file = match cli_parsed.get_first_value("output-file") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.output_file = cli_parsed
+        .get_first_value("output-file")
+        .map(|value| value.to_string());
 
     let profile_name = cli_parsed
         .get_first_value("profile")
@@ -115,10 +105,9 @@ fn get_args(
     cli_args.diff_execution_plan = cli_parsed.arguments.contains("diff-steps");
     cli_args.hide_uninteresting = cli_parsed.arguments.contains("hide-uninteresting");
 
-    cli_args.skip_tasks_pattern = match cli_parsed.get_first_value("skip-tasks-pattern") {
-        Some(value) => Some(value.to_string()),
-        None => None,
-    };
+    cli_args.skip_tasks_pattern = cli_parsed
+        .get_first_value("skip-tasks-pattern")
+        .map(|value| value.to_string());
 
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.to_string(),
@@ -127,11 +116,11 @@ fn get_args(
     let task = cli_parsed
         .get_first_value("task")
         .unwrap_or(default_task_name);
-    let task_cmd = to_owned_vec(cli_parsed.argument_values.get("TASK_CMD")).unwrap_or(vec![]);
+    let task_cmd = to_owned_vec(cli_parsed.argument_values.get("TASK_CMD")).unwrap_or_default();
     let task_cmd_slice = task_cmd.as_slice();
-    let (task, arguments) = match task_cmd_slice {
-        &[] => (task, None),
-        &[ref task_name, ref task_args @ ..] => {
+    let (task, arguments) = match *task_cmd_slice {
+        [] => (task, None),
+        [ref task_name, ref task_args @ ..] => {
             let args_strings = task_args.iter().map(|item| item.to_string()).collect();
             (task_name.to_string(), Some(args_strings))
         }
@@ -145,11 +134,11 @@ fn get_args(
 pub fn create_cli(global_config: &GlobalConfig, mut spec: CliSpec, default_meta: bool) -> CliSpec {
     let default_task_name = match global_config.default_task_name {
         Some(ref value) => value.as_str(),
-        None => &DEFAULT_TASK_NAME,
+        None => DEFAULT_TASK_NAME,
     };
     let default_log_level = match global_config.log_level {
         Some(ref value) => value.as_str(),
-        None => &DEFAULT_LOG_LEVEL,
+        None => DEFAULT_LOG_LEVEL,
     };
 
     if default_meta {
@@ -512,7 +501,7 @@ pub fn parse_args(
     } else {
         Ok(get_args(
             &cli_parsed,
-            &global_config,
+            global_config,
             command_name,
             sub_command,
         ))
@@ -529,13 +518,10 @@ pub fn parse(
         command_name,
         sub_command,
         None,
-        create_cli(&global_config, CliSpec::new(), true),
+        create_cli(global_config, CliSpec::new(), true),
     )
 }
 
 fn to_owned_vec(vec_option: Option<&Vec<String>>) -> Option<Vec<String>> {
-    match vec_option {
-        Some(vec) => Some(vec.to_owned()),
-        None => None,
-    }
+    vec_option.map(|vec| vec.to_owned())
 }

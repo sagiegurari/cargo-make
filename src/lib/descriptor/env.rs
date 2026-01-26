@@ -21,7 +21,7 @@ fn env_unique<'a>(vals: &'a [&'a IndexMap<String, EnvValue>]) -> Vec<(&'a str, &
     // iterate through the list in reverse, only taking the first value, then
     // reversing again to make sure that we still adhere to the order.
     // This way we will only ever take the latest value.
-    for (key, val) in vals.iter().map(|map| map.iter()).flatten().rev() {
+    for (key, val) in vals.iter().flat_map(|map| map.iter()).rev() {
         if visited.contains(&key.as_str()) {
             continue;
         }
@@ -143,7 +143,7 @@ pub(crate) fn merge_env(
         // if the env variable is in the current scope add an edge,
         // otherwise it is referencing an external variable.
         // also, ignore self reference (such as PATH=${PATH})
-        let is_external = envmnt::exists(&key);
+        let is_external = envmnt::exists(key);
         for used in env_depends_on(val).into_iter() {
             if (key != &used || !is_external) && graph.contains_node(used) {
                 graph.add_edge(*key, used, ());
@@ -193,7 +193,7 @@ pub(crate) fn merge_env(
         if let Some((key, val)) = combined
             .iter()
             .filter(|(key, _)| *key == name)
-            .last()
+            .next_back()
             .cloned()
         {
             // we need to check if the base and ext both are a profile,
@@ -213,13 +213,10 @@ pub(crate) fn merge_env(
     Ok(merge)
 }
 
-pub(crate) fn merge_env_files(
-    base: &mut Vec<EnvFile>,
-    extended: &mut Vec<EnvFile>,
-) -> Vec<EnvFile> {
+pub(crate) fn merge_env_files(base: &mut [EnvFile], extended: &mut [EnvFile]) -> Vec<EnvFile> {
     [&extended[..], &base[..]].concat()
 }
 
-pub(crate) fn merge_env_scripts(base: &mut Vec<String>, extended: &mut Vec<String>) -> Vec<String> {
+pub(crate) fn merge_env_scripts(base: &mut [String], extended: &mut [String]) -> Vec<String> {
     [&extended[..], &base[..]].concat()
 }

@@ -12,7 +12,7 @@ use crate::types::Cache;
 use fsio::file::{read_text_file, write_text_file};
 use std::path::{Path, PathBuf};
 
-static CACHE_FILE: &'static str = "cache.toml";
+static CACHE_FILE: &str = "cache.toml";
 
 fn load_from_path(directory: PathBuf) -> Cache {
     let file_path = Path::new(&directory).join(CACHE_FILE);
@@ -33,8 +33,7 @@ fn load_from_path(directory: PathBuf) -> Cache {
             Err(error) => {
                 info!(
                     "Unable to read cache file: {:?} error: {}",
-                    &file_path,
-                    error.to_string()
+                    &file_path, error
                 );
                 Cache::new()
             }
@@ -66,35 +65,30 @@ pub(crate) fn load() -> Cache {
 
 /// Stores the data
 pub(crate) fn store(cache_data: &Cache) {
-    match get_cache_directory(false) {
-        Some(directory) => {
-            let exists = if directory.exists() {
-                true
-            } else {
-                match fsio::directory::create(&directory) {
-                    Ok(_) => true,
-                    _ => false,
-                }
-            };
+    if let Some(directory) = get_cache_directory(false) {
+        let exists = if directory.exists() {
+            true
+        } else {
+            fsio::directory::create(&directory).is_ok()
+        };
 
-            if exists {
-                let file_name = directory.join(CACHE_FILE);
+        if exists {
+            let file_name = directory.join(CACHE_FILE);
 
-                match toml::to_string_pretty(cache_data) {
-                    Ok(toml_str) => match write_text_file(&file_name, &toml_str) {
-                        Err(error) => info!(
+            match toml::to_string_pretty(cache_data) {
+                Ok(toml_str) => {
+                    if let Err(error) = write_text_file(&file_name, &toml_str) {
+                        info!(
                             "Error while writing to cache file: {:#?}, error: {:#?}",
                             &file_name, error
-                        ),
-                        _ => (),
-                    },
-                    Err(error) => info!(
-                        "Error during serialization of cache, file: {:#?}, error: {:#?}",
-                        &file_name, error
-                    ),
-                };
-            }
+                        )
+                    }
+                }
+                Err(error) => info!(
+                    "Error during serialization of cache, file: {:#?}, error: {:#?}",
+                    &file_name, error
+                ),
+            };
         }
-        None => (),
     }
 }

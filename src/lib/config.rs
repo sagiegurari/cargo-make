@@ -14,7 +14,7 @@ use fsio::file::read_text_file;
 use fsio::path::from_path::FromPath;
 use std::path::{Path, PathBuf};
 
-pub static CONFIG_FILE: &'static str = "config.toml";
+pub static CONFIG_FILE: &str = "config.toml";
 
 pub fn get_config_directory() -> Option<PathBuf> {
     let os_directory = dirs_next::config_dir();

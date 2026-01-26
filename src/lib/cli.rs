@@ -55,7 +55,7 @@ pub fn run(
     debug!("Cli Args {:#?}", &cli_args);
     debug!("Global Configuration {:#?}", &global_config);
 
-    if version::should_check(&cli_args, &global_config) {
+    if version::should_check(cli_args, global_config) {
         version::check();
     }
 
@@ -67,10 +67,7 @@ pub fn run(
         None => match global_config.search_project_root {
             Some(search) => {
                 if search {
-                    match environment::get_project_root() {
-                        Some(value) => Some(value.clone()),
-                        None => None,
-                    }
+                    environment::get_project_root()
                 } else {
                     None
                 }
@@ -78,10 +75,7 @@ pub fn run(
             None => None,
         },
     };
-    let cwd = match cwd_string_option {
-        Some(ref value) => Some(value.as_ref()),
-        None => None,
-    };
+    let cwd = cwd_string_option.as_ref().map(|value| value.as_ref());
     let home = environment::setup_cwd(cwd);
 
     let force_makefile = cli_args.build_file.is_some();
@@ -94,21 +88,17 @@ pub fn run(
         .profile
         .clone()
         .unwrap_or_else(profile::default_profile);
-    let normalized_profile_name = profile::set(&profile_name);
+    let normalized_profile_name = profile::set(profile_name);
 
     environment::load_env_file(cli_args.env_file.clone());
 
     let env = cli_args.env.clone();
 
     let experimental = cli_args.experimental;
-    let config = descriptor::load(&build_file, force_makefile, env, experimental)?;
+    let config = descriptor::load(build_file, force_makefile, env, experimental)?;
 
     let mut time_summary_vec = vec![];
-    time_summary::add(
-        &mut time_summary_vec,
-        "[Load Makefiles]",
-        start_time.clone(),
-    );
+    time_summary::add(&mut time_summary_vec, "[Load Makefiles]", start_time);
     let step_time = SystemTime::now();
 
     match config.config.additional_profiles {
@@ -116,12 +106,12 @@ pub fn run(
         None => profile::set_additional(&vec![]),
     };
 
-    let env_info = environment::setup_env(&cli_args, &config, &task, home, &mut time_summary_vec)?;
+    let env_info = environment::setup_env(cli_args, &config, task, home, &mut time_summary_vec)?;
     time_summary::add(&mut time_summary_vec, "[Setup Env]", step_time);
 
     let crate_name = envmnt::get_or("CARGO_MAKE_CRATE_NAME", "");
     info!("");
-    if crate_name.len() > 0 {
+    if !crate_name.is_empty() {
         info!("Project: {}", &crate_name);
     }
     info!("Build File: {}", &build_file);
@@ -144,15 +134,15 @@ pub fn run(
         cli_commands::diff_steps::run(
             &default_config,
             &config,
-            &task,
-            &cli_args,
+            task,
+            cli_args,
             &env_info.crate_info,
         )
     } else if cli_args.print_only {
         cli_commands::print_steps::print(
             &mut std::io::stdout(),
             &config,
-            &task,
+            task,
             &cli_args.output_format,
             cli_args.disable_workspace,
             &cli_args.skip_tasks_pattern,
@@ -162,9 +152,9 @@ pub fn run(
     } else {
         runner::run(
             config,
-            &task,
+            task,
             env_info,
-            &cli_args,
+            cli_args,
             start_time,
             time_summary_vec,
         )

@@ -24,7 +24,7 @@ pub(crate) fn wrap_command(
 ) -> CommandSpec {
     check_toolchain(toolchain);
 
-    let channel = get_channel(&toolchain);
+    let channel = get_channel(toolchain);
     if channel.is_empty() {
         let mut command_args = vec![];
         if let Some(array) = args {
@@ -55,21 +55,21 @@ pub(crate) fn wrap_command(
 fn get_specified_min_version(toolchain: &ToolchainSpecifier) -> Option<Version> {
     let min_version = toolchain.min_version()?;
     let spec_min_version = min_version.parse::<Version>();
-    if let Err(_) = spec_min_version {
+    if spec_min_version.is_err() {
         warn!("Unable to parse min version value: {}", &min_version);
     }
     spec_min_version.ok()
 }
 
 fn check_toolchain(toolchain: &ToolchainSpecifier) {
-    let channel = get_channel(&toolchain);
+    let channel = get_channel(toolchain);
 
     if channel.is_empty() {
         return;
     }
 
     let output = Command::new("rustup")
-        .args(&["run", &channel, "rustc", "--version"])
+        .args(["run", &channel, "rustc", "--version"])
         .stderr(Stdio::null())
         .stdout(Stdio::piped())
         .output()

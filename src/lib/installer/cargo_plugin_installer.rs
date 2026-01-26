@@ -86,8 +86,8 @@ fn is_crate_installed(
 
             let stdout = strip_str(String::from_utf8_lossy(&output.stdout));
             let crate_name_trimmed = crate_name.trim();
-            Ok(is_crate_in_list_output(&crate_name_trimmed, &stdout)
-                || is_crate_in_list_output_legacy(&crate_name_trimmed, &stdout))
+            Ok(is_crate_in_list_output(crate_name_trimmed, &stdout)
+                || is_crate_in_list_output_legacy(crate_name_trimmed, &stdout))
         }
         Err(error) => {
             error!(
@@ -132,7 +132,7 @@ pub(crate) fn get_install_crate_args(
         None => debug!("No crate installation args defined."),
     };
 
-    let skip_crate_name = should_skip_crate_name(&args);
+    let skip_crate_name = should_skip_crate_name(args);
     if !skip_crate_name {
         // add locked flags
         if let Some(version) = version_option {
@@ -149,6 +149,7 @@ pub(crate) fn get_install_crate_args(
     install_args
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn install_crate(
     toolchain: &Option<ToolchainSpecifier>,
     cargo_command: Option<&str>,
@@ -160,7 +161,7 @@ pub(crate) fn install_crate(
     allow_force: &Option<bool>,
 ) -> Result<(), CargoMakeError> {
     let installed = match cargo_command {
-        Some(cargo_command) => is_crate_installed(&toolchain, cargo_command),
+        Some(cargo_command) => is_crate_installed(toolchain, cargo_command),
         None => Ok(false),
     }?;
     let mut force = false;
@@ -170,7 +171,7 @@ pub(crate) fn install_crate(
     } else if toolchain.is_none() {
         match *min_version {
             Some(ref version) => {
-                if crate_version_check::is_min_version_valid(&crate_name, version, None) {
+                if crate_version_check::is_min_version_valid(crate_name, version, None) {
                     false
                 } else {
                     force = allow_force_value;
@@ -185,11 +186,11 @@ pub(crate) fn install_crate(
 
     if run_installation {
         let install_args =
-            get_install_crate_args(crate_name, force, args, &min_version, install_command);
+            get_install_crate_args(crate_name, force, args, min_version, install_command);
 
         match toolchain {
             Some(ref toolchain_string) => {
-                let command_spec = wrap_command(&toolchain_string, "cargo", &Some(install_args));
+                let command_spec = wrap_command(toolchain_string, "cargo", &Some(install_args));
                 command::run_command(&command_spec.command, &command_spec.args, validate)?
             }
             None => command::run_command("cargo", &Some(install_args), validate)?,

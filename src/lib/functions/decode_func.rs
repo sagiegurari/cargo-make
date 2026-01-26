@@ -11,8 +11,8 @@ mod decode_func_test;
 
 use crate::environment;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
-    if function_args.len() == 0 {
+pub(crate) fn invoke(function_args: &[String]) -> Vec<String> {
+    if function_args.is_empty() {
         error!("decode expects at least one argument.");
     }
 
@@ -28,7 +28,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
         } else if found {
             mapped_value = Some(item.to_string());
             break;
-        } else if item.to_string() == env_value {
+        } else if *item == env_value {
             found = true;
         } else {
             skip = true;
@@ -39,7 +39,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
     let mut output_value = match mapped_value {
         Some(value) => value.clone(),
         None => {
-            if function_args.len() % 2 == 0 && function_args.len() > 1 {
+            if function_args.len().is_multiple_of(2) && function_args.len() > 1 {
                 function_args[function_args.len() - 1].to_string()
             } else {
                 env_value.clone()
@@ -49,7 +49,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     output_value = environment::expand_value(&output_value);
 
-    if output_value.len() > 0 {
+    if !output_value.is_empty() {
         vec![output_value]
     } else {
         vec![]

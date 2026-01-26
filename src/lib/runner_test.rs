@@ -8,6 +8,7 @@ use crate::types::{
 };
 use cfg_if::cfg_if;
 use git_info::types::GitInfo;
+use indexmap::IndexMap;
 use rust_info::types::RustInfo;
 
 #[cfg(target_os = "linux")]

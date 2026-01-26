@@ -21,9 +21,9 @@ fn normalize_additional_profiles(profiles: &Vec<String>) -> Vec<String> {
     let mut nomralized_profiles = vec![];
 
     for profile in profiles {
-        let profile_normalized = normalize_profile(&profile);
+        let profile_normalized = normalize_profile(profile);
 
-        if profile_normalized.len() > 0 {
+        if !profile_normalized.is_empty() {
             nomralized_profiles.push(profile_normalized);
         }
     }
@@ -40,9 +40,9 @@ pub(crate) fn default_profile() -> String {
 }
 
 pub(crate) fn set(profile: &str) -> String {
-    let mut profile_normalized = normalize_profile(&profile);
+    let mut profile_normalized = normalize_profile(profile);
 
-    if profile_normalized.len() == 0 {
+    if profile_normalized.is_empty() {
         profile_normalized = DEFAULT_PROFILE.to_string();
     }
 
@@ -52,7 +52,7 @@ pub(crate) fn set(profile: &str) -> String {
 }
 
 pub(crate) fn set_additional(profiles: &Vec<String>) {
-    let nomralized_profiles = normalize_additional_profiles(&profiles);
+    let nomralized_profiles = normalize_additional_profiles(profiles);
 
     envmnt::set_list(ADDITIONAL_PROFILES_ENV_KEY, &nomralized_profiles);
 }

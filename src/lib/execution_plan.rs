@@ -39,7 +39,7 @@ fn get_task_name_recursive(
                 Some(ref alias) if seen.contains(alias) => {
                     let chain = seen.join(" -> ");
                     error!("Detected cycle while resolving alias {}: {}", &name, chain);
-                    return Err(CargoMakeError::AliasCycle(name.to_string(), chain));
+                    Err(CargoMakeError::AliasCycle(name.to_string(), chain))
                 }
                 Some(ref alias) => get_task_name_recursive(config, alias, seen),
                 None => Ok(name.to_string()),
@@ -130,7 +130,7 @@ fn get_workspace_members_config(members_config: String) -> HashSet<String> {
     let members_list: Vec<&str> = members_config.split(';').collect();
 
     for member in members_list.iter() {
-        if member.len() > 0 {
+        if !member.is_empty() {
             members.insert(member.to_string());
         }
     }
@@ -148,7 +148,7 @@ fn is_workspace_member_found(member: &str, members_map: &HashSet<String>) -> boo
         for member_iter in members_map {
             if member_iter.contains("*") {
                 found = match Pattern::new(member_iter) {
-                    Ok(pattern) => pattern.matches(&member),
+                    Ok(pattern) => pattern.matches(member),
                     _ => false,
                 };
 
@@ -183,8 +183,8 @@ fn filter_workspace_members(members: &Vec<String>) -> Vec<String> {
 
     let mut filtered_members = vec![];
     for member in members {
-        if !should_skip_workspace_member(&member, &skip_members)
-            && should_include_workspace_member(&member, &include_members)
+        if !should_skip_workspace_member(member, &skip_members)
+            && should_include_workspace_member(member, &include_members)
         {
             filtered_members.push(member.to_string());
         } else {
@@ -211,7 +211,7 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
     let members = if let Some(workspace) = crate_info.workspace.clone() {
         workspace.members.unwrap_or(vec![])
     } else {
-        envmnt::get_list("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap_or(vec![])
+        envmnt::get_list("CARGO_MAKE_CRATE_WORKSPACE_MEMBERS").unwrap_or_default()
     };
 
     let log_level = logger::get_log_level();
@@ -241,7 +241,7 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
             debug!("Adding Member: {} Path: {}", &member_name, &member);
 
             let mut make_line = "exec --fail-on-error ".to_string();
-            make_line.push_str(&cargo_make_command);
+            make_line.push_str(cargo_make_command);
             make_line
                 .push_str(" --disable-check-for-updates --allow-private --no-on-error --loglevel=");
             make_line.push_str(&log_level);
@@ -250,11 +250,11 @@ fn create_workspace_task(crate_info: &CrateInfo, task: &str) -> Task {
             make_line.push_str(" --profile ");
             make_line.push_str(&profile_name);
             make_line.push_str(" -- ");
-            make_line.push_str(&task);
+            make_line.push_str(task);
 
             if let Some(args) = envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
                 for arg in args {
-                    make_line.push_str(" ");
+                    make_line.push(' ');
                     make_line.push_str(&arg);
                 }
             }
@@ -380,10 +380,7 @@ fn create_for_step(
 
     debug!("Normalized Task: {} config: {:#?}", &task, &task_config);
 
-    let is_private = match task_config.private {
-        Some(value) => value,
-        None => false,
-    };
+    let is_private = task_config.private.unwrap_or(false);
 
     if allow_private || !is_private {
         let add = !task_config.disabled.unwrap_or(false);
@@ -393,7 +390,7 @@ fn create_for_step(
                 Some(ref dependencies) => {
                     for dependency in dependencies {
                         create_for_step(
-                            &config,
+                            config,
                             &dependency.to_owned().into(),
                             steps,
                             task_names,
@@ -419,7 +416,7 @@ fn create_for_step(
         Ok(())
     } else {
         error!("Task {} is private", &task);
-        return Err(CargoMakeError::TaskIs(format!("{}", task), "private"));
+        Err(CargoMakeError::TaskIs(format!("{}", task), "private"))
     }
 }
 
@@ -509,7 +506,7 @@ impl<'a> ExecutionPlanBuilder<'a> {
 
         if !skip {
             let workspace_flow =
-                is_workspace_flow(&config, &task, disable_workspace, &crate_info, sub_flow);
+                is_workspace_flow(config, task, disable_workspace, crate_info, sub_flow);
 
             if workspace_flow {
                 let workspace_task = create_workspace_task(crate_info, task);
@@ -520,7 +517,7 @@ impl<'a> ExecutionPlanBuilder<'a> {
                 });
             } else {
                 create_for_step(
-                    &config,
+                    config,
                     &TaskIdentifier::from_name(task),
                     &mut steps,
                     &mut task_names,

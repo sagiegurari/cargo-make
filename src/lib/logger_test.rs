@@ -3,31 +3,31 @@ use super::*;
 #[test]
 fn get_level_verbose() {
     let level = get_level("verbose");
-    assert_eq!(level, LogLevel::VERBOSE);
+    assert_eq!(level, LogLevel::Verbose);
 }
 
 #[test]
 fn get_level_info() {
     let level = get_level("info");
-    assert_eq!(level, LogLevel::INFO);
+    assert_eq!(level, LogLevel::Info);
 }
 
 #[test]
 fn get_level_error() {
     let level = get_level("error");
-    assert_eq!(level, LogLevel::ERROR);
+    assert_eq!(level, LogLevel::Error);
 }
 
 #[test]
 fn get_level_off() {
     let level = get_level("off");
-    assert_eq!(level, LogLevel::OFF);
+    assert_eq!(level, LogLevel::Off);
 }
 
 #[test]
 fn get_level_other() {
     let level = get_level("test123");
-    assert_eq!(level, LogLevel::INFO);
+    assert_eq!(level, LogLevel::Info);
 }
 
 #[test]

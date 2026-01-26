@@ -17,10 +17,10 @@ use std::process::exit;
 #[derive(Debug, PartialEq)]
 /// The log levels
 pub(crate) enum LogLevel {
-    VERBOSE,
-    INFO,
-    ERROR,
-    OFF,
+    Verbose,
+    Info,
+    Error,
+    Off,
 }
 
 /// The logger options used to initialize the logger
@@ -35,10 +35,10 @@ pub struct LoggerOptions {
 
 pub(crate) fn get_level(level_name: &str) -> LogLevel {
     match level_name {
-        "verbose" => LogLevel::VERBOSE,
-        "error" => LogLevel::ERROR,
-        "off" => LogLevel::OFF,
-        _ => LogLevel::INFO,
+        "verbose" => LogLevel::Verbose,
+        "error" => LogLevel::Error,
+        "off" => LogLevel::Off,
+        _ => LogLevel::Info,
     }
 }
 
@@ -86,7 +86,7 @@ fn get_formatted_name(name: &str, use_color: bool) -> ColoredString {
 }
 
 fn get_formatted_log_level(level: &Level, use_color: bool) -> ColoredString {
-    let mut level_name = get_name_for_level(&level);
+    let mut level_name = get_name_for_level(level);
     level_name = level_name.to_uppercase();
 
     if use_color {
@@ -123,10 +123,10 @@ pub(crate) fn init(options: &LoggerOptions) {
     let level = get_level(level_name);
 
     let log_level = match level {
-        LogLevel::VERBOSE => LevelFilter::Debug,
-        LogLevel::INFO => LevelFilter::Info,
-        LogLevel::ERROR => LevelFilter::Error,
-        LogLevel::OFF => LevelFilter::Off,
+        LogLevel::Verbose => LevelFilter::Debug,
+        LogLevel::Info => LevelFilter::Info,
+        LogLevel::Error => LevelFilter::Error,
+        LogLevel::Off => LevelFilter::Off,
     };
     let level_name_value = get_name_for_filter(&log_level);
 
@@ -146,10 +146,8 @@ pub(crate) fn init(options: &LoggerOptions) {
         .format(move |out, message, record| {
             let record_level = record.level();
 
-            if cfg!(test) {
-                if record_level == LevelFilter::Error {
-                    panic!("test error flow: {}", message);
-                }
+            if cfg!(test) && record_level == LevelFilter::Error {
+                panic!("test error flow: {}", message);
             }
 
             let record_level_fmt = get_formatted_log_level(&record_level, color);

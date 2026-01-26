@@ -7,9 +7,9 @@
 #[path = "split_func_test.rs"]
 mod split_func_test;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
+pub(crate) fn invoke(function_args: &[String]) -> Vec<String> {
     let args_count = function_args.len();
-    if args_count < 2 || args_count > 3 {
+    if !(2..=3).contains(&args_count) {
         error!("split expects two or three arguments (environment variable name, split by character, optional mode: default, remove-empty)");
     }
 
@@ -30,18 +30,12 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Vec<String> {
 
     let value = envmnt::get_or(&env_key, "");
 
-    if value.len() > 0 {
+    if !value.is_empty() {
         let splitted = value.split(split_by_char);
 
         splitted
             .map(|str_value| str_value.to_string())
-            .filter(|string_value| {
-                if remove_empty && string_value.is_empty() {
-                    false
-                } else {
-                    true
-                }
-            })
+            .filter(|string_value| !(remove_empty && string_value.is_empty()))
             .collect()
     } else {
         vec![]

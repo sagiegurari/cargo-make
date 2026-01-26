@@ -17,6 +17,6 @@ pub(crate) fn execute(
     validate: bool,
 ) -> Result<bool, CargoMakeError> {
     let exit_code =
-        command::run_script_get_exit_code(&script_text, runner, &cli_arguments, validate)?;
+        command::run_script_get_exit_code(script_text, runner, cli_arguments, validate)?;
     Ok(exit_code == 0)
 }
