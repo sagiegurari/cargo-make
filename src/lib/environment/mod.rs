@@ -51,18 +51,15 @@ fn evaluate_env_value(key: &str, env_value: &EnvValueScript) -> String {
 
             debug!("Env script stdout:\n{}", &stdout);
 
-            let multi_line = match env_value.multi_line {
-                Some(bool_value) => bool_value,
-                None => false,
-            };
+            let multi_line = env_value.multi_line.unwrap_or_default();
 
             if multi_line {
                 stdout.to_string()
             } else {
                 let mut lines: Vec<&str> = stdout.split("\n").collect();
-                lines.retain(|&line| line.len() > 0);
+                lines.retain(|&line| !line.is_empty());
 
-                if lines.len() > 0 {
+                if !lines.is_empty() {
                     let line = lines[lines.len() - 1].to_string();
 
                     let line_str = str::replace(&line, "\r", "");
@@ -82,30 +79,30 @@ pub(crate) fn expand_value(value: &str) -> String {
     options.expansion_type = Some(ExpansionType::UnixBracketsWithDefaults);
     options.default_to_empty = false;
 
-    envmnt::expand(&value, Some(options))
+    envmnt::expand(value, Some(options))
 }
 
 fn evaluate_and_set_env(key: &str, value: &str) {
-    let env_value = expand_value(&value);
+    let env_value = expand_value(value);
 
     debug!("Setting Env: {} Value: {}", &key, &env_value);
-    envmnt::set(&key, &env_value);
+    envmnt::set(key, &env_value);
 }
 
 fn set_env_for_bool(key: &str, value: bool) {
     debug!("Setting Env: {} Value: {}", &key, &value);
-    envmnt::set_bool(&key, value);
+    envmnt::set_bool(key, value);
 }
 
 fn set_env_for_list(key: &str, list: &Vec<String>) {
     let mut expanded_list = vec![];
 
     for value in list {
-        let env_value = expand_value(&value);
+        let env_value = expand_value(value);
         expanded_list.push(env_value);
     }
 
-    envmnt::set_list(&key, &expanded_list);
+    envmnt::set_list(key, &expanded_list);
 }
 
 fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
@@ -115,9 +112,9 @@ fn set_env_for_script(key: &str, env_value: &EnvValueScript) {
     };
 
     if valid {
-        let value = evaluate_env_value(&key, &env_value);
+        let value = evaluate_env_value(key, env_value);
 
-        evaluate_and_set_env(&key, &value);
+        evaluate_and_set_env(key, &value);
     }
 }
 
@@ -138,7 +135,7 @@ fn set_env_for_decode_info(key: &str, decode_info: &EnvValueDecode) {
             },
         };
 
-        evaluate_and_set_env(&key, &mapped_value);
+        evaluate_and_set_env(key, &mapped_value);
     }
 }
 
@@ -151,7 +148,7 @@ fn set_env_for_conditional_value(key: &str, conditional_value: &EnvValueConditio
     if valid {
         let value = expand_value(&conditional_value.value);
 
-        evaluate_and_set_env(&key, &value);
+        evaluate_and_set_env(key, &value);
     }
 }
 
@@ -207,24 +204,24 @@ pub(crate) fn set_env_for_config(
         debug!("Setting env: {} = {:#?}", &key, &env_value);
 
         match *env_value {
-            EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
-            EnvValue::Boolean(value) => set_env_for_bool(&key, value),
-            EnvValue::Number(value) => evaluate_and_set_env(&key, &value.to_string()),
-            EnvValue::List(ref value) => set_env_for_list(&key, value),
-            EnvValue::Script(ref script_info) => set_env_for_script(&key, script_info),
-            EnvValue::Decode(ref decode_info) => set_env_for_decode_info(&key, decode_info),
+            EnvValue::Value(ref value) => evaluate_and_set_env(key, value),
+            EnvValue::Boolean(value) => set_env_for_bool(key, value),
+            EnvValue::Number(value) => evaluate_and_set_env(key, &value.to_string()),
+            EnvValue::List(ref value) => set_env_for_list(key, value),
+            EnvValue::Script(ref script_info) => set_env_for_script(key, script_info),
+            EnvValue::Decode(ref decode_info) => set_env_for_decode_info(key, decode_info),
             EnvValue::Conditional(ref conditioned_value) => {
-                set_env_for_conditional_value(&key, conditioned_value)
+                set_env_for_conditional_value(key, conditioned_value)
             }
-            EnvValue::PathGlob(ref path_glob_info) => set_env_for_path_glob(&key, path_glob_info),
+            EnvValue::PathGlob(ref path_glob_info) => set_env_for_path_glob(key, path_glob_info),
             EnvValue::Profile(ref sub_env) => {
                 if allow_sub_env {
-                    set_env_for_profile(&key, sub_env, additional_profiles)
+                    set_env_for_profile(key, sub_env, additional_profiles)
                 }
             }
             EnvValue::Unset(ref value) => {
                 if value.unset {
-                    unset_env(&key);
+                    unset_env(key);
                 }
             }
         };
@@ -234,16 +231,8 @@ pub(crate) fn set_env_for_config(
         let profile_name = profile::get();
 
         if env.contains_key(&profile_name) {
-            match env.get(&profile_name) {
-                Some(ref env_value) => {
-                    match *env_value {
-                        EnvValue::Profile(ref sub_env) => {
-                            set_env_for_profile(&profile_name, sub_env, None)
-                        }
-                        _ => (),
-                    };
-                }
-                None => (),
+            if let Some(EnvValue::Profile(ref sub_env)) = env.get(&profile_name) {
+                set_env_for_profile(&profile_name, sub_env, None)
             };
         }
     }
@@ -320,9 +309,8 @@ pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
         if key.starts_with("CARGO_MAKE_CURRENT_TASK_") {
             debug!("Setting env: {} = {:#?}", &key, &env_value);
 
-            match *env_value {
-                EnvValue::Value(ref value) => evaluate_and_set_env(&key, value),
-                _ => (),
+            if let EnvValue::Value(ref value) = *env_value {
+                evaluate_and_set_env(key, value)
             };
         }
     }
@@ -332,10 +320,7 @@ pub(crate) fn set_current_task_meta_info_env(env: IndexMap<String, EnvValue>) {
 fn initialize_env(config: &Config, cli_args: &Vec<String>) -> Result<(), CargoMakeError> {
     debug!("Initializing Env.");
 
-    let additional_profiles = match config.config.additional_profiles {
-        Some(ref profiles) => Some(profiles),
-        None => None,
-    };
+    let additional_profiles = config.config.additional_profiles.as_ref();
 
     set_env_files_for_config(config.env_files.clone(), additional_profiles);
 
@@ -377,13 +362,13 @@ fn setup_env_for_crate(home: Option<PathBuf>) -> Result<CrateInfo, CargoMakeErro
     envmnt::set_optional("CARGO_MAKE_CRATE_REPOSITORY", &package_info.repository);
 
     let has_dependencies = match crate_info.dependencies {
-        Some(ref dependencies) => dependencies.len() > 0,
+        Some(ref dependencies) => !dependencies.is_empty(),
         None => crate_info.workspace.is_some(),
     };
 
     envmnt::set_bool("CARGO_MAKE_CRATE_HAS_DEPENDENCIES", has_dependencies);
 
-    let is_workspace = !crate_info.workspace.is_none();
+    let is_workspace = crate_info.workspace.is_some();
     envmnt::set_bool("CARGO_MAKE_CRATE_IS_WORKSPACE", is_workspace);
     if is_workspace {
         envmnt::set_bool("CARGO_MAKE_USE_WORKSPACE_PROFILE", true);
@@ -476,25 +461,25 @@ fn setup_env_for_rust(home: Option<PathBuf>) -> RustInfo {
 
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_ARCH",
-        &rustinfo.target_arch.unwrap_or("unknown".to_string()),
+        rustinfo.target_arch.unwrap_or("unknown".to_string()),
     );
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_ENV",
-        &rustinfo.target_env.unwrap_or("unknown".to_string()),
+        rustinfo.target_env.unwrap_or("unknown".to_string()),
     );
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_OS",
-        &rustinfo.target_os.unwrap_or("unknown".to_string()),
+        rustinfo.target_os.unwrap_or("unknown".to_string()),
     );
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_POINTER_WIDTH",
-        &rustinfo
+        rustinfo
             .target_pointer_width
             .unwrap_or("unknown".to_string()),
     );
     envmnt::set(
         "CARGO_MAKE_RUST_TARGET_VENDOR",
-        &rustinfo.target_vendor.unwrap_or("unknown".to_string()),
+        rustinfo.target_vendor.unwrap_or("unknown".to_string()),
     );
     envmnt::set_optional("CARGO_MAKE_RUST_TARGET_TRIPLE", &rustinfo.target_triple);
     envmnt::set_or_remove(
@@ -518,10 +503,9 @@ fn setup_env_for_ci() -> CiInfo {
 
 fn get_base_directory_name() -> Option<String> {
     match env::current_dir() {
-        Ok(path) => match path.file_name() {
-            Some(name) => Some(name.to_string_lossy().into_owned()),
-            None => None,
-        },
+        Ok(path) => path
+            .file_name()
+            .map(|name| name.to_string_lossy().into_owned()),
         _ => None,
     }
 }
@@ -541,10 +525,7 @@ fn setup_env_for_project(config: &Config, crate_info: &CrateInfo) -> Result<(), 
         Some(_) => {
             let main_member = match config.config.main_project_member {
                 Some(ref name) => Some(name.to_string()),
-                None => match project_name {
-                    Some(name) => Some(name),
-                    None => None,
-                },
+                None => project_name,
             };
 
             envmnt::set_or_remove("CARGO_MAKE_PROJECT_VERSION_MEMBER", &main_member);
@@ -584,14 +565,11 @@ pub(crate) fn setup_env(
     time_summary_vec: &mut Vec<(String, u128)>,
 ) -> Result<EnvInfo, CargoMakeError> {
     envmnt::set_bool("CARGO_MAKE", true);
-    envmnt::set("CARGO_MAKE_TASK", &task);
+    envmnt::set("CARGO_MAKE_TASK", task);
 
     envmnt::set("CARGO_MAKE_COMMAND", &cli_args.command);
 
-    let task_arguments = match cli_args.arguments.clone() {
-        Some(args) => args,
-        None => vec![],
-    };
+    let task_arguments = cli_args.arguments.clone().unwrap_or_default();
     envmnt::set_list("CARGO_MAKE_TASK_ARGS", &task_arguments);
 
     // load duckscript_info
@@ -638,7 +616,7 @@ pub(crate) fn setup_env(
 
     // load env vars
     now = SystemTime::now();
-    initialize_env(config, &cli_args.arguments.clone().unwrap_or(vec![]))?;
+    initialize_env(config, &cli_args.arguments.clone().unwrap_or_default())?;
     time_summary::add(time_summary_vec, "[Setup Env - Vars]", now);
 
     Ok(EnvInfo {
@@ -661,13 +639,10 @@ fn set_workspace_cwd(directory_path: &Path, force: bool) {
 }
 
 pub(crate) fn search_and_set_workspace_cwd() {
-    match crateinfo::search_workspace_root() {
-        Some(root_directory) => {
-            let root_directory_path_buf = get_directory_path(Some(&root_directory));
-            let root_directory_path = root_directory_path_buf.as_path();
-            set_workspace_cwd(&root_directory_path, true);
-        }
-        None => (),
+    if let Some(root_directory) = crateinfo::search_workspace_root() {
+        let root_directory_path_buf = get_directory_path(Some(&root_directory));
+        let root_directory_path = root_directory_path_buf.as_path();
+        set_workspace_cwd(root_directory_path, true);
     }
 }
 
@@ -688,7 +663,7 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
         directory_path.display()
     );
 
-    match env::set_current_dir(&directory_path) {
+    match env::set_current_dir(directory_path) {
         Err(error) => {
             error!(
                 "Unable to set current working directory to: {} {:#?}",
@@ -698,9 +673,9 @@ pub(crate) fn setup_cwd(cwd: Option<&str>) -> Option<PathBuf> {
             None
         }
         _ => {
-            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", &directory_path);
+            envmnt::set("CARGO_MAKE_WORKING_DIRECTORY", directory_path);
 
-            set_workspace_cwd(&directory_path, false);
+            set_workspace_cwd(directory_path, false);
 
             debug!("Working directory changed to: {}", directory_path.display());
 
@@ -779,14 +754,14 @@ fn load_env_file_with_base_directory(
     }
 }
 
-fn current_dir_or(fallback: &PathBuf) -> PathBuf {
+fn current_dir_or(fallback: &Path) -> PathBuf {
     match env::current_dir() {
         Ok(value) => value.clone(),
-        _ => fallback.clone(),
+        _ => fallback.to_path_buf(),
     }
 }
 
-pub(crate) fn find_git_root(directory: &PathBuf) -> Option<String> {
+pub(crate) fn find_git_root(directory: &Path) -> Option<String> {
     let from_dir = if directory.to_str().unwrap_or(".") == "." {
         current_dir_or(directory)
     } else {
@@ -796,10 +771,9 @@ pub(crate) fn find_git_root(directory: &PathBuf) -> Option<String> {
     let file_path = Path::new(&from_dir).join(".git");
 
     if file_path.exists() {
-        match from_dir.to_str() {
-            Some(directory_string) => Some(directory_string.to_string()),
-            _ => None,
-        }
+        from_dir
+            .to_str()
+            .map(|directory_string| directory_string.to_string())
     } else {
         match from_dir.parent() {
             Some(parent_directory) => {
@@ -811,7 +785,7 @@ pub(crate) fn find_git_root(directory: &PathBuf) -> Option<String> {
     }
 }
 
-pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
+pub(crate) fn get_project_root_for_path(directory: &Path) -> Option<String> {
     let from_dir = if directory.to_str().unwrap_or(".") == "." {
         current_dir_or(directory)
     } else {
@@ -821,10 +795,9 @@ pub(crate) fn get_project_root_for_path(directory: &PathBuf) -> Option<String> {
     let file_path = Path::new(&from_dir).join("Cargo.toml");
 
     if file_path.exists() {
-        match from_dir.to_str() {
-            Some(directory_string) => Some(directory_string.to_string()),
-            _ => None,
-        }
+        from_dir
+            .to_str()
+            .map(|directory_string| directory_string.to_string())
     } else {
         match from_dir.parent() {
             Some(parent_directory) => {
@@ -846,8 +819,8 @@ fn expand_env_for_script_runner_arguments(task: &mut Task) {
         Some(ref args) => {
             let mut expanded_args = vec![];
 
-            for index in 0..args.len() {
-                expanded_args.push(expand_value(&args[index]));
+            for arg in args {
+                expanded_args.push(expand_value(arg));
             }
 
             Some(expanded_args)
@@ -864,33 +837,29 @@ fn expand_env_for_arguments(task: &mut Task) {
         Some(ref args) => {
             let mut expanded_args = vec![];
 
-            let task_args = match envmnt::get_list("CARGO_MAKE_TASK_ARGS") {
-                Some(list) => list,
-                None => vec![],
-            };
+            let task_args = envmnt::get_list("CARGO_MAKE_TASK_ARGS").unwrap_or_default();
 
-            for index in 0..args.len() {
-                if args[index].contains("${@}") {
-                    if task_args.len() > 0 {
-                        if args[index] == "${@}" {
-                            for arg_index in 0..task_args.len() {
-                                expanded_args.push(task_args[arg_index].clone());
+            for arg in args {
+                if arg.contains("${@}") {
+                    if !task_args.is_empty() {
+                        if arg == "${@}" {
+                            for task_arg in &task_args {
+                                expanded_args.push(task_arg.clone());
                             }
                         } else {
-                            for arg_index in 0..task_args.len() {
-                                let value_string =
-                                    str::replace(&args[index], "${@}", &task_args[arg_index]);
+                            for task_arg in &task_args {
+                                let value_string = str::replace(arg, "${@}", task_arg);
                                 expanded_args.push(value_string);
                             }
                         }
                     }
                 } else {
-                    expanded_args.push(args[index].clone());
+                    expanded_args.push(arg.clone());
                 }
             }
 
-            for index in 0..expanded_args.len() {
-                expanded_args[index] = expand_value(&expanded_args[index]);
+            for expanded_arg in &mut expanded_args {
+                *expanded_arg = expand_value(expanded_arg);
             }
 
             Some(expanded_args)
@@ -906,11 +875,8 @@ pub(crate) fn expand_env(step: &Step) -> Step {
     let mut config = step.config.clone();
 
     //update command by replacing any env vars
-    match config.command {
-        Some(value) => {
-            config.command = Some(expand_value(&value));
-        }
-        None => {}
+    if let Some(value) = config.command {
+        config.command = Some(expand_value(&value));
     };
 
     //update args by replacing any env vars

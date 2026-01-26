@@ -1,5 +1,4 @@
 use std::cmp::PartialEq;
-use std::string::ToString;
 
 #[derive(
     strum_macros::AsRefStr,
@@ -170,12 +169,12 @@ impl<T: std::any::Any> std::process::Termination for SuccessOrCargoMakeError<T> 
             SuccessOrCargoMakeError::Err(err) => match err {
                 CargoMakeError::StdIoError { error } if error.raw_os_error().is_some() => {
                     let e = unsafe { error.raw_os_error().unwrap_unchecked() };
-                    eprintln!("{}", e.to_string());
+                    eprintln!("{}", e);
                     PROCESS_EXIT_CODE(e)
                 }
                 CargoMakeError::ExitCode(error) => error,
                 _ => {
-                    eprintln!("{}", err.to_string());
+                    eprintln!("{}", err);
                     PROCESS_EXIT_CODE(err.discriminant() as i32)
                 }
             },

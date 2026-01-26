@@ -51,10 +51,10 @@ fn get_plugin(config: &Config, plugin_name: &str) -> Option<(String, Plugin)> {
                 None => plugin_name.to_string(),
             };
 
-            match plugins_config.plugins.get(&normalized_plugin_name) {
-                Some(plugin) => Some((normalized_plugin_name, plugin.clone())),
-                None => None,
-            }
+            plugins_config
+                .plugins
+                .get(&normalized_plugin_name)
+                .map(|plugin| (normalized_plugin_name, plugin.clone()))
         }
         None => None,
     }
@@ -280,10 +280,7 @@ pub(crate) fn run_task(
     } else {
         let plugin_name_option = match flow_state.borrow().forced_plugin {
             Some(ref value) => Some(value.clone()),
-            None => match step.config.plugin {
-                Some(ref value) => Some(value.clone()),
-                None => None,
-            },
+            None => step.config.plugin.clone(),
         };
 
         match plugin_name_option {

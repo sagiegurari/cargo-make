@@ -244,13 +244,13 @@ fn validate_channel(condition: &TaskCondition, flow_info_option: Option<&FlowInf
                         let index = match value {
                             RustChannel::Stable => channel_names
                                 .iter()
-                                .position(|value| *value == "stable".to_string()),
+                                .position(|value| value.as_str() == "stable"),
                             RustChannel::Beta => channel_names
                                 .iter()
-                                .position(|value| *value == "beta".to_string()),
+                                .position(|value| value.as_str() == "beta"),
                             RustChannel::Nightly => channel_names
                                 .iter()
-                                .position(|value| *value == "nightly".to_string()),
+                                .position(|value| value.as_str() == "nightly"),
                         };
 
                         match index {
@@ -317,7 +317,7 @@ fn validate_rust_version(condition: &TaskCondition) -> bool {
     }
 }
 
-fn validate_files(file_paths: &Vec<String>, exist: bool, validate_any: bool) -> bool {
+fn validate_files(file_paths: &[String], exist: bool, validate_any: bool) -> bool {
     let mut found_any = file_paths.is_empty();
 
     for file_path in file_paths.iter() {
@@ -360,7 +360,7 @@ fn validate_files_not_exist(condition: &TaskCondition, validate_any: bool) -> bo
 fn validate_files_modified(condition: &TaskCondition) -> bool {
     match &condition.files_modified {
         Some(files_modified) => {
-            if files_modified.input.len() == 0 {
+            if files_modified.input.is_empty() {
                 return true;
             }
 
@@ -479,7 +479,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
             let group_or_condition = condition_type == ConditionType::GroupOr || validate_any;
             let mut not_valid_found = false;
 
-            let mut valid = validate_os(&condition_struct);
+            let mut valid = validate_os(condition_struct);
             if group_or_condition && valid && condition_struct.os.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -488,7 +488,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_platform(&condition_struct);
+            valid = validate_platform(condition_struct);
             if group_or_condition && valid && condition_struct.platforms.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -497,7 +497,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_profile(&condition_struct);
+            valid = validate_profile(condition_struct);
             if group_or_condition && valid && condition_struct.profiles.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -506,7 +506,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_channel(&condition_struct, flow_info);
+            valid = validate_channel(condition_struct, flow_info);
             if group_or_condition && valid && condition_struct.channels.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -515,7 +515,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env(&condition_struct, validate_any);
+            valid = validate_env(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -524,7 +524,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_not(&condition_struct, validate_any);
+            valid = validate_env_not(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env_not.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -533,7 +533,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_set(&condition_struct, validate_any);
+            valid = validate_env_set(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env_set.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -542,7 +542,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_not_set(&condition_struct, validate_any);
+            valid = validate_env_not_set(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env_not_set.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -551,7 +551,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_bool(&condition_struct, true, validate_any);
+            valid = validate_env_bool(condition_struct, true, validate_any);
             if group_or_condition && valid && condition_struct.env_true.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -560,7 +560,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_bool(&condition_struct, false, validate_any);
+            valid = validate_env_bool(condition_struct, false, validate_any);
             if group_or_condition && valid && condition_struct.env_false.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -569,7 +569,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_env_contains(&condition_struct, validate_any);
+            valid = validate_env_contains(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.env_contains.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -578,7 +578,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_rust_version(&condition_struct);
+            valid = validate_rust_version(condition_struct);
             if group_or_condition && valid && condition_struct.rust_version.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -587,7 +587,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_files_exist(&condition_struct, validate_any);
+            valid = validate_files_exist(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.files_exist.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -596,7 +596,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_files_not_exist(&condition_struct, validate_any);
+            valid = validate_files_not_exist(condition_struct, validate_any);
             if group_or_condition && valid && condition_struct.files_not_exist.is_some() {
                 return true;
             } else if !group_or_condition && !valid {
@@ -605,7 +605,7 @@ fn validate_criteria(flow_info: Option<&FlowInfo>, condition: &Option<TaskCondit
                 not_valid_found = true;
             }
 
-            valid = validate_files_modified(&condition_struct);
+            valid = validate_files_modified(condition_struct);
             if !valid {
                 return false;
             }
@@ -633,14 +633,14 @@ fn validate_script(
             debug!("Checking task condition script.");
 
             let script_text = get_script_text(script);
-            return scriptengine::invoke_script_pre_flow(
+            scriptengine::invoke_script_pre_flow(
                 &ScriptValue::Text(script_text),
                 script_runner,
                 script_runner_args,
                 None,
                 false,
                 &vec![],
-            );
+            )
         }
         None => Ok(true),
     }
@@ -662,17 +662,15 @@ pub(crate) fn validate_conditions(
         None => ConditionType::And,
     };
 
-    let criteria_passed = validate_criteria(Some(&flow_info), &condition);
+    let criteria_passed = validate_criteria(Some(flow_info), condition);
     if !criteria_passed && condition_type == ConditionType::And {
         Ok(false)
     } else if criteria_passed && condition.is_some() && condition_type != ConditionType::And {
         Ok(true)
+    } else if condition_script.is_none() && !criteria_passed {
+        Ok(false)
     } else {
-        if condition_script.is_none() && !criteria_passed {
-            Ok(false)
-        } else {
-            validate_script(&condition_script, script_runner, script_runner_args)
-        }
+        validate_script(condition_script, script_runner, script_runner_args)
     }
 }
 
@@ -681,7 +679,7 @@ pub(crate) fn validate_condition_for_step(
     step: &Step,
 ) -> Result<bool, CargoMakeError> {
     validate_conditions(
-        &flow_info,
+        flow_info,
         &step.config.condition,
         &step.config.condition_script,
         step.config.script_runner.clone(),

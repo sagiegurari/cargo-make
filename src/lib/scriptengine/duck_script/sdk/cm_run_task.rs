@@ -33,7 +33,7 @@ impl Command for CommandImpl {
             )
         } else {
             let (task_name, async_run) =
-                if context.arguments.len() > 0 && context.arguments[0] == "--async" {
+                if !context.arguments.is_empty() && context.arguments[0] == "--async" {
                     (context.arguments[1].clone(), true)
                 } else {
                     (context.arguments[0].clone(), false)
@@ -53,11 +53,10 @@ impl Command for CommandImpl {
                             true,
                         )
                     });
-                } else {
-                    if let Err(e) = runner::run_flow(&sub_flow_info, self.flow_state.clone(), true)
-                    {
-                        return CommandResult::Error(e.to_string());
-                    }
+                } else if let Err(e) =
+                    runner::run_flow(&sub_flow_info, self.flow_state.clone(), true)
+                {
+                    return CommandResult::Error(e.to_string());
                 }
 
                 CommandResult::Continue(Some("true".to_string()))

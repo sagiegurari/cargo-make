@@ -142,7 +142,7 @@ pub(crate) fn is_newer(
 pub(crate) fn is_newer_found(version_string: &str) -> bool {
     debug!("Checking Version: {}", &version_string);
 
-    is_newer(&VERSION, &version_string, false, false)
+    is_newer(VERSION, version_string, false, false)
 }
 
 fn print_notification(latest_string: &str) {
@@ -227,7 +227,7 @@ fn should_check_for_args(cli_args: &CliArgs, global_config: &GlobalConfig, is_ci
     !cli_args.disable_check_for_updates
         && !is_ci
         && !envmnt::is_or("CARGO_MAKE_DISABLE_UPDATE_CHECK", false)
-        && should_check_overdue(&global_config)
+        && should_check_overdue(global_config)
 }
 
 pub(crate) fn should_check(cli_args: &CliArgs, global_config: &GlobalConfig) -> bool {
@@ -245,12 +245,9 @@ pub(crate) fn check() {
         cache::store(&cache_data);
     }
 
-    match latest {
-        Some(value) => {
-            if is_newer_found(&value) {
-                print_notification(&value);
-            }
+    if let Some(value) = latest {
+        if is_newer_found(&value) {
+            print_notification(&value);
         }
-        None => (),
     }
 }

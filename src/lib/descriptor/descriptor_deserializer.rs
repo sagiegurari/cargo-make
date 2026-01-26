@@ -50,10 +50,10 @@ pub(crate) fn load_external_config(
         Ok(value) => Ok(value),
         Err(error) => {
             error!("Unable to parse external file: {:#?}, {}", &file, error);
-            return Err(CargoMakeError::ParseFileFailed(
+            Err(CargoMakeError::ParseFileFailed(
                 String::from(file),
                 error.to_string(),
-            ));
+            ))
         }
     }
 }

@@ -22,7 +22,7 @@ fn invoke_rustup_install(toolchain: &Option<ToolchainSpecifier>, info: &InstallC
                 binary: Some(info.binary.clone()),
                 test_arg: Some(info.test_arg.clone()),
             };
-            rustup_component_installer::invoke_rustup_install(&toolchain, &rustup_component_info)
+            rustup_component_installer::invoke_rustup_install(toolchain, &rustup_component_info)
         }
         None => false,
     }
@@ -51,7 +51,7 @@ fn invoke_cargo_install(
     let install_args = cargo_plugin_installer::get_install_crate_args(
         &info.crate_name,
         info.force.unwrap_or(true),
-        &args,
+        args,
         version_option,
         &info.install_command,
     );
@@ -74,10 +74,7 @@ fn invoke_cargo_install(
 }
 
 fn is_crate_only_info(info: &InstallCrateInfo) -> bool {
-    match info.rustup_component_name {
-        Some(_) => false,
-        None => true,
-    }
+    info.rustup_component_name.is_none()
 }
 
 pub(crate) fn install(
@@ -87,8 +84,8 @@ pub(crate) fn install(
     validate: bool,
 ) -> Result<(), CargoMakeError> {
     let installed =
-        rustup_component_installer::is_installed(&toolchain, &info.binary, &info.test_arg);
-    let crate_only_info = is_crate_only_info(&info);
+        rustup_component_installer::is_installed(toolchain, &info.binary, &info.test_arg);
+    let crate_only_info = is_crate_only_info(info);
     let run_installation = if !installed {
         true
     } else if crate_only_info && toolchain.is_none() {
@@ -114,8 +111,8 @@ pub(crate) fn install(
     if run_installation {
         debug!("Crate: {} not installed.", &info.crate_name);
 
-        if !invoke_rustup_install(&toolchain, &info) {
-            invoke_cargo_install(&toolchain, &info, &args, validate)?;
+        if !invoke_rustup_install(toolchain, info) {
+            invoke_cargo_install(toolchain, info, args, validate)?;
         }
     }
     Ok(())

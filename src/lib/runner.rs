@@ -17,7 +17,6 @@ use std::rc::Rc;
 use std::thread;
 use std::time::SystemTime;
 
-use indexmap::IndexMap;
 use regex::Regex;
 
 use crate::command;
@@ -47,7 +46,7 @@ where
         Some(ref cwd) => {
             let expanded_cwd = environment::expand_value(cwd);
 
-            if expanded_cwd.len() > 0 {
+            if !expanded_cwd.is_empty() {
                 let directory = envmnt::get_or("CARGO_MAKE_WORKING_DIRECTORY", "");
 
                 environment::setup_cwd(Some(&expanded_cwd));
@@ -63,11 +62,8 @@ where
     action()?;
 
     // revert to original cwd
-    match step.config.cwd {
-        Some(_) => {
-            environment::setup_cwd(Some(&revert_directory));
-        }
-        _ => (),
+    if step.config.cwd.is_some() {
+        environment::setup_cwd(Some(&revert_directory));
     };
     Ok(())
 }
@@ -79,15 +75,16 @@ pub(crate) fn validate_condition(
     let mut valid = true;
 
     let do_validate = || -> Result<bool, CargoMakeError> {
-        valid = condition::validate_condition_for_step(&flow_info, &step)?;
+        valid = condition::validate_condition_for_step(flow_info, step)?;
         Ok(valid)
     };
 
-    do_in_task_working_directory(&step, do_validate)?;
+    do_in_task_working_directory(step, do_validate)?;
 
     Ok(valid)
 }
 
+#[allow(clippy::type_complexity)]
 pub(crate) fn get_sub_task_info_for_routing_info(
     flow_info: &FlowInfo,
     routing_info: &Vec<RunTaskRoutingInfo>,
@@ -99,7 +96,7 @@ pub(crate) fn get_sub_task_info_for_routing_info(
     let mut cleanup_task = None;
     for routing_step in routing_info {
         let invoke = condition::validate_conditions(
-            &flow_info,
+            flow_info,
             &routing_step.condition,
             &routing_step.condition_script,
             None,
@@ -144,7 +141,7 @@ fn run_cleanup_task(
 ) -> Result<(), CargoMakeError> {
     match flow_info.config.tasks.get(task) {
         Some(cleanup_task_info) => run_task(
-            &flow_info,
+            flow_info,
             flow_state,
             &Step {
                 name: task.to_string(),
@@ -164,7 +161,7 @@ fn run_forked_task(
     cleanup_task: &Option<String>,
 ) -> Result<(), CargoMakeError> {
     // run task as a sub process
-    let step = create_fork_step(&flow_info);
+    let step = create_fork_step(flow_info);
 
     match cleanup_task {
         Some(cleanup_task_name) => {
@@ -173,13 +170,13 @@ fn run_forked_task(
                 command::run_command(&step.config.command.unwrap(), &step.config.args, false)?;
 
             if exit_code != 0 {
-                run_cleanup_task(&flow_info, flow_state, &cleanup_task_name)?;
+                run_cleanup_task(flow_info, flow_state, cleanup_task_name)?;
                 command::validate_exit_code(exit_code)
             } else {
                 Ok(())
             }
         }
-        None => run_task(&flow_info, flow_state, &step),
+        None => run_task(flow_info, flow_state, &step),
     }
 }
 
@@ -204,12 +201,11 @@ fn run_sub_task_and_report(
             )
         }
         RunTaskInfo::Routing(ref routing_info) => {
-            get_sub_task_info_for_routing_info(&flow_info, routing_info)?
+            get_sub_task_info_for_routing_info(flow_info, routing_info)?
         }
     };
 
-    if task_names.is_some() {
-        let names = task_names.unwrap();
+    if let Some(names) = task_names {
         let mut threads = vec![];
 
         // clean up task only supported for forked tasks
@@ -247,18 +243,18 @@ fn run_sub_task_and_report(
                     )
                 }));
             } else {
-                task_run_fn(&flow_info, flow_state.clone(), fork, &cleanup_task)?;
+                task_run_fn(flow_info, flow_state.clone(), fork, &cleanup_task)?;
             }
         }
 
-        if threads.len() > 0 {
+        if !threads.is_empty() {
             for task_thread in threads {
                 task_thread.join().unwrap()?;
             }
         }
 
         if let Some(cleanup_task_name) = cleanup_task {
-            run_cleanup_task(&flow_info, flow_state, &cleanup_task_name)?;
+            run_cleanup_task(flow_info, flow_state, &cleanup_task_name)?;
         }
 
         Ok(true)
@@ -272,21 +268,21 @@ fn run_sub_task(
     flow_state: Rc<RefCell<FlowState>>,
     sub_task: &RunTaskInfo,
 ) -> Result<bool, CargoMakeError> {
-    run_sub_task_and_report(&flow_info, flow_state, &sub_task)
+    run_sub_task_and_report(flow_info, flow_state, sub_task)
 }
 
 fn create_watch_task_name(task: &str) -> String {
     let mut watch_task_name = "".to_string();
-    watch_task_name.push_str(&task);
+    watch_task_name.push_str(task);
     watch_task_name.push_str("-watch");
 
     watch_task_name
 }
 
 fn create_watch_step(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Step {
-    let watch_task = create_watch_task(&task, options, flow_info);
+    let watch_task = create_watch_task(task, options, flow_info);
 
-    let watch_task_name = create_watch_task_name(&task);
+    let watch_task_name = create_watch_task_name(task);
 
     Step {
         name: watch_task_name,
@@ -300,9 +296,9 @@ fn watch_task(
     task: &str,
     options: Option<TaskWatchOptions>,
 ) -> Result<(), CargoMakeError> {
-    let step = create_watch_step(&task, options, flow_info);
+    let step = create_watch_step(task, options, flow_info);
 
-    run_task(&flow_info, flow_state, &step)
+    run_task(flow_info, flow_state, &step)
 }
 
 fn is_watch_enabled() -> bool {
@@ -356,17 +352,16 @@ pub(crate) fn run_task_with_options(
     }
 
     if step.config.is_actionable() {
-        match step.config.env {
-            Some(ref env) => environment::set_current_task_meta_info_env(env.clone()),
-            None => (),
+        if let Some(ref env) = step.config.env {
+            environment::set_current_task_meta_info_env(env.clone())
         };
         envmnt::set("CARGO_MAKE_CURRENT_TASK_NAME", &step.name);
 
         if validate_condition(
-            &flow_info,
-            &environment::expand_condition_script_runner_arguments(&step),
+            flow_info,
+            &environment::expand_condition_script_runner_arguments(step),
         )? {
-            if logger::should_reduce_output(&flow_info) && step.config.script.is_none() {
+            if logger::should_reduce_output(flow_info) && step.config.script.is_none() {
                 debug!("Running Task: {}", &step.name);
             } else {
                 info!("Running Task: {}", &step.name);
@@ -380,54 +375,42 @@ pub(crate) fn run_task_with_options(
             }
 
             let deprecated_info = step.config.deprecated.clone();
-            match deprecated_info {
-                Some(deprecated) => match deprecated {
+            if let Some(deprecated) = deprecated_info {
+                match deprecated {
                     DeprecationInfo::Boolean(value) => {
                         if value {
                             warn!("Task: {} is deprecated.", &step.name);
                         }
-
-                        ()
                     }
                     DeprecationInfo::Message(ref message) => {
                         warn!("Task: {} is deprecated - {}", &step.name, message);
-
-                        ()
                     }
-                },
-                None => (),
+                }
             };
 
             //get profile
             let profile_name = profile::get();
 
-            match step.config.env_files {
-                Some(ref env_files) => environment::set_env_files(env_files.clone()),
-                None => (),
+            if let Some(ref env_files) = step.config.env_files {
+                environment::set_env_files(env_files.clone())
             };
-            match step.config.env {
-                Some(ref env) => environment::set_env(env.clone()),
-                None => (),
+            if let Some(ref env) = step.config.env {
+                environment::set_env(env.clone())
             };
 
             //make sure profile env is not overwritten
             profile::set(&profile_name);
 
             // modify step using env and functions
-            let mut updated_step = functions::run(&step)?;
+            let mut updated_step = functions::run(step)?;
             updated_step = environment::expand_env(&updated_step);
 
             let watch = should_watch(&step.config);
 
             if watch {
-                watch_task(
-                    &flow_info,
-                    flow_state,
-                    &step.name,
-                    step.config.watch.clone(),
-                )?;
+                watch_task(flow_info, flow_state, &step.name, step.config.watch.clone())?;
             } else {
-                do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
+                do_in_task_working_directory(step, || -> Result<bool, CargoMakeError> {
                     installer::install(&updated_step.config, flow_info, flow_state.clone())?;
                     Ok(true)
                 })?;
@@ -440,10 +423,10 @@ pub(crate) fn run_task_with_options(
                             start_time,
                         );
 
-                        run_sub_task(&flow_info, flow_state, sub_task)?;
+                        run_sub_task(flow_info, flow_state, sub_task)?;
                     }
                     None => {
-                        do_in_task_working_directory(&step, || -> Result<bool, CargoMakeError> {
+                        do_in_task_working_directory(step, || -> Result<bool, CargoMakeError> {
                             // run script
                             let script_runner_done = scriptengine::invoke(
                                 &updated_step.config,
@@ -475,7 +458,7 @@ pub(crate) fn run_task_with_options(
                 None => "".to_string(),
             };
 
-            if logger::should_reduce_output(&flow_info) && !step.config.is_actionable() {
+            if logger::should_reduce_output(flow_info) && !step.config.is_actionable() {
                 debug!("Skipping Task: {} {}", &step.name, &fail_message);
             } else {
                 info!("Skipping Task: {} {}", &step.name, &fail_message);
@@ -494,16 +477,16 @@ fn run_task_flow(
     execution_plan: &ExecutionPlan,
 ) -> Result<(), CargoMakeError> {
     for step in &execution_plan.steps {
-        run_task(&flow_info, flow_state.clone(), &step)?;
+        run_task(flow_info, flow_state.clone(), step)?;
     }
     Ok(())
 }
 
 fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &FlowInfo) -> Task {
     let mut task_config =
-        create_proxy_task(&task, true, true, None, flow_info.cli_arguments.clone());
+        create_proxy_task(task, true, true, None, flow_info.cli_arguments.clone());
 
-    let mut env_map = task_config.env.unwrap_or(IndexMap::new());
+    let mut env_map = task_config.env.unwrap_or_default();
     env_map.insert(
         "CARGO_MAKE_DISABLE_WATCH".to_string(),
         EnvValue::Value("true".to_string()),
@@ -514,9 +497,9 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     let mut make_command = String::new();
     for make_arg in make_args {
         if make_arg.contains(" ") {
-            make_command.push_str("\"");
+            make_command.push('"');
             make_command.push_str(&make_arg);
-            make_command.push_str("\"");
+            make_command.push('"');
         } else {
             make_command.push_str(&make_arg);
         }
@@ -528,62 +511,44 @@ fn create_watch_task(task: &str, options: Option<TaskWatchOptions>, flow_info: &
     let mut watch_args = vec!["watch".to_string()];
 
     match options {
-        Some(task_watch_options) => match task_watch_options {
-            TaskWatchOptions::Options(watch_options) => {
-                let watch_version = match watch_options.version {
-                    Some(value) => value.to_string(),
-                    _ => "8.4.1".to_string(), // current version
-                };
-                task_config.install_crate_args = Some(vec!["--version".to_string(), watch_version]);
+        Some(TaskWatchOptions::Options(watch_options)) => {
+            let watch_version = watch_options.version.as_deref().unwrap_or("8.4.1"); // current version
+            task_config.install_crate_args =
+                Some(vec!["--version".to_string(), watch_version.to_string()]);
 
-                match watch_options.why {
-                    Some(option_value) => {
-                        if option_value {
-                            watch_args.push("--why".to_string());
-                        } else {
-                            watch_args.push("-q".to_string());
-                        }
-                    }
-                    None => watch_args.push("-q".to_string()),
-                }
-
-                if let Some(option_value) = watch_options.postpone {
-                    if option_value {
-                        watch_args.push("--postpone".to_string());
-                    }
-                }
-
-                match watch_options.ignore_pattern {
-                    Some(MaybeArray::Single(value)) => {
-                        watch_args.extend_from_slice(&["-i".to_string(), value])
-                    }
-                    Some(MaybeArray::Multiple(values)) => watch_args.extend(
-                        values
-                            .iter()
-                            .flat_map(|value| ["-i".to_string(), value.to_string()])
-                            .collect::<Vec<String>>(),
-                    ),
-                    _ => (),
-                };
-
-                if let Some(option_value) = watch_options.no_git_ignore {
-                    if option_value {
-                        watch_args.push("--no-gitignore".to_string());
-                    }
-                }
-
-                match watch_options.watch {
-                    Some(paths) => {
-                        for watch_path in paths {
-                            watch_args.extend_from_slice(&["-w".to_string(), watch_path])
-                        }
-                    }
-                    _ => (),
-                };
+            if watch_options.why.unwrap_or(false) {
+                watch_args.push("--why".to_string());
+            } else {
+                watch_args.push("-q".to_string());
             }
-            _ => watch_args.push("-q".to_string()),
-        },
-        None => watch_args.push("-q".to_string()),
+
+            if watch_options.postpone.unwrap_or(false) {
+                watch_args.push("--postpone".to_string());
+            }
+
+            match watch_options.ignore_pattern {
+                Some(MaybeArray::Single(value)) => {
+                    watch_args.extend(["-i".to_string(), value]);
+                }
+                Some(MaybeArray::Multiple(values)) => {
+                    for value in values {
+                        watch_args.extend(["-i".to_string(), value.to_string()]);
+                    }
+                }
+                None => (),
+            }
+
+            if watch_options.no_git_ignore.unwrap_or(false) {
+                watch_args.push("--no-gitignore".to_string());
+            }
+
+            if let Some(paths) = watch_options.watch {
+                for watch_path in paths {
+                    watch_args.extend(["-w".to_string(), watch_path]);
+                }
+            }
+        }
+        _ => watch_args.push("-q".to_string()),
     }
 
     watch_args.extend_from_slice(&["-x".to_string(), make_command.to_string()]);
@@ -612,7 +577,7 @@ pub(crate) fn run_flow(
     .build()?;
     debug!("Created execution plan: {:#?}", &execution_plan);
 
-    run_task_flow(&flow_info, flow_state, &execution_plan)?;
+    run_task_flow(flow_info, flow_state, &execution_plan)?;
 
     Ok(())
 }
@@ -632,15 +597,12 @@ fn run_protected_flow(
     let exit_code = command::run_command(&proxy_task.command.unwrap(), &proxy_task.args, false)?;
 
     if exit_code != 0 {
-        match flow_info.config.config.on_error_task {
-            Some(ref on_error_task) => {
-                let mut error_flow_info = flow_info.clone();
-                error_flow_info.disable_on_error = true;
-                error_flow_info.task = on_error_task.clone();
+        if let Some(ref on_error_task) = flow_info.config.config.on_error_task {
+            let mut error_flow_info = flow_info.clone();
+            error_flow_info.disable_on_error = true;
+            error_flow_info.task = on_error_task.clone();
 
-                run_flow(&error_flow_info, flow_state, false)?;
-            }
-            _ => (),
+            run_flow(&error_flow_info, flow_state, false)?;
         };
 
         error!("Task error detected, exit code: {}", &exit_code);
@@ -661,7 +623,7 @@ pub fn run(
     start_time: SystemTime,
     time_summary_vec: Vec<(String, u128)>,
 ) -> Result<(), CargoMakeError> {
-    time_summary::init(&config, &cli_args);
+    time_summary::init(&config, cli_args);
 
     let skip_tasks_pattern = match cli_args.skip_tasks_pattern {
         Some(ref pattern) => match Regex::new(pattern) {

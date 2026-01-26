@@ -54,7 +54,7 @@ fn merge_tasks(
         let mut task = value.clone();
 
         task = match base.get(key) {
-            Some(ref value) => {
+            Some(value) => {
                 let mut merged_task = Task::new();
 
                 merged_task.extend(value);
@@ -62,7 +62,7 @@ fn merge_tasks(
 
                 if merge_task_env && value.env.is_some() && task.env.is_some() {
                     let extended_env = task.env.clone().unwrap();
-                    let clear = task.clear.clone().unwrap_or(false);
+                    let clear = task.clear.unwrap_or(false);
                     if extended_env.len() == 2
                         && extended_env.contains_key("CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE")
                         && extended_env
@@ -95,31 +95,28 @@ fn add_file_location_info(
         None => "".to_string(),
     };
 
-    match external_config.env_files {
-        Some(env_files) => {
-            let mut modified_env_files = vec![];
+    if let Some(env_files) = external_config.env_files {
+        let mut modified_env_files = vec![];
 
-            for env_file in env_files {
-                match env_file {
-                    EnvFile::Path(path) => {
-                        let mut info = EnvFileInfo::new(path);
+        for env_file in env_files {
+            match env_file {
+                EnvFile::Path(path) => {
+                    let mut info = EnvFileInfo::new(path);
+                    info.base_path = Some(base_directory.clone());
+
+                    modified_env_files.push(EnvFile::Info(info));
+                }
+                EnvFile::Info(mut info) => {
+                    if info.base_path.is_none() {
                         info.base_path = Some(base_directory.clone());
-
-                        modified_env_files.push(EnvFile::Info(info));
                     }
-                    EnvFile::Info(mut info) => {
-                        if info.base_path.is_none() {
-                            info.base_path = Some(base_directory.clone());
-                        }
 
-                        modified_env_files.push(EnvFile::Info(info));
-                    }
+                    modified_env_files.push(EnvFile::Info(info));
                 }
             }
-
-            external_config.env_files = Some(modified_env_files);
         }
-        None => (),
+
+        external_config.env_files = Some(modified_env_files);
     };
 
     let mut tasks_map = IndexMap::new();
@@ -181,36 +178,24 @@ fn merge_external_configs(
     parent_config: ExternalConfig,
 ) -> Result<ExternalConfig, CargoMakeError> {
     // merge env files
-    let mut parent_env_files = match parent_config.env_files {
-        Some(env_files) => env_files,
-        None => vec![],
-    };
-    let mut extended_env_files = match config.env_files {
-        Some(env_files) => env_files,
-        None => vec![],
-    };
+    let mut parent_env_files = parent_config.env_files.unwrap_or_default();
+    let mut extended_env_files = config.env_files.unwrap_or_default();
     let all_env_files = merge_env_files(&mut parent_env_files, &mut extended_env_files);
 
     // merge env
-    let mut parent_env = match parent_config.env {
+    let parent_env = match parent_config.env {
         Some(env) => env,
         None => IndexMap::new(),
     };
-    let mut extended_env = match config.env {
+    let extended_env = match config.env {
         Some(env) => env,
         None => IndexMap::new(),
     };
-    let all_env = merge_env(&mut parent_env, &mut extended_env)?;
+    let all_env = merge_env(&parent_env, &extended_env)?;
 
     // merge env scripts
-    let mut parent_env_scripts = match parent_config.env_scripts {
-        Some(env_scripts) => env_scripts,
-        None => vec![],
-    };
-    let mut extended_env_scripts = match config.env_scripts {
-        Some(env_scripts) => env_scripts,
-        None => vec![],
-    };
+    let mut parent_env_scripts = parent_config.env_scripts.unwrap_or_default();
+    let mut extended_env_scripts = config.env_scripts.unwrap_or_default();
     let all_env_scripts = merge_env_scripts(&mut parent_env_scripts, &mut extended_env_scripts);
 
     // merge tasks
@@ -257,7 +242,7 @@ fn load_descriptor_extended_makefiles(
 ) -> Result<ExternalConfig, CargoMakeError> {
     match extend_struct {
         Extend::Path(base_file) => {
-            load_external_descriptor(parent_path, &base_file, true, false, RelativeTo::Makefile)
+            load_external_descriptor(parent_path, base_file, true, false, RelativeTo::Makefile)
         }
         Extend::Options(extend_options) => {
             let force = !extend_options.optional.unwrap_or(false);
@@ -302,7 +287,7 @@ fn load_descriptor_extended_makefiles(
 /// Ensure the Makefile's min_version, if present, is older than cargo-make's
 /// currently running version.
 fn check_makefile_min_version(external_descriptor: &str) -> Result<(), CargoMakeError> {
-    let value: toml::Value = match toml::from_str(&external_descriptor) {
+    let value: toml::Value = match toml::from_str(external_descriptor) {
         Ok(value) => value,
         // If there's an error parsing the file, let the caller function figure
         // it out
@@ -315,7 +300,7 @@ fn check_makefile_min_version(external_descriptor: &str) -> Result<(), CargoMake
         .and_then(|min_ver| min_ver.as_str());
 
     if let Some(ref min_version) = min_version {
-        if version::is_newer_found(&min_version) {
+        if version::is_newer_found(min_version) {
             return Err(CargoMakeError::VersionTooOld(min_version.to_string()));
         }
     }
@@ -404,7 +389,7 @@ fn load_external_descriptor(
                 debug!("External config parent path: {}", &parent_path);
 
                 let base_file_config =
-                    load_descriptor_extended_makefiles(&parent_path, extend_struct)?;
+                    load_descriptor_extended_makefiles(parent_path, extend_struct)?;
 
                 merge_external_configs(file_config.clone(), base_file_config)
             }
@@ -436,7 +421,7 @@ pub(crate) fn load_internal_descriptors(
         makefiles::BASE
     };
 
-    let mut base_config = descriptor_deserializer::load_config(&base_descriptor, false)?;
+    let mut base_config = descriptor_deserializer::load_config(base_descriptor, false)?;
     debug!("Loaded base config: {:#?}", &base_config);
 
     if experimental {
@@ -444,7 +429,7 @@ pub(crate) fn load_internal_descriptors(
         let experimental_descriptor = makefiles::BETA;
 
         let experimental_config =
-            descriptor_deserializer::load_config(&experimental_descriptor, false)?;
+            descriptor_deserializer::load_config(experimental_descriptor, false)?;
         debug!("Loaded experimental config: {:#?}", &experimental_config);
 
         let mut base_tasks = base_config.tasks;
@@ -458,21 +443,15 @@ pub(crate) fn load_internal_descriptors(
     envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE", "");
     envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", "");
 
-    match modify_config {
-        Some(props) => {
-            base_config.apply(&props);
+    if let Some(props) = modify_config {
+        base_config.apply(&props);
 
-            match props.namespace {
-                Some(ref namespace) => {
-                    let prefix = props.get_namespace_prefix();
+        if let Some(ref namespace) = props.namespace {
+            let prefix = props.get_namespace_prefix();
 
-                    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE", &namespace);
-                    envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
-                }
-                None => (),
-            };
-        }
-        None => (),
+            envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE", namespace);
+            envmnt::set("CARGO_MAKE_CORE_TASK_NAMESPACE_PREFIX", &prefix);
+        };
     };
 
     Ok(base_config)
@@ -490,24 +469,18 @@ fn merge_base_config_and_external_config(
     };
     let mut base_tasks = base_config.tasks;
 
-    let env_files = match external_config.env_files {
-        Some(env_files) => env_files,
-        None => vec![],
-    };
+    let env_files = external_config.env_files.unwrap_or_default();
 
-    let env_scripts = match external_config.env_scripts {
-        Some(env_scripts) => env_scripts,
-        None => vec![],
-    };
+    let env_scripts = external_config.env_scripts.unwrap_or_default();
 
-    let mut external_env = match external_config.env {
+    let external_env = match external_config.env {
         Some(env) => env,
         None => IndexMap::new(),
     };
-    let mut base_env = base_config.env;
+    let base_env = base_config.env;
 
     // merge env
-    let mut all_env = merge_env(&mut base_env, &mut external_env)?;
+    let mut all_env = merge_env(&base_env, &external_env)?;
     all_env = match env_map {
         Some(values) => {
             let mut cli_env = IndexMap::new();
@@ -538,7 +511,7 @@ fn merge_base_config_and_external_config(
     let all_tasks = merge_tasks(&mut base_tasks, &mut external_tasks, late_merge);
 
     let mut config_section = base_config.config.clone();
-    config_section.extend(&mut external_config.config.unwrap_or(ConfigSection::new()));
+    config_section.extend(&mut external_config.config.unwrap_or_default());
 
     let plugins = merge_plugins_config(base_config.plugins, external_config.plugins);
 
@@ -555,9 +528,8 @@ fn merge_base_config_and_external_config(
 }
 
 fn split_once(value: &str, delimiter: char) -> Option<(&str, &str)> {
-    let mut parts = value.splitn(2, delimiter);
-    let part1 = parts.next()?;
-    let part2 = parts.next()?;
+    let (part1, part2) = value.split_once(delimiter)?;
+
     Some((part1, part2))
 }
 
@@ -651,7 +623,7 @@ pub fn load(
     experimental: bool,
 ) -> Result<Config, CargoMakeError> {
     // load extended descriptor only
-    let mut config = load_descriptors(&file_name, force, env_map.clone(), false, false, None)?;
+    let mut config = load_descriptors(file_name, force, env_map.clone(), false, false, None)?;
 
     // need to load core tasks as well
     if !config.config.skip_core_tasks.unwrap_or(false) {
@@ -662,7 +634,7 @@ pub fn load(
                 if modify_config.is_modifications_defined() {
                     // reload everything with core modifications
                     config = load_descriptors(
-                        &file_name,
+                        file_name,
                         force,
                         env_map.clone(),
                         true,

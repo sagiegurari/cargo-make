@@ -13,7 +13,7 @@ use crate::toolchain;
 use crate::types::{CommandSpec, Step, UnstableFeature};
 use run_script::{IoOptions, ScriptError, ScriptOptions};
 use std::io;
-use std::io::{Error, ErrorKind, Read};
+use std::io::{Error, Read};
 use std::process::{Command, ExitStatus, Output, Stdio};
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Once;
@@ -23,10 +23,7 @@ pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool)
     match exit_status {
         Ok(code) => {
             if !code.success() {
-                match code.code() {
-                    Some(value) => value,
-                    None => -1,
-                }
+                code.code().unwrap_or(-1)
             } else {
                 0
             }
@@ -43,8 +40,8 @@ pub(crate) fn get_exit_code(exit_status: Result<ExitStatus, Error>, force: bool)
 
 pub(crate) fn get_exit_code_from_output(output: &io::Result<Output>, force: bool) -> i32 {
     match output {
-        &Ok(ref output_struct) => get_exit_code(Ok(output_struct.status), force),
-        &Err(ref error) => {
+        Ok(output_struct) => get_exit_code(Ok(output_struct.status), force),
+        Err(error) => {
             if !force {
                 error!("Error while executing command, error: {:#?}", error);
             }
@@ -73,11 +70,7 @@ fn is_silent() -> bool {
 fn is_silent_for_level(log_level: String) -> bool {
     let level = logger::get_level(&log_level);
 
-    match level {
-        logger::LogLevel::ERROR => true,
-        logger::LogLevel::OFF => true,
-        _ => false,
-    }
+    matches!(level, logger::LogLevel::Error | logger::LogLevel::Off)
 }
 
 fn should_print_commands_by_default() -> bool {
@@ -85,7 +78,7 @@ fn should_print_commands_by_default() -> bool {
     let level = logger::get_level(&log_level);
 
     match level {
-        logger::LogLevel::OFF => false,
+        logger::LogLevel::Off => false,
         _ => {
             if should_print_commands_for_level(log_level) {
                 true
@@ -102,13 +95,11 @@ fn should_print_commands_by_default() -> bool {
 fn should_print_commands_for_level(log_level: String) -> bool {
     let level = logger::get_level(&log_level);
 
-    match level {
-        logger::LogLevel::VERBOSE => true,
-        _ => false,
-    }
+    matches!(level, logger::LogLevel::Verbose)
 }
 
 /// Runs the requested script text and returns its output.
+#[allow(clippy::ptr_arg)] // for run_script::run API signature
 pub(crate) fn run_script_get_output(
     script_lines: &Vec<String>,
     script_runner: Option<String>,
@@ -149,7 +140,7 @@ pub(crate) fn run_script_get_exit_code(
     cli_arguments: &Vec<String>,
     validate: bool,
 ) -> Result<i32, CargoMakeError> {
-    let output = run_script_get_output(&script_lines, script_runner, cli_arguments, false, None);
+    let output = run_script_get_output(script_lines, script_runner, cli_arguments, false, None);
 
     let exit_code = match output {
         Ok(output_struct) => output_struct.0,
@@ -173,7 +164,7 @@ pub(crate) fn run_command_get_output(
     let silent = is_silent();
 
     debug!("Execute Command: {}", &command_string);
-    let mut command = Command::new(&command_string);
+    let mut command = Command::new(command_string);
 
     match *args {
         Some(ref args_vec) => {
@@ -221,10 +212,7 @@ fn spawn_command(mut command: Command) -> io::Result<Output> {
     });
 
     if CTRL_C_COUNT.load(Ordering::Relaxed) != 0 {
-        Err(Error::new(
-            ErrorKind::Other,
-            "Shutting down - cannot run the command.",
-        ))?;
+        Err(Error::other("Shutting down - cannot run the command."))?;
     }
 
     let mut process = command.spawn()?;
@@ -267,7 +255,7 @@ pub(crate) fn run_command(
     args: &Option<Vec<String>>,
     validate: bool,
 ) -> Result<i32, CargoMakeError> {
-    let output = run_command_get_output(&command_string, &args, false);
+    let output = run_command_get_output(command_string, args, false);
 
     let exit_code = get_exit_code_from_output(&output, !validate);
 
@@ -283,7 +271,7 @@ pub(crate) fn run_command_get_output_string(
     command_string: &str,
     args: &Option<Vec<String>>,
 ) -> Option<String> {
-    let output = run_command_get_output(&command_string, &args, true);
+    let output = run_command_get_output(command_string, args, true);
 
     let exit_code = get_exit_code_from_output(&output, true);
 
@@ -308,7 +296,7 @@ pub(crate) fn run(step: &Step) -> Result<(), CargoMakeError> {
         Some(ref command_string) => {
             let command_spec = match step.config.toolchain {
                 Some(ref toolchain) => {
-                    toolchain::wrap_command(&toolchain, &command_string, &step.config.args)
+                    toolchain::wrap_command(toolchain, command_string, &step.config.args)
                 }
                 None => CommandSpec {
                     command: command_string.to_string(),

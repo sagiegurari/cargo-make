@@ -10,7 +10,7 @@ use crate::error::CargoMakeError;
 #[path = "trim_func_test.rs"]
 mod trim_func_test;
 
-pub(crate) fn invoke(function_args: &Vec<String>) -> Result<Vec<String>, CargoMakeError> {
+pub(crate) fn invoke(function_args: &[String]) -> Result<Vec<String>, CargoMakeError> {
     if function_args.len() > 2 {
         return Err(CargoMakeError::Arity("trim expects up to 2 arguments (environment variable name and optionally start/end trim flag)"));
     }
@@ -36,7 +36,7 @@ pub(crate) fn invoke(function_args: &Vec<String>) -> Result<Vec<String>, CargoMa
         }
     };
 
-    if trimmed_value.len() > 0 {
+    if !trimmed_value.is_empty() {
         Ok(vec![trimmed_value])
     } else {
         Ok(vec![])

@@ -12,22 +12,21 @@ pub(crate) fn is_time_summary_enabled() -> bool {
 }
 
 pub(crate) fn add(time_summary: &mut Vec<(String, u128)>, name: &str, start_time: SystemTime) {
-    match start_time.elapsed() {
-        Ok(elapsed) => time_summary.push((name.to_string(), elapsed.as_millis())),
-        _ => (),
+    if let Ok(elapsed) = start_time.elapsed() {
+        time_summary.push((name.to_string(), elapsed.as_millis()))
     };
 }
 
-pub(crate) fn print(time_summary: &Vec<(String, u128)>) {
+pub(crate) fn print(time_summary: &[(String, u128)]) {
     if is_time_summary_enabled() {
-        let mut time_summary_sorted = time_summary.clone();
+        let mut time_summary_sorted = time_summary.to_owned();
         time_summary_sorted
             .sort_by(|entry1, entry2| entry2.1.partial_cmp(&entry1.1).unwrap_or(Ordering::Equal));
 
         let mut total_time = 0;
         let mut max_name_size = 0;
         for entry in &time_summary_sorted {
-            total_time = total_time + entry.1;
+            total_time += entry.1;
             let name_size = entry.0.len();
             if max_name_size < name_size {
                 max_name_size = name_size;

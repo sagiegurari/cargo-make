@@ -15,16 +15,16 @@ use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 
 pub(crate) fn create_script_file(
-    script_text: &Vec<String>,
+    script_text: &[String],
     extension: &str,
 ) -> Result<String, CargoMakeError> {
     let text = script_text.join("\n");
 
-    create_text_file(&text, &extension)
+    create_text_file(&text, extension)
 }
 
 pub(crate) fn create_persisted_script_file(
-    script_text: &Vec<String>,
+    script_text: &[String],
     extension: &str,
 ) -> Result<String, CargoMakeError> {
     match create_persisted_script_file_with_options(script_text, extension, None) {
@@ -37,7 +37,7 @@ pub(crate) fn create_persisted_script_file(
 }
 
 fn create_persisted_script_file_with_options(
-    script_text: &Vec<String>,
+    script_text: &[String],
     extension: &str,
     filename_limit: Option<usize>,
 ) -> Result<String, CargoMakeError> {

@@ -30,7 +30,7 @@ pub fn get_platform_name() -> String {
 fn get_namespaced_task_name(namespace: &str, task: &str) -> String {
     let mut namespaced_task = String::new();
 
-    if namespace.len() > 0 {
+    if !namespace.is_empty() {
         namespaced_task.push_str(namespace);
         namespaced_task.push_str("::");
     }
@@ -131,6 +131,12 @@ pub struct CliArgs {
     pub print_time_summary: bool,
     /// Hide any minor tasks such as pre/post hooks
     pub hide_uninteresting: bool,
+}
+
+impl Default for CliArgs {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CliArgs {
@@ -627,10 +633,7 @@ impl PartialEq for InstallCargoPluginInfo {
                 Some(ref other_crate_name) => crate_name == other_crate_name,
                 None => false,
             },
-            None => match other.crate_name {
-                None => true,
-                _ => false,
-            },
+            None => other.crate_name.is_none(),
         };
         if !same {
             return false;
@@ -641,10 +644,7 @@ impl PartialEq for InstallCargoPluginInfo {
                 Some(ref other_min_version) => min_version == other_min_version,
                 None => false,
             },
-            None => match other.min_version {
-                None => true,
-                _ => false,
-            },
+            None => other.min_version.is_none(),
         };
         if !same {
             return false;
@@ -655,10 +655,7 @@ impl PartialEq for InstallCargoPluginInfo {
                 Some(ref other_install_command) => install_command == other_install_command,
                 None => false,
             },
-            None => match other.install_command {
-                None => true,
-                _ => false,
-            },
+            None => other.install_command.is_none(),
         };
         if !same {
             return false;
@@ -669,10 +666,7 @@ impl PartialEq for InstallCargoPluginInfo {
                 Some(ref other_force) => force == other_force,
                 None => false,
             },
-            None => match other.force {
-                None => true,
-                _ => false,
-            },
+            None => other.force.is_none(),
         }
     }
 }
@@ -710,18 +704,11 @@ impl PartialEq for InstallCrateInfo {
         let mut same = match self.rustup_component_name {
             Some(ref rustup_component_name) => match other.rustup_component_name {
                 Some(ref other_rustup_component_name) => {
-                    if rustup_component_name == other_rustup_component_name {
-                        true
-                    } else {
-                        false
-                    }
+                    rustup_component_name == other_rustup_component_name
                 }
                 None => false,
             },
-            None => match other.rustup_component_name {
-                None => true,
-                _ => false,
-            },
+            None => other.rustup_component_name.is_none(),
         };
         if !same {
             return false;
@@ -732,10 +719,7 @@ impl PartialEq for InstallCrateInfo {
                 Some(ref other_min_version) => min_version == other_min_version,
                 None => false,
             },
-            None => match other.min_version {
-                None => true,
-                _ => false,
-            },
+            None => other.min_version.is_none(),
         };
         if !same {
             return false;
@@ -746,10 +730,7 @@ impl PartialEq for InstallCrateInfo {
                 Some(ref other_version) => version == other_version,
                 None => false,
             },
-            None => match other.version {
-                None => true,
-                _ => false,
-            },
+            None => other.version.is_none(),
         };
         if !same {
             return false;
@@ -760,10 +741,7 @@ impl PartialEq for InstallCrateInfo {
                 Some(ref other_install_command) => install_command == other_install_command,
                 None => false,
             },
-            None => match other.install_command {
-                None => true,
-                _ => false,
-            },
+            None => other.install_command.is_none(),
         };
         if !same {
             return false;
@@ -774,10 +752,7 @@ impl PartialEq for InstallCrateInfo {
                 Some(ref other_force) => force == other_force,
                 None => false,
             },
-            None => match other.force {
-                None => true,
-                _ => false,
-            },
+            None => other.force.is_none(),
         }
     }
 }
@@ -803,10 +778,7 @@ impl PartialEq for InstallRustupComponentInfo {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
-                None => match other.binary {
-                    None => true,
-                    _ => false,
-                },
+                None => other.binary.is_none(),
             };
 
             if same {
@@ -949,10 +921,7 @@ impl PartialEq for WatchOptions {
                 Some(ref other_value) => value == other_value,
                 None => false,
             },
-            None => match other.version {
-                None => true,
-                _ => false,
-            },
+            None => other.version.is_none(),
         };
 
         same = if same {
@@ -961,10 +930,7 @@ impl PartialEq for WatchOptions {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
-                None => match other.postpone {
-                    None => true,
-                    _ => false,
-                },
+                None => other.postpone.is_none(),
             }
         } else {
             false
@@ -976,10 +942,7 @@ impl PartialEq for WatchOptions {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
-                None => match other.ignore_pattern {
-                    None => true,
-                    _ => false,
-                },
+                None => other.ignore_pattern.is_none(),
             }
         } else {
             false
@@ -991,10 +954,7 @@ impl PartialEq for WatchOptions {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
-                None => match other.no_git_ignore {
-                    None => true,
-                    _ => false,
-                },
+                None => other.no_git_ignore.is_none(),
             }
         } else {
             false
@@ -1006,10 +966,7 @@ impl PartialEq for WatchOptions {
                     Some(ref other_value) => value == other_value,
                     None => false,
                 },
-                None => match other.watch {
-                    None => true,
-                    _ => false,
-                },
+                None => other.watch.is_none(),
             }
         } else {
             false
@@ -1226,7 +1183,7 @@ impl ToolchainSpecifier {
     /// Return the channel of the toolchain to look for
     pub fn channel(&self) -> &str {
         match self {
-            Self::Simple(ref channel) => &channel,
+            Self::Simple(ref channel) => channel,
             Self::Bounded(ToolchainBoundedSpecifier { ref channel, .. }) => channel,
         }
     }
@@ -1324,9 +1281,9 @@ impl TaskIdentifier {
     }
 }
 
-impl Into<TaskIdentifier> for DependencyIdentifier {
-    fn into(self) -> TaskIdentifier {
-        match self {
+impl From<DependencyIdentifier> for TaskIdentifier {
+    fn from(val: DependencyIdentifier) -> Self {
+        match val {
             DependencyIdentifier::Definition(identifier) => identifier,
             DependencyIdentifier::Name(name) => TaskIdentifier { name, path: None },
         }
@@ -1341,64 +1298,81 @@ impl Task {
 
     /// Apply modifications
     pub fn apply(self: &mut Task, modify_config: &ModifyConfig) {
-        match modify_config.private {
-            Some(value) => {
-                if value {
-                    self.private = Some(true);
-                }
+        if let Some(value) = modify_config.private {
+            if value {
+                self.private = Some(true);
             }
-            None => (),
         };
 
-        match modify_config.namespace {
-            Some(ref namespace) => {
-                if namespace.len() > 0 {
-                    if self.extend.is_some() {
-                        self.extend = Some(get_namespaced_task_name(
-                            namespace,
-                            &self.extend.clone().unwrap(),
-                        ));
-                    }
+        if let Some(ref namespace) = modify_config.namespace {
+            if !namespace.is_empty() {
+                if self.extend.is_some() {
+                    self.extend = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.extend.clone().unwrap(),
+                    ));
+                }
 
-                    if self.alias.is_some() {
-                        self.alias = Some(get_namespaced_task_name(
-                            namespace,
-                            &self.alias.clone().unwrap(),
-                        ));
-                    }
+                if self.alias.is_some() {
+                    self.alias = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.alias.clone().unwrap(),
+                    ));
+                }
 
-                    if self.linux_alias.is_some() {
-                        self.linux_alias = Some(get_namespaced_task_name(
-                            namespace,
-                            &self.linux_alias.clone().unwrap(),
-                        ));
-                    }
+                if self.linux_alias.is_some() {
+                    self.linux_alias = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.linux_alias.clone().unwrap(),
+                    ));
+                }
 
-                    if self.windows_alias.is_some() {
-                        self.windows_alias = Some(get_namespaced_task_name(
-                            namespace,
-                            &self.windows_alias.clone().unwrap(),
-                        ));
-                    }
+                if self.windows_alias.is_some() {
+                    self.windows_alias = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.windows_alias.clone().unwrap(),
+                    ));
+                }
 
-                    if self.mac_alias.is_some() {
-                        self.mac_alias = Some(get_namespaced_task_name(
-                            namespace,
-                            &self.mac_alias.clone().unwrap(),
-                        ));
-                    }
+                if self.mac_alias.is_some() {
+                    self.mac_alias = Some(get_namespaced_task_name(
+                        namespace,
+                        &self.mac_alias.clone().unwrap(),
+                    ));
+                }
 
-                    if self.run_task.is_some() {
-                        let mut run_task = self.run_task.clone().unwrap();
+                if self.run_task.is_some() {
+                    let mut run_task = self.run_task.clone().unwrap();
 
-                        run_task = match run_task {
-                            RunTaskInfo::Name(value) => {
-                                RunTaskInfo::Name(get_namespaced_task_name(namespace, &value))
-                            }
-                            RunTaskInfo::Details(mut run_task_details) => {
-                                match run_task_details.name {
+                    run_task = match run_task {
+                        RunTaskInfo::Name(value) => {
+                            RunTaskInfo::Name(get_namespaced_task_name(namespace, &value))
+                        }
+                        RunTaskInfo::Details(mut run_task_details) => {
+                            match run_task_details.name {
+                                RunTaskName::Single(ref name) => {
+                                    run_task_details.name = RunTaskName::Single(
+                                        get_namespaced_task_name(namespace, name),
+                                    )
+                                }
+                                RunTaskName::Multiple(ref names) => {
+                                    let mut updated_names = vec![];
+                                    for name in names {
+                                        updated_names
+                                            .push(get_namespaced_task_name(namespace, name));
+                                    }
+
+                                    run_task_details.name = RunTaskName::Multiple(updated_names);
+                                }
+                            };
+
+                            RunTaskInfo::Details(run_task_details)
+                        }
+                        RunTaskInfo::Routing(mut routing_info_vector) => {
+                            for routing_info in &mut routing_info_vector {
+                                match routing_info.name {
                                     RunTaskName::Single(ref name) => {
-                                        run_task_details.name = RunTaskName::Single(
+                                        routing_info.name = RunTaskName::Single(
                                             get_namespaced_task_name(namespace, name),
                                         )
                                     }
@@ -1409,53 +1383,27 @@ impl Task {
                                                 .push(get_namespaced_task_name(namespace, name));
                                         }
 
-                                        run_task_details.name =
-                                            RunTaskName::Multiple(updated_names);
+                                        routing_info.name = RunTaskName::Multiple(updated_names);
                                     }
                                 };
-
-                                RunTaskInfo::Details(run_task_details)
                             }
-                            RunTaskInfo::Routing(mut routing_info_vector) => {
-                                for routing_info in &mut routing_info_vector {
-                                    match routing_info.name {
-                                        RunTaskName::Single(ref name) => {
-                                            routing_info.name = RunTaskName::Single(
-                                                get_namespaced_task_name(namespace, name),
-                                            )
-                                        }
-                                        RunTaskName::Multiple(ref names) => {
-                                            let mut updated_names = vec![];
-                                            for name in names {
-                                                updated_names.push(get_namespaced_task_name(
-                                                    namespace, name,
-                                                ));
-                                            }
 
-                                            routing_info.name =
-                                                RunTaskName::Multiple(updated_names);
-                                        }
-                                    };
-                                }
+                            RunTaskInfo::Routing(routing_info_vector)
+                        }
+                    };
 
-                                RunTaskInfo::Routing(routing_info_vector)
-                            }
-                        };
+                    self.run_task = Some(run_task);
+                }
 
-                        self.run_task = Some(run_task);
-                    }
-
-                    if let Some(dependencies) = &self.dependencies {
-                        self.dependencies = Some(
-                            dependencies
-                                .iter()
-                                .map(|identifier| identifier.to_owned().with_namespace(namespace))
-                                .collect(),
-                        );
-                    }
+                if let Some(dependencies) = &self.dependencies {
+                    self.dependencies = Some(
+                        dependencies
+                            .iter()
+                            .map(|identifier| identifier.to_owned().with_namespace(namespace))
+                            .collect(),
+                    );
                 }
             }
-            None => (),
         };
     }
 
@@ -1465,13 +1413,10 @@ impl Task {
     ///
     /// * `task` - The task to copy from
     pub fn extend(self: &mut Task, task: &Task) {
-        let override_values = match task.clear {
-            Some(value) => value,
-            None => false,
-        };
+        let override_values = task.clear.unwrap_or_default();
 
         if task.clear.is_some() {
-            self.clear = task.clear.clone();
+            self.clear = task.clear;
         }
 
         if task.description.is_some() {
@@ -1487,13 +1432,13 @@ impl Task {
         }
 
         if task.disabled.is_some() {
-            self.disabled = task.disabled.clone();
+            self.disabled = task.disabled;
         } else if override_values {
             self.disabled = None;
         }
 
         if task.private.is_some() {
-            self.private = task.private.clone();
+            self.private = task.private;
         } else if override_values {
             self.private = None;
         }
@@ -1511,7 +1456,7 @@ impl Task {
         }
 
         if task.workspace.is_some() {
-            self.workspace = task.workspace.clone();
+            self.workspace = task.workspace;
         } else if override_values {
             self.workspace = None;
         }
@@ -1547,13 +1492,13 @@ impl Task {
         }
 
         if task.ignore_errors.is_some() {
-            self.ignore_errors = task.ignore_errors.clone();
+            self.ignore_errors = task.ignore_errors;
         } else if override_values {
             self.ignore_errors = None;
         }
 
         if task.force.is_some() {
-            self.force = task.force.clone();
+            self.force = task.force;
         } else if override_values {
             self.force = None;
         }
@@ -1711,20 +1656,11 @@ impl Task {
     fn get_override(self: &Task) -> Option<PlatformOverrideTask> {
         let platform_name = get_platform_name();
         if platform_name == "windows" {
-            match self.windows {
-                Some(ref value) => Some(value.clone()),
-                _ => None,
-            }
+            self.windows.clone()
         } else if platform_name == "mac" {
-            match self.mac {
-                Some(ref value) => Some(value.clone()),
-                _ => None,
-            }
+            self.mac.clone()
         } else {
-            match self.linux {
-                Some(ref value) => Some(value.clone()),
-                _ => None,
-            }
+            self.linux.clone()
         }
     }
 
@@ -1735,14 +1671,14 @@ impl Task {
                 override_task.extend(self);
 
                 Task {
-                    clear: self.clear.clone(),
+                    clear: self.clear,
                     description: self.description.clone(),
                     category: self.category.clone(),
-                    disabled: override_task.disabled.clone(),
-                    private: override_task.private.clone(),
+                    disabled: override_task.disabled,
+                    private: override_task.private,
                     deprecated: override_task.deprecated.clone(),
                     extend: override_task.extend.clone(),
-                    workspace: self.workspace.clone(),
+                    workspace: self.workspace,
                     plugin: override_task.plugin.clone(),
                     watch: override_task.watch.clone(),
                     condition: override_task.condition.clone(),
@@ -1750,8 +1686,8 @@ impl Task {
                     condition_script_runner_args: override_task
                         .condition_script_runner_args
                         .clone(),
-                    ignore_errors: override_task.ignore_errors.clone(),
-                    force: override_task.force.clone(),
+                    ignore_errors: override_task.ignore_errors,
+                    force: override_task.force,
                     env_files: override_task.env_files.clone(),
                     env: override_task.env.clone(),
                     cwd: override_task.cwd.clone(),
@@ -1801,10 +1737,7 @@ impl Task {
 
         match alias {
             Some(os_alias) => Some(os_alias.clone()),
-            _ => match self.alias {
-                Some(ref alias) => Some(alias.clone()),
-                _ => None,
-            },
+            _ => self.alias.clone(),
         }
     }
 
@@ -1813,13 +1746,13 @@ impl Task {
         let mut actions_count = 0;
 
         if self.run_task.is_some() {
-            actions_count = actions_count + 1;
+            actions_count += 1;
         }
         if self.command.is_some() {
-            actions_count = actions_count + 1;
+            actions_count += 1;
         }
         if self.script.is_some() {
-            actions_count = actions_count + 1;
+            actions_count += 1;
         }
 
         actions_count
@@ -1842,7 +1775,7 @@ impl Task {
         }
 
         let mut actionable = match self.env {
-            Some(ref value) => value.len() > 0,
+            Some(ref value) => !value.is_empty(),
             None => false,
         };
         if actionable {
@@ -1850,7 +1783,7 @@ impl Task {
         }
 
         actionable = match self.env_files {
-            Some(ref value) => value.len() > 0,
+            Some(ref value) => !value.is_empty(),
             None => false,
         };
         if actionable {
@@ -1858,7 +1791,7 @@ impl Task {
         }
 
         actionable = match self.dependencies {
-            Some(ref value) => value.len() > 0,
+            Some(ref value) => !value.is_empty(),
             None => false,
         };
         if actionable {
@@ -1880,11 +1813,7 @@ impl Task {
     pub fn is_valid(self: &Task) -> bool {
         let actions_count = self.get_actions_count();
 
-        if actions_count <= 1 {
-            true
-        } else {
-            false
-        }
+        actions_count <= 1
     }
 }
 
@@ -1961,11 +1890,11 @@ impl PlatformOverrideTask {
 
         if copy_values {
             if self.disabled.is_none() && task.disabled.is_some() {
-                self.disabled = task.disabled.clone();
+                self.disabled = task.disabled;
             }
 
             if self.private.is_none() && task.private.is_some() {
-                self.private = task.private.clone();
+                self.private = task.private;
             }
 
             if self.deprecated.is_none() && task.deprecated.is_some() {
@@ -1999,11 +1928,11 @@ impl PlatformOverrideTask {
             }
 
             if self.ignore_errors.is_none() && task.ignore_errors.is_some() {
-                self.ignore_errors = task.ignore_errors.clone();
+                self.ignore_errors = task.ignore_errors;
             }
 
             if self.force.is_none() && task.force.is_some() {
-                self.force = task.force.clone();
+                self.force = task.force;
             }
 
             if self.env_files.is_none() && task.env_files.is_some() {
@@ -2110,7 +2039,7 @@ impl ModifyConfig {
             true
         } else {
             match self.namespace {
-                Some(ref value) => value.len() > 0,
+                Some(ref value) => !value.is_empty(),
                 None => false,
             }
         }
@@ -2204,37 +2133,34 @@ impl ConfigSection {
 
     /// Apply modifications
     pub fn apply(self: &mut ConfigSection, modify_config: &ModifyConfig) {
-        match modify_config.namespace {
-            Some(ref namespace) => {
-                if self.init_task.is_some() {
-                    self.init_task = Some(get_namespaced_task_name(
-                        namespace,
-                        &self.init_task.clone().unwrap(),
-                    ));
-                }
-
-                if self.end_task.is_some() {
-                    self.end_task = Some(get_namespaced_task_name(
-                        namespace,
-                        &self.end_task.clone().unwrap(),
-                    ));
-                }
-
-                if self.on_error_task.is_some() {
-                    self.on_error_task = Some(get_namespaced_task_name(
-                        namespace,
-                        &self.on_error_task.clone().unwrap(),
-                    ));
-                }
-
-                if self.legacy_migration_task.is_some() {
-                    self.legacy_migration_task = Some(get_namespaced_task_name(
-                        namespace,
-                        &self.legacy_migration_task.clone().unwrap(),
-                    ));
-                }
+        if let Some(ref namespace) = modify_config.namespace {
+            if self.init_task.is_some() {
+                self.init_task = Some(get_namespaced_task_name(
+                    namespace,
+                    &self.init_task.clone().unwrap(),
+                ));
             }
-            None => (),
+
+            if self.end_task.is_some() {
+                self.end_task = Some(get_namespaced_task_name(
+                    namespace,
+                    &self.end_task.clone().unwrap(),
+                ));
+            }
+
+            if self.on_error_task.is_some() {
+                self.on_error_task = Some(get_namespaced_task_name(
+                    namespace,
+                    &self.on_error_task.clone().unwrap(),
+                ));
+            }
+
+            if self.legacy_migration_task.is_some() {
+                self.legacy_migration_task = Some(get_namespaced_task_name(
+                    namespace,
+                    &self.legacy_migration_task.clone().unwrap(),
+                ));
+            }
         }
     }
 
@@ -2245,7 +2171,7 @@ impl ConfigSection {
     /// * `task` - The task to copy from
     pub fn extend(self: &mut ConfigSection, extended: &mut ConfigSection) {
         if extended.skip_core_tasks.is_some() {
-            self.skip_core_tasks = extended.skip_core_tasks.clone();
+            self.skip_core_tasks = extended.skip_core_tasks;
         }
 
         if extended.modify_core_tasks.is_some() {
@@ -2277,35 +2203,35 @@ impl ConfigSection {
         }
 
         if extended.default_to_workspace.is_some() {
-            self.default_to_workspace = extended.default_to_workspace.clone();
+            self.default_to_workspace = extended.default_to_workspace;
         }
 
         if extended.skip_git_env_info.is_some() {
-            self.skip_git_env_info = extended.skip_git_env_info.clone();
+            self.skip_git_env_info = extended.skip_git_env_info;
         }
 
         if extended.skip_rust_env_info.is_some() {
-            self.skip_rust_env_info = extended.skip_rust_env_info.clone();
+            self.skip_rust_env_info = extended.skip_rust_env_info;
         }
 
         if extended.skip_crate_env_info.is_some() {
-            self.skip_crate_env_info = extended.skip_crate_env_info.clone();
+            self.skip_crate_env_info = extended.skip_crate_env_info;
         }
 
         if extended.reduce_output.is_some() {
-            self.reduce_output = extended.reduce_output.clone();
+            self.reduce_output = extended.reduce_output;
         }
 
         if extended.time_summary.is_some() {
-            self.time_summary = extended.time_summary.clone();
+            self.time_summary = extended.time_summary;
         }
 
         if extended.load_cargo_aliases.is_some() {
-            self.load_cargo_aliases = extended.load_cargo_aliases.clone();
+            self.load_cargo_aliases = extended.load_cargo_aliases;
         }
 
         if extended.disable_install.is_some() {
-            self.disable_install = extended.disable_install.clone();
+            self.disable_install = extended.disable_install;
         }
 
         if extended.main_project_member.is_some() {
@@ -2363,12 +2289,10 @@ impl ConfigSection {
             } else {
                 self.load_script.clone()
             }
+        } else if self.linux_load_script.is_some() {
+            self.linux_load_script.clone()
         } else {
-            if self.linux_load_script.is_some() {
-                self.linux_load_script.clone()
-            } else {
-                self.load_script.clone()
-            }
+            self.load_script.clone()
         }
     }
 }
@@ -2393,7 +2317,7 @@ pub struct Config {
 impl Config {
     /// Apply modifications
     pub fn apply(self: &mut Config, modify_config: &ModifyConfig) {
-        self.config.apply(&modify_config);
+        self.config.apply(modify_config);
 
         let namespace = match modify_config.namespace {
             Some(ref namespace) => namespace,
@@ -2403,10 +2327,10 @@ impl Config {
         let mut modified_tasks = IndexMap::<String, Task>::new();
 
         for (key, value) in self.tasks.iter() {
-            let namespaced_task = get_namespaced_task_name(namespace, &key);
+            let namespaced_task = get_namespaced_task_name(namespace, key);
             let mut task = value.clone();
 
-            task.apply(&modify_config);
+            task.apply(modify_config);
 
             modified_tasks.insert(namespaced_task, task);
         }

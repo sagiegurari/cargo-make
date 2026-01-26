@@ -27,7 +27,7 @@ fn get_cargo_plugin_info_from_command(task_config: &Task) -> Option<(String, Str
             if command == "cargo" {
                 match task_config.args {
                     Some(ref args) => {
-                        if args.len() > 0 && !args[0].starts_with("-") {
+                        if !args.is_empty() && !args[0].starts_with("-") {
                             // create crate name
                             let mut crate_name = "cargo-".to_string();
                             crate_name = crate_name + &args[0];
@@ -76,12 +76,10 @@ pub(crate) fn install(
     let toolchain = task_config.toolchain.clone();
 
     let mut install_crate = task_config.install_crate.clone();
-    if let Some(ref install_crate_value) = install_crate {
-        if let InstallCrate::Enabled(enabled) = install_crate_value {
-            if *enabled {
-                // enabled true is the same as no install_crate defined
-                install_crate = None;
-            }
+    if let Some(InstallCrate::Enabled(enabled)) = install_crate {
+        if enabled {
+            // enabled true is the same as no install_crate defined
+            install_crate = None;
         }
     }
 
@@ -115,7 +113,7 @@ pub(crate) fn install(
             }
             InstallCrate::CargoPluginInfo(ref install_info) => {
                 let (cargo_command, crate_name) =
-                    match get_cargo_plugin_info_from_command(&task_config) {
+                    match get_cargo_plugin_info_from_command(task_config) {
                         Some(cargo_plugin_info) => cargo_plugin_info,
                         None => match get_first_command_arg(task_config) {
                             Some(arg) => match install_info.crate_name {
@@ -165,7 +163,7 @@ pub(crate) fn install(
         None => match task_config.install_script {
             Some(ref script) => {
                 scriptengine::invoke_script_in_flow_context(
-                    &script,
+                    script,
                     task_config.script_runner.clone(),
                     task_config.script_runner_args.clone(),
                     task_config.script_extension.clone(),
@@ -173,9 +171,8 @@ pub(crate) fn install(
                     Some(flow_info),
                     Some(flow_state),
                 )?;
-                ()
             }
-            None => match get_cargo_plugin_info_from_command(&task_config) {
+            None => match get_cargo_plugin_info_from_command(task_config) {
                 Some((cargo_command, crate_name)) => {
                     cargo_plugin_installer::install_crate(
                         &toolchain,

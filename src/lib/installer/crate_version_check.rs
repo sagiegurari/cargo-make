@@ -28,10 +28,10 @@ fn get_cargo_home() -> Option<String> {
     let cargo_home = match env::var("CARGO_HOME") {
         Ok(value) => Some(value.to_string()),
         Err(_) => match dirs_next::home_dir() {
-            Some(directory) => match directory.join(".cargo").to_str() {
-                Some(value) => Some(value.to_string()),
-                None => None,
-            },
+            Some(directory) => directory
+                .join(".cargo")
+                .to_str()
+                .map(|value| value.to_string()),
             None => None,
         },
     };
@@ -88,7 +88,7 @@ fn get_crate_version_from_info(crate_name: &str, info: &CratesRegistryInfo) -> O
     match info.v1 {
         Some(ref keys) => {
             for key in keys.keys() {
-                let output = parse_version_from_string(&key, crate_name);
+                let output = parse_version_from_string(key, crate_name);
 
                 match output {
                     VersionParseOutput::Version(version) => return Some(version),
@@ -107,7 +107,7 @@ pub(crate) fn get_crate_version(crate_name: &str, binary: Option<&str>) -> Optio
     let cargo_home = get_cargo_home();
     let version = match cargo_home {
         Some(directory) => match load_crates_toml(&directory) {
-            Some(info) => get_crate_version_from_info(&crate_name, &info),
+            Some(info) => get_crate_version_from_info(crate_name, &info),
             None => {
                 warn!(
                     "Unable to read crates registry information to validate {} crate version.",
@@ -130,7 +130,7 @@ pub(crate) fn get_crate_version(crate_name: &str, binary: Option<&str>) -> Optio
         None => match binary {
             Some(value) => {
                 let result = command::run_command_get_output_string(
-                    &value,
+                    value,
                     &Some(vec!["--version".to_string()]),
                 );
 

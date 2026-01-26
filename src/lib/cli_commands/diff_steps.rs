@@ -46,7 +46,7 @@ pub(crate) fn run(
         disable_workspace: cli_args.disable_workspace,
         allow_private: true,
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
-        ..ExecutionPlanBuilder::new(internal_config, &task)
+        ..ExecutionPlanBuilder::new(internal_config, task)
     }
     .build()?;
 
@@ -55,16 +55,16 @@ pub(crate) fn run(
         disable_workspace: cli_args.disable_workspace,
         allow_private: true,
         skip_tasks_pattern: skip_tasks_pattern.as_ref(),
-        ..ExecutionPlanBuilder::new(external_config, &task)
+        ..ExecutionPlanBuilder::new(external_config, task)
     }
     .build()?;
 
     let internal_file = create_file(
-        &move |file: &mut File| write_as_string(&internal_execution_plan, &file),
+        &move |file: &mut File| write_as_string(&internal_execution_plan, file),
         "toml",
     )?;
     let external_file = create_file(
-        &move |file: &mut File| write_as_string(&external_execution_plan, &file),
+        &move |file: &mut File| write_as_string(&external_execution_plan, file),
         "toml",
     )?;
 

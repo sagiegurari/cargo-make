@@ -45,13 +45,10 @@ pub(crate) fn create_proxy_task(
     //get makefile location
     let makefile_path_option = match makefile {
         Some(makefile_path) => Some(makefile_path),
-        None => match env::var("CARGO_MAKE_MAKEFILE_PATH") {
-            Ok(makefile_path) => Some(makefile_path),
-            _ => None,
-        },
+        None => env::var("CARGO_MAKE_MAKEFILE_PATH").ok(),
     };
     if let Some(makefile_path) = makefile_path_option {
-        if makefile_path.len() > 0 {
+        if !makefile_path.is_empty() {
             args.push("--makefile".to_string());
             args.push(makefile_path);
         }
