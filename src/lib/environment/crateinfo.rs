@@ -34,8 +34,12 @@ struct CargoConfigBuild {
 struct RustTarget(PathBuf);
 
 impl RustTarget {
-    fn name(&self) -> &str {
-        self.0.file_stem().unwrap().to_str().unwrap()
+    fn name(&self) -> String {
+        let file_name = self.0.file_name().unwrap().to_str().unwrap();
+        file_name
+            .strip_suffix(".json")
+            .map(String::from)
+            .unwrap_or_else(|| file_name.to_string())
     }
 }
 

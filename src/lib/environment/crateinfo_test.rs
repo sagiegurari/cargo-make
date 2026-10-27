@@ -736,6 +736,12 @@ fn get_crate_target_triple() {
         Some("x86_64-pc-windows-msvc".into())
     );
 
+    env::set_current_dir("../member_dotted").unwrap();
+    assert_eq!(
+        crate_target_triple(target_triple.clone(), None),
+        Some("thumbv8m.main-none-eabi".into())
+    );
+
     env::set_current_dir(old_current_dir).unwrap();
 }
 
